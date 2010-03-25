@@ -54,8 +54,8 @@ void list_content (GsfInput* input, int level = 0)
         return;
 
     int child_count = gsf_infile_num_children (GSF_INFILE (input));
-	bool is_dir = child_count >= 0;
-	
+    bool is_dir = child_count >= 0;
+    
     for (int i = 0; i < level; ++i)
         printf("   ");
 
@@ -68,30 +68,30 @@ void list_content (GsfInput* input, int level = 0)
             read_content_xml(input, size);
     }
 
-	if (!is_dir)
-		return;
+    if (!is_dir)
+        return;
 
     for (int i = 0; i < level; ++i)
         printf("   ");
 
-	puts ("{");
-	for (int i = 0 ; i < child_count; ++i)
+    puts ("{");
+    for (int i = 0 ; i < child_count; ++i)
     {    
-		GsfInput* child = gsf_infile_child_by_index (GSF_INFILE (input), i);
+        GsfInput* child = gsf_infile_child_by_index (GSF_INFILE (input), i);
         list_content(child, level+1);
         g_object_unref(G_OBJECT(child));
     }
 
     for (int i = 0; i < level; ++i)
         printf("   ");
-	puts ("}");
+    puts ("}");
 }
 
 void read_file(const char* fpath)
 {
     cout << "reading " << fpath << endl;
 
-	GError* err = NULL;
+    GError* err = NULL;
     GsfInput* input = gsf_input_stdio_new (fpath, &err);
     if (!input)
     {    
