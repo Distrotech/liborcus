@@ -112,7 +112,7 @@ static GsfXMLInNode const opendoc_content_dtd [] =
 void read_content_xml(GsfInput* input, size_t size)
 {
 #if 1
-    GsfXMLInDoc* doc = gsf_xml_in_doc_new(opendoc_content_dtd, gsf_ooo_ns);
+    GsfXMLInDoc* doc = gsf_xml_in_doc_new(opendoc_content_dtd, get_gsf_ooo_ns());
     gsf_xml_in_doc_parse(doc, input, NULL);
     gsf_xml_in_doc_free (doc);
 #else
