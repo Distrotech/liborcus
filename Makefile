@@ -44,7 +44,7 @@ all: $(EXEC)
 pre:
 	mkdir $(OBJDIR) 2>/dev/null || /bin/true
 
-$(OBJDIR)/main.o: $(SRCDIR)/main.cpp
+$(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(HEADERS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/main.cpp
 
 $(EXEC): pre $(OBJFILES)
