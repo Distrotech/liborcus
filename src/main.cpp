@@ -124,7 +124,7 @@ void read_content_xml(GsfInput* input, size_t size)
     gsf_xml_in_doc_free (doc);
 #else
     const guint8* content = gsf_input_read(input, size, NULL);
-    ::orcus::xml_stream_parser parser(content, size);
+    ::orcus::xml_stream_parser parser(content, size, "content.xml");
     parser.parse();
 #endif
 }

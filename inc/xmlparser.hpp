@@ -30,6 +30,7 @@
 
 #include <cstdint>
 #include <cstdlib>
+#include <string>
 
 namespace orcus {
 
@@ -41,7 +42,7 @@ namespace orcus {
 class xml_stream_parser
 {
 public:
-    xml_stream_parser(const uint8_t* content, size_t size);
+    xml_stream_parser(const uint8_t* content, size_t size, const ::std::string& name);
     ~xml_stream_parser();
 
     void parse();
@@ -51,6 +52,7 @@ private:
 
     const uint8_t* m_content;
     size_t m_size;
+    ::std::string m_name;  // stream name
 };
 
 }
