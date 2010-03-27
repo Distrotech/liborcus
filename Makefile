@@ -61,7 +61,7 @@ $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)
 
 gen-tokens:
-	$(BINDIR)/gen-tokens.py $(SCHEMAPATH)
+	$(BINDIR)/gen-tokens.py $(SCHEMAPATH) $(INCDIR)/tokens.hpp $(SRCDIR)/tokens.cpp
 
 test: $(EXEC)
 	./$(EXEC) ./test/test.ods

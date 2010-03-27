@@ -76,13 +76,24 @@ def main (args):
     parser.parse()
     tokens = parser.tokens.keys()
     tokens.sort()
+
+    outfile = open(sys.argv[2], 'w')
+    outfile.write("namespace orcus {\n\n")
+    # constant values
     token_id = 0
     for token in tokens:
         token = normalize_name(token)
-        print ("const uint32_t XML_%s = %d;"%(token, token_id))
+        outfile.write("const uint32_t XML_%s = %d;\n"%(token, token_id))
         token_id += 1
     
-    print ("const char** token_names[] = {")
+    outfile.write("\n}\n")
+    outfile.close()
+
+    outfile = open(sys.argv[3], 'w')
+    outfile.write("namespace orcus {\n\n")
+
+    # token name array (token -> string)
+    outfile.write("const char** token_names[] = {\n")
     token_id = 0
     token_size = len(tokens)
     for i in xrange(0, token_size):
@@ -90,9 +101,15 @@ def main (args):
         s = ','
         if i == token_size-1:
             s = ' '
-        print ("    \"%s\"%s // %d"%(token, s, token_id))
+        outfile.write("    \"%s\"%s // %d\n"%(token, s, token_id))
         token_id += 1
-    print ("};")
+    outfile.write("};\n")
+
+    outfile.write("\n}\n")
+    outfile.close()
+
+    # name to token map (string -> token)
+
 
 if __name__ == '__main__':
     main(sys.argv)
