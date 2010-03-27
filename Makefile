@@ -34,10 +34,12 @@ CPPFLAGS=-I$(INCDIR) -g -Wall `pkg-config --cflags libgsf-1`
 LDFLAGS=`pkg-config --libs libgsf-1`
 
 HEADERS= \
-	$(INCDIR)/global.hpp
+	$(INCDIR)/global.hpp \
+	$(INCDIR)/xmlparser.hpp
 
 OBJFILES= \
-	$(OBJDIR)/main.o
+	$(OBJDIR)/main.o \
+	$(OBJDIR)/xmlparser.o
 
 all: $(EXEC)
 
@@ -46,6 +48,9 @@ pre:
 
 $(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(HEADERS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/main.cpp
+
+$(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(HEADERS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlparser.cpp
 
 $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)
