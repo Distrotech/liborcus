@@ -130,6 +130,22 @@ void read_content_xml(GsfInput* input, size_t size)
 #endif
 }
 
+void read_content(GsfInput* input)
+{
+    if (!GSF_IS_INFILE(input))
+        return;
+
+    GsfInput* content_xml = gsf_infile_child_by_name (GSF_INFILE (input), "content.xml");
+    if (content_xml)
+    {
+        const char* name = gsf_input_name(content_xml);
+        size_t size = gsf_input_size(content_xml);
+        cout << "name: " << name << "  size: " << size << endl;
+        read_content_xml(content_xml, size);
+        g_object_unref(G_OBJECT(content_xml));
+    }
+}
+
 void list_content (GsfInput* input, int level = 0)
 {
     if (!GSF_IS_INFILE(input))
@@ -188,7 +204,7 @@ void read_file(const char* fpath)
         return;
     }
 
-    list_content (GSF_INPUT(infile));
+    read_content (GSF_INPUT(infile));
     g_object_unref (G_OBJECT (infile));
     g_object_unref (G_OBJECT (input));
 }
