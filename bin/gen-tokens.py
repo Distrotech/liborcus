@@ -58,14 +58,41 @@ class xml_parser:
         p.CharacterDataHandler = self.character
         p.Parse(self.__strm, 1)
 
-file = open(sys.argv[1], 'r')
-chars = file.read()
-file.close()
+def normalize_name (old):
+    new = ''
+    for c in old:
+        if c in '.-': # '.' nad '-' are not allowed in C++ symbols.
+            c = '_'
+        new += c
+    return new
 
-parser = xml_parser(chars)
-parser.parse()
-tokens = parser.tokens.keys()
-tokens.sort()
-for token in tokens:
-    print token
+def main (args):
 
+    file = open(sys.argv[1], 'r')
+    chars = file.read()
+    file.close()
+    
+    parser = xml_parser(chars)
+    parser.parse()
+    tokens = parser.tokens.keys()
+    tokens.sort()
+    token_id = 0
+    for token in tokens:
+        token = normalize_name(token)
+        print ("const uint32_t XML_%s = %d;"%(token, token_id))
+        token_id += 1
+    
+    print ("const char** token_names[] = {")
+    token_id = 0
+    token_size = len(tokens)
+    for i in xrange(0, token_size):
+        token = tokens[i]
+        s = ','
+        if i == token_size-1:
+            s = ' '
+        print ("    \"%s\"%s // %d"%(token, s, token_id))
+        token_id += 1
+    print ("};")
+
+if __name__ == '__main__':
+    main(sys.argv)
