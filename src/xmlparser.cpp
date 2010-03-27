@@ -42,6 +42,16 @@ struct user_data
 {
 };
 
+void start_document(void* ctx)
+{
+    cout << "start document" << endl;
+}
+
+void end_document(void* ctx)
+{
+    cout << "end document" << endl;
+}
+
 void start_element(void* ctx, const xmlChar* name, const xmlChar** attrs)
 {
     cout << "start element: " << name << endl;
@@ -94,8 +104,8 @@ xmlSAXHandler sax_handler_struct = {
     NULL, /* elementDecl */
     NULL, /* unparsedEntityDecl */
     NULL, /* setDocumentLocator */
-    NULL, /* startDocument */
-    NULL, /* endDocument */
+    start_document,
+    end_document,
     start_element,
     end_element,
     NULL, /* reference */
