@@ -29,6 +29,11 @@ EXEC=orcus-test
 OBJDIR=./obj
 SRCDIR=./src
 INCDIR=./inc
+BINDIR=./bin
+ROOTDIR=.
+
+SCHEMA=OpenDocument-schema-v1.2-cd04.rng
+SCHEMAPATH=$(ROOTDIR)/misc/$(SCHEMA)
 
 CPPFLAGS=-I$(INCDIR) -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1`
@@ -54,6 +59,9 @@ $(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(HEADERS)
 
 $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)
+
+gen-tokens:
+	$(BINDIR)/gen-tokens.py $(SCHEMAPATH)
 
 test: $(EXEC)
 	./$(EXEC) ./test/test.ods
