@@ -32,11 +32,6 @@
 
 #include "xmlparser.hpp"
 
-#if 0
-#include <gsf/gsf-libxml.h>
-#include <gsf/gsf-opendoc-utils.h>
-#endif
-
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -44,89 +39,11 @@
 
 using namespace std;
 
-#include <stdio.h>
-#include <string>
-#include <sys/time.h>
-
-namespace {
-
-class StackPrinter
-{
-public:
-    explicit StackPrinter(const char* msg) :
-        msMsg(msg)
-    {
-        fprintf(stdout, "%s: --begin\n", msMsg.c_str());
-        mfStartTime = getTime();
-    }
-
-    ~StackPrinter()
-    {
-        double fEndTime = getTime();
-        fprintf(stdout, "%s: --end (duration: %g sec)\n", msMsg.c_str(), (fEndTime-mfStartTime));
-    }
-
-    void printTime(int line) const
-    {
-        double fEndTime = getTime();
-        fprintf(stdout, "%s: --(%d) (duration: %g sec)\n", msMsg.c_str(), line, (fEndTime-mfStartTime));
-    }
-
-private:
-    double getTime() const
-    {
-        timeval tv;
-        gettimeofday(&tv, NULL);
-        return tv.tv_sec + tv.tv_usec / 1000000.0;
-    }
-
-    ::std::string msMsg;
-    double mfStartTime;
-};
-
-}
-
-#if 0
-void test_start (GsfXMLIn *xin, xmlChar const **attrs)
-{
-    StackPrinter __stack_printer__("::test_start");
-    size_t i = 0;
-    if (attrs)
-    {
-        while (attrs[i] && attrs[i+1])
-        {    
-            cout << attrs[i] << "=\"" << attrs[i+1] << "\"" << endl;
-            i += 2;
-        }
-    }
-}
-
-void test_end (GsfXMLIn *xin, G_GNUC_UNUSED GsfXMLBlob *blob)
-{
-    StackPrinter __stack_printer__("::test_end");
-}
-
-static GsfXMLInNode const opendoc_content_dtd [] =
-{
-    GSF_XML_IN_NODE_FULL (START, START, -1, NULL, GSF_XML_NO_CONTENT, FALSE, TRUE, NULL, NULL, 0),
-    GSF_XML_IN_NODE (START, OFFICE, OO_NS_OFFICE, "document-content", GSF_XML_NO_CONTENT, &test_start, &test_end),
-    GSF_XML_IN_NODE (OFFICE, OFFICE_BODY, OO_NS_OFFICE, "body", GSF_XML_NO_CONTENT, &test_start, &test_end),
-    GSF_XML_IN_NODE (OFFICE_BODY, SPREADSHEET, OO_NS_OFFICE, "spreadsheet", GSF_XML_NO_CONTENT, &test_start, &test_end),
-    GSF_XML_IN_NODE_END
-};
-#endif
-
 void read_content_xml(GsfInput* input, size_t size)
 {
-#if 0
-    GsfXMLInDoc* doc = gsf_xml_in_doc_new(opendoc_content_dtd, get_gsf_ooo_ns());
-    gsf_xml_in_doc_parse(doc, input, NULL);
-    gsf_xml_in_doc_free (doc);
-#else
     const guint8* content = gsf_input_read(input, size, NULL);
     ::orcus::xml_stream_parser parser(content, size, "content.xml");
     parser.parse();
-#endif
 }
 
 void read_content(GsfInput* input)
