@@ -30,7 +30,7 @@ OBJDIR=./obj
 SRCDIR=./src
 INCDIR=./inc
 
-CPPFLAGS=-I$(INCDIR) -g -Wall `pkg-config --cflags libgsf-1`
+CPPFLAGS=-I$(INCDIR) -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1`
 
 HEADERS= \

@@ -29,6 +29,9 @@
 #include <gsf/gsf-input-stdio.h>
 #include <gsf/gsf-infile.h>
 #include <gsf/gsf-infile-zip.h>
+
+#include "xmlparser.hpp"
+
 #if 0
 #include <gsf/gsf-libxml.h>
 #include <gsf/gsf-opendoc-utils.h>
@@ -121,12 +124,8 @@ void read_content_xml(GsfInput* input, size_t size)
     gsf_xml_in_doc_free (doc);
 #else
     const guint8* content = gsf_input_read(input, size, NULL);
-    for (size_t i = 0; i < size; ++i)
-    {
-        guint8 c = content[i];
-        cout << c;
-    }
-    cout << endl;
+    ::orcus::xml_stream_parser parser(content, size);
+    parser.parse();
 #endif
 }
 

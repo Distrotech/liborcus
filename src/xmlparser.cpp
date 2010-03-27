@@ -27,8 +27,26 @@
 
 #include "xmlparser.hpp"
 
+#include <iostream>
+
+using namespace std;
+
 namespace orcus {
 
+xml_stream_parser::xml_stream_parser(const uint8_t* content, size_t size) :
+    m_content(content), m_size(size)
+{
+}
 
+xml_stream_parser::~xml_stream_parser()
+{
+}
+
+void xml_stream_parser::parse()
+{
+    for (size_t i = 0; i < m_size; ++i)
+        cout << m_content[i];
+    cout << endl;
+}
 
 }

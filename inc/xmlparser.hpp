@@ -28,9 +28,30 @@
 #ifndef __XMLPARSER_HPP__
 #define __XMLPARSER_HPP__
 
+#include <cstdint>
+#include <cstdlib>
+
 namespace orcus {
 
+/** 
+ * This class does NOT store the stream content which is just a pointer to 
+ * the first char of the content stream.  Make sure you finish parsing while 
+ * the content pointer is valid. 
+ */
+class xml_stream_parser
+{
+public:
+    xml_stream_parser(const uint8_t* content, size_t size);
+    ~xml_stream_parser();
 
+    void parse();
+
+private:
+    xml_stream_parser(); // disabled
+
+    const uint8_t* m_content;
+    size_t m_size;
+};
 
 }
 
