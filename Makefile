@@ -40,10 +40,13 @@ LDFLAGS=`pkg-config --libs libgsf-1`
 
 HEADERS= \
 	$(INCDIR)/global.hpp \
+	$(INCDIR)/tokens.hpp \
+	$(INCDIR)/token_constants.hpp \
 	$(INCDIR)/xmlparser.hpp
 
 OBJFILES= \
 	$(OBJDIR)/main.o \
+	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/xmlparser.o
 
 all: $(EXEC)
@@ -57,11 +60,14 @@ $(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(HEADERS)
 $(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(HEADERS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlparser.cpp
 
+$(OBJDIR)/tokens.o: $(SRCDIR)/tokens.cpp $(HEADERS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/tokens.cpp
+
 $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)
 
 gen-tokens:
-	$(BINDIR)/gen-tokens.py $(SCHEMAPATH) $(INCDIR)/tokens.hpp $(SRCDIR)/tokens.cpp
+	$(BINDIR)/gen-tokens.py $(SCHEMAPATH) $(INCDIR)/token_constants.hpp $(SRCDIR)/tokens.inl
 
 test: $(EXEC)
 	./$(EXEC) ./test/test.ods
