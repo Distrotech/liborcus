@@ -29,8 +29,10 @@
 #include <gsf/gsf-input-stdio.h>
 #include <gsf/gsf-infile.h>
 #include <gsf/gsf-infile-zip.h>
+#if 0
 #include <gsf/gsf-libxml.h>
 #include <gsf/gsf-opendoc-utils.h>
+#endif
 
 #include <cstdlib>
 #include <iostream>
@@ -81,6 +83,7 @@ private:
 
 }
 
+#if 0
 void test_start (GsfXMLIn *xin, xmlChar const **attrs)
 {
     StackPrinter __stack_printer__("::test_start");
@@ -108,10 +111,11 @@ static GsfXMLInNode const opendoc_content_dtd [] =
     GSF_XML_IN_NODE (OFFICE_BODY, SPREADSHEET, OO_NS_OFFICE, "spreadsheet", GSF_XML_NO_CONTENT, &test_start, &test_end),
     GSF_XML_IN_NODE_END
 };
+#endif
 
 void read_content_xml(GsfInput* input, size_t size)
 {
-#if 1
+#if 0
     GsfXMLInDoc* doc = gsf_xml_in_doc_new(opendoc_content_dtd, get_gsf_ooo_ns());
     gsf_xml_in_doc_parse(doc, input, NULL);
     gsf_xml_in_doc_free (doc);
