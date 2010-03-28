@@ -28,9 +28,18 @@
 #ifndef __GLOBAL_HPP__
 #define __GLOBAL_HPP__
 
+#include <pthread.h>
+
 namespace orcus {
 
-
+class thread_mutex_guard
+{
+public:
+    explicit thread_mutex_guard(pthread_mutex_t& lock);
+    ~thread_mutex_guard();
+private:
+    pthread_mutex_t& m_lock;
+};
 
 }
 

@@ -26,12 +26,11 @@
  ************************************************************************/
 
 #include "tokens.hpp"
+#include "global.hpp"
 
 #include <cstdlib>
 #include <string>
 #include <hash_map>
-
-#include <pthread.h>
 
 using namespace std;
 
@@ -70,14 +69,14 @@ pthread_mutex_t name_token_map::lock;
 
 void tokens::init()
 {
-    pthread_mutex_lock(&name_token_map::lock);
+    thread_mutex_guard guard(name_token_map::lock);
+
     for (size_t i = 0; i < token_name_count; ++i)
     {
         name_token_map::data.insert(
             name_token_map::map_type::value_type(
                 string(token_names[i]), static_cast<xml_token_t>(i)));
     }
-    pthread_mutex_unlock(&name_token_map::lock);
 }
 
 bool tokens::is_valid_token(xml_token_t token)

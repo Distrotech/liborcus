@@ -46,6 +46,7 @@ HEADERS= \
 
 OBJFILES= \
 	$(OBJDIR)/main.o \
+	$(OBJDIR)/global.o \
 	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/xmlparser.o
 
@@ -56,6 +57,9 @@ pre:
 
 $(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(HEADERS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/main.cpp
+
+$(OBJDIR)/global.o: $(SRCDIR)/global.cpp $(HEADERS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/global.cpp
 
 $(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(HEADERS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlparser.cpp
