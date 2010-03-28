@@ -51,8 +51,9 @@ OBJFILES= \
 	$(OBJDIR)/xmlparser.o
 
 DEPENDS= \
-	$(HEADERS) \
-	$(OBJDIR)/gen_tokens
+	$(OBJDIR)/gen_tokens \
+	$(HEADERS)
+
 
 all: $(EXEC)
 
