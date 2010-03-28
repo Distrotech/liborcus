@@ -56,13 +56,16 @@ struct string_hash
 
 struct name_token_map
 {
-    typedef __gnu_cxx::hash_map<string, xml_token_t, string_hash> map_type;
+    typedef __gnu_cxx::hash_map<string, xml_token_t, string_hash> token_type;
+    typedef __gnu_cxx::hash_map<string, xmlns_token_t, string_hash> nstoken_type;
 
-    static map_type         data;
+    static token_type       tokens;
+    static nstoken_type     nstokens;
     static pthread_mutex_t  lock;
 };
 
-name_token_map::map_type name_token_map::data;
+name_token_map::token_type   name_token_map::tokens;
+name_token_map::nstoken_type name_token_map::nstokens;
 pthread_mutex_t name_token_map::lock;
 
 }
@@ -73,9 +76,16 @@ void tokens::init()
 
     for (size_t i = 0; i < token_name_count; ++i)
     {
-        name_token_map::data.insert(
-            name_token_map::map_type::value_type(
+        name_token_map::tokens.insert(
+            name_token_map::token_type::value_type(
                 string(token_names[i]), static_cast<xml_token_t>(i)));
+    }
+
+    for (size_t i = 0; i < nstoken_name_count; ++i)
+    {
+        name_token_map::nstokens.insert(
+            name_token_map::nstoken_type::value_type(
+                string(nstoken_names[i]), static_cast<xmlns_token_t>(i)));
     }
 }
 
@@ -86,13 +96,13 @@ bool tokens::is_valid_token(xml_token_t token)
 
 xml_token_t tokens::get_token(const char* name)
 {
-    name_token_map::map_type::const_iterator itr = name_token_map::data.find(name);
-    if (itr == name_token_map::data.end())
+    name_token_map::token_type::const_iterator itr = name_token_map::tokens.find(name);
+    if (itr == name_token_map::tokens.end())
         return XML_UNKNOWN_TOKEN;
     return itr->second;
 }
 
-const char* tokens::get_name(xml_token_t token)
+const char* tokens::get_token_name(xml_token_t token)
 {
     if (static_cast<size_t>(token) >= token_name_count)
         return "";
@@ -100,5 +110,25 @@ const char* tokens::get_name(xml_token_t token)
     return token_names[token];
 }
 
+bool tokens::is_valid_nstoken(xmlns_token_t token)
+{
+    return token != XMLNS_UNKNOWN_TOKEN;
+}
+
+xmlns_token_t tokens::get_nstoken(const char* name)
+{
+    name_token_map::nstoken_type::const_iterator itr = name_token_map::nstokens.find(name);
+    if (itr == name_token_map::nstokens.end())
+        return XMLNS_UNKNOWN_TOKEN;
+    return itr->second;
+}
+
+const char* tokens::get_nstoken_name(xmlns_token_t token)
+{
+    if (static_cast<size_t>(token) >= nstoken_name_count)
+        return "";
+
+    return nstoken_names[token];
+}
 
 }
