@@ -31,6 +31,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
+#include <exception>
 
 namespace orcus {
 
@@ -42,6 +43,16 @@ namespace orcus {
 class xml_stream_parser
 {
 public:
+    class parse_error : public ::std::exception
+    {
+    public:
+        parse_error(const ::std::string& msg);
+        virtual ~parse_error() throw();
+        virtual const char* what() const throw();
+    private:
+        ::std::string m_msg;
+    };
+
     xml_stream_parser(const uint8_t* content, size_t size, const ::std::string& name);
     ~xml_stream_parser();
 
