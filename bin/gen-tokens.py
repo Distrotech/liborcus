@@ -89,18 +89,15 @@ def main (args):
     token_size = len(tokens)
     for i in xrange(0, token_size):
         token = normalize_name(tokens[i])
-        s = ','
-        if i == token_size-1:
-            s = ''
-        outfile.write("    XML_%s = %d%s\n"%(token, token_id, s))
+        outfile.write("    XML_%s = %d,\n"%(token, token_id))
         token_id += 1
+    outfile.write("\n    XML_UNKNOWN_TOKEN = 99999 // special token to handle unrecognized token names.\n")
     
     outfile.write("};\n\n}\n")
     outfile.close()
 
     outfile = open(sys.argv[3], 'w')
     outfile.write(get_auto_gen_warning())
-    outfile.write("namespace {\n\n")
 
     # token name array (token -> string)
     outfile.write("const char* token_names[] = {\n")
@@ -115,7 +112,6 @@ def main (args):
     outfile.write("};\n\n")
 
     outfile.write("size_t token_name_count = %d;\n\n"%token_id)
-    outfile.write("}\n") # closing namespace
     outfile.close()
 
     # name to token map (string -> token)

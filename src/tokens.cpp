@@ -28,14 +28,69 @@
 #include "tokens.hpp"
 
 #include <cstdlib>
+#include <string>
+#include <hash_map>
+
+#include <pthread.h>
+
+using namespace std;
 
 namespace orcus {
 
+namespace {
+
 #include "tokens.inl"
+
+struct string_hash
+{
+    size_t operator() (const string& val) const
+    {
+        size_t n = val.size();
+        size_t hash_val = n;
+        size_t loop_size = min<size_t>(n, 20); // prevent too much looping.
+        for (size_t i = 0; i < loop_size; ++i)
+            hash_val += static_cast<size_t>(val[i]);
+
+        return hash_val;
+    }
+};
+
+struct name_token_map
+{
+    typedef __gnu_cxx::hash_map<string, xml_token_t, string_hash> map_type;
+
+    static map_type         data;
+    static pthread_mutex_t  lock;
+};
+
+name_token_map::map_type name_token_map::data;
+pthread_mutex_t name_token_map::lock;
+
+}
+
+void tokens::init()
+{
+    pthread_mutex_lock(&name_token_map::lock);
+    for (size_t i = 0; i < token_name_count; ++i)
+    {
+        name_token_map::data.insert(
+            name_token_map::map_type::value_type(
+                string(token_names[i]), static_cast<xml_token_t>(i)));
+    }
+    pthread_mutex_unlock(&name_token_map::lock);
+}
+
+bool tokens::is_valid_token(xml_token_t token)
+{
+    return token != XML_UNKNOWN_TOKEN;
+}
 
 xml_token_t tokens::get_token(const char* name)
 {
-    return XML_0;
+    name_token_map::map_type::const_iterator itr = name_token_map::data.find(name);
+    if (itr == name_token_map::data.end())
+        return XML_0;
+    return itr->second;
 }
 
 const char* tokens::get_name(xml_token_t token)

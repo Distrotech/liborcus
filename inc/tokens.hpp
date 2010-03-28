@@ -35,7 +35,36 @@ namespace orcus {
 class tokens
 {
 public:
+    /** 
+     * Initialize data used in this class.  Call this once before starting to 
+     * use methods of this class.
+     */
+    static void init();
+
+    /** 
+     * Check if a token returned from get_token() method is valid.
+     * 
+     * @return true if valid, false otherwise.
+     */
+    static bool is_valid_token(xml_token_t token);
+
+    /** 
+     * Get token from a specified name.
+     *
+     * @param name textural token name
+     * 
+     * @return token value representing the given textural token.
+     */
     static xml_token_t get_token(const char* name);
+
+    /** 
+     * Get textural token name from a token value.
+     *
+     * @param token numeric token value
+     * 
+     * @return textural token name, or empty string in case the given token is 
+     *         not valid.
+     */
     static const char* get_name(xml_token_t token);
 };
 
