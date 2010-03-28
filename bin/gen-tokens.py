@@ -69,22 +69,13 @@ def normalize_name (old):
 def get_auto_gen_warning ():
     return "// This file has been auto-generated.  Do not hand-edit this.\n\n"
 
-def main (args):
+def gen_token_constants (filepath, tokens):
 
-    file = open(sys.argv[1], 'r')
-    chars = file.read()
-    file.close()
-    
-    parser = xml_parser(chars)
-    parser.parse()
-    tokens = parser.tokens.keys()
-    tokens.sort()
-
-    outfile = open(sys.argv[2], 'w')
+    outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
     outfile.write("namespace orcus {\n\n")
     outfile.write("enum xml_token_t {\n")
-    # constant values
+
     token_id = 0
     token_size = len(tokens)
     for i in xrange(0, token_size):
@@ -96,12 +87,14 @@ def main (args):
     outfile.write("};\n\n}\n")
     outfile.close()
 
-    outfile = open(sys.argv[3], 'w')
+def gen_token_names (filepath, tokens):
+
+    outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
 
-    # token name array (token -> string)
     outfile.write("const char* token_names[] = {\n")
     token_id = 0
+    token_size = len(tokens)
     for i in xrange(0, token_size):
         token = tokens[i]
         s = ','
@@ -114,8 +107,19 @@ def main (args):
     outfile.write("size_t token_name_count = %d;\n\n"%token_id)
     outfile.close()
 
-    # name to token map (string -> token)
+def main (args):
 
+    file = open(sys.argv[1], 'r')
+    chars = file.read()
+    file.close()
+    
+    parser = xml_parser(chars)
+    parser.parse()
+    tokens = parser.tokens.keys()
+    tokens.sort()
+
+    gen_token_constants(sys.argv[2], tokens)
+    gen_token_names(sys.argv[3], tokens)
 
 if __name__ == '__main__':
     main(sys.argv)
