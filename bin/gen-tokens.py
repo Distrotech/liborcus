@@ -112,7 +112,7 @@ def gen_token_constants (filepath, tokens, ns_tokens):
     outfile.write("}\n")
     outfile.close()
 
-def gen_token_names (filepath, tokens):
+def gen_token_names (filepath, tokens, ns_tokens):
 
     outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
@@ -128,8 +128,21 @@ def gen_token_names (filepath, tokens):
         outfile.write("    \"%s\"%s // %d\n"%(token, s, token_id))
         token_id += 1
     outfile.write("};\n\n")
-
     outfile.write("size_t token_name_count = %d;\n\n"%token_id)
+
+    outfile.write("const char* nstoken_names[] = {\n")
+    token_id = 0
+    token_size = len(ns_tokens)
+    for i in xrange(0, token_size):
+        token = ns_tokens[i]
+        s = ','
+        if i == token_size-1:
+            s = ' '
+        outfile.write("    \"%s\"%s // %d\n"%(token, s, token_id))
+        token_id += 1
+    outfile.write("};\n\n")
+    outfile.write("size_t nstoken_name_count = %d;\n\n"%token_id)
+
     outfile.close()
 
 def main (args):
@@ -146,7 +159,7 @@ def main (args):
     ns_tokens.sort()
 
     gen_token_constants(sys.argv[2], tokens, ns_tokens)
-    gen_token_names(sys.argv[3], tokens)
+    gen_token_names(sys.argv[3], tokens, ns_tokens)
 
 if __name__ == '__main__':
     main(sys.argv)
