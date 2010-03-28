@@ -45,7 +45,7 @@ struct string_hash
     size_t operator() (const string& val) const
     {
         size_t n = val.size();
-        size_t hash_val = n;
+        size_t hash_val = ~n;
         size_t loop_size = min<size_t>(n, 20); // prevent too much looping.
         for (size_t i = 0; i < loop_size; ++i)
             hash_val += static_cast<size_t>(val[i]);
