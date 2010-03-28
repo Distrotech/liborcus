@@ -50,33 +50,38 @@ OBJFILES= \
 	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/xmlparser.o
 
+DEPENDS= \
+	$(HEADERS) \
+	$(OBJDIR)/gen_tokens
+
 all: $(EXEC)
 
 pre:
 	mkdir $(OBJDIR) 2>/dev/null || /bin/true
 
-$(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(HEADERS)
+$(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/main.cpp
 
-$(OBJDIR)/global.o: $(SRCDIR)/global.cpp $(HEADERS)
+$(OBJDIR)/global.o: $(SRCDIR)/global.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/global.cpp
 
-$(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(HEADERS)
+$(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlparser.cpp
 
-$(OBJDIR)/tokens.o: $(SRCDIR)/tokens.cpp $(HEADERS)
+$(OBJDIR)/tokens.o: $(SRCDIR)/tokens.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/tokens.cpp
 
 $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)
 
-gen-tokens:
+$(OBJDIR)/gen_tokens:
 	$(BINDIR)/gen-tokens.py $(SCHEMAPATH) $(INCDIR)/token_constants.hpp $(SRCDIR)/tokens.inl
+	touch $@
 
 test: $(EXEC)
 	./$(EXEC) ./test/test.ods
 
 clean:
-	rm -rf $(OBJDIR)
-	rm $(EXEC)
+	rm -rf $(OBJDIR) 2> /dev/null || /bin/true
+	rm $(EXEC) 2> /dev/null || /bin/true
 
