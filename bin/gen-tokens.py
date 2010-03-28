@@ -34,11 +34,25 @@ class xml_parser:
         self.__strm = strm
         self.__elem = None
         self.tokens = {}
+        self.ns_tokens = {}  # namespace tokens
 
     def start_element(self, name, attrs):
         self.__elem = name
         if name in ['element', 'attribute'] and attrs.has_key('name'):
             tokens = attrs['name'].split(':')
+            n = len(tokens)
+            if n == 1:
+                # namespace-less token
+                self.tokens[tokens[0]] = True
+            elif n == 2:
+                # namespaced token
+                self.ns_tokens[tokens[0]] = True
+                self.tokens[tokens[1]] = True
+            else:
+                sys.stderr.write("unrecognized token type: "+attrs['name'])
+                sys.exit(1)
+
+
             for token in tokens:
                 self.tokens[token] = True
 
@@ -69,22 +83,33 @@ def normalize_name (old):
 def get_auto_gen_warning ():
     return "// This file has been auto-generated.  Do not hand-edit this.\n\n"
 
-def gen_token_constants (filepath, tokens):
+def gen_token_constants (filepath, tokens, ns_tokens):
 
     outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
     outfile.write("namespace orcus {\n\n")
-    outfile.write("enum xml_token_t {\n")
 
+    outfile.write("enum xml_token_t {\n")
     token_id = 0
     token_size = len(tokens)
     for i in xrange(0, token_size):
         token = normalize_name(tokens[i])
         outfile.write("    XML_%s = %d,\n"%(token, token_id))
         token_id += 1
-    outfile.write("\n    XML_UNKNOWN_TOKEN = 99999 // special token to handle unrecognized token names.\n")
-    
-    outfile.write("};\n\n}\n")
+    outfile.write("\n    XML_UNKNOWN_TOKEN = %d // special token to handle unrecognized token names.\n"%token_id)
+    outfile.write("};\n\n")
+
+    outfile.write("enum xmlns_token_t {\n")
+    token_id = 0
+    token_size = len(ns_tokens)
+    for i in xrange(0, token_size):
+        token = normalize_name(ns_tokens[i])
+        outfile.write("    XMLNS_%s = %d,\n"%(token, token_id))
+        token_id += 1
+    outfile.write("\n    XMLNS_UNKNOWN_TOKEN = %d // special token to handle unrecognized token names.\n"%token_id)
+    outfile.write("};\n\n")
+
+    outfile.write("}\n")
     outfile.close()
 
 def gen_token_names (filepath, tokens):
@@ -117,8 +142,10 @@ def main (args):
     parser.parse()
     tokens = parser.tokens.keys()
     tokens.sort()
+    ns_tokens = parser.ns_tokens.keys()
+    ns_tokens.sort()
 
-    gen_token_constants(sys.argv[2], tokens)
+    gen_token_constants(sys.argv[2], tokens, ns_tokens)
     gen_token_names(sys.argv[3], tokens)
 
 if __name__ == '__main__':
