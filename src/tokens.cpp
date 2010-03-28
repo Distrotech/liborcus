@@ -88,7 +88,7 @@ xml_token_t tokens::get_token(const char* name)
 {
     name_token_map::map_type::const_iterator itr = name_token_map::data.find(name);
     if (itr == name_token_map::data.end())
-        return XML_0;
+        return XML_UNKNOWN_TOKEN;
     return itr->second;
 }
 
