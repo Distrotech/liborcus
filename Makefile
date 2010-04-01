@@ -42,12 +42,14 @@ HEADERS= \
 	$(INCDIR)/global.hpp \
 	$(INCDIR)/tokens.hpp \
 	$(INCDIR)/token_constants.hpp \
+	$(INCDIR)/xmlhandler.hpp \
 	$(INCDIR)/xmlparser.hpp
 
 OBJFILES= \
 	$(OBJDIR)/main.o \
 	$(OBJDIR)/global.o \
 	$(OBJDIR)/tokens.o \
+	$(OBJDIR)/xmlhandler.o \
 	$(OBJDIR)/xmlparser.o
 
 DEPENDS= \
@@ -71,6 +73,9 @@ $(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(DEPENDS)
 
 $(OBJDIR)/tokens.o: $(SRCDIR)/tokens.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/tokens.cpp
+
+$(OBJDIR)/xmlhandler.o: $(SRCDIR)/xmlhandler.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlhandler.cpp
 
 $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)

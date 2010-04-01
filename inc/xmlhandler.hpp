@@ -25,50 +25,18 @@
  *
  ************************************************************************/
 
-#ifndef __XMLPARSER_HPP__
-#define __XMLPARSER_HPP__
-
-#include <cstdint>
-#include <cstdlib>
-#include <string>
-#include <exception>
+#ifndef __XMLHANDLER_HPP__
+#define __XMLHANDLER_HPP__
 
 namespace orcus {
 
-class xml_stream_handler;
-
-/** 
- * This class does NOT store the stream content which is just a pointer to 
- * the first char of the content stream.  Make sure you finish parsing while 
- * the content pointer is valid. 
- */
-class xml_stream_parser
+class xml_stream_handler
 {
 public:
-    class parse_error : public ::std::exception
-    {
-    public:
-        parse_error(const ::std::string& msg);
-        virtual ~parse_error() throw();
-        virtual const char* what() const throw();
-    private:
-        ::std::string m_msg;
-    };
-
-    xml_stream_parser(const uint8_t* content, size_t size, const ::std::string& name);
-    ~xml_stream_parser();
-
-    void parse();
-
-    void set_handler(xml_stream_handler* handler);
+    xml_stream_handler();
+    ~xml_stream_handler();
 
 private:
-    xml_stream_parser(); // disabled
-
-    xml_stream_handler* mp_handler;
-    const uint8_t* m_content;
-    size_t m_size;
-    ::std::string m_name;  // stream name
 };
 
 }

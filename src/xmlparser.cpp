@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "xmlparser.hpp"
+#include "xmlhandler.hpp"
 #include "tokens.hpp"
 
 #include <libxml/parser.h>
@@ -206,7 +207,7 @@ const char* xml_stream_parser::parse_error::what() const throw()
 }
 
 xml_stream_parser::xml_stream_parser(const uint8_t* content, size_t size, const string& name) :
-    m_content(content), m_size(size), m_name(name)
+    mp_handler(NULL), m_content(content), m_size(size), m_name(name)
 {
 }
 
@@ -219,6 +220,11 @@ void xml_stream_parser::parse()
     tokens::init();
     parser_context cxt(*this);
     xmlSAXUserParseMemory(sax_handler, &cxt, reinterpret_cast<const char*>(m_content), m_size);
+}
+
+void xml_stream_parser::set_handler(xml_stream_handler* handler)
+{
+    mp_handler = handler;
 }
 
 }
