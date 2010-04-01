@@ -34,9 +34,19 @@ class xml_stream_handler
 {
 public:
     xml_stream_handler();
-    ~xml_stream_handler();
+    virtual ~xml_stream_handler() = 0;
 
-private:
+
+};
+
+// ============================================================================
+
+class ods_content_xml_handler : public xml_stream_handler
+{
+public:
+    ods_content_xml_handler();
+    virtual ~ods_content_xml_handler();
+
 };
 
 }

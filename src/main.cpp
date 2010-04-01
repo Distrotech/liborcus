@@ -31,18 +31,25 @@
 #include <gsf/gsf-infile-zip.h>
 
 #include "xmlparser.hpp"
+#include "xmlhandler.hpp"
 
 #include <cstdlib>
 #include <iostream>
 #include <string>
 #include <cstring>
 
+#include <boost/scoped_ptr.hpp>
+
 using namespace std;
 
 void read_content_xml(GsfInput* input, size_t size)
 {
+    using namespace orcus;
+
     const guint8* content = gsf_input_read(input, size, NULL);
-    ::orcus::xml_stream_parser parser(content, size, "content.xml");
+    xml_stream_parser parser(content, size, "content.xml");
+    ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler);
+    parser.set_handler(handler.get());
     parser.parse();
 }
 

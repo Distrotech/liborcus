@@ -37,5 +37,14 @@ xml_stream_handler::~xml_stream_handler()
 {
 }
 
+// ============================================================================
+
+ods_content_xml_handler::ods_content_xml_handler()
+{
+}
+
+ods_content_xml_handler::~ods_content_xml_handler()
+{
+}
 
 }
