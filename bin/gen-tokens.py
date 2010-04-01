@@ -87,7 +87,6 @@ def gen_token_constants (filepath, tokens, ns_tokens):
 
     outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
-    outfile.write("namespace orcus {\n\n")
 
     outfile.write("enum xml_token_t {\n")
     token_id = 0
@@ -109,7 +108,6 @@ def gen_token_constants (filepath, tokens, ns_tokens):
     outfile.write("\n    XMLNS_UNKNOWN_TOKEN = %d // special token to handle unrecognized token names.\n"%token_id)
     outfile.write("};\n\n")
 
-    outfile.write("}\n")
     outfile.close()
 
 def gen_token_names (filepath, tokens, ns_tokens):

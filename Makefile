@@ -81,7 +81,7 @@ $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)
 
 $(OBJDIR)/gen_tokens:
-	$(BINDIR)/gen-tokens.py $(SCHEMAPATH) $(INCDIR)/token_constants.hpp $(SRCDIR)/tokens.inl
+	$(BINDIR)/gen-tokens.py $(SCHEMAPATH) $(INCDIR)/token_constants.inl $(SRCDIR)/tokens.inl
 	touch $@
 
 test: $(EXEC)
