@@ -26,6 +26,11 @@
  ************************************************************************/
 
 #include "xmlhandler.hpp"
+#include "tokens.hpp"
+
+#include <iostream>
+
+using namespace std;
 
 namespace orcus {
 
@@ -45,6 +50,34 @@ ods_content_xml_handler::ods_content_xml_handler()
 
 ods_content_xml_handler::~ods_content_xml_handler()
 {
+}
+
+void ods_content_xml_handler::start_document()
+{
+    cout << "start document" << endl;
+}
+
+void ods_content_xml_handler::end_document()
+{
+    cout << "end document" << endl;
+}
+
+void ods_content_xml_handler::start_element(
+    xmlns_token_t ns, xml_token_t name, const vector<xml_attr>& attrs)
+{
+    cout << "<" << tokens::get_nstoken_name(ns) << ":" << tokens::get_token_name(name) << ">" << endl;
+}
+
+void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
+{
+    cout << "</" << tokens::get_nstoken_name(ns) << ":" << tokens::get_token_name(name) << ">" << endl;
+}
+
+void ods_content_xml_handler::characters(const char* ch, size_t len)
+{
+    for (size_t i = 0; i < len; ++i)
+        cout << ch[i];
+    cout << endl;
 }
 
 }

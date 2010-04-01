@@ -28,7 +28,20 @@
 #ifndef __XMLHANDLER_HPP__
 #define __XMLHANDLER_HPP__
 
+#include "token_constants.hpp"
+
+#include <cstdlib>
+#include <string>
+#include <vector>
+
 namespace orcus {
+
+struct xml_attr
+{
+    xmlns_token_t   ns;
+    xml_token_t     name;
+    ::std::string   value;
+};
 
 class xml_stream_handler
 {
@@ -36,7 +49,11 @@ public:
     xml_stream_handler();
     virtual ~xml_stream_handler() = 0;
 
-
+    virtual void start_document() = 0;
+    virtual void end_document() = 0;
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const ::std::vector<xml_attr>& attrs) = 0;
+    virtual void end_element(xmlns_token_t ns, xml_token_t name) = 0;
+    virtual void characters(const char* ch, size_t len) = 0;
 };
 
 // ============================================================================
@@ -47,6 +64,11 @@ public:
     ods_content_xml_handler();
     virtual ~ods_content_xml_handler();
 
+    virtual void start_document();
+    virtual void end_document();
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const ::std::vector<xml_attr>& attrs);
+    virtual void end_element(xmlns_token_t ns, xml_token_t name);
+    virtual void characters(const char* ch, size_t len);
 };
 
 }

@@ -61,6 +61,7 @@ public:
     void parse();
 
     void set_handler(xml_stream_handler* handler);
+    xml_stream_handler* get_handler() const;
 
 private:
     xml_stream_parser(); // disabled

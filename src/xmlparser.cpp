@@ -98,32 +98,67 @@ void name_to_tokens(const xmlChar* name, xmlns_token_t& nstoken, xml_token_t& to
     token = tokens::get_token(&buffer[0]);
 }
 
+xml_stream_handler* get_handler(void* ctx)
+{
+    return static_cast<parser_context*>(ctx)->parser.get_handler();
+}
+
 void start_document(void* ctx)
 {
-    cout << "start document" << endl;
+    xml_stream_handler* handler = get_handler(ctx);
+    if (handler)
+        handler->start_document();
 }
 
 void end_document(void* ctx)
 {
-    cout << "end document" << endl;
+    xml_stream_handler* handler = get_handler(ctx);
+    if (handler)
+        handler->end_document();
 }
 
 void start_element(void* ctx, const xmlChar* name, const xmlChar** attrs)
 {
-    cout << "start element: " << name << endl;
     xmlns_token_t nstoken;
     xml_token_t token;
     name_to_tokens(name, nstoken, token);
-    cout << "check: namespace = " << tokens::get_nstoken_name(nstoken) << "  name = " << tokens::get_token_name(token) << endl;
+    vector<xml_attr> attrs_array;
+    if (attrs)
+    {
+        xml_attr cur;
+        for (int i = 0; attrs[i]; ++i)
+        {
+            const xmlChar* attr = attrs[i];
+            if (i % 2)
+            {
+                // attribute value
+                cur.value = reinterpret_cast<const char*>(attr);
+                attrs_array.push_back(cur);
+            }
+            else
+            {
+                // attribute name
+                xmlns_token_t nstoken_attr;
+                xml_token_t token_attr;
+                name_to_tokens(attr, nstoken_attr, token_attr);
+                cur.ns = nstoken_attr;
+                cur.name = token_attr;
+            }
+        }
+    }
+    xml_stream_handler* handler = get_handler(ctx);
+    if (handler)
+        handler->start_element(nstoken, token, attrs_array);
 }
 
 void end_element(void* ctx, const xmlChar* name)
 {
-    cout << "end element: " << name << endl;
     xmlns_token_t nstoken;
     xml_token_t token;
     name_to_tokens(name, nstoken, token);
-    cout << "check: namespace = " << tokens::get_nstoken_name(nstoken) << "  name = " << tokens::get_token_name(token) << endl;
+    xml_stream_handler* handler = get_handler(ctx);
+    if (handler)
+        handler->end_element(nstoken, token);
 }
 
 void start_element_ns(
@@ -149,10 +184,9 @@ void end_element_ns(
 
 void characters(void* ctx, const xmlChar* ch, int len)
 {
-    cout << "chars: ";
-    for (int i = 0; i < len; ++i)
-        cout << ch[i];
-    cout << endl;
+    xml_stream_handler* handler = get_handler(ctx);
+    if (handler)
+        handler->characters(reinterpret_cast<const char*>(ch), static_cast<size_t>(len));
 }
 
 xmlSAXHandler sax_handler_struct = {
@@ -225,6 +259,11 @@ void xml_stream_parser::parse()
 void xml_stream_parser::set_handler(xml_stream_handler* handler)
 {
     mp_handler = handler;
+}
+
+xml_stream_handler* xml_stream_parser::get_handler() const
+{
+    return mp_handler;
 }
 
 }

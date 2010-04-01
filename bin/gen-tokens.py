@@ -34,7 +34,7 @@ class xml_parser:
         self.__strm = strm
         self.__elem = None
         self.tokens = {}
-        self.ns_tokens = {}  # namespace tokens
+        self.ns_tokens = {'xmlns': True}  # namespace tokens
 
     def start_element(self, name, attrs):
         self.__elem = name
