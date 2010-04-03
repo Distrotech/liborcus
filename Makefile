@@ -44,6 +44,7 @@ HEADERS= \
 	$(INCDIR)/token_constants.hpp \
 	$(INCDIR)/xmlhandler.hpp \
 	$(INCDIR)/odshandler.hpp \
+	$(INCDIR)/odscontext.hpp \
 	$(INCDIR)/xmlparser.hpp
 
 OBJFILES= \
@@ -52,6 +53,7 @@ OBJFILES= \
 	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/xmlhandler.o \
 	$(OBJDIR)/odshandler.o \
+	$(OBJDIR)/odscontext.o \
 	$(OBJDIR)/xmlparser.o
 
 DEPENDS= \
@@ -81,6 +83,9 @@ $(OBJDIR)/xmlhandler.o: $(SRCDIR)/xmlhandler.cpp $(DEPENDS)
 
 $(OBJDIR)/odshandler.o: $(SRCDIR)/odshandler.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odshandler.cpp
+
+$(OBJDIR)/odscontext.o: $(SRCDIR)/odscontext.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odscontext.cpp
 
 $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)
