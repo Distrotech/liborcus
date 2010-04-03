@@ -32,10 +32,12 @@
 
 namespace orcus {
 
+class ods_context_base;
+
 class ods_content_xml_handler : public xml_stream_handler
 {
 public:
-    ods_content_xml_handler();
+    ods_content_xml_handler(ods_context_base* context);
     virtual ~ods_content_xml_handler();
 
     virtual void start_document();
@@ -43,6 +45,9 @@ public:
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const ::std::vector<xml_attr>& attrs);
     virtual void end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const char* ch, size_t len);
+
+private:
+    ods_context_base* mp_context;
 };
 
 }

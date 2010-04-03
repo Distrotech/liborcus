@@ -32,6 +32,7 @@
 
 #include "xmlparser.hpp"
 #include "odshandler.hpp"
+#include "odscontext_test.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -41,14 +42,14 @@
 #include <boost/scoped_ptr.hpp>
 
 using namespace std;
+using namespace orcus;
 
-void read_content_xml(GsfInput* input, size_t size)
+void read_content_xml(GsfInput* input, size_t size, ods_context_test& context)
 {
-    using namespace orcus;
 
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(content, size, "content.xml");
-    ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler);
+    ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler(&context));
     parser.set_handler(handler.get());
     parser.parse();
 }
@@ -58,17 +59,20 @@ void read_content(GsfInput* input)
     if (!GSF_IS_INFILE(input))
         return;
 
+    ods_context_test context;
+
     GsfInput* content_xml = gsf_infile_child_by_name (GSF_INFILE (input), "content.xml");
     if (content_xml)
     {
         const char* name = gsf_input_name(content_xml);
         size_t size = gsf_input_size(content_xml);
         cout << "name: " << name << "  size: " << size << endl;
-        read_content_xml(content_xml, size);
+        read_content_xml(content_xml, size, context);
         g_object_unref(G_OBJECT(content_xml));
     }
 }
 
+#if 0
 void list_content (GsfInput* input, int level = 0)
 {
     if (!GSF_IS_INFILE(input))
@@ -107,6 +111,7 @@ void list_content (GsfInput* input, int level = 0)
         printf("   ");
     puts ("}");
 }
+#endif
 
 void read_file(const char* fpath)
 {
