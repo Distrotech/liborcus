@@ -28,6 +28,7 @@
 #include "odscontext.hpp"
 
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -59,6 +60,16 @@ void ods_content_xml_context::start_table()
 void ods_content_xml_context::end_table()
 {
     cout << "end table" << endl;
+}
+
+void ods_content_xml_context::print_html(const string& filepath) const
+{
+    ofstream file(filepath.c_str());
+    file << "<html>" << endl;
+    file << "<title>content.xml</title>" << endl;
+    file << "<body>" << endl;
+    file << "</body>" << endl;
+    file << "</html>" << endl;
 }
 
 }

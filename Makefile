@@ -95,7 +95,7 @@ $(OBJDIR)/gen_tokens:
 	touch $@
 
 test: $(EXEC)
-	./$(EXEC) ./test/test.ods
+	./$(EXEC) ./test/test.ods $(OBJDIR)/test.ods.html
 
 clean:
 	rm -rf $(OBJDIR) 2> /dev/null || /bin/true

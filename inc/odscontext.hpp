@@ -28,6 +28,8 @@
 #ifndef __ODSCONTEXT_HPP__
 #define __ODSCONTEXT_HPP__
 
+#include <string>
+
 namespace orcus {
 
 class ods_content_xml_context
@@ -41,6 +43,8 @@ public:
 
     void start_table();
     void end_table();
+
+    void print_html(const ::std::string& filepath) const;
 };
 
 }

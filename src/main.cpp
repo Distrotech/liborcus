@@ -44,7 +44,7 @@
 using namespace std;
 using namespace orcus;
 
-void read_content_xml(GsfInput* input, size_t size)
+void read_content_xml(GsfInput* input, size_t size, const char* outpath)
 {
     ods_content_xml_context context;
     const guint8* content = gsf_input_read(input, size, NULL);
@@ -52,9 +52,10 @@ void read_content_xml(GsfInput* input, size_t size)
     ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler(&context));
     parser.set_handler(handler.get());
     parser.parse();
+    context.print_html(outpath);
 }
 
-void read_content(GsfInput* input)
+void read_content(GsfInput* input, const char* outpath)
 {
     if (!GSF_IS_INFILE(input))
         return;
@@ -65,7 +66,7 @@ void read_content(GsfInput* input)
         const char* name = gsf_input_name(content_xml);
         size_t size = gsf_input_size(content_xml);
         cout << "name: " << name << "  size: " << size << endl;
-        read_content_xml(content_xml, size);
+        read_content_xml(content_xml, size, outpath);
         g_object_unref(G_OBJECT(content_xml));
     }
 }
@@ -111,7 +112,7 @@ void list_content (GsfInput* input, int level = 0)
 }
 #endif
 
-void read_file(const char* fpath)
+void read_file(const char* fpath, const char* outpath)
 {
     cout << "reading " << fpath << endl;
 
@@ -130,18 +131,18 @@ void read_file(const char* fpath)
         return;
     }
 
-    read_content (GSF_INPUT(infile));
+    read_content (GSF_INPUT(infile), outpath);
     g_object_unref (G_OBJECT (infile));
     g_object_unref (G_OBJECT (input));
 }
 
 int main(int argc, char** argv)
 {
-    if (argc != 2)
+    if (argc != 3)
         return EXIT_FAILURE;
 
     gsf_init();
-    read_file(argv[1]);
+    read_file(argv[1], argv[2]);
     gsf_shutdown();
 
     return EXIT_SUCCESS;

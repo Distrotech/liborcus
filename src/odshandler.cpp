@@ -208,34 +208,50 @@ void ods_content_xml_handler::end_table()
 
 void ods_content_xml_handler::start_table_column(const xml_attrs_type& attrs)
 {
+    if (!mp_context)
+        return;
 }
 
 void ods_content_xml_handler::end_table_column()
 {
+    if (!mp_context)
+        return;
 }
 
 void ods_content_xml_handler::start_table_row(const xml_attrs_type& attrs)
 {
+    if (!mp_context)
+        return;
 }
 
 void ods_content_xml_handler::end_table_row()
 {
+    if (!mp_context)
+        return;
 }
 
 void ods_content_xml_handler::start_table_cell(const xml_attrs_type& attrs)
 {
+    if (!mp_context)
+        return;
 }
 
 void ods_content_xml_handler::end_table_cell()
 {
+    if (!mp_context)
+        return;
 }
 
 void ods_content_xml_handler::start_text_p(const xml_attrs_type& attrs)
 {
+    if (!mp_context)
+        return;
 }
 
 void ods_content_xml_handler::end_text_p()
 {
+    if (!mp_context)
+        return;
 }
 
 }
