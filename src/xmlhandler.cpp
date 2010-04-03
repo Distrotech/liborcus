@@ -27,6 +27,7 @@
 
 #include "xmlhandler.hpp"
 #include "tokens.hpp"
+#include "global.hpp"
 
 #include <iostream>
 
@@ -63,6 +64,15 @@ void warn_unexpected(const xml_elem_stack_t& elem_stack)
     cerr << "warning: unexpected element ";
     print_stack(elem_stack);
     cerr << endl;
+}
+
+xml_token_pair_t get_parent(const xml_elem_stack_t& elem_stack)
+{
+    if (elem_stack.size() < 2)
+        throw general_error("attempt to get parent token when the stack size is less than 2");
+
+    xml_elem_stack_t::const_reverse_iterator itr = elem_stack.rbegin() + 1;
+    return *itr;
 }
 
 xml_stream_handler::xml_stream_handler()

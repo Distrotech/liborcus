@@ -55,6 +55,15 @@ void warn_unhandled(const xml_elem_stack_t& elem_stack);
 void warn_unexpected(const xml_elem_stack_t& elem_stack);
 
 /** 
+ * Get the token pair of parent element in the element stack.
+ *
+ * @param elem_stack xml element stack
+ * 
+ * @return token pair of the parent element
+ */
+xml_token_pair_t get_parent(const xml_elem_stack_t& elem_stack);
+
+/** 
  * Single xml attribute entry
  */
 struct xml_attr

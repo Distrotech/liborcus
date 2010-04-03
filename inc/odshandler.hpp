@@ -59,6 +59,9 @@ private:
     void start_table_cell(const xml_attrs_type& attrs);
     void end_table_cell();
 
+    void start_text_p(const xml_attrs_type& attrs);
+    void end_text_p();
+
 private:
     ods_content_xml_context* mp_context;
     xml_elem_stack_t m_stack;

@@ -101,11 +101,14 @@ void ods_content_xml_handler::start_element(
         switch (name)
         {
             case XML_p:
+                start_text_p(attrs);
             break;
             default:
                 warn_unhandled(m_stack);
         }
     }
+    else
+        warn_unhandled(m_stack);
 
 //  cout << "<" << tokens::get_nstoken_name(ns) << ":" << tokens::get_token_name(name) << ">" << endl;
 }
@@ -159,6 +162,7 @@ void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
         switch (name)
         {
             case XML_p:
+                end_text_p();
             break;
             default:
                 ;
@@ -175,14 +179,31 @@ void ods_content_xml_handler::characters(const char* ch, size_t len)
 
 void ods_content_xml_handler::start_table(const xml_attrs_type& attrs)
 {
-    if (mp_context)
-        mp_context->start_table();
+    if (!mp_context)
+        return;
+
+    xml_token_pair_t parent = get_parent(m_stack);
+    if (parent.first == XMLNS_office)
+    {
+        switch (parent.second)
+        {
+            case XML_spreadsheet:
+                mp_context->start_table();
+            break;
+            default:
+                warn_unexpected(m_stack);
+        }
+    }
+    else
+        warn_unexpected(m_stack);
 }
 
 void ods_content_xml_handler::end_table()
 {
-    if (mp_context)
-        mp_context->end_table();
+    if (!mp_context)
+        return;
+
+    mp_context->end_table();
 }
 
 void ods_content_xml_handler::start_table_column(const xml_attrs_type& attrs)
@@ -206,6 +227,14 @@ void ods_content_xml_handler::start_table_cell(const xml_attrs_type& attrs)
 }
 
 void ods_content_xml_handler::end_table_cell()
+{
+}
+
+void ods_content_xml_handler::start_text_p(const xml_attrs_type& attrs)
+{
+}
+
+void ods_content_xml_handler::end_text_p()
 {
 }
 
