@@ -45,7 +45,8 @@ HEADERS= \
 	$(INCDIR)/xmlhandler.hpp \
 	$(INCDIR)/odshandler.hpp \
 	$(INCDIR)/odscontext.hpp \
-	$(INCDIR)/xmlparser.hpp
+	$(INCDIR)/xmlparser.hpp \
+	$(INCDIR)/model/odstable.hpp
 
 OBJFILES= \
 	$(OBJDIR)/main.o \
@@ -54,7 +55,8 @@ OBJFILES= \
 	$(OBJDIR)/xmlhandler.o \
 	$(OBJDIR)/odshandler.o \
 	$(OBJDIR)/odscontext.o \
-	$(OBJDIR)/xmlparser.o
+	$(OBJDIR)/xmlparser.o \
+	$(OBJDIR)/odstable.o
 
 DEPENDS= \
 	$(OBJDIR)/gen_tokens \
@@ -86,6 +88,11 @@ $(OBJDIR)/odshandler.o: $(SRCDIR)/odshandler.cpp $(DEPENDS)
 
 $(OBJDIR)/odscontext.o: $(SRCDIR)/odscontext.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odscontext.cpp
+
+# model directory
+
+$(OBJDIR)/odstable.o: $(SRCDIR)/model/odstable.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/odstable.cpp
 
 $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)
