@@ -47,15 +47,21 @@ public:
     virtual void characters(const char* ch, size_t len);
 
 private:
-    void table_start(const xml_attrs_type& attrs);
-    void table_end();
+    void start_table(const xml_attrs_type& attrs);
+    void end_table();
+
+    void start_table_column(const xml_attrs_type& attrs);
+    void end_table_column();
+
+    void start_table_row(const xml_attrs_type& attrs);
+    void end_table_row();
+
+    void start_table_cell(const xml_attrs_type& attrs);
+    void end_table_cell();
 
 private:
     ods_content_xml_context* mp_context;
-
-    typedef ::std::pair<xmlns_token_t, xml_token_t> token_pair_type;
-    typedef ::std::vector<token_pair_type> stack_type;
-    stack_type m_stack;
+    xml_elem_stack_t m_stack;
 };
 
 }

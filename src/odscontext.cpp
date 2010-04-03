@@ -51,4 +51,14 @@ void ods_content_xml_context::end_content()
     cout << "end content" << endl;
 }
 
+void ods_content_xml_context::start_table()
+{
+    cout << "start table" << endl;
+}
+
+void ods_content_xml_context::end_table()
+{
+    cout << "end table" << endl;
+}
+
 }

@@ -81,13 +81,16 @@ void ods_content_xml_handler::start_element(
         switch (name)
         {
             case XML_table:
-                table_start(attrs);
+                start_table(attrs);
             break;
             case XML_table_column:
+                start_table_column(attrs);
             break;
             case XML_table_row:
+                start_table_row(attrs);
             break;
             case XML_table_cell:
+                start_table_cell(attrs);
             break;
             default:
                 ;
@@ -109,7 +112,7 @@ void ods_content_xml_handler::start_element(
 
 void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
 {
-    const token_pair_type& r = m_stack.back();
+    const xml_token_pair_t& r = m_stack.back();
 
     if (ns != r.first || name != r.second)
         throw general_error("mismatched element name");
@@ -136,13 +139,16 @@ void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
         switch (name)
         {
             case XML_table:
-                table_end();
+                end_table();
             break;
             case XML_table_column:
+                end_table_column();
             break;
             case XML_table_row:
+                end_table_row();
             break;
             case XML_table_cell:
+                end_table_cell();
             break;
             default:
                 ;
@@ -167,14 +173,40 @@ void ods_content_xml_handler::characters(const char* ch, size_t len)
 //  cout << endl;
 }
 
-void ods_content_xml_handler::table_start(const xml_attrs_type& attrs)
+void ods_content_xml_handler::start_table(const xml_attrs_type& attrs)
 {
-    cout << "table start" << endl;
+    if (mp_context)
+        mp_context->start_table();
 }
 
-void ods_content_xml_handler::table_end()
+void ods_content_xml_handler::end_table()
 {
-    cout << "table end" << endl;
+    if (mp_context)
+        mp_context->end_table();
+}
+
+void ods_content_xml_handler::start_table_column(const xml_attrs_type& attrs)
+{
+}
+
+void ods_content_xml_handler::end_table_column()
+{
+}
+
+void ods_content_xml_handler::start_table_row(const xml_attrs_type& attrs)
+{
+}
+
+void ods_content_xml_handler::end_table_row()
+{
+}
+
+void ods_content_xml_handler::start_table_cell(const xml_attrs_type& attrs)
+{
+}
+
+void ods_content_xml_handler::end_table_cell()
+{
 }
 
 }

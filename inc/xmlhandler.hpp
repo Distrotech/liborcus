@@ -36,6 +36,9 @@
 
 namespace orcus {
 
+typedef ::std::pair<xmlns_token_t, xml_token_t> xml_token_pair_t;
+typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
+
 struct xml_attr
 {
     xmlns_token_t   ns;

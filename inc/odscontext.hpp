@@ -36,8 +36,11 @@ public:
     ods_content_xml_context();
     virtual ~ods_content_xml_context();
 
-    virtual void start_content();
-    virtual void end_content();
+    void start_content();
+    void end_content();
+
+    void start_table();
+    void end_table();
 };
 
 }
