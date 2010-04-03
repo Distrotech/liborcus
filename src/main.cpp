@@ -44,9 +44,9 @@
 using namespace std;
 using namespace orcus;
 
-void read_content_xml(GsfInput* input, size_t size, ods_content_xml_context& context)
+void read_content_xml(GsfInput* input, size_t size)
 {
-
+    ods_content_xml_context context;
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(content, size, "content.xml");
     ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler(&context));
@@ -59,15 +59,13 @@ void read_content(GsfInput* input)
     if (!GSF_IS_INFILE(input))
         return;
 
-    ods_content_xml_context context;
-
     GsfInput* content_xml = gsf_infile_child_by_name (GSF_INFILE (input), "content.xml");
     if (content_xml)
     {
         const char* name = gsf_input_name(content_xml);
         size_t size = gsf_input_size(content_xml);
         cout << "name: " << name << "  size: " << size << endl;
-        read_content_xml(content_xml, size, context);
+        read_content_xml(content_xml, size);
         g_object_unref(G_OBJECT(content_xml));
     }
 }
