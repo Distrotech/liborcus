@@ -32,7 +32,7 @@
 
 #include "xmlparser.hpp"
 #include "odshandler.hpp"
-#include "odscontext_test.hpp"
+#include "odscontext.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -44,7 +44,7 @@
 using namespace std;
 using namespace orcus;
 
-void read_content_xml(GsfInput* input, size_t size, ods_context_test& context)
+void read_content_xml(GsfInput* input, size_t size, ods_content_xml_context& context)
 {
 
     const guint8* content = gsf_input_read(input, size, NULL);
@@ -59,7 +59,7 @@ void read_content(GsfInput* input)
     if (!GSF_IS_INFILE(input))
         return;
 
-    ods_context_test context;
+    ods_content_xml_context context;
 
     GsfInput* content_xml = gsf_infile_child_by_name (GSF_INFILE (input), "content.xml");
     if (content_xml)

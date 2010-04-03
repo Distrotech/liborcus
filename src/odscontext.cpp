@@ -27,14 +27,28 @@
 
 #include "odscontext.hpp"
 
+#include <iostream>
+
+using namespace std;
+
 namespace orcus {
 
-ods_context_base::ods_context_base()
+ods_content_xml_context::ods_content_xml_context()
 {
 }
 
-ods_context_base::~ods_context_base()
+ods_content_xml_context::~ods_content_xml_context()
 {
+}
+
+void ods_content_xml_context::start_content()
+{
+    cout << "start content" << endl;
+}
+
+void ods_content_xml_context::end_content()
+{
+    cout << "end content" << endl;
 }
 
 }

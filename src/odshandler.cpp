@@ -36,7 +36,7 @@ using namespace std;
 
 namespace orcus {
 
-ods_content_xml_handler::ods_content_xml_handler(ods_context_base* context) :
+ods_content_xml_handler::ods_content_xml_handler(ods_content_xml_context* context) :
     mp_context(context)
 {
 }

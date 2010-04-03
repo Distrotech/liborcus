@@ -30,19 +30,14 @@
 
 namespace orcus {
 
-/** 
- * A derived class of this base class receives callbacks from the various 
- * ods stream handler classes.  An external application needs to sub-class 
- * this in order to receive and handle data from the imported document. 
- */
-class ods_context_base
+class ods_content_xml_context
 {
 public:
-    ods_context_base();
-    virtual ~ods_context_base() = 0;
+    ods_content_xml_context();
+    virtual ~ods_content_xml_context();
 
-    virtual void start_content() = 0;
-    virtual void end_content() = 0;
+    virtual void start_content();
+    virtual void end_content();
 };
 
 }
