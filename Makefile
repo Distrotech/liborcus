@@ -45,6 +45,7 @@ HEADERS= \
 	$(INCDIR)/xmlhandler.hpp \
 	$(INCDIR)/odshandler.hpp \
 	$(INCDIR)/odscontext.hpp \
+	$(INCDIR)/odscontext_test.hpp \
 	$(INCDIR)/xmlparser.hpp
 
 OBJFILES= \
@@ -54,6 +55,7 @@ OBJFILES= \
 	$(OBJDIR)/xmlhandler.o \
 	$(OBJDIR)/odshandler.o \
 	$(OBJDIR)/odscontext.o \
+	$(OBJDIR)/odscontext_test.o \
 	$(OBJDIR)/xmlparser.o
 
 DEPENDS= \
@@ -86,6 +88,9 @@ $(OBJDIR)/odshandler.o: $(SRCDIR)/odshandler.cpp $(DEPENDS)
 
 $(OBJDIR)/odscontext.o: $(SRCDIR)/odscontext.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odscontext.cpp
+
+$(OBJDIR)/odscontext_test.o: $(SRCDIR)/odscontext_test.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odscontext_test.cpp
 
 $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)

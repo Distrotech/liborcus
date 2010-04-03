@@ -25,23 +25,17 @@
  *
  ************************************************************************/
 
-#ifndef __ODSCONTEXT_HPP__
-#define __ODSCONTEXT_HPP__
+#include "odscontext_test.hpp"
 
 namespace orcus {
 
-/** 
- * A derived class of this base class receives callbacks from the various 
- * ods stream handler classes.  An external application needs to sub-class 
- * this in order to receive and handle data from the imported document. 
- */
-class ods_context_base
+ods_context_test::ods_context_test() :
+    ods_context_base()
 {
-public:
-    ods_context_base();
-    virtual ~ods_context_base() = 0;
-};
-
 }
 
-#endif
+ods_context_test::~ods_context_test()
+{
+}
+
+}
