@@ -60,7 +60,9 @@ void ods_content_xml_handler::end_document()
 void ods_content_xml_handler::start_element(
     xmlns_token_t ns, xml_token_t name, const vector<xml_attr>& attrs)
 {
-    m_stack.push_back(pair<xmlns_token_t, xml_token_t>(ns, name));
+    xml_token_pair_t parent = m_stack.empty() ? xml_token_pair_t(XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN) : m_stack.back();
+    m_stack.push_back(xml_token_pair_t(ns, name));
+
     if (!mp_context)
         return;
 
@@ -81,16 +83,16 @@ void ods_content_xml_handler::start_element(
         switch (name)
         {
             case XML_table:
-                start_table(attrs);
+                start_table(attrs, parent);
             break;
             case XML_table_column:
-                start_table_column(attrs);
+                start_table_column(attrs, parent);
             break;
             case XML_table_row:
-                start_table_row(attrs);
+                start_table_row(attrs, parent);
             break;
             case XML_table_cell:
-                start_table_cell(attrs);
+                start_table_cell(attrs, parent);
             break;
             default:
                 warn_unhandled(m_stack);
@@ -101,7 +103,7 @@ void ods_content_xml_handler::start_element(
         switch (name)
         {
             case XML_p:
-                start_text_p(attrs);
+                start_text_p(attrs, parent);
             break;
             default:
                 warn_unhandled(m_stack);
@@ -172,17 +174,19 @@ void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
 
 void ods_content_xml_handler::characters(const char* ch, size_t len)
 {
+    if (!mp_context)
+        return;
+
 //  for (size_t i = 0; i < len; ++i)
 //      cout << ch[i];
 //  cout << endl;
 }
 
-void ods_content_xml_handler::start_table(const xml_attrs_type& attrs)
+void ods_content_xml_handler::start_table(const xml_attrs_type& attrs, const xml_token_pair_t& parent)
 {
     if (!mp_context)
         return;
 
-    xml_token_pair_t parent = get_parent(m_stack);
     if (parent.first == XMLNS_office)
     {
         switch (parent.second)
@@ -206,7 +210,7 @@ void ods_content_xml_handler::end_table()
     mp_context->end_table();
 }
 
-void ods_content_xml_handler::start_table_column(const xml_attrs_type& attrs)
+void ods_content_xml_handler::start_table_column(const xml_attrs_type& attrs, const xml_token_pair_t& parent)
 {
     if (!mp_context)
         return;
@@ -218,7 +222,7 @@ void ods_content_xml_handler::end_table_column()
         return;
 }
 
-void ods_content_xml_handler::start_table_row(const xml_attrs_type& attrs)
+void ods_content_xml_handler::start_table_row(const xml_attrs_type& attrs, const xml_token_pair_t& parent)
 {
     if (!mp_context)
         return;
@@ -230,7 +234,7 @@ void ods_content_xml_handler::end_table_row()
         return;
 }
 
-void ods_content_xml_handler::start_table_cell(const xml_attrs_type& attrs)
+void ods_content_xml_handler::start_table_cell(const xml_attrs_type& attrs, const xml_token_pair_t& parent)
 {
     if (!mp_context)
         return;
@@ -242,7 +246,7 @@ void ods_content_xml_handler::end_table_cell()
         return;
 }
 
-void ods_content_xml_handler::start_text_p(const xml_attrs_type& attrs)
+void ods_content_xml_handler::start_text_p(const xml_attrs_type& attrs, const xml_token_pair_t& parent)
 {
     if (!mp_context)
         return;

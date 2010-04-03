@@ -47,19 +47,19 @@ public:
     virtual void characters(const char* ch, size_t len);
 
 private:
-    void start_table(const xml_attrs_type& attrs);
+    void start_table(const xml_attrs_type& attrs, const xml_token_pair_t& parent);
     void end_table();
 
-    void start_table_column(const xml_attrs_type& attrs);
+    void start_table_column(const xml_attrs_type& attrs, const xml_token_pair_t& parent);
     void end_table_column();
 
-    void start_table_row(const xml_attrs_type& attrs);
+    void start_table_row(const xml_attrs_type& attrs, const xml_token_pair_t& parent);
     void end_table_row();
 
-    void start_table_cell(const xml_attrs_type& attrs);
+    void start_table_cell(const xml_attrs_type& attrs, const xml_token_pair_t& parent);
     void end_table_cell();
 
-    void start_text_p(const xml_attrs_type& attrs);
+    void start_text_p(const xml_attrs_type& attrs, const xml_token_pair_t& parent);
     void end_text_p();
 
 private:
