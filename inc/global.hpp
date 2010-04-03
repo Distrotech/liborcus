@@ -29,6 +29,8 @@
 #define __GLOBAL_HPP__
 
 #include <pthread.h>
+#include <exception>
+#include <string>
 
 namespace orcus {
 
@@ -39,6 +41,18 @@ public:
     ~thread_mutex_guard();
 private:
     pthread_mutex_t& m_lock;
+};
+
+// ============================================================================
+
+class general_error : public ::std::exception
+{
+public:
+    explicit general_error(const ::std::string& msg);
+    ~general_error() throw();
+    virtual const char* what() const throw();
+private:
+    ::std::string m_msg;
 };
 
 }

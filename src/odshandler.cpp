@@ -27,6 +27,8 @@
 
 #include "odshandler.hpp"
 #include "tokens.hpp"
+#include "odscontext.hpp"
+#include "global.hpp"
 
 #include <iostream>
 
@@ -45,30 +47,134 @@ ods_content_xml_handler::~ods_content_xml_handler()
 
 void ods_content_xml_handler::start_document()
 {
-    cout << "start document" << endl;
+    if (mp_context)
+        mp_context->start_content();
 }
 
 void ods_content_xml_handler::end_document()
 {
-    cout << "end document" << endl;
+    if (mp_context)
+        mp_context->end_content();
 }
 
 void ods_content_xml_handler::start_element(
     xmlns_token_t ns, xml_token_t name, const vector<xml_attr>& attrs)
 {
-    cout << "<" << tokens::get_nstoken_name(ns) << ":" << tokens::get_token_name(name) << ">" << endl;
+    m_stack.push_back(pair<xmlns_token_t, xml_token_t>(ns, name));
+    if (!mp_context)
+        return;
+
+    if (ns == XMLNS_office)
+    {
+        switch (name)
+        {
+            case XML_body:
+            break;
+            case XML_spreadsheet:
+            break;
+            default:
+                ;
+        }
+    }
+    else if (ns == XMLNS_table)
+    {
+        switch (name)
+        {
+            case XML_table:
+                table_start(attrs);
+            break;
+            case XML_table_column:
+            break;
+            case XML_table_row:
+            break;
+            case XML_table_cell:
+            break;
+            default:
+                ;
+        }
+    }
+    else if (ns == XMLNS_text)
+    {
+        switch (name)
+        {
+            case XML_p:
+            break;
+            default:
+                ;
+        }
+    }
+
+//  cout << "<" << tokens::get_nstoken_name(ns) << ":" << tokens::get_token_name(name) << ">" << endl;
 }
 
 void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
 {
-    cout << "</" << tokens::get_nstoken_name(ns) << ":" << tokens::get_token_name(name) << ">" << endl;
+    const token_pair_type& r = m_stack.back();
+
+    if (ns != r.first || name != r.second)
+        throw general_error("mismatched element name");
+
+//  cout << "</" << tokens::get_nstoken_name(ns) << ":" << tokens::get_token_name(name) << ">" << endl;
+    m_stack.pop_back();
+    if (!mp_context)
+        return;
+
+    if (ns == XMLNS_office)
+    {
+        switch (name)
+        {
+            case XML_body:
+            break;
+            case XML_spreadsheet:
+            break;
+            default:
+                ;
+        }
+    }
+    else if (ns == XMLNS_table)
+    {
+        switch (name)
+        {
+            case XML_table:
+                table_end();
+            break;
+            case XML_table_column:
+            break;
+            case XML_table_row:
+            break;
+            case XML_table_cell:
+            break;
+            default:
+                ;
+        }
+    }
+    else if (ns == XMLNS_text)
+    {
+        switch (name)
+        {
+            case XML_p:
+            break;
+            default:
+                ;
+        }
+    }
 }
 
 void ods_content_xml_handler::characters(const char* ch, size_t len)
 {
-    for (size_t i = 0; i < len; ++i)
-        cout << ch[i];
-    cout << endl;
+//  for (size_t i = 0; i < len; ++i)
+//      cout << ch[i];
+//  cout << endl;
+}
+
+void ods_content_xml_handler::table_start(const xml_attrs_type& attrs)
+{
+    cout << "table start" << endl;
+}
+
+void ods_content_xml_handler::table_end()
+{
+    cout << "table end" << endl;
 }
 
 }

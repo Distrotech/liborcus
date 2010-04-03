@@ -46,6 +46,8 @@ struct xml_attr
 class xml_stream_handler
 {
 public:
+    typedef ::std::vector<xml_attr> xml_attrs_type;
+
     xml_stream_handler();
     virtual ~xml_stream_handler() = 0;
 

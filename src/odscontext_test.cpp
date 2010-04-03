@@ -27,6 +27,10 @@
 
 #include "odscontext_test.hpp"
 
+#include <iostream>
+
+using namespace std;
+
 namespace orcus {
 
 ods_context_test::ods_context_test() :
@@ -36,6 +40,16 @@ ods_context_test::ods_context_test() :
 
 ods_context_test::~ods_context_test()
 {
+}
+
+void ods_context_test::start_content()
+{
+    cout << "start content" << endl;
+}
+
+void ods_context_test::end_content()
+{
+    cout << "end content" << endl;
 }
 
 }

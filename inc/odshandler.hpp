@@ -42,12 +42,20 @@ public:
 
     virtual void start_document();
     virtual void end_document();
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const ::std::vector<xml_attr>& attrs);
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_type& attrs);
     virtual void end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const char* ch, size_t len);
 
 private:
+    void table_start(const xml_attrs_type& attrs);
+    void table_end();
+
+private:
     ods_context_base* mp_context;
+
+    typedef ::std::pair<xmlns_token_t, xml_token_t> token_pair_type;
+    typedef ::std::vector<token_pair_type> stack_type;
+    stack_type m_stack;
 };
 
 }

@@ -27,6 +27,8 @@
 
 #include "global.hpp"
 
+using namespace std;
+
 namespace orcus {
 
 thread_mutex_guard::thread_mutex_guard(pthread_mutex_t& lock) :
@@ -38,6 +40,22 @@ thread_mutex_guard::thread_mutex_guard(pthread_mutex_t& lock) :
 thread_mutex_guard::~thread_mutex_guard()
 {
     pthread_mutex_unlock(&m_lock);
+}
+
+// ============================================================================
+
+general_error::general_error(const string& msg) :
+    m_msg(msg)
+{
+}
+
+general_error::~general_error() throw()
+{
+}
+
+const char* general_error::what() const throw()
+{
+    return m_msg.c_str();
 }
 
 }

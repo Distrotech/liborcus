@@ -37,6 +37,9 @@ class ods_context_test : public ods_context_base
 public:
     ods_context_test();
     virtual ~ods_context_test();
+
+    virtual void start_content();
+    virtual void end_content();
 };
 
 }

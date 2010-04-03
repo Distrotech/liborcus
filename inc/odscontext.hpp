@@ -40,6 +40,9 @@ class ods_context_base
 public:
     ods_context_base();
     virtual ~ods_context_base() = 0;
+
+    virtual void start_content() = 0;
+    virtual void end_content() = 0;
 };
 
 }
