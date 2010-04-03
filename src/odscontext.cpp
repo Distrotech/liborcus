@@ -52,14 +52,38 @@ void ods_content_xml_context::end_content()
     cout << "end content" << endl;
 }
 
-void ods_content_xml_context::start_table()
+void ods_content_xml_context::start_table(const xml_attrs_t& attrs)
 {
-    cout << "start table" << endl;
+    cout << "start table: " << endl;
 }
 
 void ods_content_xml_context::end_table()
 {
     cout << "end table" << endl;
+}
+
+void ods_content_xml_context::start_column(const xml_attrs_t& attrs)
+{
+}
+
+void ods_content_xml_context::end_column()
+{
+}
+
+void ods_content_xml_context::start_row(const xml_attrs_t& attrs)
+{
+}
+
+void ods_content_xml_context::end_row()
+{
+}
+
+void ods_content_xml_context::start_cell(const xml_attrs_t& attrs)
+{
+}
+
+void ods_content_xml_context::end_cell()
+{
 }
 
 void ods_content_xml_context::print_html(const string& filepath) const

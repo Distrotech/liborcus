@@ -111,8 +111,6 @@ void ods_content_xml_handler::start_element(
     }
     else
         warn_unhandled(m_stack);
-
-//  cout << "<" << tokens::get_nstoken_name(ns) << ":" << tokens::get_token_name(name) << ">" << endl;
 }
 
 void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
@@ -122,7 +120,6 @@ void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
     if (ns != r.first || name != r.second)
         throw general_error("mismatched element name");
 
-//  cout << "</" << tokens::get_nstoken_name(ns) << ":" << tokens::get_token_name(name) << ">" << endl;
     m_stack.pop_back();
     if (!mp_context)
         return;
@@ -176,30 +173,22 @@ void ods_content_xml_handler::characters(const char* ch, size_t len)
 {
     if (!mp_context)
         return;
-
-//  for (size_t i = 0; i < len; ++i)
-//      cout << ch[i];
-//  cout << endl;
 }
 
-void ods_content_xml_handler::start_table(const xml_attrs_type& attrs, const xml_token_pair_t& parent)
+void ods_content_xml_handler::start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
     if (!mp_context)
         return;
 
-    if (parent.first == XMLNS_office)
+    // parent(s) allowed: <office:spreadsheet>
+
+    if (parent.first != XMLNS_office || parent.second != XML_spreadsheet)
     {
-        switch (parent.second)
-        {
-            case XML_spreadsheet:
-                mp_context->start_table();
-            break;
-            default:
-                warn_unexpected(m_stack);
-        }
-    }
-    else
         warn_unexpected(m_stack);
+        return;
+    }
+
+    mp_context->start_table(attrs);
 }
 
 void ods_content_xml_handler::end_table()
@@ -210,46 +199,107 @@ void ods_content_xml_handler::end_table()
     mp_context->end_table();
 }
 
-void ods_content_xml_handler::start_table_column(const xml_attrs_type& attrs, const xml_token_pair_t& parent)
+void ods_content_xml_handler::start_table_column(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
     if (!mp_context)
         return;
+
+    if (parent.first == XMLNS_table)
+    {
+        switch (parent.second)
+        {
+            case XML_table:
+                mp_context->start_column(attrs);
+            break;
+            default:
+                warn_unexpected(m_stack);
+        }
+    }
+    else
+        warn_unexpected(m_stack);
 }
 
 void ods_content_xml_handler::end_table_column()
 {
     if (!mp_context)
         return;
+
+    mp_context->end_column();
 }
 
-void ods_content_xml_handler::start_table_row(const xml_attrs_type& attrs, const xml_token_pair_t& parent)
+void ods_content_xml_handler::start_table_row(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
     if (!mp_context)
         return;
+
+    if (parent.first == XMLNS_table)
+    {
+        switch (parent.second)
+        {
+            case XML_table:
+                mp_context->start_row(attrs);
+            break;
+            default:
+                warn_unexpected(m_stack);
+        }
+    }
+    else
+        warn_unexpected(m_stack);
 }
 
 void ods_content_xml_handler::end_table_row()
 {
     if (!mp_context)
         return;
+
+    mp_context->end_row();
 }
 
-void ods_content_xml_handler::start_table_cell(const xml_attrs_type& attrs, const xml_token_pair_t& parent)
+void ods_content_xml_handler::start_table_cell(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
     if (!mp_context)
         return;
+
+    if (parent.first == XMLNS_table)
+    {
+        switch (parent.second)
+        {
+            case XML_table_row:
+                mp_context->start_cell(attrs);
+            break;
+            default:
+                warn_unexpected(m_stack);
+        }
+    }
+    else
+        warn_unexpected(m_stack);
 }
 
 void ods_content_xml_handler::end_table_cell()
 {
     if (!mp_context)
         return;
+
+    mp_context->end_cell();
 }
 
-void ods_content_xml_handler::start_text_p(const xml_attrs_type& attrs, const xml_token_pair_t& parent)
+void ods_content_xml_handler::start_text_p(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
     if (!mp_context)
         return;
+
+    if (parent.first == XMLNS_table)
+    {
+        switch (parent.second)
+        {
+            case XML_table_cell:
+            break;
+            default:
+                warn_unexpected(m_stack);
+        }
+    }
+    else
+        warn_unexpected(m_stack);
 }
 
 void ods_content_xml_handler::end_text_p()

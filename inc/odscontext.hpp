@@ -28,23 +28,40 @@
 #ifndef __ODSCONTEXT_HPP__
 #define __ODSCONTEXT_HPP__
 
-#include <string>
+#include "xmlhandler.hpp"
 
 namespace orcus {
 
+/** 
+ * The role of this class is to interpret data passed on from the handler 
+ * and build a document model.  In the future I will make an interface class 
+ * above this class so that an external application can provide its own 
+ * implementation in order to build its own document model. 
+ */
 class ods_content_xml_context
 {
 public:
     ods_content_xml_context();
-    virtual ~ods_content_xml_context();
+    ~ods_content_xml_context();
 
     void start_content();
     void end_content();
 
-    void start_table();
+    void start_table(const xml_attrs_t& attrs);
     void end_table();
 
+    void start_column(const xml_attrs_t& attrs);
+    void end_column();
+
+    void start_row(const xml_attrs_t& attrs);
+    void end_row();
+
+    void start_cell(const xml_attrs_t& attrs);
+    void end_cell();
+
     void print_html(const ::std::string& filepath) const;
+
+private:
 };
 
 }
