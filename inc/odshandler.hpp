@@ -25,16 +25,26 @@
  *
  ************************************************************************/
 
+#ifndef __ODSHANDLER_HPP__
+#define __ODSHANDLER_HPP__
+
 #include "xmlhandler.hpp"
 
 namespace orcus {
 
-xml_stream_handler::xml_stream_handler()
+class ods_content_xml_handler : public xml_stream_handler
 {
+public:
+    ods_content_xml_handler();
+    virtual ~ods_content_xml_handler();
+
+    virtual void start_document();
+    virtual void end_document();
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const ::std::vector<xml_attr>& attrs);
+    virtual void end_element(xmlns_token_t ns, xml_token_t name);
+    virtual void characters(const char* ch, size_t len);
+};
+
 }
 
-xml_stream_handler::~xml_stream_handler()
-{
-}
-
-}
+#endif

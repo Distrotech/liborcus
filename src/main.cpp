@@ -31,7 +31,7 @@
 #include <gsf/gsf-infile-zip.h>
 
 #include "xmlparser.hpp"
-#include "xmlhandler.hpp"
+#include "odshandler.hpp"
 
 #include <cstdlib>
 #include <iostream>

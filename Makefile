@@ -35,7 +35,7 @@ ROOTDIR=.
 SCHEMA=OpenDocument-schema-v1.2-cd04.rng
 SCHEMAPATH=$(ROOTDIR)/misc/$(SCHEMA)
 
-CPPFLAGS=-I$(INCDIR) -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
+CPPFLAGS=-I$(INCDIR) -Os -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1`
 
 HEADERS= \
@@ -43,6 +43,7 @@ HEADERS= \
 	$(INCDIR)/tokens.hpp \
 	$(INCDIR)/token_constants.hpp \
 	$(INCDIR)/xmlhandler.hpp \
+	$(INCDIR)/odshandler.hpp \
 	$(INCDIR)/xmlparser.hpp
 
 OBJFILES= \
@@ -50,6 +51,7 @@ OBJFILES= \
 	$(OBJDIR)/global.o \
 	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/xmlhandler.o \
+	$(OBJDIR)/odshandler.o \
 	$(OBJDIR)/xmlparser.o
 
 DEPENDS= \
@@ -76,6 +78,9 @@ $(OBJDIR)/tokens.o: $(SRCDIR)/tokens.cpp $(DEPENDS)
 
 $(OBJDIR)/xmlhandler.o: $(SRCDIR)/xmlhandler.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlhandler.cpp
+
+$(OBJDIR)/odshandler.o: $(SRCDIR)/odshandler.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odshandler.cpp
 
 $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)
