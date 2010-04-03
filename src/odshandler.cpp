@@ -73,7 +73,7 @@ void ods_content_xml_handler::start_element(
             case XML_spreadsheet:
             break;
             default:
-                ;
+                warn_unhandled(m_stack);
         }
     }
     else if (ns == XMLNS_table)
@@ -93,7 +93,7 @@ void ods_content_xml_handler::start_element(
                 start_table_cell(attrs);
             break;
             default:
-                ;
+                warn_unhandled(m_stack);
         }
     }
     else if (ns == XMLNS_text)
@@ -103,7 +103,7 @@ void ods_content_xml_handler::start_element(
             case XML_p:
             break;
             default:
-                ;
+                warn_unhandled(m_stack);
         }
     }
 
