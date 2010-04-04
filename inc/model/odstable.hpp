@@ -28,14 +28,23 @@
 #ifndef __ODSTABLE_HPP__
 #define __ODSTABLE_HPP__
 
+#include <string>
+
 namespace orcus { namespace model {
 
 class ods_table
 {
 public:
-    ods_table();
+    ods_table(const ::std::string& name);
     ~ods_table();
+
+    ::std::string get_name() const;
+
 private:
+    ods_table(); // disabled
+
+private:
+    ::std::string m_name;
 };
 
 }}

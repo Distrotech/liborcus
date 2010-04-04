@@ -27,14 +27,24 @@
 
 #include "model/odstable.hpp"
 
+#include <iostream>
+
+using namespace std;
+
 namespace orcus { namespace model {
 
-ods_table::ods_table()
+ods_table::ods_table(const string& name) :
+    m_name(name)
 {
 }
 
 ods_table::~ods_table()
 {
+}
+
+string ods_table::get_name() const
+{
+    return m_name;
 }
 
 }}

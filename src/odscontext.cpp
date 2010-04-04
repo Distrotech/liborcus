@@ -34,6 +34,33 @@ using namespace std;
 
 namespace orcus {
 
+namespace {
+
+class table_attr_parser : public unary_function<xml_attr, void>
+{
+public:
+    table_attr_parser() {}
+    table_attr_parser(const table_attr_parser& r) :
+        m_name(r.m_name)
+    {
+    }
+
+    void operator() (const xml_attr& attr)
+    {
+        if (attr.ns == XMLNS_table && attr.name == XML_name)
+            m_name = attr.value;
+    }
+
+    model::ods_table* create_table() const
+    {
+        return new model::ods_table(m_name);
+    }
+private:
+    ::std::string m_name;
+};
+
+}
+
 ods_content_xml_context::ods_content_xml_context()
 {
 }
@@ -54,7 +81,9 @@ void ods_content_xml_context::end_content()
 
 void ods_content_xml_context::start_table(const xml_attrs_t& attrs)
 {
-    cout << "start table: " << endl;
+    table_attr_parser parser = for_each(attrs.begin(), attrs.end(), table_attr_parser());
+    m_tables.push_back(parser.create_table());
+    cout << "start table: " << m_tables.back().get_name() << endl;
 }
 
 void ods_content_xml_context::end_table()

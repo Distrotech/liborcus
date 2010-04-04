@@ -29,6 +29,9 @@
 #define __ODSCONTEXT_HPP__
 
 #include "xmlhandler.hpp"
+#include "model/odstable.hpp"
+
+#include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
 
@@ -62,6 +65,7 @@ public:
     void print_html(const ::std::string& filepath) const;
 
 private:
+    ::boost::ptr_vector<model::ods_table> m_tables;
 };
 
 }
