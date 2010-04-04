@@ -32,7 +32,6 @@
 
 #include "xmlparser.hpp"
 #include "odshandler.hpp"
-#include "odscontext.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -46,13 +45,12 @@ using namespace orcus;
 
 void read_content_xml(GsfInput* input, size_t size, const char* outpath)
 {
-    ods_content_xml_context context;
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(content, size, "content.xml");
-    ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler(&context));
+    ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler);
     parser.set_handler(handler.get());
     parser.parse();
-    context.print_html(outpath);
+    handler->print_html(outpath);
 }
 
 void read_content(GsfInput* input, const char* outpath)

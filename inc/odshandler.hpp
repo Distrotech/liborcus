@@ -30,6 +30,8 @@
 
 #include "xmlhandler.hpp"
 
+#include <string>
+
 namespace orcus {
 
 class ods_content_xml_context;
@@ -42,7 +44,7 @@ class ods_content_xml_context;
 class ods_content_xml_handler : public xml_stream_handler
 {
 public:
-    ods_content_xml_handler(ods_content_xml_context* context);
+    ods_content_xml_handler();
     virtual ~ods_content_xml_handler();
 
     virtual void start_document();
@@ -51,25 +53,9 @@ public:
     virtual void end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const char* ch, size_t len);
 
-private:
-    void start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
-    void end_table();
-
-    void start_table_column(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
-    void end_table_column();
-
-    void start_table_row(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
-    void end_table_row();
-
-    void start_table_cell(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
-    void end_table_cell();
-
-    void start_text_p(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
-    void end_text_p();
-
+    void print_html(const ::std::string& filepath) const;
 private:
     ods_content_xml_context* mp_context;
-    xml_elem_stack_t m_stack;
 };
 
 }

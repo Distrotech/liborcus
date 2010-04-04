@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "odscontext.hpp"
+#include "global.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -33,6 +34,12 @@
 using namespace std;
 
 namespace orcus {
+
+ods_context_base::~ods_context_base()
+{
+}
+
+// ============================================================================
 
 namespace {
 
@@ -143,18 +150,108 @@ ods_content_xml_context::~ods_content_xml_context()
 {
 }
 
-void ods_content_xml_context::start_content()
+void ods_content_xml_context::start_context()
 {
     cout << "start content" << endl;
 }
 
-void ods_content_xml_context::end_content()
+void ods_content_xml_context::end_context()
 {
     cout << "end content" << endl;
 }
 
-void ods_content_xml_context::start_table(const xml_attrs_t& attrs)
+void ods_content_xml_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
+    xml_token_pair_t parent = m_stack.empty() ? xml_token_pair_t(XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN) : m_stack.back();
+    m_stack.push_back(xml_token_pair_t(ns, name));
+
+    if (ns == XMLNS_office)
+    {
+        switch (name)
+        {
+            case XML_body:
+            break;
+            case XML_spreadsheet:
+            break;
+            default:
+                warn_unhandled(m_stack);
+        }
+    }
+    else if (ns == XMLNS_table)
+    {
+        switch (name)
+        {
+            case XML_table:
+                start_table(attrs, parent);
+            break;
+            case XML_table_column:
+                start_column(attrs, parent);
+            break;
+            case XML_table_row:
+                start_row(attrs, parent);
+            break;
+            case XML_table_cell:
+                start_cell(attrs, parent);
+            break;
+            default:
+                warn_unhandled(m_stack);
+        }
+    }
+    else
+        warn_unhandled(m_stack);
+}
+
+void ods_content_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
+{
+    const xml_token_pair_t& r = m_stack.back();
+
+    if (ns != r.first || name != r.second)
+        throw general_error("mismatched element name");
+
+    m_stack.pop_back();
+
+    if (ns == XMLNS_office)
+    {
+        switch (name)
+        {
+            case XML_body:
+            break;
+            case XML_spreadsheet:
+            break;
+            default:
+                ;
+        }
+    }
+    else if (ns == XMLNS_table)
+    {
+        switch (name)
+        {
+            case XML_table:
+                end_table();
+            break;
+            case XML_table_column:
+                end_column();
+            break;
+            case XML_table_row:
+                end_row();
+            break;
+            case XML_table_cell:
+                end_cell();
+            break;
+            default:
+                ;
+        }
+    }
+}
+
+void ods_content_xml_context::start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
+{
+    if (parent.first != XMLNS_office || parent.second != XML_spreadsheet)
+    {
+        warn_unexpected(m_stack);
+        return;
+    }
+
     table_attr_parser parser = for_each(attrs.begin(), attrs.end(), table_attr_parser());
     m_tables.push_back(parser.create_table());
     cout << "start table: " << m_tables.back().get_name() << endl;
@@ -167,19 +264,45 @@ void ods_content_xml_context::end_table()
     cout << "end table" << endl;
 }
 
-void ods_content_xml_context::start_column(const xml_attrs_t& attrs)
+void ods_content_xml_context::start_column(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
+    if (parent.first == XMLNS_table)
+    {
+        switch (parent.second)
+        {
+            case XML_table:
+                // TODO: Handle this.
+            break;
+            default:
+                warn_unexpected(m_stack);
+        }
+    }
+    else
+        warn_unexpected(m_stack);
 }
 
 void ods_content_xml_context::end_column()
 {
 }
 
-void ods_content_xml_context::start_row(const xml_attrs_t& attrs)
+void ods_content_xml_context::start_row(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
-    m_col = 0;
-    m_row_attr = row_attr();
-    for_each(attrs.begin(), attrs.end(), row_attr_parser(m_row_attr));
+    if (parent.first == XMLNS_table)
+    {
+        switch (parent.second)
+        {
+            case XML_table:
+                m_col = 0;
+                m_row_attr = row_attr();
+                for_each(attrs.begin(), attrs.end(), row_attr_parser(m_row_attr));
+            break;
+            default:
+                warn_unexpected(m_stack);
+        }
+    }
+    else
+        warn_unexpected(m_stack);
+
 }
 
 void ods_content_xml_context::end_row()
@@ -192,10 +315,22 @@ void ods_content_xml_context::end_row()
     m_row += m_row_attr.number_rows_repeated;
 }
 
-void ods_content_xml_context::start_cell(const xml_attrs_t& attrs)
+void ods_content_xml_context::start_cell(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
-    m_cell_attr = cell_attr();
-    for_each(attrs.begin(), attrs.end(), cell_attr_parser(m_cell_attr));
+    if (parent.first == XMLNS_table)
+    {
+        switch (parent.second)
+        {
+            case XML_table_row:
+                m_cell_attr = cell_attr();
+                for_each(attrs.begin(), attrs.end(), cell_attr_parser(m_cell_attr));
+            break;
+            default:
+                warn_unexpected(m_stack);
+        }
+    }
+    else
+        warn_unexpected(m_stack);
 }
 
 void ods_content_xml_context::end_cell()

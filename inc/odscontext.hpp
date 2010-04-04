@@ -35,13 +35,26 @@
 
 namespace orcus {
 
+class ods_context_base
+{
+public:
+    virtual ~ods_context_base() = 0;
+    virtual void start_context() = 0;
+    virtual void end_context() = 0;
+
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs) = 0;
+    virtual void end_element(xmlns_token_t ns, xml_token_t name) = 0;
+};
+
+// ============================================================================
+
 /** 
  * The role of this class is to interpret data passed on from the handler 
  * and build a document model.  In the future I will make an interface class 
  * above this class so that an external application can provide its own 
  * implementation in order to build its own document model. 
  */
-class ods_content_xml_context
+class ods_content_xml_context : public ods_context_base
 {
 public:
     struct row_attr
@@ -57,27 +70,31 @@ public:
     };
 
     ods_content_xml_context();
-    ~ods_content_xml_context();
+    virtual ~ods_content_xml_context();
 
-    void start_content();
-    void end_content();
+    virtual void start_context();
+    virtual void end_context();
 
-    void start_table(const xml_attrs_t& attrs);
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
+    virtual void end_element(xmlns_token_t ns, xml_token_t name);
+
+    void start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
     void end_table();
 
-    void start_column(const xml_attrs_t& attrs);
+    void start_column(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
     void end_column();
 
-    void start_row(const xml_attrs_t& attrs);
+    void start_row(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
     void end_row();
 
-    void start_cell(const xml_attrs_t& attrs);
+    void start_cell(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
     void end_cell();
 
     void print_html(const ::std::string& filepath) const;
 
 private:
     ::boost::ptr_vector<model::ods_table> m_tables;
+    xml_elem_stack_t m_stack;
 
     row_attr    m_row_attr;
     cell_attr   m_cell_attr;
