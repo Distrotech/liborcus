@@ -35,12 +35,6 @@ using namespace std;
 
 namespace orcus {
 
-ods_context_base::~ods_context_base()
-{
-}
-
-// ============================================================================
-
 namespace {
 
 class table_attr_parser : public unary_function<xml_attr, void>

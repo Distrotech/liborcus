@@ -28,25 +28,12 @@
 #ifndef __ODSCONTEXT_HPP__
 #define __ODSCONTEXT_HPP__
 
-#include "xmlhandler.hpp"
+#include "odscontext_base.hpp"
 #include "model/odstable.hpp"
 
 #include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
-
-class ods_context_base
-{
-public:
-    virtual ~ods_context_base() = 0;
-    virtual void start_context() = 0;
-    virtual void end_context() = 0;
-
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs) = 0;
-    virtual void end_element(xmlns_token_t ns, xml_token_t name) = 0;
-};
-
-// ============================================================================
 
 /** 
  * The role of this class is to interpret data passed on from the handler 
