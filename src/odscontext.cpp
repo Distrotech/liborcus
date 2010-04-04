@@ -59,6 +59,28 @@ private:
     ::std::string m_name;
 };
 
+class row_attr_parser : public unary_function<xml_attr, void>
+{
+public:
+    row_attr_parser(ods_content_xml_context::row_attr& attr) :
+        m_attr(attr) {}
+    row_attr_parser(const row_attr_parser& r) :
+        m_attr(r.m_attr) {}
+
+    void operator() (const xml_attr& attr)
+    {
+        if (attr.ns == XMLNS_table && attr.name == XML_number_rows_repeated)
+        {
+            char* endptr;
+            long val = strtol(attr.value.c_str(), &endptr, 10);
+            if (endptr != attr.value.c_str())
+                m_attr.number_rows_repeated = static_cast<uint32_t>(val);
+        }
+    }
+private:
+    ods_content_xml_context::row_attr& m_attr;
+};
+
 class table_html_printer : public unary_function<model::ods_table, void>
 {
 public:
@@ -76,7 +98,15 @@ private:
 
 }
 
-ods_content_xml_context::ods_content_xml_context()
+ods_content_xml_context::row_attr::row_attr() :
+    number_rows_repeated(1)
+{
+}
+
+// ============================================================================
+
+ods_content_xml_context::ods_content_xml_context() :
+    m_row(0), m_col(0)
 {
 }
 
@@ -99,6 +129,8 @@ void ods_content_xml_context::start_table(const xml_attrs_t& attrs)
     table_attr_parser parser = for_each(attrs.begin(), attrs.end(), table_attr_parser());
     m_tables.push_back(parser.create_table());
     cout << "start table: " << m_tables.back().get_name() << endl;
+
+    m_row = m_col = 0;
 }
 
 void ods_content_xml_context::end_table()
@@ -116,10 +148,17 @@ void ods_content_xml_context::end_column()
 
 void ods_content_xml_context::start_row(const xml_attrs_t& attrs)
 {
+    m_row_attr = row_attr();
+    for_each(attrs.begin(), attrs.end(), row_attr_parser(m_row_attr));
 }
 
 void ods_content_xml_context::end_row()
 {
+    if (m_row_attr.number_rows_repeated > 1)
+    {
+        // TODO: repeat this row.
+    }
+    m_row += m_row_attr.number_rows_repeated;
 }
 
 void ods_content_xml_context::start_cell(const xml_attrs_t& attrs)
@@ -128,6 +167,7 @@ void ods_content_xml_context::start_cell(const xml_attrs_t& attrs)
 
 void ods_content_xml_context::end_cell()
 {
+    ++m_col;
 }
 
 void ods_content_xml_context::print_html(const string& filepath) const

@@ -44,6 +44,12 @@ namespace orcus {
 class ods_content_xml_context
 {
 public:
+    struct row_attr
+    {
+        uint32_t number_rows_repeated;
+        row_attr();
+    };
+
     ods_content_xml_context();
     ~ods_content_xml_context();
 
@@ -66,6 +72,11 @@ public:
 
 private:
     ::boost::ptr_vector<model::ods_table> m_tables;
+
+    row_attr m_row_attr;
+
+    uint32_t m_row;
+    uint32_t m_col;
 };
 
 }
