@@ -104,6 +104,9 @@ $(OBJDIR)/gen_tokens:
 test: $(EXEC)
 	./$(EXEC) ./test/test.ods $(OBJDIR)/test.ods.html
 
+test.ou: $(EXEC)
+	./$(EXEC) ./test/george-ou-perf.ods $(OBJDIR)/george-ou-perf.ods.html
+
 clean:
 	rm -rf $(OBJDIR) 2> /dev/null || /bin/true
 	rm $(EXEC) 2> /dev/null || /bin/true

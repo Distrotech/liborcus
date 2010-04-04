@@ -59,6 +59,21 @@ private:
     ::std::string m_name;
 };
 
+class table_html_printer : public unary_function<model::ods_table, void>
+{
+public:
+    table_html_printer(ofstream& file) : m_file(file) {}
+    void operator() (const model::ods_table& table)
+    {
+        m_file 
+            << "<table>" 
+            << "<caption>" << table.get_name() << "</caption>"
+            << "</table>" << endl;
+    }
+private:
+    ofstream& m_file;
+};
+
 }
 
 ods_content_xml_context::ods_content_xml_context()
@@ -121,6 +136,7 @@ void ods_content_xml_context::print_html(const string& filepath) const
     file << "<html>" << endl;
     file << "<title>content.xml</title>" << endl;
     file << "<body>" << endl;
+    for_each(m_tables.begin(), m_tables.end(), table_html_printer(file));
     file << "</body>" << endl;
     file << "</html>" << endl;
 }
