@@ -78,6 +78,9 @@ public:
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual void end_element(xmlns_token_t ns, xml_token_t name);
 
+    void print_html(const ::std::string& filepath) const;
+
+private:
     void start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
     void end_table();
 
@@ -89,8 +92,6 @@ public:
 
     void start_cell(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
     void end_cell();
-
-    void print_html(const ::std::string& filepath) const;
 
 private:
     ::boost::ptr_vector<model::ods_table> m_tables;
