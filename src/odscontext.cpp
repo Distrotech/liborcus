@@ -177,6 +177,7 @@ void ods_content_xml_context::end_column()
 
 void ods_content_xml_context::start_row(const xml_attrs_t& attrs)
 {
+    m_col = 0;
     m_row_attr = row_attr();
     for_each(attrs.begin(), attrs.end(), row_attr_parser(m_row_attr));
 }
@@ -186,6 +187,7 @@ void ods_content_xml_context::end_row()
     if (m_row_attr.number_rows_repeated > 1)
     {
         // TODO: repeat this row.
+        cout << "repeat this row " << m_row_attr.number_rows_repeated << " times" << endl;
     }
     m_row += m_row_attr.number_rows_repeated;
 }
@@ -198,9 +200,11 @@ void ods_content_xml_context::start_cell(const xml_attrs_t& attrs)
 
 void ods_content_xml_context::end_cell()
 {
+    cout << "cell: (row=" << m_row << "," << "col=" << m_col << ")" << endl;
     if (m_cell_attr.number_columns_repeated > 1)
     {
         // TODO: repeat this cell.
+        cout << "repeat this cell " << m_cell_attr.number_columns_repeated << " times" << endl;
     }
     m_col += m_cell_attr.number_columns_repeated;
 }
