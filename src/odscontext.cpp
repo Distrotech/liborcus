@@ -81,6 +81,28 @@ private:
     ods_content_xml_context::row_attr& m_attr;
 };
 
+class cell_attr_parser : public unary_function<xml_attr, void>
+{
+public:
+    cell_attr_parser(ods_content_xml_context::cell_attr& attr) :
+        m_attr(attr) {}
+    cell_attr_parser(const cell_attr_parser& r) :
+        m_attr(r.m_attr) {}
+
+    void operator() (const xml_attr& attr)
+    {
+        if (attr.ns == XMLNS_table && attr.name == XML_number_columns_repeated)
+        {
+            char* endptr;
+            long val = strtol(attr.value.c_str(), &endptr, 10);
+            if (endptr != attr.value.c_str())
+                m_attr.number_columns_repeated = static_cast<uint32_t>(val);
+        }
+    }
+private:
+    ods_content_xml_context::cell_attr& m_attr;
+};
+
 class table_html_printer : public unary_function<model::ods_table, void>
 {
 public:
@@ -98,8 +120,15 @@ private:
 
 }
 
+// ============================================================================
+
 ods_content_xml_context::row_attr::row_attr() :
     number_rows_repeated(1)
+{
+}
+
+ods_content_xml_context::cell_attr::cell_attr() :
+    number_columns_repeated(1)
 {
 }
 
@@ -163,11 +192,17 @@ void ods_content_xml_context::end_row()
 
 void ods_content_xml_context::start_cell(const xml_attrs_t& attrs)
 {
+    m_cell_attr = cell_attr();
+    for_each(attrs.begin(), attrs.end(), cell_attr_parser(m_cell_attr));
 }
 
 void ods_content_xml_context::end_cell()
 {
-    ++m_col;
+    if (m_cell_attr.number_columns_repeated > 1)
+    {
+        // TODO: repeat this cell.
+    }
+    m_col += m_cell_attr.number_columns_repeated;
 }
 
 void ods_content_xml_context::print_html(const string& filepath) const

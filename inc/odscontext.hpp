@@ -50,6 +50,12 @@ public:
         row_attr();
     };
 
+    struct cell_attr
+    {
+        uint32_t number_columns_repeated;
+        cell_attr();
+    };
+
     ods_content_xml_context();
     ~ods_content_xml_context();
 
@@ -73,7 +79,8 @@ public:
 private:
     ::boost::ptr_vector<model::ods_table> m_tables;
 
-    row_attr m_row_attr;
+    row_attr    m_row_attr;
+    cell_attr   m_cell_attr;
 
     uint32_t m_row;
     uint32_t m_col;
