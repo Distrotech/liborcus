@@ -62,8 +62,11 @@ public:
     virtual void start_context();
     virtual void end_context();
 
+    virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
+    virtual ods_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
+
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
-    virtual void end_element(xmlns_token_t ns, xml_token_t name);
+    virtual bool end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const char* ch, size_t len);
 
     void print_html(const ::std::string& filepath) const;

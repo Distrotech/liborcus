@@ -154,6 +154,16 @@ void ods_content_xml_context::end_context()
     cout << "end content" << endl;
 }
 
+bool ods_content_xml_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+{
+    return true;
+}
+
+ods_context_base* ods_content_xml_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+{
+    return NULL;
+}
+
 void ods_content_xml_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
@@ -194,10 +204,8 @@ void ods_content_xml_context::start_element(xmlns_token_t ns, xml_token_t name, 
         warn_unhandled();
 }
 
-void ods_content_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
+bool ods_content_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
-    pop_stack(ns, name);
-
     if (ns == XMLNS_office)
     {
         switch (name)
@@ -230,6 +238,7 @@ void ods_content_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
                 ;
         }
     }
+    return pop_stack(ns, name);
 }
 
 void ods_content_xml_context::characters(const char* ch, size_t len)

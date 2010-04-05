@@ -63,7 +63,7 @@ xml_token_pair_t ods_context_base::push_stack(xmlns_token_t ns, xml_token_t name
     return parent;
 }
 
-void ods_context_base::pop_stack(xmlns_token_t ns, xml_token_t name)
+bool ods_context_base::pop_stack(xmlns_token_t ns, xml_token_t name)
 {
     const xml_token_pair_t& r = m_stack.back();
 
@@ -71,6 +71,7 @@ void ods_context_base::pop_stack(xmlns_token_t ns, xml_token_t name)
         throw general_error("mismatched element name");
 
     m_stack.pop_back();
+    return m_stack.empty();
 }
 
 void ods_context_base::warn_unhandled() const
