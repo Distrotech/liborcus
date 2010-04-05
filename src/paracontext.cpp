@@ -27,6 +27,10 @@
 
 #include "paracontext.hpp"
 
+#include <iostream>
+
+using namespace std;
+
 namespace orcus {
 
 text_para_context::text_para_context()
@@ -67,6 +71,10 @@ bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
 
 void text_para_context::characters(const char* ch, size_t len)
 {
+    cout << "'";
+    for (size_t i = 0; i < len; ++i)
+        cout << ch[i];
+    cout << "'" << endl;
 }
 
 }

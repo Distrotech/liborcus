@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "odscontext.hpp"
+#include "paracontext.hpp"
 #include "global.hpp"
 
 #include <iostream>
@@ -156,11 +157,17 @@ void ods_content_xml_context::end_context()
 
 bool ods_content_xml_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
 {
+    if (ns == XMLNS_text && name == XML_p)
+        return false;
+
     return true;
 }
 
 xml_context_base* ods_content_xml_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
 {
+    if (ns == XMLNS_text && name == XML_p)
+        return new text_para_context();
+
     return NULL;
 }
 
