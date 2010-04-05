@@ -53,9 +53,6 @@ public:
     ods_content_xml_context();
     virtual ~ods_content_xml_context();
 
-    virtual void start_context();
-    virtual void end_context();
-
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
     virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
 

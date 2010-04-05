@@ -145,16 +145,6 @@ ods_content_xml_context::~ods_content_xml_context()
 {
 }
 
-void ods_content_xml_context::start_context()
-{
-    cout << "start content" << endl;
-}
-
-void ods_content_xml_context::end_context()
-{
-    cout << "end content" << endl;
-}
-
 bool ods_content_xml_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
 {
     if (ns == XMLNS_text && name == XML_p)

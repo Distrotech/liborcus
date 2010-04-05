@@ -47,12 +47,10 @@ ods_content_xml_handler::~ods_content_xml_handler()
 
 void ods_content_xml_handler::start_document()
 {
-    get_current_context().start_context();
 }
 
 void ods_content_xml_handler::end_document()
 {
-    get_current_context().end_context();
 }
 
 void ods_content_xml_handler::start_element(

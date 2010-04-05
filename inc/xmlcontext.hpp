@@ -39,8 +39,6 @@ class xml_context_base
 {
 public:
     virtual ~xml_context_base() = 0;
-    virtual void start_context() = 0;
-    virtual void end_context() = 0;
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const = 0;
     virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const = 0;
