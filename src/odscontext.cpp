@@ -238,6 +238,10 @@ void ods_content_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
     }
 }
 
+void ods_content_xml_context::characters(const char* ch, size_t len)
+{
+}
+
 void ods_content_xml_context::start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
     if (parent.first != XMLNS_office || parent.second != XML_spreadsheet)

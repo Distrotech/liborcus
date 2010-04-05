@@ -68,6 +68,7 @@ void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
 
 void ods_content_xml_handler::characters(const char* ch, size_t len)
 {
+    get_current_context().characters(ch, len);
 }
 
 void ods_content_xml_handler::print_html(const string& filepath)
