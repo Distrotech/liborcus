@@ -32,6 +32,9 @@
 
 namespace orcus {
 
+typedef ::std::pair<xmlns_token_t, xml_token_t> xml_token_pair_t;
+typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
+
 class ods_context_base
 {
 public:
@@ -42,6 +45,15 @@ public:
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs) = 0;
     virtual void end_element(xmlns_token_t ns, xml_token_t name) = 0;
     virtual void characters(const char* ch, size_t len) = 0;
+
+protected:
+    xml_token_pair_t push_stack(xmlns_token_t ns, xml_token_t name);
+    void pop_stack(xmlns_token_t ns, xml_token_t name);
+    void warn_unhandled() const;
+    void warn_unexpected() const;
+
+private:
+    xml_elem_stack_t m_stack;
 };
 
 }

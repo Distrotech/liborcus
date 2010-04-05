@@ -83,7 +83,6 @@ private:
 
 private:
     ::boost::ptr_vector<model::ods_table> m_tables;
-    xml_elem_stack_t m_stack;
 
     row_attr    m_row_attr;
     cell_attr   m_cell_attr;

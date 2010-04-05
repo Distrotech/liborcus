@@ -156,8 +156,7 @@ void ods_content_xml_context::end_context()
 
 void ods_content_xml_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
-    xml_token_pair_t parent = m_stack.empty() ? xml_token_pair_t(XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN) : m_stack.back();
-    m_stack.push_back(xml_token_pair_t(ns, name));
+    xml_token_pair_t parent = push_stack(ns, name);
 
     if (ns == XMLNS_office)
     {
@@ -168,7 +167,7 @@ void ods_content_xml_context::start_element(xmlns_token_t ns, xml_token_t name, 
             case XML_spreadsheet:
             break;
             default:
-                warn_unhandled(m_stack);
+                warn_unhandled();
         }
     }
     else if (ns == XMLNS_table)
@@ -188,21 +187,16 @@ void ods_content_xml_context::start_element(xmlns_token_t ns, xml_token_t name, 
                 start_cell(attrs, parent);
             break;
             default:
-                warn_unhandled(m_stack);
+                warn_unhandled();
         }
     }
     else
-        warn_unhandled(m_stack);
+        warn_unhandled();
 }
 
 void ods_content_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
-    const xml_token_pair_t& r = m_stack.back();
-
-    if (ns != r.first || name != r.second)
-        throw general_error("mismatched element name");
-
-    m_stack.pop_back();
+    pop_stack(ns, name);
 
     if (ns == XMLNS_office)
     {
@@ -246,7 +240,7 @@ void ods_content_xml_context::start_table(const xml_attrs_t& attrs, const xml_to
 {
     if (parent.first != XMLNS_office || parent.second != XML_spreadsheet)
     {
-        warn_unexpected(m_stack);
+        warn_unexpected();
         return;
     }
 
@@ -272,11 +266,11 @@ void ods_content_xml_context::start_column(const xml_attrs_t& attrs, const xml_t
                 // TODO: Handle this.
             break;
             default:
-                warn_unexpected(m_stack);
+                warn_unexpected();
         }
     }
     else
-        warn_unexpected(m_stack);
+        warn_unexpected();
 }
 
 void ods_content_xml_context::end_column()
@@ -295,11 +289,11 @@ void ods_content_xml_context::start_row(const xml_attrs_t& attrs, const xml_toke
                 for_each(attrs.begin(), attrs.end(), row_attr_parser(m_row_attr));
             break;
             default:
-                warn_unexpected(m_stack);
+                warn_unexpected();
         }
     }
     else
-        warn_unexpected(m_stack);
+        warn_unexpected();
 
 }
 
@@ -324,11 +318,11 @@ void ods_content_xml_context::start_cell(const xml_attrs_t& attrs, const xml_tok
                 for_each(attrs.begin(), attrs.end(), cell_attr_parser(m_cell_attr));
             break;
             default:
-                warn_unexpected(m_stack);
+                warn_unexpected();
         }
     }
     else
-        warn_unexpected(m_stack);
+        warn_unexpected();
 }
 
 void ods_content_xml_context::end_cell()

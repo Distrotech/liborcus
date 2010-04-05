@@ -26,11 +26,65 @@
  ************************************************************************/
 
 #include "odscontext_base.hpp"
+#include "global.hpp"
+#include "tokens.hpp"
+
+#include <iostream>
+
+using namespace std;
 
 namespace orcus {
 
+namespace {
+
+void print_stack(const xml_elem_stack_t& elem_stack)
+{
+    cerr << "[ ";
+    xml_elem_stack_t::const_iterator itr, itr_beg = elem_stack.begin(), itr_end = elem_stack.end();
+    for (itr = itr_beg; itr != itr_end; ++itr)
+    {
+        if (itr != itr_beg)
+            cerr << " -> ";
+        cerr << tokens::get_nstoken_name(itr->first) << ":" << tokens::get_token_name(itr->second);
+    }
+    cerr << " ]";
+}
+
+}
+
 ods_context_base::~ods_context_base()
 {
+}
+
+xml_token_pair_t ods_context_base::push_stack(xmlns_token_t ns, xml_token_t name)
+{
+    xml_token_pair_t parent = m_stack.empty() ? xml_token_pair_t(XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN) : m_stack.back();
+    m_stack.push_back(xml_token_pair_t(ns, name));
+    return parent;
+}
+
+void ods_context_base::pop_stack(xmlns_token_t ns, xml_token_t name)
+{
+    const xml_token_pair_t& r = m_stack.back();
+
+    if (ns != r.first || name != r.second)
+        throw general_error("mismatched element name");
+
+    m_stack.pop_back();
+}
+
+void ods_context_base::warn_unhandled() const
+{
+    cerr << "warning: unhandled element ";
+    print_stack(m_stack);
+    cerr << endl;
+}
+
+void ods_context_base::warn_unexpected() const
+{
+    cerr << "warning: unexpected element ";
+    print_stack(m_stack);
+    cerr << endl;
 }
 
 }

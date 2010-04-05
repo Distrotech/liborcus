@@ -36,33 +36,6 @@
 
 namespace orcus {
 
-typedef ::std::pair<xmlns_token_t, xml_token_t> xml_token_pair_t;
-typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
-
-/** 
- * Print warning on unhandled element during parsing of xml stream.
- *
- * @param elem_stack xml element stack to print.
- */
-void warn_unhandled(const xml_elem_stack_t& elem_stack);
-
-/** 
- * Print warning on element appearing at an unexpected location during 
- * parsing of xml stream. 
- *
- * @param elem_stack xml element stack to print.
- */
-void warn_unexpected(const xml_elem_stack_t& elem_stack);
-
-/** 
- * Get the token pair of parent element in the element stack.
- *
- * @param elem_stack xml element stack
- * 
- * @return token pair of the parent element
- */
-xml_token_pair_t get_parent(const xml_elem_stack_t& elem_stack);
-
 /** 
  * Single xml attribute entry
  */
