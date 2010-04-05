@@ -36,9 +36,9 @@ using namespace std;
 
 namespace orcus {
 
-ods_content_xml_handler::ods_content_xml_handler() :
-    mp_context(new ods_content_xml_context)
+ods_content_xml_handler::ods_content_xml_handler()
 {
+    m_context_stack.push_back(new ods_content_xml_context);
 }
 
 ods_content_xml_handler::~ods_content_xml_handler()
@@ -47,39 +47,40 @@ ods_content_xml_handler::~ods_content_xml_handler()
 
 void ods_content_xml_handler::start_document()
 {
-    if (mp_context)
-        mp_context->start_context();
+    get_current_context().start_context();
 }
 
 void ods_content_xml_handler::end_document()
 {
-    if (mp_context)
-        mp_context->end_context();
+    get_current_context().end_context();
 }
 
 void ods_content_xml_handler::start_element(
     xmlns_token_t ns, xml_token_t name, const vector<xml_attr>& attrs)
 {
-    if (mp_context)
-        mp_context->start_element(ns, name, attrs);
+    get_current_context().start_element(ns, name, attrs);
 }
 
 void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
 {
-    if (mp_context)
-        mp_context->end_element(ns, name);
+    get_current_context().end_element(ns, name);
 }
 
 void ods_content_xml_handler::characters(const char* ch, size_t len)
 {
-    if (!mp_context)
-        return;
 }
 
-void ods_content_xml_handler::print_html(const string& filepath) const
+void ods_content_xml_handler::print_html(const string& filepath)
 {
-    if (mp_context)
-        mp_context->print_html(filepath);
+    if (m_context_stack.empty())
+        return;
+
+    static_cast<ods_content_xml_context&>(m_context_stack.front()).print_html(filepath);
+}
+
+ods_context_base& ods_content_xml_handler::get_current_context()
+{
+    return m_context_stack.back();
 }
 
 }

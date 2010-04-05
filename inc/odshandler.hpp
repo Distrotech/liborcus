@@ -29,8 +29,10 @@
 #define __ODSHANDLER_HPP__
 
 #include "xmlhandler.hpp"
+#include "odscontext_base.hpp"
 
 #include <string>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
 
@@ -53,9 +55,13 @@ public:
     virtual void end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const char* ch, size_t len);
 
-    void print_html(const ::std::string& filepath) const;
+    void print_html(const ::std::string& filepath);
+
 private:
-    ods_content_xml_context* mp_context;
+    ods_context_base& get_current_context();
+
+private:
+    ::boost::ptr_vector<ods_context_base> m_context_stack;
 };
 
 }
