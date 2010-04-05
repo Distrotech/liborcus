@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "odscontext_base.hpp"
+#include "xmlcontext.hpp"
 #include "global.hpp"
 #include "tokens.hpp"
 

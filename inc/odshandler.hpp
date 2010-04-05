@@ -29,7 +29,7 @@
 #define __ODSHANDLER_HPP__
 
 #include "xmlhandler.hpp"
-#include "odscontext_base.hpp"
+#include "xmlcontext.hpp"
 
 #include <string>
 #include <boost/ptr_container/ptr_vector.hpp>

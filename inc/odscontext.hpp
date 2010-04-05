@@ -28,7 +28,7 @@
 #ifndef __ODSCONTEXT_HPP__
 #define __ODSCONTEXT_HPP__
 
-#include "odscontext_base.hpp"
+#include "xmlcontext.hpp"
 #include "model/odstable.hpp"
 
 #include <boost/ptr_container/ptr_vector.hpp>
