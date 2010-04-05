@@ -25,38 +25,30 @@
  *
  ************************************************************************/
 
-#ifndef __XMLCONTEXT_HPP__
-#define __XMLCONTEXT_HPP__
+#ifndef __PARACONTEXT_HPP__
+#define __PARACONTEXT_HPP__
 
-#include "xmlhandler.hpp"
+#include "xmlcontext.hpp"
 
 namespace orcus {
 
-typedef ::std::pair<xmlns_token_t, xml_token_t> xml_token_pair_t;
-typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
-
-class xml_context_base
+class text_para_context : public xml_context_base
 {
 public:
-    virtual ~xml_context_base() = 0;
-    virtual void start_context() = 0;
-    virtual void end_context() = 0;
+    text_para_context();
+    virtual ~text_para_context();
 
-    virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const = 0;
-    virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const = 0;
+    virtual void start_context();
+    virtual void end_context();
 
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs) = 0;
-    virtual bool end_element(xmlns_token_t ns, xml_token_t name) = 0;
-    virtual void characters(const char* ch, size_t len) = 0;
+    virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
+    virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
 
-protected:
-    xml_token_pair_t push_stack(xmlns_token_t ns, xml_token_t name);
-    bool pop_stack(xmlns_token_t ns, xml_token_t name);
-    void warn_unhandled() const;
-    void warn_unexpected() const;
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
+    virtual bool end_element(xmlns_token_t ns, xml_token_t name);
+    virtual void characters(const char* ch, size_t len);
 
 private:
-    xml_elem_stack_t m_stack;
 };
 
 }

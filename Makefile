@@ -46,6 +46,7 @@ HEADERS= \
 	$(INCDIR)/odshandler.hpp \
 	$(INCDIR)/xmlcontext.hpp \
 	$(INCDIR)/odscontext.hpp \
+	$(INCDIR)/paracontext.hpp \
 	$(INCDIR)/xmlparser.hpp \
 	$(INCDIR)/model/odstable.hpp
 
@@ -57,6 +58,7 @@ OBJFILES= \
 	$(OBJDIR)/odshandler.o \
 	$(OBJDIR)/xmlcontext.o \
 	$(OBJDIR)/odscontext.o \
+	$(OBJDIR)/paracontext.o \
 	$(OBJDIR)/xmlparser.o \
 	$(OBJDIR)/odstable.o
 
@@ -90,6 +92,9 @@ $(OBJDIR)/odshandler.o: $(SRCDIR)/odshandler.cpp $(DEPENDS)
 
 $(OBJDIR)/xmlcontext.o: $(SRCDIR)/xmlcontext.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlcontext.cpp
+
+$(OBJDIR)/paracontext.o: $(SRCDIR)/paracontext.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/paracontext.cpp
 
 $(OBJDIR)/odscontext.o: $(SRCDIR)/odscontext.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odscontext.cpp

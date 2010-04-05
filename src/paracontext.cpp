@@ -25,40 +25,48 @@
  *
  ************************************************************************/
 
-#ifndef __XMLCONTEXT_HPP__
-#define __XMLCONTEXT_HPP__
-
-#include "xmlhandler.hpp"
+#include "paracontext.hpp"
 
 namespace orcus {
 
-typedef ::std::pair<xmlns_token_t, xml_token_t> xml_token_pair_t;
-typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
-
-class xml_context_base
+text_para_context::text_para_context()
 {
-public:
-    virtual ~xml_context_base() = 0;
-    virtual void start_context() = 0;
-    virtual void end_context() = 0;
-
-    virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const = 0;
-    virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const = 0;
-
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs) = 0;
-    virtual bool end_element(xmlns_token_t ns, xml_token_t name) = 0;
-    virtual void characters(const char* ch, size_t len) = 0;
-
-protected:
-    xml_token_pair_t push_stack(xmlns_token_t ns, xml_token_t name);
-    bool pop_stack(xmlns_token_t ns, xml_token_t name);
-    void warn_unhandled() const;
-    void warn_unexpected() const;
-
-private:
-    xml_elem_stack_t m_stack;
-};
-
 }
 
-#endif
+text_para_context::~text_para_context()
+{
+}
+
+void text_para_context::start_context()
+{
+}
+
+void text_para_context::end_context()
+{
+}
+
+bool text_para_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+{
+    return true;
+}
+
+xml_context_base* text_para_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+{
+    return NULL;
+}
+
+void text_para_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
+{
+    xml_token_pair_t parent = push_stack(ns, name);
+}
+
+bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
+{
+    return pop_stack(ns, name);
+}
+
+void text_para_context::characters(const char* ch, size_t len)
+{
+}
+
+}
