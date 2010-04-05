@@ -39,14 +39,7 @@ text_para_context::text_para_context()
 
 text_para_context::~text_para_context()
 {
-}
-
-void text_para_context::start_context()
-{
-}
-
-void text_para_context::end_context()
-{
+    cout << "'" << m_para_content << "'" << endl;
 }
 
 bool text_para_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
@@ -71,10 +64,8 @@ bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
 
 void text_para_context::characters(const char* ch, size_t len)
 {
-    cout << "'";
     for (size_t i = 0; i < len; ++i)
-        cout << ch[i];
-    cout << "'" << endl;
+        m_para_content.push_back(ch[i]);
 }
 
 }
