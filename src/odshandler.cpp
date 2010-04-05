@@ -58,7 +58,7 @@ void ods_content_xml_handler::end_document()
 void ods_content_xml_handler::start_element(
     xmlns_token_t ns, xml_token_t name, const vector<xml_attr>& attrs)
 {
-    ods_context_base& cur = get_current_context();
+    xml_context_base& cur = get_current_context();
     if (!cur.can_handle_element(ns, name))
         m_context_stack.push_back(cur.create_child_context(ns, name));
 
@@ -86,7 +86,7 @@ void ods_content_xml_handler::print_html(const string& filepath)
     static_cast<ods_content_xml_context&>(m_context_stack.front()).print_html(filepath);
 }
 
-ods_context_base& ods_content_xml_handler::get_current_context()
+xml_context_base& ods_content_xml_handler::get_current_context()
 {
     if (m_context_stack.empty())
         throw general_error("context stack is empty");

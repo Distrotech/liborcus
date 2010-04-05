@@ -35,13 +35,7 @@
 
 namespace orcus {
 
-/** 
- * The role of this class is to interpret data passed on from the handler 
- * and build a document model.  In the future I will make an interface class 
- * above this class so that an external application can provide its own 
- * implementation in order to build its own document model. 
- */
-class ods_content_xml_context : public ods_context_base
+class ods_content_xml_context : public xml_context_base
 {
 public:
     struct row_attr
@@ -63,7 +57,7 @@ public:
     virtual void end_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
-    virtual ods_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
+    virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
 
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);

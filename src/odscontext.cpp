@@ -159,7 +159,7 @@ bool ods_content_xml_context::can_handle_element(xmlns_token_t ns, xml_token_t n
     return true;
 }
 
-ods_context_base* ods_content_xml_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+xml_context_base* ods_content_xml_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
 {
     return NULL;
 }

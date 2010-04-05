@@ -38,11 +38,6 @@ namespace orcus {
 
 class ods_content_xml_context;
 
-/** 
- * The role of this class is to check the structure of ods content.xml 
- * stream, and make sure the structure is valid.  It does not interpret and 
- * build document model, which is done by ods_content_xml_context. 
- */
 class ods_content_xml_handler : public xml_stream_handler
 {
 public:
@@ -58,10 +53,10 @@ public:
     void print_html(const ::std::string& filepath);
 
 private:
-    ods_context_base& get_current_context();
+    xml_context_base& get_current_context();
 
 private:
-    ::boost::ptr_vector<ods_context_base> m_context_stack;
+    ::boost::ptr_vector<xml_context_base> m_context_stack;
 };
 
 }

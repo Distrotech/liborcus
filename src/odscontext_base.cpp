@@ -52,18 +52,18 @@ void print_stack(const xml_elem_stack_t& elem_stack)
 
 }
 
-ods_context_base::~ods_context_base()
+xml_context_base::~xml_context_base()
 {
 }
 
-xml_token_pair_t ods_context_base::push_stack(xmlns_token_t ns, xml_token_t name)
+xml_token_pair_t xml_context_base::push_stack(xmlns_token_t ns, xml_token_t name)
 {
     xml_token_pair_t parent = m_stack.empty() ? xml_token_pair_t(XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN) : m_stack.back();
     m_stack.push_back(xml_token_pair_t(ns, name));
     return parent;
 }
 
-bool ods_context_base::pop_stack(xmlns_token_t ns, xml_token_t name)
+bool xml_context_base::pop_stack(xmlns_token_t ns, xml_token_t name)
 {
     const xml_token_pair_t& r = m_stack.back();
 
@@ -74,14 +74,14 @@ bool ods_context_base::pop_stack(xmlns_token_t ns, xml_token_t name)
     return m_stack.empty();
 }
 
-void ods_context_base::warn_unhandled() const
+void xml_context_base::warn_unhandled() const
 {
     cerr << "warning: unhandled element ";
     print_stack(m_stack);
     cerr << endl;
 }
 
-void ods_context_base::warn_unexpected() const
+void xml_context_base::warn_unexpected() const
 {
     cerr << "warning: unexpected element ";
     print_stack(m_stack);
