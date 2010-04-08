@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ODSHANDLER_HPP__
-#define __ODSHANDLER_HPP__
+#ifndef __ORCUS_ODSHANDLER_HPP__
+#define __ORCUS_ODSHANDLER_HPP__
 
 #include "xmlhandler.hpp"
 #include "xmlcontext.hpp"
@@ -56,7 +56,8 @@ private:
     xml_context_base& get_current_context();
 
 private:
-    ::boost::ptr_vector<xml_context_base> m_context_stack;
+    typedef ::boost::ptr_vector<xml_context_base> context_stack_type;
+    context_stack_type m_context_stack;
 };
 
 }

@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ODSCONTEXT_HPP__
-#define __ODSCONTEXT_HPP__
+#ifndef __ORCUS_ODSCONTEXT_HPP__
+#define __ORCUS_ODSCONTEXT_HPP__
 
 #include "xmlcontext.hpp"
 #include "model/odstable.hpp"
@@ -55,6 +55,7 @@ public:
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
     virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
+    virtual void end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child);
 
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);

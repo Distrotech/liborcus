@@ -39,7 +39,6 @@ text_para_context::text_para_context()
 
 text_para_context::~text_para_context()
 {
-    cout << "'" << m_para_content << "'" << endl;
 }
 
 bool text_para_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
@@ -50,6 +49,11 @@ bool text_para_context::can_handle_element(xmlns_token_t ns, xml_token_t name) c
 xml_context_base* text_para_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
 {
     return NULL;
+}
+
+void text_para_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
+{
+    // not implemented yet.
 }
 
 void text_para_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
@@ -66,6 +70,11 @@ void text_para_context::characters(const char* ch, size_t len)
 {
     for (size_t i = 0; i < len; ++i)
         m_para_content.push_back(ch[i]);
+}
+
+const string& text_para_context::get_content() const
+{
+    return m_para_content;
 }
 
 }

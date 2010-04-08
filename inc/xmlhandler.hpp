@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __XMLHANDLER_HPP__
-#define __XMLHANDLER_HPP__
+#ifndef __ORCUS_XMLHANDLER_HPP__
+#define __ORCUS_XMLHANDLER_HPP__
 
 #include "token_constants.hpp"
 

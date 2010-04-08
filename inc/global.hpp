@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __GLOBAL_HPP__
-#define __GLOBAL_HPP__
+#ifndef __ORCUS_GLOBAL_HPP__
+#define __ORCUS_GLOBAL_HPP__
 
 #include <pthread.h>
 #include <exception>

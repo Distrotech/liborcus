@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __XMLPARSER_HPP__
-#define __XMLPARSER_HPP__
+#ifndef __ORCUS_XMLPARSER_HPP__
+#define __ORCUS_XMLPARSER_HPP__
 
 #include <cstdint>
 #include <cstdlib>

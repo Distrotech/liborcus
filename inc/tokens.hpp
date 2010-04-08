@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __TOKENS_HPP__
-#define __TOKENS_HPP__
+#ifndef __ORCUS_TOKENS_HPP__
+#define __ORCUS_TOKENS_HPP__
 
 #include "token_constants.hpp"
 

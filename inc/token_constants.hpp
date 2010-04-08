@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __TOKEN_CONSTANTS_HPP__
-#define __TOKEN_CONSTANTS_HPP__
+#ifndef __ORCUS_TOKEN_CONSTANTS_HPP__
+#define __ORCUS_TOKEN_CONSTANTS_HPP__
 
 namespace orcus {
 

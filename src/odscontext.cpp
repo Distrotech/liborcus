@@ -161,6 +161,15 @@ xml_context_base* ods_content_xml_context::create_child_context(xmlns_token_t ns
     return NULL;
 }
 
+void ods_content_xml_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
+{
+    if (ns == XMLNS_text && name == XML_p)
+    {
+        text_para_context* para_context = static_cast<text_para_context*>(child);
+        cout << "content from child: '" << para_context->get_content() << "'" << endl;
+    }
+}
+
 void ods_content_xml_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);

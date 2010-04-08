@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __XMLCONTEXT_HPP__
-#define __XMLCONTEXT_HPP__
+#ifndef __ORCUS_XMLCONTEXT_HPP__
+#define __ORCUS_XMLCONTEXT_HPP__
 
 #include "xmlhandler.hpp"
 
@@ -42,6 +42,7 @@ public:
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const = 0;
     virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const = 0;
+    virtual void end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child) = 0;
 
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs) = 0;
     virtual bool end_element(xmlns_token_t ns, xml_token_t name) = 0;
