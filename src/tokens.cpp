@@ -30,7 +30,7 @@
 
 #include <cstdlib>
 #include <string>
-#include <hash_map>
+#include <unordered_map>
 
 using namespace std;
 
@@ -56,8 +56,8 @@ struct string_hash
 
 struct name_token_map
 {
-    typedef __gnu_cxx::hash_map<string, xml_token_t, string_hash> token_type;
-    typedef __gnu_cxx::hash_map<string, xmlns_token_t, string_hash> nstoken_type;
+    typedef ::std::unordered_map<string, xml_token_t, string_hash> token_type;
+    typedef ::std::unordered_map<string, xmlns_token_t, string_hash> nstoken_type;
 
     static token_type       tokens;
     static nstoken_type     nstokens;
