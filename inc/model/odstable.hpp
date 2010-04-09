@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_ODSTABLE_HPP__
-#define __ORCUS_ODSTABLE_HPP__
+#ifndef __ORCUS_MODEL_ODSTABLE_HPP__
+#define __ORCUS_MODEL_ODSTABLE_HPP__
 
 #include <string>
 
