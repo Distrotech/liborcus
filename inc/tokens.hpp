@@ -30,6 +30,8 @@
 
 #include "token_constants.hpp"
 
+#include <string>
+
 namespace orcus {
 
 class tokens
@@ -55,7 +57,7 @@ public:
      * 
      * @return token value representing the given textural token.
      */
-    static xml_token_t get_token(const char* name);
+    static xml_token_t get_token(const ::std::string& name);
 
     /** 
      * Get textural token name from a token value.
@@ -81,7 +83,7 @@ public:
      * 
      * @return token value representing the given textural token.
      */
-    static xmlns_token_t get_nstoken(const char* name);
+    static xmlns_token_t get_nstoken(const ::std::string& name);
 
     /** 
      * Get textural token name from a namespace token value.
