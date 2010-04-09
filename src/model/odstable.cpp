@@ -42,7 +42,7 @@ ods_table::~ods_table()
 {
 }
 
-string ods_table::get_name() const
+const string& ods_table::get_name() const
 {
     return m_name;
 }

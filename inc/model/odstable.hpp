@@ -38,7 +38,7 @@ public:
     ods_table(const ::std::string& name);
     ~ods_table();
 
-    ::std::string get_name() const;
+    const ::std::string& get_name() const;
     void set_cell(uint32_t col, uint32_t row, const ::std::string& val);
 
 private:
