@@ -55,7 +55,7 @@ void name_to_tokens(const xmlChar* name, xmlns_token_t& nstoken, xml_token_t& to
     token = XML_UNKNOWN_TOKEN;
 
     vector<char> buffer;
-    buffer.reserve(100);
+    buffer.reserve(15);
     size_t i = 0;
     char c = name[i++];
     bool in_ns = true;
