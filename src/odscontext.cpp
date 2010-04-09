@@ -166,7 +166,7 @@ void ods_content_xml_context::end_child_context(xmlns_token_t ns, xml_token_t na
     if (ns == XMLNS_text && name == XML_p)
     {
         text_para_context* para_context = static_cast<text_para_context*>(child);
-        cout << "content from child: '" << para_context->get_content() << "'" << endl;
+        m_para_content = para_context->get_content();
     }
 }
 
@@ -342,13 +342,26 @@ void ods_content_xml_context::start_cell(const xml_attrs_t& attrs, const xml_tok
 
 void ods_content_xml_context::end_cell()
 {
-    cout << "cell: (row=" << m_row << "," << "col=" << m_col << ")" << endl;
+    if (!m_para_content.empty())
+    {
+        cout << "cell: (row=" << m_row << "," << "col=" << m_col << "," << "content='" << m_para_content << "')" << endl;
+        m_tables.back().set_cell(m_col, m_row, m_para_content);
+    }
+
+    ++m_col;
     if (m_cell_attr.number_columns_repeated > 1)
     {
-        // TODO: repeat this cell.
-        cout << "repeat this cell " << m_cell_attr.number_columns_repeated << " times" << endl;
+        uint32_t col_upper = m_col + m_cell_attr.number_columns_repeated;
+        for (; m_col <= col_upper; ++m_col)
+        {
+            if (!m_para_content.empty())
+            {
+                cout << "cell (repeated): (row=" << m_row << "," << "col=" << m_col << "," << "content='" << m_para_content << "')" << endl;
+                m_tables.back().set_cell(m_col, m_row, m_para_content);
+            }
+        }
     }
-    m_col += m_cell_attr.number_columns_repeated;
+    m_para_content.clear();
 }
 
 void ods_content_xml_context::print_html(const string& filepath) const

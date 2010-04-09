@@ -47,4 +47,8 @@ string ods_table::get_name() const
     return m_name;
 }
 
+void ods_table::set_cell(uint32_t col, uint32_t row, const string& val)
+{
+}
+
 }}

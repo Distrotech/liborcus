@@ -84,6 +84,7 @@ private:
 
     uint32_t m_row;
     uint32_t m_col;
+    ::std::string m_para_content; // store the content of current <text:p> element.
 };
 
 }
