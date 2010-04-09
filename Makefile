@@ -48,7 +48,8 @@ HEADERS= \
 	$(INCDIR)/odscontext.hpp \
 	$(INCDIR)/paracontext.hpp \
 	$(INCDIR)/xmlparser.hpp \
-	$(INCDIR)/model/odstable.hpp
+	$(INCDIR)/model/odstable.hpp \
+	$(INCDIR)/model/global.hpp
 
 OBJFILES= \
 	$(OBJDIR)/main.o \

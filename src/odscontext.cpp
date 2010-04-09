@@ -111,10 +111,20 @@ public:
     table_html_printer(ofstream& file) : m_file(file) {}
     void operator() (const model::ods_table& table)
     {
-        m_file 
-            << "<table>" 
-            << "<caption>" << table.get_name() << "</caption>"
-            << "</table>" << endl;
+        size_t row_size = table.row_size();
+        size_t col_size = table.col_size();
+
+        m_file << "<table border=\"1\">" << "<caption>" << table.get_name() << "</caption>";
+        for (size_t row = 0; row < row_size; ++row)
+        {
+            m_file << "<tr>";
+            for (size_t col = 0; col < col_size; ++col)
+            {
+                m_file << "<td>" << table.get_cell(row, col) << "</td>";
+            }
+            m_file << "</tr>" << endl;
+        }
+        m_file << "</table>" << endl;
     }
 private:
     ofstream& m_file;
@@ -317,7 +327,7 @@ void ods_content_xml_context::end_row()
     if (m_row_attr.number_rows_repeated > 1)
     {
         // TODO: repeat this row.
-        cout << "repeat this row " << m_row_attr.number_rows_repeated << " times" << endl;
+//      cout << "repeat this row " << m_row_attr.number_rows_repeated << " times" << endl;
     }
     m_row += m_row_attr.number_rows_repeated;
 }
@@ -344,8 +354,8 @@ void ods_content_xml_context::end_cell()
 {
     if (!m_para_content.empty())
     {
-        cout << "cell: (row=" << m_row << "," << "col=" << m_col << "," << "content='" << m_para_content << "')" << endl;
-        m_tables.back().set_cell(m_col, m_row, m_para_content);
+//      cout << "cell: (row=" << m_row << "," << "col=" << m_col << "," << "content='" << m_para_content << "')" << endl;
+        m_tables.back().set_cell(m_row, m_col, m_para_content);
     }
 
     ++m_col;
@@ -356,8 +366,8 @@ void ods_content_xml_context::end_cell()
         {
             if (!m_para_content.empty())
             {
-                cout << "cell (repeated): (row=" << m_row << "," << "col=" << m_col << "," << "content='" << m_para_content << "')" << endl;
-                m_tables.back().set_cell(m_col, m_row, m_para_content);
+//              cout << "cell (repeated): (row=" << m_row << "," << "col=" << m_col << "," << "content='" << m_para_content << "')" << endl;
+                m_tables.back().set_cell(m_row, m_col, m_para_content);
             }
         }
     }
