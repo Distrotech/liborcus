@@ -69,7 +69,7 @@ using namespace orcus;
 //    }
 //}
 
-#if 0
+#if 1
 void list_content (GsfInput* input, int level = 0)
 {
     if (!GSF_IS_INFILE(input))
@@ -86,8 +86,6 @@ void list_content (GsfInput* input, int level = 0)
     if (name)
     {
         cout << "name = " << name << " (size: " << size << ")" << endl;
-        if (!strncmp(name, "content.xml", 11))
-            read_content_xml(input, size);
     }
 
     if (!is_dir)
@@ -129,6 +127,7 @@ void read_file(const char* fpath, const char* outpath)
         return;
     }
 
+    list_content(GSF_INPUT(infile));
 //  read_content (GSF_INPUT(infile), outpath);
     g_object_unref (G_OBJECT (infile));
     g_object_unref (G_OBJECT (input));

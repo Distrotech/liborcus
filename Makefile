@@ -73,10 +73,7 @@ DEPENDS= \
 
 XLSX_OBJFILES = \
 	$(OBJDIR)/orcus_xlsx.o \
-	$(OBJDIR)/global.o \
-	$(OBJDIR)/xmlhandler.o \
-	$(OBJDIR)/xmlcontext.o \
-	$(OBJDIR)/xmlparser.o
+	$(OBJDIR)/global.o
 
 
 all: $(EXECS)
@@ -130,7 +127,7 @@ orcus-ods: $(OBJDIR)/pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $@
 
 orcus-xlsx: $(OBJDIR)/pre $(XLSX_OBJFILES)
-	$(CXX) $(LDFLAGS) $(OBJFILES) -o $@
+	$(CXX) $(LDFLAGS) $(XLSX_OBJFILES) -o $@
 
 # token generation
 
@@ -147,6 +144,9 @@ test.ods: orcus-ods
 
 test.ou: orcus-ods
 	./orcus-ods ./test/george-ou-perf.ods $(OBJDIR)/george-ou-perf.ods.html
+
+test.xlsx: orcus-xlsx
+	./orcus-xlsx ./test/test.xlsx $(OBJDIR)/test.xlsx.html
 
 clean:
 	rm -rf $(OBJDIR) 2> /dev/null || /bin/true
