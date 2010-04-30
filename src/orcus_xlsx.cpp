@@ -43,31 +43,49 @@
 using namespace std;
 using namespace orcus;
 
-//void read_content_xml(GsfInput* input, size_t size, const char* outpath)
-//{
-//    const guint8* content = gsf_input_read(input, size, NULL);
-//    xml_stream_parser parser(content, size, "content.xml");
-//    ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler);
-//    parser.set_handler(handler.get());
-//    parser.parse();
-//    handler->print_html(outpath);
-//}
+void read_sheet_xml(GsfInput* input, size_t size, const char* outpath)
+{
+    const guint8* content = gsf_input_read(input, size, NULL);
+    xml_stream_parser parser(content, size, "sheet.xml");
+//  ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler);
+//  parser.set_handler(handler.get());
+//  parser.parse();
+//  handler->print_html(outpath);
+}
 
-//void read_content(GsfInput* input, const char* outpath)
-//{
-//    if (!GSF_IS_INFILE(input))
-//        return;
-//
-//    GsfInput* content_xml = gsf_infile_child_by_name (GSF_INFILE (input), "content.xml");
-//    if (content_xml)
-//    {
-//        const char* name = gsf_input_name(content_xml);
-//        size_t size = gsf_input_size(content_xml);
-//        cout << "name: " << name << "  size: " << size << endl;
-//        read_content_xml(content_xml, size, outpath);
-//        g_object_unref(G_OBJECT(content_xml));
-//    }
-//}
+void read_content(GsfInput* input, const char* outpath)
+{
+    if (!GSF_IS_INFILE(input))
+        return;
+
+    GsfInput* dir_xl = gsf_infile_child_by_name (GSF_INFILE (input), "xl");
+    if (!dir_xl)
+    {
+        cout << "failed to get xl directory" << endl;
+        return;
+    }
+
+    GsfInput* dir_worksheets = gsf_infile_child_by_name(GSF_INFILE(dir_xl), "worksheets");
+    g_object_unref(G_OBJECT(dir_xl));
+    if (!dir_worksheets)
+    {
+        cout << "failed to get worksheets directory" << endl;
+        return;
+    }
+
+    GsfInput* xml_sheet1 = gsf_infile_child_by_name(GSF_INFILE(dir_worksheets), "sheet1.xml");
+    g_object_unref(G_OBJECT(dir_worksheets));
+    if (!xml_sheet1)
+    {
+        cout << "failed to get sheet1 stream" << endl;
+        return;
+    }
+
+    size_t size = gsf_input_size(xml_sheet1);
+    cout << "name: sheet1  size: " << size << endl;
+    read_sheet_xml(xml_sheet1, size, outpath);
+    g_object_unref(G_OBJECT(xml_sheet1));
+}
 
 #if 1
 void list_content (GsfInput* input, int level = 0)
@@ -127,8 +145,8 @@ void read_file(const char* fpath, const char* outpath)
         return;
     }
 
-    list_content(GSF_INPUT(infile));
-//  read_content (GSF_INPUT(infile), outpath);
+//  list_content(GSF_INPUT(infile));
+    read_content (GSF_INPUT(infile), outpath);
     g_object_unref (G_OBJECT (infile));
     g_object_unref (G_OBJECT (input));
 }

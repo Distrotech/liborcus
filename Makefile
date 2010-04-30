@@ -73,7 +73,9 @@ DEPENDS= \
 
 XLSX_OBJFILES = \
 	$(OBJDIR)/orcus_xlsx.o \
-	$(OBJDIR)/global.o
+	$(OBJDIR)/global.o \
+	$(OBJDIR)/xmlparser.o \
+	$(OBJDIR)/ooxml/ooxml_tokens.o
 
 
 all: $(EXECS)
@@ -82,6 +84,7 @@ $(OBJDIR)/pre:
 	mkdir $(OBJDIR)       2>/dev/null || /bin/true
 	mkdir $(OBJDIR)/model 2>/dev/null || /bin/true
 	mkdir $(OBJDIR)/odf   2>/dev/null || /bin/true
+	mkdir $(OBJDIR)/ooxml 2>/dev/null || /bin/true
 	touch $@
 
 $(OBJDIR)/orcus_ods.o: $(SRCDIR)/orcus_ods.cpp $(DEPENDS)
@@ -117,6 +120,9 @@ $(OBJDIR)/odf/odscontext.o: $(SRCDIR)/odf/odscontext.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/odscontext.cpp
 
 # OOXML parser
+
+$(OBJDIR)/ooxml/ooxml_tokens.o: $(SRCDIR)/ooxml/ooxml_tokens.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/ooxml_tokens.cpp
 
 # model directory
 
