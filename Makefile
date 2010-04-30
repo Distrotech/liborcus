@@ -114,8 +114,8 @@ $(OBJDIR)/gen_odf_tokens:
 test.ods: orcus-ods
 	./orcus-ods ./test/test.ods $(OBJDIR)/test.ods.html
 
-test.ou: $(EXEC)
-	./$(EXEC) ./test/george-ou-perf.ods $(OBJDIR)/george-ou-perf.ods.html
+test.ou: orcus-ods
+	./orcus-ods ./test/george-ou-perf.ods $(OBJDIR)/george-ou-perf.ods.html
 
 clean:
 	rm -rf $(OBJDIR) 2> /dev/null || /bin/true
