@@ -27,6 +27,7 @@
 #***********************************************************************
 
 import xml.parsers.expat, zipfile, sys
+import token_util
 
 class xml_parser:
 
@@ -55,6 +56,81 @@ class xml_parser:
         p.CharacterDataHandler = self.character
         p.Parse(self.__strm, 1)
 
+
+
+def get_auto_gen_warning ():
+    return "// This file has been auto-generated.  Do not hand-edit this.\n\n"
+
+
+def gen_ooxml_namespaces ():
+    nstokens = ['xmlns', 'spreadsheetML']
+    return nstokens
+
+
+def gen_token_constants (filepath, tokens):
+
+    outfile = open(filepath, 'w')
+    outfile.write(get_auto_gen_warning())
+
+    outfile.write("enum xml_token_t {\n")
+    token_id = 0
+    token_size = len(tokens)
+    for i in xrange(0, token_size):
+        token = token_util.normalize_name(tokens[i])
+        outfile.write("    XML_%s = %d,\n"%(token, token_id))
+        token_id += 1
+    outfile.write("\n    XML_UNKNOWN_TOKEN = %d // special token to handle unrecognized token names.\n"%token_id)
+    outfile.write("};\n\n")
+
+    ns_tokens = gen_ooxml_namespaces()
+    outfile.write("enum xmlns_token_t {\n")
+    token_id = 0
+    token_size = len(ns_tokens)
+    for i in xrange(0, token_size):
+        token = token_util.normalize_name(ns_tokens[i])
+        outfile.write("    XMLNS_%s = %d,\n"%(token, token_id))
+        token_id += 1
+    outfile.write("\n    XMLNS_UNKNOWN_TOKEN = %d // special token to handle unrecognized token names.\n"%token_id)
+    outfile.write("};\n\n")
+
+    outfile.close()
+
+
+def gen_token_names (filepath, tokens):
+
+    outfile = open(filepath, 'w')
+    outfile.write(get_auto_gen_warning())
+
+    outfile.write("const char* token_names[] = {\n")
+    token_id = 0
+    token_size = len(tokens)
+    for i in xrange(0, token_size):
+        token = tokens[i]
+        s = ','
+        if i == token_size-1:
+            s = ' '
+        outfile.write("    \"%s\"%s // %d\n"%(token, s, token_id))
+        token_id += 1
+    outfile.write("};\n\n")
+    outfile.write("size_t token_name_count = %d;\n\n"%token_id)
+
+    outfile.write("const char* nstoken_names[] = {\n")
+    token_id = 0
+    ns_tokens = gen_ooxml_namespaces()
+    token_size = len(ns_tokens)
+    for i in xrange(0, token_size):
+        token = ns_tokens[i]
+        s = ','
+        if i == token_size-1:
+            s = ' '
+        outfile.write("    \"%s\"%s // %d\n"%(token, s, token_id))
+        token_id += 1
+    outfile.write("};\n\n")
+    outfile.write("size_t nstoken_name_count = %d;\n\n"%token_id)
+
+    outfile.close()
+
+
 def get_all_tokens_from_zip (fpath):
     zip = zipfile.ZipFile(fpath, 'r')
     tokens = {}
@@ -77,8 +153,8 @@ def main (args):
         return
 
     tokens = get_all_tokens_from_zip(args[1])
-    for token in tokens:
-        print (token)
+    gen_token_constants(args[2], tokens)
+    gen_token_names(args[3], tokens)
 
 if __name__ == '__main__':
     main(sys.argv)

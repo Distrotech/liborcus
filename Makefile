@@ -25,7 +25,7 @@
 #
 #***********************************************************************
 
-EXECS=orcus-ods
+EXECS=orcus-ods orcus-xlsx
 
 OBJDIR=./obj
 SRCDIR=./src
@@ -71,16 +71,27 @@ DEPENDS= \
 	$(OBJDIR)/gen_ooxml_tokens \
 	$(HEADERS)
 
+XLSX_OBJFILES = \
+	$(OBJDIR)/orcus_xlsx.o \
+	$(OBJDIR)/global.o \
+	$(OBJDIR)/xmlhandler.o \
+	$(OBJDIR)/xmlcontext.o \
+	$(OBJDIR)/xmlparser.o
+
 
 all: $(EXECS)
 
-pre:
+$(OBJDIR)/pre:
 	mkdir $(OBJDIR)       2>/dev/null || /bin/true
 	mkdir $(OBJDIR)/model 2>/dev/null || /bin/true
 	mkdir $(OBJDIR)/odf   2>/dev/null || /bin/true
+	touch $@
 
 $(OBJDIR)/orcus_ods.o: $(SRCDIR)/orcus_ods.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_ods.cpp
+
+$(OBJDIR)/orcus_xlsx.o: $(SRCDIR)/orcus_xlsx.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_xlsx.cpp
 
 $(OBJDIR)/global.o: $(SRCDIR)/global.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/global.cpp
@@ -94,6 +105,8 @@ $(OBJDIR)/xmlhandler.o: $(SRCDIR)/xmlhandler.cpp $(DEPENDS)
 $(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlparser.cpp
 
+# ODF parser
+
 $(OBJDIR)/odf/odf_tokens.o: $(SRCDIR)/odf/odf_tokens.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/odf_tokens.cpp
 
@@ -106,21 +119,26 @@ $(OBJDIR)/odf/paracontext.o: $(SRCDIR)/odf/paracontext.cpp $(DEPENDS)
 $(OBJDIR)/odf/odscontext.o: $(SRCDIR)/odf/odscontext.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/odscontext.cpp
 
+# OOXML parser
+
 # model directory
 
 $(OBJDIR)/model/odstable.o: $(SRCDIR)/model/odstable.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/odstable.cpp
 
-orcus-ods: pre $(OBJFILES)
+orcus-ods: $(OBJDIR)/pre $(OBJFILES)
+	$(CXX) $(LDFLAGS) $(OBJFILES) -o $@
+
+orcus-xlsx: $(OBJDIR)/pre $(XLSX_OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $@
 
 # token generation
 
-$(OBJDIR)/gen_odf_tokens: pre
+$(OBJDIR)/gen_odf_tokens: $(OBJDIR)/pre
 	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/odf/odf_token_constants.inl $(SRCDIR)/odf/odf_tokens.inl
 	touch $@
 
-$(OBJDIR)/gen_ooxml_tokens: pre
+$(OBJDIR)/gen_ooxml_tokens: $(OBJDIR)/pre
 	$(BINDIR)/gen-ooxml-tokens.py $(OOXML_SCHEMAPATH) $(INCDIR)/ooxml/ooxml_token_constants.inl $(SRCDIR)/ooxml/ooxml_tokens.inl
 	touch $@
 
