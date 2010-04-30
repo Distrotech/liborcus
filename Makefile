@@ -60,7 +60,7 @@ OBJFILES= \
 	$(OBJDIR)/odscontext.o \
 	$(OBJDIR)/paracontext.o \
 	$(OBJDIR)/xmlparser.o \
-	$(OBJDIR)/odstable.o
+	$(OBJDIR)/model/odstable.o
 
 DEPENDS= \
 	$(OBJDIR)/gen_odf_tokens \
@@ -70,7 +70,8 @@ DEPENDS= \
 all: orcus-ods
 
 pre:
-	mkdir $(OBJDIR) 2>/dev/null || /bin/true
+	mkdir $(OBJDIR)       2>/dev/null || /bin/true
+	mkdir $(OBJDIR)/model 2>/dev/null || /bin/true
 
 $(OBJDIR)/orcus_ods.o: $(SRCDIR)/orcus_ods.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_ods.cpp
@@ -101,7 +102,7 @@ $(OBJDIR)/odscontext.o: $(SRCDIR)/odscontext.cpp $(DEPENDS)
 
 # model directory
 
-$(OBJDIR)/odstable.o: $(SRCDIR)/model/odstable.cpp $(DEPENDS)
+$(OBJDIR)/model/odstable.o: $(SRCDIR)/model/odstable.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/odstable.cpp
 
 orcus-ods: pre $(OBJFILES)
