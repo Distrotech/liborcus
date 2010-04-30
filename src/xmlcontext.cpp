@@ -27,7 +27,7 @@
 
 #include "xmlcontext.hpp"
 #include "global.hpp"
-#include "odf_tokens.hpp"
+#include "odf/odf_tokens.hpp"
 
 #include <iostream>
 

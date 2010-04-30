@@ -25,6 +25,8 @@
 #
 #***********************************************************************
 
+EXECS=orcus-ods
+
 OBJDIR=./obj
 SRCDIR=./src
 INCDIR=./inc
@@ -39,27 +41,27 @@ LDFLAGS=`pkg-config --libs libgsf-1`
 
 HEADERS= \
 	$(INCDIR)/global.hpp \
-	$(INCDIR)/odf_tokens.hpp \
-	$(INCDIR)/odf_token_constants.hpp \
 	$(INCDIR)/xmlhandler.hpp \
-	$(INCDIR)/odshandler.hpp \
 	$(INCDIR)/xmlcontext.hpp \
-	$(INCDIR)/odscontext.hpp \
-	$(INCDIR)/paracontext.hpp \
 	$(INCDIR)/xmlparser.hpp \
+	$(INCDIR)/odf/odf_tokens.hpp \
+	$(INCDIR)/odf/odf_token_constants.hpp \
+	$(INCDIR)/odf/odshandler.hpp \
+	$(INCDIR)/odf/odscontext.hpp \
+	$(INCDIR)/odf/paracontext.hpp \
 	$(INCDIR)/model/odstable.hpp \
 	$(INCDIR)/model/global.hpp
 
 OBJFILES= \
 	$(OBJDIR)/orcus_ods.o \
 	$(OBJDIR)/global.o \
-	$(OBJDIR)/odf_tokens.o \
 	$(OBJDIR)/xmlhandler.o \
-	$(OBJDIR)/odshandler.o \
 	$(OBJDIR)/xmlcontext.o \
-	$(OBJDIR)/odscontext.o \
-	$(OBJDIR)/paracontext.o \
 	$(OBJDIR)/xmlparser.o \
+	$(OBJDIR)/odf/odf_tokens.o \
+	$(OBJDIR)/odf/odshandler.o \
+	$(OBJDIR)/odf/odscontext.o \
+	$(OBJDIR)/odf/paracontext.o \
 	$(OBJDIR)/model/odstable.o
 
 DEPENDS= \
@@ -67,11 +69,12 @@ DEPENDS= \
 	$(HEADERS)
 
 
-all: orcus-ods
+all: $(EXECS)
 
 pre:
 	mkdir $(OBJDIR)       2>/dev/null || /bin/true
 	mkdir $(OBJDIR)/model 2>/dev/null || /bin/true
+	mkdir $(OBJDIR)/odf   2>/dev/null || /bin/true
 
 $(OBJDIR)/orcus_ods.o: $(SRCDIR)/orcus_ods.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_ods.cpp
@@ -79,26 +82,26 @@ $(OBJDIR)/orcus_ods.o: $(SRCDIR)/orcus_ods.cpp $(DEPENDS)
 $(OBJDIR)/global.o: $(SRCDIR)/global.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/global.cpp
 
-$(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlparser.cpp
-
-$(OBJDIR)/odf_tokens.o: $(SRCDIR)/odf_tokens.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf_tokens.cpp
+$(OBJDIR)/xmlcontext.o: $(SRCDIR)/xmlcontext.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlcontext.cpp
 
 $(OBJDIR)/xmlhandler.o: $(SRCDIR)/xmlhandler.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlhandler.cpp
 
-$(OBJDIR)/odshandler.o: $(SRCDIR)/odshandler.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odshandler.cpp
+$(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlparser.cpp
 
-$(OBJDIR)/xmlcontext.o: $(SRCDIR)/xmlcontext.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlcontext.cpp
+$(OBJDIR)/odf/odf_tokens.o: $(SRCDIR)/odf/odf_tokens.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/odf_tokens.cpp
 
-$(OBJDIR)/paracontext.o: $(SRCDIR)/paracontext.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/paracontext.cpp
+$(OBJDIR)/odf/odshandler.o: $(SRCDIR)/odf/odshandler.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/odshandler.cpp
 
-$(OBJDIR)/odscontext.o: $(SRCDIR)/odscontext.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odscontext.cpp
+$(OBJDIR)/odf/paracontext.o: $(SRCDIR)/odf/paracontext.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/paracontext.cpp
+
+$(OBJDIR)/odf/odscontext.o: $(SRCDIR)/odf/odscontext.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/odscontext.cpp
 
 # model directory
 
@@ -109,7 +112,7 @@ orcus-ods: pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $@
 
 $(OBJDIR)/gen_odf_tokens:
-	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/odf_token_constants.inl $(SRCDIR)/odf_tokens.inl
+	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/odf/odf_token_constants.inl $(SRCDIR)/odf/odf_tokens.inl
 	touch $@
 
 test.ods: orcus-ods
@@ -120,5 +123,5 @@ test.ou: orcus-ods
 
 clean:
 	rm -rf $(OBJDIR) 2> /dev/null || /bin/true
-	rm $(EXEC) 2> /dev/null || /bin/true
+	rm $(EXECS) 2> /dev/null || /bin/true
 

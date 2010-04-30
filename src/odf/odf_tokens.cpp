@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "odf_tokens.hpp"
+#include "odf/odf_tokens.hpp"
 #include "global.hpp"
 
 #include <cstdlib>
@@ -38,7 +38,7 @@ namespace orcus {
 
 namespace {
 
-#include "tokens.inl"
+#include "odf_tokens.inl"
 
 struct string_hash
 {

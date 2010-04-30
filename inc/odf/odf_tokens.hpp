@@ -28,7 +28,7 @@
 #ifndef __ORCUS_ODF_TOKENS_HPP__
 #define __ORCUS_ODF_TOKENS_HPP__
 
-#include "odf_token_constants.hpp"
+#include "odf/odf_token_constants.hpp"
 
 #include <string>
 

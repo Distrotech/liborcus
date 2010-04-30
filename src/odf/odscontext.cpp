@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#include "odscontext.hpp"
-#include "paracontext.hpp"
+#include "odf/odscontext.hpp"
+#include "odf/paracontext.hpp"
 #include "global.hpp"
 
 #include <iostream>

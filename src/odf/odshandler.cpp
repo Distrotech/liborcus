@@ -25,9 +25,9 @@
  *
  ************************************************************************/
 
-#include "odshandler.hpp"
-#include "odf_tokens.hpp"
-#include "odscontext.hpp"
+#include "odf/odshandler.hpp"
+#include "odf/odf_tokens.hpp"
+#include "odf/odscontext.hpp"
 #include "global.hpp"
 
 #include <iostream>

@@ -27,7 +27,7 @@
 
 #include "xmlparser.hpp"
 #include "xmlhandler.hpp"
-#include "odf_tokens.hpp"
+#include "odf/odf_tokens.hpp"
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
