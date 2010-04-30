@@ -51,7 +51,7 @@ HEADERS= \
 	$(INCDIR)/model/global.hpp
 
 OBJFILES= \
-	$(OBJDIR)/main.o \
+	$(OBJDIR)/orcus_ods.o \
 	$(OBJDIR)/global.o \
 	$(OBJDIR)/odf_tokens.o \
 	$(OBJDIR)/xmlhandler.o \
@@ -72,8 +72,8 @@ all: orcus-ods
 pre:
 	mkdir $(OBJDIR) 2>/dev/null || /bin/true
 
-$(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/main.cpp
+$(OBJDIR)/orcus_ods.o: $(SRCDIR)/orcus_ods.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_ods.cpp
 
 $(OBJDIR)/global.o: $(SRCDIR)/global.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/global.cpp
