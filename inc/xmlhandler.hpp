@@ -28,7 +28,7 @@
 #ifndef __ORCUS_XMLHANDLER_HPP__
 #define __ORCUS_XMLHANDLER_HPP__
 
-#include "token_constants.hpp"
+#include "odf_token_constants.hpp"
 
 #include <cstdlib>
 #include <string>

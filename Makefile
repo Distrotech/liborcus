@@ -40,8 +40,8 @@ LDFLAGS=`pkg-config --libs libgsf-1`
 
 HEADERS= \
 	$(INCDIR)/global.hpp \
-	$(INCDIR)/tokens.hpp \
-	$(INCDIR)/token_constants.hpp \
+	$(INCDIR)/odf_tokens.hpp \
+	$(INCDIR)/odf_token_constants.hpp \
 	$(INCDIR)/xmlhandler.hpp \
 	$(INCDIR)/odshandler.hpp \
 	$(INCDIR)/xmlcontext.hpp \
@@ -54,7 +54,7 @@ HEADERS= \
 OBJFILES= \
 	$(OBJDIR)/main.o \
 	$(OBJDIR)/global.o \
-	$(OBJDIR)/tokens.o \
+	$(OBJDIR)/odf_tokens.o \
 	$(OBJDIR)/xmlhandler.o \
 	$(OBJDIR)/odshandler.o \
 	$(OBJDIR)/xmlcontext.o \
@@ -64,7 +64,7 @@ OBJFILES= \
 	$(OBJDIR)/odstable.o
 
 DEPENDS= \
-	$(OBJDIR)/gen_tokens \
+	$(OBJDIR)/gen_odf_tokens \
 	$(HEADERS)
 
 
@@ -82,8 +82,8 @@ $(OBJDIR)/global.o: $(SRCDIR)/global.cpp $(DEPENDS)
 $(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlparser.cpp
 
-$(OBJDIR)/tokens.o: $(SRCDIR)/tokens.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/tokens.cpp
+$(OBJDIR)/odf_tokens.o: $(SRCDIR)/odf_tokens.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf_tokens.cpp
 
 $(OBJDIR)/xmlhandler.o: $(SRCDIR)/xmlhandler.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlhandler.cpp
@@ -108,8 +108,8 @@ $(OBJDIR)/odstable.o: $(SRCDIR)/model/odstable.cpp $(DEPENDS)
 $(EXEC): pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)
 
-$(OBJDIR)/gen_tokens:
-	$(BINDIR)/gen-tokens.py $(SCHEMAPATH) $(INCDIR)/token_constants.inl $(SRCDIR)/tokens.inl
+$(OBJDIR)/gen_odf_tokens:
+	$(BINDIR)/gen-odf-tokens.py $(SCHEMAPATH) $(INCDIR)/odf_token_constants.inl $(SRCDIR)/odf_tokens.inl
 	touch $@
 
 test: $(EXEC)

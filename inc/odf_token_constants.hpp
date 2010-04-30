@@ -25,12 +25,12 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_TOKEN_CONSTANTS_HPP__
-#define __ORCUS_TOKEN_CONSTANTS_HPP__
+#ifndef __ORCUS_ODF_TOKEN_CONSTANTS_HPP__
+#define __ORCUS_ODF_TOKEN_CONSTANTS_HPP__
 
 namespace orcus {
 
-#include "token_constants.inl"
+#include "odf_token_constants.inl"
 
 }
 
