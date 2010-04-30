@@ -36,6 +36,8 @@ ROOTDIR=.
 ODF_SCHEMA=OpenDocument-schema-v1.2-cd04.rng
 ODF_SCHEMAPATH=$(ROOTDIR)/misc/$(ODF_SCHEMA)
 
+OOXML_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip
+
 CPPFLAGS=-I$(INCDIR) -Os -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1`
 
@@ -66,6 +68,7 @@ OBJFILES= \
 
 DEPENDS= \
 	$(OBJDIR)/gen_odf_tokens \
+	$(OBJDIR)/gen_ooxml_tokens \
 	$(HEADERS)
 
 
@@ -111,8 +114,14 @@ $(OBJDIR)/model/odstable.o: $(SRCDIR)/model/odstable.cpp $(DEPENDS)
 orcus-ods: pre $(OBJFILES)
 	$(CXX) $(LDFLAGS) $(OBJFILES) -o $@
 
-$(OBJDIR)/gen_odf_tokens:
+# token generation
+
+$(OBJDIR)/gen_odf_tokens: pre
 	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/odf/odf_token_constants.inl $(SRCDIR)/odf/odf_tokens.inl
+	touch $@
+
+$(OBJDIR)/gen_ooxml_tokens: pre
+	$(BINDIR)/gen-ooxml-tokens.py $(OOXML_SCHEMAPATH) $(INCDIR)/ooxml/ooxml_token_constants.inl $(SRCDIR)/ooxml/ooxml_tokens.inl
 	touch $@
 
 test.ods: orcus-ods
