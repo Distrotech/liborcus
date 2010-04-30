@@ -28,7 +28,10 @@
 #ifndef __ORCUS_ODF_TOKENS_HPP__
 #define __ORCUS_ODF_TOKENS_HPP__
 
+#define AUTHORIZED_XML_HANDLER_INCLUDER 1
+
 #include "odf/odf_token_constants.hpp"
+#include "xmlhandler.hpp"
 
 #include <string>
 

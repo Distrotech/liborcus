@@ -25,45 +25,35 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_XMLHANDLER_HPP__
-#define __ORCUS_XMLHANDLER_HPP__
+#ifndef __ORCUS_XLSX_HANDLER_HPP__
+#define __ORCUS_XLSX_HANDLER_HPP__
 
-#ifdef OOXML
-#include "ooxml/ooxml_tokens.hpp"
-#endif
-#ifdef ODF
-#include "odf/odf_tokens.hpp"
-#endif
+#include "xmlhandler.hpp"
+#include "xmlcontext.hpp"
 
-#include <cstdlib>
 #include <string>
-#include <vector>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
 
-/** 
- * Single xml attribute entry
- */
-struct xml_attr
-{
-    xmlns_token_t   ns;
-    xml_token_t     name;
-    ::std::string   value;
-};
-
-typedef ::std::vector<xml_attr> xml_attrs_t;
-
-class xml_stream_handler
+class xlsx_sheet_xml_handler : public xml_stream_handler
 {
 public:
-    xml_stream_handler();
-    virtual ~xml_stream_handler() = 0;
+    xlsx_sheet_xml_handler();
+    virtual ~xlsx_sheet_xml_handler();
 
-    virtual void start_document() = 0;
-    virtual void end_document() = 0;
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const ::std::vector<xml_attr>& attrs) = 0;
-    virtual void end_element(xmlns_token_t ns, xml_token_t name) = 0;
-    virtual void characters(const char* ch, size_t len) = 0;
+    virtual void start_document();
+    virtual void end_document();
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
+    virtual void end_element(xmlns_token_t ns, xml_token_t name);
+    virtual void characters(const char* ch, size_t len);
+
+private:
+    xml_context_base& get_current_context();
+
+private:
+    typedef ::boost::ptr_vector<xml_context_base> context_stack_type;
+    context_stack_type m_context_stack;
 };
 
 }

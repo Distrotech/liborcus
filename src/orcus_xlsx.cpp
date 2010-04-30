@@ -31,7 +31,7 @@
 #include <gsf/gsf-infile-zip.h>
 
 #include "xmlparser.hpp"
-//#include "odf/odshandler.hpp"
+#include "ooxml/xlsx_handler.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -47,10 +47,9 @@ void read_sheet_xml(GsfInput* input, size_t size, const char* outpath)
 {
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(content, size, "sheet.xml");
-//  ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler);
-//  parser.set_handler(handler.get());
-//  parser.parse();
-//  handler->print_html(outpath);
+    ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler);
+    parser.set_handler(handler.get());
+    parser.parse();
 }
 
 void read_content(GsfInput* input, const char* outpath)

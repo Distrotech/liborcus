@@ -27,7 +27,6 @@
 
 #include "xmlparser.hpp"
 #include "xmlhandler.hpp"
-#include "odf/odf_tokens.hpp"
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
@@ -83,12 +82,14 @@ void name_to_tokens(const xmlChar* name, xmlns_token_t& nstoken, xml_token_t& to
         c = name[i++];
     }
 
+#if 0
     if (in_ns)
     {    
         ostringstream os;
         os << "element name is not properly namespaced: " << name;
         throw xml_stream_parser::parse_error(os.str());
     }
+#endif
 
     if (buffer.empty())
         throw xml_stream_parser::parse_error("empty element name");

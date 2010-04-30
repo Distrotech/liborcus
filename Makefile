@@ -38,7 +38,7 @@ ODF_SCHEMAPATH=$(ROOTDIR)/misc/$(ODF_SCHEMA)
 
 OOXML_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip
 
-CPPFLAGS=-I$(INCDIR) -Os -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
+CPPFLAGS=-I$(INCDIR) -Os -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x -DOOXML
 LDFLAGS=`pkg-config --libs libgsf-1`
 
 HEADERS= \
@@ -75,7 +75,11 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/orcus_xlsx.o \
 	$(OBJDIR)/global.o \
 	$(OBJDIR)/xmlparser.o \
-	$(OBJDIR)/ooxml/ooxml_tokens.o
+	$(OBJDIR)/xmlhandler.o \
+	$(OBJDIR)/xmlcontext.o \
+	$(OBJDIR)/ooxml/ooxml_tokens.o \
+	$(OBJDIR)/ooxml/xlsx_handler.o \
+	$(OBJDIR)/ooxml/xlsx_context.o
 
 
 all: $(EXECS)
@@ -123,6 +127,12 @@ $(OBJDIR)/odf/odscontext.o: $(SRCDIR)/odf/odscontext.cpp $(DEPENDS)
 
 $(OBJDIR)/ooxml/ooxml_tokens.o: $(SRCDIR)/ooxml/ooxml_tokens.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/ooxml_tokens.cpp
+
+$(OBJDIR)/ooxml/xlsx_handler.o: $(SRCDIR)/ooxml/xlsx_handler.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/xlsx_handler.cpp
+
+$(OBJDIR)/ooxml/xlsx_context.o: $(SRCDIR)/ooxml/xlsx_context.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/xlsx_context.cpp
 
 # model directory
 
