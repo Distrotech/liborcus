@@ -138,6 +138,7 @@ void read_file(const char* fpath, const char* outpath)
     }
 
     GsfInfile* infile = gsf_infile_zip_new (input, &err);
+    g_object_unref (G_OBJECT (input));
     if (!infile)
     {
         g_error_free (err);
@@ -147,7 +148,6 @@ void read_file(const char* fpath, const char* outpath)
 //  list_content(GSF_INPUT(infile));
     read_content (GSF_INPUT(infile), outpath);
     g_object_unref (G_OBJECT (infile));
-    g_object_unref (G_OBJECT (input));
 }
 
 int main(int argc, char** argv)
