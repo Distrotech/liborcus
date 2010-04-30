@@ -25,15 +25,14 @@
 #
 #***********************************************************************
 
-EXEC=orcus-test
 OBJDIR=./obj
 SRCDIR=./src
 INCDIR=./inc
 BINDIR=./bin
 ROOTDIR=.
 
-SCHEMA=OpenDocument-schema-v1.2-cd04.rng
-SCHEMAPATH=$(ROOTDIR)/misc/$(SCHEMA)
+ODF_SCHEMA=OpenDocument-schema-v1.2-cd04.rng
+ODF_SCHEMAPATH=$(ROOTDIR)/misc/$(ODF_SCHEMA)
 
 CPPFLAGS=-I$(INCDIR) -Os -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1`
@@ -68,7 +67,7 @@ DEPENDS= \
 	$(HEADERS)
 
 
-all: $(EXEC)
+all: orcus-ods
 
 pre:
 	mkdir $(OBJDIR) 2>/dev/null || /bin/true
@@ -105,15 +104,15 @@ $(OBJDIR)/odscontext.o: $(SRCDIR)/odscontext.cpp $(DEPENDS)
 $(OBJDIR)/odstable.o: $(SRCDIR)/model/odstable.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/odstable.cpp
 
-$(EXEC): pre $(OBJFILES)
-	$(CXX) $(LDFLAGS) $(OBJFILES) -o $(EXEC)
+orcus-ods: pre $(OBJFILES)
+	$(CXX) $(LDFLAGS) $(OBJFILES) -o $@
 
 $(OBJDIR)/gen_odf_tokens:
-	$(BINDIR)/gen-odf-tokens.py $(SCHEMAPATH) $(INCDIR)/odf_token_constants.inl $(SRCDIR)/odf_tokens.inl
+	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/odf_token_constants.inl $(SRCDIR)/odf_tokens.inl
 	touch $@
 
-test: $(EXEC)
-	./$(EXEC) ./test/test.ods $(OBJDIR)/test.ods.html
+test.ods: orcus-ods
+	./orcus-ods ./test/test.ods $(OBJDIR)/test.ods.html
 
 test.ou: $(EXEC)
 	./$(EXEC) ./test/george-ou-perf.ods $(OBJDIR)/george-ou-perf.ods.html
