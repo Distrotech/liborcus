@@ -25,10 +25,10 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_OOXML_TOKENS_HPP__
-#define __ORCUS_OOXML_TOKENS_HPP__
+#ifndef __ORCUS_TOKENS_HPP__
+#define __ORCUS_TOKENS_HPP__
 
-#include "ooxml/ooxml_token_constants.hpp"
+#include "types.hpp"
 
 #include <string>
 

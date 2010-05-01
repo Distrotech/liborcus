@@ -72,26 +72,22 @@ def gen_token_constants (filepath, tokens):
     outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
 
-    outfile.write("enum xml_token_t {\n")
-    token_id = 0
+    token_id = 1
     token_size = len(tokens)
     for i in xrange(0, token_size):
         token = token_util.normalize_name(tokens[i])
-        outfile.write("    XML_%s = %d,\n"%(token, token_id))
+        outfile.write("const xml_token_t XML_%s = %d;\n"%(token, token_id))
         token_id += 1
-    outfile.write("\n    XML_UNKNOWN_TOKEN = %d // special token to handle unrecognized token names.\n"%token_id)
-    outfile.write("};\n\n")
+    outfile.write("\n")
 
     ns_tokens = gen_ooxml_namespaces()
-    outfile.write("enum xmlns_token_t {\n")
-    token_id = 0
+
+    token_id = 1
     token_size = len(ns_tokens)
     for i in xrange(0, token_size):
         token = token_util.normalize_name(ns_tokens[i])
-        outfile.write("    XMLNS_%s = %d,\n"%(token, token_id))
+        outfile.write("const xmlns_token_t XMLNS_%s = %d;\n"%(token, token_id))
         token_id += 1
-    outfile.write("\n    XMLNS_UNKNOWN_TOKEN = %d // special token to handle unrecognized token names.\n"%token_id)
-    outfile.write("};\n\n")
 
     outfile.close()
 
@@ -102,7 +98,8 @@ def gen_token_names (filepath, tokens):
     outfile.write(get_auto_gen_warning())
 
     outfile.write("const char* token_names[] = {\n")
-    token_id = 0
+    outfile.write("    \"- unknown -\", // 0\n")
+    token_id = 1
     token_size = len(tokens)
     for i in xrange(0, token_size):
         token = tokens[i]
@@ -115,7 +112,8 @@ def gen_token_names (filepath, tokens):
     outfile.write("size_t token_name_count = %d;\n\n"%token_id)
 
     outfile.write("const char* nstoken_names[] = {\n")
-    token_id = 0
+    outfile.write("    \"- unknown -\", // 0\n")
+    token_id = 1
     ns_tokens = gen_ooxml_namespaces()
     token_size = len(ns_tokens)
     for i in xrange(0, token_size):

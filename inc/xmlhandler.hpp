@@ -28,12 +28,7 @@
 #ifndef __ORCUS_XMLHANDLER_HPP__
 #define __ORCUS_XMLHANDLER_HPP__
 
-#ifdef OOXML
-#include "ooxml/ooxml_tokens.hpp"
-#endif
-#ifdef ODF
-#include "odf/odf_tokens.hpp"
-#endif
+#include "types.hpp"
 
 #include <cstdlib>
 #include <string>

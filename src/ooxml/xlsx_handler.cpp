@@ -26,8 +26,8 @@
  ************************************************************************/
 
 #include "ooxml/xlsx_handler.hpp"
-#include "ooxml/ooxml_tokens.hpp"
 #include "ooxml/xlsx_context.hpp"
+#include "tokens.hpp"
 #include "global.hpp"
 
 #include <iostream>

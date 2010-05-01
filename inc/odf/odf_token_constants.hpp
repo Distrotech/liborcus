@@ -28,6 +28,8 @@
 #ifndef __ORCUS_ODF_TOKEN_CONSTANTS_HPP__
 #define __ORCUS_ODF_TOKEN_CONSTANTS_HPP__
 
+#include "types.hpp"
+
 namespace orcus {
 
 #include "odf_token_constants.inl"

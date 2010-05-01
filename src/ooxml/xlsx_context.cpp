@@ -60,7 +60,7 @@ void xlsx_sheet_xml_context::end_child_context(xmlns_token_t ns, xml_token_t nam
 void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
-//  warn_unhandled();
+    warn_unhandled();
 }
 
 bool xlsx_sheet_xml_context::end_element(xmlns_token_t ns, xml_token_t name)

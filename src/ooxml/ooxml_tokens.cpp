@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "ooxml/ooxml_tokens.hpp"
+#include "tokens.hpp"
 #include "global.hpp"
 
 #include <cstdlib>

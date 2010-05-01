@@ -25,16 +25,19 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_OOXML_TOKEN_CONSTANTS_HPP__
-#define __ORCUS_OOXML_TOKEN_CONSTANTS_HPP__
+#ifndef __ORCUS_TYPES_HPP__
+#define __ORCUS_TYPES_HPP__
 
-#include "types.hpp"
+#include <cstdlib>
 
 namespace orcus {
 
-#include "ooxml_token_constants.inl"
+typedef size_t xml_token_t;
+typedef size_t xmlns_token_t;
+
+const xml_token_t   XML_UNKNOWN_TOKEN = 0;
+const xmlns_token_t XMLNS_UNKNOWN_TOKEN = 0;
 
 }
 
 #endif
-

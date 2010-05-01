@@ -27,6 +27,7 @@
 
 #include "xmlcontext.hpp"
 #include "global.hpp"
+#include "tokens.hpp"
 
 #include <iostream>
 

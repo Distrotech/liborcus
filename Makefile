@@ -38,15 +38,15 @@ ODF_SCHEMAPATH=$(ROOTDIR)/misc/$(ODF_SCHEMA)
 
 OOXML_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip
 
-CPPFLAGS=-I$(INCDIR) -Os -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x -DODF
+CPPFLAGS=-I$(INCDIR) -Os -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1`
 
-HEADERS= \
+ODF_HEADERS= \
 	$(INCDIR)/global.hpp \
 	$(INCDIR)/xmlhandler.hpp \
 	$(INCDIR)/xmlcontext.hpp \
 	$(INCDIR)/xmlparser.hpp \
-	$(INCDIR)/odf/odf_tokens.hpp \
+	$(INCDIR)/tokens.hpp \
 	$(INCDIR)/odf/odf_token_constants.hpp \
 	$(INCDIR)/odf/odshandler.hpp \
 	$(INCDIR)/odf/odscontext.hpp \
@@ -54,7 +54,7 @@ HEADERS= \
 	$(INCDIR)/model/odstable.hpp \
 	$(INCDIR)/model/global.hpp
 
-OBJFILES= \
+ODF_OBJFILES= \
 	$(OBJDIR)/orcus_ods.o \
 	$(OBJDIR)/global.o \
 	$(OBJDIR)/xmlhandler.o \
@@ -66,9 +66,9 @@ OBJFILES= \
 	$(OBJDIR)/odf/paracontext.o \
 	$(OBJDIR)/model/odstable.o
 
-DEPENDS= \
-	$(HEADERS)
-
+XLSX_HEADERS= \
+	$(INCDIR)/ooxml/ooxml_token_constants.hpp \
+	
 XLSX_OBJFILES = \
 	$(OBJDIR)/orcus_xlsx.o \
 	$(OBJDIR)/global.o \
@@ -79,6 +79,9 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/ooxml/xlsx_handler.o \
 	$(OBJDIR)/ooxml/xlsx_context.o
 
+DEPENDS= \
+	$(ODF_HEADERS) \
+	$(XLSX_HEADERS)
 
 all: $(EXECS)
 
@@ -139,8 +142,8 @@ $(OBJDIR)/ooxml/xlsx_context.o: $(SRCDIR)/ooxml/xlsx_context.cpp $(DEPENDS)
 $(OBJDIR)/model/odstable.o: $(SRCDIR)/model/odstable.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/odstable.cpp
 
-orcus-ods: $(OBJDIR)/pre $(OBJFILES)
-	$(CXX) $(LDFLAGS) $(OBJFILES) -o $@
+orcus-ods: $(OBJDIR)/pre $(ODF_OBJFILES)
+	$(CXX) $(LDFLAGS) $(ODF_OBJFILES) -o $@
 
 orcus-xlsx: $(OBJDIR)/pre $(XLSX_OBJFILES)
 	$(CXX) $(LDFLAGS) $(XLSX_OBJFILES) -o $@
