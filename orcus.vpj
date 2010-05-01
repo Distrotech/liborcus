@@ -1,0 +1,256 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+	Version="10.0"
+	VendorName="SlickEdit"
+	WorkingDir=".">
+	<Config
+		Name="Debug"
+		Type="gnuc"
+		DebugCallbackName="gdb"
+		Version="1"
+		OutputFile="%bdorcus"
+		CompilerConfigName="Latest Version">
+		<Menu>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				OutputExts="*.o"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='g++ -c %xup  %defd -g -o "%bd%n%oe" %i "%f"'/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				ShowOnMenu="Never"
+				Dialog="_gnuc_options_form Link"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='g++ %xup -g -o "%o" %f %libs'/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine="make"/>
+			</Target>
+			<Target
+				Name="Rebuild"
+				MenuCaption="&amp;Rebuild"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine=""/>
+			</Target>
+			<Target
+				Name="Debug"
+				MenuCaption="&amp;Debug"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveNone"
+				RunFromDir="%rw">
+				<Exec CmdLine='vsdebugio -prog "%o"'/>
+			</Target>
+			<Target
+				Name="Execute"
+				MenuCaption="E&amp;xecute"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%o"'/>
+			</Target>
+			<Target
+				Name="dash"
+				MenuCaption="-"
+				Deletable="0">
+				<Exec/>
+			</Target>
+			<Target
+				Name="GNU C Options"
+				MenuCaption="GNU C &amp;Options..."
+				ShowOnMenu="HideIfNoCmdLine"
+				Deletable="0"
+				SaveOption="SaveNone">
+				<Exec
+					CmdLine="gnucoptions"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+	</Config>
+	<Config
+		Name="Release"
+		Type="gnuc"
+		DebugCallbackName="gdb"
+		Version="1"
+		OutputFile="%bdorcus"
+		CompilerConfigName="Latest Version">
+		<Menu>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				OutputExts="*.o"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='g++ -c %xup %defd -o "%bd%n%oe" %i "%f"'/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				ShowOnMenu="Never"
+				Dialog="_gnuc_options_form Link"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='g++ %xup -o "%o" %f %libs'/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine="make"/>
+			</Target>
+			<Target
+				Name="Rebuild"
+				MenuCaption="&amp;Rebuild"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine=""/>
+			</Target>
+			<Target
+				Name="Debug"
+				MenuCaption="&amp;Debug"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveNone"
+				RunFromDir="%rw">
+				<Exec CmdLine='vsdebugio -prog "%o"'/>
+			</Target>
+			<Target
+				Name="Execute"
+				MenuCaption="E&amp;xecute"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%o"'/>
+			</Target>
+			<Target
+				Name="dash"
+				MenuCaption="-"
+				Deletable="0">
+				<Exec/>
+			</Target>
+			<Target
+				Name="GNU C Options"
+				MenuCaption="GNU C &amp;Options..."
+				ShowOnMenu="HideIfNoCmdLine"
+				Deletable="0"
+				SaveOption="SaveNone">
+				<Exec
+					CmdLine="gnucoptions"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+	</Config>
+	<CustomFolders>
+		<Folder
+			Name="Source Files"
+			Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
+		</Folder>
+		<Folder
+			Name="Header Files"
+			Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
+		</Folder>
+		<Folder
+			Name="Resource Files"
+			Filters="*.ico;*.cur;*.dlg"/>
+		<Folder
+			Name="Bitmaps"
+			Filters="*.bmp"/>
+		<Folder
+			Name="Other Files"
+			Filters="">
+		</Folder>
+	</CustomFolders>
+	<Files AutoFolders="DirectoryView">
+		<Folder Name="inc">
+			<Folder Name="model">
+				<F N="inc/model/global.hpp"/>
+				<F N="inc/model/odstable.hpp"/>
+			</Folder>
+			<Folder Name="odf">
+				<F N="inc/odf/odf_token_constants.hpp"/>
+				<F N="inc/odf/odf_token_constants.inl"/>
+				<F N="inc/odf/odscontext.hpp"/>
+				<F N="inc/odf/odshandler.hpp"/>
+				<F N="inc/odf/paracontext.hpp"/>
+			</Folder>
+			<Folder Name="ooxml">
+				<F N="inc/ooxml/ooxml_token_constants.hpp"/>
+				<F N="inc/ooxml/ooxml_token_constants.inl"/>
+				<F N="inc/ooxml/xlsx_context.hpp"/>
+				<F N="inc/ooxml/xlsx_handler.hpp"/>
+			</Folder>
+			<F N="inc/global.hpp"/>
+			<F N="inc/tokens.hpp"/>
+			<F N="inc/types.hpp"/>
+			<F N="inc/xmlcontext.hpp"/>
+			<F N="inc/xmlhandler.hpp"/>
+			<F N="inc/xmlparser.hpp"/>
+		</Folder>
+		<Folder Name="src">
+			<Folder Name="model">
+				<F N="src/model/odstable.cpp"/>
+			</Folder>
+			<Folder Name="odf">
+				<F N="src/odf/odf_tokens.cpp"/>
+				<F N="src/odf/odf_tokens.inl"/>
+				<F N="src/odf/odscontext.cpp"/>
+				<F N="src/odf/odshandler.cpp"/>
+				<F N="src/odf/paracontext.cpp"/>
+			</Folder>
+			<Folder Name="ooxml">
+				<F N="src/ooxml/ooxml_tokens.cpp"/>
+				<F N="src/ooxml/ooxml_tokens.inl"/>
+				<F N="src/ooxml/xlsx_context.cpp"/>
+				<F N="src/ooxml/xlsx_handler.cpp"/>
+			</Folder>
+			<F N="src/global.cpp"/>
+			<F N="src/orcus_ods.cpp"/>
+			<F N="src/orcus_xlsx.cpp"/>
+			<F N="src/xmlcontext.cpp"/>
+			<F N="src/xmlhandler.cpp"/>
+			<F N="src/xmlparser.cpp"/>
+		</Folder>
+		<F
+			N="Makefile"
+			Type="Makefile"/>
+	</Files>
+</Project>
