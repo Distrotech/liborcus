@@ -38,7 +38,7 @@ ODF_SCHEMAPATH=$(ROOTDIR)/misc/$(ODF_SCHEMA)
 
 OOXML_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip
 
-CPPFLAGS=-I$(INCDIR) -Os -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x -DOOXML
+CPPFLAGS=-I$(INCDIR) -Os -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x -DODF
 LDFLAGS=`pkg-config --libs libgsf-1`
 
 HEADERS= \
@@ -67,8 +67,6 @@ OBJFILES= \
 	$(OBJDIR)/model/odstable.o
 
 DEPENDS= \
-	$(OBJDIR)/gen_odf_tokens \
-	$(OBJDIR)/gen_ooxml_tokens \
 	$(HEADERS)
 
 XLSX_OBJFILES = \
@@ -89,6 +87,8 @@ $(OBJDIR)/pre:
 	mkdir $(OBJDIR)/model 2>/dev/null || /bin/true
 	mkdir $(OBJDIR)/odf   2>/dev/null || /bin/true
 	mkdir $(OBJDIR)/ooxml 2>/dev/null || /bin/true
+	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/odf/odf_token_constants.inl $(SRCDIR)/odf/odf_tokens.inl
+	$(BINDIR)/gen-ooxml-tokens.py $(OOXML_SCHEMAPATH) $(INCDIR)/ooxml/ooxml_token_constants.inl $(SRCDIR)/ooxml/ooxml_tokens.inl
 	touch $@
 
 $(OBJDIR)/orcus_ods.o: $(SRCDIR)/orcus_ods.cpp $(DEPENDS)
@@ -144,16 +144,6 @@ orcus-ods: $(OBJDIR)/pre $(OBJFILES)
 
 orcus-xlsx: $(OBJDIR)/pre $(XLSX_OBJFILES)
 	$(CXX) $(LDFLAGS) $(XLSX_OBJFILES) -o $@
-
-# token generation
-
-$(OBJDIR)/gen_odf_tokens: $(OBJDIR)/pre
-	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/odf/odf_token_constants.inl $(SRCDIR)/odf/odf_tokens.inl
-	touch $@
-
-$(OBJDIR)/gen_ooxml_tokens: $(OBJDIR)/pre
-	$(BINDIR)/gen-ooxml-tokens.py $(OOXML_SCHEMAPATH) $(INCDIR)/ooxml/ooxml_token_constants.inl $(SRCDIR)/ooxml/ooxml_tokens.inl
-	touch $@
 
 test.ods: orcus-ods
 	./orcus-ods ./test/test.ods $(OBJDIR)/test.ods.html
