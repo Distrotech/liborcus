@@ -76,18 +76,17 @@ private:
     void blank();
 
     /**
-     * <?xml .... ?>
+     * Parse XML header that occurs at the beginning of every XML stream i.e. 
+     * <?xml version="..." encoding="..." ?> 
      */
     void header();
     void attribute();
-    void open_brace();
-    void close_brace();
 
     void name(::std::string& str);
     void value(::std::string& str);
 
-    bool is_alpha(char_type c) const;
-    bool is_numeric(char_type c) const;
+    static bool is_alpha(char_type c);
+    static bool is_numeric(char_type c);
 
 private:
     const char_type* m_content;
@@ -119,8 +118,6 @@ void sax_parser<_Char,_Handler>::parse()
 template<typename _Char, typename _Handler>
 void sax_parser<_Char,_Handler>::blank()
 {
-    using namespace std;
-
     while (next_char() == ' ')
         ;
 }
@@ -162,28 +159,6 @@ void sax_parser<_Char,_Handler>::attribute()
 }
 
 template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::open_brace()
-{
-    using namespace std;
-
-    char_type c = cur_char();
-    if (m_pos == 1 && c == '?')
-    {
-        // <?xml ... ?>
-        if (next_char() != 'x' || next_char() != 'm' || next_char() != 'l')
-            throw malformed_xml_error("expected <?xml ...");
-
-        blank();
-        attribute();
-    }
-}
-
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::close_brace()
-{
-}
-
-template<typename _Char, typename _Handler>
 void sax_parser<_Char,_Handler>::name(::std::string& str)
 {
     char_type c = cur_char();
@@ -217,7 +192,7 @@ void sax_parser<_Char,_Handler>::value(::std::string& str)
 }
 
 template<typename _Char, typename _Handler>
-bool sax_parser<_Char,_Handler>::is_alpha(char_type c) const
+bool sax_parser<_Char,_Handler>::is_alpha(char_type c)
 {
     if ('a' <= c && c <= 'z')
         return true;
@@ -227,7 +202,7 @@ bool sax_parser<_Char,_Handler>::is_alpha(char_type c) const
 }
 
 template<typename _Char, typename _Handler>
-bool sax_parser<_Char,_Handler>::is_numeric(char_type c) const
+bool sax_parser<_Char,_Handler>::is_numeric(char_type c)
 {
     if ('0' <= c && c <= '9')
         return true;
