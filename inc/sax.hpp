@@ -85,6 +85,7 @@ private:
     void name(::std::string& str);
     void value(::std::string& str);
 
+    static bool is_blank(char_type c);
     static bool is_alpha(char_type c);
     static bool is_numeric(char_type c);
 
@@ -118,8 +119,9 @@ void sax_parser<_Char,_Handler>::parse()
 template<typename _Char, typename _Handler>
 void sax_parser<_Char,_Handler>::blank()
 {
-    while (next_char() == ' ')
-        ;
+    char_type c = cur_char();
+    while (is_blank(c))
+        c = next_char();
 }
 
 template<typename _Char, typename _Handler>
@@ -131,6 +133,7 @@ void sax_parser<_Char,_Handler>::header()
     if (c != '<' || next_char() != '?' || next_char() != 'x' || next_char() != 'm' || next_char() != 'l')
         throw malformed_xml_error("xml header must begin with '<?xml'.");
 
+    inc();
     blank();
     while (cur_char() != '?')
     {
@@ -189,6 +192,18 @@ void sax_parser<_Char,_Handler>::value(::std::string& str)
         str.push_back(c);
         c = next_char();
     }
+    inc();
+}
+
+template<typename _Char, typename _Handler>
+bool sax_parser<_Char,_Handler>::is_blank(char_type c)
+{
+    if (c == ' ')
+        return true;
+    if (c == 0x0A || c == 0x0D)
+        // LF or CR
+        return true;
+    return false;
 }
 
 template<typename _Char, typename _Handler>
