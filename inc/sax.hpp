@@ -68,7 +68,15 @@ private:
 
     size_t cur_pos() const { return m_pos; }
 
-    void inc() { ++m_pos; }
+    void next() { ++m_pos; }
+
+    void nest_up() { ++m_nest_level; }
+    void nest_down()
+    {
+        if (m_nest_level == 0)
+            throw malformed_xml_error("nest level is about to go below zero.");
+        --m_nest_level; 
+    }
 
     char_type cur_char() const { return m_content[m_pos]; }
     char_type next_char() { return m_content[++m_pos]; }
@@ -80,6 +88,9 @@ private:
      * <?xml version="..." encoding="..." ?> 
      */
     void header();
+
+    void element();
+    void content();
     void attribute();
 
     void name(::std::string& str);
@@ -87,18 +98,20 @@ private:
 
     static bool is_blank(char_type c);
     static bool is_alpha(char_type c);
+    static bool is_name_char(char_type c);
     static bool is_numeric(char_type c);
 
 private:
     const char_type* m_content;
     const size_t m_size;
     size_t m_pos;
+    size_t m_nest_level;
     handler_type& m_handler;
 };
 
 template<typename _Char, typename _Handler>
 sax_parser<_Char,_Handler>::sax_parser(const char_type* content, const size_t size, handler_type& handler) :
-    m_content(content), m_size(size), m_pos(0), m_handler(handler)
+    m_content(content), m_size(size), m_pos(0), m_nest_level(0), m_handler(handler)
 {
 }
 
@@ -112,7 +125,10 @@ void sax_parser<_Char,_Handler>::parse()
 {
     using namespace std;
     m_pos = 0;
+    m_nest_level = 0;
     header();
+    blank();
+    element();
     cout << "finished parsing" << endl;
 }
 
@@ -133,7 +149,7 @@ void sax_parser<_Char,_Handler>::header()
     if (c != '<' || next_char() != '?' || next_char() != 'x' || next_char() != 'm' || next_char() != 'l')
         throw malformed_xml_error("xml header must begin with '<?xml'.");
 
-    inc();
+    next();
     blank();
     while (cur_char() != '?')
     {
@@ -143,7 +159,49 @@ void sax_parser<_Char,_Handler>::header()
     if (next_char() != '>')
         throw malformed_xml_error("xml header must end with '?>'.");
 
-    inc();
+    next();
+}
+
+template<typename _Char, typename _Handler>
+void sax_parser<_Char,_Handler>::element()
+{
+    using namespace std;
+
+    char_type c = cur_char();
+    if (c != '<')
+        throw malformed_xml_error("element must start with a '<'.");
+
+    next();
+    string elem_name;
+    name(elem_name);
+    cout << "start element: " << elem_name << endl;
+    while (true)
+    {
+        blank();
+        c = cur_char();
+        if (c == '/')
+        {
+            // Self-closing element: <element/>
+            if (next_char() != '>')
+                throw malformed_xml_error("expected '/>' to self-close the element.");
+            next();
+            cout << "end element: " << elem_name << endl;
+            return;
+        }
+        else if (c == '>')
+        {
+            // End of opening element: <element>
+            next();
+            return;
+        }
+        else
+            attribute();
+    }
+}
+
+template<typename _Char, typename _Handler>
+void sax_parser<_Char,_Handler>::content()
+{
 }
 
 template<typename _Char, typename _Handler>
@@ -156,9 +214,9 @@ void sax_parser<_Char,_Handler>::attribute()
     char_type c = cur_char();
     if (c != '=')
         throw malformed_xml_error("attribute must begin with 'name=..");
-    inc();
+    next();
     value(_value);
-    cout << "attribute: " << _name << "=\"" << _value << "\"" << endl;
+    cout << "  attribute: " << _name << "=\"" << _value << "\"" << endl;
 }
 
 template<typename _Char, typename _Handler>
@@ -172,7 +230,7 @@ void sax_parser<_Char,_Handler>::name(::std::string& str)
         throw malformed_xml_error(os.str());
     }
 
-    while (is_alpha(c) || is_numeric(c))
+    while (is_alpha(c) || is_numeric(c) || is_name_char(c))
     {
         str.push_back(c);
         c = next_char();
@@ -192,7 +250,7 @@ void sax_parser<_Char,_Handler>::value(::std::string& str)
         str.push_back(c);
         c = next_char();
     }
-    inc();
+    next();
 }
 
 template<typename _Char, typename _Handler>
@@ -213,6 +271,15 @@ bool sax_parser<_Char,_Handler>::is_alpha(char_type c)
         return true;
     if ('A' <= c && c <= 'Z')
         return true;
+    return false;
+}
+
+template<typename _Char, typename _Handler>
+bool sax_parser<_Char,_Handler>::is_name_char(char_type c)
+{
+    if (c == ':' || c == '-')
+        return true;
+
     return false;
 }
 
