@@ -262,7 +262,7 @@ void xml_stream_parser::parse()
     if (!mp_handler)
         return;
 
-    sax_parser<const uint8_t, xml_stream_handler> sax(m_content, m_size, *mp_handler);
+    sax_parser<uint8_t, xml_stream_handler> sax(m_content, m_size, *mp_handler);
     sax.parse();
 #endif
 }
