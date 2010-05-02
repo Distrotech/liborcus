@@ -219,6 +219,7 @@
 				<F N="inc/ooxml/xlsx_handler.hpp"/>
 			</Folder>
 			<F N="inc/global.hpp"/>
+			<F N="inc/sax.hpp"/>
 			<F N="inc/tokens.hpp"/>
 			<F N="inc/types.hpp"/>
 			<F N="inc/xmlcontext.hpp"/>

@@ -28,6 +28,7 @@
 #include "xmlparser.hpp"
 #include "xmlhandler.hpp"
 #include "tokens.hpp"
+#include "sax.hpp"
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
@@ -35,6 +36,8 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+
+#define USE_LIBXML 0
 
 using namespace std;
 
@@ -252,8 +255,16 @@ xml_stream_parser::~xml_stream_parser()
 void xml_stream_parser::parse()
 {
     tokens::init();
+#if USE_LIBXML
     parser_context cxt(*this);
     xmlSAXUserParseMemory(sax_handler, &cxt, reinterpret_cast<const char*>(m_content), m_size);
+#else
+    if (!mp_handler)
+        return;
+
+    sax_parser<const uint8_t, xml_stream_handler> sax(m_content, m_size, *mp_handler);
+    sax.parse();
+#endif
 }
 
 void xml_stream_parser::set_handler(xml_stream_handler* handler)
