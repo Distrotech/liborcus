@@ -33,6 +33,8 @@
 #include <exception>
 #include <string>
 
+#define DEBUG_SAX_PARSER 1
+
 namespace orcus {
 
 /** 
@@ -65,6 +67,8 @@ public:
     void parse();
 
 private:
+
+    const char* indent() const;
 
     size_t cur_pos() const { return m_pos; }
 
@@ -133,6 +137,15 @@ void sax_parser<_Char,_Handler>::parse()
 }
 
 template<typename _Char, typename _Handler>
+const char* sax_parser<_Char,_Handler>::indent() const
+{
+    ::std::ostringstream os;
+    for (size_t i = 0; i < m_nest_level; ++i)
+        os << "  ";
+    return os.str().c_str();
+}
+
+template<typename _Char, typename _Handler>
 void sax_parser<_Char,_Handler>::blank()
 {
     char_type c = cur_char();
@@ -149,6 +162,8 @@ void sax_parser<_Char,_Handler>::header()
     if (c != '<' || next_char() != '?' || next_char() != 'x' || next_char() != 'm' || next_char() != 'l')
         throw malformed_xml_error("xml header must begin with '<?xml'.");
 
+    cout << "<?xml " << endl;
+
     next();
     blank();
     while (cur_char() != '?')
@@ -159,6 +174,7 @@ void sax_parser<_Char,_Handler>::header()
     if (next_char() != '>')
         throw malformed_xml_error("xml header must end with '?>'.");
 
+    cout << "?>" << endl;
     next();
 }
 
@@ -174,7 +190,7 @@ void sax_parser<_Char,_Handler>::element()
     next();
     string elem_name;
     name(elem_name);
-    cout << "start element: " << elem_name << endl;
+    cout << indent() << "<" << elem_name << endl;
     while (true)
     {
         blank();
@@ -185,14 +201,15 @@ void sax_parser<_Char,_Handler>::element()
             if (next_char() != '>')
                 throw malformed_xml_error("expected '/>' to self-close the element.");
             next();
-            cout << "end element: " << elem_name << endl;
-            return;
+            cout << "/>" << endl;
+            break;
         }
         else if (c == '>')
         {
             // End of opening element: <element>
             next();
-            return;
+            cout << indent() << ">" << endl;
+            break;
         }
         else
             attribute();
@@ -216,7 +233,8 @@ void sax_parser<_Char,_Handler>::attribute()
         throw malformed_xml_error("attribute must begin with 'name=..");
     next();
     value(_value);
-    cout << "  attribute: " << _name << "=\"" << _value << "\"" << endl;
+
+    cout << indent() << "  attribute: " << _name << "=\"" << _value << "\"" << endl;
 }
 
 template<typename _Char, typename _Handler>
