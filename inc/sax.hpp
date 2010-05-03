@@ -183,14 +183,21 @@ void sax_parser<_Char,_Handler>::element()
 {
     using namespace std;
 
+    // <elem attr="val" attr="val" ... />
+    //
+    // <elem attr="val" attr="val" ... > content </elem>
+
+    // Parse the opening element first.  Note that this may contain zero or 
+    // more attributes, and may close itself.
+
     char_type c = cur_char();
     if (c != '<')
         throw malformed_xml_error("element must start with a '<'.");
 
     next();
-    string elem_name;
-    name(elem_name);
-    cout << indent() << "<" << elem_name << endl;
+    string open_elem_name;
+    name(open_elem_name);
+    cout << indent() << "<" << open_elem_name << endl;
     while (true)
     {
         blank();
@@ -201,7 +208,7 @@ void sax_parser<_Char,_Handler>::element()
             if (next_char() != '>')
                 throw malformed_xml_error("expected '/>' to self-close the element.");
             next();
-            cout << "/>" << endl;
+            cout << indent() << "/>" << endl;
             break;
         }
         else if (c == '>')
@@ -209,11 +216,27 @@ void sax_parser<_Char,_Handler>::element()
             // End of opening element: <element>
             next();
             cout << indent() << ">" << endl;
+            nest_up();
             break;
         }
         else
             attribute();
     }
+
+    // Parse the content of this element.
+
+    content();
+
+    // Parse the closing element.
+
+    c = cur_char();
+    if (c != '<' || next_char() != '/')
+        throw malformed_xml_error("expected '</' at the beginning of a closing element.");
+    next();
+    string close_elem_name;
+    name(close_elem_name);
+    if (open_elem_name != close_elem_name)
+        throw malformed_xml_error("names of opening and closing elements don't match.");
 }
 
 template<typename _Char, typename _Handler>
