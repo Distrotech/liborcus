@@ -29,11 +29,12 @@
 #define __ORCUS_SAX_HPP__
 
 #include <iostream>
+#include <cassert>
 #include <sstream>
 #include <exception>
 #include <string>
 
-#define DEBUG_SAX_PARSER 1
+#define DEBUG_SAX_PARSER 0
 
 namespace orcus {
 
@@ -68,7 +69,7 @@ public:
 
 private:
 
-    const char* indent() const;
+    ::std::string indent() const;
 
     size_t cur_pos() const { return m_pos; }
 
@@ -82,8 +83,19 @@ private:
         --m_nest_level; 
     }
 
-    char_type cur_char() const { return m_content[m_pos]; }
-    char_type next_char() { return m_content[++m_pos]; }
+    char_type cur_char() const 
+    { 
+        if (m_pos >= m_size)
+            throw malformed_xml_error("xml stream ended prematurely.");
+        return m_content[m_pos]; 
+    }
+
+    char_type next_char()
+    {
+        if (++m_pos >= m_size)
+            throw malformed_xml_error("xml stream ended prematurely.");
+        return m_content[m_pos]; 
+    }
 
     void blank();
 
@@ -92,9 +104,12 @@ private:
      * <?xml version="..." encoding="..." ?> 
      */
     void header();
-
+    void body();
     void element();
+    void element_open();
+    void element_close();
     void content();
+    void characters();
     void attribute();
 
     void name(::std::string& str);
@@ -132,17 +147,17 @@ void sax_parser<_Char,_Handler>::parse()
     m_nest_level = 0;
     header();
     blank();
-    element();
+    body();
     cout << "finished parsing" << endl;
 }
 
 template<typename _Char, typename _Handler>
-const char* sax_parser<_Char,_Handler>::indent() const
+::std::string sax_parser<_Char,_Handler>::indent() const
 {
     ::std::ostringstream os;
     for (size_t i = 0; i < m_nest_level; ++i)
         os << "  ";
-    return os.str().c_str();
+    return os.str();
 }
 
 template<typename _Char, typename _Handler>
@@ -162,7 +177,9 @@ void sax_parser<_Char,_Handler>::header()
     if (c != '<' || next_char() != '?' || next_char() != 'x' || next_char() != 'm' || next_char() != 'l')
         throw malformed_xml_error("xml header must begin with '<?xml'.");
 
+#if DEBUG_SAX_PARSER
     cout << "<?xml " << endl;
+#endif
 
     next();
     blank();
@@ -174,81 +191,114 @@ void sax_parser<_Char,_Handler>::header()
     if (next_char() != '>')
         throw malformed_xml_error("xml header must end with '?>'.");
 
-    cout << "?>" << endl;
     next();
+#if DEBUG_SAX_PARSER
+    cout << "?>" << endl;
+#endif
+}
+
+template<typename _Char, typename _Handler>
+void sax_parser<_Char,_Handler>::body()
+{
+    while (m_pos < m_size)
+    {
+        if (cur_char() == '<')
+            element();
+        else
+            characters();
+    }
 }
 
 template<typename _Char, typename _Handler>
 void sax_parser<_Char,_Handler>::element()
 {
+    assert(cur_char() == '<');
+    char_type c = next_char();
+    if (c == '/')
+        element_close();
+    else
+        element_open();
+}
+
+template<typename _Char, typename _Handler>
+void sax_parser<_Char,_Handler>::element_open()
+{
     using namespace std;
+    assert(is_alpha(cur_char()));
 
-    // <elem attr="val" attr="val" ... />
-    //
-    // <elem attr="val" attr="val" ... > content </elem>
-
-    // Parse the opening element first.  Note that this may contain zero or 
-    // more attributes, and may close itself.
-
-    char_type c = cur_char();
-    if (c != '<')
-        throw malformed_xml_error("element must start with a '<'.");
-
-    next();
     string open_elem_name;
     name(open_elem_name);
+#if DEBUG_SAX_PARSER
     cout << indent() << "<" << open_elem_name << endl;
+#endif
     while (true)
     {
         blank();
-        c = cur_char();
+        char_type c = cur_char();
         if (c == '/')
         {
             // Self-closing element: <element/>
             if (next_char() != '>')
                 throw malformed_xml_error("expected '/>' to self-close the element.");
             next();
+#if DEBUG_SAX_PARSER
             cout << indent() << "/>" << endl;
-            break;
+#endif
+            return;
         }
         else if (c == '>')
         {
             // End of opening element: <element>
             next();
-            cout << indent() << ">" << endl;
             nest_up();
-            break;
+#if DEBUG_SAX_PARSER
+            cout << indent() << ">" << endl;
+#endif
+            return;
         }
         else
             attribute();
     }
-
-    // Parse the content of this element.
-
-    content();
-
-    // Parse the closing element.
-
-    c = cur_char();
-    if (c != '<' || next_char() != '/')
-        throw malformed_xml_error("expected '</' at the beginning of a closing element.");
-    next();
-    string close_elem_name;
-    name(close_elem_name);
-    if (open_elem_name != close_elem_name)
-        throw malformed_xml_error("names of opening and closing elements don't match.");
 }
 
 template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::content()
+void sax_parser<_Char,_Handler>::element_close()
 {
+    using namespace std;
+    assert(cur_char() == '/');
+    nest_down();
+    next();
+    string close_elem_name;
+    name(close_elem_name);
+    if (cur_char() != '>')
+        throw malformed_xml_error("expected '>' to close the element.");
+    next();
+
+#if DEBUG_SAX_PARSER
+    cout << indent() << "</" << close_elem_name << ">" << endl;
+#endif
+}
+
+template<typename _Char, typename _Handler>
+void sax_parser<_Char,_Handler>::characters()
+{
+    using namespace std;
+    string buf;
+    char_type c = cur_char();
+    while (c != '<')
+    {
+        buf.push_back(c);
+        c = next_char();
+    }
+#if DEBUG_SAX_PARSER
+    cout << indent() << buf << endl;
+#endif
 }
 
 template<typename _Char, typename _Handler>
 void sax_parser<_Char,_Handler>::attribute()
 {
     using namespace std;
-
     string _name, _value;
     name(_name);
     char_type c = cur_char();
@@ -257,7 +307,9 @@ void sax_parser<_Char,_Handler>::attribute()
     next();
     value(_value);
 
+#if DEBUG_SAX_PARSER
     cout << indent() << "  attribute: " << _name << "=\"" << _value << "\"" << endl;
+#endif
 }
 
 template<typename _Char, typename _Handler>
