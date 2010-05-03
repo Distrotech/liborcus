@@ -78,22 +78,23 @@ private:
     void nest_up() { ++m_nest_level; }
     void nest_down()
     {
-        if (m_nest_level == 0)
-            throw malformed_xml_error("nest level is about to go below zero.");
+//      if (m_nest_level == 0)
+//          throw malformed_xml_error("nest level is about to go below zero.");
         --m_nest_level; 
     }
 
     char_type cur_char() const 
-    { 
-        if (m_pos >= m_size)
-            throw malformed_xml_error("xml stream ended prematurely.");
+    {
+//      if (m_pos >= m_size)
+//          throw malformed_xml_error("xml stream ended prematurely.");
         return m_content[m_pos]; 
     }
 
     char_type next_char()
     {
-        if (++m_pos >= m_size)
-            throw malformed_xml_error("xml stream ended prematurely.");
+        ++m_pos;
+//      if (m_pos >= m_size)
+//          throw malformed_xml_error("xml stream ended prematurely.");
         return m_content[m_pos]; 
     }
 
@@ -287,7 +288,7 @@ void sax_parser<_Char,_Handler>::characters()
     char_type c = cur_char();
     while (c != '<')
     {
-        buf.push_back(c);
+//      buf.push_back(c);
         c = next_char();
     }
 #if DEBUG_SAX_PARSER
@@ -325,7 +326,7 @@ void sax_parser<_Char,_Handler>::name(::std::string& str)
 
     while (is_alpha(c) || is_numeric(c) || is_name_char(c))
     {
-        str.push_back(c);
+//      str.push_back(c);
         c = next_char();
     }
 }
@@ -340,7 +341,7 @@ void sax_parser<_Char,_Handler>::value(::std::string& str)
     c = next_char();
     while (c != '"')
     {
-        str.push_back(c);
+//      str.push_back(c);
         c = next_char();
     }
     next();
