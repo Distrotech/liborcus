@@ -45,6 +45,7 @@ public:
     pstring(const char* pos, size_t size) : m_pos(pos), m_size(size) {}
 
     ::std::string str() const { return ::std::string(m_pos, m_size); }
+    const char* c_str() const { return m_pos; }
 
     size_t size() const { return m_size; }
     char operator[](size_t idx) const { return m_pos[idx]; }
