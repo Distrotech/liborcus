@@ -37,7 +37,7 @@
 #include <vector>
 #include <sstream>
 
-#define USE_LIBXML 0
+#define USE_LIBXML 1
 
 using namespace std;
 
@@ -109,20 +109,25 @@ xml_stream_handler* get_handler(void* ctx)
 
 void start_document(void* ctx)
 {
+#if 0
     xml_stream_handler* handler = get_handler(ctx);
     if (handler)
         handler->start_document();
+#endif
 }
 
 void end_document(void* ctx)
 {
+#if 0
     xml_stream_handler* handler = get_handler(ctx);
     if (handler)
         handler->end_document();
+#endif
 }
 
 void start_element(void* ctx, const xmlChar* name, const xmlChar** attrs)
 {
+#if 0
     xmlns_token_t nstoken;
     xml_token_t token;
     name_to_tokens(name, nstoken, token);
@@ -153,16 +158,19 @@ void start_element(void* ctx, const xmlChar* name, const xmlChar** attrs)
     xml_stream_handler* handler = get_handler(ctx);
     if (handler)
         handler->start_element(nstoken, token, attrs_array);
+#endif
 }
 
 void end_element(void* ctx, const xmlChar* name)
 {
+#if 0
     xmlns_token_t nstoken;
     xml_token_t token;
     name_to_tokens(name, nstoken, token);
     xml_stream_handler* handler = get_handler(ctx);
     if (handler)
         handler->end_element(nstoken, token);
+#endif
 }
 
 void start_element_ns(
@@ -188,9 +196,11 @@ void end_element_ns(
 
 void characters(void* ctx, const xmlChar* ch, int len)
 {
+#if 0
     xml_stream_handler* handler = get_handler(ctx);
     if (handler)
         handler->characters(reinterpret_cast<const char*>(ch), static_cast<size_t>(len));
+#endif
 }
 
 xmlSAXHandler sax_handler_struct = {
