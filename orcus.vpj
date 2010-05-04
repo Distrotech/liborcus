@@ -247,6 +247,7 @@
 			<F N="src/global.cpp"/>
 			<F N="src/orcus_ods.cpp"/>
 			<F N="src/orcus_xlsx.cpp"/>
+			<F N="src/tokens.inl"/>
 			<F N="src/xmlcontext.cpp"/>
 			<F N="src/xmlhandler.cpp"/>
 			<F N="src/xmlparser.cpp"/>
