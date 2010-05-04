@@ -29,8 +29,7 @@
 #define __ORCUS_TOKENS_HPP__
 
 #include "types.hpp"
-
-#include <string>
+#include "pstring.hpp"
 
 namespace orcus {
 
@@ -57,7 +56,7 @@ public:
      * 
      * @return token value representing the given textural token.
      */
-    static xml_token_t get_token(const ::std::string& name);
+    static xml_token_t get_token(const pstring& name);
 
     /** 
      * Get textural token name from a token value.
@@ -83,7 +82,7 @@ public:
      * 
      * @return token value representing the given textural token.
      */
-    static xmlns_token_t get_nstoken(const ::std::string& name);
+    static xmlns_token_t get_nstoken(const pstring& name);
 
     /** 
      * Get textural token name from a namespace token value.

@@ -69,8 +69,8 @@ void name_to_tokens(const xmlChar* name, xmlns_token_t& nstoken, xml_token_t& to
         {
             if (buffer.empty())
                 throw xml_stream_parser::parse_error("empty namespace");
-
-            nstoken = tokens::get_nstoken(buffer);
+            pstring pstr(buffer.c_str());
+            nstoken = tokens::get_nstoken(pstr);
             if (!tokens::is_valid_nstoken(nstoken))
             {
                 ostringstream os;
@@ -98,7 +98,8 @@ void name_to_tokens(const xmlChar* name, xmlns_token_t& nstoken, xml_token_t& to
     if (buffer.empty())
         throw xml_stream_parser::parse_error("empty element name");
 
-    token = tokens::get_token(buffer);
+    pstring pstr(buffer.c_str());
+    token = tokens::get_token(pstr);
 }
 
 xml_stream_handler* get_handler(void* ctx)

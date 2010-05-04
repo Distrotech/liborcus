@@ -29,8 +29,9 @@
 #include "global.hpp"
 
 #include <cstdlib>
-#include <string>
 #include <unordered_map>
+#include <cstring>
+#include <iostream>
 
 using namespace std;
 
@@ -42,7 +43,7 @@ namespace {
 
 struct string_hash
 {
-    size_t operator() (const string& val) const
+    size_t operator() (const pstring& val) const
     {
         size_t n = val.size();
         size_t hash_val = ~n;
@@ -56,8 +57,8 @@ struct string_hash
 
 struct name_token_map
 {
-    typedef ::std::unordered_map<string, xml_token_t, string_hash> token_type;
-    typedef ::std::unordered_map<string, xmlns_token_t, string_hash> nstoken_type;
+    typedef ::std::unordered_map<pstring, xml_token_t, string_hash> token_type;
+    typedef ::std::unordered_map<pstring, xmlns_token_t, string_hash> nstoken_type;
 
     static token_type       tokens;
     static nstoken_type     nstokens;
@@ -78,14 +79,14 @@ void tokens::init()
     {
         name_token_map::tokens.insert(
             name_token_map::token_type::value_type(
-                string(token_names[i]), static_cast<xml_token_t>(i)));
+                pstring(token_names[i]), static_cast<xml_token_t>(i)));
     }
 
     for (size_t i = 0; i < nstoken_name_count; ++i)
     {
         name_token_map::nstokens.insert(
             name_token_map::nstoken_type::value_type(
-                string(nstoken_names[i]), static_cast<xmlns_token_t>(i)));
+                pstring(nstoken_names[i]), static_cast<xmlns_token_t>(i)));
     }
 }
 
@@ -94,12 +95,16 @@ bool tokens::is_valid_token(xml_token_t token)
     return token != XML_UNKNOWN_TOKEN;
 }
 
-xml_token_t tokens::get_token(const string& name)
+xml_token_t tokens::get_token(const pstring& name)
 {
+#if 0
+    return XML_UNKNOWN_TOKEN;
+#else
     name_token_map::token_type::const_iterator itr = name_token_map::tokens.find(name);
     if (itr == name_token_map::tokens.end())
         return XML_UNKNOWN_TOKEN;
     return itr->second;
+#endif
 }
 
 const char* tokens::get_token_name(xml_token_t token)
@@ -115,12 +120,16 @@ bool tokens::is_valid_nstoken(xmlns_token_t token)
     return token != XMLNS_UNKNOWN_TOKEN;
 }
 
-xmlns_token_t tokens::get_nstoken(const string& name)
+xmlns_token_t tokens::get_nstoken(const pstring& name)
 {
+#if 0
+    return XMLNS_UNKNOWN_TOKEN;
+#else
     name_token_map::nstoken_type::const_iterator itr = name_token_map::nstokens.find(name);
     if (itr == name_token_map::nstokens.end())
         return XMLNS_UNKNOWN_TOKEN;
     return itr->second;
+#endif
 }
 
 const char* tokens::get_nstoken_name(xmlns_token_t token)

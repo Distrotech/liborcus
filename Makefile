@@ -44,6 +44,7 @@ LDFLAGS=`pkg-config --libs libgsf-1`
 ODF_HEADERS= \
 	$(INCDIR)/global.hpp \
 	$(INCDIR)/sax.hpp \
+	$(INCDIR)/pstring.hpp \
 	$(INCDIR)/xmlhandler.hpp \
 	$(INCDIR)/xmlcontext.hpp \
 	$(INCDIR)/xmlparser.hpp \

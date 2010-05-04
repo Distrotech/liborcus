@@ -25,51 +25,47 @@
  *
  ************************************************************************/
 
-#include "ooxml/xlsx_context.hpp"
-#include "global.hpp"
+#ifndef __ORCUS_PSTRING_HPP__
+#define __ORCUS_PSTRING_HPP__
 
-#include <iostream>
-#include <fstream>
-
-using namespace std;
+#include <cstdlib>
+#include <string>
+#include <cstring>
 
 namespace orcus {
 
-xlsx_sheet_xml_context::xlsx_sheet_xml_context()
+/**
+ * This string class does not store any char arrays, but it only stores the 
+ * position of the first char in the memory, and the size of the char array.
+ */
+class pstring
 {
-}
+public:
+    pstring(const char* pos) : m_pos(pos) { m_size = ::std::strlen(pos); }
+    pstring(const char* pos, size_t size) : m_pos(pos), m_size(size) {}
 
-xlsx_sheet_xml_context::~xlsx_sheet_xml_context()
-{
-}
+    ::std::string str() const { return ::std::string(m_pos, m_size); }
 
-bool xlsx_sheet_xml_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
-{
-    return true;
-}
+    size_t size() const { return m_size; }
+    char operator[](size_t idx) const { return m_pos[idx]; }
 
-xml_context_base* xlsx_sheet_xml_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
-{
-    return NULL;
-}
+    bool operator== (const pstring& r) const
+    {
+        if (m_size != r.m_size)
+            return false;
 
-void xlsx_sheet_xml_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
-{
-}
+        for (size_t i = 0; i < m_size; ++i)
+            if (m_pos[i] != r.m_pos[i])
+                return false;
 
-void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
-{
-    xml_token_pair_t parent = push_stack(ns, name);
-//  warn_unhandled();
-}
+        return true;
+    }
 
-bool xlsx_sheet_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
-{
-    return pop_stack(ns, name);
-}
-
-void xlsx_sheet_xml_context::characters(const char* ch, size_t len)
-{
-}
+private:
+    const char* m_pos;
+    size_t      m_size;
+};
 
 }
+
+#endif
