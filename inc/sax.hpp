@@ -34,6 +34,8 @@
 #include <exception>
 #include <string>
 
+#include "pstring.hpp"
+
 #define DEBUG_SAX_PARSER 0
 
 namespace orcus {
@@ -113,8 +115,8 @@ private:
     void characters();
     void attribute();
 
-    void name(::std::string& str);
-    void value(::std::string& str);
+    void name(pstring& str);
+    void value(pstring& str);
 
     static bool is_blank(char_type c);
     static bool is_alpha(char_type c);
@@ -227,10 +229,10 @@ void sax_parser<_Char,_Handler>::element_open()
     using namespace std;
     assert(is_alpha(cur_char()));
 
-    string open_elem_name;
+    pstring open_elem_name;
     name(open_elem_name);
 #if DEBUG_SAX_PARSER
-    cout << indent() << "<" << open_elem_name << endl;
+    cout << indent() << "<" << open_elem_name.str() << endl;
 #endif
     while (true)
     {
@@ -269,38 +271,41 @@ void sax_parser<_Char,_Handler>::element_close()
     assert(cur_char() == '/');
     nest_down();
     next();
-    string close_elem_name;
+    pstring close_elem_name;
     name(close_elem_name);
     if (cur_char() != '>')
         throw malformed_xml_error("expected '>' to close the element.");
     next();
 
 #if DEBUG_SAX_PARSER
-    cout << indent() << "</" << close_elem_name << ">" << endl;
+    cout << indent() << "</" << close_elem_name.str() << ">" << endl;
 #endif
 }
 
 template<typename _Char, typename _Handler>
 void sax_parser<_Char,_Handler>::characters()
 {
-    using namespace std;
-    string buf;
+    size_t first = m_pos;
     char_type c = cur_char();
     while (c != '<')
-    {
-//      buf.push_back(c);
         c = next_char();
-    }
+
+    if (m_pos > first)
+    {
+        size_t size = m_pos - first;
+        pstring val(reinterpret_cast<const char*>(m_content) + first, size);
 #if DEBUG_SAX_PARSER
-    cout << indent() << buf << endl;
+        using namespace std;
+        cout << indent() << val.str() << endl;
 #endif
+    }
 }
 
 template<typename _Char, typename _Handler>
 void sax_parser<_Char,_Handler>::attribute()
 {
     using namespace std;
-    string _name, _value;
+    pstring _name, _value;
     name(_name);
     char_type c = cur_char();
     if (c != '=')
@@ -309,13 +314,14 @@ void sax_parser<_Char,_Handler>::attribute()
     value(_value);
 
 #if DEBUG_SAX_PARSER
-    cout << indent() << "  attribute: " << _name << "=\"" << _value << "\"" << endl;
+    cout << indent() << "  attribute: " << _name.str() << "=\"" << _value.str() << "\"" << endl;
 #endif
 }
 
 template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::name(::std::string& str)
+void sax_parser<_Char,_Handler>::name(pstring& str)
 {
+    size_t first = m_pos;
     char_type c = cur_char();
     if (!is_alpha(c))
     {
@@ -325,25 +331,28 @@ void sax_parser<_Char,_Handler>::name(::std::string& str)
     }
 
     while (is_alpha(c) || is_numeric(c) || is_name_char(c))
-    {
-//      str.push_back(c);
         c = next_char();
-    }
+
+    size_t size = m_pos - first;
+    str = pstring(reinterpret_cast<const char*>(m_content) + first, size);
 }
 
 template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::value(::std::string& str)
+void sax_parser<_Char,_Handler>::value(pstring& str)
 {
     char_type c = cur_char();
     if (c != '"')
         throw malformed_xml_error("attribute value must be quoted");
 
     c = next_char();
+    size_t first = m_pos;
     while (c != '"')
-    {
-//      str.push_back(c);
         c = next_char();
-    }
+
+    size_t size = m_pos - first;
+    str = pstring(reinterpret_cast<const char*>(m_content) + first, size);
+
+    // Skip the closing quote.
     next();
 }
 

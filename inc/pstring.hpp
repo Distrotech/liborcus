@@ -41,14 +41,21 @@ namespace orcus {
 class pstring
 {
 public:
+    pstring() : m_pos(NULL), m_size(0) {}
     pstring(const char* pos) : m_pos(pos) { m_size = ::std::strlen(pos); }
     pstring(const char* pos, size_t size) : m_pos(pos), m_size(size) {}
 
     ::std::string str() const { return ::std::string(m_pos, m_size); }
-    const char* c_str() const { return m_pos; }
 
     size_t size() const { return m_size; }
     char operator[](size_t idx) const { return m_pos[idx]; }
+
+    pstring& operator= (const pstring& r)
+    {
+        m_pos = r.m_pos;
+        m_size = r.m_size;
+        return *this;
+    }
 
     bool operator== (const pstring& r) const
     {
