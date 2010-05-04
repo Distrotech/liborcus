@@ -97,14 +97,10 @@ bool tokens::is_valid_token(xml_token_t token)
 
 xml_token_t tokens::get_token(const pstring& name)
 {
-#if 0
-    return XML_UNKNOWN_TOKEN;
-#else
     name_token_map::token_type::const_iterator itr = name_token_map::tokens.find(name);
     if (itr == name_token_map::tokens.end())
         return XML_UNKNOWN_TOKEN;
     return itr->second;
-#endif
 }
 
 const char* tokens::get_token_name(xml_token_t token)
@@ -122,14 +118,10 @@ bool tokens::is_valid_nstoken(xmlns_token_t token)
 
 xmlns_token_t tokens::get_nstoken(const pstring& name)
 {
-#if 0
-    return XMLNS_UNKNOWN_TOKEN;
-#else
     name_token_map::nstoken_type::const_iterator itr = name_token_map::nstokens.find(name);
     if (itr == name_token_map::nstokens.end())
         return XMLNS_UNKNOWN_TOKEN;
     return itr->second;
-#endif
 }
 
 const char* tokens::get_nstoken_name(xmlns_token_t token)
