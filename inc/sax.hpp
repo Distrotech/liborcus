@@ -36,7 +36,7 @@
 
 #include "pstring.hpp"
 
-#define DEBUG_SAX_PARSER 0
+#define DEBUG_SAX_PARSER 1
 
 namespace orcus {
 
@@ -44,12 +44,15 @@ namespace orcus {
  * Template-based sax parser that doesn't use function pointer for 
  * callbacks for better performance, especially on large XML streams.
  */
-template<typename _Char, typename _Handler>
+template<typename _Char, typename _Handler, typename _Tokens>
 class sax_parser
 {
 public:
     typedef _Char       char_type;
     typedef _Handler    handler_type;
+    typedef _Tokens     tokens;
+    typedef typename tokens::token_type     token_type;
+    typedef typename tokens::nstoken_type   nstoken_type;
 
     class malformed_xml_error : public ::std::exception
     {
@@ -131,19 +134,19 @@ private:
     handler_type& m_handler;
 };
 
-template<typename _Char, typename _Handler>
-sax_parser<_Char,_Handler>::sax_parser(const char_type* content, const size_t size, handler_type& handler) :
+template<typename _Char, typename _Handler, typename _Tokens>
+sax_parser<_Char,_Handler,_Tokens>::sax_parser(const char_type* content, const size_t size, handler_type& handler) :
     m_content(content), m_size(size), m_pos(0), m_nest_level(0), m_handler(handler)
 {
 }
 
-template<typename _Char, typename _Handler>
-sax_parser<_Char,_Handler>::~sax_parser()
+template<typename _Char, typename _Handler, typename _Tokens>
+sax_parser<_Char,_Handler,_Tokens>::~sax_parser()
 {
 }
 
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::parse()
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::parse()
 {
     using namespace std;
     m_pos = 0;
@@ -154,8 +157,8 @@ void sax_parser<_Char,_Handler>::parse()
     cout << "finished parsing" << endl;
 }
 
-template<typename _Char, typename _Handler>
-::std::string sax_parser<_Char,_Handler>::indent() const
+template<typename _Char, typename _Handler, typename _Tokens>
+::std::string sax_parser<_Char,_Handler,_Tokens>::indent() const
 {
     ::std::ostringstream os;
     for (size_t i = 0; i < m_nest_level; ++i)
@@ -163,16 +166,16 @@ template<typename _Char, typename _Handler>
     return os.str();
 }
 
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::blank()
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::blank()
 {
     char_type c = cur_char();
     while (is_blank(c))
         c = next_char();
 }
 
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::header()
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::header()
 {
     using namespace std;
 
@@ -200,8 +203,8 @@ void sax_parser<_Char,_Handler>::header()
 #endif
 }
 
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::body()
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::body()
 {
     while (m_pos < m_size)
     {
@@ -212,8 +215,8 @@ void sax_parser<_Char,_Handler>::body()
     }
 }
 
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::element()
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::element()
 {
     assert(cur_char() == '<');
     char_type c = next_char();
@@ -223,16 +226,28 @@ void sax_parser<_Char,_Handler>::element()
         element_open();
 }
 
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::element_open()
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::element_open()
 {
-    using namespace std;
     assert(is_alpha(cur_char()));
 
-    pstring open_elem_name;
-    name(open_elem_name);
+    pstring elem_name;
+    token_type elem_token     = tokens::XML_UNKNOWN_TOKEN;
+    nstoken_type elem_nstoken = tokens::XMLNS_UNKNOWN_TOKEN;
+    name(elem_name);
+    if (cur_char() == ':')
+    {
+        elem_nstoken = tokens::get_nstoken(elem_name);
+        next();
+        name(elem_name);
+        elem_token = tokens::get_token(elem_name);
+    }
+    else
+        elem_token = tokens::get_token(elem_name);
+
 #if DEBUG_SAX_PARSER
-    cout << indent() << "<" << open_elem_name.str() << endl;
+    using namespace std;
+    cout << indent() << "<" << tokens::get_nstoken_name(elem_nstoken) << ":" << tokens::get_token_name(elem_token) << endl;
 #endif
     while (true)
     {
@@ -264,26 +279,38 @@ void sax_parser<_Char,_Handler>::element_open()
     }
 }
 
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::element_close()
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::element_close()
 {
     using namespace std;
     assert(cur_char() == '/');
     nest_down();
     next();
-    pstring close_elem_name;
-    name(close_elem_name);
+    pstring elem_name;
+    token_type elem_token     = tokens::XML_UNKNOWN_TOKEN;
+    nstoken_type elem_nstoken = tokens::XMLNS_UNKNOWN_TOKEN;;
+    name(elem_name);
+    if (cur_char() == ':')
+    {
+        elem_nstoken = tokens::get_nstoken(elem_name);
+        next();
+        name(elem_name);
+        elem_token = tokens::get_token(elem_name);
+    }
+    else
+        elem_token = tokens::get_token(elem_name);
+
     if (cur_char() != '>')
         throw malformed_xml_error("expected '>' to close the element.");
     next();
 
 #if DEBUG_SAX_PARSER
-    cout << indent() << "</" << close_elem_name.str() << ">" << endl;
+    cout << indent() << "</" << tokens::get_nstoken_name(elem_nstoken) << ":" << tokens::get_token_name(elem_token) << ">" << endl;
 #endif
 }
 
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::characters()
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::characters()
 {
     size_t first = m_pos;
     char_type c = cur_char();
@@ -301,12 +328,26 @@ void sax_parser<_Char,_Handler>::characters()
     }
 }
 
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::attribute()
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::attribute()
 {
     using namespace std;
     pstring _name, _value;
+    nstoken_type ns_token = tokens::XMLNS_UNKNOWN_TOKEN;
+    token_type name_token = tokens::XML_UNKNOWN_TOKEN;
     name(_name);
+    if (cur_char() == ':')
+    {
+        // Attribute name is namespaced.
+        ns_token = tokens::get_nstoken(_name);
+        next();
+        name(_name);
+        name_token = tokens::get_token(_name);
+    }
+    else
+        // Attribute name is without namespace.
+        name_token = tokens::get_token(_name);
+
     char_type c = cur_char();
     if (c != '=')
         throw malformed_xml_error("attribute must begin with 'name=..");
@@ -314,12 +355,12 @@ void sax_parser<_Char,_Handler>::attribute()
     value(_value);
 
 #if DEBUG_SAX_PARSER
-    cout << indent() << "  attribute: " << _name.str() << "=\"" << _value.str() << "\"" << endl;
+    cout << indent() << "  attribute: " << tokens::get_nstoken_name(ns_token) << ":" << tokens::get_token_name(name_token) << "=\"" << _value.str() << "\"" << endl;
 #endif
 }
 
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::name(pstring& str)
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::name(pstring& str)
 {
     size_t first = m_pos;
     char_type c = cur_char();
@@ -337,8 +378,8 @@ void sax_parser<_Char,_Handler>::name(pstring& str)
     str = pstring(reinterpret_cast<const char*>(m_content) + first, size);
 }
 
-template<typename _Char, typename _Handler>
-void sax_parser<_Char,_Handler>::value(pstring& str)
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::value(pstring& str)
 {
     char_type c = cur_char();
     if (c != '"')
@@ -356,8 +397,8 @@ void sax_parser<_Char,_Handler>::value(pstring& str)
     next();
 }
 
-template<typename _Char, typename _Handler>
-bool sax_parser<_Char,_Handler>::is_blank(char_type c)
+template<typename _Char, typename _Handler, typename _Tokens>
+bool sax_parser<_Char,_Handler,_Tokens>::is_blank(char_type c)
 {
     if (c == ' ')
         return true;
@@ -367,8 +408,8 @@ bool sax_parser<_Char,_Handler>::is_blank(char_type c)
     return false;
 }
 
-template<typename _Char, typename _Handler>
-bool sax_parser<_Char,_Handler>::is_alpha(char_type c)
+template<typename _Char, typename _Handler, typename _Tokens>
+bool sax_parser<_Char,_Handler,_Tokens>::is_alpha(char_type c)
 {
     if ('a' <= c && c <= 'z')
         return true;
@@ -377,17 +418,17 @@ bool sax_parser<_Char,_Handler>::is_alpha(char_type c)
     return false;
 }
 
-template<typename _Char, typename _Handler>
-bool sax_parser<_Char,_Handler>::is_name_char(char_type c)
+template<typename _Char, typename _Handler, typename _Tokens>
+bool sax_parser<_Char,_Handler,_Tokens>::is_name_char(char_type c)
 {
-    if (c == ':' || c == '-')
+    if (c == '-')
         return true;
 
     return false;
 }
 
-template<typename _Char, typename _Handler>
-bool sax_parser<_Char,_Handler>::is_numeric(char_type c)
+template<typename _Char, typename _Handler, typename _Tokens>
+bool sax_parser<_Char,_Handler,_Tokens>::is_numeric(char_type c)
 {
     if ('0' <= c && c <= '9')
         return true;

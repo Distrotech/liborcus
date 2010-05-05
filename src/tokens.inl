@@ -55,6 +55,9 @@ name_token_map::token_type   name_token_map::tokens;
 name_token_map::nstoken_type name_token_map::nstokens;
 pthread_mutex_t name_token_map::lock;
 
+xml_token_t tokens::XML_UNKNOWN_TOKEN     = XML_UNKNOWN_TOKEN;
+xmlns_token_t tokens::XMLNS_UNKNOWN_TOKEN = XMLNS_UNKNOWN_TOKEN;
+
 void tokens::init()
 {
     thread_mutex_guard guard(name_token_map::lock);

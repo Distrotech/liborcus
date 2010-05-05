@@ -28,6 +28,8 @@
 
 import xml.parsers.expat, sys
 
+import token_util
+
 class xml_parser:
 
     def __init__ (self, strm):
@@ -72,14 +74,6 @@ class xml_parser:
         p.CharacterDataHandler = self.character
         p.Parse(self.__strm, 1)
 
-def normalize_name (old):
-    new = ''
-    for c in old:
-        if c in '.-': # '.' nad '-' are not allowed in C++ symbols.
-            c = '_'
-        new += c
-    return new
-
 def get_auto_gen_warning ():
     return "// This file has been auto-generated.  Do not hand-edit this.\n\n"
 
@@ -91,7 +85,7 @@ def gen_token_constants (filepath, tokens, ns_tokens):
     token_id = 1
     token_size = len(tokens)
     for i in xrange(0, token_size):
-        token = normalize_name(tokens[i])
+        token = token_util.normalize_name(tokens[i])
         outfile.write("const xml_token_t XML_%s = %d;\n"%(token, token_id))
         token_id += 1
     outfile.write("\n")
@@ -99,7 +93,7 @@ def gen_token_constants (filepath, tokens, ns_tokens):
     token_id = 1
     token_size = len(ns_tokens)
     for i in xrange(0, token_size):
-        token = normalize_name(ns_tokens[i])
+        token = token_util.normalize_name(ns_tokens[i])
         outfile.write("const xmlns_token_t XMLNS_%s = %d;\n"%(token, token_id))
         token_id += 1
 
@@ -111,7 +105,7 @@ def gen_token_names (filepath, tokens, ns_tokens):
     outfile.write(get_auto_gen_warning())
 
     outfile.write("const char* token_names[] = {\n")
-    outfile.write("    \"- unknown -\", // 0\n")
+    outfile.write("    \"%s\", // 0\n"%token_util.unknown_token_name)
     token_id = 1
     token_size = len(tokens)
     for i in xrange(0, token_size):
@@ -125,7 +119,7 @@ def gen_token_names (filepath, tokens, ns_tokens):
     outfile.write("size_t token_name_count = %d;\n\n"%token_id)
 
     outfile.write("const char* nstoken_names[] = {\n")
-    outfile.write("    \"- unknown -\", // 0\n")
+    outfile.write("    \"%s\", // 0\n"%token_util.unknown_token_name)
     token_id = 1
     token_size = len(ns_tokens)
     for i in xrange(0, token_size):

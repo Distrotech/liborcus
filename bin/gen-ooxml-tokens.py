@@ -98,7 +98,7 @@ def gen_token_names (filepath, tokens):
     outfile.write(get_auto_gen_warning())
 
     outfile.write("const char* token_names[] = {\n")
-    outfile.write("    \"- unknown -\", // 0\n")
+    outfile.write("    \"%s\", // 0\n"%token_util.unknown_token_name)
     token_id = 1
     token_size = len(tokens)
     for i in xrange(0, token_size):
@@ -112,7 +112,7 @@ def gen_token_names (filepath, tokens):
     outfile.write("size_t token_name_count = %d;\n\n"%token_id)
 
     outfile.write("const char* nstoken_names[] = {\n")
-    outfile.write("    \"- unknown -\", // 0\n")
+    outfile.write("    \"%s\", // 0\n"%token_util.unknown_token_name)
     token_id = 1
     ns_tokens = gen_ooxml_namespaces()
     token_size = len(ns_tokens)

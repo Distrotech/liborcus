@@ -36,6 +36,12 @@ namespace orcus {
 class tokens
 {
 public:
+    typedef xml_token_t     token_type;
+    typedef xmlns_token_t   nstoken_type;
+    
+    static xml_token_t      XML_UNKNOWN_TOKEN;
+    static xmlns_token_t    XMLNS_UNKNOWN_TOKEN;
+
     /** 
      * Initialize data used in this class.  Call this once before starting to 
      * use methods of this class.  This method is synchronized.

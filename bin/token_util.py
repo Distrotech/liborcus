@@ -33,3 +33,5 @@ def normalize_name (old):
             c = '_'
         new += c
     return new
+
+unknown_token_name = "??"
