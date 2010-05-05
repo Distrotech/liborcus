@@ -37,7 +37,7 @@
 #include <vector>
 #include <sstream>
 
-#define USE_LIBXML 1
+#define USE_LIBXML 0
 
 using namespace std;
 
@@ -273,7 +273,7 @@ void xml_stream_parser::parse()
     if (!mp_handler)
         return;
 
-    sax_parser<uint8_t, xml_stream_handler> sax(m_content, m_size, *mp_handler);
+    sax_parser<char, xml_stream_handler> sax(reinterpret_cast<const char*>(m_content), m_size, *mp_handler);
     sax.parse();
 #endif
 }
