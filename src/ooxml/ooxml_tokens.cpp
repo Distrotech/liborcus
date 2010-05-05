@@ -36,7 +36,11 @@ using namespace std;
 
 namespace orcus {
 
+namespace {
+
 #include "ooxml_tokens.inl"
+
+}
 
 }
 

@@ -27,6 +27,8 @@
 
 namespace orcus {
 
+namespace {
+
 struct string_hash
 {
     size_t operator() (const pstring& val) const
@@ -54,6 +56,8 @@ struct name_token_map
 name_token_map::token_type   name_token_map::tokens;
 name_token_map::nstoken_type name_token_map::nstokens;
 pthread_mutex_t name_token_map::lock;
+
+}
 
 xml_token_t tokens::XML_UNKNOWN_TOKEN     = XML_UNKNOWN_TOKEN;
 xmlns_token_t tokens::XMLNS_UNKNOWN_TOKEN = XMLNS_UNKNOWN_TOKEN;

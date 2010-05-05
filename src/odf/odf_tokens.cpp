@@ -37,7 +37,11 @@ using namespace std;
 
 namespace orcus {
 
+namespace {
+
 #include "odf_tokens.inl"
+
+}
 
 }
 
