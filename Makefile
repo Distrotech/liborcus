@@ -38,7 +38,7 @@ ODF_SCHEMAPATH=$(ROOTDIR)/misc/$(ODF_SCHEMA)
 
 OOXML_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip
 
-CPPFLAGS=-I$(INCDIR) -Os -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
+CPPFLAGS=-I$(INCDIR) -O2 -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1`
 
 ODF_HEADERS= \
@@ -69,6 +69,9 @@ ODF_OBJFILES= \
 	$(OBJDIR)/odf/paracontext.o \
 	$(OBJDIR)/model/odstable.o
 
+SHARED_INLS= \
+	$(SRCDIR)/tokens.inl
+
 XLSX_HEADERS= \
 	$(INCDIR)/ooxml/ooxml_token_constants.hpp \
 	
@@ -83,6 +86,7 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/ooxml/xlsx_context.o
 
 DEPENDS= \
+	$(SHARED_INLS) \
 	$(ODF_HEADERS) \
 	$(XLSX_HEADERS)
 

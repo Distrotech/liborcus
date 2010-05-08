@@ -57,6 +57,8 @@ public:
         return *this;
     }
 
+    const char* get() const { return m_pos; }
+
     bool operator== (const pstring& r) const
     {
         if (m_size != r.m_size)

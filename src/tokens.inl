@@ -33,11 +33,15 @@ struct string_hash
 {
     size_t operator() (const pstring& val) const
     {
-        size_t n = val.size();
-        size_t hash_val = ~n;
-        size_t loop_size = min<size_t>(n, 20); // prevent too much looping.
+        size_t hash_val = val.size();
+        size_t loop_size = min<size_t>(hash_val, 20); // prevent too much looping.
+        const char* p = val.get();
         for (size_t i = 0; i < loop_size; ++i)
-            hash_val += static_cast<size_t>(val[i]);
+        {
+            hash_val += static_cast<size_t>(*p);
+            hash_val *= 2;
+            ++p;
+        }
 
         return hash_val;
     }
