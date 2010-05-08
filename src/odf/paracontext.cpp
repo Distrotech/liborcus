@@ -66,13 +66,12 @@ bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void text_para_context::characters(const char* ch, size_t len)
+void text_para_context::characters(const pstring& str)
 {
-    for (size_t i = 0; i < len; ++i)
-        m_para_content.push_back(ch[i]);
+    m_para_content = str;
 }
 
-const string& text_para_context::get_content() const
+const pstring& text_para_context::get_content() const
 {
     return m_para_content;
 }

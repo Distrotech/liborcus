@@ -39,7 +39,7 @@ namespace orcus {
 
 namespace {
 
-class table_attr_parser : public unary_function<xml_attr, void>
+class table_attr_parser : public unary_function<xml_attr_t, void>
 {
 public:
     table_attr_parser() {}
@@ -48,7 +48,7 @@ public:
     {
     }
 
-    void operator() (const xml_attr& attr)
+    void operator() (const xml_attr_t& attr)
     {
         if (attr.ns == XMLNS_table && attr.name == XML_name)
             m_name = attr.value;
@@ -59,10 +59,10 @@ public:
         return new model::ods_table(m_name);
     }
 private:
-    ::std::string m_name;
+    pstring m_name;
 };
 
-class row_attr_parser : public unary_function<xml_attr, void>
+class row_attr_parser : public unary_function<xml_attr_t, void>
 {
 public:
     row_attr_parser(ods_content_xml_context::row_attr& attr) :
@@ -70,13 +70,13 @@ public:
     row_attr_parser(const row_attr_parser& r) :
         m_attr(r.m_attr) {}
 
-    void operator() (const xml_attr& attr)
+    void operator() (const xml_attr_t& attr)
     {
         if (attr.ns == XMLNS_table && attr.name == XML_number_rows_repeated)
         {
             char* endptr;
-            long val = strtol(attr.value.c_str(), &endptr, 10);
-            if (endptr != attr.value.c_str())
+            long val = strtol(attr.value.str().c_str(), &endptr, 10);
+            if (endptr != attr.value.str())
                 m_attr.number_rows_repeated = static_cast<uint32_t>(val);
         }
     }
@@ -84,7 +84,7 @@ private:
     ods_content_xml_context::row_attr& m_attr;
 };
 
-class cell_attr_parser : public unary_function<xml_attr, void>
+class cell_attr_parser : public unary_function<xml_attr_t, void>
 {
 public:
     cell_attr_parser(ods_content_xml_context::cell_attr& attr) :
@@ -92,13 +92,13 @@ public:
     cell_attr_parser(const cell_attr_parser& r) :
         m_attr(r.m_attr) {}
 
-    void operator() (const xml_attr& attr)
+    void operator() (const xml_attr_t& attr)
     {
         if (attr.ns == XMLNS_table && attr.name == XML_number_columns_repeated)
         {
             char* endptr;
-            long val = strtol(attr.value.c_str(), &endptr, 10);
-            if (endptr != attr.value.c_str())
+            long val = strtol(attr.value.str().c_str(), &endptr, 10);
+            if (endptr != attr.value.str())
                 m_attr.number_columns_repeated = static_cast<uint32_t>(val);
         }
     }
@@ -115,13 +115,13 @@ public:
         size_t row_size = table.row_size();
         size_t col_size = table.col_size();
 
-        m_file << "<table border=\"1\">" << "<caption>" << table.get_name() << "</caption>";
+        m_file << "<table border=\"1\">" << "<caption>" << table.get_name().str() << "</caption>";
         for (size_t row = 0; row < row_size; ++row)
         {
             m_file << "<tr>";
             for (size_t col = 0; col < col_size; ++col)
             {
-                m_file << "<td>" << table.get_cell(row, col) << "</td>";
+                m_file << "<td>" << table.get_cell(row, col).str() << "</td>";
             }
             m_file << "</tr>" << endl;
         }
@@ -258,7 +258,7 @@ bool ods_content_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void ods_content_xml_context::characters(const char* ch, size_t len)
+void ods_content_xml_context::characters(const pstring& str)
 {
 }
 
@@ -272,7 +272,7 @@ void ods_content_xml_context::start_table(const xml_attrs_t& attrs, const xml_to
 
     table_attr_parser parser = for_each(attrs.begin(), attrs.end(), table_attr_parser());
     m_tables.push_back(parser.create_table());
-    cout << "start table: " << m_tables.back().get_name() << endl;
+    cout << "start table: " << m_tables.back().get_name().str() << endl;
 
     m_row = m_col = 0;
 }

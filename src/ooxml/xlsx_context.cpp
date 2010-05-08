@@ -68,7 +68,7 @@ bool xlsx_sheet_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void xlsx_sheet_xml_context::characters(const char* ch, size_t len)
+void xlsx_sheet_xml_context::characters(const pstring& str)
 {
 }
 

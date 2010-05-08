@@ -131,10 +131,10 @@ void start_element(void* ctx, const xmlChar* name, const xmlChar** attrs)
     xmlns_token_t nstoken;
     xml_token_t token;
     name_to_tokens(name, nstoken, token);
-    vector<xml_attr> attrs_array;
+    vector<xml_attr_t> attrs_array;
     if (attrs)
     {
-        xml_attr cur;
+        xml_attr_t cur;
         for (int i = 0; attrs[i]; ++i)
         {
             const xmlChar* attr = attrs[i];

@@ -29,8 +29,8 @@
 #define __ORCUS_MODEL_ODSTABLE_HPP__
 
 #include "model/global.hpp"
+#include "pstring.hpp"
 
-#include <string>
 #include <unordered_map>
 
 namespace orcus { namespace model {
@@ -38,15 +38,15 @@ namespace orcus { namespace model {
 class ods_table
 {
 public:
-    typedef ::std::unordered_map<col_t, ::std::string>   row_type;
+    typedef ::std::unordered_map<col_t, pstring>   row_type;
     typedef ::std::unordered_map<row_t, row_type*>       sheet_type;
 
-    ods_table(const ::std::string& name);
+    ods_table(const pstring& name);
     ~ods_table();
 
-    const ::std::string& get_name() const;
-    void set_cell(row_t row, col_t col, const ::std::string& val);
-    ::std::string get_cell(row_t row, col_t col) const;
+    const pstring& get_name() const;
+    void set_cell(row_t row, col_t col, const pstring& val);
+    pstring get_cell(row_t row, col_t col) const;
     size_t row_size() const;
     size_t col_size() const;
 
@@ -54,7 +54,7 @@ private:
     ods_table(); // disabled
 
 private:
-    ::std::string   m_name;
+    pstring   m_name;
     sheet_type      m_sheet;
 };
 

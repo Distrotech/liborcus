@@ -36,18 +36,6 @@
 
 namespace orcus {
 
-/** 
- * Single xml attribute entry
- */
-struct xml_attr
-{
-    xmlns_token_t   ns;
-    xml_token_t     name;
-    ::std::string   value;
-};
-
-typedef ::std::vector<xml_attr> xml_attrs_t;
-
 class xml_stream_handler
 {
 public:
@@ -56,9 +44,9 @@ public:
 
     virtual void start_document() = 0;
     virtual void end_document() = 0;
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const ::std::vector<xml_attr>& attrs) = 0;
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs) = 0;
     virtual void end_element(xmlns_token_t ns, xml_token_t name) = 0;
-    virtual void characters(const char* ch, size_t len) = 0;
+    virtual void characters(const pstring& str) = 0;
 };
 
 }

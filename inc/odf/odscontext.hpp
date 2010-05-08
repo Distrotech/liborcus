@@ -59,7 +59,7 @@ public:
 
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);
-    virtual void characters(const char* ch, size_t len);
+    virtual void characters(const pstring& str);
 
     void print_html(const ::std::string& filepath) const;
 
@@ -84,7 +84,7 @@ private:
 
     uint32_t m_row;
     uint32_t m_col;
-    ::std::string m_para_content; // store the content of current <text:p> element.
+    pstring m_para_content; // store the content of current <text:p> element.
 };
 
 }

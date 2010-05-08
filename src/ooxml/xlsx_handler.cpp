@@ -54,7 +54,7 @@ void xlsx_sheet_xml_handler::end_document()
 }
 
 void xlsx_sheet_xml_handler::start_element(
-    xmlns_token_t ns, xml_token_t name, const vector<xml_attr>& attrs)
+    xmlns_token_t ns, xml_token_t name, const vector<xml_attr_t>& attrs)
 {
     xml_context_base& cur = get_current_context();
     if (!cur.can_handle_element(ns, name))
@@ -79,9 +79,9 @@ void xlsx_sheet_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
     }
 }
 
-void xlsx_sheet_xml_handler::characters(const char* ch, size_t len)
+void xlsx_sheet_xml_handler::characters(const pstring& str)
 {
-    get_current_context().characters(ch, len);
+    get_current_context().characters(str);
 }
 
 xml_context_base& xlsx_sheet_xml_handler::get_current_context()

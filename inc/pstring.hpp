@@ -69,6 +69,17 @@ public:
         return true;
     }
 
+    bool empty() const
+    {
+        return m_size == 0;
+    }
+
+    void clear()
+    {
+        m_pos = NULL;
+        m_size = 0;
+    }
+
 private:
     const char* m_pos;
     size_t      m_size;

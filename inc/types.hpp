@@ -29,6 +29,7 @@
 #define __ORCUS_TYPES_HPP__
 
 #include <cstdlib>
+#include <vector>
 #include "pstring.hpp"
 
 namespace orcus {
@@ -49,6 +50,8 @@ struct xml_attr_t
     xml_attr_t(xmlns_token_t _ns, xml_token_t _name, const pstring& _value) :
         ns(_ns), name(_name), value(_value) {}
 };
+
+typedef ::std::vector<xml_attr_t> xml_attrs_t;
 
 }
 

@@ -30,7 +30,7 @@
 
 #include "xmlcontext.hpp"
 
-#include <string>
+#include "pstring.hpp"
 
 namespace orcus {
 
@@ -46,12 +46,12 @@ public:
 
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);
-    virtual void characters(const char* ch, size_t len);
+    virtual void characters(const pstring& str);
 
-    const ::std::string& get_content() const;
+    const pstring& get_content() const;
 
 private:
-    ::std::string m_para_content;
+    pstring m_para_content;
 };
 
 }

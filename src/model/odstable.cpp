@@ -65,7 +65,7 @@ private:
 
 }
 
-ods_table::ods_table(const string& name) :
+ods_table::ods_table(const pstring& name) :
     m_name(name)
 {
 }
@@ -75,12 +75,12 @@ ods_table::~ods_table()
     for_each(m_sheet.begin(), m_sheet.end(), row_deleter());
 }
 
-const string& ods_table::get_name() const
+const pstring& ods_table::get_name() const
 {
     return m_name;
 }
 
-void ods_table::set_cell(row_t row, col_t col, const string& val)
+void ods_table::set_cell(row_t row, col_t col, const pstring& val)
 {
     sheet_type::iterator itr = m_sheet.find(row);
     if (itr == m_sheet.end())
@@ -96,16 +96,16 @@ void ods_table::set_cell(row_t row, col_t col, const string& val)
     p->insert(row_type::value_type(col, val));
 }
 
-string ods_table::get_cell(row_t row, col_t col) const
+pstring ods_table::get_cell(row_t row, col_t col) const
 {
     sheet_type::const_iterator itr = m_sheet.find(row);
     if (itr == m_sheet.end())
-        return string();
+        return pstring();
 
     row_type* p = itr->second;
     row_type::const_iterator itr_cell = p->find(col);
     if (itr_cell == p->end())
-        return string();
+        return pstring();
 
     return itr_cell->second;
 }

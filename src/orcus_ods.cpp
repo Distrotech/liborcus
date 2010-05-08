@@ -50,7 +50,7 @@ void read_content_xml(GsfInput* input, size_t size, const char* outpath)
     ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler);
     parser.set_handler(handler.get());
     parser.parse();
-    handler->print_html(outpath);
+//  handler->print_html(outpath);
 }
 
 void read_content(GsfInput* input, const char* outpath)

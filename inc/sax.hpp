@@ -37,7 +37,7 @@
 
 #include "pstring.hpp"
 
-#define DEBUG_SAX_PARSER 1
+#define DEBUG_SAX_PARSER 0
 
 namespace orcus {
 
@@ -288,17 +288,20 @@ void sax_parser<_Char,_Handler,_Tokens>::element_open()
             if (next_char() != '>')
                 throw malformed_xml_error("expected '/>' to self-close the element.");
             next();
+            m_handler.start_element(elem_nstoken, elem_token, m_attrs);
 #if DEBUG_SAX_PARSER
             print_attributes();
             cout << indent() << "/>" << endl;
 #endif
             clear_attributes();
+            m_handler.end_element(elem_nstoken, elem_token);
             return;
         }
         else if (c == '>')
         {
             // End of opening element: <element>
             next();
+            m_handler.start_element(elem_nstoken, elem_token, m_attrs);
 #if DEBUG_SAX_PARSER
             print_attributes();
             cout << indent() << ">" << endl;
@@ -336,6 +339,7 @@ void sax_parser<_Char,_Handler,_Tokens>::element_close()
         throw malformed_xml_error("expected '>' to close the element.");
     next();
 
+    m_handler.end_element(elem_nstoken, elem_token);
 #if DEBUG_SAX_PARSER
     using namespace std;
     cout << indent() << "</" << tokens::get_nstoken_name(elem_nstoken) << ":" << tokens::get_token_name(elem_token) << ">" << endl;
@@ -354,6 +358,7 @@ void sax_parser<_Char,_Handler,_Tokens>::characters()
     {
         size_t size = m_pos - first;
         pstring val(reinterpret_cast<const char*>(m_content) + first, size);
+        m_handler.characters(val);
 #if DEBUG_SAX_PARSER
         using namespace std;
         cout << indent() << val.str() << endl;
