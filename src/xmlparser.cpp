@@ -273,7 +273,7 @@ void xml_stream_parser::parse()
     if (!mp_handler)
         return;
 
-    sax_parser<char, xml_stream_handler, tokens> sax(reinterpret_cast<const char*>(m_content), m_size, *mp_handler);
+    sax_parser<xml_stream_handler, tokens> sax(reinterpret_cast<const char*>(m_content), m_size, *mp_handler);
     sax.parse();
 #endif
 }
