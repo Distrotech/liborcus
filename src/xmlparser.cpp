@@ -43,6 +43,7 @@ using namespace std;
 
 namespace orcus {
 
+#if USE_LIBXML
 namespace {
 
 struct parser_context
@@ -241,6 +242,7 @@ xmlSAXHandler sax_handler_struct = {
 static xmlSAXHandlerPtr sax_handler = &sax_handler_struct;
 
 }
+#endif
 
 // ============================================================================
 

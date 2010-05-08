@@ -36,11 +36,10 @@ struct string_hash
         size_t hash_val = val.size();
         size_t loop_size = min<size_t>(hash_val, 20); // prevent too much looping.
         const char* p = val.get();
-        for (size_t i = 0; i < loop_size; ++i)
+        for (size_t i = 0; i < loop_size; ++i, ++p)
         {
             hash_val += static_cast<size_t>(*p);
             hash_val *= 2;
-            ++p;
         }
 
         return hash_val;
