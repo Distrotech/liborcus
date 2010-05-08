@@ -38,6 +38,7 @@ class tokens
 public:
     typedef xml_token_t     token_type;
     typedef xmlns_token_t   nstoken_type;
+    typedef xml_attr_t      attr_type;
     
     static xml_token_t      XML_UNKNOWN_TOKEN;
     static xmlns_token_t    XMLNS_UNKNOWN_TOKEN;

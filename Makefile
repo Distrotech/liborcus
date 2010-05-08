@@ -49,6 +49,7 @@ ODF_HEADERS= \
 	$(INCDIR)/xmlcontext.hpp \
 	$(INCDIR)/xmlparser.hpp \
 	$(INCDIR)/tokens.hpp \
+	$(INCDIR)/types.hpp \
 	$(INCDIR)/odf/odf_token_constants.hpp \
 	$(INCDIR)/odf/odshandler.hpp \
 	$(INCDIR)/odf/odscontext.hpp \

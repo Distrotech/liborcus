@@ -29,6 +29,7 @@
 #define __ORCUS_TYPES_HPP__
 
 #include <cstdlib>
+#include "pstring.hpp"
 
 namespace orcus {
 
@@ -37,6 +38,17 @@ typedef size_t xmlns_token_t;
 
 const xml_token_t   XML_UNKNOWN_TOKEN = 0;
 const xmlns_token_t XMLNS_UNKNOWN_TOKEN = 0;
+
+struct xml_attr_t
+{
+    xmlns_token_t ns;
+    xml_token_t   name;
+    pstring       value;
+
+    xml_attr_t() : ns(XML_UNKNOWN_TOKEN), name(XML_UNKNOWN_TOKEN) {}
+    xml_attr_t(xmlns_token_t _ns, xml_token_t _name, const pstring& _value) :
+        ns(_ns), name(_name), value(_value) {}
+};
 
 }
 

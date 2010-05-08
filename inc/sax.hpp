@@ -32,13 +32,36 @@
 #include <cassert>
 #include <sstream>
 #include <exception>
-#include <string>
+#include <vector>
+#include <algorithm>
 
 #include "pstring.hpp"
 
 #define DEBUG_SAX_PARSER 1
 
 namespace orcus {
+
+namespace sax {
+
+template<typename _Attr, typename _Tokens>
+class attr_printer : public ::std::unary_function<_Attr, void>
+{
+public:
+    attr_printer(const ::std::string& indent) : m_indent(indent) {}
+
+    void operator() (const _Attr& attr) const
+    {
+        using namespace std;
+        cout << m_indent << "  attribute: " 
+            << _Tokens::get_nstoken_name(attr.ns) << ":" 
+            << _Tokens::get_token_name(attr.name) << "=\"" 
+            << attr.value.str() << "\"" << endl;
+    }
+private:
+    ::std::string m_indent;
+};
+
+}
 
 /** 
  * Template-based sax parser that doesn't use function pointer for 
@@ -53,6 +76,7 @@ public:
     typedef _Tokens     tokens;
     typedef typename tokens::token_type     token_type;
     typedef typename tokens::nstoken_type   nstoken_type;
+    typedef typename tokens::attr_type      attr_type;
 
     class malformed_xml_error : public ::std::exception
     {
@@ -121,12 +145,16 @@ private:
     void name(pstring& str);
     void value(pstring& str);
 
+    void clear_attributes();
+    void print_attributes() const;
+
     static bool is_blank(char_type c);
     static bool is_alpha(char_type c);
     static bool is_name_char(char_type c);
     static bool is_numeric(char_type c);
 
 private:
+    ::std::vector<attr_type> m_attrs;
     const char_type* m_content;
     const size_t m_size;
     size_t m_pos;
@@ -199,8 +227,10 @@ void sax_parser<_Char,_Handler,_Tokens>::header()
 
     next();
 #if DEBUG_SAX_PARSER
+    print_attributes();
     cout << "?>" << endl;
 #endif
+    clear_attributes();
 }
 
 template<typename _Char, typename _Handler, typename _Tokens>
@@ -260,8 +290,10 @@ void sax_parser<_Char,_Handler,_Tokens>::element_open()
                 throw malformed_xml_error("expected '/>' to self-close the element.");
             next();
 #if DEBUG_SAX_PARSER
+            print_attributes();
             cout << indent() << "/>" << endl;
 #endif
+            clear_attributes();
             return;
         }
         else if (c == '>')
@@ -269,8 +301,10 @@ void sax_parser<_Char,_Handler,_Tokens>::element_open()
             // End of opening element: <element>
             next();
 #if DEBUG_SAX_PARSER
+            print_attributes();
             cout << indent() << ">" << endl;
 #endif
+            clear_attributes();
             nest_up();
             return;
         }
@@ -354,8 +388,10 @@ void sax_parser<_Char,_Handler,_Tokens>::attribute()
     next();
     value(_value);
 
+    m_attrs.push_back(attr_type(ns_token, name_token, _value));
+
 #if DEBUG_SAX_PARSER
-    cout << indent() << "  attribute: " << tokens::get_nstoken_name(ns_token) << ":" << tokens::get_token_name(name_token) << "=\"" << _value.str() << "\"" << endl;
+//  cout << indent() << "  attribute: " << tokens::get_nstoken_name(ns_token) << ":" << tokens::get_token_name(name_token) << "=\"" << _value.str() << "\"" << endl;
 #endif
 }
 
@@ -395,6 +431,19 @@ void sax_parser<_Char,_Handler,_Tokens>::value(pstring& str)
 
     // Skip the closing quote.
     next();
+}
+
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::clear_attributes()
+{
+    m_attrs.clear();
+}
+
+template<typename _Char, typename _Handler, typename _Tokens>
+void sax_parser<_Char,_Handler,_Tokens>::print_attributes() const
+{
+    using namespace std;
+    for_each(m_attrs.begin(), m_attrs.end(), sax::attr_printer<attr_type, tokens>(indent()));
 }
 
 template<typename _Char, typename _Handler, typename _Tokens>
