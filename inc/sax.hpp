@@ -100,15 +100,12 @@ private:
 
     ::std::string indent() const;
 
-    size_t cur_pos() const { return m_pos; }
-
-    void next() { ++m_pos; }
+    void next() { ++m_pos; ++m_char; }
 
     void nest_up() { ++m_nest_level; }
     void nest_down()
     {
-//      if (m_nest_level == 0)
-//          throw malformed_xml_error("nest level is about to go below zero.");
+        assert(m_nest_level > 0);
         --m_nest_level; 
     }
 
@@ -116,15 +113,15 @@ private:
     {
 //      if (m_pos >= m_size)
 //          throw malformed_xml_error("xml stream ended prematurely.");
-        return m_content[m_pos]; 
+        return *m_char;
     }
 
     char_type next_char()
     {
-        ++m_pos;
+        next();
 //      if (m_pos >= m_size)
 //          throw malformed_xml_error("xml stream ended prematurely.");
-        return m_content[m_pos]; 
+        return *m_char;
     }
 
     void blank();
@@ -156,6 +153,7 @@ private:
 private:
     ::std::vector<attr_type> m_attrs;
     const char_type* m_content;
+    const char_type* m_char;
     const size_t m_size;
     size_t m_pos;
     size_t m_nest_level;
@@ -164,7 +162,7 @@ private:
 
 template<typename _Char, typename _Handler, typename _Tokens>
 sax_parser<_Char,_Handler,_Tokens>::sax_parser(const char_type* content, const size_t size, handler_type& handler) :
-    m_content(content), m_size(size), m_pos(0), m_nest_level(0), m_handler(handler)
+    m_content(content), m_char(content), m_size(size), m_pos(0), m_nest_level(0), m_handler(handler)
 {
 }
 
@@ -179,6 +177,7 @@ void sax_parser<_Char,_Handler,_Tokens>::parse()
     using namespace std;
     m_pos = 0;
     m_nest_level = 0;
+    m_char = m_content;
     header();
     blank();
     body();
