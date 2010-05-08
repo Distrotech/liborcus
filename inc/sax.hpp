@@ -268,10 +268,10 @@ void sax_parser<_Char,_Handler,_Tokens>::element_open()
         {
             // End of opening element: <element>
             next();
-            nest_up();
 #if DEBUG_SAX_PARSER
             cout << indent() << ">" << endl;
 #endif
+            nest_up();
             return;
         }
         else
