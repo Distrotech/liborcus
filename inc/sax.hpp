@@ -205,13 +205,12 @@ void sax_parser<_Char,_Handler,_Tokens>::blank()
 template<typename _Char, typename _Handler, typename _Tokens>
 void sax_parser<_Char,_Handler,_Tokens>::header()
 {
-    using namespace std;
-
     char_type c = cur_char();
     if (c != '<' || next_char() != '?' || next_char() != 'x' || next_char() != 'm' || next_char() != 'l')
         throw malformed_xml_error("xml header must begin with '<?xml'.");
 
 #if DEBUG_SAX_PARSER
+    using namespace std;
     cout << "<?xml " << endl;
 #endif
 
@@ -316,7 +315,6 @@ void sax_parser<_Char,_Handler,_Tokens>::element_open()
 template<typename _Char, typename _Handler, typename _Tokens>
 void sax_parser<_Char,_Handler,_Tokens>::element_close()
 {
-    using namespace std;
     assert(cur_char() == '/');
     nest_down();
     next();
@@ -339,6 +337,7 @@ void sax_parser<_Char,_Handler,_Tokens>::element_close()
     next();
 
 #if DEBUG_SAX_PARSER
+    using namespace std;
     cout << indent() << "</" << tokens::get_nstoken_name(elem_nstoken) << ":" << tokens::get_token_name(elem_token) << ">" << endl;
 #endif
 }
@@ -365,7 +364,6 @@ void sax_parser<_Char,_Handler,_Tokens>::characters()
 template<typename _Char, typename _Handler, typename _Tokens>
 void sax_parser<_Char,_Handler,_Tokens>::attribute()
 {
-    using namespace std;
     pstring _name, _value;
     nstoken_type ns_token = tokens::XMLNS_UNKNOWN_TOKEN;
     token_type name_token = tokens::XML_UNKNOWN_TOKEN;
@@ -389,10 +387,6 @@ void sax_parser<_Char,_Handler,_Tokens>::attribute()
     value(_value);
 
     m_attrs.push_back(attr_type(ns_token, name_token, _value));
-
-#if DEBUG_SAX_PARSER
-//  cout << indent() << "  attribute: " << tokens::get_nstoken_name(ns_token) << ":" << tokens::get_token_name(name_token) << "=\"" << _value.str() << "\"" << endl;
-#endif
 }
 
 template<typename _Char, typename _Handler, typename _Tokens>
