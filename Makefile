@@ -97,8 +97,8 @@ $(OBJDIR)/pre:
 	mkdir $(OBJDIR)/model 2>/dev/null || /bin/true
 	mkdir $(OBJDIR)/odf   2>/dev/null || /bin/true
 	mkdir $(OBJDIR)/ooxml 2>/dev/null || /bin/true
-	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/odf/odf_token_constants.inl $(SRCDIR)/odf/odf_tokens.inl
-	$(BINDIR)/gen-ooxml-tokens.py $(OOXML_SCHEMAPATH) $(INCDIR)/ooxml/ooxml_token_constants.inl $(SRCDIR)/ooxml/ooxml_tokens.inl
+	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/odf/odf_token_constants.inl $(SRCDIR)/odf/odf_tokens.inl $(SRCDIR)/odf/odf_tokens.txt
+	$(BINDIR)/gen-ooxml-tokens.py $(OOXML_SCHEMAPATH) $(INCDIR)/ooxml/ooxml_token_constants.inl $(SRCDIR)/ooxml/ooxml_tokens.inl $(SRCDIR)/ooxml/ooxml_tokens.txt
 	touch $@
 
 $(OBJDIR)/orcus_ods.o: $(SRCDIR)/orcus_ods.cpp $(DEPENDS)

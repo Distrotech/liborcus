@@ -35,3 +35,17 @@ def normalize_name (old):
     return new
 
 unknown_token_name = "??"
+
+def gen_token_list (filepath, tokens, ns_tokens):
+    dic = {}
+    for t in tokens:
+        dic[t] = True
+    for t in ns_tokens:
+        dic[t] = True
+
+    keys = dic.keys()
+    keys.sort()
+    file = open(filepath, 'w')
+    for key in keys:
+        file.write(key + "\n")
+    file.close()

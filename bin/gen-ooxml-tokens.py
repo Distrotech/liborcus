@@ -153,6 +153,7 @@ def main (args):
     tokens = get_all_tokens_from_zip(args[1])
     gen_token_constants(args[2], tokens)
     gen_token_names(args[3], tokens)
+    token_util.gen_token_list(sys.argv[4], tokens, gen_ooxml_namespaces())
 
 if __name__ == '__main__':
     main(sys.argv)

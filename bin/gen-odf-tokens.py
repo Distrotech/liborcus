@@ -149,6 +149,7 @@ def main (args):
 
     gen_token_constants(sys.argv[2], tokens, ns_tokens)
     gen_token_names(sys.argv[3], tokens, ns_tokens)
+    token_util.gen_token_list(sys.argv[4], tokens, ns_tokens)
 
 if __name__ == '__main__':
     main(sys.argv)
