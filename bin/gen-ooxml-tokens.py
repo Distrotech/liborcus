@@ -63,7 +63,7 @@ def get_auto_gen_warning ():
 
 
 def gen_ooxml_namespaces ():
-    nstokens = ['xmlns', 'spreadsheetML', 'r']
+    nstokens = ['xmlns', 'xlsx', 'r']
     return nstokens
 
 
