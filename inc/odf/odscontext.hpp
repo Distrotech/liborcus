@@ -29,7 +29,7 @@
 #define __ORCUS_ODSCONTEXT_HPP__
 
 #include "xmlcontext.hpp"
-#include "model/odstable.hpp"
+#include "model/sheet.hpp"
 
 #include <boost/ptr_container/ptr_vector.hpp>
 

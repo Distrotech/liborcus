@@ -54,7 +54,7 @@ ODF_HEADERS= \
 	$(INCDIR)/odf/odshandler.hpp \
 	$(INCDIR)/odf/odscontext.hpp \
 	$(INCDIR)/odf/paracontext.hpp \
-	$(INCDIR)/model/odstable.hpp \
+	$(INCDIR)/model/sheet.hpp \
 	$(INCDIR)/model/global.hpp
 
 ODF_OBJFILES= \
@@ -67,7 +67,7 @@ ODF_OBJFILES= \
 	$(OBJDIR)/odf/odshandler.o \
 	$(OBJDIR)/odf/odscontext.o \
 	$(OBJDIR)/odf/paracontext.o \
-	$(OBJDIR)/model/odstable.o
+	$(OBJDIR)/model/sheet.o
 
 SHARED_INLS= \
 	$(SRCDIR)/tokens.inl
@@ -146,8 +146,8 @@ $(OBJDIR)/ooxml/xlsx_context.o: $(SRCDIR)/ooxml/xlsx_context.cpp $(DEPENDS)
 
 # model directory
 
-$(OBJDIR)/model/odstable.o: $(SRCDIR)/model/odstable.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/odstable.cpp
+$(OBJDIR)/model/sheet.o: $(SRCDIR)/model/sheet.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/sheet.cpp
 
 orcus-ods: $(OBJDIR)/pre $(ODF_OBJFILES)
 	$(CXX) $(LDFLAGS) $(ODF_OBJFILES) -o $@

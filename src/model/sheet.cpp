@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "model/odstable.hpp"
+#include "model/sheet.hpp"
 #include "global.hpp"
 
 #include <iostream>
