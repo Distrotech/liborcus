@@ -150,7 +150,9 @@ def main (args):
     if len(args) < 4:
         return
 
-    tokens = get_all_tokens_from_zip(args[1])
+    tokens = ['xmlns'] # default tokens
+    more_tokens = get_all_tokens_from_zip(args[1])
+    tokens.extend(more_tokens)
     gen_token_constants(args[2], tokens)
     gen_token_names(args[3], tokens)
     token_util.gen_token_list(sys.argv[4], tokens, gen_ooxml_namespaces())
