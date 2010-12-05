@@ -74,6 +74,20 @@ bool xml_context_base::pop_stack(xmlns_token_t ns, xml_token_t name)
     return m_stack.empty();
 }
 
+xml_token_pair_t& xml_context_base::get_current_element()
+{
+    if (m_stack.empty())
+        throw general_error("element stack is empty!");
+    return m_stack.back();
+}
+
+const xml_token_pair_t& xml_context_base::get_current_element() const
+{
+    if (m_stack.empty())
+        throw general_error("element stack is empty!");
+    return m_stack.back();
+}
+
 void xml_context_base::warn_unhandled() const
 {
     cerr << "warning: unhandled element ";

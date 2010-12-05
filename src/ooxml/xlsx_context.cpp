@@ -53,7 +53,7 @@ public:
         {
             if (attr.value != "http://schemas.openxmlformats.org/spreadsheetml/2006/main")
                 throw xml_structure_error("invalid namespace for worksheet element!");
-            m_parent.set_default_ns(XMLNS_spreadsheetML);
+            m_parent.set_default_ns(XMLNS_xlsx);
         }
     }
 private:
@@ -86,33 +86,36 @@ void xlsx_sheet_xml_context::end_child_context(xmlns_token_t ns, xml_token_t nam
 
 void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
-    xml_token_pair_t parent = push_stack(ns, name);
     if (ns == XMLNS_UNKNOWN_TOKEN)
+        ns = m_default_ns;
+
+    xml_token_pair_t parent = push_stack(ns, name);
+
+    switch (name)
     {
-        switch (name)
-        {
-            case XML_worksheet:
-                cout << "elem s: ";
-                print_element(ns, name);
-                for_each(attrs.begin(), attrs.end(), worksheet_attr_parser(*this));
-            break;
-        }
+        case XML_worksheet:
+            for_each(attrs.begin(), attrs.end(), worksheet_attr_parser(*this));
+
+            // the namespace for worksheet element comes from its own 'xmlns' attribute.
+            get_current_element().first = m_default_ns;
+        break;
+        default:
+            warn_unhandled();
     }
-//  warn_unhandled();
+
 }
 
 bool xlsx_sheet_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
     if (ns == XMLNS_UNKNOWN_TOKEN)
+        ns = m_default_ns;
+
+    switch (name)
     {
-        switch (name)
-        {
-            case XML_worksheet:
-                cout << "elem e: ";
-                print_element(ns, name);
-            break;
-        }
+        case XML_worksheet:
+        break;
     }
+
     return pop_stack(ns, name);
 }
 

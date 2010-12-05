@@ -51,6 +51,8 @@ public:
 protected:
     xml_token_pair_t push_stack(xmlns_token_t ns, xml_token_t name);
     bool pop_stack(xmlns_token_t ns, xml_token_t name);
+    xml_token_pair_t& get_current_element();
+    const xml_token_pair_t& get_current_element() const;
     void warn_unhandled() const;
     void warn_unexpected() const;
 
