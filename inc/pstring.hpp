@@ -40,6 +40,8 @@ namespace orcus {
  */
 class pstring
 {
+    friend ::std::ostream& operator<< (::std::ostream& os, const pstring& str);
+
 public:
     pstring() : m_pos(NULL), m_size(0) {}
     pstring(const char* pos) : m_pos(pos) { m_size = ::std::strlen(pos); }
@@ -86,6 +88,11 @@ private:
     const char* m_pos;
     size_t      m_size;
 };
+
+inline ::std::ostream& operator<< (::std::ostream& os, const pstring& str)
+{
+    return os << str.str();
+}
 
 }
 
