@@ -35,11 +35,15 @@
 
 namespace orcus { namespace model {
 
+/**
+ * This class represents a single sheet instance in the internal document
+ * model.
+ */
 class sheet
 {
 public:
-    typedef ::std::unordered_map<col_t, pstring>   row_type;
-    typedef ::std::unordered_map<row_t, row_type*>       sheet_type;
+    typedef ::std::unordered_map<col_t, pstring>    row_type;
+    typedef ::std::unordered_map<row_t, row_type*>  sheet_type;
 
     sheet(const pstring& name);
     ~sheet();
@@ -54,8 +58,8 @@ private:
     sheet(); // disabled
 
 private:
-    pstring   m_name;
-    sheet_type      m_sheet;
+    pstring     m_name;   /// sheet name
+    sheet_type  m_sheet;  /// group of rows.
 };
 
 }}
