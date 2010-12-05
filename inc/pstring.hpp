@@ -64,13 +64,40 @@ public:
     bool operator== (const pstring& r) const
     {
         if (m_size != r.m_size)
+            // lengths differ.
             return false;
 
-        for (size_t i = 0; i < m_size; ++i)
-            if (m_pos[i] != r.m_pos[i])
+        const char* pos1 = m_pos;
+        const char* pos2 = r.m_pos;
+        for (size_t i = 0; i < m_size; ++i, ++pos1, ++pos2)
+            if (*pos1 != *pos2)
                 return false;
 
         return true;
+    }
+
+    bool operator!= (const pstring& r) const
+    {
+        return !operator==(r);
+    }
+
+    bool operator== (const char* str) const
+    {
+        size_t n = ::std::strlen(str);
+        if (n != m_size)
+            // lengths differ.
+            return false;
+
+        if (!m_size)
+            // both are empty strings.
+            return true;
+
+        return ::std::strncmp(str, m_pos, n) == 0;
+    }
+
+    bool operator!= (const char* str) const
+    {
+        return !operator==(str);
     }
 
     bool empty() const

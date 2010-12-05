@@ -152,11 +152,11 @@ void read_file(const char* fpath, const char* outpath)
 
 int main(int argc, char** argv)
 {
-    if (argc != 3)
+    if (argc != 2)
         return EXIT_FAILURE;
 
     gsf_init();
-    read_file(argv[1], argv[2]);
+    read_file(argv[1], "out.html");
     gsf_shutdown();
 
     return EXIT_SUCCESS;

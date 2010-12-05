@@ -26,6 +26,10 @@
  ************************************************************************/
 
 #include "global.hpp"
+#include "tokens.hpp"
+
+#include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -56,6 +60,41 @@ general_error::~general_error() throw()
 const char* general_error::what() const throw()
 {
     return m_msg.c_str();
+}
+
+xml_structure_error::xml_structure_error(const string& msg) :
+    general_error(msg) {}
+
+xml_structure_error::~xml_structure_error() throw() {}
+
+// ============================================================================
+
+namespace {
+
+struct attr_printer : unary_function<void, xml_attr_t>
+{
+    void operator()(const xml_attr_t& attr) const
+    {
+        cout << "  ";
+        if (attr.ns != XMLNS_UNKNOWN_TOKEN)
+            cout << tokens::get_nstoken_name(attr.ns) << ":";
+
+        cout << tokens::get_token_name(attr.name) << " = \"" << attr.value << "\"" << endl;
+    }
+};
+
+}
+
+void print_element(xmlns_token_t ns, xml_token_t name)
+{
+    if (ns != XMLNS_UNKNOWN_TOKEN)
+        cout << tokens::get_nstoken_name(ns) << ":";
+    cout << tokens::get_token_name(name) << endl;
+}
+
+void print_attrs(const xml_attrs_t& attrs)
+{
+    for_each(attrs.begin(), attrs.end(), attr_printer());
 }
 
 }

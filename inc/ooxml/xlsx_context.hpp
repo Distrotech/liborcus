@@ -34,6 +34,9 @@
 
 namespace orcus {
 
+/**
+ * Top-level context for xl/worksheets/sheet<num>.xml.
+ */
 class xlsx_sheet_xml_context : public xml_context_base
 {
 public:
@@ -47,6 +50,10 @@ public:
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
+
+    void set_default_ns(xmlns_token_t ns);
+private:
+    xmlns_token_t m_default_ns; /// default namespace for worksheet element context.
 };
 
 }

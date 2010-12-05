@@ -32,6 +32,8 @@
 #include <exception>
 #include <string>
 
+#include "types.hpp"
+
 namespace orcus {
 
 class thread_mutex_guard
@@ -49,11 +51,27 @@ class general_error : public ::std::exception
 {
 public:
     explicit general_error(const ::std::string& msg);
-    ~general_error() throw();
+    virtual ~general_error() throw();
     virtual const char* what() const throw();
 private:
     ::std::string m_msg;
 };
+
+class xml_structure_error : public general_error
+{
+public:
+    explicit xml_structure_error(const ::std::string& msg);
+    virtual ~xml_structure_error() throw();
+};
+
+// ============================================================================
+
+void print_element(xmlns_token_t ns, xml_token_t name);
+
+/**
+ * Print attributes to stdout for debugging purposes. 
+ */
+void print_attrs(const xml_attrs_t& attrs);
 
 }
 

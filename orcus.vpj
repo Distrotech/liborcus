@@ -203,7 +203,7 @@
 		<Folder Name="inc">
 			<Folder Name="model">
 				<F N="inc/model/global.hpp"/>
-				<F N="inc/model/odstable.hpp"/>
+				<F N="inc/model/sheet.hpp"/>
 			</Folder>
 			<Folder Name="odf">
 				<F N="inc/odf/odf_token_constants.hpp"/>
@@ -229,7 +229,7 @@
 		</Folder>
 		<Folder Name="src">
 			<Folder Name="model">
-				<F N="src/model/odstable.cpp"/>
+				<F N="src/model/sheet.cpp"/>
 			</Folder>
 			<Folder Name="odf">
 				<F N="src/odf/odf_tokens.cpp"/>
