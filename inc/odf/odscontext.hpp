@@ -77,7 +77,7 @@ private:
     void end_cell();
 
 private:
-    ::boost::ptr_vector<model::ods_table> m_tables;
+    ::boost::ptr_vector<model::sheet> m_tables;
 
     row_attr    m_row_attr;
     cell_attr   m_cell_attr;

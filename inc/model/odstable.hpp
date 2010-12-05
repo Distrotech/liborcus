@@ -35,14 +35,14 @@
 
 namespace orcus { namespace model {
 
-class ods_table
+class sheet
 {
 public:
     typedef ::std::unordered_map<col_t, pstring>   row_type;
     typedef ::std::unordered_map<row_t, row_type*>       sheet_type;
 
-    ods_table(const pstring& name);
-    ~ods_table();
+    sheet(const pstring& name);
+    ~sheet();
 
     const pstring& get_name() const;
     void set_cell(row_t row, col_t col, const pstring& val);
@@ -51,7 +51,7 @@ public:
     size_t col_size() const;
 
 private:
-    ods_table(); // disabled
+    sheet(); // disabled
 
 private:
     pstring   m_name;

@@ -54,9 +54,9 @@ public:
             m_name = attr.value;
     }
 
-    model::ods_table* create_table() const
+    model::sheet* create_table() const
     {
-        return new model::ods_table(m_name);
+        return new model::sheet(m_name);
     }
 private:
     pstring m_name;
@@ -106,11 +106,11 @@ private:
     ods_content_xml_context::cell_attr& m_attr;
 };
 
-class table_html_printer : public unary_function<model::ods_table, void>
+class table_html_printer : public unary_function<model::sheet, void>
 {
 public:
     table_html_printer(ofstream& file) : m_file(file) {}
-    void operator() (const model::ods_table& table)
+    void operator() (const model::sheet& table)
     {
         size_t row_size = table.row_size();
         size_t col_size = table.col_size();

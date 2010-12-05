@@ -37,20 +37,20 @@ namespace orcus { namespace model {
 
 namespace {
 
-struct row_deleter : public unary_function<pair<row_t, ods_table::row_type*>, void>
+struct row_deleter : public unary_function<pair<row_t, sheet::row_type*>, void>
 {
-    void operator() (const pair<row_t, ods_table::row_type*>& r)
+    void operator() (const pair<row_t, sheet::row_type*>& r)
     {
         delete r.second;
     }
 };
 
-struct colsize_checker : public unary_function<pair<row_t, ods_table::row_type*>, void>
+struct colsize_checker : public unary_function<pair<row_t, sheet::row_type*>, void>
 {
     colsize_checker() : m_colsize(0) {}
     colsize_checker(const colsize_checker& r) : m_colsize(r.m_colsize) {}
 
-    void operator() (const pair<row_t, ods_table::row_type*>& r)
+    void operator() (const pair<row_t, sheet::row_type*>& r)
     {
         size_t colsize = r.second->size();
         if (colsize > m_colsize)
@@ -65,22 +65,22 @@ private:
 
 }
 
-ods_table::ods_table(const pstring& name) :
+sheet::sheet(const pstring& name) :
     m_name(name)
 {
 }
 
-ods_table::~ods_table()
+sheet::~sheet()
 {
     for_each(m_sheet.begin(), m_sheet.end(), row_deleter());
 }
 
-const pstring& ods_table::get_name() const
+const pstring& sheet::get_name() const
 {
     return m_name;
 }
 
-void ods_table::set_cell(row_t row, col_t col, const pstring& val)
+void sheet::set_cell(row_t row, col_t col, const pstring& val)
 {
     sheet_type::iterator itr = m_sheet.find(row);
     if (itr == m_sheet.end())
@@ -96,7 +96,7 @@ void ods_table::set_cell(row_t row, col_t col, const pstring& val)
     p->insert(row_type::value_type(col, val));
 }
 
-pstring ods_table::get_cell(row_t row, col_t col) const
+pstring sheet::get_cell(row_t row, col_t col) const
 {
     sheet_type::const_iterator itr = m_sheet.find(row);
     if (itr == m_sheet.end())
@@ -110,12 +110,12 @@ pstring ods_table::get_cell(row_t row, col_t col) const
     return itr_cell->second;
 }
 
-size_t ods_table::row_size() const
+size_t sheet::row_size() const
 {
     return m_sheet.size();
 }
 
-size_t ods_table::col_size() const
+size_t sheet::col_size() const
 {
     return for_each(m_sheet.begin(), m_sheet.end(), colsize_checker()).get_colsize();
 }
