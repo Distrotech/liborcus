@@ -116,6 +116,15 @@ void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, c
         case XML_sheetData:
             xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
         break;
+        case XML_row:
+            xml_element_expected(parent, XMLNS_xlsx, XML_sheetData);
+        break;
+        case XML_c:
+            xml_element_expected(parent, XMLNS_xlsx, XML_row);
+        break;
+        case XML_v:
+            xml_element_expected(parent, XMLNS_xlsx, XML_c);
+        break;
         default:
             warn_unhandled();
     }
