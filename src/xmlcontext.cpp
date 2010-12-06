@@ -30,6 +30,7 @@
 #include "tokens.hpp"
 
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -100,6 +101,26 @@ void xml_context_base::warn_unexpected() const
     cerr << "warning: unexpected element ";
     print_stack(m_stack);
     cerr << endl;
+}
+
+void xml_element_expected(
+    const xml_token_pair_t& elem, xmlns_token_t ns, xml_token_t name, 
+    const string* error)
+{
+    if (elem.first == ns && elem.second == name)
+        // This is an expected element.  Good.
+        return;
+
+    if (error)
+    {
+        throw xml_structure_error(*error);
+    }
+
+    // Create a generic error message.
+    ostringstream os;
+    os << "element '" << tokens::get_nstoken_name(ns) << ":" << tokens::get_token_name(name) << "' expected, but '";
+    os << tokens::get_nstoken_name(elem.first) << ":" << tokens::get_token_name(elem.second) << "' encountered.";
+    throw xml_structure_error(os.str());
 }
 
 }

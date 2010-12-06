@@ -34,6 +34,10 @@
 
 namespace orcus {
 
+namespace model {
+    class sheet;
+}
+
 /**
  * Top-level context for xl/worksheets/sheet<num>.xml.
  */
@@ -54,6 +58,7 @@ public:
     void set_default_ns(xmlns_token_t ns);
 private:
     xmlns_token_t m_default_ns; /// default namespace for worksheet element context.
+    model::sheet* mp_sheet; /// sheet model instance for the loaded document.
 };
 
 }

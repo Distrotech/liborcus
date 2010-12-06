@@ -60,6 +60,19 @@ private:
     xml_elem_stack_t m_stack;
 };
 
+/**
+ * Check if observed element equals expected element.  If not, it throws an 
+ * xml_structure_error exception. 
+ * 
+ * @param elem element observed.
+ * @param ns namespace of expected element.
+ * @param name name of expected element. 
+ * @param error custom error message if needed. 
+ */
+void xml_element_expected(
+    const xml_token_pair_t& elem, xmlns_token_t ns, xml_token_t name, 
+    const ::std::string* error = NULL);
+
 }
 
 #endif

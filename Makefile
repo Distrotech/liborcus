@@ -83,7 +83,8 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/xmlcontext.o \
 	$(OBJDIR)/ooxml/ooxml_tokens.o \
 	$(OBJDIR)/ooxml/xlsx_handler.o \
-	$(OBJDIR)/ooxml/xlsx_context.o
+	$(OBJDIR)/ooxml/xlsx_context.o \
+	$(OBJDIR)/model/sheet.o
 
 DEPENDS= \
 	$(SHARED_INLS) \

@@ -29,6 +29,7 @@
 #include "global.hpp"
 #include "tokens.hpp"
 #include "ooxml/ooxml_token_constants.hpp"
+#include "model/sheet.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -60,14 +61,24 @@ private:
     xlsx_sheet_xml_context& m_parent;
 };
 
+/**
+ * Temporary sheet name to use until I parse the ooxml package structure
+ * correctly in order to obtain real sheet names.  The real sheet names are
+ * given in xl/workbook.xml.
+ */
+const char* dummy_sheet_name = "Test Sheet";
+
 }
 
-xlsx_sheet_xml_context::xlsx_sheet_xml_context()
+xlsx_sheet_xml_context::xlsx_sheet_xml_context() :
+    m_default_ns(XMLNS_UNKNOWN_TOKEN),
+    mp_sheet(NULL)
 {
 }
 
 xlsx_sheet_xml_context::~xlsx_sheet_xml_context()
 {
+    delete mp_sheet;
 }
 
 bool xlsx_sheet_xml_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
@@ -95,9 +106,15 @@ void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, c
     {
         case XML_worksheet:
             for_each(attrs.begin(), attrs.end(), worksheet_attr_parser(*this));
+            print_attrs(attrs);
 
             // the namespace for worksheet element comes from its own 'xmlns' attribute.
             get_current_element().first = m_default_ns;
+
+            mp_sheet = new model::sheet(pstring(dummy_sheet_name));
+        break;
+        case XML_sheetData:
+            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
         break;
         default:
             warn_unhandled();
