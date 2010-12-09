@@ -36,9 +36,9 @@ using namespace std;
 
 namespace orcus {
 
-ods_content_xml_handler::ods_content_xml_handler()
+ods_content_xml_handler::ods_content_xml_handler(const tokens_base& tokens)
 {
-    m_context_stack.push_back(new ods_content_xml_context);
+    m_context_stack.push_back(new ods_content_xml_context(tokens));
 }
 
 ods_content_xml_handler::~ods_content_xml_handler()

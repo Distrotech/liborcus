@@ -36,12 +36,13 @@
 
 namespace orcus {
 
+class tokens_base;
 class ods_content_xml_context;
 
 class ods_content_xml_handler : public xml_stream_handler
 {
 public:
-    ods_content_xml_handler();
+    ods_content_xml_handler(const tokens_base& tokens);
     virtual ~ods_content_xml_handler();
 
     virtual void start_document();

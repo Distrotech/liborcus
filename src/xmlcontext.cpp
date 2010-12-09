@@ -27,7 +27,7 @@
 
 #include "xmlcontext.hpp"
 #include "global.hpp"
-#include "tokens.hpp"
+#include "tokens_base.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -38,7 +38,7 @@ namespace orcus {
 
 namespace {
 
-void print_stack(const xml_elem_stack_t& elem_stack)
+void print_stack(const tokens_base& tokens, const xml_elem_stack_t& elem_stack)
 {
     cerr << "[ ";
     xml_elem_stack_t::const_iterator itr, itr_beg = elem_stack.begin(), itr_end = elem_stack.end();
@@ -46,15 +46,23 @@ void print_stack(const xml_elem_stack_t& elem_stack)
     {
         if (itr != itr_beg)
             cerr << " -> ";
-        cerr << tokens::get_nstoken_name(itr->first) << ":" << tokens::get_token_name(itr->second);
+        cerr << tokens.get_nstoken_name(itr->first) << ":" << tokens.get_token_name(itr->second);
     }
     cerr << " ]";
 }
 
 }
 
+xml_context_base::xml_context_base(const tokens_base& tokens) :
+    m_tokens(tokens) {}
+
 xml_context_base::~xml_context_base()
 {
+}
+
+const tokens_base& xml_context_base::get_tokens() const
+{
+    return m_tokens;
 }
 
 xml_token_pair_t xml_context_base::push_stack(xmlns_token_t ns, xml_token_t name)
@@ -92,18 +100,18 @@ const xml_token_pair_t& xml_context_base::get_current_element() const
 void xml_context_base::warn_unhandled() const
 {
     cerr << "warning: unhandled element ";
-    print_stack(m_stack);
+    print_stack(m_tokens, m_stack);
     cerr << endl;
 }
 
 void xml_context_base::warn_unexpected() const
 {
     cerr << "warning: unexpected element ";
-    print_stack(m_stack);
+    print_stack(m_tokens, m_stack);
     cerr << endl;
 }
 
-void xml_element_expected(
+void xml_context_base::xml_element_expected(
     const xml_token_pair_t& elem, xmlns_token_t ns, xml_token_t name, 
     const string* error)
 {
@@ -118,8 +126,8 @@ void xml_element_expected(
 
     // Create a generic error message.
     ostringstream os;
-    os << "element '" << tokens::get_nstoken_name(ns) << ":" << tokens::get_token_name(name) << "' expected, but '";
-    os << tokens::get_nstoken_name(elem.first) << ":" << tokens::get_token_name(elem.second) << "' encountered.";
+    os << "element '" << m_tokens.get_nstoken_name(ns) << ":" << m_tokens.get_token_name(name) << "' expected, but '";
+    os << m_tokens.get_nstoken_name(elem.first) << ":" << m_tokens.get_token_name(elem.second) << "' encountered.";
     throw xml_structure_error(os.str());
 }
 

@@ -36,6 +36,7 @@
 namespace orcus {
 
 class xml_stream_handler;
+class tokens_base;
 
 /** 
  * This class does NOT store the stream content which is just a pointer to 
@@ -55,7 +56,7 @@ public:
         ::std::string m_msg;
     };
 
-    xml_stream_parser(const uint8_t* content, size_t size, const ::std::string& name);
+    xml_stream_parser(const tokens_base& tokens, const uint8_t* content, size_t size, const ::std::string& name);
     ~xml_stream_parser();
 
     void parse();
@@ -66,6 +67,7 @@ public:
 private:
     xml_stream_parser(); // disabled
 
+    const tokens_base& m_tokens;
     xml_stream_handler* mp_handler;
     const uint8_t* m_content;
     size_t m_size;

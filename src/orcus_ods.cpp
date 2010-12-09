@@ -32,6 +32,7 @@
 
 #include "xmlparser.hpp"
 #include "odf/odshandler.hpp"
+#include "odf/odf_tokens.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -46,8 +47,8 @@ using namespace orcus;
 void read_content_xml(GsfInput* input, size_t size, const char* outpath)
 {
     const guint8* content = gsf_input_read(input, size, NULL);
-    xml_stream_parser parser(content, size, "content.xml");
-    ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler);
+    xml_stream_parser parser(odf_tokens, content, size, "content.xml");
+    ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler(odf_tokens));
     parser.set_handler(handler.get());
     parser.parse();
 //  handler->print_html(outpath);
@@ -136,11 +137,11 @@ void read_file(const char* fpath, const char* outpath)
 
 int main(int argc, char** argv)
 {
-    if (argc != 3)
+    if (argc != 2)
         return EXIT_FAILURE;
 
     gsf_init();
-    read_file(argv[1], argv[2]);
+    read_file(argv[1], "out.html");
     gsf_shutdown();
 
     return EXIT_SUCCESS;

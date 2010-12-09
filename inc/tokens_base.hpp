@@ -51,17 +51,11 @@ public:
     tokens_base(const char** token_names, size_t token_name_count, const char** nstoken_names, size_t nstoken_name_count);
 
     /** 
-     * Initialize data used in this class.  Call this once before starting to 
-     * use methods of this class.  This method is synchronized.
-     */
-    void init();
-
-    /** 
      * Check if a token returned from get_token() method is valid.
      * 
      * @return true if valid, false otherwise.
      */
-    bool is_valid_token(xml_token_t token);
+    bool is_valid_token(xml_token_t token) const;
 
     /** 
      * Get token from a specified name.
@@ -70,7 +64,7 @@ public:
      * 
      * @return token value representing the given textural token.
      */
-    xml_token_t get_token(const pstring& name);
+    xml_token_t get_token(const pstring& name) const;
 
     /** 
      * Get textural token name from a token value.
@@ -80,14 +74,14 @@ public:
      * @return textural token name, or empty string in case the given token is 
      *         not valid.
      */
-    const char* get_token_name(xml_token_t token);
+    const char* get_token_name(xml_token_t token) const;
 
     /** 
      * Check if a namespace token returned from get_nstoken() method is valid.
      * 
      * @return true if valid, false otherwise.
      */
-    bool is_valid_nstoken(xmlns_token_t token);
+    bool is_valid_nstoken(xmlns_token_t token) const;
 
     /** 
      * Get a namespace token from a specified name.
@@ -96,7 +90,7 @@ public:
      * 
      * @return token value representing the given textural token.
      */
-    xmlns_token_t get_nstoken(const pstring& name);
+    xmlns_token_t get_nstoken(const pstring& name) const;
 
     /** 
      * Get textural token name from a namespace token value.
@@ -106,7 +100,7 @@ public:
      * @return textural token name, or empty string in case the given token is 
      *         not valid.
      */
-    const char* get_nstoken_name(xmlns_token_t token);
+    const char* get_nstoken_name(xmlns_token_t token) const;
 
 private:
     struct string_hash

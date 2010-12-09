@@ -32,12 +32,15 @@
 
 namespace orcus {
 
+class tokens_base;
+
 typedef ::std::pair<xmlns_token_t, xml_token_t> xml_token_pair_t;
 typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
 
 class xml_context_base
 {
 public:
+    xml_context_base(const tokens_base& tokens);
     virtual ~xml_context_base() = 0;
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const = 0;
@@ -49,6 +52,7 @@ public:
     virtual void characters(const pstring& str) = 0;
 
 protected:
+    const tokens_base& get_tokens() const;
     xml_token_pair_t push_stack(xmlns_token_t ns, xml_token_t name);
     bool pop_stack(xmlns_token_t ns, xml_token_t name);
     xml_token_pair_t& get_current_element();
@@ -56,22 +60,24 @@ protected:
     void warn_unhandled() const;
     void warn_unexpected() const;
 
+    /**
+     * Check if observed element equals expected element.  If not, it throws an 
+     * xml_structure_error exception. 
+     * 
+     * @param elem element observed.
+     * @param ns namespace of expected element.
+     * @param name name of expected element. 
+     * @param error custom error message if needed. 
+     */
+    void xml_element_expected(
+        const xml_token_pair_t& elem, xmlns_token_t ns, xml_token_t name, 
+        const ::std::string* error = NULL);
+
 private:
+    const tokens_base& m_tokens;
     xml_elem_stack_t m_stack;
 };
 
-/**
- * Check if observed element equals expected element.  If not, it throws an 
- * xml_structure_error exception. 
- * 
- * @param elem element observed.
- * @param ns namespace of expected element.
- * @param name name of expected element. 
- * @param error custom error message if needed. 
- */
-void xml_element_expected(
-    const xml_token_pair_t& elem, xmlns_token_t ns, xml_token_t name, 
-    const ::std::string* error = NULL);
 
 }
 

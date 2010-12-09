@@ -26,7 +26,7 @@
  ************************************************************************/
 
 #include "global.hpp"
-#include "tokens.hpp"
+#include "tokens_base.hpp"
 
 #include <iostream>
 #include <algorithm>
@@ -73,28 +73,35 @@ namespace {
 
 struct attr_printer : unary_function<void, xml_attr_t>
 {
+public:
+    attr_printer(const tokens_base& tokens) :
+        m_tokens(tokens) {}
+
     void operator()(const xml_attr_t& attr) const
     {
         cout << "  ";
         if (attr.ns != XMLNS_UNKNOWN_TOKEN)
-            cout << tokens::get_nstoken_name(attr.ns) << ":";
+            cout << m_tokens.get_nstoken_name(attr.ns) << ":";
 
-        cout << tokens::get_token_name(attr.name) << " = \"" << attr.value << "\"" << endl;
+        cout << m_tokens.get_token_name(attr.name) << " = \"" << attr.value << "\"" << endl;
     }
+
+private:
+    const tokens_base& m_tokens;
 };
 
 }
 
-void print_element(xmlns_token_t ns, xml_token_t name)
+void print_element(const tokens_base& tokens, xmlns_token_t ns, xml_token_t name)
 {
     if (ns != XMLNS_UNKNOWN_TOKEN)
-        cout << tokens::get_nstoken_name(ns) << ":";
-    cout << tokens::get_token_name(name) << endl;
+        cout << tokens.get_nstoken_name(ns) << ":";
+    cout << tokens.get_token_name(name) << endl;
 }
 
-void print_attrs(const xml_attrs_t& attrs)
+void print_attrs(const tokens_base& tokens, const xml_attrs_t& attrs)
 {
-    for_each(attrs.begin(), attrs.end(), attr_printer());
+    for_each(attrs.begin(), attrs.end(), attr_printer(tokens));
 }
 
 }

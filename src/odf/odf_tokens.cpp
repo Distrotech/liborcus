@@ -25,15 +25,7 @@
  *
  ************************************************************************/
 
-#include "tokens.hpp"
-#include "global.hpp"
-
-#include <cstdlib>
-#include <unordered_map>
-#include <cstring>
-#include <iostream>
-
-using namespace std;
+#include "odf/odf_tokens.hpp"
 
 namespace orcus {
 
@@ -43,7 +35,9 @@ namespace {
 
 }
 
+tokens_base odf_tokens = 
+    tokens_base(token_names, token_name_count, nstoken_names, nstoken_name_count);
+
 }
 
-#include "../tokens.inl"
 
