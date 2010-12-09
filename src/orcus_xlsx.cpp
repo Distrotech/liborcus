@@ -43,6 +43,15 @@
 using namespace std;
 using namespace orcus;
 
+void read_content_types(GsfInput* input, size_t size)
+{
+    const guint8* content = gsf_input_read(input, size, NULL);
+    xml_stream_parser parser(content, size, "[Content_Types].xml");
+//  ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler);
+//  parser.set_handler(handler.get());
+//  parser.parse();
+}
+
 void read_sheet_xml(GsfInput* input, size_t size, const char* outpath)
 {
     const guint8* content = gsf_input_read(input, size, NULL);
@@ -56,6 +65,18 @@ void read_content(GsfInput* input, const char* outpath)
 {
     if (!GSF_IS_INFILE(input))
         return;
+
+    GsfInput* xml_content_types = gsf_infile_child_by_name(GSF_INFILE (input), "[Content_Types].xml");
+    if (!xml_content_types)
+    {
+        cout << "failed to get [Content_Types].xml stream." << endl;
+        return;
+    }
+
+    size_t size = gsf_input_size(xml_content_types);
+    cout << "name: [Content_Types].xml  size: " << size << endl;
+    read_content_types(xml_content_types, size);
+    g_object_unref(G_OBJECT(xml_content_types));
 
     GsfInput* dir_xl = gsf_infile_child_by_name (GSF_INFILE (input), "xl");
     if (!dir_xl)
@@ -80,7 +101,7 @@ void read_content(GsfInput* input, const char* outpath)
         return;
     }
 
-    size_t size = gsf_input_size(xml_sheet1);
+    size = gsf_input_size(xml_sheet1);
     cout << "name: sheet1  size: " << size << endl;
     read_sheet_xml(xml_sheet1, size, outpath);
     g_object_unref(G_OBJECT(xml_sheet1));
