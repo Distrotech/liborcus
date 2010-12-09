@@ -208,6 +208,7 @@
 			<Folder Name="odf">
 				<F N="inc/odf/odf_token_constants.hpp"/>
 				<F N="inc/odf/odf_token_constants.inl"/>
+				<F N="inc/odf/odf_tokens.hpp"/>
 				<F N="inc/odf/odscontext.hpp"/>
 				<F N="inc/odf/odshandler.hpp"/>
 				<F N="inc/odf/paracontext.hpp"/>
@@ -215,6 +216,7 @@
 			<Folder Name="ooxml">
 				<F N="inc/ooxml/ooxml_token_constants.hpp"/>
 				<F N="inc/ooxml/ooxml_token_constants.inl"/>
+				<F N="inc/ooxml/ooxml_tokens.hpp"/>
 				<F N="inc/ooxml/opc_handler.hpp"/>
 				<F N="inc/ooxml/opc_token_constants.hpp"/>
 				<F N="inc/ooxml/opc_token_constants.inl"/>

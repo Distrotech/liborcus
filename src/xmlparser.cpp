@@ -256,7 +256,7 @@ const char* xml_stream_parser::parse_error::what() const throw()
     return m_msg.c_str();
 }
 
-xml_stream_parser::xml_stream_parser(const tokens_base& tokens, const uint8_t* content, size_t size, const string& name) :
+xml_stream_parser::xml_stream_parser(const tokens& tokens, const uint8_t* content, size_t size, const string& name) :
     m_tokens(tokens), mp_handler(NULL), m_content(content), m_size(size), m_name(name)
 {
 }
@@ -274,7 +274,7 @@ void xml_stream_parser::parse()
     if (!mp_handler)
         return;
 
-    sax_parser<xml_stream_handler, tokens_base> sax(reinterpret_cast<const char*>(m_content), m_size, m_tokens, *mp_handler);
+    sax_parser<xml_stream_handler, tokens> sax(reinterpret_cast<const char*>(m_content), m_size, m_tokens, *mp_handler);
     sax.parse();
 #endif
 }

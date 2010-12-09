@@ -38,7 +38,7 @@ namespace orcus {
 
 namespace {
 
-void print_stack(const tokens_base& tokens, const xml_elem_stack_t& elem_stack)
+void print_stack(const tokens& tokens, const xml_elem_stack_t& elem_stack)
 {
     cerr << "[ ";
     xml_elem_stack_t::const_iterator itr, itr_beg = elem_stack.begin(), itr_end = elem_stack.end();
@@ -53,14 +53,14 @@ void print_stack(const tokens_base& tokens, const xml_elem_stack_t& elem_stack)
 
 }
 
-xml_context_base::xml_context_base(const tokens_base& tokens) :
+xml_context_base::xml_context_base(const tokens& tokens) :
     m_tokens(tokens) {}
 
 xml_context_base::~xml_context_base()
 {
 }
 
-const tokens_base& xml_context_base::get_tokens() const
+const tokens& xml_context_base::get_tokens() const
 {
     return m_tokens;
 }

@@ -69,7 +69,7 @@ const char* dummy_sheet_name = "Test Sheet";
 
 }
 
-xlsx_sheet_xml_context::xlsx_sheet_xml_context(const tokens_base& tokens) :
+xlsx_sheet_xml_context::xlsx_sheet_xml_context(const tokens& tokens) :
     xml_context_base(tokens),
     m_default_ns(XMLNS_UNKNOWN_TOKEN),
     mp_sheet(NULL)

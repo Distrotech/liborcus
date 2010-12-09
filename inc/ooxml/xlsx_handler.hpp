@@ -39,7 +39,7 @@ namespace orcus {
 class xlsx_sheet_xml_handler : public xml_stream_handler
 {
 public:
-    xlsx_sheet_xml_handler(const tokens_base& tokens);
+    xlsx_sheet_xml_handler(const tokens& tokens);
     virtual ~xlsx_sheet_xml_handler();
 
     virtual void start_document();
@@ -53,7 +53,7 @@ private:
 
 private:
     typedef ::boost::ptr_vector<xml_context_base> context_stack_type;
-    const tokens_base& m_tokens;
+    const tokens& m_tokens;
     context_stack_type m_context_stack;
 };
 

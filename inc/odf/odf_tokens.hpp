@@ -35,7 +35,7 @@ namespace orcus {
 /**
  * Singleton instance containing all ODF tokens.
  */
-extern tokens_base odf_tokens;
+extern tokens odf_tokens;
 
 }
 

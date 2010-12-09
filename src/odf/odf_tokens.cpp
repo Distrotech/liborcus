@@ -35,8 +35,8 @@ namespace {
 
 }
 
-tokens_base odf_tokens = 
-    tokens_base(token_names, token_name_count, nstoken_names, nstoken_name_count);
+tokens odf_tokens = 
+    tokens(token_names, token_name_count, nstoken_names, nstoken_name_count);
 
 }
 

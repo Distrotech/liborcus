@@ -32,10 +32,10 @@ using namespace std;
 
 namespace orcus {
 
-xml_token_t tokens_base::XML_UNKNOWN_TOKEN     = XML_UNKNOWN_TOKEN;
-xmlns_token_t tokens_base::XMLNS_UNKNOWN_TOKEN = XMLNS_UNKNOWN_TOKEN;
+xml_token_t tokens::XML_UNKNOWN_TOKEN     = XML_UNKNOWN_TOKEN;
+xmlns_token_t tokens::XMLNS_UNKNOWN_TOKEN = XMLNS_UNKNOWN_TOKEN;
 
-tokens_base::tokens_base(const char** token_names, size_t token_name_count, const char** nstoken_names, size_t nstoken_name_count) :
+tokens::tokens(const char** token_names, size_t token_name_count, const char** nstoken_names, size_t nstoken_name_count) :
     m_token_names(token_names), 
     m_nstoken_names(nstoken_names), 
     m_token_name_count(token_name_count), 
@@ -56,12 +56,12 @@ tokens_base::tokens_base(const char** token_names, size_t token_name_count, cons
     }
 }
 
-bool tokens_base::is_valid_token(xml_token_t token) const
+bool tokens::is_valid_token(xml_token_t token) const
 {
     return token != XML_UNKNOWN_TOKEN;
 }
 
-xml_token_t tokens_base::get_token(const pstring& name) const
+xml_token_t tokens::get_token(const pstring& name) const
 {
     token_map_type::const_iterator itr = m_tokens.find(name);
     if (itr == m_tokens.end())
@@ -69,7 +69,7 @@ xml_token_t tokens_base::get_token(const pstring& name) const
     return itr->second;
 }
 
-const char* tokens_base::get_token_name(xml_token_t token) const
+const char* tokens::get_token_name(xml_token_t token) const
 {
     if (static_cast<size_t>(token) >= m_token_name_count)
         return "";
@@ -77,12 +77,12 @@ const char* tokens_base::get_token_name(xml_token_t token) const
     return m_token_names[token];
 }
 
-bool tokens_base::is_valid_nstoken(xmlns_token_t token) const
+bool tokens::is_valid_nstoken(xmlns_token_t token) const
 {
     return token != XMLNS_UNKNOWN_TOKEN;
 }
 
-xmlns_token_t tokens_base::get_nstoken(const pstring& name) const
+xmlns_token_t tokens::get_nstoken(const pstring& name) const
 {
     nstoken_map_type::const_iterator itr = m_nstokens.find(name);
     if (itr == m_nstokens.end())
@@ -90,7 +90,7 @@ xmlns_token_t tokens_base::get_nstoken(const pstring& name) const
     return itr->second;
 }
 
-const char* tokens_base::get_nstoken_name(xmlns_token_t token) const
+const char* tokens::get_nstoken_name(xmlns_token_t token) const
 {
     if (static_cast<size_t>(token) >= m_nstoken_name_count)
         return "";

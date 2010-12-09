@@ -36,7 +36,7 @@
 
 namespace orcus {
 
-class tokens_base;
+class tokens;
 
 class thread_mutex_guard
 {
@@ -73,7 +73,7 @@ void print_element(xmlns_token_t ns, xml_token_t name);
 /**
  * Print attributes to stdout for debugging purposes. 
  */
-void print_attrs(const tokens_base& tokens, const xml_attrs_t& attrs);
+void print_attrs(const tokens& tokens, const xml_attrs_t& attrs);
 
 }
 

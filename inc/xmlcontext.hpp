@@ -32,7 +32,7 @@
 
 namespace orcus {
 
-class tokens_base;
+class tokens;
 
 typedef ::std::pair<xmlns_token_t, xml_token_t> xml_token_pair_t;
 typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
@@ -40,7 +40,7 @@ typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
 class xml_context_base
 {
 public:
-    xml_context_base(const tokens_base& tokens);
+    xml_context_base(const tokens& tokens);
     virtual ~xml_context_base() = 0;
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const = 0;
@@ -52,7 +52,7 @@ public:
     virtual void characters(const pstring& str) = 0;
 
 protected:
-    const tokens_base& get_tokens() const;
+    const tokens& get_tokens() const;
     xml_token_pair_t push_stack(xmlns_token_t ns, xml_token_t name);
     bool pop_stack(xmlns_token_t ns, xml_token_t name);
     xml_token_pair_t& get_current_element();
@@ -74,7 +74,7 @@ protected:
         const ::std::string* error = NULL);
 
 private:
-    const tokens_base& m_tokens;
+    const tokens& m_tokens;
     xml_elem_stack_t m_stack;
 };
 

@@ -50,7 +50,7 @@ public:
         cell_attr();
     };
 
-    ods_content_xml_context(const tokens_base& tokens);
+    ods_content_xml_context(const tokens& tokens);
     virtual ~ods_content_xml_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;

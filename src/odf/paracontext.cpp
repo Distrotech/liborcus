@@ -33,7 +33,7 @@ using namespace std;
 
 namespace orcus {
 
-text_para_context::text_para_context(const tokens_base& tokens) :
+text_para_context::text_para_context(const tokens& tokens) :
     xml_context_base(tokens)
 {
 }

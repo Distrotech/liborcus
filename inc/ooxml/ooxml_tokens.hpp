@@ -32,8 +32,8 @@
 
 namespace orcus {
 
-extern tokens_base ooxml_tokens;
-extern tokens_base opc_tokens;
+extern tokens ooxml_tokens;
+extern tokens opc_tokens;
 
 }
 

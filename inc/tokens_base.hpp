@@ -38,7 +38,7 @@ namespace orcus {
 
 class pstring;
 
-class tokens_base
+class tokens
 {
 public:
     typedef xml_token_t     token_type;
@@ -48,7 +48,7 @@ public:
     static xml_token_t      XML_UNKNOWN_TOKEN;
     static xmlns_token_t    XMLNS_UNKNOWN_TOKEN;
 
-    tokens_base(const char** token_names, size_t token_name_count, const char** nstoken_names, size_t nstoken_name_count);
+    tokens(const char** token_names, size_t token_name_count, const char** nstoken_names, size_t nstoken_name_count);
 
     /** 
      * Check if a token returned from get_token() method is valid.
