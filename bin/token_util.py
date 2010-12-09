@@ -26,6 +26,8 @@
 #
 #***********************************************************************
 
+import sys
+
 def normalize_name (old):
     new = ''
     for c in old:
@@ -49,3 +51,7 @@ def gen_token_list (filepath, tokens, ns_tokens):
     for key in keys:
         file.write(key + "\n")
     file.close()
+
+def die (msg):
+    sys.stderr.write(msg + "\n")
+    sys.exit(1)

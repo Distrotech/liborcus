@@ -100,8 +100,10 @@ $(OBJDIR)/pre:
 	mkdir -p $(OBJDIR)/odf
 	mkdir -p $(OBJDIR)/ooxml
 	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/odf/odf_token_constants.inl $(SRCDIR)/odf/odf_tokens.inl $(SRCDIR)/odf/odf_tokens.txt
-	$(BINDIR)/gen-ooxml-tokens.py $(OOXML_SCHEMAPATH) $(INCDIR)/ooxml/ooxml_token_constants.inl $(SRCDIR)/ooxml/ooxml_tokens.inl $(SRCDIR)/ooxml/ooxml_tokens.txt
-	$(BINDIR)/gen-ooxml-tokens.py $(OPC_SCHEMAPATH) $(INCDIR)/ooxml/opc_token_constants.inl $(SRCDIR)/ooxml/opc_tokens.inl $(SRCDIR)/ooxml/opc_tokens.txt
+	$(BINDIR)/gen-ooxml-tokens.py -t ooxml $(OOXML_SCHEMAPATH) \
+		$(INCDIR)/ooxml/ooxml_token_constants.inl $(SRCDIR)/ooxml/ooxml_tokens.inl $(SRCDIR)/ooxml/ooxml_tokens.txt
+	$(BINDIR)/gen-ooxml-tokens.py -t opc $(OPC_SCHEMAPATH) \
+		$(INCDIR)/ooxml/opc_token_constants.inl $(SRCDIR)/ooxml/opc_tokens.inl $(SRCDIR)/ooxml/opc_tokens.txt
 	touch $@
 
 $(OBJDIR)/orcus_ods.o: $(SRCDIR)/orcus_ods.cpp $(DEPENDS)

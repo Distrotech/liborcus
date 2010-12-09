@@ -26,7 +26,7 @@
 #
 #***********************************************************************
 
-import xml.parsers.expat, zipfile, sys
+import xml.parsers.expat, zipfile, optparse, sys
 import token_util
 
 class xml_parser:
@@ -146,16 +146,27 @@ def get_all_tokens_from_zip (fpath):
     return keys
 
 
-def main (args):
+def main ():
+    parser = optparse.OptionParser()
+    parser.add_option("-t", "--schema-type", dest="schema_type", default="ooxml", metavar="TYPE",
+        help="Specify the schema type.  Possible values are: 'ooxml', or 'opc'.  The default value is 'ooxml'.")
+    options, args = parser.parse_args()
+
     if len(args) < 4:
-        return
+        parser.print_help()
+        sys.exit(1)
+
+    schema_type = options.schema_type
+    if not schema_type in ['opc', 'ooxml']:
+        token_util.die("Unsupported schema type: %s"%schema_type)
 
     tokens = ['xmlns'] # default tokens
-    more_tokens = get_all_tokens_from_zip(args[1])
+    more_tokens = get_all_tokens_from_zip(args[0])
     tokens.extend(more_tokens)
-    gen_token_constants(args[2], tokens)
-    gen_token_names(args[3], tokens)
-    token_util.gen_token_list(sys.argv[4], tokens, gen_ooxml_namespaces())
+    gen_token_constants(args[1], tokens)
+    gen_token_names(args[2], tokens)
+    nstokens = gen_ooxml_namespaces()
+    token_util.gen_token_list(args[3], tokens, nstokens)
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()
