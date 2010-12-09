@@ -38,7 +38,7 @@ class xml_parser:
 
     def start_element(self, name, attrs):
         self.__elem = name
-        if name in ['xsd:element', 'xsd:attribute'] and attrs.has_key('name'):
+        if name in ['xs:element', 'xs:attribute', 'xsd:element', 'xsd:attribute'] and attrs.has_key('name'):
             token = attrs['name']
             if len(token) > 0:
                 self.tokens.append(token)

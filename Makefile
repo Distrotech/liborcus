@@ -37,6 +37,7 @@ ODF_SCHEMA=OpenDocument-schema-v1.2-cd04.rng
 ODF_SCHEMAPATH=$(ROOTDIR)/misc/$(ODF_SCHEMA)
 
 OOXML_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip
+OPC_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OpenPackagingConventions-XMLSchema.zip
 
 CPPFLAGS=-I$(INCDIR) -O2 -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1`
@@ -94,12 +95,13 @@ DEPENDS= \
 all: $(EXECS)
 
 $(OBJDIR)/pre:
-	mkdir $(OBJDIR)       2>/dev/null || /bin/true
-	mkdir $(OBJDIR)/model 2>/dev/null || /bin/true
-	mkdir $(OBJDIR)/odf   2>/dev/null || /bin/true
-	mkdir $(OBJDIR)/ooxml 2>/dev/null || /bin/true
+	mkdir -p $(OBJDIR)
+	mkdir -p $(OBJDIR)/model
+	mkdir -p $(OBJDIR)/odf
+	mkdir -p $(OBJDIR)/ooxml
 	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/odf/odf_token_constants.inl $(SRCDIR)/odf/odf_tokens.inl $(SRCDIR)/odf/odf_tokens.txt
 	$(BINDIR)/gen-ooxml-tokens.py $(OOXML_SCHEMAPATH) $(INCDIR)/ooxml/ooxml_token_constants.inl $(SRCDIR)/ooxml/ooxml_tokens.inl $(SRCDIR)/ooxml/ooxml_tokens.txt
+	$(BINDIR)/gen-ooxml-tokens.py $(OPC_SCHEMAPATH) $(INCDIR)/ooxml/opc_token_constants.inl $(SRCDIR)/ooxml/opc_tokens.inl $(SRCDIR)/ooxml/opc_tokens.txt
 	touch $@
 
 $(OBJDIR)/orcus_ods.o: $(SRCDIR)/orcus_ods.cpp $(DEPENDS)
