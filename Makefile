@@ -49,7 +49,6 @@ ODF_HEADERS= \
 	$(INCDIR)/xmlhandler.hpp \
 	$(INCDIR)/xmlcontext.hpp \
 	$(INCDIR)/xmlparser.hpp \
-	$(INCDIR)/tokens.hpp \
 	$(INCDIR)/tokens_base.hpp \
 	$(INCDIR)/types.hpp \
 	$(INCDIR)/odf/odf_token_constants.hpp \
@@ -72,9 +71,6 @@ ODF_OBJFILES= \
 	$(OBJDIR)/odf/paracontext.o \
 	$(OBJDIR)/model/sheet.o
 
-SHARED_INLS= \
-	$(SRCDIR)/tokens.inl
-
 XLSX_HEADERS= \
 	$(INCDIR)/tokens_base.hpp \
 	$(INCDIR)/ooxml/ooxml_token_constants.hpp \
@@ -94,7 +90,6 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/model/sheet.o
 
 DEPENDS= \
-	$(SHARED_INLS) \
 	$(ODF_HEADERS) \
 	$(XLSX_HEADERS)
 
