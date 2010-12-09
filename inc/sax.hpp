@@ -47,17 +47,19 @@ template<typename _Attr, typename _Tokens>
 class attr_printer : public ::std::unary_function<_Attr, void>
 {
 public:
-    attr_printer(const ::std::string& indent) : m_indent(indent) {}
+    attr_printer(const _Tokens& tokens, const ::std::string& indent) : 
+        m_tokens(tokens), m_indent(indent) {}
 
     void operator() (const _Attr& attr) const
     {
         using namespace std;
         cout << m_indent << "  attribute: " 
-            << _Tokens::get_nstoken_name(attr.ns) << ":" 
-            << _Tokens::get_token_name(attr.name) << "=\"" 
+            << m_tokens.get_nstoken_name(attr.ns) << ":" 
+            << m_tokens.get_token_name(attr.name) << "=\"" 
             << attr.value.str() << "\"" << endl;
     }
 private:
+    const _Tokens& m_tokens;
     ::std::string m_indent;
 };
 
@@ -448,7 +450,7 @@ template<typename _Handler, typename _Tokens>
 void sax_parser<_Handler,_Tokens>::print_attributes() const
 {
     using namespace std;
-    for_each(m_attrs.begin(), m_attrs.end(), sax::attr_printer<attr_type, tokens_map>(indent()));
+    for_each(m_attrs.begin(), m_attrs.end(), sax::attr_printer<attr_type, tokens_map>(m_tokens, indent()));
 }
 
 template<typename _Handler, typename _Tokens>
