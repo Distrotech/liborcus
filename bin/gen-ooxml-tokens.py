@@ -66,8 +66,11 @@ def gen_ooxml_namespaces ():
     nstokens = ['xmlns', 'xlsx', 'r']
     return nstokens
 
+def gen_opc_namespaces ():
+    nstokens = ['xmlns']
+    return nstokens
 
-def gen_token_constants (filepath, tokens):
+def gen_token_constants (filepath, tokens, nstokens):
 
     outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
@@ -80,19 +83,17 @@ def gen_token_constants (filepath, tokens):
         token_id += 1
     outfile.write("\n")
 
-    ns_tokens = gen_ooxml_namespaces()
-
     token_id = 1
-    token_size = len(ns_tokens)
+    token_size = len(nstokens)
     for i in xrange(0, token_size):
-        token = token_util.normalize_name(ns_tokens[i])
+        token = token_util.normalize_name(nstokens[i])
         outfile.write("const xmlns_token_t XMLNS_%s = %d;\n"%(token, token_id))
         token_id += 1
 
     outfile.close()
 
 
-def gen_token_names (filepath, tokens):
+def gen_token_names (filepath, tokens, nstokens):
 
     outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
@@ -114,10 +115,10 @@ def gen_token_names (filepath, tokens):
     outfile.write("const char* nstoken_names[] = {\n")
     outfile.write("    \"%s\", // 0\n"%token_util.unknown_token_name)
     token_id = 1
-    ns_tokens = gen_ooxml_namespaces()
-    token_size = len(ns_tokens)
+
+    token_size = len(nstokens)
     for i in xrange(0, token_size):
-        token = ns_tokens[i]
+        token = nstokens[i]
         s = ','
         if i == token_size-1:
             s = ' '
@@ -160,12 +161,18 @@ def main ():
     if not schema_type in ['opc', 'ooxml']:
         token_util.die("Unsupported schema type: %s"%schema_type)
 
+    if schema_type == 'ooxml':
+        nstokens = gen_ooxml_namespaces()
+    elif schema_type == 'opc':
+        nstokens = gen_opc_namespaces()
+    else:
+        die("Logic error")
+
     tokens = ['xmlns'] # default tokens
     more_tokens = get_all_tokens_from_zip(args[0])
     tokens.extend(more_tokens)
-    gen_token_constants(args[1], tokens)
-    gen_token_names(args[2], tokens)
-    nstokens = gen_ooxml_namespaces()
+    gen_token_constants(args[1], tokens, nstokens)
+    gen_token_names(args[2], tokens, nstokens)
     token_util.gen_token_list(args[3], tokens, nstokens)
 
 if __name__ == '__main__':
