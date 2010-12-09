@@ -32,10 +32,12 @@
 
 namespace orcus {
 
+class tokens;
+
 class opc_content_types_xml_handler : public xml_stream_handler
 {
 public:
-    opc_content_types_xml_handler();
+    opc_content_types_xml_handler(const tokens& _tokens);
     virtual ~opc_content_types_xml_handler();
 
     virtual void start_document();
@@ -43,6 +45,8 @@ public:
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual void end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
+private:
+    const tokens& m_tokens;
 };
 
 }

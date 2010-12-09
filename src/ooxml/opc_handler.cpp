@@ -26,10 +26,16 @@
  ************************************************************************/
 
 #include "ooxml/opc_handler.hpp"
+#include "tokens.hpp"
+
+#include <iostream>
+
+using namespace std;
 
 namespace orcus {
 
-opc_content_types_xml_handler::opc_content_types_xml_handler()
+opc_content_types_xml_handler::opc_content_types_xml_handler(const tokens& _tokens) :
+    m_tokens(_tokens)
 {
 }
 
@@ -47,6 +53,7 @@ void opc_content_types_xml_handler::end_document()
 
 void opc_content_types_xml_handler::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t &attrs)
 {
+    cout << m_tokens.get_nstoken_name(ns) << ":" << m_tokens.get_token_name(name) << endl;
 }
 
 void opc_content_types_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)

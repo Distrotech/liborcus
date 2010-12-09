@@ -32,6 +32,7 @@
 
 #include "xmlparser.hpp"
 #include "ooxml/xlsx_handler.hpp"
+#include "ooxml/opc_handler.hpp"
 #include "ooxml/ooxml_tokens.hpp"
 
 #include <cstdlib>
@@ -48,9 +49,9 @@ void read_content_types(GsfInput* input, size_t size)
 {
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(opc_tokens, content, size, "[Content_Types].xml");
-//  ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler);
-//  parser.set_handler(handler.get());
-//  parser.parse();
+    ::boost::scoped_ptr<opc_content_types_xml_handler> handler(new opc_content_types_xml_handler(opc_tokens));
+    parser.set_handler(handler.get());
+    parser.parse();
 }
 
 void read_sheet_xml(GsfInput* input, size_t size, const char* outpath)
