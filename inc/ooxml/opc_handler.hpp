@@ -33,6 +33,7 @@
 namespace orcus {
 
 class tokens;
+class opc_content_types_context;
 
 class opc_content_types_handler : public xml_stream_handler
 {
@@ -47,6 +48,7 @@ public:
     virtual void characters(const pstring& str);
 private:
     const tokens& m_tokens;
+    opc_content_types_context* mp_context;
 };
 
 }

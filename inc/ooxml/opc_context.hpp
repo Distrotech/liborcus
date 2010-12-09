@@ -25,47 +25,26 @@
  *
  ************************************************************************/
 
-#include "ooxml/opc_handler.hpp"
-#include "ooxml/opc_context.hpp"
-#include "tokens.hpp"
+#ifndef __ORCUS_OPC_CONTEXT_HPP__
+#define __ORCUS_OPC_CONTEXT_HPP__
 
-#include <iostream>
-
-using namespace std;
+#include "xmlcontext.hpp"
 
 namespace orcus {
 
-opc_content_types_handler::opc_content_types_handler(const tokens& _tokens) :
-    m_tokens(_tokens), mp_context(new opc_content_types_context(_tokens))
+class opc_content_types_context : public xml_context_base
 {
-}
+public:
+    opc_content_types_context(const tokens& _tokens);
+    virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
+    virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
+    virtual void end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base *child);
 
-opc_content_types_handler::~opc_content_types_handler()
-{
-    delete mp_context;
-}
-
-void opc_content_types_handler::start_document()
-{
-}
-
-void opc_content_types_handler::end_document()
-{
-}
-
-void opc_content_types_handler::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t &attrs)
-{
-    mp_context->start_element(ns, name, attrs);
-}
-
-void opc_content_types_handler::end_element(xmlns_token_t ns, xml_token_t name)
-{
-    mp_context->end_element(ns, name);
-}
-
-void opc_content_types_handler::characters(const pstring &str)
-{
-    mp_context->characters(str);
-}
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const::std::vector<xml_attr_t> &attrs);
+    virtual bool end_element(xmlns_token_t ns, xml_token_t name);
+    virtual void characters(const pstring &str);
+};
 
 }
+
+#endif

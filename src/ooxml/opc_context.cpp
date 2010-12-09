@@ -25,47 +25,42 @@
  *
  ************************************************************************/
 
-#include "ooxml/opc_handler.hpp"
 #include "ooxml/opc_context.hpp"
-#include "tokens.hpp"
-
-#include <iostream>
-
-using namespace std;
 
 namespace orcus {
 
-opc_content_types_handler::opc_content_types_handler(const tokens& _tokens) :
-    m_tokens(_tokens), mp_context(new opc_content_types_context(_tokens))
+opc_content_types_context::opc_content_types_context(const tokens& _tokens) :
+    xml_context_base(_tokens)
 {
 }
 
-opc_content_types_handler::~opc_content_types_handler()
+bool opc_content_types_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
 {
-    delete mp_context;
+    return true;
 }
 
-void opc_content_types_handler::start_document()
+xml_context_base* opc_content_types_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+{
+    return NULL;
+}
+
+void opc_content_types_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base *child)
 {
 }
 
-void opc_content_types_handler::end_document()
+void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name, const::std::vector<xml_attr_t> &attrs)
 {
+    xml_token_pair_t parent = push_stack(ns, name);
+    warn_unhandled();
 }
 
-void opc_content_types_handler::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t &attrs)
+bool opc_content_types_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
-    mp_context->start_element(ns, name, attrs);
+    return pop_stack(ns, name);
 }
 
-void opc_content_types_handler::end_element(xmlns_token_t ns, xml_token_t name)
+void opc_content_types_context::characters(const pstring &str)
 {
-    mp_context->end_element(ns, name);
-}
-
-void opc_content_types_handler::characters(const pstring &str)
-{
-    mp_context->characters(str);
 }
 
 }

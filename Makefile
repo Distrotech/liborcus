@@ -85,6 +85,7 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/ooxml/ooxml_tokens.o \
 	$(OBJDIR)/ooxml/opc_handler.o \
+	$(OBJDIR)/ooxml/opc_context.o \
 	$(OBJDIR)/ooxml/xlsx_handler.o \
 	$(OBJDIR)/ooxml/xlsx_context.o \
 	$(OBJDIR)/model/sheet.o
@@ -149,6 +150,9 @@ $(OBJDIR)/ooxml/ooxml_tokens.o: $(SRCDIR)/ooxml/ooxml_tokens.cpp $(DEPENDS)
 
 $(OBJDIR)/ooxml/opc_handler.o: $(SRCDIR)/ooxml/opc_handler.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/opc_handler.cpp
+
+$(OBJDIR)/ooxml/opc_context.o: $(SRCDIR)/ooxml/opc_context.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/opc_context.cpp
 
 $(OBJDIR)/ooxml/xlsx_handler.o: $(SRCDIR)/ooxml/xlsx_handler.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/xlsx_handler.cpp
