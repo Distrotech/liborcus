@@ -78,10 +78,5 @@
 			<F N="bin/gen-ooxml-tokens.py"/>
 			<F N="bin/token_util.py"/>
 		</Folder>
-		<Folder Name="inc">
-			<Folder Name="ooxml">
-				<F N="inc/ooxml/opc_token_constants.inl"/>
-			</Folder>
-		</Folder>
 	</Files>
 </Project>

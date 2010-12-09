@@ -215,6 +215,7 @@
 			<Folder Name="ooxml">
 				<F N="inc/ooxml/ooxml_token_constants.hpp"/>
 				<F N="inc/ooxml/ooxml_token_constants.inl"/>
+				<F N="inc/ooxml/opc_token_constants.inl"/>
 				<F N="inc/ooxml/xlsx_context.hpp"/>
 				<F N="inc/ooxml/xlsx_handler.hpp"/>
 			</Folder>
