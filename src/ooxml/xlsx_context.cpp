@@ -70,7 +70,8 @@ const char* dummy_sheet_name = "Test Sheet";
 
 }
 
-xlsx_sheet_xml_context::xlsx_sheet_xml_context() :
+xlsx_sheet_xml_context::xlsx_sheet_xml_context(const tokens_base& tokens) :
+    xml_context_base(tokens),
     m_default_ns(XMLNS_UNKNOWN_TOKEN),
     mp_sheet(NULL)
 {
@@ -106,7 +107,7 @@ void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, c
     {
         case XML_worksheet:
             for_each(attrs.begin(), attrs.end(), worksheet_attr_parser(*this));
-            print_attrs(attrs);
+            print_attrs(get_tokens(), attrs);
 
             // the namespace for worksheet element comes from its own 'xmlns' attribute.
             get_current_element().first = m_default_ns;

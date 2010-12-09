@@ -25,23 +25,28 @@
  *
  ************************************************************************/
 
-#include "tokens.hpp"
-#include "global.hpp"
-
-#include <cstdlib>
-#include <string>
-#include <unordered_map>
-
-using namespace std;
+#include "ooxml/ooxml_tokens.hpp"
 
 namespace orcus {
 
-namespace {
+namespace ooxml {
 
 #include "ooxml_tokens.inl"
 
 }
 
+namespace opc {
+
+#include "opc_tokens.inl"
+
 }
 
-#include "../tokens.inl"
+tokens_base ooxml_tokens = 
+    tokens_base(ooxml::token_names, ooxml::token_name_count, 
+                ooxml::nstoken_names, ooxml::nstoken_name_count);
+
+tokens_base opc_tokens = 
+    tokens_base(opc::token_names, opc::token_name_count, 
+                opc::nstoken_names, opc::nstoken_name_count);
+
+}

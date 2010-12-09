@@ -25,37 +25,17 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_XLSX_HANDLER_HPP__
-#define __ORCUS_XLSX_HANDLER_HPP__
+#ifndef __ORCUS_ODF_TOKENS_HPP__
+#define __ORCUS_ODF_TOKENS_HPP__
 
-#include "xmlhandler.hpp"
-#include "xmlcontext.hpp"
-
-#include <string>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include "tokens_base.hpp"
 
 namespace orcus {
 
-class xlsx_sheet_xml_handler : public xml_stream_handler
-{
-public:
-    xlsx_sheet_xml_handler(const tokens_base& tokens);
-    virtual ~xlsx_sheet_xml_handler();
-
-    virtual void start_document();
-    virtual void end_document();
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
-    virtual void end_element(xmlns_token_t ns, xml_token_t name);
-    virtual void characters(const pstring& str);
-
-private:
-    xml_context_base& get_current_context();
-
-private:
-    typedef ::boost::ptr_vector<xml_context_base> context_stack_type;
-    const tokens_base& m_tokens;
-    context_stack_type m_context_stack;
-};
+/**
+ * Singleton instance containing all ODF tokens.
+ */
+extern tokens_base odf_tokens;
 
 }
 

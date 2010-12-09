@@ -44,7 +44,7 @@ namespace model {
 class xlsx_sheet_xml_context : public xml_context_base
 {
 public:
-    xlsx_sheet_xml_context();
+    xlsx_sheet_xml_context(const tokens_base& tokens);
     virtual ~xlsx_sheet_xml_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
