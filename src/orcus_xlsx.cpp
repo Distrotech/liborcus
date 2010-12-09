@@ -49,7 +49,7 @@ void read_content_types(GsfInput* input, size_t size)
 {
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(opc_tokens, content, size, "[Content_Types].xml");
-    ::boost::scoped_ptr<opc_content_types_xml_handler> handler(new opc_content_types_xml_handler(opc_tokens));
+    ::boost::scoped_ptr<opc_content_types_handler> handler(new opc_content_types_handler(opc_tokens));
     parser.set_handler(handler.get());
     parser.parse();
 }
