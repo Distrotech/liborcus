@@ -66,6 +66,8 @@ void read_content(GsfInput* input, const char* outpath)
     if (!GSF_IS_INFILE(input))
         return;
 
+    // [Content_Types].xml
+
     GsfInput* xml_content_types = gsf_infile_child_by_name(GSF_INFILE (input), "[Content_Types].xml");
     if (!xml_content_types)
     {
@@ -77,6 +79,8 @@ void read_content(GsfInput* input, const char* outpath)
     cout << "name: [Content_Types].xml  size: " << size << endl;
     read_content_types(xml_content_types, size);
     g_object_unref(G_OBJECT(xml_content_types));
+
+    // xl/worksheets/sheet1.xml
 
     GsfInput* dir_xl = gsf_infile_child_by_name (GSF_INFILE (input), "xl");
     if (!dir_xl)

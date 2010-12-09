@@ -50,6 +50,7 @@ ODF_HEADERS= \
 	$(INCDIR)/xmlcontext.hpp \
 	$(INCDIR)/xmlparser.hpp \
 	$(INCDIR)/tokens.hpp \
+	$(INCDIR)/tokens_base.hpp \
 	$(INCDIR)/types.hpp \
 	$(INCDIR)/odf/odf_token_constants.hpp \
 	$(INCDIR)/odf/odshandler.hpp \
@@ -64,6 +65,7 @@ ODF_OBJFILES= \
 	$(OBJDIR)/xmlhandler.o \
 	$(OBJDIR)/xmlcontext.o \
 	$(OBJDIR)/xmlparser.o \
+	$(OBJDIR)/tokens_base.o \
 	$(OBJDIR)/odf/odf_tokens.o \
 	$(OBJDIR)/odf/odshandler.o \
 	$(OBJDIR)/odf/odscontext.o \
@@ -74,6 +76,7 @@ SHARED_INLS= \
 	$(SRCDIR)/tokens.inl
 
 XLSX_HEADERS= \
+	$(INCDIR)/tokens_base.hpp \
 	$(INCDIR)/ooxml/ooxml_token_constants.hpp \
 	$(INCDIR)/ooxml/opc_handler.hpp
 	
@@ -83,6 +86,7 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/xmlparser.o \
 	$(OBJDIR)/xmlhandler.o \
 	$(OBJDIR)/xmlcontext.o \
+	$(OBJDIR)/tokens_base.o \
 	$(OBJDIR)/ooxml/ooxml_tokens.o \
 	$(OBJDIR)/ooxml/opc_handler.o \
 	$(OBJDIR)/ooxml/xlsx_handler.o \
@@ -125,6 +129,9 @@ $(OBJDIR)/xmlhandler.o: $(SRCDIR)/xmlhandler.cpp $(DEPENDS)
 
 $(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlparser.cpp
+
+$(OBJDIR)/tokens_base.o: $(SRCDIR)/tokens_base.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/tokens_base.cpp
 
 # ODF parser
 
