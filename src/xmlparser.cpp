@@ -27,7 +27,7 @@
 
 #include "xmlparser.hpp"
 #include "xmlhandler.hpp"
-#include "tokens_base.hpp"
+#include "tokens.hpp"
 #include "sax.hpp"
 
 #include <libxml/parser.h>

@@ -28,7 +28,7 @@
 #ifndef __ORCUS_ODF_TOKENS_HPP__
 #define __ORCUS_ODF_TOKENS_HPP__
 
-#include "tokens_base.hpp"
+#include "tokens.hpp"
 
 namespace orcus {
 

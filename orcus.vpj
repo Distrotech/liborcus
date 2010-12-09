@@ -226,7 +226,7 @@
 			<F N="inc/global.hpp"/>
 			<F N="inc/pstring.hpp"/>
 			<F N="inc/sax.hpp"/>
-			<F N="inc/tokens_base.hpp"/>
+			<F N="inc/tokens.hpp"/>
 			<F N="inc/types.hpp"/>
 			<F N="inc/xmlcontext.hpp"/>
 			<F N="inc/xmlhandler.hpp"/>
@@ -246,6 +246,7 @@
 			<Folder Name="ooxml">
 				<F N="src/ooxml/ooxml_tokens.cpp"/>
 				<F N="src/ooxml/ooxml_tokens.inl"/>
+				<F N="src/ooxml/opc_handler.cpp"/>
 				<F N="src/ooxml/opc_tokens.cpp"/>
 				<F N="src/ooxml/opc_tokens.inl"/>
 				<F N="src/ooxml/xlsx_context.cpp"/>
@@ -254,7 +255,7 @@
 			<F N="src/global.cpp"/>
 			<F N="src/orcus_ods.cpp"/>
 			<F N="src/orcus_xlsx.cpp"/>
-			<F N="src/tokens_base.cpp"/>
+			<F N="src/tokens.cpp"/>
 			<F N="src/xmlcontext.cpp"/>
 			<F N="src/xmlhandler.cpp"/>
 			<F N="src/xmlparser.cpp"/>
