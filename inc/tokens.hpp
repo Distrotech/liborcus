@@ -103,25 +103,8 @@ public:
     const char* get_nstoken_name(xmlns_token_t token) const;
 
 private:
-    struct string_hash
-    {
-        size_t operator() (const pstring& val) const
-        {
-            // TODO: make this hashing algoritm more efficient.
-            size_t hash_val = val.size();
-            size_t loop_size = ::std::min<size_t>(hash_val, 20); // prevent too much looping.
-            const char* p = val.get();
-            for (size_t i = 0; i < loop_size; ++i, ++p)
-            {
-                hash_val += static_cast<size_t>(*p);
-                hash_val *= 2;
-            }
-    
-            return hash_val;
-        }
-    };
-    typedef ::std::unordered_map<pstring, xml_token_t, string_hash>     token_map_type;
-    typedef ::std::unordered_map<pstring, xmlns_token_t, string_hash>   nstoken_map_type;
+    typedef ::std::unordered_map<pstring, xml_token_t, pstring::hash>     token_map_type;
+    typedef ::std::unordered_map<pstring, xmlns_token_t, pstring::hash>   nstoken_map_type;
 
     token_map_type   m_tokens;
     nstoken_map_type m_nstokens;

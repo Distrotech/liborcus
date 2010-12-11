@@ -27,8 +27,10 @@
 
 #include "ooxml/opc_context.hpp"
 #include "ooxml/opc_token_constants.hpp"
+#include "ooxml/content_types.hpp"
 #include "global.hpp"
 
+#include <iostream>
 #include <algorithm>
 
 using namespace std;
@@ -62,6 +64,34 @@ public:
     }
 private:
     xmlns_token_t m_default_ns;
+};
+
+class override_attr_parser : public unary_function<void, xml_attr_t>
+{
+public:
+    override_attr_parser() {}
+    override_attr_parser(const override_attr_parser& r) :
+        m_part_name(r.m_part_name), m_content_type(r.m_content_type) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_PartName:
+                m_part_name = attr.value;
+            break;
+            case XML_ContentType:
+                m_content_type = attr.value;
+            break;
+        }
+    }
+
+    const pstring& get_part_name() const { return m_part_name; }
+    const pstring& get_content_type() const { return m_content_type; }
+
+private:
+    pstring m_part_name;
+    pstring m_content_type;
 };
 
 }
@@ -105,7 +135,12 @@ void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name
         }
         break;
         case XML_Override:
+        {
             xml_element_expected(parent, XMLNS_ct, XML_Types);
+            override_attr_parser func;
+            func = for_each(attrs.begin(), attrs.end(), func);
+            cout << "part name: " << func.get_part_name() << "  content type: " << func.get_content_type() << endl;
+        }
         break;
         case XML_Default:
             xml_element_expected(parent, XMLNS_ct, XML_Types);

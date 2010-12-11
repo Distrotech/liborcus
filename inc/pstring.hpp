@@ -111,6 +111,24 @@ public:
         m_size = 0;
     }
 
+    struct hash
+    {
+        size_t operator() (const pstring& val) const
+        {
+            // TODO: make this hashing algoritm more efficient.
+            size_t hash_val = val.size();
+            size_t loop_size = ::std::min<size_t>(hash_val, 20); // prevent too much looping.
+            const char* p = val.get();
+            for (size_t i = 0; i < loop_size; ++i, ++p)
+            {
+                hash_val += static_cast<size_t>(*p);
+                hash_val *= 2;
+            }
+    
+            return hash_val;
+        }
+    };
+
 private:
     const char* m_pos;
     size_t      m_size;
