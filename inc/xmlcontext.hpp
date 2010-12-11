@@ -60,6 +60,9 @@ protected:
     void warn_unhandled() const;
     void warn_unexpected() const;
 
+    void set_default_ns(xmlns_token_t ns);
+    xmlns_token_t get_default_ns() const;
+
     /**
      * Check if observed element equals expected element.  If not, it throws an 
      * xml_structure_error exception. 
@@ -76,6 +79,7 @@ protected:
 private:
     const tokens& m_tokens;
     xml_elem_stack_t m_stack;
+    xmlns_token_t m_default_ns; /// default namespace for worksheet element context.
 };
 
 

@@ -54,7 +54,9 @@ void print_stack(const tokens& tokens, const xml_elem_stack_t& elem_stack)
 }
 
 xml_context_base::xml_context_base(const tokens& tokens) :
-    m_tokens(tokens) {}
+    m_tokens(tokens),
+    m_default_ns(XMLNS_UNKNOWN_TOKEN)
+    {}
 
 xml_context_base::~xml_context_base()
 {
@@ -67,6 +69,9 @@ const tokens& xml_context_base::get_tokens() const
 
 xml_token_pair_t xml_context_base::push_stack(xmlns_token_t ns, xml_token_t name)
 {
+    if (ns == XMLNS_UNKNOWN_TOKEN)
+        ns = m_default_ns;
+
     xml_token_pair_t parent = m_stack.empty() ? xml_token_pair_t(XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN) : m_stack.back();
     m_stack.push_back(xml_token_pair_t(ns, name));
     return parent;
@@ -74,6 +79,9 @@ xml_token_pair_t xml_context_base::push_stack(xmlns_token_t ns, xml_token_t name
 
 bool xml_context_base::pop_stack(xmlns_token_t ns, xml_token_t name)
 {
+    if (ns == XMLNS_UNKNOWN_TOKEN)
+        ns = m_default_ns;
+
     const xml_token_pair_t& r = m_stack.back();
 
     if (ns != r.first || name != r.second)
@@ -109,6 +117,16 @@ void xml_context_base::warn_unexpected() const
     cerr << "warning: unexpected element ";
     print_stack(m_tokens, m_stack);
     cerr << endl;
+}
+
+void xml_context_base::set_default_ns(xmlns_token_t ns)
+{
+    m_default_ns = ns;
+}
+
+xmlns_token_t xml_context_base::get_default_ns() const
+{
+    return m_default_ns;
 }
 
 void xml_context_base::xml_element_expected(

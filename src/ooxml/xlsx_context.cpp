@@ -45,19 +45,28 @@ namespace {
 class worksheet_attr_parser : public unary_function<void, xml_attr_t>
 {
 public:
-    explicit worksheet_attr_parser(xlsx_sheet_xml_context& parent) : m_parent(parent) {}
+    explicit worksheet_attr_parser() : 
+        m_default_ns(XMLNS_UNKNOWN_TOKEN) {}
 
-    void operator() (const xml_attr_t& attr) const
+    worksheet_attr_parser(const worksheet_attr_parser& r) :
+        m_default_ns(r.m_default_ns) {}
+
+    void operator() (const xml_attr_t& attr)
     {
         if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_xmlns)
         {
             if (attr.value != "http://schemas.openxmlformats.org/spreadsheetml/2006/main")
                 throw xml_structure_error("invalid namespace for worksheet element!");
-            m_parent.set_default_ns(XMLNS_xlsx);
+            m_default_ns = XMLNS_xlsx;
         }
     }
+
+    xmlns_token_t get_default_ns() const
+    {
+        return m_default_ns;
+    }
 private:
-    xlsx_sheet_xml_context& m_parent;
+    xmlns_token_t m_default_ns;
 };
 
 /**
@@ -71,7 +80,6 @@ const char* dummy_sheet_name = "Test Sheet";
 
 xlsx_sheet_xml_context::xlsx_sheet_xml_context(const tokens& tokens) :
     xml_context_base(tokens),
-    m_default_ns(XMLNS_UNKNOWN_TOKEN),
     mp_sheet(NULL)
 {
 }
@@ -97,21 +105,23 @@ void xlsx_sheet_xml_context::end_child_context(xmlns_token_t ns, xml_token_t nam
 
 void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
-    if (ns == XMLNS_UNKNOWN_TOKEN)
-        ns = m_default_ns;
-
     xml_token_pair_t parent = push_stack(ns, name);
 
     switch (name)
     {
         case XML_worksheet:
-            for_each(attrs.begin(), attrs.end(), worksheet_attr_parser(*this));
+        {
             print_attrs(get_tokens(), attrs);
 
+            xmlns_token_t default_ns = 
+                for_each(attrs.begin(), attrs.end(), worksheet_attr_parser()).get_default_ns();
+
             // the namespace for worksheet element comes from its own 'xmlns' attribute.
-            get_current_element().first = m_default_ns;
+            get_current_element().first = default_ns;
+            set_default_ns(default_ns);
 
             mp_sheet = new model::sheet(pstring(dummy_sheet_name));
+        }
         break;
         case XML_sheetData:
             xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
@@ -133,9 +143,6 @@ void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, c
 
 bool xlsx_sheet_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
-    if (ns == XMLNS_UNKNOWN_TOKEN)
-        ns = m_default_ns;
-
     switch (name)
     {
         case XML_worksheet:
@@ -147,11 +154,6 @@ bool xlsx_sheet_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
 
 void xlsx_sheet_xml_context::characters(const pstring& str)
 {
-}
-
-void xlsx_sheet_xml_context::set_default_ns(xmlns_token_t ns)
-{
-    m_default_ns = ns;
 }
 
 }
