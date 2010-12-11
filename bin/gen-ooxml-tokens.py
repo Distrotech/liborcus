@@ -67,7 +67,9 @@ def gen_ooxml_namespaces ():
     return nstokens
 
 def gen_opc_namespaces ():
-    nstokens = ['xmlns']
+    # ct - content types
+    # rel - relations
+    nstokens = ['xmlns', 'ct', 'rel']
     return nstokens
 
 def gen_token_constants (filepath, tokens, nstokens):
