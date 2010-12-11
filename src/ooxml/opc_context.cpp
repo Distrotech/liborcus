@@ -99,7 +99,7 @@ void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name
             xmlns_token_t default_ns = 
                 for_each(attrs.begin(), attrs.end(), types_attr_parser()).get_default_ns();
 
-            // the namespace for worksheet element comes from its own 'xmlns' attribute.
+            // the namespace for Types element comes from its own 'xmlns' attribute.
             get_current_element().first = default_ns;
             set_default_ns(default_ns);
         }
