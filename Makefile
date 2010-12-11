@@ -74,7 +74,8 @@ ODF_OBJFILES= \
 XLSX_HEADERS= \
 	$(INCDIR)/tokens.hpp \
 	$(INCDIR)/ooxml/ooxml_token_constants.hpp \
-	$(INCDIR)/ooxml/opc_handler.hpp
+	$(INCDIR)/ooxml/opc_handler.hpp \
+	$(INCDIR)/ooxml/content_types.hpp
 	
 XLSX_OBJFILES = \
 	$(OBJDIR)/orcus_xlsx.o \
@@ -88,6 +89,7 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/ooxml/opc_context.o \
 	$(OBJDIR)/ooxml/xlsx_handler.o \
 	$(OBJDIR)/ooxml/xlsx_context.o \
+	$(OBJDIR)/ooxml/content_types.o \
 	$(OBJDIR)/model/sheet.o
 
 DEPENDS= \
@@ -144,6 +146,9 @@ $(OBJDIR)/odf/odscontext.o: $(SRCDIR)/odf/odscontext.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/odscontext.cpp
 
 # OOXML parser
+
+$(OBJDIR)/ooxml/content_types.o: $(SRCDIR)/ooxml/content_types.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/content_types.cpp
 
 $(OBJDIR)/ooxml/ooxml_tokens.o: $(SRCDIR)/ooxml/ooxml_tokens.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/ooxml_tokens.cpp
