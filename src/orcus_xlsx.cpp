@@ -51,7 +51,12 @@ struct print_xml_part : unary_function<void, xml_part_t>
 {
     void operator() (const xml_part_t& v) const
     {
-        cout << "* part name: " << v.first << " (" << v.second << ")" << endl;
+        cout << "* part name: " << v.first;
+        if (v.second)
+            cout << " (" << v.second << ")";
+        else
+            cout << " (<unknown content type>)";
+        cout << endl;
     }
 };
 
