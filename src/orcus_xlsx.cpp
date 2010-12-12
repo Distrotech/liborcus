@@ -95,8 +95,11 @@ private:
  * in the package to be parsed. 
  */
 void read_content_types(
-    GsfInput* input, size_t size, vector<xml_part_t>& parts, vector<xml_part_t>& ext_defaults)
+    GsfInput* input, vector<xml_part_t>& parts, vector<xml_part_t>& ext_defaults)
 {
+    size_t size = gsf_input_size(input);
+    cout << "---" << endl;
+    cout << "name: [Content_Types].xml  size: " << size << endl;
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(opc_tokens, content, size, "[Content_Types].xml");
     ::boost::scoped_ptr<opc_content_types_handler> handler(new opc_content_types_handler(opc_tokens));
@@ -109,8 +112,10 @@ void read_content_types(
 /**
  * Parse a sheet xml part that contains data stored in a single sheet.
  */
-void read_sheet_xml(GsfInput* input, size_t size, const char* outpath)
+void read_sheet_xml(GsfInput* input, const char* outpath)
 {
+    size_t size = gsf_input_size(input);
+    cout << "name: sheet1  size: " << size << endl;
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(ooxml_tokens, content, size, "sheet.xml");
     ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler(ooxml_tokens));
@@ -134,11 +139,7 @@ void read_content(GsfInput* input, const char* outpath)
     {
         gsf_infile_guard xml_content_types_guard(input, "[Content_Types].xml");
         GsfInput* xml_content_types = xml_content_types_guard.get();
-    
-        size_t size = gsf_input_size(xml_content_types);
-        cout << "---" << endl;
-        cout << "name: [Content_Types].xml  size: " << size << endl;
-        read_content_types(xml_content_types, size, parts, ext_defaults);
+        read_content_types(xml_content_types, parts, ext_defaults);
     }
     for_each(parts.begin(), parts.end(), print_xml_content_types("part name"));
     for_each(ext_defaults.begin(), ext_defaults.end(), print_xml_content_types("extension default"));
@@ -161,10 +162,7 @@ void read_content(GsfInput* input, const char* outpath)
     cout << "---" << endl;
     gsf_infile_guard xml_sheet1_guard(dir_worksheets, "sheet1.xml");
     GsfInput* xml_sheet1 = xml_sheet1_guard.get();
-
-    size_t size = gsf_input_size(xml_sheet1);
-    cout << "name: sheet1  size: " << size << endl;
-    read_sheet_xml(xml_sheet1, size, outpath);
+    read_sheet_xml(xml_sheet1, outpath);
 }
 
 void list_content (GsfInput* input, int level = 0)
