@@ -54,7 +54,7 @@ struct xml_attr_t
 
 typedef ::std::vector<xml_attr_t> xml_attrs_t;
 typedef const char* content_type_t;
-typedef ::std::pair< ::std::string, const char*> xml_part_t;
+typedef ::std::pair< ::std::string, content_type_t> xml_part_t;
 
 }
 
