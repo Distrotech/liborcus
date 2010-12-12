@@ -60,6 +60,11 @@ struct print_xml_part : unary_function<void, xml_part_t>
     }
 };
 
+/**
+ * Parse the [Content_Types].xml part to extract the paths and content types
+ * of the other xml parts contained in the package. This is the first part 
+ * in the package to be parsed. 
+ */
 void read_content_types(GsfInput* input, size_t size, vector<xml_part_t>& parts)
 {
     const guint8* content = gsf_input_read(input, size, NULL);
@@ -70,6 +75,9 @@ void read_content_types(GsfInput* input, size_t size, vector<xml_part_t>& parts)
     handler->pop_parts(parts);
 }
 
+/**
+ * Parse a sheet xml part that contains data stored in a single sheet.
+ */
 void read_sheet_xml(GsfInput* input, size_t size, const char* outpath)
 {
     const guint8* content = gsf_input_read(input, size, NULL);
@@ -79,6 +87,10 @@ void read_sheet_xml(GsfInput* input, size_t size, const char* outpath)
     parser.parse();
 }
 
+/**
+ * The top-level function that determines the order in which the individual 
+ * parts get parsed. 
+ */
 void read_content(GsfInput* input, const char* outpath)
 {
     if (!GSF_IS_INFILE(input))
