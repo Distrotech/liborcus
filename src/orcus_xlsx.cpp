@@ -40,6 +40,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <sstream>
 
 #include <boost/scoped_ptr.hpp>
 
@@ -74,7 +75,11 @@ public:
         mp_input(gsf_infile_child_by_name(GSF_INFILE(parent), name))
     {
         if (!mp_input)
-            throw general_error("failed to open infile child: ");
+        {
+            ostringstream os;
+            os << "failed to open infile child: '" << name << "'";
+            throw general_error(os.str());
+        }
     }
 
     ~gsf_infile_guard() 
