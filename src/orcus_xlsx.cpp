@@ -47,17 +47,23 @@ using namespace orcus;
 
 namespace {
 
-struct print_xml_part : unary_function<void, xml_part_t>
+class print_xml_content_types : unary_function<void, xml_part_t>
 {
+public:
+    print_xml_content_types(const char* prefix) :
+        m_prefix(prefix) {}
+
     void operator() (const xml_part_t& v) const
     {
-        cout << "* part name: " << v.first;
+        cout << "* " << m_prefix << ": " << v.first;
         if (v.second)
             cout << " (" << v.second << ")";
         else
             cout << " (<unknown content type>)";
         cout << endl;
     }
+private:
+    const char* m_prefix;
 };
 
 /**
@@ -65,7 +71,8 @@ struct print_xml_part : unary_function<void, xml_part_t>
  * of the other xml parts contained in the package. This is the first part 
  * in the package to be parsed. 
  */
-void read_content_types(GsfInput* input, size_t size, vector<xml_part_t>& parts)
+void read_content_types(
+    GsfInput* input, size_t size, vector<xml_part_t>& parts, vector<xml_part_t>& ext_defaults)
 {
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(opc_tokens, content, size, "[Content_Types].xml");
@@ -73,6 +80,7 @@ void read_content_types(GsfInput* input, size_t size, vector<xml_part_t>& parts)
     parser.set_handler(handler.get());
     parser.parse();
     handler->pop_parts(parts);
+    handler->pop_ext_defaluts(ext_defaults);
 }
 
 /**
@@ -106,12 +114,14 @@ void read_content(GsfInput* input, const char* outpath)
     }
 
     vector<xml_part_t> parts;
+    vector<xml_part_t> ext_defaults;
     size_t size = gsf_input_size(xml_content_types);
     cout << "name: [Content_Types].xml  size: " << size << endl;
-    read_content_types(xml_content_types, size, parts);
+    read_content_types(xml_content_types, size, parts, ext_defaults);
     g_object_unref(G_OBJECT(xml_content_types));
 
-    for_each(parts.begin(), parts.end(), print_xml_part());
+    for_each(parts.begin(), parts.end(), print_xml_content_types("part name"));
+    for_each(ext_defaults.begin(), ext_defaults.end(), print_xml_content_types("extension default"));
 
     // xl/worksheets/sheet1.xml
 

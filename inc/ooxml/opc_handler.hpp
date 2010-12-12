@@ -48,6 +48,7 @@ public:
     virtual void characters(const pstring& str);
 
     void pop_parts(::std::vector<xml_part_t>& parts);
+    void pop_ext_defaluts(::std::vector<xml_part_t>& ext_defaults);
 private:
     const tokens& m_tokens;
     opc_content_types_context* mp_context;

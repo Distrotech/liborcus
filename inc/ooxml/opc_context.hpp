@@ -58,9 +58,19 @@ public:
      * @param parts instance to swap the stored xml part info with.
      */
     void pop_parts(::std::vector<xml_part_t>& parts);
+
+    /**
+     * Swap stored xml extension info with the instance passed as the 
+     * argument. Calling this will clear the storage. 
+     * 
+     * @param parts instance to swap the stored extension info with.
+     */
+    void pop_ext_defaults(::std::vector<xml_part_t>& ext_defaults);
+
 private:
     ct_cache_type m_ct_cache; // content type cache;
     ::std::vector<xml_part_t> m_parts;
+    ::std::vector<xml_part_t> m_ext_defaults;
 };
 
 }

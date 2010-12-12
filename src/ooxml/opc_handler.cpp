@@ -76,4 +76,12 @@ void opc_content_types_handler::pop_parts(vector<xml_part_t>& parts)
     mp_context->pop_parts(parts);
 }
 
+void opc_content_types_handler::pop_ext_defaluts(vector<xml_part_t>& ext_defaults)
+{
+    if (!mp_context)
+        return;
+
+    mp_context->pop_ext_defaults(ext_defaults);
+}
+
 }
