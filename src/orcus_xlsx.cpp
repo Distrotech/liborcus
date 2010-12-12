@@ -34,6 +34,7 @@
 #include "ooxml/xlsx_handler.hpp"
 #include "ooxml/opc_handler.hpp"
 #include "ooxml/ooxml_tokens.hpp"
+#include "global.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -70,7 +71,11 @@ class gsf_infile_guard
 {
 public:
     gsf_infile_guard(GsfInput* parent, const char* name) : 
-        mp_input(gsf_infile_child_by_name(GSF_INFILE(parent), name)) {}
+        mp_input(gsf_infile_child_by_name(GSF_INFILE(parent), name))
+    {
+        if (!mp_input)
+            throw general_error("failed to open infile child: ");
+    }
 
     ~gsf_infile_guard() 
     {
@@ -124,52 +129,40 @@ void read_content(GsfInput* input, const char* outpath)
 
     // [Content_Types].xml
 
-    GsfInput* xml_content_types = gsf_infile_child_by_name(GSF_INFILE (input), "[Content_Types].xml");
-    if (!xml_content_types)
-    {
-        cout << "failed to get [Content_Types].xml stream." << endl;
-        return;
-    }
-
     vector<xml_part_t> parts;
     vector<xml_part_t> ext_defaults;
-    size_t size = gsf_input_size(xml_content_types);
-    cout << "---" << endl;
-    cout << "name: [Content_Types].xml  size: " << size << endl;
-    read_content_types(xml_content_types, size, parts, ext_defaults);
-    g_object_unref(G_OBJECT(xml_content_types));
-
+    {
+        gsf_infile_guard xml_content_types_guard(input, "[Content_Types].xml");
+        GsfInput* xml_content_types = xml_content_types_guard.get();
+    
+        size_t size = gsf_input_size(xml_content_types);
+        cout << "---" << endl;
+        cout << "name: [Content_Types].xml  size: " << size << endl;
+        read_content_types(xml_content_types, size, parts, ext_defaults);
+    }
     for_each(parts.begin(), parts.end(), print_xml_content_types("part name"));
     for_each(ext_defaults.begin(), ext_defaults.end(), print_xml_content_types("extension default"));
+
+    // _rels/.rels
+
+    {
+        gsf_infile_guard dir_rels_guard(input, "_rels");
+        GsfInput* dir_rels = dir_rels_guard.get();
+    }
 
     // xl/worksheets/sheet1.xml
 
     gsf_infile_guard dir_xl_guard(input, "xl");
     GsfInput* dir_xl = dir_xl_guard.get();
-    if (!dir_xl)
-    {
-        cout << "failed to get xl directory" << endl;
-        return;
-    }
 
     gsf_infile_guard dir_worksheets_guard(dir_xl, "worksheets");
     GsfInput* dir_worksheets = dir_worksheets_guard.get();
-    if (!dir_worksheets)
-    {
-        cout << "failed to get worksheets directory" << endl;
-        return;
-    }
 
     cout << "---" << endl;
     gsf_infile_guard xml_sheet1_guard(dir_worksheets, "sheet1.xml");
     GsfInput* xml_sheet1 = xml_sheet1_guard.get();
-    if (!xml_sheet1)
-    {
-        cout << "failed to get sheet1 stream" << endl;
-        return;
-    }
 
-    size = gsf_input_size(xml_sheet1);
+    size_t size = gsf_input_size(xml_sheet1);
     cout << "name: sheet1  size: " << size << endl;
     read_sheet_xml(xml_sheet1, size, outpath);
 }
