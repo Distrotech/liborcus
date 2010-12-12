@@ -114,6 +114,15 @@ void read_content_types(
     handler->pop_ext_defaluts(ext_defaults);
 }
 
+void read_relations(GsfInput* input)
+{
+    size_t size = gsf_input_size(input);
+    cout << "---" << endl;
+    cout << "name: _rels/.rels  size: " << size << endl;
+    const guint8* content = gsf_input_read(input, size, NULL);
+    xml_stream_parser parser(opc_tokens, content, size, "_rels/.rels");
+}
+
 /**
  * Parse a sheet xml part that contains data stored in a single sheet.
  */
@@ -154,6 +163,9 @@ void read_content(GsfInput* input, const char* outpath)
     {
         gsf_infile_guard dir_rels_guard(input, "_rels");
         GsfInput* dir_rels = dir_rels_guard.get();
+        gsf_infile_guard rels_guard(dir_rels, ".rels");
+        GsfInput* rels = rels_guard.get();
+        read_relations(rels);
     }
 
     // xl/worksheets/sheet1.xml
