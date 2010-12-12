@@ -75,6 +75,7 @@ XLSX_HEADERS= \
 	$(INCDIR)/tokens.hpp \
 	$(INCDIR)/ooxml/ooxml_token_constants.hpp \
 	$(INCDIR)/ooxml/opc_handler.hpp \
+	$(INCDIR)/ooxml/opc_context.hpp \
 	$(INCDIR)/ooxml/content_types.hpp
 	
 XLSX_OBJFILES = \

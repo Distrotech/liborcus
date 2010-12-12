@@ -69,9 +69,14 @@ private:
 class override_attr_parser : public unary_function<void, xml_attr_t>
 {
 public:
-    override_attr_parser() {}
+    override_attr_parser(opc_content_types_context::ct_cache_type* p_ct_cache) : 
+        mp_ct_cache(p_ct_cache),
+        m_content_type(NULL) {}
+
     override_attr_parser(const override_attr_parser& r) :
-        m_part_name(r.m_part_name), m_content_type(r.m_content_type) {}
+        mp_ct_cache(r.mp_ct_cache),
+        m_part_name(r.m_part_name), 
+        m_content_type(r.m_content_type) {}
 
     void operator() (const xml_attr_t& attr)
     {
@@ -81,23 +86,42 @@ public:
                 m_part_name = attr.value;
             break;
             case XML_ContentType:
-                m_content_type = attr.value;
+                m_content_type = to_content_type(attr.value);
             break;
         }
     }
 
     const pstring& get_part_name() const { return m_part_name; }
-    const pstring& get_content_type() const { return m_content_type; }
+    const char* get_content_type() const { return m_content_type; }
 
 private:
+    content_type_t to_content_type(const pstring& p) const
+    {
+        opc_content_types_context::ct_cache_type::const_iterator itr = 
+            mp_ct_cache->find(p);
+        if (itr == mp_ct_cache->end())
+            return NULL;
+        const pstring& val = *itr;
+        return val.get();
+    }
+
+private:
+    const opc_content_types_context::ct_cache_type* mp_ct_cache;
     pstring m_part_name;
-    pstring m_content_type;
+    content_type_t m_content_type;
 };
 
 }
 
 opc_content_types_context::opc_content_types_context(const tokens& _tokens) :
     xml_context_base(_tokens)
+{
+    // build content type cache.
+    for (content_type_t* p = CT_all; *p; ++p)
+        m_ct_cache.insert(pstring(*p));
+}
+
+opc_content_types_context::~opc_content_types_context()
 {
 }
 
@@ -137,9 +161,14 @@ void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name
         case XML_Override:
         {
             xml_element_expected(parent, XMLNS_ct, XML_Types);
-            override_attr_parser func;
+            override_attr_parser func(&m_ct_cache);
             func = for_each(attrs.begin(), attrs.end(), func);
-            cout << "part name: " << func.get_part_name() << "  content type: " << func.get_content_type() << endl;
+
+            // We need to create allocated strings here because the part names
+            // need to survive after the [Content_Types].xml stream is
+            // destroyed.
+            m_parts.push_back(
+                xml_part_t(func.get_part_name().str(), func.get_content_type()));
         }
         break;
         case XML_Default:

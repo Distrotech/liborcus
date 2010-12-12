@@ -28,17 +28,21 @@
 #ifndef __ORCUS_OOXML_CONTENT_TYPES_HPP__
 #define __ORCUS_OOXML_CONTENT_TYPES_HPP__
 
+#include "types.hpp"
+
 namespace orcus {
 
-extern const char* CT_ooxml_extended_properties;
-extern const char* CT_ooxml_xlsx_shared_strings;
-extern const char* CT_ooxml_xlsx_sheet_main;
-extern const char* CT_ooxml_xlsx_styles;
-extern const char* CT_ooxml_xlsx_worksheet;
-extern const char* CT_ooxml_theme;
-extern const char* CT_opc_core_properties;
-extern const char* CT_opc_relationships;
-extern const char* CT_xml;
+extern content_type_t CT_ooxml_extended_properties;
+extern content_type_t CT_ooxml_xlsx_shared_strings;
+extern content_type_t CT_ooxml_xlsx_sheet_main;
+extern content_type_t CT_ooxml_xlsx_styles;
+extern content_type_t CT_ooxml_xlsx_worksheet;
+extern content_type_t CT_ooxml_theme;
+extern content_type_t CT_opc_core_properties;
+extern content_type_t CT_opc_relationships;
+extern content_type_t CT_xml;
+
+extern content_type_t* CT_all;
 
 }
 

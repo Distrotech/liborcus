@@ -30,6 +30,7 @@
 
 #include <cstdlib>
 #include <vector>
+#include <string>
 #include "pstring.hpp"
 
 namespace orcus {
@@ -52,6 +53,8 @@ struct xml_attr_t
 };
 
 typedef ::std::vector<xml_attr_t> xml_attrs_t;
+typedef const char* content_type_t;
+typedef ::std::pair< ::std::string, const char*> xml_part_t;
 
 }
 
