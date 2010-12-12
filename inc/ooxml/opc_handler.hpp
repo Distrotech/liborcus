@@ -46,6 +46,8 @@ public:
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual void end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
+
+    void pop_parts(::std::vector<xml_part_t>& parts);
 private:
     const tokens& m_tokens;
     opc_content_types_context* mp_context;

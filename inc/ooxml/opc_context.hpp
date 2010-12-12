@@ -51,6 +51,13 @@ public:
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring &str);
 
+    /**
+     * Swap stored xml part info with the instance passed as the argument. 
+     * Calling this will clear the storage. 
+     * 
+     * @param parts instance to swap the stored xml part info with.
+     */
+    void pop_parts(::std::vector<xml_part_t>& parts);
 private:
     ct_cache_type m_ct_cache; // content type cache;
     ::std::vector<xml_part_t> m_parts;

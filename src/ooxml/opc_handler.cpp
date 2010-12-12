@@ -68,4 +68,12 @@ void opc_content_types_handler::characters(const pstring &str)
     mp_context->characters(str);
 }
 
+void opc_content_types_handler::pop_parts(vector<xml_part_t>& parts)
+{
+    if (!mp_context)
+        return;
+
+    mp_context->pop_parts(parts);
+}
+
 }

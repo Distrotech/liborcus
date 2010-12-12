@@ -188,4 +188,9 @@ void opc_content_types_context::characters(const pstring &str)
 {
 }
 
+void opc_content_types_context::pop_parts(vector<xml_part_t>& parts)
+{
+    m_parts.swap(parts);
+}
+
 }
