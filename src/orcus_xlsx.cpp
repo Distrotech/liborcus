@@ -60,8 +60,6 @@ struct print_xml_part : unary_function<void, xml_part_t>
     }
 };
 
-}
-
 void read_content_types(GsfInput* input, size_t size, vector<xml_part_t>& parts)
 {
     const guint8* content = gsf_input_read(input, size, NULL);
@@ -196,6 +194,8 @@ void read_file(const char* fpath, const char* outpath)
 //  list_content(GSF_INPUT(infile));
     read_content (GSF_INPUT(infile), outpath);
     g_object_unref (G_OBJECT (infile));
+}
+
 }
 
 int main(int argc, char** argv)
