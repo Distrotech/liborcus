@@ -66,6 +66,24 @@ private:
     const char* m_prefix;
 };
 
+class gsf_infile_guard
+{
+public:
+    gsf_infile_guard(GsfInput* parent, const char* name) : 
+        mp_input(gsf_infile_child_by_name(GSF_INFILE(parent), name)) {}
+
+    ~gsf_infile_guard() 
+    {
+        if (mp_input)
+            g_object_unref(G_OBJECT(mp_input)); 
+    }
+
+    GsfInput* get() const { return mp_input; }
+
+private:
+    GsfInput* mp_input;
+};
+
 /**
  * Parse the [Content_Types].xml part to extract the paths and content types
  * of the other xml parts contained in the package. This is the first part 
@@ -126,15 +144,16 @@ void read_content(GsfInput* input, const char* outpath)
 
     // xl/worksheets/sheet1.xml
 
-    GsfInput* dir_xl = gsf_infile_child_by_name (GSF_INFILE (input), "xl");
+    gsf_infile_guard dir_xl_guard(input, "xl");
+    GsfInput* dir_xl = dir_xl_guard.get();
     if (!dir_xl)
     {
         cout << "failed to get xl directory" << endl;
         return;
     }
 
-    GsfInput* dir_worksheets = gsf_infile_child_by_name(GSF_INFILE(dir_xl), "worksheets");
-    g_object_unref(G_OBJECT(dir_xl));
+    gsf_infile_guard dir_worksheets_guard(dir_xl, "worksheets");
+    GsfInput* dir_worksheets = dir_worksheets_guard.get();
     if (!dir_worksheets)
     {
         cout << "failed to get worksheets directory" << endl;
@@ -142,8 +161,8 @@ void read_content(GsfInput* input, const char* outpath)
     }
 
     cout << "---" << endl;
-    GsfInput* xml_sheet1 = gsf_infile_child_by_name(GSF_INFILE(dir_worksheets), "sheet1.xml");
-    g_object_unref(G_OBJECT(dir_worksheets));
+    gsf_infile_guard xml_sheet1_guard(dir_worksheets, "sheet1.xml");
+    GsfInput* xml_sheet1 = xml_sheet1_guard.get();
     if (!xml_sheet1)
     {
         cout << "failed to get sheet1 stream" << endl;
@@ -153,10 +172,8 @@ void read_content(GsfInput* input, const char* outpath)
     size = gsf_input_size(xml_sheet1);
     cout << "name: sheet1  size: " << size << endl;
     read_sheet_xml(xml_sheet1, size, outpath);
-    g_object_unref(G_OBJECT(xml_sheet1));
 }
 
-#if 1
 void list_content (GsfInput* input, int level = 0)
 {
     if (!GSF_IS_INFILE(input))
@@ -193,7 +210,6 @@ void list_content (GsfInput* input, int level = 0)
         printf("   ");
     puts ("}");
 }
-#endif
 
 void read_file(const char* fpath, const char* outpath)
 {
