@@ -29,32 +29,36 @@
 
 namespace orcus {
 
+content_type_t CT_ooxml_extended_properties = "application/vnd.openxmlformats-officedocument.extended-properties+xml";
+content_type_t CT_ooxml_xlsx_calc_chain     = "application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml";
+content_type_t CT_ooxml_xlsx_pivot_table    = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml";
+content_type_t CT_ooxml_xlsx_shared_strings = "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml";
+content_type_t CT_ooxml_xlsx_sheet_main     = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml";
+content_type_t CT_ooxml_xlsx_styles         = "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml";
+content_type_t CT_ooxml_xlsx_worksheet      = "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
+content_type_t CT_ooxml_theme               = "application/vnd.openxmlformats-officedocument.theme+xml";
+content_type_t CT_opc_core_properties       = "application/vnd.openxmlformats-package.core-properties+xml";
+content_type_t CT_opc_relationships         = "application/vnd.openxmlformats-package.relationships+xml";
+content_type_t CT_xml                       = "application/xml";
+
 namespace {
 
 content_type_t cts[] = {
-    "application/vnd.openxmlformats-officedocument.extended-properties+xml",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml",
-    "application/vnd.openxmlformats-officedocument.theme+xml",
-    "application/vnd.openxmlformats-package.core-properties+xml",
-    "application/vnd.openxmlformats-package.relationships+xml",
-    "application/xml",
+    CT_ooxml_extended_properties,
+    CT_ooxml_xlsx_calc_chain,
+    CT_ooxml_xlsx_pivot_table,
+    CT_ooxml_xlsx_shared_strings,
+    CT_ooxml_xlsx_sheet_main,
+    CT_ooxml_xlsx_styles,
+    CT_ooxml_xlsx_worksheet,
+    CT_ooxml_theme,
+    CT_opc_core_properties,
+    CT_opc_relationships,
+    CT_xml,
     NULL
 };
 
 }
-
-content_type_t CT_ooxml_extended_properties = cts[0];
-content_type_t CT_ooxml_xlsx_shared_strings = cts[1];
-content_type_t CT_ooxml_xlsx_sheet_main = cts[2];
-content_type_t CT_ooxml_xlsx_styles = cts[3];
-content_type_t CT_ooxml_xlsx_worksheet = cts[4];
-content_type_t CT_ooxml_theme = cts[5];
-content_type_t CT_opc_core_properties = cts[6];
-content_type_t CT_opc_relationships = cts[7];
-content_type_t CT_xml = cts[8];
 
 content_type_t* CT_all = cts;
 
