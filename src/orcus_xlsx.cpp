@@ -116,6 +116,7 @@ void read_content(GsfInput* input, const char* outpath)
     vector<xml_part_t> parts;
     vector<xml_part_t> ext_defaults;
     size_t size = gsf_input_size(xml_content_types);
+    cout << "---" << endl;
     cout << "name: [Content_Types].xml  size: " << size << endl;
     read_content_types(xml_content_types, size, parts, ext_defaults);
     g_object_unref(G_OBJECT(xml_content_types));
@@ -140,6 +141,7 @@ void read_content(GsfInput* input, const char* outpath)
         return;
     }
 
+    cout << "---" << endl;
     GsfInput* xml_sheet1 = gsf_infile_child_by_name(GSF_INFILE(dir_worksheets), "sheet1.xml");
     g_object_unref(G_OBJECT(dir_worksheets));
     if (!xml_sheet1)
