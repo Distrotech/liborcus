@@ -51,8 +51,7 @@ struct print_xml_part : unary_function<void, xml_part_t>
 {
     void operator() (const xml_part_t& v) const
     {
-        cout << "  part name:    " << v.first << endl;
-        cout << "  content type: " << v.second << endl;
+        cout << "* part name: " << v.first << " (" << v.second << ")" << endl;
     }
 };
 
@@ -98,6 +97,7 @@ void read_content(GsfInput* input, const char* outpath)
     g_object_unref(G_OBJECT(xml_content_types));
 
     for_each(parts.begin(), parts.end(), print_xml_part());
+
     // xl/worksheets/sheet1.xml
 
     GsfInput* dir_xl = gsf_infile_child_by_name (GSF_INFILE (input), "xl");
