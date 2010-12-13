@@ -34,12 +34,17 @@ content_type_t CT_ooxml_drawing               = "application/vnd.openxmlformats-
 content_type_t CT_ooxml_vml_drawing           = "application/vnd.openxmlformats-officedocument.vmlDrawing";
 content_type_t CT_ooxml_xlsx_calc_chain       = "application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml";
 content_type_t CT_ooxml_xlsx_comments         = "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml";
+content_type_t CT_ooxml_xlsx_connections      = "application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml";
 content_type_t CT_ooxml_xlsx_external_link    = "application/vnd.openxmlformats-officedocument.spreadsheetml.externalLink+xml";
+content_type_t CT_ooxml_xlsx_pivot_cache_def  = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheDefinition+xml";
+content_type_t CT_ooxml_xlsx_pivot_cache_rec  = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheRecords+xml";
 content_type_t CT_ooxml_xlsx_pivot_table      = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml";
 content_type_t CT_ooxml_xlsx_printer_settings = "application/vnd.openxmlformats-officedocument.spreadsheetml.printerSettings";
+content_type_t CT_ooxml_xlsx_query_table      = "application/vnd.openxmlformats-officedocument.spreadsheetml.queryTable+xml";
 content_type_t CT_ooxml_xlsx_shared_strings   = "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml";
 content_type_t CT_ooxml_xlsx_sheet_main       = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml";
 content_type_t CT_ooxml_xlsx_styles           = "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml";
+content_type_t CT_ooxml_xlsx_table            = "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml";
 content_type_t CT_ooxml_xlsx_worksheet        = "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
 content_type_t CT_ooxml_theme                 = "application/vnd.openxmlformats-officedocument.theme+xml";
 content_type_t CT_opc_core_properties         = "application/vnd.openxmlformats-package.core-properties+xml";
@@ -54,12 +59,17 @@ content_type_t cts[] = {
     CT_ooxml_vml_drawing,
     CT_ooxml_xlsx_calc_chain,
     CT_ooxml_xlsx_comments,
+    CT_ooxml_xlsx_connections,
     CT_ooxml_xlsx_external_link,
+    CT_ooxml_xlsx_pivot_cache_def,
+    CT_ooxml_xlsx_pivot_cache_rec,
     CT_ooxml_xlsx_pivot_table,
     CT_ooxml_xlsx_printer_settings,
+    CT_ooxml_xlsx_query_table,
     CT_ooxml_xlsx_shared_strings,
     CT_ooxml_xlsx_sheet_main,
     CT_ooxml_xlsx_styles,
+    CT_ooxml_xlsx_table,
     CT_ooxml_xlsx_worksheet,
     CT_ooxml_theme,
     CT_opc_core_properties,
