@@ -33,7 +33,11 @@
 namespace orcus {
 
 extern content_type_t CT_ooxml_extended_properties;
+extern content_type_t CT_ooxml_drawing;
+extern content_type_t CT_ooxml_vml_drawing;
 extern content_type_t CT_ooxml_xlsx_calc_chain;
+extern content_type_t CT_ooxml_xlsx_comments;
+extern content_type_t CT_ooxml_xlsx_external_link;
 extern content_type_t CT_ooxml_xlsx_pivot_table;
 extern content_type_t CT_ooxml_xlsx_printer_settings;
 extern content_type_t CT_ooxml_xlsx_shared_strings;

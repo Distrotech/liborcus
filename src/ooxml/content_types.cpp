@@ -30,7 +30,11 @@
 namespace orcus {
 
 content_type_t CT_ooxml_extended_properties   = "application/vnd.openxmlformats-officedocument.extended-properties+xml";
+content_type_t CT_ooxml_drawing               = "application/vnd.openxmlformats-officedocument.drawing+xml";
+content_type_t CT_ooxml_vml_drawing           = "application/vnd.openxmlformats-officedocument.vmlDrawing";
 content_type_t CT_ooxml_xlsx_calc_chain       = "application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml";
+content_type_t CT_ooxml_xlsx_comments         = "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml";
+content_type_t CT_ooxml_xlsx_external_link    = "application/vnd.openxmlformats-officedocument.spreadsheetml.externalLink+xml";
 content_type_t CT_ooxml_xlsx_pivot_table      = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml";
 content_type_t CT_ooxml_xlsx_printer_settings = "application/vnd.openxmlformats-officedocument.spreadsheetml.printerSettings";
 content_type_t CT_ooxml_xlsx_shared_strings   = "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml";
@@ -46,7 +50,11 @@ namespace {
 
 content_type_t cts[] = {
     CT_ooxml_extended_properties,
+    CT_ooxml_drawing,
+    CT_ooxml_vml_drawing,
     CT_ooxml_xlsx_calc_chain,
+    CT_ooxml_xlsx_comments,
+    CT_ooxml_xlsx_external_link,
     CT_ooxml_xlsx_pivot_table,
     CT_ooxml_xlsx_printer_settings,
     CT_ooxml_xlsx_shared_strings,
