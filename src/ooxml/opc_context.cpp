@@ -98,7 +98,10 @@ private:
         opc_content_types_context::ct_cache_type::const_iterator itr = 
             mp_ct_cache->find(p);
         if (itr == mp_ct_cache->end())
+        {
+            cout << "unknown content type: " << p << endl;
             return NULL;
+        }
         const pstring& val = *itr;
         return val.get();
     }
