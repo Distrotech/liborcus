@@ -171,7 +171,7 @@ void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name
             // the part names need to survive after the [Content_Types].xml
             // stream is destroyed.
             m_parts.push_back(
-                xml_part_t(func.get_name(), func.get_content_type()));
+                xml_part_t(func.get_name().intern(), func.get_content_type()));
         }
         break;
         case XML_Default:
@@ -183,7 +183,7 @@ void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name
             // Like the part names, we need to use allocated strings for 
             // extension names.
             m_ext_defaults.push_back(
-                xml_part_t(func.get_name(), func.get_content_type()));
+                xml_part_t(func.get_name().intern(), func.get_content_type()));
         }
         break;
         default:

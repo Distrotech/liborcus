@@ -257,6 +257,7 @@ int main(int argc, char** argv)
     gsf_init();
     read_file(argv[1], "out.html");
     gsf_shutdown();
+    cout << "intern count: " << pstring::intern::size() << endl;
     pstring::intern::dispose();
     return EXIT_SUCCESS;
 }
