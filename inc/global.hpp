@@ -38,17 +38,6 @@ namespace orcus {
 
 class tokens;
 
-class thread_mutex_guard
-{
-public:
-    explicit thread_mutex_guard(pthread_mutex_t& lock);
-    ~thread_mutex_guard();
-private:
-    pthread_mutex_t& m_lock;
-};
-
-// ============================================================================
-
 class general_error : public ::std::exception
 {
 public:

@@ -35,19 +35,6 @@ using namespace std;
 
 namespace orcus {
 
-thread_mutex_guard::thread_mutex_guard(pthread_mutex_t& lock) :
-    m_lock(lock)
-{
-    pthread_mutex_lock(&m_lock);
-}
-
-thread_mutex_guard::~thread_mutex_guard()
-{
-    pthread_mutex_unlock(&m_lock);
-}
-
-// ============================================================================
-
 general_error::general_error(const string& msg) :
     m_msg(msg)
 {
