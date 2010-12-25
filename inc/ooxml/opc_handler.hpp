@@ -34,7 +34,11 @@ namespace orcus {
 
 class tokens;
 class opc_content_types_context;
+class opc_relations_context;
 
+/**
+ * XML stream handler for [Content_Types].xml part.
+ */
 class opc_content_types_handler : public xml_stream_handler
 {
 public:
@@ -52,6 +56,26 @@ public:
 private:
     const tokens& m_tokens;
     opc_content_types_context* mp_context;
+};
+
+/**
+ * XML Stream handler for relations parts.
+ */
+class opc_relations_handler : public xml_stream_handler
+{
+public:
+    opc_relations_handler(const tokens& _tokens);
+    virtual ~opc_relations_handler();
+
+    virtual void start_document();
+    virtual void end_document();
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
+    virtual void end_element(xmlns_token_t ns, xml_token_t name);
+    virtual void characters(const pstring& str);
+
+private:
+    const tokens& m_tokens;
+    opc_relations_context* mp_context;
 };
 
 }

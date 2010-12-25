@@ -114,13 +114,16 @@ void read_content_types(
     handler->pop_ext_defaluts(ext_defaults);
 }
 
-void read_relations(GsfInput* input)
+void read_relations(GsfInput* input, const char* path)
 {
     size_t size = gsf_input_size(input);
     cout << "---" << endl;
-    cout << "name: _rels/.rels  size: " << size << endl;
+    cout << "name: " << path << "  size: " << size << endl;
     const guint8* content = gsf_input_read(input, size, NULL);
-    xml_stream_parser parser(opc_tokens, content, size, "_rels/.rels");
+    xml_stream_parser parser(opc_tokens, content, size, path);
+    ::boost::scoped_ptr<opc_relations_handler> handler(new opc_relations_handler(opc_tokens));
+    parser.set_handler(handler.get());
+    parser.parse();
 }
 
 /**
@@ -165,7 +168,7 @@ void read_content(GsfInput* input, const char* outpath)
         GsfInput* dir_rels = dir_rels_guard.get();
         gsf_infile_guard rels_guard(dir_rels, ".rels");
         GsfInput* rels = rels_guard.get();
-        read_relations(rels);
+        read_relations(rels, "_rels/.rels");
     }
 
     // xl/worksheets/sheet1.xml

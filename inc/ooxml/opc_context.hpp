@@ -35,6 +35,11 @@
 
 namespace orcus {
 
+/**
+ * Main context class for the [Content_Types].xml part.  This context does
+ * not use any child contexts; [Content_Types].xml part is simple enough
+ * that we can handle all in a single context class.
+ */
 class opc_content_types_context : public xml_context_base
 {
 public:
@@ -71,6 +76,24 @@ private:
     ct_cache_type m_ct_cache; // content type cache;
     ::std::vector<xml_part_t> m_parts;
     ::std::vector<xml_part_t> m_ext_defaults;
+};
+
+/**
+ * Context class for relations parts.
+ */
+class opc_relations_context : public xml_context_base
+{
+public:
+    opc_relations_context(const tokens& _tokens);
+    virtual ~opc_relations_context();
+
+    virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
+    virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
+    virtual void end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base *child);
+
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const::std::vector<xml_attr_t> &attrs);
+    virtual bool end_element(xmlns_token_t ns, xml_token_t name);
+    virtual void characters(const pstring &str);
 };
 
 }

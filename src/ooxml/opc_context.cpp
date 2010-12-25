@@ -209,4 +209,43 @@ void opc_content_types_context::pop_ext_defaults(vector<xml_part_t>& ext_default
     m_ext_defaults.swap(ext_defaults);
 }
 
+// ============================================================================
+
+opc_relations_context::opc_relations_context(const tokens &_tokens) :
+    xml_context_base(_tokens)
+{
+}
+
+opc_relations_context::~opc_relations_context()
+{
+}
+
+bool opc_relations_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+{
+    return true;
+}
+
+xml_context_base* opc_relations_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+{
+    return NULL;
+}
+
+void opc_relations_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base *child)
+{
+}
+
+void opc_relations_context::start_element(xmlns_token_t ns, xml_token_t name, const vector<xml_attr_t> &attrs)
+{
+    xml_token_pair_t parent = push_stack(ns, name);
+}
+
+bool opc_relations_context::end_element(xmlns_token_t ns, xml_token_t name)
+{
+    return pop_stack(ns, name);
+}
+
+void opc_relations_context::characters(const pstring &str)
+{
+}
+
 }
