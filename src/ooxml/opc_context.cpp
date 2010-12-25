@@ -28,6 +28,7 @@
 #include "ooxml/opc_context.hpp"
 #include "ooxml/opc_token_constants.hpp"
 #include "ooxml/content_types.hpp"
+#include "ooxml/schemas.hpp"
 #include "global.hpp"
 
 #include <iostream>
@@ -52,7 +53,7 @@ public:
     {
         if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_xmlns)
         {
-            if (attr.value != "http://schemas.openxmlformats.org/package/2006/content-types")
+            if (attr.value != SCH_content_types)
                 throw xml_structure_error("invalid namespace for types element!");
             m_default_ns = XMLNS_ct;
         }
@@ -229,7 +230,7 @@ public:
     {
         if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_xmlns)
         {
-            if (attr.value != "http://schemas.openxmlformats.org/package/2006/relationships")
+            if (attr.value != SCH_relationships)
                 throw xml_structure_error("invalid namespace for types element!");
             m_default_ns = XMLNS_rel;
         }

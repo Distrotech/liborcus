@@ -222,6 +222,7 @@
 				<F N="inc/ooxml/opc_handler.hpp"/>
 				<F N="inc/ooxml/opc_token_constants.hpp"/>
 				<F N="inc/ooxml/opc_token_constants.inl"/>
+				<F N="inc/ooxml/schemas.hpp"/>
 				<F N="inc/ooxml/xlsx_context.hpp"/>
 				<F N="inc/ooxml/xlsx_handler.hpp"/>
 			</Folder>
@@ -252,6 +253,7 @@
 				<F N="src/ooxml/opc_context.cpp"/>
 				<F N="src/ooxml/opc_handler.cpp"/>
 				<F N="src/ooxml/opc_tokens.inl"/>
+				<F N="src/ooxml/schemas.cpp"/>
 				<F N="src/ooxml/xlsx_context.cpp"/>
 				<F N="src/ooxml/xlsx_handler.cpp"/>
 			</Folder>

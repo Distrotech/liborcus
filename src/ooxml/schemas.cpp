@@ -29,6 +29,19 @@
 
 namespace orcus {
 
+schema_t SCH_content_types = "http://schemas.openxmlformats.org/package/2006/content-types";
+schema_t SCH_relationships = "http://schemas.openxmlformats.org/package/2006/relationships";
 
+namespace {
+
+schema_t schs[] = {
+    SCH_content_types,
+    SCH_relationships,
+    NULL
+};
+
+}
+
+schema_t* SCH_all = schs;
 
 }
