@@ -53,6 +53,8 @@ public:
      */
     static pstring intern(const char* str);
 
+    static pstring intern(const char* str, size_t n);
+
     struct intern
     {
         /**
@@ -125,10 +127,8 @@ public:
         return !operator==(str);
     }
 
-    bool empty() const
-    {
-        return m_size == 0;
-    }
+
+    bool empty() const { return m_size == 0; }
 
     void clear()
     {
@@ -140,6 +140,8 @@ public:
     {
         size_t operator() (const pstring& val) const;
     };
+
+    pstring intern() const;
 
 private:
     const char* m_pos;

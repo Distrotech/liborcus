@@ -34,6 +34,8 @@
 using namespace std;
 using namespace orcus;
 
+const char* static_text = "test";
+
 int main()
 {
     // Empty strings should not be interned.
@@ -57,6 +59,21 @@ int main()
     cout << "interned string: " << str << endl;
     cout << "intern size: " << pstring::intern::size() << endl;
     assert(pstring::intern::size() == 2);
+
+    // Interning an already-intern string should return a pstring with 
+    // identical memory address.
+    pstring str2 = str.intern();
+    assert(str == str2);
+    assert(pstring::intern::size() == 2);
+    assert(str.get() == str2.get()); // their memory address should be identical.
+
+    pstring static_str(static_text);
+    str = static_str.intern();
+    cout << "interned string: " << str << endl;
+    cout << "intern size: " << pstring::intern::size() << endl;
+    assert(pstring::intern::size() == 3);
+    assert(str == static_str);
+    assert(str.get() != static_str.get());
 
     pstring::intern::dispose();
     cout << "dispose() called" << endl;

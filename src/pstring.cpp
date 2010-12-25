@@ -27,6 +27,7 @@
 
 #include "pstring.hpp"
 
+#include <cassert>
 #include <unordered_set>
 
 #include <boost/thread/mutex.hpp>
@@ -67,24 +68,32 @@ struct _interned_strings {
 
 pstring pstring::intern(const char* str)
 {
-    ::boost::mutex::scoped_lock(interned_strings.mtx);
-    if (*str == '\0')
-        // Don't intern empty strings.
+    return intern(str, strlen(str));
+}
+
+pstring pstring::intern(const char* str, size_t n)
+{
+    if (!n)
         return pstring();
 
-    string* new_str = new string(str);
+    ::boost::mutex::scoped_lock(interned_strings.mtx);
+
+    string* new_str = new string(str, n);
     pstring_store_type::const_iterator itr = interned_strings.store.find(new_str);
     if (itr == interned_strings.store.end())
     {
+        // This string has not been interned.  Intern it.
         interned_strings.store.insert(new_str);
-        return pstring(&(*new_str)[0], new_str->size());
+        assert(new_str->size() == n);
+        return pstring(&(*new_str)[0], n);
     }
 
     // This string has already been interned.
     delete new_str;
 
     const string* stored_str = *itr;
-    return pstring(&(*stored_str)[0], stored_str->size());
+    assert(stored_str->size() == n);
+    return pstring(&(*stored_str)[0], n);
 }
 
 void pstring::intern::dispose()
@@ -113,6 +122,11 @@ size_t pstring::hash::operator() (const pstring& val) const
     }
 
     return hash_val;
+}
+
+pstring pstring::intern() const
+{
+    return intern(m_pos, m_size);
 }
 
 }
