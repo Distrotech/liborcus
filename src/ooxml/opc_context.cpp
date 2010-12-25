@@ -276,7 +276,6 @@ void opc_relations_context::start_element(xmlns_token_t ns, xml_token_t name, co
         case XML_Relationships:
         {
             xml_element_expected(parent, XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN);
-
             print_attrs(get_tokens(), attrs);
 
             xmlns_token_t default_ns =
@@ -285,6 +284,12 @@ void opc_relations_context::start_element(xmlns_token_t ns, xml_token_t name, co
             // the namespace for Types element comes from its own 'xmlns' attribute.
             get_current_element().first = default_ns;
             set_default_ns(default_ns);
+        }
+        break;
+        case XML_Relationship:
+        {
+            xml_element_expected(parent, XMLNS_rel, XML_Relationships);
+            print_attrs(get_tokens(), attrs);
         }
         break;
         default:
