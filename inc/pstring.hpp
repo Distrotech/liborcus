@@ -43,6 +43,22 @@ class pstring
     friend ::std::ostream& operator<< (::std::ostream& os, const pstring& str);
 
 public:
+    /**
+     * Create a new string instance and hold it internally until 
+     * dispose_intern() gets called. 
+     * 
+     * @param str string to intern.
+     * 
+     * @return pstring instance pointing to the interned string.
+     */
+    static pstring intern(const char* str);
+
+    /**
+     * Destroy all interned string instances.  Call this before the program
+     * exits.
+     */
+    static void dispose_intern();
+
     pstring() : m_pos(NULL), m_size(0) {}
     pstring(const char* pos) : m_pos(pos) { m_size = ::std::strlen(pos); }
     pstring(const char* pos, size_t size) : m_pos(pos), m_size(size) {}

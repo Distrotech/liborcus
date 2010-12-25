@@ -258,5 +258,6 @@ int main(int argc, char** argv)
     read_file(argv[1], "out.html");
     gsf_shutdown();
 
+    pstring::dispose_intern();
     return EXIT_SUCCESS;
 }

@@ -29,6 +29,15 @@
 
 namespace orcus {
 
+pstring pstring::intern(const char* str)
+{
+    return pstring();
+}
+
+void pstring::dispose_intern()
+{
+}
+
 size_t pstring::hash::operator() (const pstring& val) const
 {
     // TODO: make this hashing algoritm more efficient.
