@@ -53,11 +53,20 @@ public:
      */
     static pstring intern(const char* str);
 
-    /**
-     * Destroy all interned string instances.  Call this before the program
-     * exits.
-     */
-    static void dispose_intern();
+    struct intern
+    {
+        /**
+         * Destroy all interned string instances.  Call this before the 
+         * program exits. 
+         */
+        static void dispose();
+        static size_t size();
+
+    private:
+        intern();
+        intern(const intern&);
+        ~intern();
+    };
 
     pstring() : m_pos(NULL), m_size(0) {}
     pstring(const char* pos) : m_pos(pos) { m_size = ::std::strlen(pos); }

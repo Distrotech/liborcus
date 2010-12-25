@@ -27,15 +27,77 @@
 
 #include "pstring.hpp"
 
+#include <unordered_set>
+
+#include <boost/thread/mutex.hpp>
+
+using namespace std;
+
 namespace orcus {
+
+namespace {
+
+struct pstring_hash
+{
+    size_t operator() (const string* p) const { return m_hash(*p); }
+private:
+    hash<string> m_hash;
+};
+
+struct pstring_equal_to
+{
+    bool operator() (const string* p1, const string* p2) const { return m_equal_to(*p1, *p2); }
+private:
+    equal_to<string> m_equal_to;
+};
+
+struct delete_instance : public unary_function<void, string*>
+{
+    void operator() (string* p) { delete p; }
+};
+
+typedef unordered_set<string*, pstring_hash, pstring_equal_to> pstring_store_type;
+
+struct _interned_strings {
+    pstring_store_type store;
+    ::boost::mutex mtx;
+} interned_strings;
+
+}
 
 pstring pstring::intern(const char* str)
 {
-    return pstring();
+    ::boost::mutex::scoped_lock(interned_strings.mtx);
+    if (*str == '\0')
+        // Don't intern empty strings.
+        return pstring();
+
+    string* new_str = new string(str);
+    pstring_store_type::const_iterator itr = interned_strings.store.find(new_str);
+    if (itr == interned_strings.store.end())
+    {
+        interned_strings.store.insert(new_str);
+        return pstring(&(*new_str)[0], new_str->size());
+    }
+
+    // This string has already been interned.
+    delete new_str;
+
+    const string* stored_str = *itr;
+    return pstring(&(*stored_str)[0], stored_str->size());
 }
 
-void pstring::dispose_intern()
+void pstring::intern::dispose()
 {
+    ::boost::mutex::scoped_lock(interned_strings.mtx);
+    for_each(interned_strings.store.begin(), interned_strings.store.end(), delete_instance());
+    interned_strings.store.clear();
+}
+
+size_t pstring::intern::size()
+{
+    ::boost::mutex::scoped_lock(interned_strings.mtx);
+    return interned_strings.store.size();
 }
 
 size_t pstring::hash::operator() (const pstring& val) const

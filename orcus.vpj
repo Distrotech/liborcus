@@ -261,6 +261,7 @@
 			<F N="src/orcus_ods.cpp"/>
 			<F N="src/orcus_xlsx.cpp"/>
 			<F N="src/pstring.cpp"/>
+			<F N="src/pstring_intern_test.cpp"/>
 			<F N="src/tokens.cpp"/>
 			<F N="src/xmlcontext.cpp"/>
 			<F N="src/xmlhandler.cpp"/>

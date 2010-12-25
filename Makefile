@@ -40,7 +40,7 @@ OOXML_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip
 OPC_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OpenPackagingConventions-XMLSchema.zip
 
 CPPFLAGS=-I$(INCDIR) -O2 -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
-LDFLAGS=`pkg-config --libs libgsf-1`
+LDFLAGS=`pkg-config --libs libgsf-1` -lboost_thread
 
 COMMON_HEADERS= \
 	$(INCDIR)/xmlhandler.hpp \
@@ -97,6 +97,10 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/ooxml/content_types.o \
 	$(OBJDIR)/ooxml/schemas.o \
 	$(OBJDIR)/model/sheet.o
+
+PSTRING_TEST_OBJFILES= \
+	$(OBJDIR)/pstring.o \
+	$(OBJDIR)/pstring_intern_test.o
 
 DEPENDS= \
 	$(ODF_HEADERS) \
@@ -177,6 +181,10 @@ $(OBJDIR)/ooxml/xlsx_handler.o: $(SRCDIR)/ooxml/xlsx_handler.cpp $(DEPENDS)
 $(OBJDIR)/ooxml/xlsx_context.o: $(SRCDIR)/ooxml/xlsx_context.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/xlsx_context.cpp
 
+# pstring intern test
+$(OBJDIR)/pstring_intern_test.o: $(SRCDIR)/pstring_intern_test.cpp $(INCDIR)/pstring.hpp
+	$(CXX) $(CPPFLAGS) -c $(SRCDIR)/pstring_intern_test.cpp -o $@
+
 # model directory
 
 $(OBJDIR)/model/sheet.o: $(SRCDIR)/model/sheet.cpp $(DEPENDS)
@@ -188,14 +196,23 @@ orcus-ods: $(OBJDIR)/pre $(ODF_OBJFILES)
 orcus-xlsx: $(OBJDIR)/pre $(XLSX_OBJFILES)
 	$(CXX) $(LDFLAGS) $(XLSX_OBJFILES) -o $@
 
+pstring-intern-test: $(PSTRING_TEST_OBJFILES)
+	$(CXX) $(CPPFLAGS) $(LDFLAGS) $(PSTRING_TEST_OBJFILES) -o $@
+
+test.pstring: pstring-intern-test
+	./pstring-intern-test
+
+test.pstring.mem: pstring-intern-test
+	valgrind --tool=memcheck --leak-check=full ./pstring-intern-test
+
 test.ods: orcus-ods
-	./orcus-ods ./test/test.ods $(OBJDIR)/test.ods.html
+	./orcus-ods ./test/test.ods
 
 test.ou: orcus-ods
-	./orcus-ods ./test/george-ou-perf.ods $(OBJDIR)/george-ou-perf.ods.html
+	./orcus-ods ./test/george-ou-perf.ods
 
 test.xlsx: orcus-xlsx
-	./orcus-xlsx ./test/test.xlsx $(OBJDIR)/test.xlsx.html
+	./orcus-xlsx ./test/test.xlsx
 
 clean:
 	rm -rf $(OBJDIR) 2> /dev/null || /bin/true
