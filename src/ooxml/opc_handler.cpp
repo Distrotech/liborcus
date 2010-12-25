@@ -36,7 +36,7 @@ using namespace std;
 namespace orcus {
 
 opc_content_types_handler::opc_content_types_handler(const tokens& _tokens) :
-    m_tokens(_tokens), mp_context(new opc_content_types_context(_tokens))
+    mp_context(new opc_content_types_context(_tokens))
 {
 }
 
@@ -87,7 +87,7 @@ void opc_content_types_handler::pop_ext_defaluts(vector<xml_part_t>& ext_default
 // ============================================================================
 
 opc_relations_handler::opc_relations_handler(const tokens& _tokens) :
-    m_tokens(_tokens), mp_context(new opc_relations_context(_tokens))
+    mp_context(new opc_relations_context(_tokens))
 {
 }
 
