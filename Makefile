@@ -109,7 +109,6 @@ DEPENDS= \
 all: $(EXECS)
 
 $(OBJDIR)/pre:
-	mkdir -p $(OBJDIR)
 	mkdir -p $(OBJDIR)/model
 	mkdir -p $(OBJDIR)/odf
 	mkdir -p $(OBJDIR)/ooxml
@@ -196,7 +195,7 @@ orcus-ods: $(OBJDIR)/pre $(ODF_OBJFILES)
 orcus-xlsx: $(OBJDIR)/pre $(XLSX_OBJFILES)
 	$(CXX) $(LDFLAGS) $(XLSX_OBJFILES) -o $@
 
-pstring-intern-test: $(PSTRING_TEST_OBJFILES)
+pstring-intern-test: $(OBJDIR)/pre $(PSTRING_TEST_OBJFILES)
 	$(CXX) $(CPPFLAGS) $(LDFLAGS) $(PSTRING_TEST_OBJFILES) -o $@
 
 test.pstring: pstring-intern-test
