@@ -29,26 +29,38 @@
 
 #include <string>
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 using namespace orcus;
 
 int main()
 {
-    pstring str;
-    str = pstring::intern("");
+    // Empty strings should not be interned.
+    pstring str = pstring::intern("");
     cout << "intern size: " << pstring::intern::size() << endl;
+    assert(str.empty());
+    assert(pstring::intern::size() == 0);
+
     str = pstring::intern("A");
     cout << "interned string: " << str << endl;
     cout << "intern size: " << pstring::intern::size() << endl;
+    assert(pstring::intern::size() == 1);
+
+    // Duplicate string.
     str = pstring::intern("A");
     cout << "interned string: " << str << endl;
     cout << "intern size: " << pstring::intern::size() << endl;
+    assert(pstring::intern::size() == 1);
+
     str = pstring::intern("B");
     cout << "interned string: " << str << endl;
     cout << "intern size: " << pstring::intern::size() << endl;
+    assert(pstring::intern::size() == 2);
+
     pstring::intern::dispose();
     cout << "dispose() called" << endl;
     cout << "intern size: " << pstring::intern::size() << endl;
+    assert(pstring::intern::size() == 0);
     return EXIT_SUCCESS;
 }
