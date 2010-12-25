@@ -211,6 +211,40 @@ void opc_content_types_context::pop_ext_defaults(vector<xml_part_t>& ext_default
 
 // ============================================================================
 
+namespace {
+
+/**
+ * Attribute parser for Relationships element.
+ */
+class rels_attr_parser : public unary_function<void, xml_attr_t>
+{
+public:
+    explicit rels_attr_parser() : 
+        m_default_ns(XMLNS_UNKNOWN_TOKEN) {}
+
+    rels_attr_parser(const rels_attr_parser& r) :
+        m_default_ns(r.m_default_ns) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_xmlns)
+        {
+            if (attr.value != "http://schemas.openxmlformats.org/package/2006/relationships")
+                throw xml_structure_error("invalid namespace for types element!");
+            m_default_ns = XMLNS_rel;
+        }
+    }
+
+    xmlns_token_t get_default_ns() const
+    {
+        return m_default_ns;
+    }
+private:
+    xmlns_token_t m_default_ns;
+};
+
+}
+
 opc_relations_context::opc_relations_context(const tokens &_tokens) :
     xml_context_base(_tokens)
 {
@@ -237,6 +271,25 @@ void opc_relations_context::end_child_context(xmlns_token_t ns, xml_token_t name
 void opc_relations_context::start_element(xmlns_token_t ns, xml_token_t name, const vector<xml_attr_t> &attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
+    switch (name)
+    {
+        case XML_Relationships:
+        {
+            xml_element_expected(parent, XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN);
+
+            print_attrs(get_tokens(), attrs);
+
+            xmlns_token_t default_ns =
+                for_each(attrs.begin(), attrs.end(), rels_attr_parser()).get_default_ns();
+
+            // the namespace for Types element comes from its own 'xmlns' attribute.
+            get_current_element().first = default_ns;
+            set_default_ns(default_ns);
+        }
+        break;
+        default:
+            warn_unhandled();
+    }
 }
 
 bool opc_relations_context::end_element(xmlns_token_t ns, xml_token_t name)
