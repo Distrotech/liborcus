@@ -32,8 +32,11 @@
 
 namespace orcus {
 
-extern schema_t SCH_content_types;
-extern schema_t SCH_relationships;
+extern schema_t SCH_opc_content_types;
+extern schema_t SCH_opc_relationships;
+extern schema_t SCH_rels_extended_props;
+extern schema_t SCH_rels_metadata_core_props;
+extern schema_t SCH_rels_office_doc;
 
 /**
  * Null-terminated array of all schema types.
