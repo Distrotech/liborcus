@@ -35,13 +35,20 @@ using namespace orcus;
 
 int main()
 {
-    pstring::intern("A");
+    pstring str;
+    str = pstring::intern("");
     cout << "intern size: " << pstring::intern::size() << endl;
-    pstring::intern("A");
+    str = pstring::intern("A");
+    cout << "interned string: " << str << endl;
     cout << "intern size: " << pstring::intern::size() << endl;
-    pstring::intern("B");
+    str = pstring::intern("A");
+    cout << "interned string: " << str << endl;
+    cout << "intern size: " << pstring::intern::size() << endl;
+    str = pstring::intern("B");
+    cout << "interned string: " << str << endl;
     cout << "intern size: " << pstring::intern::size() << endl;
     pstring::intern::dispose();
+    cout << "dispose() called" << endl;
     cout << "intern size: " << pstring::intern::size() << endl;
     return EXIT_SUCCESS;
 }
