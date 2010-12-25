@@ -42,14 +42,25 @@ OPC_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OpenPackagingConventions-XMLSchema
 CPPFLAGS=-I$(INCDIR) -O2 -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1`
 
-ODF_HEADERS= \
-	$(INCDIR)/global.hpp \
-	$(INCDIR)/sax.hpp \
-	$(INCDIR)/pstring.hpp \
+COMMON_HEADERS= \
 	$(INCDIR)/xmlhandler.hpp \
 	$(INCDIR)/xmlcontext.hpp \
 	$(INCDIR)/xmlparser.hpp \
+	$(INCDIR)/global.hpp \
+	$(INCDIR)/pstring.hpp \
 	$(INCDIR)/tokens.hpp \
+	$(INCDIR)/sax.hpp
+
+COMMON_OBJFILES= \
+	$(OBJDIR)/global.o \
+	$(OBJDIR)/xmlhandler.o \
+	$(OBJDIR)/xmlcontext.o \
+	$(OBJDIR)/xmlparser.o \
+	$(OBJDIR)/tokens.o \
+	$(OBJDIR)/pstring.o
+
+ODF_HEADERS= \
+	$(COMMON_HEADERS) \
 	$(INCDIR)/types.hpp \
 	$(INCDIR)/odf/odf_token_constants.hpp \
 	$(INCDIR)/odf/odshandler.hpp \
@@ -59,12 +70,8 @@ ODF_HEADERS= \
 	$(INCDIR)/model/global.hpp
 
 ODF_OBJFILES= \
+	$(COMMON_OBJFILES) \
 	$(OBJDIR)/orcus_ods.o \
-	$(OBJDIR)/global.o \
-	$(OBJDIR)/xmlhandler.o \
-	$(OBJDIR)/xmlcontext.o \
-	$(OBJDIR)/xmlparser.o \
-	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/odf/odf_tokens.o \
 	$(OBJDIR)/odf/odshandler.o \
 	$(OBJDIR)/odf/odscontext.o \
@@ -72,7 +79,7 @@ ODF_OBJFILES= \
 	$(OBJDIR)/model/sheet.o
 
 XLSX_HEADERS= \
-	$(INCDIR)/tokens.hpp \
+	$(COMMON_HEADERS) \
 	$(INCDIR)/ooxml/ooxml_token_constants.hpp \
 	$(INCDIR)/ooxml/opc_handler.hpp \
 	$(INCDIR)/ooxml/opc_context.hpp \
@@ -80,12 +87,8 @@ XLSX_HEADERS= \
 	$(INCDIR)/ooxml/schemas.hpp
 	
 XLSX_OBJFILES = \
+	$(COMMON_OBJFILES) \
 	$(OBJDIR)/orcus_xlsx.o \
-	$(OBJDIR)/global.o \
-	$(OBJDIR)/xmlparser.o \
-	$(OBJDIR)/xmlhandler.o \
-	$(OBJDIR)/xmlcontext.o \
-	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/ooxml/ooxml_tokens.o \
 	$(OBJDIR)/ooxml/opc_handler.o \
 	$(OBJDIR)/ooxml/opc_context.o \
@@ -133,6 +136,9 @@ $(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(DEPENDS)
 
 $(OBJDIR)/tokens.o: $(SRCDIR)/tokens.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/tokens.cpp
+
+$(OBJDIR)/pstring.o: $(SRCDIR)/pstring.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/pstring.cpp
 
 # ODF parser
 
