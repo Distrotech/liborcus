@@ -59,6 +59,9 @@ struct delete_instance : public unary_function<void, string*>
 
 typedef unordered_set<string*, pstring_hash, pstring_equal_to> pstring_store_type;
 
+/**
+ * Internal cache to store interned string instances.
+ */
 struct _interned_strings {
     pstring_store_type store;
     ::boost::mutex mtx;

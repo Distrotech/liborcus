@@ -62,6 +62,12 @@ public:
          * program exits. 
          */
         static void dispose();
+
+        /**
+         * Return how many strings have been interned so far. 
+         * 
+         * @return size_t number of interned string instances.
+         */
         static size_t size();
 
     private:
