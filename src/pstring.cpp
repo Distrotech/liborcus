@@ -124,6 +124,35 @@ size_t pstring::hash::operator() (const pstring& val) const
     return hash_val;
 }
 
+bool pstring::operator== (const pstring& r) const
+{
+    if (m_size != r.m_size)
+        // lengths differ.
+        return false;
+
+    const char* pos1 = m_pos;
+    const char* pos2 = r.m_pos;
+    for (size_t i = 0; i < m_size; ++i, ++pos1, ++pos2)
+        if (*pos1 != *pos2)
+            return false;
+
+    return true;
+}
+
+bool pstring::operator== (const char* str) const
+{
+    size_t n = ::std::strlen(str);
+    if (n != m_size)
+        // lengths differ.
+        return false;
+
+    if (!m_size)
+        // both are empty strings.
+        return true;
+
+    return ::std::strncmp(str, m_pos, n) == 0;
+}
+
 pstring pstring::intern() const
 {
     return intern(m_pos, m_size);

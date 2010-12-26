@@ -45,7 +45,7 @@ class pstring
 public:
     /**
      * Create a new string instance and hold it internally until 
-     * dispose_intern() gets called. 
+     * intern::dispose() gets called.
      * 
      * @param str string to intern.
      * 
@@ -88,39 +88,14 @@ public:
 
     const char* get() const { return m_pos; }
 
-    bool operator== (const pstring& r) const
-    {
-        if (m_size != r.m_size)
-            // lengths differ.
-            return false;
-
-        const char* pos1 = m_pos;
-        const char* pos2 = r.m_pos;
-        for (size_t i = 0; i < m_size; ++i, ++pos1, ++pos2)
-            if (*pos1 != *pos2)
-                return false;
-
-        return true;
-    }
+    bool operator== (const pstring& r) const;
 
     bool operator!= (const pstring& r) const
     {
         return !operator==(r);
     }
 
-    bool operator== (const char* str) const
-    {
-        size_t n = ::std::strlen(str);
-        if (n != m_size)
-            // lengths differ.
-            return false;
-
-        if (!m_size)
-            // both are empty strings.
-            return true;
-
-        return ::std::strncmp(str, m_pos, n) == 0;
-    }
+    bool operator== (const char* str) const;
 
     bool operator!= (const char* str) const
     {
