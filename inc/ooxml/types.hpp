@@ -34,7 +34,26 @@ namespace orcus {
 
 typedef const char* content_type_t;
 typedef const char* schema_t;
-typedef ::std::pair<pstring, content_type_t> xml_part_t;
+
+/**
+ * Part name (first) and content type (second).
+ */
+typedef ::std::pair<pstring, content_type_t>    xml_part_t;
+
+/**
+ * Single OPC relationship that corresponds with a Relationship element in 
+ * .rels parts.
+ */
+struct opc_rel_t
+{
+    pstring  rid;
+    pstring  target;
+    schema_t type;
+
+    opc_rel_t() : type(NULL) {}
+    opc_rel_t(const pstring& _rid, const pstring& _target, schema_t _type) :
+        rid(_rid), target(_target), type(_type) {}
+};
 
 }
 

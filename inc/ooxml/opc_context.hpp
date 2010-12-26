@@ -85,6 +85,8 @@ private:
 class opc_relations_context : public xml_context_base
 {
 public:
+    typedef ::std::unordered_set<pstring, pstring::hash> schema_cache_type;
+
     opc_relations_context(const tokens& _tokens);
     virtual ~opc_relations_context();
 
@@ -95,6 +97,12 @@ public:
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const::std::vector<xml_attr_t> &attrs);
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring &str);
+
+    void pop_rels(::std::vector<opc_rel_t>& rels);
+
+private:
+    schema_cache_type m_schema_cache;
+    ::std::vector<opc_rel_t> m_rels;
 };
 
 }

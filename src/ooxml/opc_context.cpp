@@ -91,7 +91,7 @@ public:
     }
 
     const pstring& get_name() const { return m_name; }
-    const char* get_content_type() const { return m_content_type; }
+    content_type_t get_content_type() const { return m_content_type; }
 
 private:
     content_type_t to_content_type(const pstring& p) const
@@ -244,11 +244,63 @@ private:
     xmlns_token_t m_default_ns;
 };
 
+class rel_attr_parser : public unary_function<void, xml_attr_t>
+{
+public:
+    rel_attr_parser(const opc_relations_context::schema_cache_type* cache) :
+        mp_schema_cache(cache) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        if (attr.ns != XMLNS_rel)
+            return;
+
+        // Target and rId strings must be interned as they must survive after
+        // the rels part gets destroyed.
+
+        switch (attr.name)
+        {
+            case XML_Target:
+                m_rel.target = attr.value.intern();
+            break;
+            case XML_Type:
+                m_rel.type = to_schema(attr.value);
+            break;
+            case XML_Id:
+                m_rel.rid = attr.value.intern();
+            break;
+        }
+    }
+
+    const opc_rel_t& get_rel() const { return m_rel; }
+
+private:
+    schema_t to_schema(const pstring& p) const
+    {
+        opc_relations_context::schema_cache_type::const_iterator itr = 
+            mp_schema_cache->find(p);
+        if (itr == mp_schema_cache->end())
+        {
+            cout << "unknown schema: " << p << endl;
+            return NULL;
+        }
+        const pstring& val = *itr;
+        return val.get();
+    }
+
+private:
+    const opc_relations_context::schema_cache_type* mp_schema_cache;
+    opc_rel_t m_rel;
+};
+
 }
 
 opc_relations_context::opc_relations_context(const tokens &_tokens) :
     xml_context_base(_tokens)
 {
+    // build content type cache.
+    for (schema_t* p = SCH_all; *p; ++p)
+        m_schema_cache.insert(pstring(*p));
 }
 
 opc_relations_context::~opc_relations_context()
@@ -289,8 +341,11 @@ void opc_relations_context::start_element(xmlns_token_t ns, xml_token_t name, co
         break;
         case XML_Relationship:
         {
+            rel_attr_parser func(&m_schema_cache);
             xml_element_expected(parent, XMLNS_rel, XML_Relationships);
             print_attrs(get_tokens(), attrs);
+            func = for_each(attrs.begin(), attrs.end(), func);
+            m_rels.push_back(func.get_rel());
         }
         break;
         default:
@@ -305,6 +360,11 @@ bool opc_relations_context::end_element(xmlns_token_t ns, xml_token_t name)
 
 void opc_relations_context::characters(const pstring &str)
 {
+}
+
+void opc_relations_context::pop_rels(vector<opc_rel_t>& rels)
+{
+    m_rels.swap(rels);
 }
 
 }

@@ -119,4 +119,9 @@ void opc_relations_handler::characters(const pstring &str)
     mp_context->characters(str);
 }
 
+void opc_relations_handler::pop_rels(vector<opc_rel_t>& rels)
+{
+    mp_context->pop_rels(rels);
+}
+
 }
