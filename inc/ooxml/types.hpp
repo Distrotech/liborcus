@@ -25,34 +25,16 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_TYPES_HPP__
-#define __ORCUS_TYPES_HPP__
+#ifndef __ORCUS_OOXML_TYPES_HPP__
+#define __ORCUS_OOXML_TYPES_HPP__
 
-#include <cstdlib>
-#include <vector>
-#include <string>
 #include "pstring.hpp"
 
 namespace orcus {
 
-typedef size_t xml_token_t;
-typedef size_t xmlns_token_t;
-
-const xml_token_t   XML_UNKNOWN_TOKEN = 0;
-const xmlns_token_t XMLNS_UNKNOWN_TOKEN = 0;
-
-struct xml_attr_t
-{
-    xmlns_token_t ns;
-    xml_token_t   name;
-    pstring       value;
-
-    xml_attr_t() : ns(XML_UNKNOWN_TOKEN), name(XML_UNKNOWN_TOKEN) {}
-    xml_attr_t(xmlns_token_t _ns, xml_token_t _name, const pstring& _value) :
-        ns(_ns), name(_name), value(_value) {}
-};
-
-typedef ::std::vector<xml_attr_t> xml_attrs_t;
+typedef const char* content_type_t;
+typedef const char* schema_t;
+typedef ::std::pair<pstring, content_type_t> xml_part_t;
 
 }
 

@@ -29,6 +29,7 @@
 #define __ORCUS_OPC_CONTEXT_HPP__
 
 #include "xmlcontext.hpp"
+#include "ooxml/types.hpp"
 
 #include <unordered_set>
 #include <vector>
