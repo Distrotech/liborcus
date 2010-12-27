@@ -36,6 +36,7 @@
 #include "ooxml/xlsx_handler.hpp"
 #include "ooxml/opc_handler.hpp"
 #include "ooxml/ooxml_tokens.hpp"
+#include "ooxml/schemas.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -134,6 +135,8 @@ private:
 
     void read_relations(const char* path, vector<opc_rel_t>& rels);
 
+    void read_workbook(const char* file_name);
+
     /**
      * Parse a sheet xml part that contains data stored in a single sheet.
      */
@@ -201,9 +204,50 @@ void orcus_xlsx::read_file(const char* fpath, const char* outpath)
 
 void orcus_xlsx::read_part(const pstring& path, schema_t type)
 {
-    cout << "reading xml part " << path << endl;
-    GsfInput* dir_cur = m_dir_stack.back().get();
+    assert(!m_dir_stack.empty());
+    
+    // Used for unwinding at the end of this method.
+    size_t stack_size = m_dir_stack.size();
 
+    // Change current directory and read the in-file.
+    const char* p = path.get();
+    const char* p_name = NULL;
+    size_t name_len = 0;
+    for (size_t i = 0, n = path.size(); i < n; ++i, ++p, ++name_len)
+    {
+        if (!p_name)
+            p_name = p;
+
+        if (*p == '/')
+        {
+            // Push a new directory.
+            string dir_name(p_name, name_len);
+            gsf_infile_guard dir_new(m_dir_stack.back().get(), dir_name.c_str());
+            m_dir_stack.push_back(dir_new);
+            
+            p_name = NULL;
+            name_len = 0;
+        }
+    }
+
+    if (p_name)
+    {
+        // This is a file.
+        string file_name(p_name, name_len);
+
+        if (type == SCH_rels_office_doc)
+            read_workbook(file_name.c_str());
+        else
+        {
+            cout << "---" << endl;
+            cout << "unhandled schema type: " << type << endl;
+        }
+    }
+
+    // Unwind to the original directory.
+    vector<gsf_infile_guard>::iterator itr = m_dir_stack.begin();
+    advance(itr, stack_size);
+    m_dir_stack.erase(itr, m_dir_stack.end());
 }
 
 void orcus_xlsx::read_content_types()
@@ -241,6 +285,17 @@ void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
     parser.set_handler(&m_rel_handler);
     parser.parse();
     m_rel_handler.pop_rels(rels);
+}
+
+void orcus_xlsx::read_workbook(const char* file_name)
+{
+    gsf_infile_guard guard(m_dir_stack.back().get(), file_name);
+    GsfInput* input = guard.get();
+    size_t size = gsf_input_size(input);
+    cout << "---" << endl;
+    cout << "file name: " << file_name << "  size: " << size << endl;
+    const guint8* content = gsf_input_read(input, size, NULL);
+    xml_stream_parser parser(ooxml_tokens, content, size, file_name);
 }
 
 void orcus_xlsx::read_sheet_xml(GsfInput* input, const char* outpath)
