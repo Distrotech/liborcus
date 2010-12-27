@@ -35,8 +35,7 @@ using namespace std;
 
 namespace orcus {
 
-xlsx_sheet_xml_handler::xlsx_sheet_xml_handler(const tokens& tokens) :
-    m_tokens(tokens)
+xlsx_sheet_xml_handler::xlsx_sheet_xml_handler(const tokens& tokens)
 {
     m_context_stack.push_back(new xlsx_sheet_xml_context(tokens));
 }

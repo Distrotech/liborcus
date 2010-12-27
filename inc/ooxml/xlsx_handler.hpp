@@ -53,7 +53,6 @@ private:
 
 private:
     typedef ::boost::ptr_vector<xml_context_base> context_stack_type;
-    const tokens& m_tokens;
     context_stack_type m_context_stack;
 };
 
