@@ -49,7 +49,8 @@ COMMON_HEADERS= \
 	$(INCDIR)/global.hpp \
 	$(INCDIR)/pstring.hpp \
 	$(INCDIR)/tokens.hpp \
-	$(INCDIR)/sax.hpp
+	$(INCDIR)/sax.hpp \
+	$(INCDIR)/types.hpp
 
 COMMON_OBJFILES= \
 	$(OBJDIR)/global.o \
@@ -84,7 +85,9 @@ XLSX_HEADERS= \
 	$(INCDIR)/ooxml/opc_handler.hpp \
 	$(INCDIR)/ooxml/opc_context.hpp \
 	$(INCDIR)/ooxml/content_types.hpp \
-	$(INCDIR)/ooxml/schemas.hpp
+	$(INCDIR)/ooxml/global.hpp \
+	$(INCDIR)/ooxml/schemas.hpp \
+	$(INCDIR)/ooxml/types.hpp
 	
 XLSX_OBJFILES = \
 	$(COMMON_OBJFILES) \
@@ -95,6 +98,7 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/ooxml/xlsx_handler.o \
 	$(OBJDIR)/ooxml/xlsx_context.o \
 	$(OBJDIR)/ooxml/content_types.o \
+	$(OBJDIR)/ooxml/global.o \
 	$(OBJDIR)/ooxml/schemas.o \
 	$(OBJDIR)/model/sheet.o
 
@@ -164,6 +168,9 @@ $(OBJDIR)/ooxml/content_types.o: $(SRCDIR)/ooxml/content_types.cpp $(DEPENDS)
 
 $(OBJDIR)/ooxml/schemas.o: $(SRCDIR)/ooxml/schemas.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/schemas.cpp
+
+$(OBJDIR)/ooxml/global.o: $(SRCDIR)/ooxml/global.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/global.cpp
 
 $(OBJDIR)/ooxml/ooxml_tokens.o: $(SRCDIR)/ooxml/ooxml_tokens.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/ooxml_tokens.cpp

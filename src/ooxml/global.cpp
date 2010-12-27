@@ -25,38 +25,15 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_OOXML_TYPES_HPP__
-#define __ORCUS_OOXML_TYPES_HPP__
-
-#include "pstring.hpp"
-
-#include <iostream>
+#include "ooxml/global.hpp"
+#include "ooxml/types.hpp"
 
 namespace orcus {
 
-typedef const char* content_type_t;
-typedef const char* schema_t;
-
-/**
- * Part name (first) and content type (second).
- */
-typedef ::std::pair<pstring, content_type_t>    xml_part_t;
-
-/**
- * Single OPC relationship that corresponds with a Relationship element in 
- * .rels parts.
- */
-struct opc_rel_t
+void print_opc_rel::operator() (const opc_rel_t& v) const
 {
-    pstring  rid;
-    pstring  target;
-    schema_t type;
-
-    opc_rel_t() : type(NULL) {}
-    opc_rel_t(const pstring& _rid, const pstring& _target, schema_t _type) :
-        rid(_rid), target(_target), type(_type) {}
-};
-
+    using namespace std;
+    cout << v.rid << ": " << v.target << " (" << v.type << ")" << endl;
 }
 
-#endif
+}

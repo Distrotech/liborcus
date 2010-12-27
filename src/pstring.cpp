@@ -29,6 +29,7 @@
 
 #include <cassert>
 #include <unordered_set>
+#include <iostream>
 
 #include <boost/thread/mutex.hpp>
 

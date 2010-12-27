@@ -215,6 +215,7 @@
 			</Folder>
 			<Folder Name="ooxml">
 				<F N="inc/ooxml/content_types.hpp"/>
+				<F N="inc/ooxml/global.hpp"/>
 				<F N="inc/ooxml/ooxml_token_constants.hpp"/>
 				<F N="inc/ooxml/ooxml_token_constants.inl"/>
 				<F N="inc/ooxml/ooxml_tokens.hpp"/>
@@ -249,6 +250,7 @@
 			</Folder>
 			<Folder Name="ooxml">
 				<F N="src/ooxml/content_types.cpp"/>
+				<F N="src/ooxml/global.cpp"/>
 				<F N="src/ooxml/ooxml_tokens.cpp"/>
 				<F N="src/ooxml/ooxml_tokens.inl"/>
 				<F N="src/ooxml/opc_context.cpp"/>

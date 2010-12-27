@@ -30,11 +30,12 @@
 #include <gsf/gsf-infile.h>
 #include <gsf/gsf-infile-zip.h>
 
+#include "global.hpp"
 #include "xmlparser.hpp"
+#include "ooxml/global.hpp"
 #include "ooxml/xlsx_handler.hpp"
 #include "ooxml/opc_handler.hpp"
 #include "ooxml/ooxml_tokens.hpp"
-#include "global.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -172,6 +173,8 @@ void read_content(GsfInput* input, const char* outpath)
         GsfInput* input_rels = rels_guard.get();
         read_relations(input_rels, "_rels/.rels", rels);
     }
+    cout << "relationship count: " << rels.size() << endl;
+    for_each(rels.begin(), rels.end(), print_opc_rel());
 
     // xl/worksheets/sheet1.xml
 

@@ -31,6 +31,7 @@
 #include "ooxml/schemas.hpp"
 #include "global.hpp"
 
+#include <cassert>
 #include <iostream>
 #include <algorithm>
 
@@ -252,9 +253,6 @@ public:
 
     void operator() (const xml_attr_t& attr)
     {
-        if (attr.ns != XMLNS_rel)
-            return;
-
         // Target and rId strings must be interned as they must survive after
         // the rels part gets destroyed.
 
@@ -291,6 +289,28 @@ private:
 private:
     const opc_relations_context::schema_cache_type* mp_schema_cache;
     opc_rel_t m_rel;
+};
+
+/**
+ * Compare relations by the rId.
+ */
+struct compare_rels : binary_function<bool, opc_rel_t, opc_rel_t>
+{
+    bool operator() (const opc_rel_t& r1, const opc_rel_t& r2) const
+    {
+        size_t n1 = r1.rid.size(), n2 = r2.rid.size();
+        size_t n = min(n1, n2);
+        const char *p1 = r1.rid.get(), *p2 = r2.rid.get();
+        for (size_t i = 0; i < n; ++i, ++p1, ++p2)
+        {
+            if (*p1 < *p2)
+                return true;
+            if (*p1 > *p2)
+                return false;
+            assert(*p1 == *p2);
+        }
+        return n1 < n2;
+    }
 };
 
 }
@@ -364,6 +384,8 @@ void opc_relations_context::characters(const pstring &str)
 
 void opc_relations_context::pop_rels(vector<opc_rel_t>& rels)
 {
+    // Sort by the rId.
+    sort(m_rels.begin(), m_rels.end(), compare_rels());
     m_rels.swap(rels);
 }
 
