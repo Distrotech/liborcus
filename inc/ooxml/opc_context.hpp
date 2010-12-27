@@ -28,7 +28,7 @@
 #ifndef __ORCUS_OPC_CONTEXT_HPP__
 #define __ORCUS_OPC_CONTEXT_HPP__
 
-#include "xmlcontext.hpp"
+#include "xml_context.hpp"
 #include "ooxml/types.hpp"
 
 #include <unordered_set>

@@ -28,8 +28,8 @@
 #ifndef __ORCUS_ODSHANDLER_HPP__
 #define __ORCUS_ODSHANDLER_HPP__
 
-#include "xmlhandler.hpp"
-#include "xmlcontext.hpp"
+#include "xml_handler.hpp"
+#include "xml_context.hpp"
 
 #include <string>
 #include <boost/ptr_container/ptr_vector.hpp>

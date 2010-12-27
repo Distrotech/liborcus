@@ -28,7 +28,7 @@
 #ifndef __ORCUS_PARACONTEXT_HPP__
 #define __ORCUS_PARACONTEXT_HPP__
 
-#include "xmlcontext.hpp"
+#include "xml_context.hpp"
 
 #include "pstring.hpp"
 

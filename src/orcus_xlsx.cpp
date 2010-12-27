@@ -31,7 +31,7 @@
 #include <gsf/gsf-infile-zip.h>
 
 #include "global.hpp"
-#include "xmlparser.hpp"
+#include "xml_parser.hpp"
 #include "ooxml/global.hpp"
 #include "ooxml/xlsx_handler.hpp"
 #include "ooxml/opc_handler.hpp"

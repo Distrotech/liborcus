@@ -233,9 +233,9 @@
 			<F N="inc/sax.hpp"/>
 			<F N="inc/tokens.hpp"/>
 			<F N="inc/types.hpp"/>
-			<F N="inc/xmlcontext.hpp"/>
-			<F N="inc/xmlhandler.hpp"/>
-			<F N="inc/xmlparser.hpp"/>
+			<F N="inc/xml_context.hpp"/>
+			<F N="inc/xml_handler.hpp"/>
+			<F N="inc/xml_parser.hpp"/>
 		</Folder>
 		<Folder Name="src">
 			<Folder Name="model">
@@ -266,9 +266,9 @@
 			<F N="src/pstring.cpp"/>
 			<F N="src/pstring_intern_test.cpp"/>
 			<F N="src/tokens.cpp"/>
-			<F N="src/xmlcontext.cpp"/>
-			<F N="src/xmlhandler.cpp"/>
-			<F N="src/xmlparser.cpp"/>
+			<F N="src/xml_context.cpp"/>
+			<F N="src/xml_handler.cpp"/>
+			<F N="src/xml_parser.cpp"/>
 		</Folder>
 		<F
 			N="Makefile"

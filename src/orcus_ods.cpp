@@ -30,7 +30,7 @@
 #include <gsf/gsf-infile.h>
 #include <gsf/gsf-infile-zip.h>
 
-#include "xmlparser.hpp"
+#include "xml_parser.hpp"
 #include "odf/odshandler.hpp"
 #include "odf/odf_tokens.hpp"
 

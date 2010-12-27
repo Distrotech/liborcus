@@ -43,9 +43,9 @@ CPPFLAGS=-I$(INCDIR) -O2 -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1` -lboost_thread
 
 COMMON_HEADERS= \
-	$(INCDIR)/xmlhandler.hpp \
-	$(INCDIR)/xmlcontext.hpp \
-	$(INCDIR)/xmlparser.hpp \
+	$(INCDIR)/xml_handler.hpp \
+	$(INCDIR)/xml_context.hpp \
+	$(INCDIR)/xml_parser.hpp \
 	$(INCDIR)/global.hpp \
 	$(INCDIR)/pstring.hpp \
 	$(INCDIR)/tokens.hpp \
@@ -54,9 +54,9 @@ COMMON_HEADERS= \
 
 COMMON_OBJFILES= \
 	$(OBJDIR)/global.o \
-	$(OBJDIR)/xmlhandler.o \
-	$(OBJDIR)/xmlcontext.o \
-	$(OBJDIR)/xmlparser.o \
+	$(OBJDIR)/xml_handler.o \
+	$(OBJDIR)/xml_context.o \
+	$(OBJDIR)/xml_parser.o \
 	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/pstring.o
 
@@ -132,14 +132,14 @@ $(OBJDIR)/orcus_xlsx.o: $(SRCDIR)/orcus_xlsx.cpp $(DEPENDS)
 $(OBJDIR)/global.o: $(SRCDIR)/global.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/global.cpp
 
-$(OBJDIR)/xmlcontext.o: $(SRCDIR)/xmlcontext.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlcontext.cpp
+$(OBJDIR)/xml_context.o: $(SRCDIR)/xml_context.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xml_context.cpp
 
-$(OBJDIR)/xmlhandler.o: $(SRCDIR)/xmlhandler.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlhandler.cpp
+$(OBJDIR)/xml_handler.o: $(SRCDIR)/xml_handler.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xml_handler.cpp
 
-$(OBJDIR)/xmlparser.o: $(SRCDIR)/xmlparser.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xmlparser.cpp
+$(OBJDIR)/xml_parser.o: $(SRCDIR)/xml_parser.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xml_parser.cpp
 
 $(OBJDIR)/tokens.o: $(SRCDIR)/tokens.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/tokens.cpp

@@ -28,7 +28,7 @@
 #ifndef __ORCUS_XLSX_CONTEXT_HPP__
 #define __ORCUS_XLSX_CONTEXT_HPP__
 
-#include "xmlcontext.hpp"
+#include "xml_context.hpp"
 
 #include <boost/ptr_container/ptr_vector.hpp>
 

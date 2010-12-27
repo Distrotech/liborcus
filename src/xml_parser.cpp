@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#include "xmlparser.hpp"
-#include "xmlhandler.hpp"
+#include "xml_parser.hpp"
+#include "xml_handler.hpp"
 #include "tokens.hpp"
 #include "sax.hpp"
 

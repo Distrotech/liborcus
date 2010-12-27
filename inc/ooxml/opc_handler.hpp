@@ -28,7 +28,7 @@
 #ifndef __ORCUS_OPC_HANDLER_HPP__
 #define __ORCUS_OPC_HANDLER_HPP__
 
-#include "xmlhandler.hpp"
+#include "xml_handler.hpp"
 #include "ooxml/types.hpp"
 
 namespace orcus {

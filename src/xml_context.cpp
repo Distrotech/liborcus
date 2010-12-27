@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "xmlcontext.hpp"
+#include "xml_context.hpp"
 #include "global.hpp"
 #include "tokens.hpp"
 
