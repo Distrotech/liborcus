@@ -73,7 +73,14 @@ public:
     virtual void end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
 
+    /**
+     * Call this before using this handler with the parser.
+     */
     void init();
+
+    /**
+     * Pop an array of relationship data.  The data are sorted by the rId. 
+     */
     void pop_rels(::std::vector<opc_rel_t>& rels);
 
 private:

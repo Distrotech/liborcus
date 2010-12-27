@@ -220,6 +220,9 @@ test.ou: orcus-ods
 test.xlsx: orcus-xlsx
 	./orcus-xlsx ./test/test.xlsx
 
+test.xlsx.mem: orcus-xlsx
+	valgrind --tool=memcheck --leak-check=full ./orcus-xlsx ./test/test.xlsx
+
 clean:
 	rm -rf $(OBJDIR) 2> /dev/null || /bin/true
 	rm $(EXECS) 2> /dev/null || /bin/true

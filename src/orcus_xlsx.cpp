@@ -73,14 +73,26 @@ class gsf_infile_guard
 {
 public:
     gsf_infile_guard(GsfInput* parent, const char* name) : 
-        mp_input(gsf_infile_child_by_name(GSF_INFILE(parent), name))
+        mp_input(NULL)
     {
+        if (name)
+            mp_input = gsf_infile_child_by_name(GSF_INFILE(parent), name);
+        else
+            mp_input = parent;
+
         if (!mp_input)
         {
             ostringstream os;
             os << "failed to open infile child: '" << name << "'";
             throw general_error(os.str());
         }
+    }
+
+    gsf_infile_guard(const gsf_infile_guard& r) :
+        mp_input(r.mp_input)
+    {
+        if (mp_input)
+            g_object_ref(G_OBJECT(mp_input));
     }
 
     ~gsf_infile_guard() 
@@ -103,15 +115,24 @@ public:
 
     void read_file(const char* fpath, const char* outpath);
 
+    /**
+     * Read an xml part inside package.  The path is relative to the relation 
+     * file. 
+     * 
+     * @param path the path to the xml part.
+     * @param type schema type.
+     */
+    void read_part(const pstring& path, const schema_t type);
+
 private:
     /**
      * Parse the [Content_Types].xml part to extract the paths and content 
      * types of the other xml parts contained in the package. This is the 
      * first part in the package to be parsed. 
      */
-    void read_content_types(GsfInput* input);
+    void read_content_types();
 
-    void read_relations(GsfInput* input, const char* path, vector<opc_rel_t>& rels);
+    void read_relations(const char* path, vector<opc_rel_t>& rels);
 
     /**
      * Parse a sheet xml part that contains data stored in a single sheet.
@@ -122,7 +143,7 @@ private:
      * The top-level function that determines the order in which the 
      * individual parts get parsed. 
      */
-    void read_content(GsfInput* input, const char* outpath);
+    void read_content(const char* outpath);
 
     void list_content (GsfInput* input, int level = 0);
 
@@ -131,6 +152,8 @@ private:
 
     vector<xml_part_t> m_parts;
     vector<xml_part_t> m_ext_defaults;
+
+    vector<gsf_infile_guard> m_dir_stack;
 };
 
 orcus_xlsx::orcus_xlsx() :
@@ -138,8 +161,58 @@ orcus_xlsx::orcus_xlsx() :
 
 orcus_xlsx::~orcus_xlsx() {}
 
-void orcus_xlsx::read_content_types(GsfInput* input)
+struct process_opc_rel : public unary_function<void, opc_rel_t>
 {
+    process_opc_rel(orcus_xlsx& parent) : m_parent(parent) {}
+
+    void operator() (const opc_rel_t& v)
+    {
+        m_parent.read_part(v.target, v.type);
+    }
+private:
+    orcus_xlsx& m_parent;
+};
+
+void orcus_xlsx::read_file(const char* fpath, const char* outpath)
+{
+    cout << "reading " << fpath << endl;
+
+    GError* err = NULL;
+    GsfInput* input = gsf_input_stdio_new (fpath, &err);
+    if (!input)
+    {    
+        g_error_free (err);
+        return;
+    }
+
+    GsfInfile* infile = gsf_infile_zip_new (input, &err);
+    g_object_unref (G_OBJECT (input));
+    if (!infile)
+    {
+        g_error_free (err);
+        return;
+    }
+
+    gsf_infile_guard dir_root(GSF_INPUT(infile), NULL);
+    m_dir_stack.push_back(dir_root);
+//  list_content(GSF_INPUT(infile));
+    read_content (outpath);
+}
+
+void orcus_xlsx::read_part(const pstring& path, schema_t type)
+{
+    cout << "reading xml part " << path << endl;
+    GsfInput* dir_cur = m_dir_stack.back().get();
+
+}
+
+void orcus_xlsx::read_content_types()
+{
+    gsf_infile_guard guard(m_dir_stack.back().get(), "[Content_Types].xml");
+    GsfInput* input = guard.get();
+    if (!input)
+        throw general_error("could not open [Content_Types].xml part.");
+
     size_t size = gsf_input_size(input);
     cout << "---" << endl;
     cout << "name: [Content_Types].xml  size: " << size << endl;
@@ -152,12 +225,16 @@ void orcus_xlsx::read_content_types(GsfInput* input)
     handler->pop_ext_defaluts(m_ext_defaults);
 }
 
-void orcus_xlsx::read_relations(GsfInput* input, const char* path, vector<opc_rel_t>& rels)
+void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
 {
-    size_t size = gsf_input_size(input);
+    GsfInput* dir_cur = m_dir_stack.back().get();
+    gsf_infile_guard rels_guard(dir_cur, path);
+    GsfInput* input_rels = rels_guard.get();
+
+    size_t size = gsf_input_size(input_rels);
     cout << "---" << endl;
     cout << "name: " << path << "  size: " << size << endl;
-    const guint8* content = gsf_input_read(input, size, NULL);
+    const guint8* content = gsf_input_read(input_rels, size, NULL);
     xml_stream_parser parser(opc_tokens, content, size, path);
 
     m_rel_handler.init();
@@ -177,36 +254,36 @@ void orcus_xlsx::read_sheet_xml(GsfInput* input, const char* outpath)
     parser.parse();
 }
 
-void orcus_xlsx::read_content(GsfInput* input, const char* outpath)
+void orcus_xlsx::read_content(const char* outpath)
 {
-    if (!GSF_IS_INFILE(input))
+    if (m_dir_stack.empty())
         return;
+
+    // Get the root directory handle.
+    GsfInput* dir_root = m_dir_stack.back().get();
 
     // [Content_Types].xml
 
-    {
-        gsf_infile_guard xml_content_types_guard(input, "[Content_Types].xml");
-        GsfInput* xml_content_types = xml_content_types_guard.get();
-        read_content_types(xml_content_types);
-    }
+    read_content_types();
     for_each(m_parts.begin(), m_parts.end(), print_xml_content_types("part name"));
     for_each(m_ext_defaults.begin(), m_ext_defaults.end(), print_xml_content_types("extension default"));
 
     // _rels/.rels
 
     vector<opc_rel_t> rels;
-    {
-        gsf_infile_guard dir_rels_guard(input, "_rels");
-        GsfInput* dir_rels = dir_rels_guard.get();
-        gsf_infile_guard rels_guard(dir_rels, ".rels");
-        GsfInput* input_rels = rels_guard.get();
-        read_relations(input_rels, "_rels/.rels", rels);
-    }
-    for_each(rels.begin(), rels.end(), print_opc_rel());
 
+    gsf_infile_guard dir_rels(dir_root, "_rels");
+    m_dir_stack.push_back(dir_rels);
+    read_relations(".rels", rels);
+    m_dir_stack.pop_back();
+
+    for_each(rels.begin(), rels.end(), print_opc_rel());
+    for_each(rels.begin(), rels.end(), process_opc_rel(*this));
+
+#if 0
     // xl/worksheets/sheet1.xml
 
-    gsf_infile_guard dir_xl_guard(input, "xl");
+    gsf_infile_guard dir_xl_guard(dir_root, "xl");
     GsfInput* dir_xl = dir_xl_guard.get();
 
     gsf_infile_guard dir_worksheets_guard(dir_xl, "worksheets");
@@ -216,6 +293,7 @@ void orcus_xlsx::read_content(GsfInput* input, const char* outpath)
     gsf_infile_guard xml_sheet1_guard(dir_worksheets, "sheet1.xml");
     GsfInput* xml_sheet1 = xml_sheet1_guard.get();
     read_sheet_xml(xml_sheet1, outpath);
+#endif
 }
 
 void orcus_xlsx::list_content (GsfInput* input, int level)
@@ -255,31 +333,6 @@ void orcus_xlsx::list_content (GsfInput* input, int level)
     puts ("}");
 }
 
-void orcus_xlsx::read_file(const char* fpath, const char* outpath)
-{
-    cout << "reading " << fpath << endl;
-
-    GError* err = NULL;
-    GsfInput* input = gsf_input_stdio_new (fpath, &err);
-    if (!input)
-    {    
-        g_error_free (err);
-        return;
-    }
-
-    GsfInfile* infile = gsf_infile_zip_new (input, &err);
-    g_object_unref (G_OBJECT (input));
-    if (!infile)
-    {
-        g_error_free (err);
-        return;
-    }
-
-//  list_content(GSF_INPUT(infile));
-    read_content (GSF_INPUT(infile), outpath);
-    g_object_unref (G_OBJECT (infile));
-}
-
 }
 
 int main(int argc, char** argv)
@@ -291,7 +344,7 @@ int main(int argc, char** argv)
     orcus_xlsx app;
     app.read_file(argv[1], "out.html");
     gsf_shutdown();
-    pstring::intern::dump();
+//  pstring::intern::dump();
     pstring::intern::dispose();
     return EXIT_SUCCESS;
 }
