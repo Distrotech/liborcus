@@ -53,13 +53,15 @@ namespace {
 class orcus_xlsx
 {
 public:
+    void read_file(const char* fpath, const char* outpath);
+
+private:
     /**
      * Parse the [Content_Types].xml part to extract the paths and content 
      * types of the other xml parts contained in the package. This is the 
      * first part in the package to be parsed. 
      */
-    void read_content_types(
-        GsfInput* input, vector<xml_part_t>& parts, vector<xml_part_t>& ext_defaults);
+    void read_content_types(GsfInput* input);
 
     void read_relations(GsfInput* input, const char* path, vector<opc_rel_t>& rels);
 
@@ -76,7 +78,9 @@ public:
 
     void list_content (GsfInput* input, int level = 0);
 
-    void read_file(const char* fpath, const char* outpath);
+private:
+    vector<xml_part_t> m_parts;
+    vector<xml_part_t> m_ext_defaults;
 };
 
 class print_xml_content_types : unary_function<void, xml_part_t>
@@ -124,8 +128,7 @@ private:
     GsfInput* mp_input;
 };
 
-void orcus_xlsx::read_content_types(
-    GsfInput* input, vector<xml_part_t>& parts, vector<xml_part_t>& ext_defaults)
+void orcus_xlsx::read_content_types(GsfInput* input)
 {
     size_t size = gsf_input_size(input);
     cout << "---" << endl;
@@ -135,8 +138,8 @@ void orcus_xlsx::read_content_types(
     ::boost::scoped_ptr<opc_content_types_handler> handler(new opc_content_types_handler(opc_tokens));
     parser.set_handler(handler.get());
     parser.parse();
-    handler->pop_parts(parts);
-    handler->pop_ext_defaluts(ext_defaults);
+    handler->pop_parts(m_parts);
+    handler->pop_ext_defaluts(m_ext_defaults);
 }
 
 void orcus_xlsx::read_relations(GsfInput* input, const char* path, vector<opc_rel_t>& rels)
@@ -170,15 +173,13 @@ void orcus_xlsx::read_content(GsfInput* input, const char* outpath)
 
     // [Content_Types].xml
 
-    vector<xml_part_t> parts;
-    vector<xml_part_t> ext_defaults;
     {
         gsf_infile_guard xml_content_types_guard(input, "[Content_Types].xml");
         GsfInput* xml_content_types = xml_content_types_guard.get();
-        read_content_types(xml_content_types, parts, ext_defaults);
+        read_content_types(xml_content_types);
     }
-    for_each(parts.begin(), parts.end(), print_xml_content_types("part name"));
-    for_each(ext_defaults.begin(), ext_defaults.end(), print_xml_content_types("extension default"));
+    for_each(m_parts.begin(), m_parts.end(), print_xml_content_types("part name"));
+    for_each(m_ext_defaults.begin(), m_ext_defaults.end(), print_xml_content_types("extension default"));
 
     // _rels/.rels
 
