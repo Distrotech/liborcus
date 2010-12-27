@@ -35,7 +35,6 @@
 #include "xml_simple_handler.hpp"
 #include "ooxml/global.hpp"
 #include "ooxml/xlsx_handler.hpp"
-#include "ooxml/opc_handler.hpp"
 #include "ooxml/opc_context.hpp"
 #include "ooxml/ooxml_tokens.hpp"
 #include "ooxml/schemas.hpp"
@@ -264,11 +263,14 @@ void orcus_xlsx::read_content_types()
     cout << "name: [Content_Types].xml  size: " << size << endl;
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(opc_tokens, content, size, "[Content_Types].xml");
-    ::boost::scoped_ptr<opc_content_types_handler> handler(new opc_content_types_handler(opc_tokens));
+    ::boost::scoped_ptr<xml_simple_stream_handler> handler(
+        new xml_simple_stream_handler(new opc_content_types_context(opc_tokens)));
+    opc_content_types_context& context = 
+        static_cast<opc_content_types_context&>(handler->get_context());
     parser.set_handler(handler.get());
     parser.parse();
-    handler->pop_parts(m_parts);
-    handler->pop_ext_defaluts(m_ext_defaults);
+    context.pop_parts(m_parts);
+    context.pop_ext_defaults(m_ext_defaults);
 }
 
 void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
