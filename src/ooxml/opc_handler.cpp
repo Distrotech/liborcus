@@ -84,49 +84,4 @@ void opc_content_types_handler::pop_ext_defaluts(vector<xml_part_t>& ext_default
     mp_context->pop_ext_defaults(ext_defaults);
 }
 
-// ============================================================================
-
-opc_relations_handler::opc_relations_handler(const tokens& _tokens) :
-    mp_context(new opc_relations_context(_tokens))
-{
-}
-
-opc_relations_handler::~opc_relations_handler()
-{
-    delete mp_context;
-}
-
-void opc_relations_handler::start_document()
-{
-}
-
-void opc_relations_handler::end_document()
-{
-}
-
-void opc_relations_handler::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t &attrs)
-{
-    mp_context->start_element(ns, name, attrs);
-}
-
-void opc_relations_handler::end_element(xmlns_token_t ns, xml_token_t name)
-{
-    mp_context->end_element(ns, name);
-}
-
-void opc_relations_handler::characters(const pstring &str)
-{
-    mp_context->characters(str);
-}
-
-void opc_relations_handler::init()
-{
-    mp_context->init();
-}
-
-void opc_relations_handler::pop_rels(vector<opc_rel_t>& rels)
-{
-    mp_context->pop_rels(rels);
-}
-
 }

@@ -58,35 +58,6 @@ private:
     opc_content_types_context* mp_context;
 };
 
-/**
- * XML Stream handler for relations parts.
- */
-class opc_relations_handler : public xml_stream_handler
-{
-public:
-    opc_relations_handler(const tokens& _tokens);
-    virtual ~opc_relations_handler();
-
-    virtual void start_document();
-    virtual void end_document();
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
-    virtual void end_element(xmlns_token_t ns, xml_token_t name);
-    virtual void characters(const pstring& str);
-
-    /**
-     * Call this before using this handler with the parser.
-     */
-    void init();
-
-    /**
-     * Pop an array of relationship data.  The data are sorted by the rId. 
-     */
-    void pop_rels(::std::vector<opc_rel_t>& rels);
-
-private:
-    opc_relations_context* mp_context;
-};
-
 }
 
 #endif

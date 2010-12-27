@@ -28,11 +28,16 @@
 #include "xml_simple_handler.hpp"
 #include "xml_context.hpp"
 
+#include <cassert>
+
 namespace orcus {
 
 xml_simple_stream_handler::xml_simple_stream_handler(xml_context_base* context) :
     xml_stream_handler(),
-    mp_context(context) {}
+    mp_context(context)
+{
+    assert(mp_context);
+}
 
 xml_simple_stream_handler::~xml_simple_stream_handler()
 {

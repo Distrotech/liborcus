@@ -32,9 +32,11 @@
 
 #include "global.hpp"
 #include "xml_parser.hpp"
+#include "xml_simple_handler.hpp"
 #include "ooxml/global.hpp"
 #include "ooxml/xlsx_handler.hpp"
 #include "ooxml/opc_handler.hpp"
+#include "ooxml/opc_context.hpp"
 #include "ooxml/ooxml_tokens.hpp"
 #include "ooxml/schemas.hpp"
 
@@ -151,7 +153,7 @@ private:
     void list_content (GsfInput* input, int level = 0);
 
 private:
-    opc_relations_handler m_rel_handler;
+    xml_simple_stream_handler m_opc_rel_handler;
 
     vector<xml_part_t> m_parts;
     vector<xml_part_t> m_ext_defaults;
@@ -160,7 +162,7 @@ private:
 };
 
 orcus_xlsx::orcus_xlsx() :
-    m_rel_handler(opc_tokens) {}
+    m_opc_rel_handler(new opc_relations_context(opc_tokens)) {}
 
 orcus_xlsx::~orcus_xlsx() {}
 
@@ -281,10 +283,12 @@ void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
     const guint8* content = gsf_input_read(input_rels, size, NULL);
     xml_stream_parser parser(opc_tokens, content, size, path);
 
-    m_rel_handler.init();
-    parser.set_handler(&m_rel_handler);
+    opc_relations_context& context = 
+        static_cast<opc_relations_context&>(m_opc_rel_handler.get_context());
+    context.init();
+    parser.set_handler(&m_opc_rel_handler);
     parser.parse();
-    m_rel_handler.pop_rels(rels);
+    context.pop_rels(rels);
 }
 
 void orcus_xlsx::read_workbook(const char* file_name)
