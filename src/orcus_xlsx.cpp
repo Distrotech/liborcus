@@ -50,6 +50,35 @@ using namespace orcus;
 
 namespace {
 
+class orcus_xlsx
+{
+public:
+    /**
+     * Parse the [Content_Types].xml part to extract the paths and content 
+     * types of the other xml parts contained in the package. This is the 
+     * first part in the package to be parsed. 
+     */
+    void read_content_types(
+        GsfInput* input, vector<xml_part_t>& parts, vector<xml_part_t>& ext_defaults);
+
+    void read_relations(GsfInput* input, const char* path, vector<opc_rel_t>& rels);
+
+    /**
+     * Parse a sheet xml part that contains data stored in a single sheet.
+     */
+    void read_sheet_xml(GsfInput* input, const char* outpath);
+
+    /**
+     * The top-level function that determines the order in which the 
+     * individual parts get parsed. 
+     */
+    void read_content(GsfInput* input, const char* outpath);
+
+    void list_content (GsfInput* input, int level = 0);
+
+    void read_file(const char* fpath, const char* outpath);
+};
+
 class print_xml_content_types : unary_function<void, xml_part_t>
 {
 public:
@@ -95,12 +124,7 @@ private:
     GsfInput* mp_input;
 };
 
-/**
- * Parse the [Content_Types].xml part to extract the paths and content types
- * of the other xml parts contained in the package. This is the first part 
- * in the package to be parsed. 
- */
-void read_content_types(
+void orcus_xlsx::read_content_types(
     GsfInput* input, vector<xml_part_t>& parts, vector<xml_part_t>& ext_defaults)
 {
     size_t size = gsf_input_size(input);
@@ -115,7 +139,7 @@ void read_content_types(
     handler->pop_ext_defaluts(ext_defaults);
 }
 
-void read_relations(GsfInput* input, const char* path, vector<opc_rel_t>& rels)
+void orcus_xlsx::read_relations(GsfInput* input, const char* path, vector<opc_rel_t>& rels)
 {
     size_t size = gsf_input_size(input);
     cout << "---" << endl;
@@ -128,10 +152,7 @@ void read_relations(GsfInput* input, const char* path, vector<opc_rel_t>& rels)
     handler->pop_rels(rels);
 }
 
-/**
- * Parse a sheet xml part that contains data stored in a single sheet.
- */
-void read_sheet_xml(GsfInput* input, const char* outpath)
+void orcus_xlsx::read_sheet_xml(GsfInput* input, const char* outpath)
 {
     size_t size = gsf_input_size(input);
     cout << "name: sheet1  size: " << size << endl;
@@ -142,11 +163,7 @@ void read_sheet_xml(GsfInput* input, const char* outpath)
     parser.parse();
 }
 
-/**
- * The top-level function that determines the order in which the individual 
- * parts get parsed. 
- */
-void read_content(GsfInput* input, const char* outpath)
+void orcus_xlsx::read_content(GsfInput* input, const char* outpath)
 {
     if (!GSF_IS_INFILE(input))
         return;
@@ -189,7 +206,7 @@ void read_content(GsfInput* input, const char* outpath)
     read_sheet_xml(xml_sheet1, outpath);
 }
 
-void list_content (GsfInput* input, int level = 0)
+void orcus_xlsx::list_content (GsfInput* input, int level)
 {
     if (!GSF_IS_INFILE(input))
         return;
@@ -226,7 +243,7 @@ void list_content (GsfInput* input, int level = 0)
     puts ("}");
 }
 
-void read_file(const char* fpath, const char* outpath)
+void orcus_xlsx::read_file(const char* fpath, const char* outpath)
 {
     cout << "reading " << fpath << endl;
 
@@ -259,7 +276,8 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
 
     gsf_init();
-    read_file(argv[1], "out.html");
+    orcus_xlsx app;
+    app.read_file(argv[1], "out.html");
     gsf_shutdown();
     pstring::intern::dump();
     pstring::intern::dispose();
