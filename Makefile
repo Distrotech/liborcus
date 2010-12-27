@@ -44,6 +44,7 @@ LDFLAGS=`pkg-config --libs libgsf-1` -lboost_thread
 
 COMMON_HEADERS= \
 	$(INCDIR)/xml_handler.hpp \
+	$(INCDIR)/xml_simple_handler.hpp \
 	$(INCDIR)/xml_context.hpp \
 	$(INCDIR)/xml_parser.hpp \
 	$(INCDIR)/global.hpp \
@@ -55,6 +56,7 @@ COMMON_HEADERS= \
 COMMON_OBJFILES= \
 	$(OBJDIR)/global.o \
 	$(OBJDIR)/xml_handler.o \
+	$(OBJDIR)/xml_simple_handler.o \
 	$(OBJDIR)/xml_context.o \
 	$(OBJDIR)/xml_parser.o \
 	$(OBJDIR)/tokens.o \
@@ -137,6 +139,9 @@ $(OBJDIR)/xml_context.o: $(SRCDIR)/xml_context.cpp $(DEPENDS)
 
 $(OBJDIR)/xml_handler.o: $(SRCDIR)/xml_handler.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xml_handler.cpp
+
+$(OBJDIR)/xml_simple_handler.o: $(SRCDIR)/xml_simple_handler.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xml_simple_handler.cpp
 
 $(OBJDIR)/xml_parser.o: $(SRCDIR)/xml_parser.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/xml_parser.cpp

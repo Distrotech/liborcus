@@ -236,6 +236,7 @@
 			<F N="inc/xml_context.hpp"/>
 			<F N="inc/xml_handler.hpp"/>
 			<F N="inc/xml_parser.hpp"/>
+			<F N="inc/xml_simple_handler.hpp"/>
 		</Folder>
 		<Folder Name="src">
 			<Folder Name="model">
@@ -269,6 +270,7 @@
 			<F N="src/xml_context.cpp"/>
 			<F N="src/xml_handler.cpp"/>
 			<F N="src/xml_parser.cpp"/>
+			<F N="src/xml_simple_handler.cpp"/>
 		</Folder>
 		<F
 			N="Makefile"
