@@ -381,6 +381,11 @@ void opc_relations_context::characters(const pstring &str)
 {
 }
 
+void opc_relations_context::init()
+{
+    m_rels.clear();
+}
+
 void opc_relations_context::pop_rels(vector<opc_rel_t>& rels)
 {
     // Sort by the rId.
