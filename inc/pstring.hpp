@@ -70,6 +70,8 @@ public:
          */
         static size_t size();
 
+        static void dump();
+
     private:
         intern();
         intern(const intern&);

@@ -30,6 +30,7 @@
 #include <cassert>
 #include <unordered_set>
 #include <iostream>
+#include <vector>
 
 #include <boost/thread/mutex.hpp>
 
@@ -53,9 +54,33 @@ private:
     equal_to<string> m_equal_to;
 };
 
+struct pstring_less
+{
+    bool operator() (const string* p1, const string* p2) const { return m_less(*p1, *p2); }
+private:
+    less<string> m_less;
+};
+
 struct delete_instance : public unary_function<void, string*>
 {
     void operator() (string* p) { delete p; }
+};
+
+struct dump_instance : public unary_function<void, string*>
+{
+    void operator() (const string* p) const
+    {
+        cout << *p << endl;
+    }
+};
+
+class pstring_back_inserter
+{
+public:
+    pstring_back_inserter(vector<const string*>& store) : m_store(store) {}
+    void operator() (const string* p) { m_store.push_back(p); }
+private:
+    vector<const string*>& m_store;
 };
 
 typedef unordered_set<string*, pstring_hash, pstring_equal_to> pstring_store_type;
@@ -111,6 +136,21 @@ size_t pstring::intern::size()
 {
     ::boost::mutex::scoped_lock(interned_strings.mtx);
     return interned_strings.store.size();
+}
+
+void pstring::intern::dump()
+{
+    ::boost::mutex::scoped_lock(interned_strings.mtx);
+    cout << "interned string count: " << interned_strings.store.size() << endl;
+
+    // Sorted stored strings first.
+    vector<const string*> sorted;
+    sorted.reserve(interned_strings.store.size());
+    for_each(interned_strings.store.begin(), interned_strings.store.end(), pstring_back_inserter(sorted));
+    sort(sorted.begin(), sorted.end(), pstring_less());
+
+    // Now dump them all to stdout.
+    for_each(sorted.begin(), sorted.end(), dump_instance());
 }
 
 size_t pstring::hash::operator() (const pstring& val) const
