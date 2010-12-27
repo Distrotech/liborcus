@@ -68,10 +68,13 @@ struct delete_instance : public unary_function<void, string*>
 
 struct dump_instance : public unary_function<void, string*>
 {
-    void operator() (const string* p) const
+    dump_instance() : counter(0) {}
+    void operator() (const string* p)
     {
-        cout << *p << endl;
+        cout << counter++ << ": '" << *p << "'" << endl;
     }
+private:
+    size_t counter;
 };
 
 class pstring_back_inserter
