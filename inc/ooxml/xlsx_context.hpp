@@ -44,6 +44,15 @@ namespace model {
 class xlsx_workbook_context : public xml_context_base
 {
 public:
+    struct sheet
+    {
+        pstring name;
+        size_t  id;
+        pstring rid;
+
+        sheet();
+    };
+
     xlsx_workbook_context(const tokens& tokens);
     virtual ~xlsx_workbook_context();
 
@@ -54,6 +63,11 @@ public:
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
+
+    void pop_sheet_info(::std::vector<sheet>& sheets);
+
+private:
+    ::std::vector<sheet> m_sheets;
 };
 
 /**

@@ -72,6 +72,14 @@ private:
     const char* m_prefix;
 };
 
+struct print_sheet_info : unary_function<void, xlsx_workbook_context::sheet>
+{
+    void operator() (const xlsx_workbook_context::sheet& v) const
+    {
+        cout << "sheet name: " << v.name << "  sheet id: " << v.id << "  relationship id: " << v.rid << endl;
+    }
+};
+
 class gsf_infile_guard
 {
 public:
@@ -309,6 +317,10 @@ void orcus_xlsx::read_workbook(const char* file_name)
         static_cast<xlsx_workbook_context&>(handler->get_context());
     parser.set_handler(handler.get());
     parser.parse();
+
+    vector<xlsx_workbook_context::sheet> sheets;
+    context.pop_sheet_info(sheets);
+    for_each(sheets.begin(), sheets.end(), print_sheet_info());
 }
 
 void orcus_xlsx::read_sheet_xml(GsfInput* input, const char* outpath)

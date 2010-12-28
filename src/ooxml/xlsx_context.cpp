@@ -34,6 +34,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -91,7 +92,34 @@ public:
     virtual void handle_other_attrs(const xml_attr_t &attr) {}
 };
 
+class workbook_sheet_attr_parser : unary_function<void, xml_attr_t>
+{
+public:
+    void operator() (const xml_attr_t& attr)
+    {
+        if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_name)
+            m_sheet.name = attr.value.intern();
+        else if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_sheetId)
+        {
+            const pstring& val = attr.value;
+            if (!val.empty())
+                m_sheet.id = strtoul(val.str().c_str(), NULL, 10);
+        }
+        else if (attr.ns == XMLNS_r && attr.name == XML_id)
+        {
+            m_sheet.rid = attr.value.intern();
+        }
+    }
+
+    const xlsx_workbook_context::sheet get_sheet() const { return m_sheet; }
+
+private:
+    xlsx_workbook_context::sheet m_sheet;
+};
+
 }
+
+xlsx_workbook_context::sheet::sheet() : id(0) {}
 
 xlsx_workbook_context::xlsx_workbook_context(const tokens& tokens) :
     xml_context_base(tokens) {}
@@ -130,6 +158,17 @@ void xlsx_workbook_context::start_element(xmlns_token_t ns, xml_token_t name, co
             set_default_ns(default_ns);
         }
         break;
+        case XML_sheets:
+            xml_element_expected(parent, XMLNS_xlsx, XML_workbook);
+        break;
+        case XML_sheet:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_sheets);
+            const sheet& sheet = for_each(
+                attrs.begin(), attrs.end(), workbook_sheet_attr_parser()).get_sheet();
+            m_sheets.push_back(sheet);
+        }
+        break;
         default:
             warn_unhandled();
     }
@@ -141,6 +180,11 @@ bool xlsx_workbook_context::end_element(xmlns_token_t ns, xml_token_t name)
 }
 
 void xlsx_workbook_context::characters(const pstring& str) {}
+
+void xlsx_workbook_context::pop_sheet_info(vector<sheet>& sheets)
+{
+    m_sheets.swap(sheets);
+}
 
 namespace {
 
