@@ -28,11 +28,14 @@
 #ifndef __ORCUS_OOXML_GLOBAL_HPP__
 #define __ORCUS_OOXML_GLOBAL_HPP__
 
+#include "types.hpp"
+
 #include <functional>
 
 namespace orcus {
 
 struct opc_rel_t;
+struct xml_attr_t;
 
 struct print_opc_rel : ::std::unary_function<void, opc_rel_t>
 {

@@ -26,7 +26,11 @@
  ************************************************************************/
 
 #include "ooxml/global.hpp"
-#include "ooxml/types.hpp"
+#include "ooxml/ooxml_types.hpp"
+
+#include <iostream>
+
+using namespace std;
 
 namespace orcus {
 

@@ -35,6 +35,7 @@
 #include "xml_simple_handler.hpp"
 #include "ooxml/global.hpp"
 #include "ooxml/xlsx_handler.hpp"
+#include "ooxml/xlsx_context.hpp"
 #include "ooxml/opc_context.hpp"
 #include "ooxml/ooxml_tokens.hpp"
 #include "ooxml/schemas.hpp"
@@ -302,6 +303,12 @@ void orcus_xlsx::read_workbook(const char* file_name)
     cout << "file name: " << file_name << "  size: " << size << endl;
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(ooxml_tokens, content, size, file_name);
+    ::boost::scoped_ptr<xml_simple_stream_handler> handler(
+        new xml_simple_stream_handler(new xlsx_workbook_context(ooxml_tokens)));
+    xlsx_workbook_context& context = 
+        static_cast<xlsx_workbook_context&>(handler->get_context());
+    parser.set_handler(handler.get());
+    parser.parse();
 }
 
 void orcus_xlsx::read_sheet_xml(GsfInput* input, const char* outpath)

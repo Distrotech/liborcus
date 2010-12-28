@@ -31,18 +31,20 @@ namespace orcus {
 
 schema_t SCH_opc_content_types        = "http://schemas.openxmlformats.org/package/2006/content-types";
 schema_t SCH_opc_relationships        = "http://schemas.openxmlformats.org/package/2006/relationships";
-schema_t SCH_rels_extended_props      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties";
 schema_t SCH_rels_metadata_core_props = "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties";
+schema_t SCH_rels_extended_props      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties";
 schema_t SCH_rels_office_doc          = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
+schema_t SCH_xlsx_main                = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
 
 namespace {
 
 schema_t schs[] = {
     SCH_opc_content_types,
     SCH_opc_relationships,
-    SCH_rels_extended_props,
     SCH_rels_metadata_core_props,
+    SCH_rels_extended_props,
     SCH_rels_office_doc,
+    SCH_xlsx_main,
     NULL
 };
 

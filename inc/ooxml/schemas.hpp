@@ -28,15 +28,16 @@
 #ifndef __ORCUS_OOXML_SCHEMAS_HPP__
 #define __ORCUS_OOXML_SCHEMAS_HPP__
 
-#include "types.hpp"
+#include "ooxml_types.hpp"
 
 namespace orcus {
 
 extern schema_t SCH_opc_content_types;
 extern schema_t SCH_opc_relationships;
-extern schema_t SCH_rels_extended_props;
 extern schema_t SCH_rels_metadata_core_props;
+extern schema_t SCH_rels_extended_props;
 extern schema_t SCH_rels_office_doc;
+extern schema_t SCH_xlsx_main;
 
 /**
  * Null-terminated array of all schema types.
