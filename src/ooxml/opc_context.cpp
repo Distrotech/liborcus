@@ -231,7 +231,7 @@ public:
     {
         if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_xmlns)
         {
-            if (attr.value != SCH_opc_relationships)
+            if (attr.value != SCH_opc_rels)
                 throw xml_structure_error("invalid namespace for types element!");
             m_default_ns = XMLNS_rel;
         }

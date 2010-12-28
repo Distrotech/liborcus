@@ -245,7 +245,7 @@ void orcus_xlsx::read_part(const pstring& path, schema_t type)
         // This is a file.
         string file_name(p_name, name_len);
 
-        if (type == SCH_rels_office_doc)
+        if (type == SCH_od_rels_office_doc)
             read_workbook(file_name.c_str());
         else
         {
