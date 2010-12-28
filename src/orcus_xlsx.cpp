@@ -306,9 +306,11 @@ void orcus_xlsx::read_workbook(const char* file_name)
 {
     gsf_infile_guard guard(m_dir_stack.back().get(), file_name);
     GsfInput* input = guard.get();
+
     size_t size = gsf_input_size(input);
     cout << "---" << endl;
     cout << "file name: " << file_name << "  size: " << size << endl;
+
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(ooxml_tokens, content, size, file_name);
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
@@ -318,9 +320,22 @@ void orcus_xlsx::read_workbook(const char* file_name)
     parser.set_handler(handler.get());
     parser.parse();
 
+    // Get sheet info from the context instance.
     vector<xlsx_workbook_context::sheet> sheets;
     context.pop_sheet_info(sheets);
     for_each(sheets.begin(), sheets.end(), print_sheet_info());
+
+    // Read the relationship file associated with this file, located at
+    // _rels/<file name>.rels.
+    vector<opc_rel_t> rels;
+    gsf_infile_guard dir_rels(m_dir_stack.back().get(), "_rels");
+    m_dir_stack.push_back(dir_rels);
+    string rels_file_name(file_name);
+    rels_file_name += ".rels";
+    read_relations(rels_file_name.c_str(), rels);
+    m_dir_stack.pop_back();
+    cout << "relation count: " << rels.size() << endl;
+    for_each(rels.begin(), rels.end(), print_opc_rel());
 }
 
 void orcus_xlsx::read_sheet_xml(GsfInput* input, const char* outpath)
