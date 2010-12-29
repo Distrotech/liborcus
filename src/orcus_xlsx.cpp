@@ -150,7 +150,7 @@ private:
     /**
      * Parse a sheet xml part that contains data stored in a single sheet.
      */
-    void read_sheet_xml(GsfInput* input, const char* outpath);
+    void read_sheet(const char* file_name);
 
     /**
      * The top-level function that determines the order in which the 
@@ -247,10 +247,12 @@ void orcus_xlsx::read_part(const pstring& path, schema_t type)
 
         if (type == SCH_od_rels_office_doc)
             read_workbook(file_name.c_str());
+        else if (type == SCH_od_rels_worksheet)
+            read_sheet(file_name.c_str());
         else
         {
             cout << "---" << endl;
-            cout << "unhandled schema type: " << type << endl;
+            cout << "unhandled relationship type: " << type << endl;
         }
     }
 
@@ -334,16 +336,20 @@ void orcus_xlsx::read_workbook(const char* file_name)
     rels_file_name += ".rels";
     read_relations(rels_file_name.c_str(), rels);
     m_dir_stack.pop_back();
-    cout << "relation count: " << rels.size() << endl;
     for_each(rels.begin(), rels.end(), print_opc_rel());
+    for_each(rels.begin(), rels.end(), process_opc_rel(*this));
 }
 
-void orcus_xlsx::read_sheet_xml(GsfInput* input, const char* outpath)
+void orcus_xlsx::read_sheet(const char* file_name)
 {
+    gsf_infile_guard guard(m_dir_stack.back().get(), file_name);
+    GsfInput* input = guard.get();
+
     size_t size = gsf_input_size(input);
-    cout << "name: sheet1  size: " << size << endl;
+    cout << "---" << endl;
+    cout << "file name: " << file_name << "  size: " << size << endl;
     const guint8* content = gsf_input_read(input, size, NULL);
-    xml_stream_parser parser(ooxml_tokens, content, size, "sheet.xml");
+    xml_stream_parser parser(ooxml_tokens, content, size, file_name);
     ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler(ooxml_tokens));
     parser.set_handler(handler.get());
     parser.parse();
@@ -374,21 +380,6 @@ void orcus_xlsx::read_content(const char* outpath)
 
     for_each(rels.begin(), rels.end(), print_opc_rel());
     for_each(rels.begin(), rels.end(), process_opc_rel(*this));
-
-#if 0
-    // xl/worksheets/sheet1.xml
-
-    gsf_infile_guard dir_xl_guard(dir_root, "xl");
-    GsfInput* dir_xl = dir_xl_guard.get();
-
-    gsf_infile_guard dir_worksheets_guard(dir_xl, "worksheets");
-    GsfInput* dir_worksheets = dir_worksheets_guard.get();
-
-    cout << "---" << endl;
-    gsf_infile_guard xml_sheet1_guard(dir_worksheets, "sheet1.xml");
-    GsfInput* xml_sheet1 = xml_sheet1_guard.get();
-    read_sheet_xml(xml_sheet1, outpath);
-#endif
 }
 
 void orcus_xlsx::list_content (GsfInput* input, int level)
