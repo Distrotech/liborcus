@@ -208,6 +208,7 @@
 				</Folder>
 				<Folder Name="odf">
 					<F N="include/orcus/odf/odf_token_constants.hpp"/>
+					<F N="include/orcus/odf/odf_token_constants.inl"/>
 					<F N="include/orcus/odf/odf_tokens.hpp"/>
 					<F N="include/orcus/odf/odscontext.hpp"/>
 					<F N="include/orcus/odf/odshandler.hpp"/>
@@ -217,10 +218,12 @@
 					<F N="include/orcus/ooxml/content_types.hpp"/>
 					<F N="include/orcus/ooxml/global.hpp"/>
 					<F N="include/orcus/ooxml/ooxml_token_constants.hpp"/>
+					<F N="include/orcus/ooxml/ooxml_token_constants.inl"/>
 					<F N="include/orcus/ooxml/ooxml_tokens.hpp"/>
 					<F N="include/orcus/ooxml/ooxml_types.hpp"/>
 					<F N="include/orcus/ooxml/opc_context.hpp"/>
 					<F N="include/orcus/ooxml/opc_token_constants.hpp"/>
+					<F N="include/orcus/ooxml/opc_token_constants.inl"/>
 					<F N="include/orcus/ooxml/schemas.hpp"/>
 					<F N="include/orcus/ooxml/xlsx_context.hpp"/>
 					<F N="include/orcus/ooxml/xlsx_handler.hpp"/>
