@@ -29,7 +29,7 @@ EXECS=orcus-ods orcus-xlsx
 
 OBJDIR=./obj
 SRCDIR=./src
-INCDIR=./inc
+INCDIR=./include
 BINDIR=./bin
 ROOTDIR=.
 

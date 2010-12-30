@@ -200,43 +200,43 @@
 		</Folder>
 	</CustomFolders>
 	<Files AutoFolders="DirectoryView">
-		<Folder Name="inc">
+		<Folder Name="include">
 			<Folder Name="model">
-				<F N="inc/model/global.hpp"/>
-				<F N="inc/model/sheet.hpp"/>
+				<F N="include/model/global.hpp"/>
+				<F N="include/model/sheet.hpp"/>
 			</Folder>
 			<Folder Name="odf">
-				<F N="inc/odf/odf_token_constants.hpp"/>
-				<F N="inc/odf/odf_token_constants.inl"/>
-				<F N="inc/odf/odf_tokens.hpp"/>
-				<F N="inc/odf/odscontext.hpp"/>
-				<F N="inc/odf/odshandler.hpp"/>
-				<F N="inc/odf/paracontext.hpp"/>
+				<F N="include/odf/odf_token_constants.hpp"/>
+				<F N="include/odf/odf_token_constants.inl"/>
+				<F N="include/odf/odf_tokens.hpp"/>
+				<F N="include/odf/odscontext.hpp"/>
+				<F N="include/odf/odshandler.hpp"/>
+				<F N="include/odf/paracontext.hpp"/>
 			</Folder>
 			<Folder Name="ooxml">
-				<F N="inc/ooxml/content_types.hpp"/>
-				<F N="inc/ooxml/global.hpp"/>
-				<F N="inc/ooxml/ooxml_token_constants.hpp"/>
-				<F N="inc/ooxml/ooxml_token_constants.inl"/>
-				<F N="inc/ooxml/ooxml_tokens.hpp"/>
-				<F N="inc/ooxml/ooxml_types.hpp"/>
-				<F N="inc/ooxml/opc_context.hpp"/>
-				<F N="inc/ooxml/opc_token_constants.hpp"/>
-				<F N="inc/ooxml/opc_token_constants.inl"/>
-				<F N="inc/ooxml/schemas.hpp"/>
-				<F N="inc/ooxml/xlsx_context.hpp"/>
-				<F N="inc/ooxml/xlsx_handler.hpp"/>
-				<F N="inc/ooxml/xlsx_types.hpp"/>
+				<F N="include/ooxml/content_types.hpp"/>
+				<F N="include/ooxml/global.hpp"/>
+				<F N="include/ooxml/ooxml_token_constants.hpp"/>
+				<F N="include/ooxml/ooxml_token_constants.inl"/>
+				<F N="include/ooxml/ooxml_tokens.hpp"/>
+				<F N="include/ooxml/ooxml_types.hpp"/>
+				<F N="include/ooxml/opc_context.hpp"/>
+				<F N="include/ooxml/opc_token_constants.hpp"/>
+				<F N="include/ooxml/opc_token_constants.inl"/>
+				<F N="include/ooxml/schemas.hpp"/>
+				<F N="include/ooxml/xlsx_context.hpp"/>
+				<F N="include/ooxml/xlsx_handler.hpp"/>
+				<F N="include/ooxml/xlsx_types.hpp"/>
 			</Folder>
-			<F N="inc/global.hpp"/>
-			<F N="inc/pstring.hpp"/>
-			<F N="inc/sax.hpp"/>
-			<F N="inc/tokens.hpp"/>
-			<F N="inc/types.hpp"/>
-			<F N="inc/xml_context.hpp"/>
-			<F N="inc/xml_handler.hpp"/>
-			<F N="inc/xml_parser.hpp"/>
-			<F N="inc/xml_simple_handler.hpp"/>
+			<F N="include/global.hpp"/>
+			<F N="include/pstring.hpp"/>
+			<F N="include/sax.hpp"/>
+			<F N="include/tokens.hpp"/>
+			<F N="include/types.hpp"/>
+			<F N="include/xml_context.hpp"/>
+			<F N="include/xml_handler.hpp"/>
+			<F N="include/xml_parser.hpp"/>
+			<F N="include/xml_simple_handler.hpp"/>
 		</Folder>
 		<Folder Name="src">
 			<Folder Name="model">
