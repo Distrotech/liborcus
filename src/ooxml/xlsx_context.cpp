@@ -175,8 +175,10 @@ void xlsx_workbook_context::start_element(xmlns_token_t ns, xml_token_t name, co
             xml_element_expected(parent, XMLNS_xlsx, XML_sheets);
             workbook_sheet_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
-            m_sheets.insert(
-                sheet_info_type::value_type(func.get_rid(), func.get_sheet()));
+            m_sheets.push_back(new xlsx_rel_sheet_info(func.get_sheet()));
+            const xlsx_rel_sheet_info& info = m_sheets.back();
+            m_sheet_info.insert(
+                opc_rel_extras_t::value_type(func.get_rid(), &info));
         }
         break;
         default:
@@ -191,9 +193,9 @@ bool xlsx_workbook_context::end_element(xmlns_token_t ns, xml_token_t name)
 
 void xlsx_workbook_context::characters(const pstring& str) {}
 
-void xlsx_workbook_context::pop_sheet_info(sheet_info_type& sheets)
+void xlsx_workbook_context::pop_sheet_info(opc_rel_extras_t& sheets)
 {
-    m_sheets.swap(sheets);
+    m_sheet_info.swap(sheets);
 }
 
 namespace {

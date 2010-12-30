@@ -60,10 +60,11 @@ public:
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
 
-    void pop_sheet_info(sheet_info_type& sheets);
+    void pop_sheet_info(opc_rel_extras_t& sheets);
 
 private:
-    sheet_info_type m_sheets;
+    opc_rel_extras_t m_sheet_info;
+    ::boost::ptr_vector<xlsx_rel_sheet_info> m_sheets;
 };
 
 /**

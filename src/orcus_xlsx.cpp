@@ -72,11 +72,12 @@ private:
     const char* m_prefix;
 };
 
-struct print_sheet_info : unary_function<void, pair<pstring, xlsx_rel_sheet_info> >
+struct print_sheet_info : unary_function<void, pair<pstring, const opc_rel_t::extra*> >
 {
-    void operator() (const pair<pstring, xlsx_rel_sheet_info>& v) const
+    void operator() (const pair<pstring, const opc_rel_t::extra*>& v) const
     {
-        cout << "sheet name: " << v.second.name << "  sheet id: " << v.second.id << "  relationship id: " << v.first << endl;
+        const xlsx_rel_sheet_info* info = static_cast<const xlsx_rel_sheet_info*>(v.second);
+        cout << "sheet name: " << info->name << "  sheet id: " << info->id << "  relationship id: " << v.first << endl;
     }
 };
 
@@ -133,7 +134,7 @@ public:
      * @param path the path to the xml part.
      * @param type schema type.
      */
-    void read_part(const pstring& path, const schema_t type, const opc_rel_t::extras* data);
+    void read_part(const pstring& path, const schema_t type, const opc_rel_t::extra* data);
 
 private:
     /**
@@ -180,35 +181,25 @@ orcus_xlsx::orcus_xlsx() :
 
 orcus_xlsx::~orcus_xlsx() {}
 
-struct add_extras_to_opc_rel : public unary_function<void, opc_rel_t>
-{
-    add_extras_to_opc_rel(const xlsx_workbook_context::sheet_info_type& sheets) : 
-        m_sheets(sheets) {}
-
-    void operator() (opc_rel_t& v)
-    {
-        xlsx_workbook_context::sheet_info_type::const_iterator 
-            itr = m_sheets.find(v.rid);
-        if (itr != m_sheets.end())
-        {
-            const xlsx_rel_sheet_info& data = itr->second;
-            v.data = &data;
-        }
-    }
-private:
-    const xlsx_workbook_context::sheet_info_type& m_sheets;
-};
-
 struct process_opc_rel : public unary_function<void, opc_rel_t>
 {
-    process_opc_rel(orcus_xlsx& parent) : m_parent(parent) {}
+    process_opc_rel(orcus_xlsx& parent, const opc_rel_extras_t* extras) : 
+        m_parent(parent), m_extras(extras) {}
 
     void operator() (const opc_rel_t& v)
     {
-        m_parent.read_part(v.target, v.type, v.data);
+        const opc_rel_t::extra* data = NULL;
+        if (m_extras)
+        {
+            opc_rel_extras_t::const_iterator itr = m_extras->find(v.rid);
+            if (itr != m_extras->end())
+                data = itr->second;
+        }
+        m_parent.read_part(v.target, v.type, data);
     }
 private:
     orcus_xlsx& m_parent;
+    const opc_rel_extras_t* m_extras;
 };
 
 void orcus_xlsx::read_file(const char* fpath, const char* outpath)
@@ -237,7 +228,7 @@ void orcus_xlsx::read_file(const char* fpath, const char* outpath)
     read_content (outpath);
 }
 
-void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_t::extras* data)
+void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_t::extra* data)
 {
     assert(!m_dir_stack.empty());
     
@@ -350,9 +341,9 @@ void orcus_xlsx::read_workbook(const char* file_name)
     parser.parse();
 
     // Get sheet info from the context instance.
-    xlsx_workbook_context::sheet_info_type sheets;
-    context.pop_sheet_info(sheets);
-    for_each(sheets.begin(), sheets.end(), print_sheet_info());
+    opc_rel_extras_t sheet_data;
+    context.pop_sheet_info(sheet_data);
+    for_each(sheet_data.begin(), sheet_data.end(), print_sheet_info());
 
     // Read the relationship file associated with this file, located at
     // _rels/<file name>.rels.
@@ -365,8 +356,7 @@ void orcus_xlsx::read_workbook(const char* file_name)
     m_dir_stack.pop_back();
 
     for_each(rels.begin(), rels.end(), print_opc_rel());
-    for_each(rels.begin(), rels.end(), add_extras_to_opc_rel(sheets));
-    for_each(rels.begin(), rels.end(), process_opc_rel(*this));
+    for_each(rels.begin(), rels.end(), process_opc_rel(*this, &sheet_data));
 }
 
 void orcus_xlsx::read_sheet(const char* file_name, const xlsx_rel_sheet_info* data)
@@ -432,7 +422,7 @@ void orcus_xlsx::read_content(const char* outpath)
     m_dir_stack.pop_back();
 
     for_each(rels.begin(), rels.end(), print_opc_rel());
-    for_each(rels.begin(), rels.end(), process_opc_rel(*this));
+    for_each(rels.begin(), rels.end(), process_opc_rel(*this, NULL));
 }
 
 void orcus_xlsx::list_content (GsfInput* input, int level)

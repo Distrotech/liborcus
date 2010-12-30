@@ -31,6 +31,7 @@
 #include "pstring.hpp"
 
 #include <iostream>
+#include <unordered_map>
 
 namespace orcus {
 
@@ -51,18 +52,19 @@ struct opc_rel_t
     /**
      * Used only to allow custom data associated with a relationship.
      */
-    struct extras {};
+    struct extra {};
 
     pstring  rid;
     pstring  target;
     schema_t type;
 
-    const extras* data;
-
-    opc_rel_t() : type(NULL), data(NULL) {}
+    opc_rel_t() : type(NULL) {}
     opc_rel_t(const pstring& _rid, const pstring& _target, schema_t _type) :
-        rid(_rid), target(_target), type(_type), data(NULL) {}
+        rid(_rid), target(_target), type(_type) {}
 };
+
+typedef ::std::unordered_map<pstring, const opc_rel_t::extra*, pstring::hash>
+    opc_rel_extras_t;
 
 }
 
