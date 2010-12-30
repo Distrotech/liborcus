@@ -32,7 +32,7 @@
 
 namespace orcus {
 
-struct xlsx_rel_sheet_info : public opc_rel_t::extra
+struct xlsx_rel_sheet_info : public opc_rel_extra
 {
     pstring name;
     size_t  id;

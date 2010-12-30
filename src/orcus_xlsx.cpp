@@ -72,9 +72,9 @@ private:
     const char* m_prefix;
 };
 
-struct print_sheet_info : unary_function<void, pair<pstring, const opc_rel_t::extra*> >
+struct print_sheet_info : unary_function<void, pair<pstring, const opc_rel_extra*> >
 {
-    void operator() (const pair<pstring, const opc_rel_t::extra*>& v) const
+    void operator() (const pair<pstring, const opc_rel_extra*>& v) const
     {
         const xlsx_rel_sheet_info* info = static_cast<const xlsx_rel_sheet_info*>(v.second);
         cout << "sheet name: " << info->name << "  sheet id: " << info->id << "  relationship id: " << v.first << endl;
@@ -134,7 +134,7 @@ public:
      * @param path the path to the xml part.
      * @param type schema type.
      */
-    void read_part(const pstring& path, const schema_t type, const opc_rel_t::extra* data);
+    void read_part(const pstring& path, const schema_t type, const opc_rel_extra* data);
 
 private:
     /**
@@ -188,7 +188,7 @@ struct process_opc_rel : public unary_function<void, opc_rel_t>
 
     void operator() (const opc_rel_t& v)
     {
-        const opc_rel_t::extra* data = NULL;
+        const opc_rel_extra* data = NULL;
         if (m_extras)
         {
             opc_rel_extras_t::const_iterator itr = m_extras->find(v.rid);
@@ -228,7 +228,7 @@ void orcus_xlsx::read_file(const char* fpath, const char* outpath)
     read_content (outpath);
 }
 
-void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_t::extra* data)
+void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_extra* data)
 {
     assert(!m_dir_stack.empty());
     

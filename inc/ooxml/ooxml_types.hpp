@@ -49,11 +49,6 @@ typedef ::std::pair<pstring, content_type_t>    xml_part_t;
  */
 struct opc_rel_t
 {
-    /**
-     * Used only to allow custom data associated with a relationship.
-     */
-    struct extra {};
-
     pstring  rid;
     pstring  target;
     schema_t type;
@@ -63,7 +58,12 @@ struct opc_rel_t
         rid(_rid), target(_target), type(_type) {}
 };
 
-typedef ::std::unordered_map<pstring, const opc_rel_t::extra*, pstring::hash>
+/**
+ * Used only to allow custom data associated with a relationship.
+ */
+struct opc_rel_extra {};
+
+typedef ::std::unordered_map<pstring, const opc_rel_extra*, pstring::hash>
     opc_rel_extras_t;
 
 }
