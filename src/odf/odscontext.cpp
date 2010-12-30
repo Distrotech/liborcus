@@ -25,10 +25,10 @@
  *
  ************************************************************************/
 
-#include "odf/odscontext.hpp"
-#include "odf/paracontext.hpp"
-#include "odf/odf_token_constants.hpp"
-#include "global.hpp"
+#include "orcus/odf/odscontext.hpp"
+#include "orcus/odf/paracontext.hpp"
+#include "orcus/odf/odf_token_constants.hpp"
+#include "orcus/global.hpp"
 
 #include <iostream>
 #include <fstream>

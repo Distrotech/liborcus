@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "odf/odf_tokens.hpp"
+#include "orcus/odf/odf_tokens.hpp"
 
 namespace orcus {
 

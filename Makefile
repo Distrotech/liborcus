@@ -29,7 +29,7 @@ EXECS=orcus-ods orcus-xlsx
 
 OBJDIR=./obj
 SRCDIR=./src
-INCDIR=./include
+INCDIR=./include/orcus
 BINDIR=./bin
 ROOTDIR=.
 
@@ -39,7 +39,7 @@ ODF_SCHEMAPATH=$(ROOTDIR)/misc/$(ODF_SCHEMA)
 OOXML_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip
 OPC_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OpenPackagingConventions-XMLSchema.zip
 
-CPPFLAGS=-I$(INCDIR) -O2 -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
+CPPFLAGS=-I./include -O2 -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1` -lboost_thread
 
 COMMON_HEADERS= \

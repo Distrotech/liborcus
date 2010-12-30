@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#include "ooxml/global.hpp"
-#include "ooxml/ooxml_types.hpp"
+#include "orcus/ooxml/global.hpp"
+#include "orcus/ooxml/ooxml_types.hpp"
 
 #include <iostream>
 

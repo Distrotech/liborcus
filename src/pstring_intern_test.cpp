@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "pstring.hpp"
+#include "orcus/pstring.hpp"
 
 #include <string>
 #include <iostream>

@@ -25,10 +25,10 @@
  *
  ************************************************************************/
 
-#include "xml_parser.hpp"
-#include "xml_handler.hpp"
-#include "tokens.hpp"
-#include "sax.hpp"
+#include "orcus/xml_parser.hpp"
+#include "orcus/xml_handler.hpp"
+#include "orcus/tokens.hpp"
+#include "orcus/sax.hpp"
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>

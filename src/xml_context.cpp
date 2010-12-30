@@ -25,9 +25,9 @@
  *
  ************************************************************************/
 
-#include "xml_context.hpp"
-#include "global.hpp"
-#include "tokens.hpp"
+#include "orcus/xml_context.hpp"
+#include "orcus/global.hpp"
+#include "orcus/tokens.hpp"
 
 #include <iostream>
 #include <sstream>

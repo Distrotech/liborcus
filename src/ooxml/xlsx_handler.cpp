@@ -25,9 +25,9 @@
  *
  ************************************************************************/
 
-#include "ooxml/xlsx_handler.hpp"
-#include "ooxml/xlsx_context.hpp"
-#include "global.hpp"
+#include "orcus/ooxml/xlsx_handler.hpp"
+#include "orcus/ooxml/xlsx_context.hpp"
+#include "orcus/global.hpp"
 
 #include <iostream>
 

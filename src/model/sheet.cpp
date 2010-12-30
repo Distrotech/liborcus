@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#include "model/sheet.hpp"
-#include "global.hpp"
+#include "orcus/model/sheet.hpp"
+#include "orcus/global.hpp"
 
 #include <iostream>
 #include <algorithm>

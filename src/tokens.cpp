@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#include "tokens.hpp"
-#include "pstring.hpp"
+#include "orcus/tokens.hpp"
+#include "orcus/pstring.hpp"
 
 using namespace std;
 

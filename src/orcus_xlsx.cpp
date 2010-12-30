@@ -30,15 +30,15 @@
 #include <gsf/gsf-infile.h>
 #include <gsf/gsf-infile-zip.h>
 
-#include "global.hpp"
-#include "xml_parser.hpp"
-#include "xml_simple_handler.hpp"
-#include "ooxml/global.hpp"
-#include "ooxml/xlsx_handler.hpp"
-#include "ooxml/xlsx_context.hpp"
-#include "ooxml/opc_context.hpp"
-#include "ooxml/ooxml_tokens.hpp"
-#include "ooxml/schemas.hpp"
+#include "orcus/global.hpp"
+#include "orcus/xml_parser.hpp"
+#include "orcus/xml_simple_handler.hpp"
+#include "orcus/ooxml/global.hpp"
+#include "orcus/ooxml/xlsx_handler.hpp"
+#include "orcus/ooxml/xlsx_context.hpp"
+#include "orcus/ooxml/opc_context.hpp"
+#include "orcus/ooxml/ooxml_tokens.hpp"
+#include "orcus/ooxml/schemas.hpp"
 
 #include <cstdlib>
 #include <iostream>

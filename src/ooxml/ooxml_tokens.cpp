@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "ooxml/ooxml_tokens.hpp"
+#include "orcus/ooxml/ooxml_tokens.hpp"
 
 namespace orcus {
 

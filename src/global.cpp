@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#include "global.hpp"
-#include "tokens.hpp"
+#include "orcus/global.hpp"
+#include "orcus/tokens.hpp"
 
 #include <iostream>
 #include <algorithm>
