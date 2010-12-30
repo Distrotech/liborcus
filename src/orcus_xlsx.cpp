@@ -72,11 +72,11 @@ private:
     const char* m_prefix;
 };
 
-struct print_sheet_info : unary_function<void, xlsx_workbook_context::sheet>
+struct print_sheet_info : unary_function<void, pair<pstring, xlsx_rel_sheet_info> >
 {
-    void operator() (const xlsx_workbook_context::sheet& v) const
+    void operator() (const pair<pstring, xlsx_rel_sheet_info>& v) const
     {
-        cout << "sheet name: " << v.name << "  sheet id: " << v.id << "  relationship id: " << v.rid << endl;
+        cout << "sheet name: " << v.second.name << "  sheet id: " << v.second.id << "  relationship id: " << v.first << endl;
     }
 };
 
@@ -133,7 +133,7 @@ public:
      * @param path the path to the xml part.
      * @param type schema type.
      */
-    void read_part(const pstring& path, const schema_t type);
+    void read_part(const pstring& path, const schema_t type, const opc_rel_t::extras* data);
 
 private:
     /**
@@ -150,7 +150,7 @@ private:
     /**
      * Parse a sheet xml part that contains data stored in a single sheet.
      */
-    void read_sheet(const char* file_name);
+    void read_sheet(const char* file_name, const xlsx_rel_sheet_info* data);
 
     /**
      * Parse sharedStrings.xml part that contains a list of strings referenced
@@ -180,13 +180,32 @@ orcus_xlsx::orcus_xlsx() :
 
 orcus_xlsx::~orcus_xlsx() {}
 
+struct add_extras_to_opc_rel : public unary_function<void, opc_rel_t>
+{
+    add_extras_to_opc_rel(const xlsx_workbook_context::sheet_info_type& sheets) : 
+        m_sheets(sheets) {}
+
+    void operator() (opc_rel_t& v)
+    {
+        xlsx_workbook_context::sheet_info_type::const_iterator 
+            itr = m_sheets.find(v.rid);
+        if (itr != m_sheets.end())
+        {
+            const xlsx_rel_sheet_info& data = itr->second;
+            v.data = &data;
+        }
+    }
+private:
+    const xlsx_workbook_context::sheet_info_type& m_sheets;
+};
+
 struct process_opc_rel : public unary_function<void, opc_rel_t>
 {
     process_opc_rel(orcus_xlsx& parent) : m_parent(parent) {}
 
     void operator() (const opc_rel_t& v)
     {
-        m_parent.read_part(v.target, v.type);
+        m_parent.read_part(v.target, v.type, v.data);
     }
 private:
     orcus_xlsx& m_parent;
@@ -218,7 +237,7 @@ void orcus_xlsx::read_file(const char* fpath, const char* outpath)
     read_content (outpath);
 }
 
-void orcus_xlsx::read_part(const pstring& path, schema_t type)
+void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_t::extras* data)
 {
     assert(!m_dir_stack.empty());
     
@@ -254,7 +273,7 @@ void orcus_xlsx::read_part(const pstring& path, schema_t type)
         if (type == SCH_od_rels_office_doc)
             read_workbook(file_name.c_str());
         else if (type == SCH_od_rels_worksheet)
-            read_sheet(file_name.c_str());
+            read_sheet(file_name.c_str(), static_cast<const xlsx_rel_sheet_info*>(data));
         else if (type == SCH_od_rels_shared_strings)
             read_shared_strings(file_name.c_str());
         else
@@ -331,7 +350,7 @@ void orcus_xlsx::read_workbook(const char* file_name)
     parser.parse();
 
     // Get sheet info from the context instance.
-    vector<xlsx_workbook_context::sheet> sheets;
+    xlsx_workbook_context::sheet_info_type sheets;
     context.pop_sheet_info(sheets);
     for_each(sheets.begin(), sheets.end(), print_sheet_info());
 
@@ -344,17 +363,24 @@ void orcus_xlsx::read_workbook(const char* file_name)
     rels_file_name += ".rels";
     read_relations(rels_file_name.c_str(), rels);
     m_dir_stack.pop_back();
+
     for_each(rels.begin(), rels.end(), print_opc_rel());
+    for_each(rels.begin(), rels.end(), add_extras_to_opc_rel(sheets));
     for_each(rels.begin(), rels.end(), process_opc_rel(*this));
 }
 
-void orcus_xlsx::read_sheet(const char* file_name)
+void orcus_xlsx::read_sheet(const char* file_name, const xlsx_rel_sheet_info* data)
 {
     gsf_infile_guard guard(m_dir_stack.back().get(), file_name);
     GsfInput* input = guard.get();
 
     size_t size = gsf_input_size(input);
     cout << "---" << endl;
+    if (data)
+    {
+        cout << "relationship sheet data: " << endl;
+        cout << "  sheet name: " << data->name << "  sheet ID: " << data->id << endl;
+    }
     cout << "file name: " << file_name << "  size: " << size << endl;
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(ooxml_tokens, content, size, file_name);

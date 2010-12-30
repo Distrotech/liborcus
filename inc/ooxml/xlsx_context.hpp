@@ -29,7 +29,9 @@
 #define __ORCUS_XLSX_CONTEXT_HPP__
 
 #include "xml_context.hpp"
+#include "xlsx_types.hpp"
 
+#include <unordered_map>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
@@ -44,14 +46,8 @@ namespace model {
 class xlsx_workbook_context : public xml_context_base
 {
 public:
-    struct sheet
-    {
-        pstring name;
-        size_t  id;
-        pstring rid;
-
-        sheet();
-    };
+    typedef ::std::unordered_map<
+        pstring, xlsx_rel_sheet_info, pstring::hash> sheet_info_type;
 
     xlsx_workbook_context(const tokens& tokens);
     virtual ~xlsx_workbook_context();
@@ -64,10 +60,10 @@ public:
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
 
-    void pop_sheet_info(::std::vector<sheet>& sheets);
+    void pop_sheet_info(sheet_info_type& sheets);
 
 private:
-    ::std::vector<sheet> m_sheets;
+    sheet_info_type m_sheets;
 };
 
 /**

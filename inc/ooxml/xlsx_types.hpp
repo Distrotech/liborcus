@@ -25,43 +25,19 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_OOXML_TYPES_HPP__
-#define __ORCUS_OOXML_TYPES_HPP__
+#ifndef __ORCUS_XLSX_TYPES_HPP__
+#define __ORCUS_XLSX_TYPES_HPP__
 
-#include "pstring.hpp"
-
-#include <iostream>
+#include "ooxml_types.hpp"
 
 namespace orcus {
 
-typedef const char* content_type_t;
-typedef const char* schema_t;
-
-/**
- * Part name (first) and content type (second).
- */
-typedef ::std::pair<pstring, content_type_t>    xml_part_t;
-
-/**
- * Single OPC relationship that corresponds with a Relationship element in 
- * .rels parts.
- */
-struct opc_rel_t
+struct xlsx_rel_sheet_info : public opc_rel_t::extras
 {
-    /**
-     * Used only to allow custom data associated with a relationship.
-     */
-    struct extras {};
+    pstring name;
+    size_t  id;
 
-    pstring  rid;
-    pstring  target;
-    schema_t type;
-
-    const extras* data;
-
-    opc_rel_t() : type(NULL), data(NULL) {}
-    opc_rel_t(const pstring& _rid, const pstring& _target, schema_t _type) :
-        rid(_rid), target(_target), type(_type), data(NULL) {}
+    xlsx_rel_sheet_info() : id(0) {}
 };
 
 }

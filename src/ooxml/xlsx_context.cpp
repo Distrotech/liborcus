@@ -116,19 +116,19 @@ public:
         }
         else if (attr.ns == XMLNS_r && attr.name == XML_id)
         {
-            m_sheet.rid = attr.value.intern();
+            m_rid = attr.value.intern();
         }
     }
 
-    const xlsx_workbook_context::sheet get_sheet() const { return m_sheet; }
+    const xlsx_rel_sheet_info get_sheet() const { return m_sheet; }
+    const pstring& get_rid() const { return m_rid; }
 
 private:
-    xlsx_workbook_context::sheet m_sheet;
+    pstring m_rid;
+    xlsx_rel_sheet_info m_sheet;
 };
 
 }
-
-xlsx_workbook_context::sheet::sheet() : id(0) {}
 
 xlsx_workbook_context::xlsx_workbook_context(const tokens& tokens) :
     xml_context_base(tokens) {}
@@ -173,9 +173,10 @@ void xlsx_workbook_context::start_element(xmlns_token_t ns, xml_token_t name, co
         case XML_sheet:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_sheets);
-            const sheet& sheet = for_each(
-                attrs.begin(), attrs.end(), workbook_sheet_attr_parser()).get_sheet();
-            m_sheets.push_back(sheet);
+            workbook_sheet_attr_parser func;
+            func = for_each(attrs.begin(), attrs.end(), func);
+            m_sheets.insert(
+                sheet_info_type::value_type(func.get_rid(), func.get_sheet()));
         }
         break;
         default:
@@ -190,7 +191,7 @@ bool xlsx_workbook_context::end_element(xmlns_token_t ns, xml_token_t name)
 
 void xlsx_workbook_context::characters(const pstring& str) {}
 
-void xlsx_workbook_context::pop_sheet_info(vector<sheet>& sheets)
+void xlsx_workbook_context::pop_sheet_info(sheet_info_type& sheets)
 {
     m_sheets.swap(sheets);
 }

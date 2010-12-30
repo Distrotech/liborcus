@@ -226,6 +226,7 @@
 				<F N="inc/ooxml/schemas.hpp"/>
 				<F N="inc/ooxml/xlsx_context.hpp"/>
 				<F N="inc/ooxml/xlsx_handler.hpp"/>
+				<F N="inc/ooxml/xlsx_types.hpp"/>
 			</Folder>
 			<F N="inc/global.hpp"/>
 			<F N="inc/pstring.hpp"/>
