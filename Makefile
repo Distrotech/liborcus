@@ -88,6 +88,8 @@ XLSX_HEADERS= \
 	$(INCDIR)/ooxml/content_types.hpp \
 	$(INCDIR)/ooxml/global.hpp \
 	$(INCDIR)/ooxml/schemas.hpp \
+	$(INCDIR)/ooxml/xlsx_context.hpp \
+	$(INCDIR)/ooxml/xlsx_handler.hpp \
 	$(INCDIR)/ooxml/ooxml_types.hpp
 	
 XLSX_OBJFILES = \

@@ -153,6 +153,12 @@ private:
     void read_sheet(const char* file_name);
 
     /**
+     * Parse sharedStrings.xml part that contains a list of strings referenced
+     * in the document.
+     */
+    void read_shared_strings(const char* file_name);
+
+    /**
      * The top-level function that determines the order in which the 
      * individual parts get parsed. 
      */
@@ -249,6 +255,8 @@ void orcus_xlsx::read_part(const pstring& path, schema_t type)
             read_workbook(file_name.c_str());
         else if (type == SCH_od_rels_worksheet)
             read_sheet(file_name.c_str());
+        else if (type == SCH_od_rels_shared_strings)
+            read_shared_strings(file_name.c_str());
         else
         {
             cout << "---" << endl;
@@ -351,6 +359,25 @@ void orcus_xlsx::read_sheet(const char* file_name)
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(ooxml_tokens, content, size, file_name);
     ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler(ooxml_tokens));
+    parser.set_handler(handler.get());
+    parser.parse();
+}
+
+void orcus_xlsx::read_shared_strings(const char* file_name)
+{
+    gsf_infile_guard guard(m_dir_stack.back().get(), file_name);
+    GsfInput* input = guard.get();
+
+    size_t size = gsf_input_size(input);
+    cout << "---" << endl;
+    cout << "file name: " << file_name << "  size: " << size << endl;
+    const guint8* content = gsf_input_read(input, size, NULL);
+
+    xml_stream_parser parser(ooxml_tokens, content, size, file_name);
+    ::boost::scoped_ptr<xml_simple_stream_handler> handler(
+        new xml_simple_stream_handler(new xlsx_shared_strings_context(ooxml_tokens)));
+    xlsx_shared_strings_context& context = 
+        static_cast<xlsx_shared_strings_context&>(handler->get_context());
     parser.set_handler(handler.get());
     parser.parse();
 }
