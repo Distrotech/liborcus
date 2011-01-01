@@ -364,7 +364,9 @@ void opc_relations_context::start_element(xmlns_token_t ns, xml_token_t name, co
             rel_attr_parser func(&m_schema_cache);
             xml_element_expected(parent, XMLNS_rel, XML_Relationships);
             func = for_each(attrs.begin(), attrs.end(), func);
-            m_rels.push_back(func.get_rel());
+            const opc_rel_t& rel = func.get_rel();
+            if (rel.type)
+                m_rels.push_back(rel);
         }
         break;
         default:
