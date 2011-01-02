@@ -389,7 +389,7 @@ bool xlsx_shared_strings_context::end_element(xmlns_token_t ns, xml_token_t name
     switch (name)
     {
         case XML_t:
-            cout << m_current_str << endl;
+//          cout << m_current_str << endl;
         break;
     }
     return pop_stack(ns, name);
