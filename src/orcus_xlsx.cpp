@@ -46,12 +46,62 @@
 #include <cstring>
 #include <sstream>
 
+#define USE_FILE_BUFFER 0
+#if USE_FILE_BUFFER
+#include <fcntl.h>
+#include <sys/mman.h>
+#endif
+
 #include <boost/scoped_ptr.hpp>
 
 using namespace std;
 using namespace orcus;
 
 namespace {
+
+#if USE_FILE_BUFFER
+struct temp_buf
+{
+    guint8* buf;
+    size_t  size;
+    char    name[18];
+};
+
+bool create_buffer(temp_buf& obj, size_t size)
+{
+    strcpy(obj.name, "/tmp/orcus-XXXXXX");
+    int fd = mkostemp(obj.name, O_RDWR | O_CREAT | O_TRUNC);
+
+    if (fd == -1)
+        return false;
+
+    do
+    {
+        if (lseek(fd, size - 1, SEEK_SET) == -1)
+            break;
+
+        if (write(fd, "", 1) != 1)
+            break;
+
+        obj.buf = (guint8*)mmap(0, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+        if (obj.buf == MAP_FAILED)
+            break;
+
+        obj.size = size;
+        return true;
+    }
+    while (false);
+
+    close(fd);
+    return false;
+}
+
+void destroy_buffer(temp_buf& obj)
+{
+    munmap(obj.buf, obj.size);
+    unlink(obj.name);
+}
+#endif
 
 class print_xml_content_types : unary_function<void, xml_part_t>
 {
