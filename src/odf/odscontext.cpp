@@ -56,7 +56,7 @@ public:
 
     model::sheet* create_table() const
     {
-        return new model::sheet(m_name);
+        return new model::sheet;
     }
 private:
     pstring m_name;
@@ -115,7 +115,7 @@ public:
         size_t row_size = table.row_size();
         size_t col_size = table.col_size();
 
-        m_file << "<table border=\"1\">" << "<caption>" << table.get_name().str() << "</caption>";
+        m_file << "<table border=\"1\">" << "<caption>" << "sheet_name" << "</caption>";
         for (size_t row = 0; row < row_size; ++row)
         {
             m_file << "<tr>";
@@ -273,7 +273,7 @@ void ods_content_xml_context::start_table(const xml_attrs_t& attrs, const xml_to
 
     table_attr_parser parser = for_each(attrs.begin(), attrs.end(), table_attr_parser());
     m_tables.push_back(parser.create_table());
-    cout << "start table: " << m_tables.back().get_name().str() << endl;
+    cout << "start table " << endl;
 
     m_row = m_col = 0;
 }

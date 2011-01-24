@@ -45,22 +45,17 @@ public:
     typedef ::std::unordered_map<col_t, size_t>     row_type;
     typedef ::std::unordered_map<row_t, row_type*>  sheet_type;
 
-    sheet(const pstring& name);
+    sheet();
     virtual ~sheet();
 
     virtual void set_string(row_t row, col_t col, size_t sindex);
 
-    const pstring& get_name() const;
     void set_cell(row_t row, col_t col, const pstring& val);
     pstring get_cell(row_t row, col_t col) const;
     size_t row_size() const;
     size_t col_size() const;
 
 private:
-    sheet(); // disabled
-
-private:
-    pstring     m_name;   /// sheet name
     sheet_type  m_sheet;  /// group of rows.
 };
 

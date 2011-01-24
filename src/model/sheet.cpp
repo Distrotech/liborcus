@@ -65,8 +65,7 @@ private:
 
 }
 
-sheet::sheet(const pstring& name) :
-    m_name(name)
+sheet::sheet()
 {
 }
 
@@ -89,11 +88,6 @@ void sheet::set_string(row_t row, col_t col, size_t sindex)
 
     row_type* p = itr->second;
     p->insert(row_type::value_type(col, sindex));
-}
-
-const pstring& sheet::get_name() const
-{
-    return m_name;
 }
 
 void sheet::set_cell(row_t row, col_t col, const pstring& val)
