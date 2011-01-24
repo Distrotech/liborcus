@@ -31,6 +31,7 @@
 #include "orcus/ooxml/ooxml_types.hpp"
 #include "orcus/ooxml/schemas.hpp"
 #include "orcus/model/sheet.hpp"
+#include "orcus/model/shared_strings.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -359,6 +360,7 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
     {
         case XML_sst:
         {
+            // root element for the shared string part.
             xml_element_expected(parent, XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN);
             print_attrs(get_tokens(), attrs);
 
@@ -374,9 +376,11 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
         }
         break;
         case XML_si:
+            // single shared string entry.
             xml_element_expected(parent, XMLNS_xlsx, XML_sst);
         break;
         case XML_t:
+            // actual text stored as its content.
             xml_element_expected(parent, XMLNS_xlsx, XML_si);
         break;
         default:
@@ -389,7 +393,7 @@ bool xlsx_shared_strings_context::end_element(xmlns_token_t ns, xml_token_t name
     switch (name)
     {
         case XML_t:
-//          cout << m_current_str << endl;
+            m_strings.append(m_current_str.get(), m_current_str.size());
         break;
     }
     return pop_stack(ns, name);

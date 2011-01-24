@@ -28,16 +28,52 @@
 #ifndef __ORCUS_MODEL_SHARED_STRINGS_HPP__
 #define __ORCUS_MODEL_SHARED_STRINGS_HPP__
 
+#include <cstdlib>
+#include <vector>
+
+namespace orcus {
+
+class pstring;
+
+}
+
 namespace orcus { namespace model {
+
+/**
+ * Interface class designed to be derived by the implementor.
+ * 
+ */
+class shared_strings_base
+{
+public:
+    virtual ~shared_strings_base() = 0;
+
+    /**
+     * Append new string to the string list.  Order of insertion is important 
+     * since that determines the numerical ID values of inserted strings.
+     *  
+     * @param s pointer to the first character of the string array.  The 
+     *          string array doesn't necessary have to be null-terminated.
+     * @param n length of the string.
+     */
+    virtual void append(const char* s, size_t n) = 0;
+};
 
 /**
  * This class handles global pool of string instances.
  */
-class shared_strings
+class shared_strings : public shared_strings_base
 {
 public:
     shared_strings();
-    ~shared_strings();
+    virtual ~shared_strings();
+
+    virtual void append(const char* s, size_t n);
+
+    bool has(size_t index) const;
+    const pstring& get(size_t index) const;
+private:
+    ::std::vector<pstring> m_strings;
 };
 
 }}

@@ -26,8 +26,15 @@
  ************************************************************************/
 
 #include "orcus/model/shared_strings.hpp"
+#include "orcus/pstring.hpp"
+
+#include <iostream>
+
+using namespace std;
 
 namespace orcus { namespace model {
+
+shared_strings_base::~shared_strings_base() {}
 
 shared_strings::shared_strings()
 {
@@ -35,6 +42,22 @@ shared_strings::shared_strings()
 
 shared_strings::~shared_strings()
 {
+}
+
+void shared_strings::append(const char* s, size_t n)
+{
+    pstring ps = pstring(s, n).intern();
+    m_strings.push_back(ps);
+}
+
+bool shared_strings::has(size_t index) const
+{
+    return index < m_strings.size();
+}
+
+const pstring& shared_strings::get(size_t index) const
+{
+    return m_strings[index];
 }
 
 }}
