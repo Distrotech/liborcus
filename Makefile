@@ -52,9 +52,11 @@ COMMON_HEADERS= \
 	$(INCDIR)/tokens.hpp \
 	$(INCDIR)/sax.hpp \
 	$(INCDIR)/types.hpp \
+	$(INCDIR)/model/interface.hpp \
 	$(INCDIR)/model/sheet.hpp \
 	$(INCDIR)/model/global.hpp \
-	$(INCDIR)/model/shared_strings.hpp
+	$(INCDIR)/model/shared_strings.hpp \
+	$(INCDIR)/model/document.hpp
 
 COMMON_OBJFILES= \
 	$(OBJDIR)/global.o \
@@ -65,7 +67,8 @@ COMMON_OBJFILES= \
 	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/pstring.o \
 	$(OBJDIR)/model/sheet.o \
-	$(OBJDIR)/model/shared_strings.o
+	$(OBJDIR)/model/shared_strings.o \
+	$(OBJDIR)/model/document.o \
 
 ODF_HEADERS= \
 	$(COMMON_HEADERS) \
@@ -191,10 +194,6 @@ $(OBJDIR)/ooxml/xlsx_handler.o: $(SRCDIR)/ooxml/xlsx_handler.cpp $(DEPENDS)
 $(OBJDIR)/ooxml/xlsx_context.o: $(SRCDIR)/ooxml/xlsx_context.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/xlsx_context.cpp
 
-# pstring intern test
-$(OBJDIR)/pstring_intern_test.o: $(SRCDIR)/pstring_intern_test.cpp $(INCDIR)/pstring.hpp
-	$(CXX) $(CPPFLAGS) -c $(SRCDIR)/pstring_intern_test.cpp -o $@
-
 # model directory
 
 $(OBJDIR)/model/sheet.o: $(SRCDIR)/model/sheet.cpp $(DEPENDS)
@@ -202,6 +201,16 @@ $(OBJDIR)/model/sheet.o: $(SRCDIR)/model/sheet.cpp $(DEPENDS)
 
 $(OBJDIR)/model/shared_strings.o: $(SRCDIR)/model/shared_strings.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/shared_strings.cpp
+
+$(OBJDIR)/model/document.o: $(SRCDIR)/model/document.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/document.cpp
+
+# pstring intern test
+
+$(OBJDIR)/pstring_intern_test.o: $(SRCDIR)/pstring_intern_test.cpp $(INCDIR)/pstring.hpp
+	$(CXX) $(CPPFLAGS) -c $(SRCDIR)/pstring_intern_test.cpp -o $@
+
+# executables
 
 orcus-ods: $(OBJDIR)/pre $(ODF_OBJFILES)
 	$(CXX) $(LDFLAGS) $(ODF_OBJFILES) -o $@

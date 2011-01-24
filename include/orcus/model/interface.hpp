@@ -63,8 +63,19 @@ public:
     virtual void set_string(row_t row, col_t col, size_t sindex) = 0;
 };
 
+/**
+ * This interface provides the filters a means to instantiate concrete
+ * classes that implement the above interfaces.
+ */
+class document_base
+{
+public:
+    virtual ~document_base() = 0;
+};
+
 inline shared_strings_base::~shared_strings_base() {}
 inline sheet_base::~sheet_base() {}
+inline document_base::~document_base() {}
 
 }}
 
