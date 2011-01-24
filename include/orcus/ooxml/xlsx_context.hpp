@@ -38,6 +38,7 @@ namespace orcus {
 
 namespace model {
     class sheet;
+    class shared_strings;
 }
 
 /**
@@ -94,7 +95,7 @@ private:
 class xlsx_shared_strings_context : public xml_context_base
 {
 public:
-    xlsx_shared_strings_context(const tokens& tokens);
+    xlsx_shared_strings_context(const tokens& tokens, model::shared_strings& strings);
     virtual ~xlsx_shared_strings_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -106,6 +107,7 @@ public:
     virtual void characters(const pstring& str);
 
 private:
+    model::shared_strings& m_strings;
     pstring m_current_str;
 };
 

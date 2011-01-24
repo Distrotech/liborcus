@@ -39,6 +39,8 @@
 #include "orcus/ooxml/opc_context.hpp"
 #include "orcus/ooxml/ooxml_tokens.hpp"
 #include "orcus/ooxml/schemas.hpp"
+#include "orcus/model/shared_strings.hpp"
+#include "orcus/model/sheet.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -53,6 +55,7 @@
 #endif
 
 #include <boost/scoped_ptr.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
 using namespace orcus;
@@ -224,6 +227,11 @@ private:
     vector<xml_part_t> m_ext_defaults;
 
     vector<gsf_infile_guard> m_dir_stack;
+
+    // Document model data members
+
+    model::shared_strings m_strings;
+    ::boost::ptr_vector<model::sheet> m_sheets;
 };
 
 orcus_xlsx::orcus_xlsx() :
@@ -441,7 +449,7 @@ void orcus_xlsx::read_shared_strings(const char* file_name)
 
     xml_stream_parser parser(ooxml_tokens, content, size, file_name);
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-        new xml_simple_stream_handler(new xlsx_shared_strings_context(ooxml_tokens)));
+        new xml_simple_stream_handler(new xlsx_shared_strings_context(ooxml_tokens, m_strings)));
     xlsx_shared_strings_context& context = 
         static_cast<xlsx_shared_strings_context&>(handler->get_context());
     parser.set_handler(handler.get());

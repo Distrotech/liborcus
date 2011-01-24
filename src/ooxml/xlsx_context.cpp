@@ -333,8 +333,8 @@ private:
 
 }
 
-xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens) :
-    xml_context_base(tokens) {}
+xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, model::shared_strings& strings) :
+    xml_context_base(tokens), m_strings(strings) {}
 
 xlsx_shared_strings_context::~xlsx_shared_strings_context() {}
 
