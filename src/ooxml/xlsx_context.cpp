@@ -210,8 +210,6 @@ public:
     virtual void handle_other_attrs(const xml_attr_t &attr) {}
 };
 
-const char* dummy_sheet_name = "Test Sheet";
-
 }
 
 xlsx_sheet_xml_context::xlsx_sheet_xml_context(const tokens& tokens) :
@@ -256,7 +254,7 @@ void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, c
             get_current_element().first = default_ns;
             set_default_ns(default_ns);
 
-            mp_sheet = new model::sheet(pstring(dummy_sheet_name));
+            mp_sheet = new model::sheet;
         }
         break;
         case XML_sheetData:
