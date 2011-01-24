@@ -204,6 +204,7 @@
 			<Folder Name="orcus">
 				<Folder Name="model">
 					<F N="include/orcus/model/global.hpp"/>
+					<F N="include/orcus/model/shared_strings.hpp"/>
 					<F N="include/orcus/model/sheet.hpp"/>
 				</Folder>
 				<Folder Name="odf">
@@ -242,6 +243,7 @@
 		</Folder>
 		<Folder Name="src">
 			<Folder Name="model">
+				<F N="src/model/shared_strings.cpp"/>
 				<F N="src/model/sheet.cpp"/>
 			</Folder>
 			<Folder Name="odf">

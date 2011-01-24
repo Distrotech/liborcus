@@ -51,7 +51,10 @@ COMMON_HEADERS= \
 	$(INCDIR)/pstring.hpp \
 	$(INCDIR)/tokens.hpp \
 	$(INCDIR)/sax.hpp \
-	$(INCDIR)/types.hpp
+	$(INCDIR)/types.hpp \
+	$(INCDIR)/model/sheet.hpp \
+	$(INCDIR)/model/global.hpp \
+	$(INCDIR)/model/shared_strings.hpp
 
 COMMON_OBJFILES= \
 	$(OBJDIR)/global.o \
@@ -60,7 +63,9 @@ COMMON_OBJFILES= \
 	$(OBJDIR)/xml_context.o \
 	$(OBJDIR)/xml_parser.o \
 	$(OBJDIR)/tokens.o \
-	$(OBJDIR)/pstring.o
+	$(OBJDIR)/pstring.o \
+	$(OBJDIR)/model/sheet.o \
+	$(OBJDIR)/model/shared_strings.o
 
 ODF_HEADERS= \
 	$(COMMON_HEADERS) \
@@ -68,9 +73,7 @@ ODF_HEADERS= \
 	$(INCDIR)/odf/odf_token_constants.hpp \
 	$(INCDIR)/odf/odshandler.hpp \
 	$(INCDIR)/odf/odscontext.hpp \
-	$(INCDIR)/odf/paracontext.hpp \
-	$(INCDIR)/model/sheet.hpp \
-	$(INCDIR)/model/global.hpp
+	$(INCDIR)/odf/paracontext.hpp
 
 ODF_OBJFILES= \
 	$(COMMON_OBJFILES) \
@@ -78,8 +81,7 @@ ODF_OBJFILES= \
 	$(OBJDIR)/odf/odf_tokens.o \
 	$(OBJDIR)/odf/odshandler.o \
 	$(OBJDIR)/odf/odscontext.o \
-	$(OBJDIR)/odf/paracontext.o \
-	$(OBJDIR)/model/sheet.o
+	$(OBJDIR)/odf/paracontext.o
 
 XLSX_HEADERS= \
 	$(COMMON_HEADERS) \
@@ -102,8 +104,7 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/ooxml/xlsx_context.o \
 	$(OBJDIR)/ooxml/content_types.o \
 	$(OBJDIR)/ooxml/global.o \
-	$(OBJDIR)/ooxml/schemas.o \
-	$(OBJDIR)/model/sheet.o
+	$(OBJDIR)/ooxml/schemas.o
 
 PSTRING_TEST_OBJFILES= \
 	$(OBJDIR)/pstring.o \
@@ -198,6 +199,9 @@ $(OBJDIR)/pstring_intern_test.o: $(SRCDIR)/pstring_intern_test.cpp $(INCDIR)/pst
 
 $(OBJDIR)/model/sheet.o: $(SRCDIR)/model/sheet.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/sheet.cpp
+
+$(OBJDIR)/model/shared_strings.o: $(SRCDIR)/model/shared_strings.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/shared_strings.cpp
 
 orcus-ods: $(OBJDIR)/pre $(ODF_OBJFILES)
 	$(CXX) $(LDFLAGS) $(ODF_OBJFILES) -o $@
