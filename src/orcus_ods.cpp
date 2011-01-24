@@ -44,7 +44,29 @@
 using namespace std;
 using namespace orcus;
 
-void read_content_xml(GsfInput* input, size_t size, const char* outpath)
+class orcus_ods
+{
+public:
+    orcus_ods();
+    ~orcus_ods();
+
+    void read_file(const char* fpath, const char* outpath);
+
+private:
+    void list_content (GsfInput* input, int level = 0);
+    void read_content(GsfInput* input, const char* outpath);
+    void read_content_xml(GsfInput* input, size_t size, const char* outpath);
+};
+
+orcus_ods::orcus_ods()
+{
+}
+
+orcus_ods::~orcus_ods()
+{
+}
+
+void orcus_ods::read_content_xml(GsfInput* input, size_t size, const char* outpath)
 {
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(odf_tokens, content, size, "content.xml");
@@ -54,7 +76,7 @@ void read_content_xml(GsfInput* input, size_t size, const char* outpath)
 //  handler->print_html(outpath);
 }
 
-void read_content(GsfInput* input, const char* outpath)
+void orcus_ods::read_content(GsfInput* input, const char* outpath)
 {
     if (!GSF_IS_INFILE(input))
         return;
@@ -70,8 +92,7 @@ void read_content(GsfInput* input, const char* outpath)
     }
 }
 
-#if 0
-void list_content (GsfInput* input, int level = 0)
+void orcus_ods::list_content (GsfInput* input, int level)
 {
     if (!GSF_IS_INFILE(input))
         return;
@@ -81,15 +102,6 @@ void list_content (GsfInput* input, int level = 0)
     
     for (int i = 0; i < level; ++i)
         printf("   ");
-
-    const char* name = gsf_input_name(input);
-    size_t size = gsf_input_size(input);
-    if (name)
-    {
-        cout << "name = " << name << " (size: " << size << ")" << endl;
-        if (!strncmp(name, "content.xml", 11))
-            read_content_xml(input, size);
-    }
 
     if (!is_dir)
         return;
@@ -109,9 +121,8 @@ void list_content (GsfInput* input, int level = 0)
         printf("   ");
     puts ("}");
 }
-#endif
 
-void read_file(const char* fpath, const char* outpath)
+void orcus_ods::read_file(const char* fpath, const char* outpath)
 {
     cout << "reading " << fpath << endl;
 
@@ -140,8 +151,9 @@ int main(int argc, char** argv)
     if (argc != 2)
         return EXIT_FAILURE;
 
+    orcus_ods obj;
     gsf_init();
-    read_file(argv[1], "out.html");
+    obj.read_file(argv[1], "out.html");
     gsf_shutdown();
     return EXIT_SUCCESS;
 }

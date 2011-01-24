@@ -28,7 +28,7 @@
 #ifndef __ORCUS_MODEL_ODSTABLE_HPP__
 #define __ORCUS_MODEL_ODSTABLE_HPP__
 
-#include "orcus/model/global.hpp"
+#include "orcus/model/interface.hpp"
 #include "orcus/pstring.hpp"
 
 #include <unordered_map>
@@ -39,14 +39,16 @@ namespace orcus { namespace model {
  * This class represents a single sheet instance in the internal document
  * model.
  */
-class sheet
+class sheet : public sheet_base
 {
 public:
-    typedef ::std::unordered_map<col_t, pstring>    row_type;
+    typedef ::std::unordered_map<col_t, size_t>     row_type;
     typedef ::std::unordered_map<row_t, row_type*>  sheet_type;
 
     sheet(const pstring& name);
-    ~sheet();
+    virtual ~sheet();
+
+    virtual void set_string(row_t row, col_t col, size_t sindex);
 
     const pstring& get_name() const;
     void set_cell(row_t row, col_t col, const pstring& val);

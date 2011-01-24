@@ -34,8 +34,6 @@ using namespace std;
 
 namespace orcus { namespace model {
 
-shared_strings_base::~shared_strings_base() {}
-
 shared_strings::shared_strings()
 {
 }
@@ -44,10 +42,11 @@ shared_strings::~shared_strings()
 {
 }
 
-void shared_strings::append(const char* s, size_t n)
+size_t shared_strings::append(const char* s, size_t n)
 {
     pstring ps = pstring(s, n).intern();
     m_strings.push_back(ps);
+    return m_strings.size() - 1;
 }
 
 bool shared_strings::has(size_t index) const

@@ -334,8 +334,8 @@ private:
 
 }
 
-xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, model::shared_strings& strings) :
-    xml_context_base(tokens), m_strings(strings) {}
+xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, model::shared_strings_base* strings) :
+    xml_context_base(tokens), mp_strings(strings) {}
 
 xlsx_shared_strings_context::~xlsx_shared_strings_context() {}
 
@@ -393,7 +393,7 @@ bool xlsx_shared_strings_context::end_element(xmlns_token_t ns, xml_token_t name
     switch (name)
     {
         case XML_t:
-            m_strings.append(m_current_str.get(), m_current_str.size());
+            mp_strings->append(m_current_str.get(), m_current_str.size());
         break;
     }
     return pop_stack(ns, name);

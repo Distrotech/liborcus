@@ -230,12 +230,13 @@ private:
 
     // Document model data members
 
-    model::shared_strings m_strings;
+    ::boost::scoped_ptr<model::shared_strings_base> mp_strings;
     ::boost::ptr_vector<model::sheet> m_sheets;
 };
 
 orcus_xlsx::orcus_xlsx() :
-    m_opc_rel_handler(new opc_relations_context(opc_tokens)) {}
+    m_opc_rel_handler(new opc_relations_context(opc_tokens)),
+    mp_strings(new model::shared_strings) {}
 
 orcus_xlsx::~orcus_xlsx() {}
 
@@ -449,7 +450,7 @@ void orcus_xlsx::read_shared_strings(const char* file_name)
 
     xml_stream_parser parser(ooxml_tokens, content, size, file_name);
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-        new xml_simple_stream_handler(new xlsx_shared_strings_context(ooxml_tokens, m_strings)));
+        new xml_simple_stream_handler(new xlsx_shared_strings_context(ooxml_tokens, mp_strings.get())));
     xlsx_shared_strings_context& context = 
         static_cast<xlsx_shared_strings_context&>(handler->get_context());
     parser.set_handler(handler.get());

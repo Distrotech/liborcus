@@ -75,12 +75,7 @@ sheet::~sheet()
     for_each(m_sheet.begin(), m_sheet.end(), row_deleter());
 }
 
-const pstring& sheet::get_name() const
-{
-    return m_name;
-}
-
-void sheet::set_cell(row_t row, col_t col, const pstring& val)
+void sheet::set_string(row_t row, col_t col, size_t sindex)
 {
     sheet_type::iterator itr = m_sheet.find(row);
     if (itr == m_sheet.end())
@@ -93,11 +88,36 @@ void sheet::set_cell(row_t row, col_t col, const pstring& val)
     }
 
     row_type* p = itr->second;
+    p->insert(row_type::value_type(col, sindex));
+}
+
+const pstring& sheet::get_name() const
+{
+    return m_name;
+}
+
+void sheet::set_cell(row_t row, col_t col, const pstring& val)
+{
+#if 0 // temporarily disabled
+    sheet_type::iterator itr = m_sheet.find(row);
+    if (itr == m_sheet.end())
+    {
+        // This row doesn't exist yet.  Create it.
+        pair<sheet_type::iterator, bool> r = m_sheet.insert(sheet_type::value_type(row, new row_type));
+        if (!r.second)
+            throw general_error("failed to insert a new row instance.");
+        itr = r.first;
+    }
+
+    row_type* p = itr->second;
     p->insert(row_type::value_type(col, val));
+#endif
 }
 
 pstring sheet::get_cell(row_t row, col_t col) const
 {
+    return pstring();
+#if 0 // temporarily disabled
     sheet_type::const_iterator itr = m_sheet.find(row);
     if (itr == m_sheet.end())
         return pstring();
@@ -108,6 +128,7 @@ pstring sheet::get_cell(row_t row, col_t col) const
         return pstring();
 
     return itr_cell->second;
+#endif
 }
 
 size_t sheet::row_size() const
