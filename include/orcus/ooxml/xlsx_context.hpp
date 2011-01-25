@@ -29,6 +29,7 @@
 #define __ORCUS_XLSX_CONTEXT_HPP__
 
 #include "orcus/xml_context.hpp"
+#include "orcus/model/global.hpp"
 #include "orcus/ooxml/xlsx_types.hpp"
 
 #include <unordered_map>
@@ -74,6 +75,8 @@ private:
 class xlsx_sheet_xml_context : public xml_context_base
 {
 public:
+    enum cell_type { cell_type_string, cell_type_value };
+
     xlsx_sheet_xml_context(const tokens& tokens, model::sheet_base* sheet);
     virtual ~xlsx_sheet_xml_context();
 
@@ -87,6 +90,10 @@ public:
 
 private:
     model::sheet_base* mp_sheet; /// sheet model instance for the loaded document.
+    model::row_t m_current_row;
+    model::col_t m_current_col;
+    cell_type m_current_cell_type;
+    pstring m_current_str;
 };
 
 /**

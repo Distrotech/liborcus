@@ -36,6 +36,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <sstream>
 
 using namespace std;
 
@@ -102,7 +103,7 @@ public:
     virtual void handle_other_attrs(const xml_attr_t &attr) {}
 };
 
-class workbook_sheet_attr_parser : unary_function<void, xml_attr_t>
+class workbook_sheet_attr_parser : public unary_function<void, xml_attr_t>
 {
 public:
     void operator() (const xml_attr_t& attr)
@@ -210,11 +211,117 @@ public:
     virtual void handle_other_attrs(const xml_attr_t &attr) {}
 };
 
+class row_attr_parser : public unary_function<void, xml_attr_t>
+{
+public:
+    row_attr_parser() : m_row(0) {}
+    void operator() (const xml_attr_t& attr)
+    {
+        if (attr.name == XML_r)
+        {
+            // row index
+            m_row = static_cast<model::row_t>(
+                strtoul(attr.value.str().c_str(), NULL, 10));
+            if (!m_row)
+                throw xml_structure_error("row number can never be zero!");
+
+            m_row -= 1; // from 1-based to 0-based.
+        }
+    }
+
+    model::row_t get_row() const { return m_row; }
+
+private:
+    model::row_t m_row;
+};
+
+class cell_attr_parser : public unary_function<void, xml_attr_t>
+{
+    struct address
+    {
+        model::row_t row;
+        model::col_t col;
+        address(model::row_t _row, model::col_t _col) : row(_row), col(_col) {}
+    };
+public:
+    cell_attr_parser() : m_type(xlsx_sheet_xml_context::cell_type_value), m_address(0,0) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        if (attr.name == XML_r)
+        {
+            // cell address in A1 notation.
+            m_address = to_cell_address(attr.value);
+        }
+        else if (attr.name == XML_t)
+        {
+            // cell type
+            m_type = to_cell_type(attr.value);
+        }
+    }
+
+    xlsx_sheet_xml_context::cell_type get_cell_type() const { return m_type; }
+
+    model::row_t get_row() const { return m_address.row; }
+    model::col_t get_col() const { return m_address.col; }
+
+private:
+    xlsx_sheet_xml_context::cell_type to_cell_type(const pstring& s) const
+    {
+        xlsx_sheet_xml_context::cell_type t = xlsx_sheet_xml_context::cell_type_value;
+        if (!s.empty() && s[0] == 's')
+            t = xlsx_sheet_xml_context::cell_type_string;
+        return t;
+    }
+
+    address to_cell_address(const pstring& s) const
+    {
+        model::row_t row = 0;
+        model::col_t col = 0;
+        const char* p = s.get();
+        size_t n = s.size();
+        for (size_t i = 0; i < n; ++i, ++p)
+        {
+            char c = *p;
+            if ('A' <= c && c <= 'Z')
+            {
+                col *= 26;
+                col += static_cast<model::col_t>(c - 'A' + 1);
+            }
+            else if ('0' <= c && c <= '9')
+            {
+                row *= 10;
+                row += static_cast<model::row_t>(c - '0');
+            }
+            else
+            {
+                ostringstream os;
+                os << "invalid cell address: " << s;
+                throw xml_structure_error(os.str());
+            }
+        }
+
+        if (!row || !col)
+        {
+            ostringstream os;
+            os << "invalid cell address: " << s;
+            throw xml_structure_error(os.str());
+        }
+
+        return address(row-1, col-1); // switch from 1-based to 0-based.
+    }
+
+private:
+    xlsx_sheet_xml_context::cell_type m_type;
+    address   m_address;
+};
+
 }
 
 xlsx_sheet_xml_context::xlsx_sheet_xml_context(const tokens& tokens, model::sheet_base* sheet) :
     xml_context_base(tokens),
-    mp_sheet(sheet)
+    mp_sheet(sheet),
+    m_current_row(0)
 {
 }
 
@@ -254,14 +361,53 @@ void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, c
             set_default_ns(default_ns);
         }
         break;
+        case XML_cols:
+            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
+        break;
+        case XML_col:
+            xml_element_expected(parent, XMLNS_xlsx, XML_cols);
+        break;
+        case XML_dimension:
+            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
+        break;
+        case XML_pageMargins:
+            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
+        break;
+        case XML_sheetViews:
+            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
+        break;
+        case XML_sheetView:
+            xml_element_expected(parent, XMLNS_xlsx, XML_sheetViews);
+        break;
+        case XML_selection:
+            xml_element_expected(parent, XMLNS_xlsx, XML_sheetView);
+        break;
         case XML_sheetData:
             xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
         break;
+        case XML_sheetFormatPr:
+            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
+        break;
         case XML_row:
+        {
             xml_element_expected(parent, XMLNS_xlsx, XML_sheetData);
+            row_attr_parser func;
+            func = for_each(attrs.begin(), attrs.end(), func);
+            m_current_row = func.get_row();
+        }
         break;
         case XML_c:
+        {
             xml_element_expected(parent, XMLNS_xlsx, XML_row);
+            cell_attr_parser func;
+            func = for_each(attrs.begin(), attrs.end(), func);
+
+            if (m_current_row != func.get_row())
+                throw xml_structure_error("row numbers differ!");
+
+            m_current_col = func.get_col();
+            m_current_cell_type = func.get_cell_type();
+        }
         break;
         case XML_v:
             xml_element_expected(parent, XMLNS_xlsx, XML_c);
@@ -276,7 +422,15 @@ bool xlsx_sheet_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
     switch (name)
     {
-        case XML_worksheet:
+        case XML_v:
+        {
+            if (m_current_cell_type == cell_type_string)
+            {
+                // string cell
+                size_t str_id = strtoul(m_current_str.str().c_str(), NULL, 10);
+                mp_sheet->set_string(m_current_row, m_current_col, str_id);
+            }
+        }
         break;
     }
 
@@ -285,6 +439,7 @@ bool xlsx_sheet_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
 
 void xlsx_sheet_xml_context::characters(const pstring& str)
 {
+    m_current_str = str;
 }
 
 // ============================================================================
