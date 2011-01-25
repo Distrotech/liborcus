@@ -65,6 +65,9 @@ private:
 
 }
 
+sheet::cell::cell() : type(ct_value), value(0.0) {}
+sheet::cell::cell(cell_type _type, double _value) : type(_type), value(_value) {}
+
 sheet::sheet()
 {
 }
@@ -87,7 +90,23 @@ void sheet::set_string(row_t row, col_t col, size_t sindex)
     }
 
     row_type* p = itr->second;
-    p->insert(row_type::value_type(col, sindex));
+    p->insert(row_type::value_type(col, cell(ct_string, static_cast<double>(sindex))));
+}
+
+void sheet::set_value(row_t row, col_t col, double value)
+{
+    sheet_type::iterator itr = m_sheet.find(row);
+    if (itr == m_sheet.end())
+    {
+        // This row doesn't exist yet.  Create it.
+        pair<sheet_type::iterator, bool> r = m_sheet.insert(sheet_type::value_type(row, new row_type));
+        if (!r.second)
+            throw general_error("failed to insert a new row instance.");
+        itr = r.first;
+    }
+
+    row_type* p = itr->second;
+    p->insert(row_type::value_type(col, cell(ct_value, value)));
 }
 
 void sheet::set_cell(row_t row, col_t col, const pstring& val)

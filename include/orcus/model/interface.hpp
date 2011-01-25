@@ -78,6 +78,7 @@ public:
     virtual ~sheet_base() = 0;
 
     virtual void set_string(row_t row, col_t col, size_t sindex) = 0;
+    virtual void set_value(row_t row, col_t col, double value) = 0;
 };
 
 inline sheet_base::~sheet_base() {}

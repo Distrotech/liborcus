@@ -268,6 +268,7 @@ public:
 private:
     xlsx_sheet_xml_context::cell_type to_cell_type(const pstring& s) const
     {
+        // TODO: check if there are other cell types.
         xlsx_sheet_xml_context::cell_type t = xlsx_sheet_xml_context::cell_type_value;
         if (!s.empty() && s[0] == 's')
             t = xlsx_sheet_xml_context::cell_type_string;
@@ -424,11 +425,22 @@ bool xlsx_sheet_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
     {
         case XML_v:
         {
-            if (m_current_cell_type == cell_type_string)
+            switch (m_current_cell_type)
             {
-                // string cell
-                size_t str_id = strtoul(m_current_str.str().c_str(), NULL, 10);
-                mp_sheet->set_string(m_current_row, m_current_col, str_id);
+                case cell_type_string:
+                {
+                    // string cell
+                    size_t str_id = strtoul(m_current_str.str().c_str(), NULL, 10);
+                    mp_sheet->set_string(m_current_row, m_current_col, str_id);
+                }
+                break;
+                case cell_type_value:
+                {
+                    // value cell
+                    double val = strtod(m_current_str.str().c_str(), NULL);
+                    mp_sheet->set_value(m_current_row, m_current_col, val);
+                }
+                break;
             }
         }
         break;
