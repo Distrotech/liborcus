@@ -29,6 +29,10 @@
 #include "orcus/model/shared_strings.hpp"
 #include "orcus/model/sheet.hpp"
 
+#include <iostream>
+
+using namespace std;
+
 namespace orcus { namespace model {
 
 document::document() :
@@ -52,8 +56,12 @@ sheet* document::append_sheet()
     return &m_sheets.back();
 }
 
-void document::print_summary() const
+void document::dump() const
 {
+    cout << "----------------------------------------------------------------------" << endl;
+    cout << "  Document content summary" << endl;
+    cout << "----------------------------------------------------------------------" << endl;
+    mp_strings->dump();
 }
 
 }}

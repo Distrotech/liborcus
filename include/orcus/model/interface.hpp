@@ -44,7 +44,9 @@ public:
 
     /**
      * Append new string to the string list.  Order of insertion is important 
-     * since that determines the numerical ID values of inserted strings.
+     * since that determines the numerical ID values of inserted strings. 
+     * Note that this method assumes that the caller knows the string being 
+     * appended is not yet in the pool.
      *  
      * @param s pointer to the first character of the string array.  The 
      *          string array doesn't necessary have to be null-terminated.
@@ -53,6 +55,19 @@ public:
      * @return ID of the string just inserted. 
      */
     virtual size_t append(const char* s, size_t n) = 0;
+
+    /**
+     * Similar to the append method, it adds new string to the string pool; 
+     * however, this method checks if the string being added is already in the 
+     * pool before each insertion, to avoid duplicated strings. 
+     * 
+     * @param s pointer to the first character of the string array.  The 
+     *          string array doesn't necessary have to be null-terminated.
+     * @param n length of the string. 
+     *  
+     * @return ID of the string just inserted. 
+     */
+    virtual size_t add(const char* s, size_t n) = 0;
 };
 
 inline shared_strings_base::~shared_strings_base() {}

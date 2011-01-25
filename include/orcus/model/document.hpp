@@ -50,7 +50,7 @@ public:
     shared_strings* get_shared_strings();
     sheet* append_sheet();
 
-    void print_summary() const;
+    void dump() const;
 
 private:
     ::boost::ptr_vector<sheet> m_sheets;

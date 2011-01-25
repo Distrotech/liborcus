@@ -534,7 +534,7 @@ int main(int argc, char** argv)
     orcus_xlsx app(new model::factory(doc.get()));
     app.read_file(argv[1], "out.html");
     gsf_shutdown();
-    doc->print_summary();
+    doc->dump();
 //  pstring::intern::dump();
     pstring::intern::dispose();
     return EXIT_SUCCESS;

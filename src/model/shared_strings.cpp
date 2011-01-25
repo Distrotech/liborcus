@@ -29,6 +29,7 @@
 #include "orcus/pstring.hpp"
 
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -45,8 +46,31 @@ shared_strings::~shared_strings()
 size_t shared_strings::append(const char* s, size_t n)
 {
     pstring ps = pstring(s, n).intern();
+    return append_to_pool(ps);
+}
+
+size_t shared_strings::add(const char* s, size_t n)
+{
+    pstring ps = pstring(s, n).intern();
+
+    // Check if this string is already in the pool.
+    str_index_map_type::const_iterator itr = m_set.find(ps);
+    if (itr != m_set.end())
+    {
+        // It's already in the pool.
+        return itr->second;
+    }
+
+    // Not in the pool yet.  Insert it into the pool.
+    return append_to_pool(ps);
+}
+
+size_t shared_strings::append_to_pool(const pstring& ps)
+{
+    size_t index = m_strings.size() - 1;
     m_strings.push_back(ps);
-    return m_strings.size() - 1;
+    m_set.insert(str_index_map_type::value_type(ps, index));
+    return index;
 }
 
 bool shared_strings::has(size_t index) const
@@ -57,6 +81,27 @@ bool shared_strings::has(size_t index) const
 const pstring& shared_strings::get(size_t index) const
 {
     return m_strings[index];
+}
+
+namespace {
+
+struct print_string : public unary_function<void, pstring>
+{
+    size_t m_count;
+public:
+    print_string() : m_count(1) {}
+    void operator() (const pstring& ps)
+    {
+        cout << m_count++ << ": '" << ps << "'" << endl;
+    }
+};
+
+}
+
+void shared_strings::dump() const
+{
+    cout << "number of shared strings: " << m_strings.size() << endl;
+    for_each(m_strings.begin(), m_strings.end(), print_string());
 }
 
 }}

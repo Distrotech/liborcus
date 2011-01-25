@@ -29,16 +29,11 @@
 #define __ORCUS_MODEL_SHARED_STRINGS_HPP__
 
 #include "orcus/model/interface.hpp"
+#include "orcus/pstring.hpp"
 
 #include <cstdlib>
 #include <vector>
-#include <unordered_set>
-
-namespace orcus {
-
-class pstring;
-
-}
+#include <unordered_map>
 
 namespace orcus { namespace model {
 
@@ -47,17 +42,24 @@ namespace orcus { namespace model {
  */
 class shared_strings : public shared_strings_base
 {
+    typedef ::std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
+
 public:
     shared_strings();
     virtual ~shared_strings();
 
     virtual size_t append(const char* s, size_t n);
+    virtual size_t add(const char* s, size_t n);
 
     bool has(size_t index) const;
     const pstring& get(size_t index) const;
+    void dump() const;
+
+private:
+    size_t append_to_pool(const pstring& ps);
 private:
     ::std::vector<pstring> m_strings;
-
+    str_index_map_type m_set;
 };
 
 }}
