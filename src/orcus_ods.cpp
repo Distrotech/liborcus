@@ -33,6 +33,8 @@
 #include "orcus/xml_parser.hpp"
 #include "orcus/odf/odshandler.hpp"
 #include "orcus/odf/odf_tokens.hpp"
+#include "orcus/model/document.hpp"
+#include "orcus/model/factory.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -40,14 +42,16 @@
 #include <cstring>
 
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/noncopyable.hpp>
 
 using namespace std;
 using namespace orcus;
 
-class orcus_ods
+class orcus_ods : private ::boost::noncopyable
 {
 public:
-    orcus_ods();
+    orcus_ods(model::factory_base* factory);
     ~orcus_ods();
 
     void read_file(const char* fpath, const char* outpath);
@@ -56,9 +60,13 @@ private:
     void list_content (GsfInput* input, int level = 0);
     void read_content(GsfInput* input, const char* outpath);
     void read_content_xml(GsfInput* input, size_t size, const char* outpath);
+
+private:
+    ::boost::shared_ptr<model::factory_base> mp_factory;
 };
 
-orcus_ods::orcus_ods()
+orcus_ods::orcus_ods(model::factory_base* factory) :
+    mp_factory(factory)
 {
 }
 
@@ -151,9 +159,11 @@ int main(int argc, char** argv)
     if (argc != 2)
         return EXIT_FAILURE;
 
-    orcus_ods obj;
+    ::boost::scoped_ptr<model::document> doc(new model::document);
+
+    orcus_ods app(new model::factory(doc.get()));
     gsf_init();
-    obj.read_file(argv[1], "out.html");
+    app.read_file(argv[1], "out.html");
     gsf_shutdown();
     return EXIT_SUCCESS;
 }
