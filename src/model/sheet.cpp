@@ -33,6 +33,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sstream>
+#include <vector>
 
 #include <mdds/mixed_type_matrix.hpp>
 
@@ -152,11 +153,16 @@ void sheet::dump() const
     size_t col_count = col_size();
     cout << "rows: " << row_count << "  cols: " << col_count << endl;
 
+    if (m_sheet.empty())
+        // nothing to print.
+        return;
+
     const shared_strings* sstrings = m_doc.get_shared_strings();
 
     typedef ::mdds::mixed_type_matrix<string, bool> mx_type;
     mx_type mx(row_count, col_count, ::mdds::matrix_density_sparse_empty);
 
+    // Put all cell values into matrix as string elements first.
     sheet_type::const_iterator itr = m_sheet.begin(), itr_end = m_sheet.end();
     for (; itr != itr_end; ++itr)
     {
@@ -187,19 +193,63 @@ void sheet::dump() const
         }
     }
 
-    for (size_t r = 0; r < row_count; ++r)
+    // Calculate column widths first.
+    mx_type::size_pair_type sp = mx.size();
+    vector<size_t> col_widths(sp.second, 0);
+
+    for (size_t r = 0; r < sp.first; ++r)
     {
-        for (size_t c = 0; c < col_count; ++c)
+        for (size_t c = 0; c < sp.second; ++c)
         {
             if (mx.get_type(r, c) == ::mdds::element_empty)
-                cout << " |";
+                continue;
+
+            const string* p = mx.get_string(r, c);
+            if (col_widths[c] < p->size())
+                col_widths[c] = p->size();
+        }
+    }
+
+    // Create a row separator string;
+    ostringstream os;
+    os << '+';
+    for (size_t i = 0; i < col_widths.size(); ++i)
+    {
+        os << '-';
+        size_t cw = col_widths[i];
+        for (size_t i = 0; i < cw; ++i)
+            os << '-';
+        os << "-+";
+    }
+
+    string sep = os.str();
+
+    // Now print to stdout.
+    cout << sep << endl;
+    for (size_t r = 0; r < row_count; ++r)
+    {
+        cout << "|";
+        for (size_t c = 0; c < col_count; ++c)
+        {
+            size_t cw = col_widths[c]; // column width
+            if (mx.get_type(r, c) == ::mdds::element_empty)
+            {
+                for (size_t i = 0; i < cw; ++i)
+                    cout << ' ';
+                cout << "  |";
+            }
             else
             {
                 const string* s = mx.get_string(r, c);
-                cout << *s << "|";
+                cout << ' ' << *s;
+                cw -= s->size();
+                for (size_t i = 0; i < cw; ++i)
+                    cout << ' ';
+                cout << " |";
             }
         }
         cout << endl;
+        cout << sep << endl;
     }
 }
 
