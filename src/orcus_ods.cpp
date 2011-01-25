@@ -31,7 +31,7 @@
 #include <gsf/gsf-infile-zip.h>
 
 #include "orcus/xml_parser.hpp"
-#include "orcus/odf/odshandler.hpp"
+#include "orcus/odf/ods_handler.hpp"
 #include "orcus/odf/odf_tokens.hpp"
 #include "orcus/model/document.hpp"
 #include "orcus/model/factory.hpp"

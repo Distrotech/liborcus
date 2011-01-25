@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/odf/paracontext.hpp"
+#include "orcus/odf/para_context.hpp"
 
 #include <iostream>
 

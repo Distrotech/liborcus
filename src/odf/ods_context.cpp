@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#include "orcus/odf/odscontext.hpp"
-#include "orcus/odf/paracontext.hpp"
+#include "orcus/odf/ods_context.hpp"
+#include "orcus/odf/para_context.hpp"
 #include "orcus/odf/odf_token_constants.hpp"
 #include "orcus/global.hpp"
 

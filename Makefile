@@ -78,17 +78,17 @@ ODF_HEADERS= \
 	$(COMMON_HEADERS) \
 	$(INCDIR)/types.hpp \
 	$(INCDIR)/odf/odf_token_constants.hpp \
-	$(INCDIR)/odf/odshandler.hpp \
-	$(INCDIR)/odf/odscontext.hpp \
-	$(INCDIR)/odf/paracontext.hpp
+	$(INCDIR)/odf/ods_handler.hpp \
+	$(INCDIR)/odf/ods_context.hpp \
+	$(INCDIR)/odf/para_context.hpp
 
 ODF_OBJFILES= \
 	$(COMMON_OBJFILES) \
 	$(OBJDIR)/orcus_ods.o \
 	$(OBJDIR)/odf/odf_tokens.o \
-	$(OBJDIR)/odf/odshandler.o \
-	$(OBJDIR)/odf/odscontext.o \
-	$(OBJDIR)/odf/paracontext.o
+	$(OBJDIR)/odf/ods_handler.o \
+	$(OBJDIR)/odf/ods_context.o \
+	$(OBJDIR)/odf/para_context.o
 
 XLSX_HEADERS= \
 	$(COMMON_HEADERS) \
@@ -166,14 +166,14 @@ $(OBJDIR)/pstring.o: $(SRCDIR)/pstring.cpp $(DEPENDS)
 $(OBJDIR)/odf/odf_tokens.o: $(SRCDIR)/odf/odf_tokens.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/odf_tokens.cpp
 
-$(OBJDIR)/odf/odshandler.o: $(SRCDIR)/odf/odshandler.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/odshandler.cpp
+$(OBJDIR)/odf/ods_handler.o: $(SRCDIR)/odf/ods_handler.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/ods_handler.cpp
 
-$(OBJDIR)/odf/paracontext.o: $(SRCDIR)/odf/paracontext.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/paracontext.cpp
+$(OBJDIR)/odf/para_context.o: $(SRCDIR)/odf/para_context.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/para_context.cpp
 
-$(OBJDIR)/odf/odscontext.o: $(SRCDIR)/odf/odscontext.cpp $(DEPENDS)
-	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/odscontext.cpp
+$(OBJDIR)/odf/ods_context.o: $(SRCDIR)/odf/ods_context.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/odf/ods_context.cpp
 
 # OOXML parser
 
