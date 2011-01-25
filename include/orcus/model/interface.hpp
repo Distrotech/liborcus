@@ -68,6 +68,9 @@ public:
      * @return ID of the string just inserted. 
      */
     virtual size_t add(const char* s, size_t n) = 0;
+
+    virtual void append_segment(const char* s, size_t n) = 0;
+    virtual void commit_segments() = 0;
 };
 
 inline shared_strings_base::~shared_strings_base() {}

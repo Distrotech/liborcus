@@ -497,7 +497,7 @@ private:
 }
 
 xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, model::shared_strings_base* strings) :
-    xml_context_base(tokens), mp_strings(strings) {}
+    xml_context_base(tokens), mp_strings(strings), m_in_segments(false) {}
 
 xlsx_shared_strings_context::~xlsx_shared_strings_context() {}
 
@@ -539,11 +539,21 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
         break;
         case XML_si:
             // single shared string entry.
+            m_in_segments = false;
             xml_element_expected(parent, XMLNS_xlsx, XML_sst);
         break;
-        case XML_t:
-            // actual text stored as its content.
+        case XML_r:
+            m_in_segments = true;
             xml_element_expected(parent, XMLNS_xlsx, XML_si);
+        break;
+        case XML_t:
+        {
+            // actual text stored as its content.
+            xml_elem_stack_t allowed;
+            allowed.push_back(xml_token_pair_t(XMLNS_xlsx, XML_si));
+            allowed.push_back(xml_token_pair_t(XMLNS_xlsx, XML_r));
+            xml_element_expected(parent, allowed);
+        }
         break;
         default:
             warn_unhandled();
@@ -555,7 +565,27 @@ bool xlsx_shared_strings_context::end_element(xmlns_token_t ns, xml_token_t name
     switch (name)
     {
         case XML_t:
-            mp_strings->append(m_current_str.get(), m_current_str.size());
+            m_current_str_runs.push_back(m_current_str);
+        break;
+        case XML_si:
+        {
+            if (m_in_segments)
+            {
+                vector<pstring>::const_iterator itr = m_current_str_runs.begin(), itr_end = m_current_str_runs.end();
+                for (; itr != itr_end; ++itr)
+                {
+                    const pstring& ps = *itr;
+                    mp_strings->append_segment(ps.get(), ps.size());
+                }
+                mp_strings->commit_segments();
+            }
+            else
+            {
+                assert(m_current_str_runs.size() == 1);
+                mp_strings->append(m_current_str.get(), m_current_str.size());
+            }
+            m_current_str_runs.clear();
+        }
         break;
     }
     return pop_stack(ns, name);

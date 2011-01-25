@@ -50,6 +50,8 @@ public:
 
     virtual size_t append(const char* s, size_t n);
     virtual size_t add(const char* s, size_t n);
+    virtual void append_segment(const char* s, size_t n);
+    virtual void commit_segments();
 
     bool has(size_t index) const;
     const pstring& get(size_t index) const;
@@ -59,6 +61,7 @@ private:
     size_t append_to_pool(const pstring& ps);
 private:
     ::std::vector<pstring> m_strings;
+    ::std::string m_segment_buffer;
     str_index_map_type m_set;
 };
 

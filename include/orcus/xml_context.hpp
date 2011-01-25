@@ -76,6 +76,9 @@ protected:
         const xml_token_pair_t& elem, xmlns_token_t ns, xml_token_t name, 
         const ::std::string* error = NULL);
 
+    void xml_element_expected(
+        const xml_token_pair_t& elem, const xml_elem_stack_t& expected_elems);
+
 private:
     const tokens& m_tokens;
     xml_elem_stack_t m_stack;

@@ -149,4 +149,20 @@ void xml_context_base::xml_element_expected(
     throw xml_structure_error(os.str());
 }
 
+void xml_context_base::xml_element_expected(
+    const xml_token_pair_t& elem, const xml_elem_stack_t& expected_elems)
+{
+    xml_elem_stack_t::const_iterator itr = expected_elems.begin(), itr_end = expected_elems.end();
+    for (; itr != itr_end; ++itr)
+    {
+        if (elem == *itr)
+            return;
+    }
+
+    // Create a generic error message.
+    ostringstream os;
+    os << "unexpected element encountered: " << m_tokens.get_nstoken_name(elem.first) << ":" << m_tokens.get_token_name(elem.second);
+    throw xml_structure_error(os.str());
+}
+
 }
