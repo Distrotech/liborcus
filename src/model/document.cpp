@@ -40,6 +40,7 @@ void document::sheet_item::printer::operator() (const sheet_item& item) const
 {
     cout << "---" << endl;
     cout << "Sheet name: " << item.name << endl;
+    item.data.dump();
 }
 
 document::document() :

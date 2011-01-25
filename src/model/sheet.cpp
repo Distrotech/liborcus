@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2010, 2011 Kohei Yoshida
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -68,7 +68,8 @@ private:
 sheet::cell::cell() : type(ct_value), value(0.0) {}
 sheet::cell::cell(cell_type _type, double _value) : type(_type), value(_value) {}
 
-sheet::sheet()
+sheet::sheet() :
+    m_max_row(0), m_max_col(0)
 {
 }
 
@@ -79,33 +80,13 @@ sheet::~sheet()
 
 void sheet::set_string(row_t row, col_t col, size_t sindex)
 {
-    sheet_type::iterator itr = m_sheet.find(row);
-    if (itr == m_sheet.end())
-    {
-        // This row doesn't exist yet.  Create it.
-        pair<sheet_type::iterator, bool> r = m_sheet.insert(sheet_type::value_type(row, new row_type));
-        if (!r.second)
-            throw general_error("failed to insert a new row instance.");
-        itr = r.first;
-    }
-
-    row_type* p = itr->second;
+    row_type* p = get_row(row, col);
     p->insert(row_type::value_type(col, cell(ct_string, static_cast<double>(sindex))));
 }
 
 void sheet::set_value(row_t row, col_t col, double value)
 {
-    sheet_type::iterator itr = m_sheet.find(row);
-    if (itr == m_sheet.end())
-    {
-        // This row doesn't exist yet.  Create it.
-        pair<sheet_type::iterator, bool> r = m_sheet.insert(sheet_type::value_type(row, new row_type));
-        if (!r.second)
-            throw general_error("failed to insert a new row instance.");
-        itr = r.first;
-    }
-
-    row_type* p = itr->second;
+    row_type* p = get_row(row, col);
     p->insert(row_type::value_type(col, cell(ct_value, value)));
 }
 
@@ -146,12 +127,44 @@ pstring sheet::get_cell(row_t row, col_t col) const
 
 size_t sheet::row_size() const
 {
-    return m_sheet.size();
+    if (m_sheet.empty())
+        return 0;
+
+    return static_cast<size_t>(m_max_row + 1);
 }
 
 size_t sheet::col_size() const
 {
-    return for_each(m_sheet.begin(), m_sheet.end(), colsize_checker()).get_colsize();
+    if (m_sheet.empty())
+        return 0;
+
+    return static_cast<size_t>(m_max_col + 1);
+}
+
+void sheet::dump() const
+{
+    size_t row_count = row_size();
+    size_t col_count = col_size();
+    cout << "rows: " << row_count << "  cols: " << col_count << endl;
+}
+
+sheet::row_type* sheet::get_row(row_t row, col_t col)
+{
+    sheet_type::iterator itr = m_sheet.find(row);
+    if (itr == m_sheet.end())
+    {
+        // This row doesn't exist yet.  Create it.
+        pair<sheet_type::iterator, bool> r = m_sheet.insert(sheet_type::value_type(row, new row_type));
+        if (!r.second)
+            throw general_error("failed to insert a new row instance.");
+        itr = r.first;
+    }
+    if (m_max_row < row)
+        m_max_row = row;
+    if (m_max_col < col)
+        m_max_col = col;
+
+    return itr->second;
 }
 
 }}

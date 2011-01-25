@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2010, 2011 Kohei Yoshida
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -72,8 +72,15 @@ public:
     size_t row_size() const;
     size_t col_size() const;
 
+    void dump() const;
+
+private:
+    row_type* get_row(row_t row, col_t col);
+
 private:
     sheet_type  m_sheet;  /// group of rows.
+    row_t m_max_row;
+    col_t m_max_col;
 };
 
 }}
