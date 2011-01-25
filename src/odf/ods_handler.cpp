@@ -67,7 +67,6 @@ void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
 {
     bool ended = get_current_context().end_element(ns, name);
 
-    // We need to keep at least one context because of print_html() call.
     if (ended && m_context_stack.size() > 1)
     {
         // Call end_child_context of the parent context to provide a way for 
