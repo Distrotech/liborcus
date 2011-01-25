@@ -214,9 +214,9 @@
 					<F N="include/orcus/odf/odf_token_constants.hpp"/>
 					<F N="include/orcus/odf/odf_token_constants.inl"/>
 					<F N="include/orcus/odf/odf_tokens.hpp"/>
-					<F N="include/orcus/odf/odscontext.hpp"/>
-					<F N="include/orcus/odf/odshandler.hpp"/>
-					<F N="include/orcus/odf/paracontext.hpp"/>
+					<F N="include/orcus/odf/ods_context.hpp"/>
+					<F N="include/orcus/odf/ods_handler.hpp"/>
+					<F N="include/orcus/odf/para_context.hpp"/>
 				</Folder>
 				<Folder Name="ooxml">
 					<F N="include/orcus/ooxml/content_types.hpp"/>
@@ -254,9 +254,9 @@
 			<Folder Name="odf">
 				<F N="src/odf/odf_tokens.cpp"/>
 				<F N="src/odf/odf_tokens.inl"/>
-				<F N="src/odf/odscontext.cpp"/>
-				<F N="src/odf/odshandler.cpp"/>
-				<F N="src/odf/paracontext.cpp"/>
+				<F N="src/odf/ods_context.cpp"/>
+				<F N="src/odf/ods_handler.cpp"/>
+				<F N="src/odf/para_context.cpp"/>
 			</Folder>
 			<Folder Name="ooxml">
 				<F N="src/ooxml/content_types.cpp"/>
