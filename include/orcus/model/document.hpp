@@ -30,16 +30,31 @@
 
 #include "orcus/model/interface.hpp"
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 namespace orcus { namespace model {
+
+class shared_strings;
+class sheet;
 
 /**
  * Internal document representation used only for testing the filters.
  */
-class document : public document_base
+class document
 {
+    document(const document&); // disabled
 public:
     document();
-    virtual ~document();
+    ~document();
+
+    shared_strings* get_shared_strings();
+    sheet* append_sheet();
+
+    void print_summary() const;
+
+private:
+    ::boost::ptr_vector<sheet> m_sheets;
+    shared_strings* mp_strings;
 };
 
 }}

@@ -41,6 +41,8 @@
 #include "orcus/ooxml/schemas.hpp"
 #include "orcus/model/shared_strings.hpp"
 #include "orcus/model/sheet.hpp"
+#include "orcus/model/factory.hpp"
+#include "orcus/model/document.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -54,6 +56,8 @@
 #include <sys/mman.h>
 #endif
 
+#include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
@@ -172,10 +176,10 @@ private:
     GsfInput* mp_input;
 };
 
-class orcus_xlsx
+class orcus_xlsx : public ::boost::noncopyable
 {
 public:
-    orcus_xlsx();
+    orcus_xlsx(model::factory_base* factory);
     ~orcus_xlsx();
 
     void read_file(const char* fpath, const char* outpath);
@@ -225,18 +229,14 @@ private:
 
     vector<xml_part_t> m_parts;
     vector<xml_part_t> m_ext_defaults;
-
     vector<gsf_infile_guard> m_dir_stack;
 
-    // Document model data members
-
-    ::boost::scoped_ptr<model::shared_strings_base> mp_strings;
-    ::boost::ptr_vector<model::sheet> m_sheets;
+    ::boost::shared_ptr<model::factory_base> mp_factory;
 };
 
-orcus_xlsx::orcus_xlsx() :
+orcus_xlsx::orcus_xlsx(model::factory_base* factory) :
     m_opc_rel_handler(new opc_relations_context(opc_tokens)),
-    mp_strings(new model::shared_strings) {}
+    mp_factory(factory) {}
 
 orcus_xlsx::~orcus_xlsx() {}
 
@@ -450,7 +450,7 @@ void orcus_xlsx::read_shared_strings(const char* file_name)
 
     xml_stream_parser parser(ooxml_tokens, content, size, file_name);
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-        new xml_simple_stream_handler(new xlsx_shared_strings_context(ooxml_tokens, mp_strings.get())));
+        new xml_simple_stream_handler(new xlsx_shared_strings_context(ooxml_tokens, mp_factory->get_shared_strings())));
     xlsx_shared_strings_context& context = 
         static_cast<xlsx_shared_strings_context&>(handler->get_context());
     parser.set_handler(handler.get());
@@ -528,10 +528,13 @@ int main(int argc, char** argv)
     if (argc != 2)
         return EXIT_FAILURE;
 
+    ::boost::scoped_ptr<model::document> doc(new model::document);
+
     gsf_init();
-    orcus_xlsx app;
+    orcus_xlsx app(new model::factory(doc.get()));
     app.read_file(argv[1], "out.html");
     gsf_shutdown();
+    doc->print_summary();
 //  pstring::intern::dump();
     pstring::intern::dispose();
     return EXIT_SUCCESS;

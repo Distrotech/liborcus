@@ -56,6 +56,7 @@ COMMON_HEADERS= \
 	$(INCDIR)/model/sheet.hpp \
 	$(INCDIR)/model/global.hpp \
 	$(INCDIR)/model/shared_strings.hpp \
+	$(INCDIR)/model/factory.hpp \
 	$(INCDIR)/model/document.hpp
 
 COMMON_OBJFILES= \
@@ -68,6 +69,7 @@ COMMON_OBJFILES= \
 	$(OBJDIR)/pstring.o \
 	$(OBJDIR)/model/sheet.o \
 	$(OBJDIR)/model/shared_strings.o \
+	$(OBJDIR)/model/factory.o \
 	$(OBJDIR)/model/document.o \
 
 ODF_HEADERS= \
@@ -204,6 +206,9 @@ $(OBJDIR)/model/shared_strings.o: $(SRCDIR)/model/shared_strings.cpp $(DEPENDS)
 
 $(OBJDIR)/model/document.o: $(SRCDIR)/model/document.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/document.cpp
+
+$(OBJDIR)/model/factory.o: $(SRCDIR)/model/factory.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/factory.cpp
 
 # pstring intern test
 

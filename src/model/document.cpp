@@ -26,14 +26,33 @@
  ************************************************************************/
 
 #include "orcus/model/document.hpp"
+#include "orcus/model/shared_strings.hpp"
+#include "orcus/model/sheet.hpp"
 
 namespace orcus { namespace model {
 
-document::document()
+document::document() :
+    mp_strings(new shared_strings)
 {
 }
 
 document::~document()
+{
+    delete mp_strings;
+}
+
+shared_strings* document::get_shared_strings()
+{
+    return mp_strings;
+}
+
+sheet* document::append_sheet()
+{
+    m_sheets.push_back(new sheet);
+    return &m_sheets.back();
+}
+
+void document::print_summary() const
 {
 }
 

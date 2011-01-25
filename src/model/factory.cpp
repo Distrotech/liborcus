@@ -25,63 +25,30 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_MODEL_INTERFACE_HPP__
-#define __ORCUS_MODEL_INTERFACE_HPP__
-
-#include <cstdlib>
-
-#include "orcus/model/global.hpp"
+#include "orcus/model/factory.hpp"
+#include "orcus/model/shared_strings.hpp"
+#include "orcus/model/sheet.hpp"
+#include "orcus/model/document.hpp"
 
 namespace orcus { namespace model {
 
-/**
- * Interface class designed to be derived by the implementor. 
- */
-class shared_strings_base
+factory::factory(document* doc) :
+    mp_document(doc)
 {
-public:
-    virtual ~shared_strings_base() = 0;
+}
 
-    /**
-     * Append new string to the string list.  Order of insertion is important 
-     * since that determines the numerical ID values of inserted strings.
-     *  
-     * @param s pointer to the first character of the string array.  The 
-     *          string array doesn't necessary have to be null-terminated.
-     * @param n length of the string. 
-     *  
-     * @return ID of the string just inserted. 
-     */
-    virtual size_t append(const char* s, size_t n) = 0;
-};
-
-inline shared_strings_base::~shared_strings_base() {}
-
-class sheet_base
+factory::~factory()
 {
-public:
-    virtual ~sheet_base() = 0;
+}
 
-    virtual void set_string(row_t row, col_t col, size_t sindex) = 0;
-};
-
-inline sheet_base::~sheet_base() {}
-
-/**
- * This interface provides the filters a means to instantiate concrete
- * classes that implement the above interfaces.
- */
-class factory_base
+shared_strings_base* factory::get_shared_strings()
 {
-public:
-    virtual ~factory_base() = 0;
+    return mp_document->get_shared_strings();
+}
 
-    virtual shared_strings_base* get_shared_strings() = 0;
-    virtual sheet_base* append_sheet() = 0;
-};
-
-inline factory_base::~factory_base() {}
+sheet_base* factory::append_sheet()
+{
+    return mp_document->append_sheet();
+}
 
 }}
-
-#endif
