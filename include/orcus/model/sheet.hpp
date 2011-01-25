@@ -35,6 +35,8 @@
 
 namespace orcus { namespace model {
 
+class document;
+
 /**
  * This class represents a single sheet instance in the internal document
  * model.
@@ -58,10 +60,10 @@ class sheet : public sheet_base
         cell(cell_type _type, double _value);
     };
 public:
-    typedef ::std::unordered_map<col_t, cell>     row_type;
+    typedef ::std::unordered_map<col_t, cell>       row_type;
     typedef ::std::unordered_map<row_t, row_type*>  sheet_type;
 
-    sheet();
+    sheet(document& doc);
     virtual ~sheet();
 
     virtual void set_string(row_t row, col_t col, size_t sindex);
@@ -78,6 +80,7 @@ private:
     row_type* get_row(row_t row, col_t col);
 
 private:
+    document& m_doc;
     sheet_type  m_sheet;  /// group of rows.
     row_t m_max_row;
     col_t m_max_col;

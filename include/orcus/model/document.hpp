@@ -53,7 +53,7 @@ class document : private ::boost::noncopyable
     {
         pstring name;
         sheet   data;
-        sheet_item(const pstring& _name);
+        sheet_item(document& doc, const pstring& _name);
 
         struct printer : public ::std::unary_function<void, sheet_item>
         {
@@ -66,6 +66,7 @@ public:
     ~document();
 
     shared_strings* get_shared_strings();
+    const shared_strings* get_shared_strings() const;
     sheet* append_sheet(const pstring& sheet_name);
 
     /**

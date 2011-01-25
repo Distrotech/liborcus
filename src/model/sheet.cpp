@@ -27,9 +27,12 @@
 
 #include "orcus/model/sheet.hpp"
 #include "orcus/global.hpp"
+#include "orcus/model/shared_strings.hpp"
+#include "orcus/model/document.hpp"
 
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 
 #include <mdds/mixed_type_matrix.hpp>
 
@@ -70,8 +73,8 @@ private:
 sheet::cell::cell() : type(ct_value), value(0.0) {}
 sheet::cell::cell(cell_type _type, double _value) : type(_type), value(_value) {}
 
-sheet::sheet() :
-    m_max_row(0), m_max_col(0)
+sheet::sheet(document& doc) :
+    m_doc(doc), m_max_row(0), m_max_col(0)
 {
 }
 
@@ -149,13 +152,54 @@ void sheet::dump() const
     size_t col_count = col_size();
     cout << "rows: " << row_count << "  cols: " << col_count << endl;
 
+    const shared_strings* sstrings = m_doc.get_shared_strings();
+
     typedef ::mdds::mixed_type_matrix<string, bool> mx_type;
     mx_type mx(row_count, col_count, ::mdds::matrix_density_sparse_empty);
 
     sheet_type::const_iterator itr = m_sheet.begin(), itr_end = m_sheet.end();
     for (; itr != itr_end; ++itr)
     {
-        
+        row_t row = itr->first;
+        const row_type& row_con = *itr->second;
+        row_type::const_iterator itr_row = row_con.begin(), itr_row_end = row_con.end();
+        for (; itr_row != itr_row_end; ++itr_row)
+        {
+            col_t col = itr_row->first;
+            const cell& c = itr_row->second;
+            switch (c.type)
+            {
+                case ct_string:
+                {
+                    size_t sindex = static_cast<size_t>(c.value);
+                    const pstring& ps = sstrings->get(sindex);
+                    mx.set_string(row, col, new string(ps.get(), ps.size()));
+                }
+                break;
+                case ct_value:
+                {
+                    ostringstream os;
+                    os << c.value;
+                    mx.set_string(row, col, new string(os.str()));
+                }
+                break;
+            }
+        }
+    }
+
+    for (size_t r = 0; r < row_count; ++r)
+    {
+        for (size_t c = 0; c < col_count; ++c)
+        {
+            if (mx.get_type(r, c) == ::mdds::element_empty)
+                cout << " |";
+            else
+            {
+                const string* s = mx.get_string(r, c);
+                cout << *s << "|";
+            }
+        }
+        cout << endl;
     }
 }
 

@@ -34,7 +34,7 @@ using namespace std;
 
 namespace orcus { namespace model {
 
-document::sheet_item::sheet_item(const pstring& _name) : name(_name) {}
+document::sheet_item::sheet_item(document& doc, const pstring& _name) : name(_name), data(doc) {}
 
 void document::sheet_item::printer::operator() (const sheet_item& item) const
 {
@@ -58,9 +58,14 @@ shared_strings* document::get_shared_strings()
     return mp_strings;
 }
 
+const shared_strings* document::get_shared_strings() const
+{
+    return mp_strings;
+}
+
 sheet* document::append_sheet(const pstring& sheet_name)
 {
-    m_sheets.push_back(new sheet_item(sheet_name));
+    m_sheets.push_back(new sheet_item(*this, sheet_name));
     return &m_sheets.back().data;
 }
 
