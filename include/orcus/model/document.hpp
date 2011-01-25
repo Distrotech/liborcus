@@ -29,7 +29,9 @@
 #define __ORCUS_MODEL_DOCUMENT_HPP__
 
 #include "orcus/model/interface.hpp"
+#include "orcus/pstring.hpp"
 
+#include <vector>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus { namespace model {
@@ -48,11 +50,12 @@ public:
     ~document();
 
     shared_strings* get_shared_strings();
-    sheet* append_sheet();
+    sheet* append_sheet(const pstring& sheet_name);
 
     void dump() const;
 
 private:
+    ::std::vector<pstring> m_sheet_names;
     ::boost::ptr_vector<sheet> m_sheets;
     shared_strings* mp_strings;
 };

@@ -46,9 +46,9 @@ shared_strings_base* factory::get_shared_strings()
     return mp_document->get_shared_strings();
 }
 
-sheet_base* factory::append_sheet()
+sheet_base* factory::append_sheet(const char* sheet_name, size_t sheet_name_length)
 {
-    return mp_document->append_sheet();
+    return mp_document->append_sheet(pstring(sheet_name, sheet_name_length));
 }
 
 }}

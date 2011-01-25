@@ -50,8 +50,9 @@ shared_strings* document::get_shared_strings()
     return mp_strings;
 }
 
-sheet* document::append_sheet()
+sheet* document::append_sheet(const pstring& sheet_name)
 {
+    m_sheet_names.push_back(sheet_name);
     m_sheets.push_back(new sheet);
     return &m_sheets.back();
 }
@@ -62,6 +63,8 @@ void document::dump() const
     cout << "  Document content summary" << endl;
     cout << "----------------------------------------------------------------------" << endl;
     mp_strings->dump();
+
+    cout << "number of sheets: " << m_sheets.size() << endl;
 }
 
 }}

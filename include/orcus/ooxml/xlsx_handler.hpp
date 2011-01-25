@@ -36,10 +36,16 @@
 
 namespace orcus {
 
+namespace model {
+
+class sheet_base;
+
+}
+
 class xlsx_sheet_xml_handler : public xml_stream_handler
 {
 public:
-    xlsx_sheet_xml_handler(const tokens& tokens);
+    xlsx_sheet_xml_handler(const tokens& tokens, model::sheet_base* sheet);
     virtual ~xlsx_sheet_xml_handler();
 
     virtual void start_document();

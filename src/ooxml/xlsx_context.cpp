@@ -212,15 +212,14 @@ public:
 
 }
 
-xlsx_sheet_xml_context::xlsx_sheet_xml_context(const tokens& tokens) :
+xlsx_sheet_xml_context::xlsx_sheet_xml_context(const tokens& tokens, model::sheet_base* sheet) :
     xml_context_base(tokens),
-    mp_sheet(NULL)
+    mp_sheet(sheet)
 {
 }
 
 xlsx_sheet_xml_context::~xlsx_sheet_xml_context()
 {
-    delete mp_sheet;
 }
 
 bool xlsx_sheet_xml_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
@@ -253,8 +252,6 @@ void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, c
             // the namespace for worksheet element comes from its own 'xmlns' attribute.
             get_current_element().first = default_ns;
             set_default_ns(default_ns);
-
-            mp_sheet = new model::sheet;
         }
         break;
         case XML_sheetData:

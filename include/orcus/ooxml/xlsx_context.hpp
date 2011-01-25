@@ -37,7 +37,7 @@
 namespace orcus {
 
 namespace model {
-    class sheet;
+    class sheet_base;
     class shared_strings_base;
 }
 
@@ -74,7 +74,7 @@ private:
 class xlsx_sheet_xml_context : public xml_context_base
 {
 public:
-    xlsx_sheet_xml_context(const tokens& tokens);
+    xlsx_sheet_xml_context(const tokens& tokens, model::sheet_base* sheet);
     virtual ~xlsx_sheet_xml_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -86,7 +86,7 @@ public:
     virtual void characters(const pstring& str);
 
 private:
-    model::sheet* mp_sheet; /// sheet model instance for the loaded document.
+    model::sheet_base* mp_sheet; /// sheet model instance for the loaded document.
 };
 
 /**

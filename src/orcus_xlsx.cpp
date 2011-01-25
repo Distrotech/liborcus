@@ -433,7 +433,8 @@ void orcus_xlsx::read_sheet(const char* file_name, const xlsx_rel_sheet_info* da
     cout << "file name: " << file_name << "  size: " << size << endl;
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(ooxml_tokens, content, size, file_name);
-    ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler(ooxml_tokens));
+    model::sheet_base* sheet = mp_factory->append_sheet(data->name.get(), data->name.size());
+    ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler(ooxml_tokens, sheet));
     parser.set_handler(handler.get());
     parser.parse();
 }

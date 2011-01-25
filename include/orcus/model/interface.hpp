@@ -92,7 +92,7 @@ public:
     virtual ~factory_base() = 0;
 
     virtual shared_strings_base* get_shared_strings() = 0;
-    virtual sheet_base* append_sheet() = 0;
+    virtual sheet_base* append_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
 };
 
 inline factory_base::~factory_base() {}
