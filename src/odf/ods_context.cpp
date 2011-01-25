@@ -168,7 +168,7 @@ bool ods_content_xml_context::can_handle_element(xmlns_token_t ns, xml_token_t n
 xml_context_base* ods_content_xml_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
 {
     if (ns == XMLNS_text && name == XML_p)
-        return new text_para_context(get_tokens());
+        return new text_para_context(get_tokens(), mp_factory->get_shared_strings());
 
     return NULL;
 }
@@ -179,6 +179,7 @@ void ods_content_xml_context::end_child_context(xmlns_token_t ns, xml_token_t na
     {
         text_para_context* para_context = static_cast<text_para_context*>(child);
         m_para_content = para_context->get_content();
+        m_para_index = para_context->get_string_index();
     }
 }
 
@@ -356,12 +357,7 @@ void ods_content_xml_context::start_cell(const xml_attrs_t& attrs, const xml_tok
 void ods_content_xml_context::end_cell()
 {
     if (!m_para_content.empty())
-    {
-//      cout << "cell: (row=" << m_row << "," << "col=" << m_col << "," << "content='" << m_para_content << "')" << endl;
-        model::shared_strings_base* ss = mp_factory->get_shared_strings();
-        size_t sindex = ss->add(m_para_content.get(), m_para_content.size());
-        m_tables.back()->set_string(m_row, m_col, sindex);
-    }
+        m_tables.back()->set_string(m_row, m_col, m_para_index);
 
     ++m_col;
     if (m_cell_attr.number_columns_repeated > 1)
@@ -370,12 +366,7 @@ void ods_content_xml_context::end_cell()
         for (; m_col <= col_upper; ++m_col)
         {
             if (!m_para_content.empty())
-            {
-//              cout << "cell (repeated): (row=" << m_row << "," << "col=" << m_col << "," << "content='" << m_para_content << "')" << endl;
-                model::shared_strings_base* ss = mp_factory->get_shared_strings();
-                size_t sindex = ss->add(m_para_content.get(), m_para_content.size());
-                m_tables.back()->set_string(m_row, m_col, sindex);
-            }
+                m_tables.back()->set_string(m_row, m_col, m_para_index);
         }
     }
     m_para_content.clear();

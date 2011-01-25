@@ -113,7 +113,7 @@ public:
 void shared_strings::dump() const
 {
     cout << "number of shared strings: " << m_strings.size() << endl;
-//  for_each(m_strings.begin(), m_strings.end(), print_string());
+    for_each(m_strings.begin(), m_strings.end(), print_string());
 }
 
 }}

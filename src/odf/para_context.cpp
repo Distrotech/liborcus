@@ -26,6 +26,8 @@
  ************************************************************************/
 
 #include "orcus/odf/para_context.hpp"
+#include "orcus/odf/odf_token_constants.hpp"
+#include "orcus/model/interface.hpp"
 
 #include <iostream>
 
@@ -33,8 +35,10 @@ using namespace std;
 
 namespace orcus {
 
-text_para_context::text_para_context(const tokens& tokens) :
-    xml_context_base(tokens)
+text_para_context::text_para_context(const tokens& tokens, model::shared_strings_base* ssb) :
+    xml_context_base(tokens),
+    mp_sstrings(ssb),
+    m_string_index(0)
 {
 }
 
@@ -60,21 +64,36 @@ void text_para_context::end_child_context(xmlns_token_t ns, xml_token_t name, xm
 void text_para_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
+    if (ns == XMLNS_text && name == XML_span)
+    {
+        // text span.
+    }
 }
 
 bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
+    if (ns == XMLNS_text && name == XML_span)
+    {
+        // text span.
+    }
+
+    m_string_index = mp_sstrings->add(m_current_content.get(), m_current_content.size());
     return pop_stack(ns, name);
 }
 
 void text_para_context::characters(const pstring& str)
 {
-    m_para_content = str;
+    m_current_content = str;
+}
+
+size_t text_para_context::get_string_index() const
+{
+    return m_string_index;
 }
 
 const pstring& text_para_context::get_content() const
 {
-    return m_para_content;
+    return m_current_content;
 }
 
 }

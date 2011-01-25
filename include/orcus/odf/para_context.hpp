@@ -34,12 +34,18 @@
 
 namespace orcus {
 
+namespace model {
+
+class shared_strings_base;
+
+}
+
 class tokens;
 
 class text_para_context : public xml_context_base
 {
 public:
-    text_para_context(const tokens& tokens);
+    text_para_context(const tokens& tokens, model::shared_strings_base* ssb);
     virtual ~text_para_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -50,10 +56,13 @@ public:
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
 
+    size_t get_string_index() const;
     const pstring& get_content() const;
 
 private:
-    pstring m_para_content;
+    model::shared_strings_base* mp_sstrings;
+    pstring m_current_content;
+    size_t m_string_index;
 };
 
 }
