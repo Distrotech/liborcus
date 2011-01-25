@@ -62,7 +62,7 @@ private:
     pstring m_name;
 };
 
-class row_attr_parser : public unary_function<void, xml_attr_t>
+class row_attr_parser : public unary_function<xml_attr_t, void>
 {
 public:
     row_attr_parser(ods_content_xml_context::row_attr& attr) :

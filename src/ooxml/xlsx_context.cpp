@@ -44,7 +44,7 @@ namespace orcus {
 
 namespace {
 
-class root_element_attr_parser: ::std::unary_function<void, xml_attr_t>
+class root_element_attr_parser: ::std::unary_function<xml_attr_t, void>
 {
 public:
     root_element_attr_parser(
@@ -103,7 +103,7 @@ public:
     virtual void handle_other_attrs(const xml_attr_t &attr) {}
 };
 
-class workbook_sheet_attr_parser : public unary_function<void, xml_attr_t>
+class workbook_sheet_attr_parser : public unary_function<xml_attr_t, void>
 {
 public:
     void operator() (const xml_attr_t& attr)
@@ -235,7 +235,7 @@ private:
     model::row_t m_row;
 };
 
-class cell_attr_parser : public unary_function<void, xml_attr_t>
+class cell_attr_parser : public unary_function<xml_attr_t, void>
 {
     struct address
     {

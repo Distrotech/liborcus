@@ -31,6 +31,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include <mdds/mixed_type_matrix.hpp>
+
 using namespace std;
 
 namespace orcus { namespace model {
@@ -146,6 +148,15 @@ void sheet::dump() const
     size_t row_count = row_size();
     size_t col_count = col_size();
     cout << "rows: " << row_count << "  cols: " << col_count << endl;
+
+    typedef ::mdds::mixed_type_matrix<string, bool> mx_type;
+    mx_type mx(row_count, col_count, ::mdds::matrix_density_sparse_empty);
+
+    sheet_type::const_iterator itr = m_sheet.begin(), itr_end = m_sheet.end();
+    for (; itr != itr_end; ++itr)
+    {
+        
+    }
 }
 
 sheet::row_type* sheet::get_row(row_t row, col_t col)

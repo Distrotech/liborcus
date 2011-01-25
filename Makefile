@@ -27,6 +27,8 @@
 
 EXECS=orcus-ods orcus-xlsx
 
+MDDS_INCDIR=$(HOME)/multidimalgorithm/include
+
 OBJDIR=./obj
 SRCDIR=./src
 INCDIR=./include/orcus
@@ -39,7 +41,7 @@ ODF_SCHEMAPATH=$(ROOTDIR)/misc/$(ODF_SCHEMA)
 OOXML_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip
 OPC_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OpenPackagingConventions-XMLSchema.zip
 
-CPPFLAGS=-I./include -O2 -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
+CPPFLAGS=-I./include -I$(MDDS_INCDIR) -O2 -g -Wall `pkg-config --cflags libgsf-1` -std=c++0x
 LDFLAGS=`pkg-config --libs libgsf-1` -lboost_thread
 
 COMMON_HEADERS= \
