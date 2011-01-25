@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2010, 2011 Kohei Yoshida
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -29,9 +29,11 @@
 #include "orcus/odf/para_context.hpp"
 #include "orcus/odf/odf_token_constants.hpp"
 #include "orcus/global.hpp"
+#include "orcus/model/interface.hpp"
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -54,10 +56,7 @@ public:
             m_name = attr.value;
     }
 
-    model::sheet* create_table() const
-    {
-        return new model::sheet;
-    }
+    const pstring& get_name() const { return m_name; }
 private:
     pstring m_name;
 };
@@ -147,8 +146,9 @@ ods_content_xml_context::cell_attr::cell_attr() :
 
 // ============================================================================
 
-ods_content_xml_context::ods_content_xml_context(const tokens& tokens) :
+ods_content_xml_context::ods_content_xml_context(const tokens& tokens, model::factory_base* factory) :
     xml_context_base(tokens),
+    mp_factory(factory),
     m_row(0), m_col(0)
 {
 }
@@ -272,8 +272,9 @@ void ods_content_xml_context::start_table(const xml_attrs_t& attrs, const xml_to
     }
 
     table_attr_parser parser = for_each(attrs.begin(), attrs.end(), table_attr_parser());
-    m_tables.push_back(parser.create_table());
-    cout << "start table " << endl;
+    const pstring& name = parser.get_name();
+    m_tables.push_back(mp_factory->append_sheet(name.get(), name.size()));
+    cout << "start table " << name << endl;
 
     m_row = m_col = 0;
 }
@@ -357,7 +358,9 @@ void ods_content_xml_context::end_cell()
     if (!m_para_content.empty())
     {
 //      cout << "cell: (row=" << m_row << "," << "col=" << m_col << "," << "content='" << m_para_content << "')" << endl;
-        m_tables.back().set_cell(m_row, m_col, m_para_content);
+        model::shared_strings_base* ss = mp_factory->get_shared_strings();
+        size_t sindex = ss->add(m_para_content.get(), m_para_content.size());
+        m_tables.back()->set_string(m_row, m_col, sindex);
     }
 
     ++m_col;
@@ -369,22 +372,13 @@ void ods_content_xml_context::end_cell()
             if (!m_para_content.empty())
             {
 //              cout << "cell (repeated): (row=" << m_row << "," << "col=" << m_col << "," << "content='" << m_para_content << "')" << endl;
-                m_tables.back().set_cell(m_row, m_col, m_para_content);
+                model::shared_strings_base* ss = mp_factory->get_shared_strings();
+                size_t sindex = ss->add(m_para_content.get(), m_para_content.size());
+                m_tables.back()->set_string(m_row, m_col, sindex);
             }
         }
     }
     m_para_content.clear();
-}
-
-void ods_content_xml_context::print_html(const string& filepath) const
-{
-    ofstream file(filepath.c_str());
-    file << "<html>" << endl;
-    file << "<title>content.xml</title>" << endl;
-    file << "<body>" << endl;
-    for_each(m_tables.begin(), m_tables.end(), table_html_printer(file));
-    file << "</body>" << endl;
-    file << "</html>" << endl;
 }
 
 }

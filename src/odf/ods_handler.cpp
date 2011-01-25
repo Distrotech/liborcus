@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2010, 2011 Kohei Yoshida
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -35,9 +35,10 @@ using namespace std;
 
 namespace orcus {
 
-ods_content_xml_handler::ods_content_xml_handler(const tokens& tokens)
+ods_content_xml_handler::ods_content_xml_handler(const tokens& tokens, model::factory_base* factory) :
+    mp_factory(factory)
 {
-    m_context_stack.push_back(new ods_content_xml_context(tokens));
+    m_context_stack.push_back(new ods_content_xml_context(tokens, factory));
 }
 
 ods_content_xml_handler::~ods_content_xml_handler()
@@ -81,14 +82,6 @@ void ods_content_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
 void ods_content_xml_handler::characters(const pstring& str)
 {
     get_current_context().characters(str);
-}
-
-void ods_content_xml_handler::print_html(const string& filepath)
-{
-    if (m_context_stack.empty())
-        throw general_error("context stack is empty");
-
-    static_cast<ods_content_xml_context&>(m_context_stack.front()).print_html(filepath);
 }
 
 xml_context_base& ods_content_xml_handler::get_current_context()

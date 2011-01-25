@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2010, 2011 Kohei Yoshida
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -31,9 +31,15 @@
 #include "orcus/xml_context.hpp"
 #include "orcus/model/sheet.hpp"
 
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
 
 namespace orcus {
+
+namespace model {
+
+class factory_base;
+
+}
 
 class ods_content_xml_context : public xml_context_base
 {
@@ -50,7 +56,7 @@ public:
         cell_attr();
     };
 
-    ods_content_xml_context(const tokens& tokens);
+    ods_content_xml_context(const tokens& tokens, model::factory_base* factory);
     virtual ~ods_content_xml_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -60,8 +66,6 @@ public:
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
-
-    void print_html(const ::std::string& filepath) const;
 
 private:
     void start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
@@ -77,7 +81,8 @@ private:
     void end_cell();
 
 private:
-    ::boost::ptr_vector<model::sheet> m_tables;
+    model::factory_base* mp_factory;
+    ::std::vector<model::sheet_base*> m_tables;
 
     row_attr    m_row_attr;
     cell_attr   m_cell_attr;

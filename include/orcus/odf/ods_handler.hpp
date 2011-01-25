@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2010, 2011 Kohei Yoshida
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -39,10 +39,19 @@ namespace orcus {
 class tokens;
 class ods_content_xml_context;
 
+namespace model {
+
+class factory_base;
+
+}
+
+/**
+ * Handler for parsing the content.xml part.
+ */
 class ods_content_xml_handler : public xml_stream_handler
 {
 public:
-    ods_content_xml_handler(const tokens& tokens);
+    ods_content_xml_handler(const tokens& tokens, model::factory_base* factory);
     virtual ~ods_content_xml_handler();
 
     virtual void start_document();
@@ -51,12 +60,11 @@ public:
     virtual void end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
 
-    void print_html(const ::std::string& filepath);
-
 private:
     xml_context_base& get_current_context();
 
 private:
+    model::factory_base* mp_factory;
     typedef ::boost::ptr_vector<xml_context_base> context_stack_type;
     context_stack_type m_context_stack;
 };

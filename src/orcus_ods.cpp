@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2010, 2011 Kohei Yoshida
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -78,7 +78,8 @@ void orcus_ods::read_content_xml(GsfInput* input, size_t size, const char* outpa
 {
     const guint8* content = gsf_input_read(input, size, NULL);
     xml_stream_parser parser(odf_tokens, content, size, "content.xml");
-    ::boost::scoped_ptr<ods_content_xml_handler> handler(new ods_content_xml_handler(odf_tokens));
+    ::boost::scoped_ptr<ods_content_xml_handler> handler(
+        new ods_content_xml_handler(odf_tokens, mp_factory.get()));
     parser.set_handler(handler.get());
     parser.parse();
 //  handler->print_html(outpath);
@@ -165,5 +166,7 @@ int main(int argc, char** argv)
     gsf_init();
     app.read_file(argv[1], "out.html");
     gsf_shutdown();
+    doc->dump();
+
     return EXIT_SUCCESS;
 }
