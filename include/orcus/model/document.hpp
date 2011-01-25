@@ -29,22 +29,38 @@
 #define __ORCUS_MODEL_DOCUMENT_HPP__
 
 #include "orcus/model/interface.hpp"
+#include "orcus/model/sheet.hpp"
 #include "orcus/pstring.hpp"
 
-#include <vector>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace orcus { namespace model {
 
 class shared_strings;
-class sheet;
 
 /**
  * Internal document representation used only for testing the filters.
  */
-class document
+class document : private ::boost::noncopyable
 {
-    document(const document&); // disabled
+    /**
+     * Single sheet entry which consists of a sheet name and a sheet data. 
+     * Use the printer function object to print sheet content with for_each 
+     * function. 
+     */
+    struct sheet_item : private ::boost::noncopyable
+    {
+        pstring name;
+        sheet   data;
+        sheet_item(const pstring& _name);
+
+        struct printer : public ::std::unary_function<void, sheet_item>
+        {
+            void operator() (const sheet_item& item) const;
+        };
+    };
+
 public:
     document();
     ~document();
@@ -52,11 +68,13 @@ public:
     shared_strings* get_shared_strings();
     sheet* append_sheet(const pstring& sheet_name);
 
+    /**
+     * Dump document content to stdout for debugging.
+     */
     void dump() const;
 
 private:
-    ::std::vector<pstring> m_sheet_names;
-    ::boost::ptr_vector<sheet> m_sheets;
+    ::boost::ptr_vector<sheet_item> m_sheets;
     shared_strings* mp_strings;
 };
 

@@ -27,13 +27,20 @@
 
 #include "orcus/model/document.hpp"
 #include "orcus/model/shared_strings.hpp"
-#include "orcus/model/sheet.hpp"
 
 #include <iostream>
 
 using namespace std;
 
 namespace orcus { namespace model {
+
+document::sheet_item::sheet_item(const pstring& _name) : name(_name) {}
+
+void document::sheet_item::printer::operator() (const sheet_item& item) const
+{
+    cout << "---" << endl;
+    cout << "Sheet name: " << item.name << endl;
+}
 
 document::document() :
     mp_strings(new shared_strings)
@@ -52,9 +59,8 @@ shared_strings* document::get_shared_strings()
 
 sheet* document::append_sheet(const pstring& sheet_name)
 {
-    m_sheet_names.push_back(sheet_name);
-    m_sheets.push_back(new sheet);
-    return &m_sheets.back();
+    m_sheets.push_back(new sheet_item(sheet_name));
+    return &m_sheets.back().data;
 }
 
 void document::dump() const
@@ -65,6 +71,7 @@ void document::dump() const
     mp_strings->dump();
 
     cout << "number of sheets: " << m_sheets.size() << endl;
+    for_each(m_sheets.begin(), m_sheets.end(), sheet_item::printer());
 }
 
 }}
