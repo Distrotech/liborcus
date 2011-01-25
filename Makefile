@@ -27,7 +27,7 @@
 
 EXECS=orcus-ods orcus-xlsx
 
-MDDS_INCDIR=$(HOME)/multidimalgorithm/include
+MDDS_INCDIR=$(HOME)/Documents/Workspace/multidimalgorithm/include
 
 OBJDIR=./obj
 SRCDIR=./src
