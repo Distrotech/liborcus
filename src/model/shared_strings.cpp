@@ -67,7 +67,7 @@ size_t shared_strings::add(const char* s, size_t n)
 
 size_t shared_strings::append_to_pool(const pstring& ps)
 {
-    size_t index = m_strings.size() - 1;
+    size_t index = m_strings.size();
     m_strings.push_back(ps);
     m_set.insert(str_index_map_type::value_type(ps, index));
     return index;
