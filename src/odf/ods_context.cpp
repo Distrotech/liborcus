@@ -149,7 +149,9 @@ ods_content_xml_context::cell_attr::cell_attr() :
 ods_content_xml_context::ods_content_xml_context(const tokens& tokens, model::factory_base* factory) :
     xml_context_base(tokens),
     mp_factory(factory),
-    m_row(0), m_col(0)
+    m_row(0), m_col(0),
+    m_para_index(0),
+    m_has_content(false)
 {
 }
 
@@ -178,7 +180,7 @@ void ods_content_xml_context::end_child_context(xmlns_token_t ns, xml_token_t na
     if (ns == XMLNS_text && name == XML_p)
     {
         text_para_context* para_context = static_cast<text_para_context*>(child);
-        m_para_content = para_context->get_content();
+        m_has_content = !para_context->empty();
         m_para_index = para_context->get_string_index();
     }
 }
@@ -356,7 +358,7 @@ void ods_content_xml_context::start_cell(const xml_attrs_t& attrs, const xml_tok
 
 void ods_content_xml_context::end_cell()
 {
-    if (!m_para_content.empty())
+    if (m_has_content)
         m_tables.back()->set_string(m_row, m_col, m_para_index);
 
     ++m_col;
@@ -365,11 +367,11 @@ void ods_content_xml_context::end_cell()
         uint32_t col_upper = m_col + m_cell_attr.number_columns_repeated;
         for (; m_col <= col_upper; ++m_col)
         {
-            if (!m_para_content.empty())
+            if (m_has_content)
                 m_tables.back()->set_string(m_row, m_col, m_para_index);
         }
     }
-    m_para_content.clear();
+    m_has_content = false;
 }
 
 }

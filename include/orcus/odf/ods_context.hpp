@@ -90,7 +90,7 @@ private:
     uint32_t m_row;
     uint32_t m_col;
     size_t m_para_index;
-    pstring m_para_content; // store the content of current <text:p> element.
+    bool m_has_content;
 };
 
 }

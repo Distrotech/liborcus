@@ -61,13 +61,11 @@ public:
     virtual void characters(const pstring& str);
 
     size_t get_string_index() const;
-    const pstring& get_content() const;
     bool empty() const;
 
 private:
     model::shared_strings_base* mp_sstrings;
     ::std::vector<pstring> m_contents;
-    pstring m_current_content;
     size_t m_string_index;
     bool m_formatted;
 };

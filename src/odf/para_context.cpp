@@ -85,6 +85,9 @@ bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
         // paragraph
         if (m_formatted)
         {
+            // this paragraph consists of several segments, some of which may
+            // be formatted.
+
             vector<pstring>::const_iterator itr = m_contents.begin(), itr_end = m_contents.end();
             for (; itr != itr_end; ++itr)
             {
@@ -95,6 +98,7 @@ bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
         }
         else if (!m_contents.empty())
         {
+            // Unformatted simple text paragraph.
             assert(m_contents.size() == 1);
             const pstring& ps = m_contents.back();
             m_string_index = mp_sstrings->add(ps.get(), ps.size());
@@ -110,17 +114,11 @@ bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
 void text_para_context::characters(const pstring& str)
 {
     m_contents.push_back(str);
-    m_current_content = str;
 }
 
 size_t text_para_context::get_string_index() const
 {
     return m_string_index;
-}
-
-const pstring& text_para_context::get_content() const
-{
-    return m_current_content;
 }
 
 bool text_para_context::empty() const
