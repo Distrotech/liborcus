@@ -284,8 +284,7 @@ void print_formatted_text(_OSTREAM& strm, const pstring& text, const shared_stri
 {
     typedef html_elem<_OSTREAM> elem;
 
-    const char* p_b    = "b";
-    const char* p_i    = "i";
+    const char* p_span = "span";
 
     size_t pos = 0;
     shared_strings::format_runs_type::const_iterator itr = formats.begin(), itr_end = formats.end();
@@ -302,26 +301,20 @@ void print_formatted_text(_OSTREAM& strm, const pstring& text, const shared_stri
         if (!run.size)
             continue;
 
+        string style = "";
         if (run.bold)
-        {
-            elem bold(strm, p_b);
-            if (run.italic)
-            {
-                elem italic(strm, p_i);
-                strm << string(&text[pos], run.size);
-            }
-            else
-                strm << string(&text[pos], run.size);
-        }
+            style += "font-weight: bold;";
+        if (run.italic)
+            style += "font-style: italic;";
+
+        if (style.empty())
+            strm << string(&text[pos], run.size);
         else
         {
-            if (run.italic)
-            {
-                elem italic(strm, p_i);
-                strm << string(&text[pos], run.size);
-            }
-            else
-                strm << string(&text[pos], run.size);
+            // Surround the text segment with <span></span> to apply styles.
+            style = "style=\"" + style + "\"";
+            elem span(strm, p_span, style.c_str());
+            strm << string(&text[pos], run.size);
         }
 
         pos += run.size;
