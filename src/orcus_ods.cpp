@@ -135,6 +135,8 @@ void orcus_ods::read_file(const char* fpath, const char* outpath)
 {
     cout << "reading " << fpath << endl;
 
+    gsf_init();
+
     GError* err = NULL;
     GsfInput* input = gsf_input_stdio_new (fpath, &err);
     if (!input)
@@ -153,6 +155,8 @@ void orcus_ods::read_file(const char* fpath, const char* outpath)
     read_content (GSF_INPUT(infile), outpath);
     g_object_unref (G_OBJECT (infile));
     g_object_unref (G_OBJECT (input));
+
+    gsf_shutdown();
 }
 
 int main(int argc, char** argv)
@@ -163,9 +167,7 @@ int main(int argc, char** argv)
     ::boost::scoped_ptr<model::document> doc(new model::document);
 
     orcus_ods app(new model::factory(doc.get()));
-    gsf_init();
     app.read_file(argv[1], "out.html");
-    gsf_shutdown();
     doc->dump();
     pstring::intern::dispose();
 

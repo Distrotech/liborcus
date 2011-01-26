@@ -265,6 +265,8 @@ void orcus_xlsx::read_file(const char* fpath, const char* outpath)
 {
     cout << "reading " << fpath << endl;
 
+    gsf_init();
+
     GError* err = NULL;
     GsfInput* input = gsf_input_stdio_new (fpath, &err);
     if (!input)
@@ -285,6 +287,8 @@ void orcus_xlsx::read_file(const char* fpath, const char* outpath)
     m_dir_stack.push_back(dir_root);
 //  list_content(GSF_INPUT(infile));
     read_content (outpath);
+
+    gsf_shutdown();
 }
 
 void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_extra* data)
@@ -531,10 +535,8 @@ int main(int argc, char** argv)
 
     ::boost::scoped_ptr<model::document> doc(new model::document);
 
-    gsf_init();
     orcus_xlsx app(new model::factory(doc.get()));
     app.read_file(argv[1], "out.html");
-    gsf_shutdown();
     doc->dump();
 //  pstring::intern::dump();
     pstring::intern::dispose();
