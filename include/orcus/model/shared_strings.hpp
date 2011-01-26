@@ -59,8 +59,10 @@ class shared_strings : public shared_strings_base, private ::boost::noncopyable
     typedef ::std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
 
 public:
+    // format runs for single string
     typedef ::std::vector<format_run> format_runs_type;
-    typedef ::std::unordered_map<size_t, format_runs_type*> segment_formats_type;
+    // format runs for all shared strings, mapped by string IDs.
+    typedef ::std::unordered_map<size_t, format_runs_type*> format_runs_map_type;
 
     shared_strings();
     virtual ~shared_strings();
@@ -75,7 +77,10 @@ public:
 
     bool has(size_t index) const;
     const pstring& get(size_t index) const;
+    const format_runs_type* get_format_runs(size_t index) const;
+
     void dump() const;
+
 
 private:
     size_t append_to_pool(const pstring& ps);
@@ -90,7 +95,7 @@ private:
      * Container for all format runs of all formatted strings.  Format runs 
      * are mapped with the string IDs.
      */
-    segment_formats_type m_formats;
+    format_runs_map_type m_formats;
 
     ::std::string       m_cur_segment_string;
     format_run      m_cur_format;

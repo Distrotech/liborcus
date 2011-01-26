@@ -64,7 +64,7 @@ shared_strings::shared_strings() :
 shared_strings::~shared_strings()
 {
     for_each(m_formats.begin(), m_formats.end(), 
-             delete_map_object<segment_formats_type>());
+             delete_map_object<format_runs_map_type>());
 
     // This pointer should be NULL.
     assert(!mp_cur_format_runs);
@@ -111,6 +111,14 @@ const pstring& shared_strings::get(size_t index) const
     return m_strings[index];
 }
 
+const shared_strings::format_runs_type* shared_strings::get_format_runs(size_t index) const
+{
+    format_runs_map_type::const_iterator itr = m_formats.find(index);
+    if (itr != m_formats.end())
+        return itr->second;
+    return NULL;
+}
+
 void shared_strings::set_segment_bold(bool b)
 {
     m_cur_format.bold = b;
@@ -150,7 +158,7 @@ size_t shared_strings::commit_segments()
     pstring ps = pstring(m_cur_segment_string.data(), m_cur_segment_string.size()).intern();
     m_cur_segment_string.clear();
     size_t sindex = append_to_pool(ps);
-    m_formats.insert(segment_formats_type::value_type(sindex, mp_cur_format_runs));
+    m_formats.insert(format_runs_map_type::value_type(sindex, mp_cur_format_runs));
     mp_cur_format_runs = NULL;
     return sindex;
 }
