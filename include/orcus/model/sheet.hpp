@@ -75,6 +75,7 @@ public:
     size_t col_size() const;
 
     void dump() const;
+    void dump_html(const ::std::string& filepath) const;
 
 private:
     row_type* get_row(row_t row, col_t col);

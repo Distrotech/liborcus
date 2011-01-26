@@ -59,6 +59,14 @@ class document : private ::boost::noncopyable
         {
             void operator() (const sheet_item& item) const;
         };
+
+        struct html_printer : public ::std::unary_function<sheet_item, void>
+        {
+            html_printer(const ::std::string& filepath);
+            void operator() (const sheet_item& item) const;
+        private:
+            const ::std::string& m_filepath;
+        };
     };
 
 public:
@@ -73,6 +81,14 @@ public:
      * Dump document content to stdout for debugging.
      */
     void dump() const;
+
+    /**
+     * File name should not contain an extension.  The final name will be 
+     * [filename] + _ + [sheet name] + .html. 
+     * 
+     * @param filename base file name
+     */
+    void dump_html(const ::std::string& filename) const;
 
 private:
     ::boost::ptr_vector<sheet_item> m_sheets;

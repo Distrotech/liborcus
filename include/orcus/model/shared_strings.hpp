@@ -44,6 +44,9 @@ namespace orcus { namespace model {
  */
 class shared_strings : public shared_strings_base, private ::boost::noncopyable
 {
+    typedef ::std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
+
+public:
     struct format_run
     {
         size_t pos;
@@ -56,9 +59,6 @@ class shared_strings : public shared_strings_base, private ::boost::noncopyable
         bool formatted() const;
     };
 
-    typedef ::std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
-
-public:
     // format runs for single string
     typedef ::std::vector<format_run> format_runs_type;
     // format runs for all shared strings, mapped by string IDs.
@@ -97,7 +97,7 @@ private:
      */
     format_runs_map_type m_formats;
 
-    ::std::string       m_cur_segment_string;
+    ::std::string   m_cur_segment_string;
     format_run      m_cur_format;
     format_runs_type*   mp_cur_format_runs;
     str_index_map_type m_set;

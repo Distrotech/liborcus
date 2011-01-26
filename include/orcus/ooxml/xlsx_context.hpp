@@ -116,7 +116,7 @@ public:
 private:
     model::shared_strings_base* mp_strings;
     pstring m_current_str;
-    ::std::vector<pstring> m_current_str_runs;
+//  ::std::vector<pstring> m_current_str_runs;
     bool m_in_segments;
 };
 

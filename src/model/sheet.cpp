@@ -31,6 +31,7 @@
 #include "orcus/model/document.hpp"
 
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <sstream>
 #include <vector>
@@ -250,6 +251,166 @@ void sheet::dump() const
         }
         cout << endl;
         cout << sep << endl;
+    }
+}
+
+namespace {
+
+template<typename _OSTREAM>
+class html_elem
+{
+public:
+    html_elem(_OSTREAM& strm, const char* name, const char* attr = NULL) :
+        m_strm(strm), m_name(name)
+    {
+        if (attr)
+            m_strm << '<' << m_name << ' ' << attr << '>' << endl;
+        else
+            m_strm << '<' << m_name << '>' << endl;
+    }
+
+    ~html_elem()
+    {
+        m_strm << "</" << m_name << '>' << endl;
+    }
+
+private:
+    _OSTREAM& m_strm;
+    const char* m_name;
+};
+
+template<typename _OSTREAM>
+void print_formatted_text(_OSTREAM& strm, const pstring& text, const shared_strings::format_runs_type& formats)
+{
+    typedef html_elem<_OSTREAM> elem;
+
+    const char* p_b    = "b";
+    const char* p_i    = "i";
+
+    size_t pos = 0;
+    shared_strings::format_runs_type::const_iterator itr = formats.begin(), itr_end = formats.end();
+    for (; itr != itr_end; ++itr)
+    {
+        const shared_strings::format_run& run = *itr;
+        if (pos < run.pos)
+        {
+            // flush unformatted text.
+            strm << string(&text[pos], run.pos - pos);
+            pos = run.pos;
+        }
+        
+        if (!run.size)
+            continue;
+
+        if (run.bold)
+        {
+            elem bold(strm, p_b);
+            if (run.italic)
+            {
+                elem italic(strm, p_i);
+                strm << string(&text[pos], run.size);
+            }
+            else
+                strm << string(&text[pos], run.size);
+        }
+        else
+        {
+            if (run.italic)
+            {
+                elem italic(strm, p_i);
+                strm << string(&text[pos], run.size);
+            }
+            else
+                strm << string(&text[pos], run.size);
+        }
+
+        pos += run.size;
+    }
+
+    if (pos < text.size())
+    {
+        // flush the remaining unformatted text.
+        strm << string(&text[pos], text.size() - pos);
+    }
+}
+
+}
+
+void sheet::dump_html(const string& filepath) const
+{
+    typedef html_elem<ofstream> elem;
+
+    ofstream file(filepath);
+    if (!file)
+    {
+        cerr << "failed to create file: " << filepath << endl;
+        return;
+    }
+
+    const char* p_html = "html";
+    const char* p_table = "table";
+    const char* p_tr   = "tr";
+    const char* p_td   = "td";
+    const char* p_table_attrs = "style=\"border:1px solid black;\"";
+    const char* p_empty_cell_attrs = "style=\"border:1px solid black; color:white;\"";
+
+    {
+        elem root(file, p_html);
+    
+        if (m_sheet.empty())
+            // nothing to print.
+            return;
+    
+        size_t col_count = col_size();
+
+        const shared_strings* sstrings = m_doc.get_shared_strings();
+    
+        elem table(file, p_table, p_table_attrs);
+        sheet_type::const_iterator itr = m_sheet.begin(), itr_end = m_sheet.end();
+        for (; itr != itr_end; ++itr)
+        {
+            const row_type& row_con = *itr->second;
+            row_type::const_iterator itr_row = row_con.begin(), itr_row_end = row_con.end();
+            elem tr(file, p_tr, p_table_attrs);
+            col_t col = 0;
+            for (; itr_row != itr_row_end; ++itr_row, ++col)
+            {
+                for (; col < itr_row->first; ++col)
+                {
+                    elem td(file, p_td, p_empty_cell_attrs);
+                    file << '-'; // empty cell.
+                }
+
+                elem td(file, p_td, p_table_attrs);
+                const cell& c = itr_row->second;
+                switch (c.type)
+                {
+                    case ct_string:
+                    {
+                        size_t sindex = static_cast<size_t>(c.value);
+                        const pstring& ps = sstrings->get(sindex);
+                        const shared_strings::format_runs_type* pformat = sstrings->get_format_runs(sindex);
+                        if (pformat)
+                            print_formatted_text<ofstream>(file, ps, *pformat);
+                        else
+                            file << ps;
+                    }
+                    break;
+                    case ct_value:
+                    {
+                        ostringstream os;
+                        os << c.value;
+                        file << os.str();
+                    }
+                    break;
+                }
+            }
+            for (; col < col_count; ++col)
+            {
+                elem td(file, p_td, p_empty_cell_attrs);
+                file << '-'; // empty cell.
+            }
+        }
     }
 }
 

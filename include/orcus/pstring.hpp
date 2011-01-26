@@ -85,7 +85,7 @@ public:
     ::std::string str() const { return ::std::string(m_pos, m_size); }
 
     size_t size() const { return m_size; }
-    char operator[](size_t idx) const { return m_pos[idx]; }
+    const char& operator[](size_t idx) const { return m_pos[idx]; }
 
     pstring& operator= (const pstring& r)
     {

@@ -494,20 +494,6 @@ private:
     size_t m_unique_count;
 };
 
-class append_each_segment : public unary_function<pstring, void>
-{
-public:
-    append_each_segment(model::shared_strings_base& ssb) :
-        m_strings(ssb) {}
-
-    void operator() (const pstring& ps)
-    {
-        m_strings.append_segment(ps.get(), ps.size());
-    }
-private:
-    model::shared_strings_base& m_strings;
-};
-
 }
 
 xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, model::shared_strings_base* strings) :
@@ -612,7 +598,6 @@ bool xlsx_shared_strings_context::end_element(xmlns_token_t ns, xml_token_t name
     switch (name)
     {
         case XML_t:
-            m_current_str_runs.push_back(m_current_str);
         break;
         case XML_b:
             mp_strings->set_segment_bold(true);
@@ -620,22 +605,19 @@ bool xlsx_shared_strings_context::end_element(xmlns_token_t ns, xml_token_t name
         case XML_i:
             mp_strings->set_segment_italic(true);
         break;
+        case XML_r:
+            mp_strings->append_segment(m_current_str.get(), m_current_str.size());
+        break;
         case XML_si:
         {
             if (m_in_segments)
-            {
-                for_each(
-                    m_current_str_runs.begin(), m_current_str_runs.end(), 
-                    append_each_segment(*mp_strings));
+                // commit all formatted segments.
                 mp_strings->commit_segments();
-            }
             else
             {
                 // unformatted text should only have one text segment.
-                assert(m_current_str_runs.size() == 1);
                 mp_strings->append(m_current_str.get(), m_current_str.size());
             }
-            m_current_str_runs.clear();
         }
         break;
     }

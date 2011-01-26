@@ -43,6 +43,16 @@ void document::sheet_item::printer::operator() (const sheet_item& item) const
     item.data.dump();
 }
 
+document::sheet_item::html_printer::html_printer(const string& filepath) : 
+    m_filepath(filepath) {}
+
+void document::sheet_item::html_printer::operator() (const sheet_item& item) const
+{
+    // file path is expected to be a directory.
+    string this_file = m_filepath + '/' + item.name.str() + ".html";
+    item.data.dump_html(this_file);
+}
+
 document::document() :
     mp_strings(new shared_strings)
 {
@@ -78,6 +88,11 @@ void document::dump() const
 
     cout << "number of sheets: " << m_sheets.size() << endl;
     for_each(m_sheets.begin(), m_sheets.end(), sheet_item::printer());
+}
+
+void document::dump_html(const string& filepath) const
+{
+    for_each(m_sheets.begin(), m_sheets.end(), sheet_item::html_printer(filepath));
 }
 
 }}

@@ -538,6 +538,7 @@ int main(int argc, char** argv)
     orcus_xlsx app(new model::factory(doc.get()));
     app.read_file(argv[1], "out.html");
     doc->dump();
+    doc->dump_html("./obj");
 //  pstring::intern::dump();
     pstring::intern::dispose();
     return EXIT_SUCCESS;

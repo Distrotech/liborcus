@@ -140,11 +140,10 @@ void shared_strings::append_segment(const char* s, size_t n)
     if (m_cur_format.formatted())
     {
         // This segment is formatted.
-
         // Record the position and size of the format run.
         m_cur_format.pos = start_pos;
         m_cur_format.size = n;
-
+        
         if (!mp_cur_format_runs)
             mp_cur_format_runs = new format_runs_type;
     
