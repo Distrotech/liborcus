@@ -55,7 +55,7 @@ class document : private ::boost::noncopyable
         sheet   data;
         sheet_item(document& doc, const pstring& _name);
 
-        struct printer : public ::std::unary_function<void, sheet_item>
+        struct printer : public ::std::unary_function<sheet_item, void>
         {
             void operator() (const sheet_item& item) const;
         };

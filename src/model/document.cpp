@@ -65,7 +65,7 @@ const shared_strings* document::get_shared_strings() const
 
 sheet* document::append_sheet(const pstring& sheet_name)
 {
-    m_sheets.push_back(new sheet_item(*this, sheet_name));
+    m_sheets.push_back(new sheet_item(*this, sheet_name.intern()));
     return &m_sheets.back().data;
 }
 
