@@ -364,7 +364,7 @@ void ods_content_xml_context::end_cell()
     ++m_col;
     if (m_cell_attr.number_columns_repeated > 1)
     {
-        uint32_t col_upper = m_col + m_cell_attr.number_columns_repeated;
+        uint32_t col_upper = m_col + m_cell_attr.number_columns_repeated - 2;
         for (; m_col <= col_upper; ++m_col)
         {
             if (m_has_content)
