@@ -30,6 +30,7 @@
 #include "orcus/model/interface.hpp"
 
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 
@@ -38,7 +39,8 @@ namespace orcus {
 text_para_context::text_para_context(const tokens& tokens, model::shared_strings_base* ssb) :
     xml_context_base(tokens),
     mp_sstrings(ssb),
-    m_string_index(0)
+    m_string_index(0),
+    m_formatted(false)
 {
 }
 
@@ -64,25 +66,50 @@ void text_para_context::end_child_context(xmlns_token_t ns, xml_token_t name, xm
 void text_para_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
-    if (ns == XMLNS_text && name == XML_span)
+    if (ns == XMLNS_text && name == XML_p)
+    {
+        // paragraph
+        m_formatted = false;
+    }
+    else if (ns == XMLNS_text && name == XML_span)
     {
         // text span.
+        m_formatted = true;
     }
 }
 
 bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
-    if (ns == XMLNS_text && name == XML_span)
+    if (ns == XMLNS_text && name == XML_p)
+    {
+        // paragraph
+        if (m_formatted)
+        {
+            vector<pstring>::const_iterator itr = m_contents.begin(), itr_end = m_contents.end();
+            for (; itr != itr_end; ++itr)
+            {
+                const pstring& ps = *itr;
+                mp_sstrings->append_segment(ps.get(), ps.size());
+            }
+            m_string_index = mp_sstrings->commit_segments();
+        }
+        else if (!m_contents.empty())
+        {
+            assert(m_contents.size() == 1);
+            const pstring& ps = m_contents.back();
+            m_string_index = mp_sstrings->add(ps.get(), ps.size());
+        }
+    }
+    else if (ns == XMLNS_text && name == XML_span)
     {
         // text span.
     }
-
-    m_string_index = mp_sstrings->add(m_current_content.get(), m_current_content.size());
     return pop_stack(ns, name);
 }
 
 void text_para_context::characters(const pstring& str)
 {
+    m_contents.push_back(str);
     m_current_content = str;
 }
 
@@ -94,6 +121,11 @@ size_t text_para_context::get_string_index() const
 const pstring& text_para_context::get_content() const
 {
     return m_current_content;
+}
+
+bool text_para_context::empty() const
+{
+    return m_contents.empty();
 }
 
 }

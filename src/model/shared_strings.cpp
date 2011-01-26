@@ -88,11 +88,11 @@ void shared_strings::append_segment(const char* s, size_t n)
     m_segment_buffer += string(s, n);
 }
 
-void shared_strings::commit_segments()
+size_t shared_strings::commit_segments()
 {
     pstring ps = pstring(m_segment_buffer.data(), m_segment_buffer.size()).intern();
-    append_to_pool(ps);
     m_segment_buffer.clear();
+    return append_to_pool(ps);
 }
 
 namespace {

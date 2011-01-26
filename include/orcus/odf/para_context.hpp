@@ -29,8 +29,9 @@
 #define __ORCUS_PARACONTEXT_HPP__
 
 #include "orcus/xml_context.hpp"
-
 #include "orcus/pstring.hpp"
+
+#include <vector>
 
 namespace orcus {
 
@@ -42,6 +43,9 @@ class shared_strings_base;
 
 class tokens;
 
+/**
+ * This class handles <text:p> contexts.
+ */
 class text_para_context : public xml_context_base
 {
 public:
@@ -58,11 +62,14 @@ public:
 
     size_t get_string_index() const;
     const pstring& get_content() const;
+    bool empty() const;
 
 private:
     model::shared_strings_base* mp_sstrings;
+    ::std::vector<pstring> m_contents;
     pstring m_current_content;
     size_t m_string_index;
+    bool m_formatted;
 };
 
 }
