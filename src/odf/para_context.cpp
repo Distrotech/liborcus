@@ -69,11 +69,13 @@ void text_para_context::start_element(xmlns_token_t ns, xml_token_t name, const 
     if (ns == XMLNS_text && name == XML_p)
     {
         // paragraph
+        xml_element_expected(parent, XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN);
         m_formatted = false;
     }
     else if (ns == XMLNS_text && name == XML_span)
     {
         // text span.
+        xml_element_expected(parent, XMLNS_text, XML_p);
         m_formatted = true;
     }
 }
