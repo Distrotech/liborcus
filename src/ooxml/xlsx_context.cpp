@@ -543,8 +543,41 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
             xml_element_expected(parent, XMLNS_xlsx, XML_sst);
         break;
         case XML_r:
+            // rich text run
             m_in_segments = true;
             xml_element_expected(parent, XMLNS_xlsx, XML_si);
+        break;
+        case XML_rPr:
+            // rich text run property
+            xml_element_expected(parent, XMLNS_xlsx, XML_r);
+        break;
+        case XML_b:
+            // bold
+            xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
+        break;
+        case XML_i:
+            // italic
+            xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
+        break;
+        case XML_sz:
+            // font size
+            xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
+        break;
+        case XML_color:
+            // data bar color
+            xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
+        break;
+        case XML_rFont:
+            // font
+            xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
+        break;
+        case XML_family:
+            // font family
+            xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
+        break;
+        case XML_scheme:
+            // font scheme
+            xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
         break;
         case XML_t:
         {
@@ -567,6 +600,12 @@ bool xlsx_shared_strings_context::end_element(xmlns_token_t ns, xml_token_t name
         case XML_t:
             m_current_str_runs.push_back(m_current_str);
         break;
+        case XML_b:
+            mp_strings->set_segment_bold(true);
+        break;
+        case XML_i:
+            mp_strings->set_segment_italic(true);
+        break;
         case XML_si:
         {
             if (m_in_segments)
@@ -581,6 +620,7 @@ bool xlsx_shared_strings_context::end_element(xmlns_token_t ns, xml_token_t name
             }
             else
             {
+                // unformatted text should only have one text segment.
                 assert(m_current_str_runs.size() == 1);
                 mp_strings->append(m_current_str.get(), m_current_str.size());
             }

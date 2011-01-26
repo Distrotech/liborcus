@@ -44,12 +44,23 @@ class shared_strings : public shared_strings_base
 {
     typedef ::std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
 
+    struct segment_format
+    {
+        bool bold;
+        bool italic;
+        segment_format();
+
+        void reset();
+    };
 public:
     shared_strings();
     virtual ~shared_strings();
 
     virtual size_t append(const char* s, size_t n);
     virtual size_t add(const char* s, size_t n);
+
+    virtual void set_segment_bold(bool b);
+    virtual void set_segment_italic(bool b);
     virtual void append_segment(const char* s, size_t n);
     virtual size_t commit_segments();
 
@@ -59,9 +70,11 @@ public:
 
 private:
     size_t append_to_pool(const pstring& ps);
+
 private:
     ::std::vector<pstring> m_strings;
     ::std::string m_segment_buffer;
+    segment_format m_segment_format;
     str_index_map_type m_set;
 };
 
