@@ -494,6 +494,20 @@ private:
     size_t m_unique_count;
 };
 
+class append_each_segment : public unary_function<pstring, void>
+{
+public:
+    append_each_segment(model::shared_strings_base& ssb) :
+        m_strings(ssb) {}
+
+    void operator() (const pstring& ps)
+    {
+        m_strings.append_segment(ps.get(), ps.size());
+    }
+private:
+    model::shared_strings_base& m_strings;
+};
+
 }
 
 xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, model::shared_strings_base* strings) :
@@ -610,12 +624,9 @@ bool xlsx_shared_strings_context::end_element(xmlns_token_t ns, xml_token_t name
         {
             if (m_in_segments)
             {
-                vector<pstring>::const_iterator itr = m_current_str_runs.begin(), itr_end = m_current_str_runs.end();
-                for (; itr != itr_end; ++itr)
-                {
-                    const pstring& ps = *itr;
-                    mp_strings->append_segment(ps.get(), ps.size());
-                }
+                for_each(
+                    m_current_str_runs.begin(), m_current_str_runs.end(), 
+                    append_each_segment(*mp_strings));
                 mp_strings->commit_segments();
             }
             else
