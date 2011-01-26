@@ -37,10 +37,10 @@ using namespace std;
 
 namespace orcus { namespace model {
 
-shared_strings::segment_format::segment_format() :
+shared_strings::format_run::format_run() :
     pos(0), size(0), bold(false), italic(false) {}
 
-void shared_strings::segment_format::reset()
+void shared_strings::format_run::reset()
 {
     pos = 0;
     size = 0;
@@ -48,7 +48,7 @@ void shared_strings::segment_format::reset()
     italic = false;
 }
 
-bool shared_strings::segment_format::formatted() const
+bool shared_strings::format_run::formatted() const
 {
     if (bold || italic)
         return true;
