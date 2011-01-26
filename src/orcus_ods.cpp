@@ -167,6 +167,7 @@ int main(int argc, char** argv)
     app.read_file(argv[1], "out.html");
     gsf_shutdown();
     doc->dump();
+    pstring::intern::dispose();
 
     return EXIT_SUCCESS;
 }
