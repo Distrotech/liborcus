@@ -27,29 +27,48 @@
 
 #include "orcus/model/shared_strings.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/global.hpp"
 
 #include <iostream>
 #include <algorithm>
+#include <cassert>
 
 using namespace std;
 
 namespace orcus { namespace model {
 
 shared_strings::segment_format::segment_format() :
-    bold(false), italic(false) {}
+    pos(0), size(0), bold(false), italic(false) {}
 
 void shared_strings::segment_format::reset()
 {
+    pos = 0;
+    size = 0;
     bold = false;
     italic = false;
 }
 
-shared_strings::shared_strings()
+bool shared_strings::segment_format::formatted() const
+{
+    if (bold || italic)
+        return true;
+
+    return false;
+}
+
+shared_strings::shared_strings() :
+    mp_cur_format_runs(NULL)
 {
 }
 
 shared_strings::~shared_strings()
 {
+    for_each(m_formats.begin(), m_formats.end(), 
+             delete_map_object<segment_formats_type>());
+
+    // This pointer should be NULL.
+    assert(!mp_cur_format_runs);
+    delete mp_cur_format_runs;
 }
 
 size_t shared_strings::append(const char* s, size_t n)
@@ -94,25 +113,46 @@ const pstring& shared_strings::get(size_t index) const
 
 void shared_strings::set_segment_bold(bool b)
 {
-    m_segment_format.bold = b;
+    m_cur_format.bold = b;
 }
 
 void shared_strings::set_segment_italic(bool b)
 {
-    m_segment_format.italic = b;
+    m_cur_format.italic = b;
 }
 
 void shared_strings::append_segment(const char* s, size_t n)
 {
-    m_segment_buffer += string(s, n);
-    m_segment_format.reset();
+    if (!n)
+        return;
+
+    size_t start_pos = m_cur_segment_string.size();
+    m_cur_segment_string += string(s, n);
+
+    if (m_cur_format.formatted())
+    {
+        // This segment is formatted.
+
+        // Record the position and size of the format run.
+        m_cur_format.pos = start_pos;
+        m_cur_format.size = n;
+
+        if (!mp_cur_format_runs)
+            mp_cur_format_runs = new format_runs_type;
+    
+        mp_cur_format_runs->push_back(m_cur_format);
+        m_cur_format.reset();
+    }
 }
 
 size_t shared_strings::commit_segments()
 {
-    pstring ps = pstring(m_segment_buffer.data(), m_segment_buffer.size()).intern();
-    m_segment_buffer.clear();
-    return append_to_pool(ps);
+    pstring ps = pstring(m_cur_segment_string.data(), m_cur_segment_string.size()).intern();
+    m_cur_segment_string.clear();
+    size_t sindex = append_to_pool(ps);
+    m_formats.insert(segment_formats_type::value_type(sindex, mp_cur_format_runs));
+    mp_cur_format_runs = NULL;
+    return sindex;
 }
 
 namespace {

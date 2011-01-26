@@ -28,7 +28,6 @@
 #ifndef __ORCUS_GLOBAL_HPP__
 #define __ORCUS_GLOBAL_HPP__
 
-#include <pthread.h>
 #include <exception>
 #include <string>
 
@@ -63,6 +62,19 @@ void print_element(xmlns_token_t ns, xml_token_t name);
  * Print attributes to stdout for debugging purposes. 
  */
 void print_attrs(const tokens& tokens, const xml_attrs_t& attrs);
+
+/**
+ * Function object for deleting objects that are stored in map container as
+ * pointers.
+ */
+template<typename T>
+struct delete_map_object : public ::std::unary_function<typename T::value_type, void>
+{
+    void operator() (typename T::value_type& v)
+    {
+        delete v.second;
+    }
+};
 
 }
 

@@ -35,24 +35,33 @@
 #include <vector>
 #include <unordered_map>
 
+#include <boost/noncopyable.hpp>
+
 namespace orcus { namespace model {
 
 /**
  * This class handles global pool of string instances.
  */
-class shared_strings : public shared_strings_base
+class shared_strings : public shared_strings_base, private ::boost::noncopyable
 {
-    typedef ::std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
-
     struct segment_format
     {
-        bool bold;
-        bool italic;
+        size_t pos;
+        size_t size;
+        bool bold:1;
+        bool italic:1;
         segment_format();
 
         void reset();
+        bool formatted() const;
     };
+
+    typedef ::std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
+
 public:
+    typedef ::std::vector<segment_format> format_runs_type;
+    typedef ::std::unordered_map<size_t, format_runs_type*> segment_formats_type;
+
     shared_strings();
     virtual ~shared_strings();
 
@@ -72,9 +81,20 @@ private:
     size_t append_to_pool(const pstring& ps);
 
 private:
+    /**
+     * String pool, contains only simple unformatted strings.
+     */
     ::std::vector<pstring> m_strings;
-    ::std::string m_segment_buffer;
-    segment_format m_segment_format;
+
+    /**
+     * Container for all format runs of all formatted strings.  Format runs 
+     * are mapped with the string IDs.
+     */
+    segment_formats_type m_formats;
+
+    ::std::string       m_cur_segment_string;
+    segment_format      m_cur_format;
+    format_runs_type*   mp_cur_format_runs;
     str_index_map_type m_set;
 };
 
