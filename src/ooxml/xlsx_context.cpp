@@ -667,7 +667,6 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
             const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t font_count = strtoul(ps.str().c_str(), NULL, 10);
-            cout << "font count: " << font_count << endl;
             mp_styles->set_font_count(font_count);
         }
         break;
