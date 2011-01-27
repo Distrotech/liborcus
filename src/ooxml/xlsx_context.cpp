@@ -807,6 +807,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         break;
         case XML_cellXfs:
         {
+            // Collection of un-named cell formats used in the document.
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
             const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t n = strtoul(ps.str().c_str(), NULL, 10);
@@ -823,6 +824,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         break;
         case XML_cellStyle:
         {
+            // named cell style, some of which are built-in such as 'Normal'.
             xml_element_expected(parent, XMLNS_xlsx, XML_cellStyles);
         }
         break;

@@ -164,6 +164,21 @@ void styles::commit_border()
     m_cur_border.reset();
 }
 
+void styles::set_cell_style_xf_count(size_t n) {}
+void styles::set_cell_style_xf_number_format(size_t index) {}
+void styles::set_cell_style_xf_font(size_t index) {}
+void styles::set_cell_style_xf_fill(size_t index) {}
+void styles::set_cell_style_xf_border(size_t index) {}
+void styles::commit_cell_style_xf() {}
+
+void styles::set_cell_xf_count(size_t n) {}
+void styles::set_cell_xf_number_format(size_t index) {}
+void styles::set_cell_xf_font(size_t index) {}
+void styles::set_cell_xf_fill(size_t index) {}
+void styles::set_cell_xf_border(size_t index) {}
+void styles::set_cell_xf_style_xf(size_t index) {}
+void styles::commit_cell_xf() {}
+
 const styles::font* styles::get_font(size_t index) const
 {
     if (index >= m_fonts.size())

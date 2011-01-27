@@ -101,6 +101,21 @@ public:
     virtual void set_border_count(size_t n) = 0;
     virtual void set_border_style(border_direction_t dir, const char* s, size_t n) = 0;
     virtual void commit_border() = 0;
+
+    virtual void set_cell_style_xf_count(size_t n) = 0;
+    virtual void set_cell_style_xf_number_format(size_t index) = 0;
+    virtual void set_cell_style_xf_font(size_t index) = 0;
+    virtual void set_cell_style_xf_fill(size_t index) = 0;
+    virtual void set_cell_style_xf_border(size_t index) = 0;
+    virtual void commit_cell_style_xf() = 0;
+
+    virtual void set_cell_xf_count(size_t n) = 0;
+    virtual void set_cell_xf_number_format(size_t index) = 0;
+    virtual void set_cell_xf_font(size_t index) = 0;
+    virtual void set_cell_xf_fill(size_t index) = 0;
+    virtual void set_cell_xf_border(size_t index) = 0;
+    virtual void set_cell_xf_style_xf(size_t index) = 0;
+    virtual void commit_cell_xf() = 0;
 };
 
 inline styles_base::~styles_base() {}
