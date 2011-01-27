@@ -623,8 +623,8 @@ public:
 
 }
 
-xlsx_styles_context::xlsx_styles_context(const tokens& tokens) :
-    xml_context_base(tokens) {}
+xlsx_styles_context::xlsx_styles_context(const tokens& tokens, model::styles_base* styles) :
+    xml_context_base(tokens), mp_styles(styles) {}
 
 xlsx_styles_context::~xlsx_styles_context() {}
 

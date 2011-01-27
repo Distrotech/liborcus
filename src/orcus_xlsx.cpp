@@ -476,7 +476,7 @@ void orcus_xlsx::read_styles(const char* file_name)
 
     xml_stream_parser parser(ooxml_tokens, content, size, file_name);
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-        new xml_simple_stream_handler(new xlsx_styles_context(ooxml_tokens)));
+        new xml_simple_stream_handler(new xlsx_styles_context(ooxml_tokens, mp_factory->get_styles())));
 //  xlsx_styles_context& context =
 //      static_cast<xlsx_styles_context&>(handler->get_context());
     parser.set_handler(handler.get());

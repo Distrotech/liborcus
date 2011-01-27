@@ -40,6 +40,7 @@ namespace orcus {
 namespace model {
     class sheet_base;
     class shared_strings_base;
+    class styles_base;
 }
 
 /**
@@ -126,7 +127,7 @@ private:
 class xlsx_styles_context : public xml_context_base
 {
 public:
-    xlsx_styles_context(const tokens& tokens);
+    xlsx_styles_context(const tokens& tokens, model::styles_base* styles);
     virtual ~xlsx_styles_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -136,6 +137,9 @@ public:
     virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_token_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
+
+private:
+    model::styles_base* mp_styles;
 };
 
 }
