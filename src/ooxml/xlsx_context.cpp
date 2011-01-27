@@ -797,6 +797,43 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
             for_each(attrs.begin(), attrs.end(), func);
         }
         break;
+        case XML_cellStyleXfs:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
+            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            size_t n = strtoul(ps.str().c_str(), NULL, 10);
+            cout << "cell style xfs count: " << n << endl;
+        }
+        break;
+        case XML_cellXfs:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
+            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            size_t n = strtoul(ps.str().c_str(), NULL, 10);
+            cout << "cell xfs count: " << n << endl;
+        }
+        break;
+        case XML_cellStyles:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
+            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            size_t n = strtoul(ps.str().c_str(), NULL, 10);
+            cout << "cell styles count: " << n << endl;
+        }
+        break;
+        case XML_cellStyle:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_cellStyles);
+        }
+        break;
+        case XML_xf:
+        {
+            xml_elem_stack_t allowed;
+            allowed.push_back(xml_elem_stack_t::value_type(XMLNS_xlsx, XML_cellXfs));
+            allowed.push_back(xml_elem_stack_t::value_type(XMLNS_xlsx, XML_cellStyleXfs));
+            xml_element_expected(parent, allowed);
+        }
+        break;
         default:
             warn_unhandled();
     }
