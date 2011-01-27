@@ -42,6 +42,15 @@ void styles::font::reset()
     italic = false;
 }
 
+styles::fill::fill()
+{
+}
+
+void styles::fill::reset()
+{
+    pattern_type.clear();
+}
+
 styles::styles()
 {
 }
@@ -53,12 +62,6 @@ styles::~styles()
 void styles::set_font_count(size_t n)
 {
     m_fonts.reserve(n);
-}
-
-void styles::commit_font()
-{
-    m_fonts.push_back(m_cur_font);
-    m_cur_font.reset();
 }
 
 void styles::set_font_bold(bool b)
@@ -79,6 +82,36 @@ void styles::set_font_name(const char* s, size_t n)
 void styles::set_font_size(double point)
 {
     m_cur_font.size = point;
+}
+
+void styles::commit_font()
+{
+    m_fonts.push_back(m_cur_font);
+    m_cur_font.reset();
+}
+
+void styles::set_fill_count(size_t n)
+{
+    m_fills.reserve(n);
+}
+
+void styles::set_fill_pattern_type(const char* s, size_t n)
+{
+    m_cur_fill.pattern_type = pstring(s, n).intern();
+}
+
+void styles::commit_fill()
+{
+    m_fills.push_back(m_cur_fill);
+    m_cur_fill.reset();
+}
+
+const styles::font* styles::get_font(size_t index) const
+{
+    if (index >= m_fonts.size())
+        return NULL;
+
+    return &m_fonts[index];
 }
 
 }}

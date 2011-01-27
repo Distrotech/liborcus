@@ -706,6 +706,24 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         case XML_scheme:
             xml_element_expected(parent, XMLNS_xlsx, XML_font);
         break;
+        case XML_fills:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
+            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            size_t fill_count = strtoul(ps.str().c_str(), NULL, 10);
+            mp_styles->set_fill_count(fill_count);
+        }
+        break;
+        case XML_fill:
+            xml_element_expected(parent, XMLNS_xlsx, XML_fills);
+        break;
+        case XML_patternFill:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_fill);
+            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_patternType)).get_value();
+            mp_styles->set_fill_pattern_type(ps.get(), ps.size());
+        }
+        break;
         default:
             warn_unhandled();
     }
@@ -713,6 +731,15 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
 
 bool xlsx_styles_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
+    switch (name)
+    {
+        case XML_font:
+            mp_styles->commit_font();
+        break;
+        case XML_fill:
+            mp_styles->commit_fill();
+        break;
+    }
     return pop_stack(ns, name);
 }
 

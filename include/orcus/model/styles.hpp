@@ -46,7 +46,13 @@ public:
         bool italic:1;
 
         font();
+        void reset();
+    };
 
+    struct fill
+    {
+        pstring pattern_type;
+        fill();
         void reset();
     };
 
@@ -60,9 +66,17 @@ public:
     virtual void set_font_size(double point);
     virtual void commit_font();
 
+    virtual void set_fill_count(size_t n);
+    virtual void set_fill_pattern_type(const char* s, size_t n);
+    virtual void commit_fill();
+
+    const font* get_font(size_t index) const;
+
 private:
     font m_cur_font;
+    fill m_cur_fill;
     ::std::vector<font> m_fonts;
+    ::std::vector<fill> m_fills;
 };
 
 }}
