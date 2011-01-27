@@ -582,9 +582,7 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
             // font size
             xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
             const pstring& s = for_each(attrs.begin(), attrs.end(), val_attr_getter()).get_value();
-            cout << "s = " << s << endl;
             double point = strtod(s.str().c_str(), NULL);
-            cout << "point = " << point << endl;
             mp_strings->set_segment_font_size(point);
         }
         break;
