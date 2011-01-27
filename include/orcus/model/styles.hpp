@@ -52,7 +52,28 @@ public:
     struct fill
     {
         pstring pattern_type;
+
         fill();
+        void reset();
+    };
+
+    struct border_attrs
+    {
+        pstring style;
+
+        border_attrs();
+        void reset();
+    };
+
+    struct border
+    {
+        border_attrs top;
+        border_attrs bottom;
+        border_attrs left;
+        border_attrs right;
+        border_attrs diagonal;
+
+        border();
         void reset();
     };
 
@@ -70,13 +91,19 @@ public:
     virtual void set_fill_pattern_type(const char* s, size_t n);
     virtual void commit_fill();
 
+    virtual void set_border_count(size_t n);
+    virtual void set_border_style(border_direction_t dir, const char* s, size_t n);
+    virtual void commit_border();
+
     const font* get_font(size_t index) const;
 
 private:
     font m_cur_font;
     fill m_cur_fill;
+    border m_cur_border;
     ::std::vector<font> m_fonts;
     ::std::vector<fill> m_fills;
+    ::std::vector<border> m_borders;
 };
 
 }}

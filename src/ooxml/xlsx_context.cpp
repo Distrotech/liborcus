@@ -621,6 +621,25 @@ public:
         root_element_attr_parser(SCH_xlsx_main, XMLNS_xlsx) {}
 };
 
+class border_attr_parser : public unary_function<xml_attr_t, void>
+{
+    model::border_direction_t m_dir;
+    model::styles_base& m_styles;
+public:
+    border_attr_parser(model::border_direction_t dir, model::styles_base& styles) : 
+        m_dir(dir), m_styles(styles) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_style:
+                m_styles.set_border_style(m_dir, attr.value.get(), attr.value.size());
+            break;
+        }
+    }
+};
+
 }
 
 xlsx_styles_context::xlsx_styles_context(const tokens& tokens, model::styles_base* styles) :
@@ -690,7 +709,16 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         }
         break;
         case XML_color:
-            xml_element_expected(parent, XMLNS_xlsx, XML_font);
+        {
+            // The color element can occur under various parent elements.
+            xml_elem_stack_t allowed;
+            allowed.push_back(xml_token_pair_t(XMLNS_xlsx, XML_font));
+            allowed.push_back(xml_token_pair_t(XMLNS_xlsx, XML_top));
+            allowed.push_back(xml_token_pair_t(XMLNS_xlsx, XML_bottom));
+            allowed.push_back(xml_token_pair_t(XMLNS_xlsx, XML_left));
+            allowed.push_back(xml_token_pair_t(XMLNS_xlsx, XML_right));
+            xml_element_expected(parent, allowed);
+        }
         break;
         case XML_name:
         {
@@ -723,6 +751,52 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
             mp_styles->set_fill_pattern_type(ps.get(), ps.size());
         }
         break;
+        case XML_borders:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
+            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            size_t border_count = strtoul(ps.str().c_str(), NULL, 10);
+            mp_styles->set_border_count(border_count);
+        }
+        break;
+        case XML_border:
+            xml_element_expected(parent, XMLNS_xlsx, XML_borders);
+        break;
+        case XML_top:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_border);
+            border_attr_parser func(model::border_top, *mp_styles);
+            for_each(attrs.begin(), attrs.end(), func);
+        }
+        break;
+        case XML_bottom:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_border);
+            border_attr_parser func(model::border_bottom, *mp_styles);
+            for_each(attrs.begin(), attrs.end(), func);
+        }
+        break;
+        case XML_left:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_border);
+            border_attr_parser func(model::border_left, *mp_styles);
+            for_each(attrs.begin(), attrs.end(), func);
+        }
+        break;
+        case XML_right:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_border);
+            border_attr_parser func(model::border_right, *mp_styles);
+            for_each(attrs.begin(), attrs.end(), func);
+        }
+        break;
+        case XML_diagonal:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_border);
+            border_attr_parser func(model::border_diagonal, *mp_styles);
+            for_each(attrs.begin(), attrs.end(), func);
+        }
+        break;
         default:
             warn_unhandled();
     }
@@ -742,8 +816,9 @@ bool xlsx_styles_context::end_element(xmlns_token_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void xlsx_styles_context::characters(const pstring& str)
+void xlsx_styles_context::characters(const pstring& /*str*/)
 {
+    // not used in the styles.xml part.
 }
 
 }

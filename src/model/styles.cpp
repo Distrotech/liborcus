@@ -51,6 +51,27 @@ void styles::fill::reset()
     pattern_type.clear();
 }
 
+styles::border_attrs::border_attrs()
+{
+}
+
+void styles::border_attrs::reset()
+{
+    style.clear();
+}
+
+styles::border::border()
+{
+}
+
+void styles::border::reset()
+{
+    top.reset();
+    bottom.reset();
+    left.reset();
+    right.reset();
+}
+
 styles::styles()
 {
 }
@@ -104,6 +125,43 @@ void styles::commit_fill()
 {
     m_fills.push_back(m_cur_fill);
     m_cur_fill.reset();
+}
+
+void styles::set_border_count(size_t n)
+{
+    m_borders.reserve(n);
+}
+
+void styles::set_border_style(border_direction_t dir, const char* s, size_t n)
+{
+    border_attrs* p = NULL;
+    switch (dir)
+    {
+        case border_top:
+            p = &m_cur_border.top;
+        break;
+        case border_bottom:
+            p = &m_cur_border.bottom;
+        break;
+        case border_left:
+            p = &m_cur_border.left;
+        break;
+        case border_right:
+            p = &m_cur_border.right;
+        break;
+        case border_diagonal:
+            p = &m_cur_border.diagonal;
+        break;
+    }
+
+    if (p)
+        p->style = pstring(s, n).intern();
+}
+
+void styles::commit_border()
+{
+    m_borders.push_back(m_cur_border);
+    m_cur_border.reset();
 }
 
 const styles::font* styles::get_font(size_t index) const

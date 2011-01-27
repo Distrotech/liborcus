@@ -97,6 +97,10 @@ public:
     virtual void set_fill_count(size_t n) = 0;
     virtual void set_fill_pattern_type(const char* s, size_t n) = 0;
     virtual void commit_fill() = 0;
+
+    virtual void set_border_count(size_t n) = 0;
+    virtual void set_border_style(border_direction_t dir, const char* s, size_t n) = 0;
+    virtual void commit_border() = 0;
 };
 
 inline styles_base::~styles_base() {}

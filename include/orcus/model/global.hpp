@@ -35,6 +35,15 @@ namespace orcus { namespace model {
 typedef uint32_t row_t;
 typedef uint32_t col_t;
 
+enum border_direction_t
+{
+    border_top,
+    border_bottom,
+    border_left,
+    border_right,
+    border_diagonal
+};
+
 }}
 
 #endif
