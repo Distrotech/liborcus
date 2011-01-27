@@ -71,7 +71,7 @@ public:
 
     virtual void set_segment_bold(bool b) = 0;
     virtual void set_segment_italic(bool b) = 0;
-    virtual void set_segment_font(const char* s, size_t n) = 0;
+    virtual void set_segment_font_name(const char* s, size_t n) = 0;
     virtual void set_segment_font_size(double point) = 0;
     virtual void append_segment(const char* s, size_t n) = 0;
     virtual size_t commit_segments() = 0;
@@ -86,6 +86,13 @@ class styles_base
 {
 public:
     virtual ~styles_base() = 0;
+
+    virtual void set_font_count(size_t n) = 0;
+    virtual void set_font_bold(bool b) = 0;
+    virtual void set_font_italic(bool b) = 0;
+    virtual void set_font_name(const char* s, size_t n) = 0;
+    virtual void set_font_size(double point) = 0;
+    virtual void commit_font() = 0;
 };
 
 inline styles_base::~styles_base() {}

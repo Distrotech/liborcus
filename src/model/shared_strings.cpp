@@ -139,7 +139,7 @@ void shared_strings::set_segment_italic(bool b)
     m_cur_format.italic = b;
 }
 
-void shared_strings::set_segment_font(const char* s, size_t n)
+void shared_strings::set_segment_font_name(const char* s, size_t n)
 {
     m_cur_format.font = pstring(s, n).intern();
 }

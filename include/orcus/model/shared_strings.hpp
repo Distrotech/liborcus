@@ -74,7 +74,7 @@ public:
 
     virtual void set_segment_bold(bool b);
     virtual void set_segment_italic(bool b);
-    virtual void set_segment_font(const char* s, size_t n);
+    virtual void set_segment_font_name(const char* s, size_t n);
     virtual void set_segment_font_size(double point);
     virtual void append_segment(const char* s, size_t n);
     virtual size_t commit_segments();

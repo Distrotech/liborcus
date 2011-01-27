@@ -37,4 +37,28 @@ styles::~styles()
 {
 }
 
+void styles::set_font_count(size_t n)
+{
+}
+
+void styles::commit_font()
+{
+}
+
+void styles::set_font_bold(bool b)
+{
+}
+
+void styles::set_font_italic(bool b)
+{
+}
+
+void styles::set_font_name(const char* s, size_t n)
+{
+}
+
+void styles::set_font_size(double point)
+{
+}
+
 }}

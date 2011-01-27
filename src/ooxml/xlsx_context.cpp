@@ -547,7 +547,7 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
             // font
             xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
             const pstring& font = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
-            mp_strings->set_segment_font(font.get(), font.size());
+            mp_strings->set_segment_font_name(font.get(), font.size());
         }
         break;
         case XML_family:
@@ -668,6 +668,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
             const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t font_count = strtoul(ps.str().c_str(), NULL, 10);
             cout << "font count: " << font_count << endl;
+            mp_styles->set_font_count(font_count);
         }
         break;
         case XML_font:
@@ -675,18 +676,29 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         break;
         case XML_b:
             xml_element_expected(parent, XMLNS_xlsx, XML_font);
+            mp_styles->set_font_bold(true);
         break;
         case XML_i:
             xml_element_expected(parent, XMLNS_xlsx, XML_font);
+            mp_styles->set_font_italic(true);
         break;
         case XML_sz:
+        {
             xml_element_expected(parent, XMLNS_xlsx, XML_font);
+            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
+            double font_size = strtod(ps.str().c_str(), NULL);
+            mp_styles->set_font_size(font_size);
+        }
         break;
         case XML_color:
             xml_element_expected(parent, XMLNS_xlsx, XML_font);
         break;
         case XML_name:
+        {
             xml_element_expected(parent, XMLNS_xlsx, XML_font);
+            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
+            mp_styles->set_font_name(ps.get(), ps.size());
+        }
         break;
         case XML_family:
             xml_element_expected(parent, XMLNS_xlsx, XML_font);

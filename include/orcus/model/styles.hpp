@@ -36,7 +36,14 @@ class styles : public styles_base
 {
 public:
     styles();
-    ~styles();
+    virtual ~styles();
+
+    virtual void set_font_count(size_t n);
+    virtual void set_font_bold(bool b);
+    virtual void set_font_italic(bool b);
+    virtual void set_font_name(const char* s, size_t n);
+    virtual void set_font_size(double point);
+    virtual void commit_font();
 };
 
 }}
