@@ -494,6 +494,24 @@ private:
     size_t m_unique_count;
 };
 
+/**
+ * Use this when we need to just get the value of a "val" attribute.
+ */
+class val_attr_getter : public unary_function<xml_attr_t, void>
+{
+    double m_value;
+public:
+    val_attr_getter() : m_value(0) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        if (attr.name == XML_val)
+            m_value = strtod(attr.value.str().c_str(), NULL);
+    }
+
+    double get_value() const { return m_value; }
+};
+
 }
 
 xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, model::shared_strings_base* strings) :
@@ -560,8 +578,12 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
             xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
         break;
         case XML_sz:
+        {
             // font size
             xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
+            double point = for_each(attrs.begin(), attrs.end(), val_attr_getter()).get_value();
+            mp_strings->set_segment_font_size(point);
+        }
         break;
         case XML_color:
             // data bar color

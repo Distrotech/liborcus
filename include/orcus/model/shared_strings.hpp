@@ -51,6 +51,7 @@ public:
     {
         size_t pos;
         size_t size;
+        double font_size;
         bool bold:1;
         bool italic:1;
         format_run();
@@ -72,6 +73,7 @@ public:
 
     virtual void set_segment_bold(bool b);
     virtual void set_segment_italic(bool b);
+    virtual void set_segment_font_size(double point);
     virtual void append_segment(const char* s, size_t n);
     virtual size_t commit_segments();
 

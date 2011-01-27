@@ -307,6 +307,13 @@ void print_formatted_text(_OSTREAM& strm, const pstring& text, const shared_stri
         if (run.italic)
             style += "font-style: italic;";
 
+        if (run.font_size)
+        {
+            ostringstream os;
+            os << "font-size: " << run.font_size << "pt;";
+            style += os.str();
+        }
+
         if (style.empty())
             strm << string(&text[pos], run.size);
         else
@@ -340,12 +347,12 @@ void sheet::dump_html(const string& filepath) const
         return;
     }
 
-    const char* p_html = "html";
+    const char* p_html  = "html";
     const char* p_table = "table";
-    const char* p_tr   = "tr";
-    const char* p_td   = "td";
-    const char* p_table_attrs = "style=\"border:1px solid black;\"";
-    const char* p_empty_cell_attrs = "style=\"border:1px solid black; color:white;\"";
+    const char* p_tr    = "tr";
+    const char* p_td    = "td";
+    const char* p_table_attrs      = "style=\"border:1px solid rgb(220,220,220); border-collapse:collapse\"";
+    const char* p_empty_cell_attrs = "style=\"border:1px solid rgb(220,220,220); color:white;\"";
 
     {
         elem root(file, p_html);
@@ -360,8 +367,20 @@ void sheet::dump_html(const string& filepath) const
     
         elem table(file, p_table, p_table_attrs);
         sheet_type::const_iterator itr = m_sheet.begin(), itr_end = m_sheet.end();
-        for (; itr != itr_end; ++itr)
+        
+        for (row_t row = 0; itr != itr_end; ++itr, ++row)
         {
+            row_t this_row = itr->first;
+            for (; row < this_row; ++row)
+            {
+                // Insert empty row(s).
+                elem tr(file, p_tr, p_table_attrs);
+                for (col_t col = 0; col < col_count; ++col)
+                {
+                    elem td(file, p_td, p_empty_cell_attrs);
+                    file << '-'; // empty cell.
+                }
+            }
             const row_type& row_con = *itr->second;
             row_type::const_iterator itr_row = row_con.begin(), itr_row_end = row_con.end();
             elem tr(file, p_tr, p_table_attrs);
@@ -398,6 +417,7 @@ void sheet::dump_html(const string& filepath) const
                     break;
                 }
             }
+
             for (; col < col_count; ++col)
             {
                 elem td(file, p_td, p_empty_cell_attrs);
