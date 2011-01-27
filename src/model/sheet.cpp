@@ -264,14 +264,14 @@ public:
         m_strm(strm), m_name(name)
     {
         if (attr)
-            m_strm << '<' << m_name << ' ' << attr << '>' << endl;
+            m_strm << '<' << m_name << ' ' << attr << '>';
         else
-            m_strm << '<' << m_name << '>' << endl;
+            m_strm << '<' << m_name << '>';
     }
 
     ~html_elem()
     {
-        m_strm << "</" << m_name << '>' << endl;
+        m_strm << "</" << m_name << '>';
     }
 
 private:
@@ -306,6 +306,9 @@ void print_formatted_text(_OSTREAM& strm, const pstring& text, const shared_stri
             style += "font-weight: bold;";
         if (run.italic)
             style += "font-style: italic;";
+
+        if (!run.font.empty())
+            style += "font-family: " + run.font.str() + ";";
 
         if (run.font_size)
         {

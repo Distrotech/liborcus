@@ -243,6 +243,9 @@ test.ou: orcus-ods
 test.xlsx: orcus-xlsx
 	./orcus-xlsx ./test/test.xlsx
 
+test.xlsx.gdb: orcus-xlsx
+	gdb --args ./orcus-xlsx ./test/test.xlsx
+
 test.xlsx.mem: orcus-xlsx
 	valgrind --tool=memcheck --leak-check=full ./orcus-xlsx ./test/test.xlsx
 

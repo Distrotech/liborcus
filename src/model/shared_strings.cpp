@@ -46,6 +46,7 @@ void shared_strings::format_run::reset()
 {
     pos = 0;
     size = 0;
+    font.clear();
     font_size = 0;
     bold = false;
     italic = false;
@@ -57,6 +58,9 @@ bool shared_strings::format_run::formatted() const
         return true;
 
     if (font_size)
+        return true;
+
+    if (!font.empty())
         return true;
 
     return false;
@@ -133,6 +137,11 @@ void shared_strings::set_segment_bold(bool b)
 void shared_strings::set_segment_italic(bool b)
 {
     m_cur_format.italic = b;
+}
+
+void shared_strings::set_segment_font(const char* s, size_t n)
+{
+    m_cur_format.font = pstring(s, n).intern();
 }
 
 void shared_strings::set_segment_font_size(double point)

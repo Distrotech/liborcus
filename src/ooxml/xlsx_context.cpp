@@ -499,17 +499,17 @@ private:
  */
 class val_attr_getter : public unary_function<xml_attr_t, void>
 {
-    double m_value;
+    pstring m_value;
 public:
-    val_attr_getter() : m_value(0) {}
+    val_attr_getter() {}
 
     void operator() (const xml_attr_t& attr)
     {
         if (attr.name == XML_val)
-            m_value = strtod(attr.value.str().c_str(), NULL);
+            m_value = attr.value;
     }
 
-    double get_value() const { return m_value; }
+    const pstring& get_value() const { return m_value; }
 };
 
 }
@@ -581,7 +581,10 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
         {
             // font size
             xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
-            double point = for_each(attrs.begin(), attrs.end(), val_attr_getter()).get_value();
+            const pstring& s = for_each(attrs.begin(), attrs.end(), val_attr_getter()).get_value();
+            cout << "s = " << s << endl;
+            double point = strtod(s.str().c_str(), NULL);
+            cout << "point = " << point << endl;
             mp_strings->set_segment_font_size(point);
         }
         break;
@@ -590,8 +593,12 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
             xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
         break;
         case XML_rFont:
+        {
             // font
             xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
+            const pstring& font = for_each(attrs.begin(), attrs.end(), val_attr_getter()).get_value();
+            mp_strings->set_segment_font(font.get(), font.size());
+        }
         break;
         case XML_family:
             // font family
