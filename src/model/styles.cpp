@@ -85,6 +85,16 @@ void styles::xf::reset()
     *this = xf();
 }
 
+styles::cell_style::cell_style() :
+    xf(0), builtin(0)
+{
+}
+
+void styles::cell_style::reset()
+{
+    *this = cell_style();
+}
+
 styles::styles()
 {
 }
@@ -177,20 +187,98 @@ void styles::commit_border()
     m_cur_border.reset();
 }
 
-void styles::set_cell_style_xf_count(size_t n) {}
-void styles::set_cell_style_xf_number_format(size_t index) {}
-void styles::set_cell_style_xf_font(size_t index) {}
-void styles::set_cell_style_xf_fill(size_t index) {}
-void styles::set_cell_style_xf_border(size_t index) {}
-void styles::commit_cell_style_xf() {}
+void styles::set_cell_style_xf_count(size_t n)
+{
+    m_cell_style_formats.reserve(n);
+}
 
-void styles::set_cell_xf_count(size_t n) {}
-void styles::set_cell_xf_number_format(size_t index) {}
-void styles::set_cell_xf_font(size_t index) {}
-void styles::set_cell_xf_fill(size_t index) {}
-void styles::set_cell_xf_border(size_t index) {}
-void styles::set_cell_xf_style_xf(size_t index) {}
-void styles::commit_cell_xf() {}
+void styles::set_cell_style_xf_number_format(size_t index)
+{
+    m_cur_cell_style_format.num_format = index;
+}
+
+void styles::set_cell_style_xf_font(size_t index)
+{
+    m_cur_cell_style_format.font = index;
+}
+
+void styles::set_cell_style_xf_fill(size_t index)
+{
+    m_cur_cell_style_format.fill = index;
+}
+
+void styles::set_cell_style_xf_border(size_t index)
+{
+    m_cur_cell_style_format.border = index;
+}
+
+void styles::commit_cell_style_xf()
+{
+    m_cell_style_formats.push_back(m_cur_cell_style_format);
+    m_cur_cell_style_format.reset();
+}
+
+void styles::set_cell_xf_count(size_t n)
+{
+    m_cell_formats.reserve(n);
+}
+
+void styles::set_cell_xf_number_format(size_t index)
+{
+    m_cur_cell_format.num_format = index;
+}
+
+void styles::set_cell_xf_font(size_t index)
+{
+    m_cur_cell_format.font = index;
+}
+
+void styles::set_cell_xf_fill(size_t index)
+{
+    m_cur_cell_format.fill = index;
+}
+
+void styles::set_cell_xf_border(size_t index)
+{
+    m_cur_cell_format.border = index;
+}
+
+void styles::set_cell_xf_style_xf(size_t index)
+{
+    m_cur_cell_format.style_xf = index;
+}
+
+void styles::commit_cell_xf()
+{
+    m_cell_formats.push_back(m_cur_cell_format);
+    m_cur_cell_format.reset();
+}
+
+void styles::set_cell_style_count(size_t n)
+{
+    m_cell_styles.reserve(n);
+}
+
+void styles::set_cell_style_name(const char* s, size_t n)
+{
+    m_cur_cell_style.name = pstring(s, n).intern();
+}
+
+void styles::set_cell_style_xf(size_t index)
+{
+    m_cur_cell_style.xf = index;
+}
+
+void styles::set_cell_style_builtin(size_t index)
+{
+    m_cur_cell_style.builtin = index;
+}
+
+void styles::commit_cell_style()
+{
+    m_cell_styles.push_back(m_cur_cell_style);
+    m_cur_cell_style.reset();
+}
 
 const styles::font* styles::get_font(size_t index) const
 {

@@ -116,6 +116,12 @@ public:
     virtual void set_cell_xf_border(size_t index) = 0;
     virtual void set_cell_xf_style_xf(size_t index) = 0;
     virtual void commit_cell_xf() = 0;
+
+    virtual void set_cell_style_count(size_t n) = 0;
+    virtual void set_cell_style_name(const char* s, size_t n) = 0;
+    virtual void set_cell_style_xf(size_t index) = 0;
+    virtual void set_cell_style_builtin(size_t index) = 0;
+    virtual void commit_cell_style() = 0;
 };
 
 inline styles_base::~styles_base() {}

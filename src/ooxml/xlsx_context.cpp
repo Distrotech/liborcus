@@ -802,7 +802,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
             const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t n = strtoul(ps.str().c_str(), NULL, 10);
-            cout << "cell style xfs count: " << n << endl;
+            mp_styles->set_cell_style_xf_count(n);
         }
         break;
         case XML_cellXfs:
@@ -811,7 +811,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
             const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t n = strtoul(ps.str().c_str(), NULL, 10);
-            cout << "cell xfs count: " << n << endl;
+            mp_styles->set_cell_xf_count(n);
         }
         break;
         case XML_cellStyles:

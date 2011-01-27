@@ -77,6 +77,9 @@ public:
         void reset();
     };
 
+    /**
+     * Cell format attributes
+     */
     struct xf
     {
         size_t num_format;      /// number format ID
@@ -91,6 +94,16 @@ public:
         bool apply_alignment;
 
         xf();
+        void reset();
+    };
+
+    struct cell_style
+    {
+        pstring name;
+        size_t xf;
+        size_t builtin;
+
+        cell_style();
         void reset();
     };
 
@@ -127,15 +140,28 @@ public:
     virtual void set_cell_xf_style_xf(size_t index);
     virtual void commit_cell_xf();
 
+    virtual void set_cell_style_count(size_t n);
+    virtual void set_cell_style_name(const char* s, size_t n);
+    virtual void set_cell_style_xf(size_t index);
+    virtual void set_cell_style_builtin(size_t index);
+    virtual void commit_cell_style();
+
     const font* get_font(size_t index) const;
 
 private:
     font m_cur_font;
     fill m_cur_fill;
     border m_cur_border;
+    xf m_cur_cell_style_format;
+    xf m_cur_cell_format;
+    cell_style m_cur_cell_style;
+
     ::std::vector<font> m_fonts;
     ::std::vector<fill> m_fills;
     ::std::vector<border> m_borders;
+    ::std::vector<xf> m_cell_style_formats;
+    ::std::vector<xf> m_cell_formats;
+    ::std::vector<cell_style> m_cell_styles;
 };
 
 }}
