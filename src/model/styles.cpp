@@ -29,6 +29,19 @@
 
 namespace orcus { namespace model {
 
+styles::font::font() :
+    size(0.0), bold(false), italic(false)
+{
+}
+
+void styles::font::reset()
+{
+    name.clear();
+    size = 0.0;
+    bold = false;
+    italic = false;
+}
+
 styles::styles()
 {
 }
@@ -39,26 +52,33 @@ styles::~styles()
 
 void styles::set_font_count(size_t n)
 {
+    m_fonts.reserve(n);
 }
 
 void styles::commit_font()
 {
+    m_fonts.push_back(m_cur_font);
+    m_cur_font.reset();
 }
 
 void styles::set_font_bold(bool b)
 {
+    m_cur_font.bold = b;
 }
 
 void styles::set_font_italic(bool b)
 {
+    m_cur_font.italic = b;
 }
 
 void styles::set_font_name(const char* s, size_t n)
 {
+    m_cur_font.name = pstring(s, n).intern();
 }
 
 void styles::set_font_size(double point)
 {
+    m_cur_font.size = point;
 }
 
 }}

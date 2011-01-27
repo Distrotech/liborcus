@@ -29,12 +29,27 @@
 #define __ORCUS_MODEL_STYLES_HPP__
 
 #include "orcus/model/interface.hpp"
+#include "orcus/pstring.hpp"
+
+#include <vector>
 
 namespace orcus { namespace model {
 
 class styles : public styles_base
 {
 public:
+    struct font
+    {
+        pstring name;
+        double size;
+        bool bold:1;
+        bool italic:1;
+
+        font();
+
+        void reset();
+    };
+
     styles();
     virtual ~styles();
 
@@ -44,6 +59,10 @@ public:
     virtual void set_font_name(const char* s, size_t n);
     virtual void set_font_size(double point);
     virtual void commit_font();
+
+private:
+    font m_cur_font;
+    ::std::vector<font> m_fonts;
 };
 
 }}
