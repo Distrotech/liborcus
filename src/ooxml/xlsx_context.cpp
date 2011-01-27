@@ -658,4 +658,43 @@ void xlsx_shared_strings_context::characters(const pstring& str)
         m_current_str = str;
 }
 
+
+xlsx_styles_context::xlsx_styles_context(const tokens& tokens) :
+    xml_context_base(tokens) {}
+
+xlsx_styles_context::~xlsx_styles_context() {}
+
+bool xlsx_styles_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+{
+    return true;
+}
+
+xml_context_base* xlsx_styles_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+{
+    return NULL;
+}
+
+void xlsx_styles_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
+{
+}
+
+void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
+{
+    xml_token_pair_t parent = push_stack(ns, name);
+    switch (name)
+    {
+        default:
+            warn_unhandled();
+    }
+}
+
+bool xlsx_styles_context::end_element(xmlns_token_t ns, xml_token_t name)
+{
+    return pop_stack(ns, name);
+}
+
+void xlsx_styles_context::characters(const pstring& str)
+{
+}
+
 }

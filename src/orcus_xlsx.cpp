@@ -216,6 +216,8 @@ private:
      */
     void read_shared_strings(const char* file_name);
 
+    void read_styles(const char* file_name);
+
     /**
      * The top-level function that determines the order in which the 
      * individual parts get parsed. 
@@ -330,6 +332,8 @@ void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_ext
             read_sheet(file_name.c_str(), static_cast<const xlsx_rel_sheet_info*>(data));
         else if (type == SCH_od_rels_shared_strings)
             read_shared_strings(file_name.c_str());
+        else if (type == SCH_od_rels_styles)
+            read_styles(file_name.c_str());
         else
         {
             cout << "---" << endl;
@@ -456,8 +460,25 @@ void orcus_xlsx::read_shared_strings(const char* file_name)
     xml_stream_parser parser(ooxml_tokens, content, size, file_name);
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
         new xml_simple_stream_handler(new xlsx_shared_strings_context(ooxml_tokens, mp_factory->get_shared_strings())));
-    xlsx_shared_strings_context& context = 
-        static_cast<xlsx_shared_strings_context&>(handler->get_context());
+    parser.set_handler(handler.get());
+    parser.parse();
+}
+
+void orcus_xlsx::read_styles(const char* file_name)
+{
+    gsf_infile_guard guard(m_dir_stack.back().get(), file_name);
+    GsfInput* input = guard.get();
+
+    size_t size = gsf_input_size(input);
+    cout << "---" << endl;
+    cout << "file name: " << file_name << "  size: " << size << endl;
+    const guint8* content = gsf_input_read(input, size, NULL);
+
+    xml_stream_parser parser(ooxml_tokens, content, size, file_name);
+    ::boost::scoped_ptr<xml_simple_stream_handler> handler(
+        new xml_simple_stream_handler(new xlsx_styles_context(ooxml_tokens)));
+//  xlsx_styles_context& context =
+//      static_cast<xlsx_styles_context&>(handler->get_context());
     parser.set_handler(handler.get());
     parser.parse();
 }
@@ -537,8 +558,8 @@ int main(int argc, char** argv)
 
     orcus_xlsx app(new model::factory(doc.get()));
     app.read_file(argv[1], "out.html");
-    doc->dump();
-    doc->dump_html("./obj");
+//  doc->dump();
+//  doc->dump_html("./obj");
 //  pstring::intern::dump();
     pstring::intern::dispose();
     return EXIT_SUCCESS;

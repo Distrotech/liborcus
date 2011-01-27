@@ -119,6 +119,25 @@ private:
     bool m_in_segments;
 };
 
+/**
+ * Context for xl/styles.xml part.  This part contains various styles used
+ * in the sheets.
+ */
+class xlsx_styles_context : public xml_context_base
+{
+public:
+    xlsx_styles_context(const tokens& tokens);
+    virtual ~xlsx_styles_context();
+
+    virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
+    virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
+    virtual void end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child);
+
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
+    virtual bool end_element(xmlns_token_t ns, xml_token_t name);
+    virtual void characters(const pstring& str);
+};
+
 }
 
 #endif
