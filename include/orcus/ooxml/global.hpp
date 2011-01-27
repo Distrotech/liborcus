@@ -41,7 +41,7 @@ struct xml_attr_t;
 /**
  * Function object to print relationship information.
  */
-struct print_opc_rel : ::std::unary_function<void, opc_rel_t>
+struct print_opc_rel : ::std::unary_function<opc_rel_t, void>
 {
     void operator() (const opc_rel_t& v) const;
 };
