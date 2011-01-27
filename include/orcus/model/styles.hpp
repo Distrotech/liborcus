@@ -77,6 +77,23 @@ public:
         void reset();
     };
 
+    struct xf
+    {
+        size_t num_format;      /// number format ID
+        size_t font;            /// font ID
+        size_t fill;            /// fill ID
+        size_t border;          /// border ID
+        size_t style_xf;        /// style XF ID (used only for cell format)
+        bool apply_num_format;
+        bool apply_font;
+        bool apply_fill;
+        bool apply_border;
+        bool apply_alignment;
+
+        xf();
+        void reset();
+    };
+
     styles();
     virtual ~styles();
 

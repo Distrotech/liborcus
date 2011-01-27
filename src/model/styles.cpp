@@ -36,10 +36,7 @@ styles::font::font() :
 
 void styles::font::reset()
 {
-    name.clear();
-    size = 0.0;
-    bold = false;
-    italic = false;
+    *this = font();
 }
 
 styles::fill::fill()
@@ -48,7 +45,7 @@ styles::fill::fill()
 
 void styles::fill::reset()
 {
-    pattern_type.clear();
+    *this = fill();
 }
 
 styles::border_attrs::border_attrs()
@@ -57,7 +54,7 @@ styles::border_attrs::border_attrs()
 
 void styles::border_attrs::reset()
 {
-    style.clear();
+    *this = border_attrs();
 }
 
 styles::border::border()
@@ -66,10 +63,26 @@ styles::border::border()
 
 void styles::border::reset()
 {
-    top.reset();
-    bottom.reset();
-    left.reset();
-    right.reset();
+    *this = border();
+}
+
+styles::xf::xf() :
+    num_format(0),
+    font(0),
+    fill(0),
+    border(0),
+    style_xf(0),
+    apply_num_format(false),
+    apply_font(false),
+    apply_fill(false),
+    apply_border(false),
+    apply_alignment(false)
+{
+}
+
+void styles::xf::reset()
+{
+    *this = xf();
 }
 
 styles::styles()
