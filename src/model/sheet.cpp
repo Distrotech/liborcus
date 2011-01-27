@@ -343,7 +343,7 @@ void sheet::dump_html(const string& filepath) const
 {
     typedef html_elem<ofstream> elem;
 
-    ofstream file(filepath);
+    ofstream file(filepath.c_str());
     if (!file)
     {
         cerr << "failed to create file: " << filepath << endl;
