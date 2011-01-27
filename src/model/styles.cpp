@@ -25,35 +25,16 @@
  *
  ************************************************************************/
 
-#include "orcus/model/factory.hpp"
-#include "orcus/model/shared_strings.hpp"
-#include "orcus/model/sheet.hpp"
-#include "orcus/model/document.hpp"
+#include "orcus/model/styles.hpp"
 
 namespace orcus { namespace model {
 
-factory::factory(document* doc) :
-    mp_document(doc)
+styles::styles()
 {
 }
 
-factory::~factory()
+styles::~styles()
 {
-}
-
-shared_strings_base* factory::get_shared_strings()
-{
-    return mp_document->get_shared_strings();
-}
-
-styles_base* factory::get_styles()
-{
-    return NULL;
-}
-
-sheet_base* factory::append_sheet(const char* sheet_name, size_t sheet_name_length)
-{
-    return mp_document->append_sheet(pstring(sheet_name, sheet_name_length));
 }
 
 }}

@@ -58,6 +58,7 @@ COMMON_HEADERS= \
 	$(INCDIR)/model/sheet.hpp \
 	$(INCDIR)/model/global.hpp \
 	$(INCDIR)/model/shared_strings.hpp \
+	$(INCDIR)/model/styles.hpp \
 	$(INCDIR)/model/factory.hpp \
 	$(INCDIR)/model/document.hpp
 
@@ -71,6 +72,7 @@ COMMON_OBJFILES= \
 	$(OBJDIR)/pstring.o \
 	$(OBJDIR)/model/sheet.o \
 	$(OBJDIR)/model/shared_strings.o \
+	$(OBJDIR)/model/styles.o \
 	$(OBJDIR)/model/factory.o \
 	$(OBJDIR)/model/document.o \
 
@@ -205,6 +207,9 @@ $(OBJDIR)/model/sheet.o: $(SRCDIR)/model/sheet.cpp $(DEPENDS)
 
 $(OBJDIR)/model/shared_strings.o: $(SRCDIR)/model/shared_strings.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/shared_strings.cpp
+
+$(OBJDIR)/model/styles.o: $(SRCDIR)/model/styles.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/styles.cpp
 
 $(OBJDIR)/model/document.o: $(SRCDIR)/model/document.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/document.cpp

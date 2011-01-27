@@ -41,6 +41,7 @@ public:
     virtual ~factory();
 
     virtual shared_strings_base* get_shared_strings();
+    virtual styles_base* get_styles();
     virtual sheet_base* append_sheet(const char* sheet_name, size_t sheet_name_length);
 
 private:

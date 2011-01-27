@@ -209,6 +209,7 @@
 					<F N="include/orcus/model/interface.hpp"/>
 					<F N="include/orcus/model/shared_strings.hpp"/>
 					<F N="include/orcus/model/sheet.hpp"/>
+					<F N="include/orcus/model/styles.hpp"/>
 				</Folder>
 				<Folder Name="odf">
 					<F N="include/orcus/odf/odf_token_constants.hpp"/>
@@ -250,6 +251,7 @@
 				<F N="src/model/factory.cpp"/>
 				<F N="src/model/shared_strings.cpp"/>
 				<F N="src/model/sheet.cpp"/>
+				<F N="src/model/styles.cpp"/>
 			</Folder>
 			<Folder Name="odf">
 				<F N="src/odf/odf_tokens.cpp"/>

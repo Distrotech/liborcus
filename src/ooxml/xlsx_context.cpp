@@ -446,17 +446,18 @@ private:
 };
 
 /**
- * Use this when we need to just get the value of a "val" attribute.
+ * Use this when we need to just get the value of a single attribute.
  */
-class val_attr_getter : public unary_function<xml_attr_t, void>
+class single_attr_getter : public unary_function<xml_attr_t, void>
 {
     pstring m_value;
+    xml_token_t m_name;
 public:
-    val_attr_getter() {}
+    single_attr_getter(xml_token_t name) : m_name(name) {}
 
     void operator() (const xml_attr_t& attr)
     {
-        if (attr.name == XML_val)
+        if (attr.name == m_name)
             m_value = attr.value;
     }
 
@@ -532,7 +533,7 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
         {
             // font size
             xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
-            const pstring& s = for_each(attrs.begin(), attrs.end(), val_attr_getter()).get_value();
+            const pstring& s = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
             double point = strtod(s.str().c_str(), NULL);
             mp_strings->set_segment_font_size(point);
         }
@@ -545,7 +546,7 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
         {
             // font
             xml_element_expected(parent, XMLNS_xlsx, XML_rPr);
-            const pstring& font = for_each(attrs.begin(), attrs.end(), val_attr_getter()).get_value();
+            const pstring& font = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
             mp_strings->set_segment_font(font.get(), font.size());
         }
         break;
@@ -662,6 +663,36 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         }
         break;
         case XML_fonts:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
+            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            size_t font_count = strtoul(ps.str().c_str(), NULL, 10);
+            cout << "font count: " << font_count << endl;
+        }
+        break;
+        case XML_font:
+            xml_element_expected(parent, XMLNS_xlsx, XML_fonts);
+        break;
+        case XML_b:
+            xml_element_expected(parent, XMLNS_xlsx, XML_font);
+        break;
+        case XML_i:
+            xml_element_expected(parent, XMLNS_xlsx, XML_font);
+        break;
+        case XML_sz:
+            xml_element_expected(parent, XMLNS_xlsx, XML_font);
+        break;
+        case XML_color:
+            xml_element_expected(parent, XMLNS_xlsx, XML_font);
+        break;
+        case XML_name:
+            xml_element_expected(parent, XMLNS_xlsx, XML_font);
+        break;
+        case XML_family:
+            xml_element_expected(parent, XMLNS_xlsx, XML_font);
+        break;
+        case XML_scheme:
+            xml_element_expected(parent, XMLNS_xlsx, XML_font);
         break;
         default:
             warn_unhandled();

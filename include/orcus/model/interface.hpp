@@ -79,6 +79,20 @@ public:
 
 inline shared_strings_base::~shared_strings_base() {}
 
+/**
+ * Interface for styles.
+ */
+class styles_base
+{
+public:
+    virtual ~styles_base() = 0;
+};
+
+inline styles_base::~styles_base() {}
+
+/**
+ * Interface for sheet.
+ */
 class sheet_base
 {
 public:
@@ -100,6 +114,7 @@ public:
     virtual ~factory_base() = 0;
 
     virtual shared_strings_base* get_shared_strings() = 0;
+    virtual styles_base* get_styles() = 0;
     virtual sheet_base* append_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
 };
 
