@@ -812,6 +812,9 @@ bool xlsx_styles_context::end_element(xmlns_token_t ns, xml_token_t name)
         case XML_fill:
             mp_styles->commit_fill();
         break;
+        case XML_border:
+            mp_styles->commit_border();
+        break;
     }
     return pop_stack(ns, name);
 }
