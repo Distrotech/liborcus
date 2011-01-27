@@ -27,6 +27,7 @@
 
 #include "orcus/ooxml/xlsx_context.hpp"
 #include "orcus/global.hpp"
+#include "orcus/ooxml/global.hpp"
 #include "orcus/ooxml/ooxml_token_constants.hpp"
 #include "orcus/ooxml/ooxml_types.hpp"
 #include "orcus/ooxml/schemas.hpp"
@@ -43,56 +44,6 @@ using namespace std;
 namespace orcus {
 
 namespace {
-
-class root_element_attr_parser: ::std::unary_function<xml_attr_t, void>
-{
-public:
-    root_element_attr_parser(
-        const schema_t expected_schema, const xmlns_token_t expected_ns);
-
-    virtual ~root_element_attr_parser();
-
-    virtual void handle_other_attrs(const xml_attr_t& attr) = 0;
-
-    root_element_attr_parser& operator= (const root_element_attr_parser& r)
-    {
-        m_default_ns = r.m_default_ns;
-        m_expected_schema = r.m_expected_schema;
-        m_expected_ns = r.m_expected_ns;
-        return *this;
-    }
-
-    void operator() (const xml_attr_t& attr);
-    xmlns_token_t get_default_ns() const;
-private:
-    xmlns_token_t m_default_ns;
-    schema_t m_expected_schema;
-    xmlns_token_t m_expected_ns;
-};
-
-root_element_attr_parser::root_element_attr_parser(
-    const schema_t expected_schema, const xmlns_token_t expected_ns) :
-    m_default_ns(XMLNS_UNKNOWN_TOKEN),
-    m_expected_schema(expected_schema),
-    m_expected_ns(expected_ns) {}
-
-root_element_attr_parser::~root_element_attr_parser() {}
-
-void root_element_attr_parser::operator() (const xml_attr_t& attr)
-{
-    if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_xmlns)
-    {
-        if (attr.value == m_expected_schema)
-            m_default_ns = m_expected_ns;
-    }
-    else
-        handle_other_attrs(attr);
-}
-
-xmlns_token_t root_element_attr_parser::get_default_ns() const
-{
-    return m_default_ns;
-}
 
 class workbook_attr_parser : public root_element_attr_parser
 {
@@ -545,7 +496,7 @@ void xlsx_shared_strings_context::start_element(xmlns_token_t ns, xml_token_t na
             print_attrs(get_tokens(), attrs);
 
             shared_strings_root_attr_parser func;
-            func = for_each(attrs.begin(), attrs.end(), shared_strings_root_attr_parser());
+            func = for_each(attrs.begin(), attrs.end(), func);
             xmlns_token_t default_ns = func.get_default_ns();
 
             // the namespace for worksheet element comes from its own 'xmlns' attribute.
@@ -658,6 +609,18 @@ void xlsx_shared_strings_context::characters(const pstring& str)
         m_current_str = str;
 }
 
+// ============================================================================
+
+namespace {
+
+class styles_root_attr_parser : public root_element_attr_parser
+{
+public:
+    styles_root_attr_parser() :
+        root_element_attr_parser(SCH_xlsx_main, XMLNS_xlsx) {}
+};
+
+}
 
 xlsx_styles_context::xlsx_styles_context(const tokens& tokens) :
     xml_context_base(tokens) {}
@@ -683,6 +646,23 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
     xml_token_pair_t parent = push_stack(ns, name);
     switch (name)
     {
+        case XML_styleSheet:
+        {
+            // root element
+            xml_element_expected(parent, XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN);
+            print_attrs(get_tokens(), attrs);
+
+            styles_root_attr_parser func;
+            func = for_each(attrs.begin(), attrs.end(), func);
+            xmlns_token_t default_ns = func.get_default_ns();
+
+            // the namespace for worksheet element comes from its own 'xmlns' attribute.
+            get_current_element().first = default_ns;
+            set_default_ns(default_ns);
+        }
+        break;
+        case XML_fonts:
+        break;
         default:
             warn_unhandled();
     }
