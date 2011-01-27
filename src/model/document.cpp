@@ -27,6 +27,7 @@
 
 #include "orcus/model/document.hpp"
 #include "orcus/model/shared_strings.hpp"
+#include "orcus/model/styles.hpp"
 
 #include <iostream>
 
@@ -54,13 +55,15 @@ void document::sheet_item::html_printer::operator() (const sheet_item& item) con
 }
 
 document::document() :
-    mp_strings(new shared_strings)
+    mp_strings(new shared_strings),
+    mp_styles(new styles)
 {
 }
 
 document::~document()
 {
     delete mp_strings;
+    delete mp_styles;
 }
 
 shared_strings* document::get_shared_strings()
@@ -71,6 +74,16 @@ shared_strings* document::get_shared_strings()
 const shared_strings* document::get_shared_strings() const
 {
     return mp_strings;
+}
+
+styles* document::get_styles()
+{
+    return mp_styles;
+}
+
+const styles* document::get_styles() const
+{
+    return mp_styles;
 }
 
 sheet* document::append_sheet(const pstring& sheet_name)

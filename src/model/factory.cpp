@@ -27,6 +27,7 @@
 
 #include "orcus/model/factory.hpp"
 #include "orcus/model/shared_strings.hpp"
+#include "orcus/model/styles.hpp"
 #include "orcus/model/sheet.hpp"
 #include "orcus/model/document.hpp"
 
@@ -48,7 +49,7 @@ shared_strings_base* factory::get_shared_strings()
 
 styles_base* factory::get_styles()
 {
-    return NULL;
+    return mp_document->get_styles();
 }
 
 sheet_base* factory::append_sheet(const char* sheet_name, size_t sheet_name_length)

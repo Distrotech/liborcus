@@ -38,6 +38,7 @@
 namespace orcus { namespace model {
 
 class shared_strings;
+class styles;
 
 /**
  * Internal document representation used only for testing the filters.
@@ -75,6 +76,10 @@ public:
 
     shared_strings* get_shared_strings();
     const shared_strings* get_shared_strings() const;
+
+    styles* get_styles();
+    const styles* get_styles() const;
+
     sheet* append_sheet(const pstring& sheet_name);
 
     /**
@@ -93,6 +98,7 @@ public:
 private:
     ::boost::ptr_vector<sheet_item> m_sheets;
     shared_strings* mp_strings;
+    styles* mp_styles;
 };
 
 }}
