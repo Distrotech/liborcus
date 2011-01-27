@@ -640,10 +640,107 @@ public:
     }
 };
 
+class cell_style_attr_parser : public unary_function<xml_attr_t, void>
+{
+    model::styles_base& m_styles;
+public:
+    cell_style_attr_parser(model::styles_base& styles) : 
+        m_styles(styles) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_name:
+                m_styles.set_cell_style_name(attr.value.get(), attr.value.size());
+            break;
+            case XML_xfId:
+            {
+                size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
+                m_styles.set_cell_style_xf(n);
+            }
+            break;
+            case XML_builtinId:
+            {
+                size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
+                m_styles.set_cell_style_builtin(n);
+            }
+            break;
+        }
+    }
+};
+
+class xf_attr_parser : public unary_function<xml_attr_t, void>
+{
+    model::styles_base& m_styles;
+    bool m_cell_style;
+public:
+    xf_attr_parser(model::styles_base& styles, bool cell_style) :
+        m_styles(styles), m_cell_style(cell_style) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_borderId:
+            {
+                size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
+                if (m_cell_style)
+                    m_styles.set_cell_style_xf_border(n);
+                else
+                    m_styles.set_cell_xf_border(n);
+            }
+            break;
+            case XML_fillId:
+            {
+                size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
+                if (m_cell_style)
+                    m_styles.set_cell_style_xf_fill(n);
+                else
+                    m_styles.set_cell_xf_fill(n);
+            }
+            break;
+            case XML_fontId:
+            {
+                size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
+                if (m_cell_style)
+                    m_styles.set_cell_style_xf_font(n);
+                else
+                    m_styles.set_cell_xf_font(n);
+            }
+            break;
+            case XML_numFmtId:
+            {
+                size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
+                if (m_cell_style)
+                    m_styles.set_cell_style_xf_number_format(n);
+                else
+                    m_styles.set_cell_xf_number_format(n);
+            }
+            break;
+            case XML_xfId:
+            {
+                size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
+                if (!m_cell_style)
+                    m_styles.set_cell_xf_style_xf(n);
+            }
+            break;
+            case XML_applyBorder:
+            break;
+            case XML_applyFill:
+            break;
+            case XML_applyFont:
+            break;
+            case XML_applyNumberFormat:
+            break;
+        }
+    }
+};
+
 }
 
 xlsx_styles_context::xlsx_styles_context(const tokens& tokens, model::styles_base* styles) :
-    xml_context_base(tokens), mp_styles(styles) {}
+    xml_context_base(tokens), mp_styles(styles), m_cell_style_xf(false) {}
 
 xlsx_styles_context::~xlsx_styles_context() {}
 
@@ -819,13 +916,14 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
             const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t n = strtoul(ps.str().c_str(), NULL, 10);
-            cout << "cell styles count: " << n << endl;
+            mp_styles->set_cell_style_count(n);
         }
         break;
         case XML_cellStyle:
         {
             // named cell style, some of which are built-in such as 'Normal'.
             xml_element_expected(parent, XMLNS_xlsx, XML_cellStyles);
+            for_each(attrs.begin(), attrs.end(), cell_style_attr_parser(*mp_styles));
         }
         break;
         case XML_xf:
@@ -834,6 +932,8 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
             allowed.push_back(xml_elem_stack_t::value_type(XMLNS_xlsx, XML_cellXfs));
             allowed.push_back(xml_elem_stack_t::value_type(XMLNS_xlsx, XML_cellStyleXfs));
             xml_element_expected(parent, allowed);
+            m_cell_style_xf = parent.second == XML_cellStyleXfs;
+            for_each(attrs.begin(), attrs.end(), xf_attr_parser(*mp_styles, m_cell_style_xf));
         }
         break;
         default:
@@ -853,6 +953,15 @@ bool xlsx_styles_context::end_element(xmlns_token_t ns, xml_token_t name)
         break;
         case XML_border:
             mp_styles->commit_border();
+        break;
+        case XML_cellStyle:
+            mp_styles->commit_cell_style();
+        break;
+        case XML_xf:
+            if (m_cell_style_xf)
+                mp_styles->commit_cell_style_xf();
+            else
+                mp_styles->commit_cell_xf();
         break;
     }
     return pop_stack(ns, name);

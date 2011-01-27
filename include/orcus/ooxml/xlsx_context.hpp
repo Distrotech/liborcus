@@ -140,6 +140,7 @@ public:
 
 private:
     model::styles_base* mp_styles;
+    bool m_cell_style_xf;
 };
 
 }
