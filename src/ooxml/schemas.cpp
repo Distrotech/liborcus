@@ -33,6 +33,7 @@ schema_t SCH_opc_content_types            = "http://schemas.openxmlformats.org/p
 schema_t SCH_opc_rels                     = "http://schemas.openxmlformats.org/package/2006/relationships";
 schema_t SCH_opc_rels_metadata_core_props = "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties";
 schema_t SCH_od_rels_connections          = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/connections";
+schema_t SCH_od_rels_printer_settings     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/printerSettings";
 schema_t SCH_od_rels_shared_strings       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings";
 schema_t SCH_od_rels_styles               = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles";
 schema_t SCH_od_rels_theme                = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme";
@@ -49,6 +50,7 @@ schema_t schs[] = {
     SCH_opc_rels,
     SCH_opc_rels_metadata_core_props,
     SCH_od_rels_connections,
+    SCH_od_rels_printer_settings,
     SCH_od_rels_shared_strings,
     SCH_od_rels_styles,
     SCH_od_rels_theme,

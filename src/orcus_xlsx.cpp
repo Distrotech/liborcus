@@ -299,14 +299,15 @@ void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_ext
 {
     assert(!m_dir_stack.empty());
     
-    // Used for unwinding at the end of this method.
-    size_t stack_size = m_dir_stack.size();
+    // Keep track of directovy movement to unwind to the original directory at
+    // the end of this method.
+    vector<gsf_infile_guard> dir_changed;
 
     // Change current directory and read the in-file.
     const char* p = path.get();
     const char* p_name = NULL;
     size_t name_len = 0;
-    for (size_t i = 0, n = path.size(); i < n; ++i, ++p, ++name_len)
+    for (size_t i = 0, n = path.size(); i < n; ++i, ++p)
     {
         if (!p_name)
             p_name = p;
@@ -315,12 +316,25 @@ void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_ext
         {
             // Push a new directory.
             string dir_name(p_name, name_len);
-            gsf_infile_guard dir_new(m_dir_stack.back().get(), dir_name.c_str());
-            m_dir_stack.push_back(dir_new);
+            if (dir_name == "..")
+            {
+                dir_changed.push_back(m_dir_stack.back());
+                m_dir_stack.pop_back();
+            }
+            else
+            {
+                gsf_infile_guard dir_new(m_dir_stack.back().get(), dir_name.c_str());
+                m_dir_stack.push_back(dir_new);
+
+                // Add a null directory to the change record to remove it at the end.
+                dir_changed.push_back(gsf_infile_guard(NULL, NULL, false));
+            }
             
             p_name = NULL;
             name_len = 0;
         }
+        else
+            ++name_len;
     }
 
     if (p_name)
@@ -344,9 +358,18 @@ void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_ext
     }
 
     // Unwind to the original directory.
-    vector<gsf_infile_guard>::iterator itr = m_dir_stack.begin();
-    advance(itr, stack_size);
-    m_dir_stack.erase(itr, m_dir_stack.end());
+    while (!dir_changed.empty())
+    {
+        const gsf_infile_guard& dir = dir_changed.back();
+        if (dir.get())
+            // re-add removed directory.
+            m_dir_stack.push_back(dir);
+        else
+            // remove added directory.
+            m_dir_stack.pop_back();
+
+        dir_changed.pop_back();
+    }
 }
 
 void orcus_xlsx::read_content_types()
