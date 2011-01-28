@@ -49,9 +49,24 @@ public:
         void reset();
     };
 
+    struct color
+    {
+        uint8_t alpha;
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
+
+        color();
+        color(uint8_t _alpha, uint8_t _red, uint8_t _green, uint8_t _blue);
+
+        void reset();
+    };
+
     struct fill
     {
         pstring pattern_type;
+        color fg_color;
+        color bg_color;
 
         fill();
         void reset();
@@ -119,6 +134,8 @@ public:
 
     virtual void set_fill_count(size_t n);
     virtual void set_fill_pattern_type(const char* s, size_t n);
+    virtual void set_fill_fg_color(uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue);
+    virtual void set_fill_bg_color(uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue);
     virtual void commit_fill();
 
     virtual void set_border_count(size_t n);
@@ -145,6 +162,7 @@ public:
 
     const font* get_font(size_t index) const;
     const xf* get_cell_xf(size_t index) const;
+    const fill* get_fill(size_t index) const;
 
 private:
     font m_cur_font;

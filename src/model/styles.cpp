@@ -39,6 +39,21 @@ void styles::font::reset()
     *this = font();
 }
 
+styles::color::color() :
+    alpha(0), red(0), green(0), blue(0)
+{
+}
+
+styles::color::color(uint8_t _alpha, uint8_t _red, uint8_t _green, uint8_t _blue) :
+    alpha(_alpha), red(_red), green(_green), blue(_blue)
+{
+}
+
+void styles::color::reset()
+{
+    *this = color();
+}
+
 styles::fill::fill()
 {
 }
@@ -142,6 +157,16 @@ void styles::set_fill_count(size_t n)
 void styles::set_fill_pattern_type(const char* s, size_t n)
 {
     m_cur_fill.pattern_type = pstring(s, n).intern();
+}
+
+void styles::set_fill_fg_color(uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue)
+{
+    m_cur_fill.fg_color = color(alpha, red, green, blue);
+}
+
+void styles::set_fill_bg_color(uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue)
+{
+    m_cur_fill.bg_color = color(alpha, red, green, blue);
 }
 
 void styles::commit_fill()
@@ -274,6 +299,14 @@ const styles::xf* styles::get_cell_xf(size_t index) const
         return NULL;
 
     return &m_cell_formats[index];
+}
+
+const styles::fill* styles::get_fill(size_t index) const
+{
+    if (index >= m_fills.size())
+        return NULL;
+
+    return &m_fills[index];
 }
 
 }}

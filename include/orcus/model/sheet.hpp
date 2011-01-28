@@ -79,13 +79,14 @@ public:
     virtual void set_value(row_t row, col_t col, double value);
     virtual void set_format(row_t row, col_t col, size_t index);
 
-    size_t row_size() const;
-    size_t col_size() const;
+    row_t row_size() const;
+    col_t col_size() const;
 
     void dump() const;
     void dump_html(const ::std::string& filepath) const;
 
 private:
+    void update_size(row_t row, col_t col);
     row_type* get_row(row_t row, col_t col);
     size_t get_cell_format(row_t row, col_t col) const;
 

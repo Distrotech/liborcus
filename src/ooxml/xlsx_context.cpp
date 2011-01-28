@@ -27,6 +27,7 @@
 
 #include "orcus/ooxml/xlsx_context.hpp"
 #include "orcus/global.hpp"
+#include "orcus/tokens.hpp"
 #include "orcus/ooxml/global.hpp"
 #include "orcus/ooxml/ooxml_token_constants.hpp"
 #include "orcus/ooxml/ooxml_types.hpp"
@@ -408,11 +409,11 @@ bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
                     break;
                 }
     
-                if (m_cur_cell_xf)
-                    mp_sheet->set_format(m_cur_row, m_cur_col, m_cur_cell_xf);
-    
                 m_cur_str.clear();
             }
+
+            if (m_cur_cell_xf)
+                mp_sheet->set_format(m_cur_row, m_cur_col, m_cur_cell_xf);
         }
         break;
     }
@@ -743,6 +744,49 @@ public:
     }
 };
 
+class fill_color_attr_parser : public unary_function<xml_attr_t, void>
+{
+    model::styles_base& m_styles;
+    const tokens& m_tokens;
+    bool m_foreground;
+public:
+    fill_color_attr_parser(model::styles_base& styles, const tokens& _tokens, bool fg) :
+        m_styles(styles), m_tokens(_tokens), m_foreground(fg) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_rgb:
+            {
+                uint8_t alpha;
+                uint8_t red;
+                uint8_t green;
+                uint8_t blue;
+                to_rgb(attr.value, alpha, red, green, blue);
+                if (m_foreground)
+                    m_styles.set_fill_fg_color(alpha, red, green, blue);
+                else
+                    m_styles.set_fill_bg_color(alpha, red, green, blue);
+            }
+            break;
+            case XML_indexed:
+            break;
+            default:
+                cerr << "warning: unknown attribute [ " << m_tokens.get_token_name(attr.name) << " ]" << endl;
+        }
+    }
+
+private:
+    void to_rgb(const pstring& ps, uint8_t& alpha, uint8_t& red, uint8_t& green, uint8_t& blue) const
+    {
+        alpha = 255;
+        red = 255;
+        green = 0;
+        blue = 0;
+    }
+};
+
 }
 
 xlsx_styles_context::xlsx_styles_context(const tokens& tokens, model::styles_base* styles) :
@@ -852,6 +896,18 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
             xml_element_expected(parent, XMLNS_xlsx, XML_fill);
             const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_patternType)).get_value();
             mp_styles->set_fill_pattern_type(ps.get(), ps.size());
+        }
+        break;
+        case XML_fgColor:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_patternFill);
+            for_each(attrs.begin(), attrs.end(), fill_color_attr_parser(*mp_styles, get_tokens(), true));
+        }
+        break;
+        case XML_bgColor:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_patternFill);
+            for_each(attrs.begin(), attrs.end(), fill_color_attr_parser(*mp_styles, get_tokens(), false));
         }
         break;
         case XML_borders:

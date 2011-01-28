@@ -115,22 +115,24 @@ void sheet::set_format(row_t row, col_t col, size_t index)
 
     segment_col_index_type& con = *itr->second;
     con.insert_back(col, col+1, index);
+
+    update_size(row, col);
 }
 
-size_t sheet::row_size() const
+row_t sheet::row_size() const
 {
     if (m_sheet.empty())
         return 0;
 
-    return static_cast<size_t>(m_max_row + 1);
+    return m_max_row + 1;
 }
 
-size_t sheet::col_size() const
+col_t sheet::col_size() const
 {
     if (m_sheet.empty())
         return 0;
 
-    return static_cast<size_t>(m_max_col + 1);
+    return m_max_col + 1;
 }
 
 void sheet::dump() const
@@ -249,7 +251,7 @@ public:
         m_strm(strm), m_name(name)
     {
         if (attr)
-            m_strm << '<' << m_name << ' ' << attr << '>';
+            m_strm << '<' << m_name << " style=\"" << attr << "\">";
         else
             m_strm << '<' << m_name << '>';
     }
@@ -306,8 +308,6 @@ void print_formatted_text(_OSTREAM& strm, const pstring& text, const shared_stri
             strm << string(&text[pos], run.size);
         else
         {
-            // Surround the text segment with <span></span> to apply styles.
-            style = "style=\"" + style + "\"";
             elem span(strm, p_span, style.c_str());
             strm << string(&text[pos], run.size);
         }
@@ -340,6 +340,18 @@ void build_style_string(string& str, const styles& styles, const styles::xf& fmt
                 os << "font-style: italic;";
         }
     }
+    if (fmt.fill)
+    {
+        const styles::fill* p = styles.get_fill(fmt.fill);
+        if (p)
+        {
+            if (p->pattern_type == "solid")
+            {
+                const styles::color& r = p->fg_color;
+                os << "background-color: red;";
+            }
+        }
+    }
     str += os.str();
 }
 
@@ -360,8 +372,8 @@ void sheet::dump_html(const string& filepath) const
     const char* p_table = "table";
     const char* p_tr    = "tr";
     const char* p_td    = "td";
-    const char* p_table_attrs      = "style=\"border:1px solid rgb(220,220,220); border-collapse:collapse\"";
-    const char* p_empty_cell_attrs = "style=\"border:1px solid rgb(220,220,220); color:white;\"";
+    const char* p_table_attrs      = "border:1px solid rgb(220,220,220); border-collapse:collapse;";
+    const char* p_empty_cell_attrs = "border:1px solid rgb(220,220,220); color:white;";
 
     {
         elem root(file, p_html);
@@ -376,8 +388,8 @@ void sheet::dump_html(const string& filepath) const
     
         elem table(file, p_table, p_table_attrs);
         sheet_type::const_iterator itr = m_sheet.begin(), itr_end = m_sheet.end();
-        
-        for (row_t row = 0; itr != itr_end; ++itr, ++row)
+        row_t row = 0;
+        for (; itr != itr_end; ++itr, ++row)
         {
             row_t this_row = itr->first;
             for (; row < this_row; ++row)
@@ -386,7 +398,18 @@ void sheet::dump_html(const string& filepath) const
                 elem tr(file, p_tr, p_table_attrs);
                 for (col_t col = 0; col < col_count; ++col)
                 {
-                    elem td(file, p_td, p_empty_cell_attrs);
+                    size_t xf = get_cell_format(row, col);
+                    string style;
+                    if (xf)
+                    {
+                        // Apply cell format.
+                        styles* p_styles = m_doc.get_styles();
+                        const styles::xf* fmt = p_styles->get_cell_xf(xf);
+                        if (fmt)
+                            build_style_string(style, *p_styles, *fmt);
+                    }
+                    style += p_empty_cell_attrs;
+                    elem td(file, p_td, style.c_str());
                     file << '-'; // empty cell.
                 }
             }
@@ -398,11 +421,24 @@ void sheet::dump_html(const string& filepath) const
             {
                 for (; col < itr_row->first; ++col)
                 {
-                    elem td(file, p_td, p_empty_cell_attrs);
+                    string style;
+                    style += p_empty_cell_attrs;
+                    elem td(file, p_td, style.c_str());
                     file << '-'; // empty cell.
                 }
 
-                elem td(file, p_td, p_table_attrs);
+                size_t xf = get_cell_format(row, col);
+                string style = p_table_attrs;
+                if (xf)
+                {
+                    // Apply cell format.
+                    styles* p_styles = m_doc.get_styles();
+                    const styles::xf* fmt = p_styles->get_cell_xf(xf);
+                    if (fmt)
+                        build_style_string(style, *p_styles, *fmt);
+                }
+
+                elem td(file, p_td, style.c_str());
                 const cell& c = itr_row->second;
                 ostringstream os;
                 switch (c.type)
@@ -423,28 +459,50 @@ void sheet::dump_html(const string& filepath) const
                     break;
                 }
 
+                file << os.str();
+            }
+
+            for (; col < col_count; ++col)
+            {
+                string style;
+                style += p_empty_cell_attrs;
+                style += "\"";
+                elem td(file, p_td, style.c_str());
+                file << '-'; // empty cell.
+            }
+        }
+
+        row_t row_count = row_size();
+        for (; row < row_count; ++row)
+        {
+            // Insert empty row(s).
+            elem tr(file, p_tr, p_table_attrs);
+            for (col_t col = 0; col < col_count; ++col)
+            {
                 size_t xf = get_cell_format(row, col);
+                string style;
                 if (xf)
                 {
                     // Apply cell format.
                     styles* p_styles = m_doc.get_styles();
                     const styles::xf* fmt = p_styles->get_cell_xf(xf);
-                    string style;
                     if (fmt)
                         build_style_string(style, *p_styles, *fmt);
-                    file << "<span style=\"" << style << "\">" << os.str() << "</span>";
                 }
-                else
-                    file << os.str();
-            }
-
-            for (; col < col_count; ++col)
-            {
-                elem td(file, p_td, p_empty_cell_attrs);
+                style += p_empty_cell_attrs;
+                elem td(file, p_td, style.c_str());
                 file << '-'; // empty cell.
             }
         }
     }
+}
+
+void sheet::update_size(row_t row, col_t col)
+{
+    if (m_max_row < row)
+        m_max_row = row;
+    if (m_max_col < col)
+        m_max_col = col;
 }
 
 sheet::row_type* sheet::get_row(row_t row, col_t col)
@@ -458,10 +516,7 @@ sheet::row_type* sheet::get_row(row_t row, col_t col)
             throw general_error("failed to insert a new row instance.");
         itr = r.first;
     }
-    if (m_max_row < row)
-        m_max_row = row;
-    if (m_max_col < col)
-        m_max_col = col;
+    update_size(row, col);
 
     return itr->second;
 }

@@ -100,6 +100,8 @@ public:
 
     virtual void set_fill_count(size_t n) = 0;
     virtual void set_fill_pattern_type(const char* s, size_t n) = 0;
+    virtual void set_fill_fg_color(uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue) = 0;
+    virtual void set_fill_bg_color(uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue) = 0;
     virtual void commit_fill() = 0;
 
     // border
