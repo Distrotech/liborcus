@@ -141,7 +141,7 @@ struct print_sheet_info : unary_function<void, pair<pstring, const opc_rel_extra
 class gsf_infile_guard
 {
 public:
-    gsf_infile_guard(GsfInput* parent, const char* name) : 
+    gsf_infile_guard(GsfInput* parent, const char* name, bool throw_on_failure = true) : 
         mp_input(NULL)
     {
         if (name)
@@ -149,7 +149,7 @@ public:
         else
             mp_input = parent;
 
-        if (!mp_input)
+        if (!mp_input && throw_on_failure)
         {
             ostringstream os;
             os << "failed to open infile child: '" << name << "'";
@@ -200,6 +200,8 @@ private:
      * first part in the package to be parsed. 
      */
     void read_content_types();
+
+    void check_relation_part(const char* file_name, const opc_rel_extras_t* extras);
 
     void read_relations(const char* path, vector<opc_rel_t>& rels);
 
@@ -369,11 +371,34 @@ void orcus_xlsx::read_content_types()
     context.pop_ext_defaults(m_ext_defaults);
 }
 
+void orcus_xlsx::check_relation_part(const char* file_name, const opc_rel_extras_t* extra)
+{
+    // Read the relationship file associated with this file, located at
+    // _rels/<file name>.rels.
+    vector<opc_rel_t> rels;
+    gsf_infile_guard dir_rels(m_dir_stack.back().get(), "_rels", false);
+    if (!dir_rels.get())
+        // _rels directory not found.  Nothing to do.
+        return;
+
+    m_dir_stack.push_back(dir_rels);
+    string rels_file_name(file_name);
+    rels_file_name += ".rels";
+    read_relations(rels_file_name.c_str(), rels);
+    m_dir_stack.pop_back();
+
+    for_each(rels.begin(), rels.end(), print_opc_rel());
+    for_each(rels.begin(), rels.end(), process_opc_rel(*this, extra));
+}
+
 void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
 {
     GsfInput* dir_cur = m_dir_stack.back().get();
-    gsf_infile_guard rels_guard(dir_cur, path);
+    gsf_infile_guard rels_guard(dir_cur, path, false);
     GsfInput* input_rels = rels_guard.get();
+    if (!input_rels)
+        // Specified .rels file not found.  Bail out.
+        return;
 
     size_t size = gsf_input_size(input_rels);
     cout << "---" << endl;
@@ -412,18 +437,7 @@ void orcus_xlsx::read_workbook(const char* file_name)
     context.pop_sheet_info(sheet_data);
     for_each(sheet_data.begin(), sheet_data.end(), print_sheet_info());
 
-    // Read the relationship file associated with this file, located at
-    // _rels/<file name>.rels.
-    vector<opc_rel_t> rels;
-    gsf_infile_guard dir_rels(m_dir_stack.back().get(), "_rels");
-    m_dir_stack.push_back(dir_rels);
-    string rels_file_name(file_name);
-    rels_file_name += ".rels";
-    read_relations(rels_file_name.c_str(), rels);
-    m_dir_stack.pop_back();
-
-    for_each(rels.begin(), rels.end(), print_opc_rel());
-    for_each(rels.begin(), rels.end(), process_opc_rel(*this, &sheet_data));
+    check_relation_part(file_name, &sheet_data);
 }
 
 void orcus_xlsx::read_sheet(const char* file_name, const xlsx_rel_sheet_info* data)
@@ -445,6 +459,8 @@ void orcus_xlsx::read_sheet(const char* file_name, const xlsx_rel_sheet_info* da
     ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler(ooxml_tokens, sheet));
     parser.set_handler(handler.get());
     parser.parse();
+
+    check_relation_part(file_name, NULL);
 }
 
 void orcus_xlsx::read_shared_strings(const char* file_name)
