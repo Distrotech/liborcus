@@ -37,7 +37,7 @@ namespace orcus {
 
 xlsx_sheet_xml_handler::xlsx_sheet_xml_handler(const tokens& tokens, model::sheet_base* sheet)
 {
-    m_context_stack.push_back(new xlsx_sheet_xml_context(tokens, sheet));
+    m_context_stack.push_back(new xlsx_sheet_context(tokens, sheet));
 }
 
 xlsx_sheet_xml_handler::~xlsx_sheet_xml_handler()

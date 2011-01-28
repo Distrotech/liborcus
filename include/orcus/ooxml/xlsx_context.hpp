@@ -73,13 +73,13 @@ private:
 /**
  * Top-level context for xl/worksheets/sheet<num>.xml.
  */
-class xlsx_sheet_xml_context : public xml_context_base
+class xlsx_sheet_context : public xml_context_base
 {
 public:
     enum cell_type { cell_type_string, cell_type_value };
 
-    xlsx_sheet_xml_context(const tokens& tokens, model::sheet_base* sheet);
-    virtual ~xlsx_sheet_xml_context();
+    xlsx_sheet_context(const tokens& tokens, model::sheet_base* sheet);
+    virtual ~xlsx_sheet_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
     virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;

@@ -195,7 +195,7 @@ class cell_attr_parser : public unary_function<xml_attr_t, void>
         address(model::row_t _row, model::col_t _col) : row(_row), col(_col) {}
     };
 public:
-    cell_attr_parser() : m_type(xlsx_sheet_xml_context::cell_type_value), m_address(0,0) {}
+    cell_attr_parser() : m_type(xlsx_sheet_context::cell_type_value), m_address(0,0) {}
 
     void operator() (const xml_attr_t& attr)
     {
@@ -211,18 +211,18 @@ public:
         }
     }
 
-    xlsx_sheet_xml_context::cell_type get_cell_type() const { return m_type; }
+    xlsx_sheet_context::cell_type get_cell_type() const { return m_type; }
 
     model::row_t get_row() const { return m_address.row; }
     model::col_t get_col() const { return m_address.col; }
 
 private:
-    xlsx_sheet_xml_context::cell_type to_cell_type(const pstring& s) const
+    xlsx_sheet_context::cell_type to_cell_type(const pstring& s) const
     {
         // TODO: check if there are other cell types.
-        xlsx_sheet_xml_context::cell_type t = xlsx_sheet_xml_context::cell_type_value;
+        xlsx_sheet_context::cell_type t = xlsx_sheet_context::cell_type_value;
         if (!s.empty() && s[0] == 's')
-            t = xlsx_sheet_xml_context::cell_type_string;
+            t = xlsx_sheet_context::cell_type_string;
         return t;
     }
 
@@ -264,38 +264,38 @@ private:
     }
 
 private:
-    xlsx_sheet_xml_context::cell_type m_type;
+    xlsx_sheet_context::cell_type m_type;
     address   m_address;
 };
 
 }
 
-xlsx_sheet_xml_context::xlsx_sheet_xml_context(const tokens& tokens, model::sheet_base* sheet) :
+xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, model::sheet_base* sheet) :
     xml_context_base(tokens),
     mp_sheet(sheet),
     m_current_row(0)
 {
 }
 
-xlsx_sheet_xml_context::~xlsx_sheet_xml_context()
+xlsx_sheet_context::~xlsx_sheet_context()
 {
 }
 
-bool xlsx_sheet_xml_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+bool xlsx_sheet_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
 {
     return true;
 }
 
-xml_context_base* xlsx_sheet_xml_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+xml_context_base* xlsx_sheet_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
 {
     return NULL;
 }
 
-void xlsx_sheet_xml_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
+void xlsx_sheet_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
 {
 }
 
-void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
+void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
 
@@ -370,7 +370,7 @@ void xlsx_sheet_xml_context::start_element(xmlns_token_t ns, xml_token_t name, c
 
 }
 
-bool xlsx_sheet_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
+bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
     switch (name)
     {
@@ -400,7 +400,7 @@ bool xlsx_sheet_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void xlsx_sheet_xml_context::characters(const pstring& str)
+void xlsx_sheet_context::characters(const pstring& str)
 {
     m_current_str = str;
 }
