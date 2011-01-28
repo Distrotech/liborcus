@@ -182,7 +182,7 @@ public:
     orcus_xlsx(model::factory_base* factory);
     ~orcus_xlsx();
 
-    void read_file(const char* fpath, const char* outpath);
+    void read_file(const char* fpath);
 
     /**
      * Read an xml part inside package.  The path is relative to the relation 
@@ -222,7 +222,7 @@ private:
      * The top-level function that determines the order in which the 
      * individual parts get parsed. 
      */
-    void read_content(const char* outpath);
+    void read_content();
 
     void list_content (GsfInput* input, int level = 0);
 
@@ -263,7 +263,7 @@ private:
     const opc_rel_extras_t* m_extras;
 };
 
-void orcus_xlsx::read_file(const char* fpath, const char* outpath)
+void orcus_xlsx::read_file(const char* fpath)
 {
     cout << "reading " << fpath << endl;
 
@@ -288,7 +288,7 @@ void orcus_xlsx::read_file(const char* fpath, const char* outpath)
     gsf_infile_guard dir_root(GSF_INPUT(infile), NULL);
     m_dir_stack.push_back(dir_root);
 //  list_content(GSF_INPUT(infile));
-    read_content (outpath);
+    read_content();
 
     gsf_shutdown();
 }
@@ -483,7 +483,7 @@ void orcus_xlsx::read_styles(const char* file_name)
     parser.parse();
 }
 
-void orcus_xlsx::read_content(const char* outpath)
+void orcus_xlsx::read_content()
 {
     if (m_dir_stack.empty())
         return;
@@ -557,7 +557,7 @@ int main(int argc, char** argv)
     ::boost::scoped_ptr<model::document> doc(new model::document);
 
     orcus_xlsx app(new model::factory(doc.get()));
-    app.read_file(argv[1], "out.html");
+    app.read_file(argv[1]);
 //  doc->dump();
     doc->dump_html("./obj");
 //  pstring::intern::dump();
