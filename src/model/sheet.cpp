@@ -348,7 +348,7 @@ void build_style_string(string& str, const styles& styles, const styles::xf& fmt
             if (p->pattern_type == "solid")
             {
                 const styles::color& r = p->fg_color;
-                os << "background-color: red;";
+                os << "background-color: rgb(" << r.red << "," << r.green << "," << r.blue << ");";
             }
         }
     }

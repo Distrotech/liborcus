@@ -763,7 +763,10 @@ public:
                 uint8_t red;
                 uint8_t green;
                 uint8_t blue;
-                to_rgb(attr.value, alpha, red, green, blue);
+                if (!to_rgb(attr.value, alpha, red, green, blue))
+                    // invalid RGB color format.
+                    return;
+
                 if (m_foreground)
                     m_styles.set_fill_fg_color(alpha, red, green, blue);
                 else
@@ -778,12 +781,21 @@ public:
     }
 
 private:
-    void to_rgb(const pstring& ps, uint8_t& alpha, uint8_t& red, uint8_t& green, uint8_t& blue) const
+    bool to_rgb(const pstring& ps, uint8_t& alpha, uint8_t& red, uint8_t& green, uint8_t& blue) const
     {
-        alpha = 255;
-        red = 255;
-        green = 0;
-        blue = 0;
+        // RGB string is a 8-character string representing 32-bit hexadecimal
+        // number e.g. 'FF004A12' (alpha - red - green - blue)
+        size_t n = ps.size();
+        if (n != 8)
+            return false;
+
+        unsigned long v = strtoul(ps.str().c_str(), NULL, 16);
+        blue  = (0x000000FF & v);
+        green = (0x000000FF & (v >> 8));
+        red   = (0x000000FF & (v >> 16));
+        alpha = (0x000000FF & (v >> 24));
+
+        return true;
     }
 };
 
