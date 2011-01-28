@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2010, 2011 Kohei Yoshida
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -194,20 +194,33 @@ class cell_attr_parser : public unary_function<xml_attr_t, void>
         model::col_t col;
         address(model::row_t _row, model::col_t _col) : row(_row), col(_col) {}
     };
+
+    xlsx_sheet_context::cell_type m_type;
+    address m_address;
+    size_t m_xf;
+
 public:
-    cell_attr_parser() : m_type(xlsx_sheet_context::cell_type_value), m_address(0,0) {}
+    cell_attr_parser() : 
+        m_type(xlsx_sheet_context::cell_type_unknown),
+        m_address(0,0),
+        m_xf(0) {}
 
     void operator() (const xml_attr_t& attr)
     {
-        if (attr.name == XML_r)
+        switch (attr.name)
         {
-            // cell address in A1 notation.
-            m_address = to_cell_address(attr.value);
-        }
-        else if (attr.name == XML_t)
-        {
-            // cell type
-            m_type = to_cell_type(attr.value);
+            case XML_r:
+                // cell address in A1 notation.
+                m_address = to_cell_address(attr.value);
+            break;
+            case XML_t:
+                // cell type
+                m_type = to_cell_type(attr.value);
+            break;
+            case XML_s:
+                // cell style
+                m_xf = strtoul(attr.value.str().c_str(), NULL, 10);
+            break;
         }
     }
 
@@ -215,6 +228,7 @@ public:
 
     model::row_t get_row() const { return m_address.row; }
     model::col_t get_col() const { return m_address.col; }
+    size_t get_xf() const { return m_xf; }
 
 private:
     xlsx_sheet_context::cell_type to_cell_type(const pstring& s) const
@@ -262,10 +276,6 @@ private:
 
         return address(row-1, col-1); // switch from 1-based to 0-based.
     }
-
-private:
-    xlsx_sheet_context::cell_type m_type;
-    address   m_address;
 };
 
 }
@@ -273,7 +283,8 @@ private:
 xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, model::sheet_base* sheet) :
     xml_context_base(tokens),
     mp_sheet(sheet),
-    m_current_row(0)
+    m_cur_row(0),
+    m_cur_cell_type(cell_type_unknown)
 {
 }
 
@@ -345,7 +356,7 @@ void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const
             xml_element_expected(parent, XMLNS_xlsx, XML_sheetData);
             row_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
-            m_current_row = func.get_row();
+            m_cur_row = func.get_row();
         }
         break;
         case XML_c:
@@ -354,11 +365,12 @@ void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const
             cell_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
 
-            if (m_current_row != func.get_row())
+            if (m_cur_row != func.get_row())
                 throw xml_structure_error("row numbers differ!");
 
-            m_current_col = func.get_col();
-            m_current_cell_type = func.get_cell_type();
+            m_cur_col = func.get_col();
+            m_cur_cell_type = func.get_cell_type();
+            m_cur_cell_xf = func.get_xf();
         }
         break;
         case XML_v:
@@ -374,25 +386,28 @@ bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
     switch (name)
     {
-        case XML_v:
+        case XML_c:
         {
-            switch (m_current_cell_type)
+            switch (m_cur_cell_type)
             {
                 case cell_type_string:
                 {
                     // string cell
-                    size_t str_id = strtoul(m_current_str.str().c_str(), NULL, 10);
-                    mp_sheet->set_string(m_current_row, m_current_col, str_id);
+                    size_t str_id = strtoul(m_cur_str.str().c_str(), NULL, 10);
+                    mp_sheet->set_string(m_cur_row, m_cur_col, str_id);
                 }
                 break;
                 case cell_type_value:
                 {
                     // value cell
-                    double val = strtod(m_current_str.str().c_str(), NULL);
-                    mp_sheet->set_value(m_current_row, m_current_col, val);
+                    double val = strtod(m_cur_str.str().c_str(), NULL);
+                    mp_sheet->set_value(m_cur_row, m_cur_col, val);
                 }
                 break;
             }
+
+            if (m_cur_cell_xf)
+                mp_sheet->set_format(m_cur_row, m_cur_col, m_cur_cell_xf);
         }
         break;
     }
@@ -402,7 +417,7 @@ bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
 
 void xlsx_sheet_context::characters(const pstring& str)
 {
-    m_current_str = str;
+    m_cur_str = str;
 }
 
 // ============================================================================
@@ -585,7 +600,7 @@ bool xlsx_shared_strings_context::end_element(xmlns_token_t ns, xml_token_t name
             mp_strings->set_segment_italic(true);
         break;
         case XML_r:
-            mp_strings->append_segment(m_current_str.get(), m_current_str.size());
+            mp_strings->append_segment(m_cur_str.get(), m_cur_str.size());
         break;
         case XML_si:
         {
@@ -595,7 +610,7 @@ bool xlsx_shared_strings_context::end_element(xmlns_token_t ns, xml_token_t name
             else
             {
                 // unformatted text should only have one text segment.
-                mp_strings->append(m_current_str.get(), m_current_str.size());
+                mp_strings->append(m_cur_str.get(), m_cur_str.size());
             }
         }
         break;
@@ -607,7 +622,7 @@ void xlsx_shared_strings_context::characters(const pstring& str)
 {
     xml_token_pair_t& cur_token = get_current_element();
     if (cur_token.first == XMLNS_xlsx && cur_token.second == XML_t)
-        m_current_str = str;
+        m_cur_str = str;
 }
 
 // ============================================================================

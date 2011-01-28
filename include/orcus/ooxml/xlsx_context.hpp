@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2010, 2011 Kohei Yoshida
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -76,7 +76,7 @@ private:
 class xlsx_sheet_context : public xml_context_base
 {
 public:
-    enum cell_type { cell_type_string, cell_type_value };
+    enum cell_type { cell_type_string, cell_type_value, cell_type_unknown };
 
     xlsx_sheet_context(const tokens& tokens, model::sheet_base* sheet);
     virtual ~xlsx_sheet_context();
@@ -91,10 +91,11 @@ public:
 
 private:
     model::sheet_base* mp_sheet; /// sheet model instance for the loaded document.
-    model::row_t m_current_row;
-    model::col_t m_current_col;
-    cell_type m_current_cell_type;
-    pstring m_current_str;
+    model::row_t m_cur_row;
+    model::col_t m_cur_col;
+    cell_type    m_cur_cell_type;
+    size_t       m_cur_cell_xf;
+    pstring      m_cur_str;
 };
 
 /**
@@ -116,7 +117,7 @@ public:
 
 private:
     model::shared_strings_base* mp_strings;
-    pstring m_current_str;
+    pstring m_cur_str;
     bool m_in_segments;
 };
 
