@@ -145,15 +145,42 @@ class sheet_base
 public:
     virtual ~sheet_base() = 0;
 
+    /**
+     * Set string value to a cell. 
+     * 
+     * @param row row ID
+     * @param col column ID
+     * @param sindex string index in the shared string table.
+     */
     virtual void set_string(row_t row, col_t col, size_t sindex) = 0;
+
+    /**
+     * Set numerical value to a cell.
+     * 
+     * @param row row ID
+     * @param col column ID
+     * @param value value being assigned to the cell.
+     */
     virtual void set_value(row_t row, col_t col, double value) = 0;
+
+    /**
+     * Set cell format to specified cell.  The cell format is referred to by 
+     * the xf (cell format) index in the styles table.
+     * 
+     * @param row row ID
+     * @param col column ID
+     * @param index xf (cell format) index
+     */
+    virtual void set_format(row_t row, col_t col, size_t index) = 0;
 };
 
 inline sheet_base::~sheet_base() {}
 
 /**
  * This interface provides the filters a means to instantiate concrete
- * classes that implement the above interfaces.
+ * classes that implement the above interfaces.  The client code never has 
+ * to manually delete objects returned by its methods; the implementor of 
+ * this interface must manage the life cycles of objects it returns.
  */
 class factory_base
 {
