@@ -102,7 +102,7 @@ void sheet::set_format(row_t row, col_t col, size_t index)
         pair<cell_format_type::iterator, bool> r =
             m_cell_formats.insert(
                 cell_format_type::value_type(
-                    col, new segment_col_index_type(0, max_col_limit, 0)));
+                    row, new segment_col_index_type(0, max_col_limit, 0)));
 
         if (!r.second)
         {
@@ -380,9 +380,9 @@ void sheet::dump_html(const string& filepath) const
                     file << '-'; // empty cell.
                 }
 
-                size_t xf = get_cell_format(row, col);
                 elem td(file, p_td, p_table_attrs);
                 const cell& c = itr_row->second;
+                ostringstream os;
                 switch (c.type)
                 {
                     case ct_string:
@@ -391,19 +391,26 @@ void sheet::dump_html(const string& filepath) const
                         const pstring& ps = sstrings->get(sindex);
                         const shared_strings::format_runs_type* pformat = sstrings->get_format_runs(sindex);
                         if (pformat)
-                            print_formatted_text<ofstream>(file, ps, *pformat);
+                            print_formatted_text<ostringstream>(os, ps, *pformat);
                         else
-                            file << ps;
+                            os << ps;
                     }
                     break;
                     case ct_value:
                     {
-                        ostringstream os;
                         os << c.value;
-                        file << os.str();
                     }
                     break;
                 }
+
+                size_t xf = get_cell_format(row, col);
+                if (xf)
+                {
+                    // TODO: Apply correct cell format.
+                    file << "<span style=\"color:green\">" << os.str() << "</span>";
+                }
+                else
+                    file << os.str();
             }
 
             for (; col < col_count; ++col)
