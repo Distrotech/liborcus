@@ -34,6 +34,7 @@
 #include <mdds/flat_segment_tree.hpp>
 
 #include <unordered_map>
+#include <map>
 
 namespace orcus { namespace model {
 
@@ -65,11 +66,11 @@ class sheet : public sheet_base
         cell(cell_type _type, double _value);
     };
 public:
-    typedef ::mdds::flat_segment_tree<row_t, size_t>  segment_row_index_type;
-    typedef ::std::unordered_map<col_t, segment_row_index_type*> cell_format_type;
+    typedef ::mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
+    typedef ::std::unordered_map<row_t, segment_col_index_type*> cell_format_type;
 
-    typedef ::std::unordered_map<col_t, cell>       row_type;
-    typedef ::std::unordered_map<row_t, row_type*>  sheet_type;
+    typedef ::std::map<col_t, cell>       row_type;
+    typedef ::std::map<row_t, row_type*>  sheet_type;
 
     sheet(document& doc);
     virtual ~sheet();
@@ -86,11 +87,12 @@ public:
 
 private:
     row_type* get_row(row_t row, col_t col);
+    size_t get_cell_format(row_t row, col_t col) const;
 
 private:
     document& m_doc;
     sheet_type  m_sheet;  /// group of rows.
-    cell_format_type m_cell_formats;
+    mutable cell_format_type m_cell_formats;
     row_t m_max_row;
     col_t m_max_col;
 };

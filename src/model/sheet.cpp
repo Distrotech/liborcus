@@ -96,13 +96,13 @@ void sheet::set_value(row_t row, col_t col, double value)
 
 void sheet::set_format(row_t row, col_t col, size_t index)
 {
-    cell_format_type::iterator itr = m_cell_formats.find(col);
+    cell_format_type::iterator itr = m_cell_formats.find(row);
     if (itr == m_cell_formats.end())
     {
         pair<cell_format_type::iterator, bool> r =
             m_cell_formats.insert(
                 cell_format_type::value_type(
-                    col, new segment_row_index_type(0, max_row_limit, 0)));
+                    col, new segment_col_index_type(0, max_col_limit, 0)));
 
         if (!r.second)
         {
@@ -112,8 +112,8 @@ void sheet::set_format(row_t row, col_t col, size_t index)
         itr = r.first;
     }
 
-    segment_row_index_type& con = *itr->second;
-    con.insert_back(row, row+1, index);
+    segment_col_index_type& con = *itr->second;
+    con.insert_back(col, col+1, index);
 }
 
 size_t sheet::row_size() const
@@ -380,6 +380,7 @@ void sheet::dump_html(const string& filepath) const
                     file << '-'; // empty cell.
                 }
 
+                size_t xf = get_cell_format(row, col);
                 elem td(file, p_td, p_table_attrs);
                 const cell& c = itr_row->second;
                 switch (c.type)
@@ -431,6 +432,23 @@ sheet::row_type* sheet::get_row(row_t row, col_t col)
         m_max_col = col;
 
     return itr->second;
+}
+
+size_t sheet::get_cell_format(row_t row, col_t col) const
+{
+    cell_format_type::const_iterator itr = m_cell_formats.find(row);
+    if (itr == m_cell_formats.end())
+        return 0;
+
+    segment_col_index_type& con = *itr->second;
+    if (!con.is_tree_valid())
+        con.build_tree();
+
+    size_t index;
+    if (!con.search_tree(col, index))
+        return 0;
+
+    return index;
 }
 
 }}

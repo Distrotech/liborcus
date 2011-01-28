@@ -76,7 +76,7 @@ private:
 class xlsx_sheet_context : public xml_context_base
 {
 public:
-    enum cell_type { cell_type_string, cell_type_value, cell_type_unknown };
+    enum cell_type { cell_type_string, cell_type_value };
 
     xlsx_sheet_context(const tokens& tokens, model::sheet_base* sheet);
     virtual ~xlsx_sheet_context();

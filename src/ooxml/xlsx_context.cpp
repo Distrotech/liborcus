@@ -201,7 +201,7 @@ class cell_attr_parser : public unary_function<xml_attr_t, void>
 
 public:
     cell_attr_parser() : 
-        m_type(xlsx_sheet_context::cell_type_unknown),
+        m_type(xlsx_sheet_context::cell_type_value),
         m_address(0,0),
         m_xf(0) {}
 
@@ -284,7 +284,7 @@ xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, model::sheet_base* 
     xml_context_base(tokens),
     mp_sheet(sheet),
     m_cur_row(0),
-    m_cur_cell_type(cell_type_unknown)
+    m_cur_cell_type(cell_type_value)
 {
 }
 
@@ -388,26 +388,31 @@ bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
     {
         case XML_c:
         {
-            switch (m_cur_cell_type)
+            if (!m_cur_str.empty())
             {
-                case cell_type_string:
+                switch (m_cur_cell_type)
                 {
-                    // string cell
-                    size_t str_id = strtoul(m_cur_str.str().c_str(), NULL, 10);
-                    mp_sheet->set_string(m_cur_row, m_cur_col, str_id);
+                    case cell_type_string:
+                    {
+                        // string cell
+                        size_t str_id = strtoul(m_cur_str.str().c_str(), NULL, 10);
+                        mp_sheet->set_string(m_cur_row, m_cur_col, str_id);
+                    }
+                    break;
+                    case cell_type_value:
+                    {
+                        // value cell
+                        double val = strtod(m_cur_str.str().c_str(), NULL);
+                        mp_sheet->set_value(m_cur_row, m_cur_col, val);
+                    }
+                    break;
                 }
-                break;
-                case cell_type_value:
-                {
-                    // value cell
-                    double val = strtod(m_cur_str.str().c_str(), NULL);
-                    mp_sheet->set_value(m_cur_row, m_cur_col, val);
-                }
-                break;
+    
+                if (m_cur_cell_xf)
+                    mp_sheet->set_format(m_cur_row, m_cur_col, m_cur_cell_xf);
+    
+                m_cur_str.clear();
             }
-
-            if (m_cur_cell_xf)
-                mp_sheet->set_format(m_cur_row, m_cur_col, m_cur_cell_xf);
         }
         break;
     }
