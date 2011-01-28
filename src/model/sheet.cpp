@@ -44,14 +44,6 @@ namespace orcus { namespace model {
 
 namespace {
 
-struct row_deleter : public unary_function<pair<row_t, sheet::row_type*>, void>
-{
-    void operator() (const pair<row_t, sheet::row_type*>& r)
-    {
-        delete r.second;
-    }
-};
-
 struct colsize_checker : public unary_function<pair<row_t, sheet::row_type*>, void>
 {
     colsize_checker() : m_colsize(0) {}
@@ -72,6 +64,9 @@ private:
 
 }
 
+const row_t sheet::max_row_limit = 1048575;
+const col_t sheet::max_col_limit = 1023;
+
 sheet::cell::cell() : type(ct_value), value(0.0) {}
 sheet::cell::cell(cell_type _type, double _value) : type(_type), value(_value) {}
 
@@ -82,7 +77,9 @@ sheet::sheet(document& doc) :
 
 sheet::~sheet()
 {
-    for_each(m_sheet.begin(), m_sheet.end(), row_deleter());
+    for_each(m_sheet.begin(), m_sheet.end(), delete_map_object<sheet_type>());
+    for_each(m_cell_formats.begin(), m_cell_formats.end(), 
+             delete_map_object<cell_format_type>());
 }
 
 void sheet::set_string(row_t row, col_t col, size_t sindex)
@@ -99,6 +96,24 @@ void sheet::set_value(row_t row, col_t col, double value)
 
 void sheet::set_format(row_t row, col_t col, size_t index)
 {
+    cell_format_type::iterator itr = m_cell_formats.find(col);
+    if (itr == m_cell_formats.end())
+    {
+        pair<cell_format_type::iterator, bool> r =
+            m_cell_formats.insert(
+                cell_format_type::value_type(
+                    col, new segment_row_index_type(0, max_row_limit, 0)));
+
+        if (!r.second)
+        {
+            cerr << "insertion of new cell format container failed!" << endl;
+            return;
+        }
+        itr = r.first;
+    }
+
+    segment_row_index_type& con = *itr->second;
+    con.insert_back(row, row+1, index);
 }
 
 size_t sheet::row_size() const

@@ -31,6 +31,8 @@
 #include "orcus/model/interface.hpp"
 #include "orcus/pstring.hpp"
 
+#include <mdds/flat_segment_tree.hpp>
+
 #include <unordered_map>
 
 namespace orcus { namespace model {
@@ -43,6 +45,9 @@ class document;
  */
 class sheet : public sheet_base
 {
+    static const row_t max_row_limit;
+    static const col_t max_col_limit;
+
     enum cell_type { ct_string, ct_value };
 
     /**
@@ -60,6 +65,9 @@ class sheet : public sheet_base
         cell(cell_type _type, double _value);
     };
 public:
+    typedef ::mdds::flat_segment_tree<row_t, size_t>  segment_row_index_type;
+    typedef ::std::unordered_map<col_t, segment_row_index_type*> cell_format_type;
+
     typedef ::std::unordered_map<col_t, cell>       row_type;
     typedef ::std::unordered_map<row_t, row_type*>  sheet_type;
 
@@ -82,6 +90,7 @@ private:
 private:
     document& m_doc;
     sheet_type  m_sheet;  /// group of rows.
+    cell_format_type m_cell_formats;
     row_t m_max_row;
     col_t m_max_col;
 };
