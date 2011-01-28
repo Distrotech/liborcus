@@ -144,6 +144,7 @@ public:
     virtual void commit_cell_style();
 
     const font* get_font(size_t index) const;
+    const xf* get_cell_xf(size_t index) const;
 
 private:
     font m_cur_font;

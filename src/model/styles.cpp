@@ -268,4 +268,12 @@ const styles::font* styles::get_font(size_t index) const
     return &m_fonts[index];
 }
 
+const styles::xf* styles::get_cell_xf(size_t index) const
+{
+    if (index >= m_cell_formats.size())
+        return NULL;
+
+    return &m_cell_formats[index];
+}
+
 }}

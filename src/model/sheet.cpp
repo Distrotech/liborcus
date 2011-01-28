@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "orcus/model/sheet.hpp"
+#include "orcus/model/styles.hpp"
 #include "orcus/global.hpp"
 #include "orcus/model/shared_strings.hpp"
 #include "orcus/model/document.hpp"
@@ -321,6 +322,27 @@ void print_formatted_text(_OSTREAM& strm, const pstring& text, const shared_stri
     }
 }
 
+void build_style_string(string& str, const styles& styles, const styles::xf& fmt)
+{
+    ostringstream os;
+    if (fmt.font)
+    {
+        const styles::font* p = styles.get_font(fmt.font);
+        if (p)
+        {
+            if (!p->name.empty())
+                os << "font-family: " << p->name << ";";
+            if (p->size)
+                os << "font-size: " << p->size << "pt;";
+            if (p->bold)
+                os << "font-weight: bold;";
+            if (p->italic)
+                os << "font-style: italic;";
+        }
+    }
+    str = os.str();
+}
+
 }
 
 void sheet::dump_html(const string& filepath) const
@@ -407,7 +429,12 @@ void sheet::dump_html(const string& filepath) const
                 if (xf)
                 {
                     // TODO: Apply correct cell format.
-                    file << "<span style=\"color:green\">" << os.str() << "</span>";
+                    styles* p_styles = m_doc.get_styles();
+                    const styles::xf* fmt = p_styles->get_cell_xf(xf);
+                    string style;
+                    if (fmt)
+                        build_style_string(style, *p_styles, *fmt);
+                    file << "<span style=\"" << style << "\">" << os.str() << "</span>";
                 }
                 else
                     file << os.str();
