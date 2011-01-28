@@ -105,31 +105,6 @@ private:
     ods_content_xml_context::cell_attr& m_attr;
 };
 
-class table_html_printer : public unary_function<model::sheet, void>
-{
-public:
-    table_html_printer(ofstream& file) : m_file(file) {}
-    void operator() (const model::sheet& table)
-    {
-        size_t row_size = table.row_size();
-        size_t col_size = table.col_size();
-
-        m_file << "<table border=\"1\">" << "<caption>" << "sheet_name" << "</caption>";
-        for (size_t row = 0; row < row_size; ++row)
-        {
-            m_file << "<tr>";
-            for (size_t col = 0; col < col_size; ++col)
-            {
-                m_file << "<td>" << table.get_cell(row, col).str() << "</td>";
-            }
-            m_file << "</tr>" << endl;
-        }
-        m_file << "</table>" << endl;
-    }
-private:
-    ofstream& m_file;
-};
-
 }
 
 // ============================================================================

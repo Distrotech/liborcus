@@ -97,39 +97,8 @@ void sheet::set_value(row_t row, col_t col, double value)
     p->insert(row_type::value_type(col, cell(ct_value, value)));
 }
 
-void sheet::set_cell(row_t row, col_t col, const pstring& val)
+void sheet::set_format(row_t row, col_t col, size_t index)
 {
-#if 0 // temporarily disabled
-    sheet_type::iterator itr = m_sheet.find(row);
-    if (itr == m_sheet.end())
-    {
-        // This row doesn't exist yet.  Create it.
-        pair<sheet_type::iterator, bool> r = m_sheet.insert(sheet_type::value_type(row, new row_type));
-        if (!r.second)
-            throw general_error("failed to insert a new row instance.");
-        itr = r.first;
-    }
-
-    row_type* p = itr->second;
-    p->insert(row_type::value_type(col, val));
-#endif
-}
-
-pstring sheet::get_cell(row_t row, col_t col) const
-{
-    return pstring();
-#if 0 // temporarily disabled
-    sheet_type::const_iterator itr = m_sheet.find(row);
-    if (itr == m_sheet.end())
-        return pstring();
-
-    row_type* p = itr->second;
-    row_type::const_iterator itr_cell = p->find(col);
-    if (itr_cell == p->end())
-        return pstring();
-
-    return itr_cell->second;
-#endif
 }
 
 size_t sheet::row_size() const

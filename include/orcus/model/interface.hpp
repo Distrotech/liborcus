@@ -150,7 +150,7 @@ public:
      * 
      * @param row row ID
      * @param col column ID
-     * @param sindex string index in the shared string table.
+     * @param sindex 0-based string index in the shared string table.
      */
     virtual void set_string(row_t row, col_t col, size_t sindex) = 0;
 
@@ -169,9 +169,9 @@ public:
      * 
      * @param row row ID
      * @param col column ID
-     * @param index xf (cell format) index
+     * @param index 0-based xf (cell format) index
      */
-    virtual void set_format(row_t row, col_t col, size_t index) = 0;
+    virtual void set_format(row_t row, col_t col, size_t xf_index) = 0;
 };
 
 inline sheet_base::~sheet_base() {}

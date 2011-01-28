@@ -68,9 +68,8 @@ public:
 
     virtual void set_string(row_t row, col_t col, size_t sindex);
     virtual void set_value(row_t row, col_t col, double value);
+    virtual void set_format(row_t row, col_t col, size_t index);
 
-    void set_cell(row_t row, col_t col, const pstring& val);
-    pstring get_cell(row_t row, col_t col) const;
     size_t row_size() const;
     size_t col_size() const;
 
