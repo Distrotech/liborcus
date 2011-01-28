@@ -233,7 +233,7 @@ private:
     vector<xml_part_t> m_ext_defaults;
     vector<gsf_infile_guard> m_dir_stack;
 
-    ::boost::shared_ptr<model::factory_base> mp_factory;
+    model::factory_base* mp_factory;
 };
 
 orcus_xlsx::orcus_xlsx(model::factory_base* factory) :
@@ -555,8 +555,8 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
 
     ::boost::scoped_ptr<model::document> doc(new model::document);
-
-    orcus_xlsx app(new model::factory(doc.get()));
+    ::boost::scoped_ptr<model::factory> factory(new model::factory(doc.get()));
+    orcus_xlsx app(factory.get());
     app.read_file(argv[1]);
 //  doc->dump();
     doc->dump_html("./obj");
