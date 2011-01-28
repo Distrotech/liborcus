@@ -87,6 +87,8 @@ class styles_base
 public:
     virtual ~styles_base() = 0;
 
+    // font
+
     virtual void set_font_count(size_t n) = 0;
     virtual void set_font_bold(bool b) = 0;
     virtual void set_font_italic(bool b) = 0;
@@ -94,25 +96,37 @@ public:
     virtual void set_font_size(double point) = 0;
     virtual void commit_font() = 0;
 
+    // fill
+
     virtual void set_fill_count(size_t n) = 0;
     virtual void set_fill_pattern_type(const char* s, size_t n) = 0;
     virtual void commit_fill() = 0;
+
+    // border
 
     virtual void set_border_count(size_t n) = 0;
     virtual void set_border_style(border_direction_t dir, const char* s, size_t n) = 0;
     virtual void commit_border() = 0;
 
+    // cell style xf
+
     virtual void set_cell_style_xf_count(size_t n) = 0;
     virtual void commit_cell_style_xf() = 0;
 
+    // cell xf
+
     virtual void set_cell_xf_count(size_t n) = 0;
     virtual void commit_cell_xf() = 0;
+
+    // xf (cell format) - used both by cell xf and cell style xf.
 
     virtual void set_xf_number_format(size_t index) = 0;
     virtual void set_xf_font(size_t index) = 0;
     virtual void set_xf_fill(size_t index) = 0;
     virtual void set_xf_border(size_t index) = 0;
     virtual void set_xf_style_xf(size_t index) = 0;
+
+    // cell style entry
 
     virtual void set_cell_style_count(size_t n) = 0;
     virtual void set_cell_style_name(const char* s, size_t n) = 0;
