@@ -126,19 +126,16 @@ public:
     virtual void commit_border();
 
     virtual void set_cell_style_xf_count(size_t n);
-    virtual void set_cell_style_xf_number_format(size_t index);
-    virtual void set_cell_style_xf_font(size_t index);
-    virtual void set_cell_style_xf_fill(size_t index);
-    virtual void set_cell_style_xf_border(size_t index);
     virtual void commit_cell_style_xf();
 
     virtual void set_cell_xf_count(size_t n);
-    virtual void set_cell_xf_number_format(size_t index);
-    virtual void set_cell_xf_font(size_t index);
-    virtual void set_cell_xf_fill(size_t index);
-    virtual void set_cell_xf_border(size_t index);
-    virtual void set_cell_xf_style_xf(size_t index);
     virtual void commit_cell_xf();
+
+    virtual void set_xf_number_format(size_t index);
+    virtual void set_xf_font(size_t index);
+    virtual void set_xf_fill(size_t index);
+    virtual void set_xf_border(size_t index);
+    virtual void set_xf_style_xf(size_t index);
 
     virtual void set_cell_style_count(size_t n);
     virtual void set_cell_style_name(const char* s, size_t n);
@@ -152,7 +149,6 @@ private:
     font m_cur_font;
     fill m_cur_fill;
     border m_cur_border;
-    xf m_cur_cell_style_format;
     xf m_cur_cell_format;
     cell_style m_cur_cell_style;
 

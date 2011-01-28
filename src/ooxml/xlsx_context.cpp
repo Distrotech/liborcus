@@ -673,10 +673,9 @@ public:
 class xf_attr_parser : public unary_function<xml_attr_t, void>
 {
     model::styles_base& m_styles;
-    bool m_cell_style;
 public:
-    xf_attr_parser(model::styles_base& styles, bool cell_style) :
-        m_styles(styles), m_cell_style(cell_style) {}
+    xf_attr_parser(model::styles_base& styles) :
+        m_styles(styles) {}
 
     void operator() (const xml_attr_t& attr)
     {
@@ -685,44 +684,31 @@ public:
             case XML_borderId:
             {
                 size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
-                if (m_cell_style)
-                    m_styles.set_cell_style_xf_border(n);
-                else
-                    m_styles.set_cell_xf_border(n);
+                m_styles.set_xf_border(n);
             }
             break;
             case XML_fillId:
             {
                 size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
-                if (m_cell_style)
-                    m_styles.set_cell_style_xf_fill(n);
-                else
-                    m_styles.set_cell_xf_fill(n);
+                m_styles.set_xf_fill(n);
             }
             break;
             case XML_fontId:
             {
                 size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
-                if (m_cell_style)
-                    m_styles.set_cell_style_xf_font(n);
-                else
-                    m_styles.set_cell_xf_font(n);
+                m_styles.set_xf_font(n);
             }
             break;
             case XML_numFmtId:
             {
                 size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
-                if (m_cell_style)
-                    m_styles.set_cell_style_xf_number_format(n);
-                else
-                    m_styles.set_cell_xf_number_format(n);
+                m_styles.set_xf_number_format(n);
             }
             break;
             case XML_xfId:
             {
                 size_t n = strtoul(attr.value.str().c_str(), NULL, 10);
-                if (!m_cell_style)
-                    m_styles.set_cell_xf_style_xf(n);
+                m_styles.set_xf_style_xf(n);
             }
             break;
             case XML_applyBorder:
@@ -897,24 +883,29 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         case XML_cellStyleXfs:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
-            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            const pstring& ps = for_each(
+                attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t n = strtoul(ps.str().c_str(), NULL, 10);
             mp_styles->set_cell_style_xf_count(n);
+            m_cell_style_xf = true;
         }
         break;
         case XML_cellXfs:
         {
             // Collection of un-named cell formats used in the document.
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
-            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            const pstring& ps = for_each(
+                attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t n = strtoul(ps.str().c_str(), NULL, 10);
             mp_styles->set_cell_xf_count(n);
+            m_cell_style_xf = false;
         }
         break;
         case XML_cellStyles:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
-            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            const pstring& ps = for_each(
+                attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t n = strtoul(ps.str().c_str(), NULL, 10);
             mp_styles->set_cell_style_count(n);
         }
@@ -928,12 +919,14 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         break;
         case XML_xf:
         {
+            // Actual cell format attributes (for some reason) abbreviated to
+            // 'xf'.  Used both by cells and cell styles.
             xml_elem_stack_t allowed;
             allowed.push_back(xml_elem_stack_t::value_type(XMLNS_xlsx, XML_cellXfs));
             allowed.push_back(xml_elem_stack_t::value_type(XMLNS_xlsx, XML_cellStyleXfs));
             xml_element_expected(parent, allowed);
-            m_cell_style_xf = parent.second == XML_cellStyleXfs;
-            for_each(attrs.begin(), attrs.end(), xf_attr_parser(*mp_styles, m_cell_style_xf));
+
+            for_each(attrs.begin(), attrs.end(), xf_attr_parser(*mp_styles));
         }
         break;
         default:

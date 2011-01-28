@@ -192,30 +192,10 @@ void styles::set_cell_style_xf_count(size_t n)
     m_cell_style_formats.reserve(n);
 }
 
-void styles::set_cell_style_xf_number_format(size_t index)
-{
-    m_cur_cell_style_format.num_format = index;
-}
-
-void styles::set_cell_style_xf_font(size_t index)
-{
-    m_cur_cell_style_format.font = index;
-}
-
-void styles::set_cell_style_xf_fill(size_t index)
-{
-    m_cur_cell_style_format.fill = index;
-}
-
-void styles::set_cell_style_xf_border(size_t index)
-{
-    m_cur_cell_style_format.border = index;
-}
-
 void styles::commit_cell_style_xf()
 {
-    m_cell_style_formats.push_back(m_cur_cell_style_format);
-    m_cur_cell_style_format.reset();
+    m_cell_style_formats.push_back(m_cur_cell_format);
+    m_cur_cell_format.reset();
 }
 
 void styles::set_cell_xf_count(size_t n)
@@ -223,35 +203,35 @@ void styles::set_cell_xf_count(size_t n)
     m_cell_formats.reserve(n);
 }
 
-void styles::set_cell_xf_number_format(size_t index)
-{
-    m_cur_cell_format.num_format = index;
-}
-
-void styles::set_cell_xf_font(size_t index)
-{
-    m_cur_cell_format.font = index;
-}
-
-void styles::set_cell_xf_fill(size_t index)
-{
-    m_cur_cell_format.fill = index;
-}
-
-void styles::set_cell_xf_border(size_t index)
-{
-    m_cur_cell_format.border = index;
-}
-
-void styles::set_cell_xf_style_xf(size_t index)
-{
-    m_cur_cell_format.style_xf = index;
-}
-
 void styles::commit_cell_xf()
 {
     m_cell_formats.push_back(m_cur_cell_format);
     m_cur_cell_format.reset();
+}
+
+void styles::set_xf_number_format(size_t index)
+{
+    m_cur_cell_format.num_format = index;
+}
+
+void styles::set_xf_font(size_t index)
+{
+    m_cur_cell_format.font = index;
+}
+
+void styles::set_xf_fill(size_t index)
+{
+    m_cur_cell_format.fill = index;
+}
+
+void styles::set_xf_border(size_t index)
+{
+    m_cur_cell_format.border = index;
+}
+
+void styles::set_xf_style_xf(size_t index)
+{
+    m_cur_cell_format.style_xf = index;
 }
 
 void styles::set_cell_style_count(size_t n)
