@@ -340,7 +340,7 @@ void build_style_string(string& str, const styles& styles, const styles::xf& fmt
                 os << "font-style: italic;";
         }
     }
-    str = os.str();
+    str += os.str();
 }
 
 }
@@ -419,16 +419,14 @@ void sheet::dump_html(const string& filepath) const
                     }
                     break;
                     case ct_value:
-                    {
                         os << c.value;
-                    }
                     break;
                 }
 
                 size_t xf = get_cell_format(row, col);
                 if (xf)
                 {
-                    // TODO: Apply correct cell format.
+                    // Apply cell format.
                     styles* p_styles = m_doc.get_styles();
                     const styles::xf* fmt = p_styles->get_cell_xf(xf);
                     string style;
