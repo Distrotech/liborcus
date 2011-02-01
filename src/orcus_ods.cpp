@@ -168,7 +168,7 @@ int main(int argc, char** argv)
 
     orcus_ods app(new model::factory(doc.get()));
     app.read_file(argv[1], "out.html");
-    doc->dump();
+//  doc->dump();
     pstring::intern::dispose();
 
     return EXIT_SUCCESS;

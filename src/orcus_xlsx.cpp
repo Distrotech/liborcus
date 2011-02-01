@@ -597,8 +597,8 @@ int main(int argc, char** argv)
     ::boost::scoped_ptr<model::factory> factory(new model::factory(doc.get()));
     orcus_xlsx app(factory.get());
     app.read_file(argv[1]);
-    doc->dump();
-    doc->dump_html("./obj");
+//  doc->dump();
+//  doc->dump_html("./obj");
 //  pstring::intern::dump();
     pstring::intern::dispose();
     return EXIT_SUCCESS;
