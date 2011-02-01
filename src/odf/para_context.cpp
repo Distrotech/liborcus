@@ -66,18 +66,29 @@ void text_para_context::end_child_context(xmlns_token_t ns, xml_token_t name, xm
 void text_para_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
-    if (ns == XMLNS_text && name == XML_p)
+    if (ns == XMLNS_text)
     {
-        // paragraph
-        xml_element_expected(parent, XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN);
-        m_formatted = false;
+        switch (name)
+        {
+            case XML_p:
+                // paragraph
+                xml_element_expected(parent, XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN);
+                m_formatted = false;
+            break;
+            case XML_span:
+                // text span.
+                xml_element_expected(parent, XMLNS_text, XML_p);
+                m_formatted = true;
+            break;
+            case XML_s:
+                // control character.  ignored for now.
+            break;
+            default:
+                warn_unhandled();
+        }
     }
-    else if (ns == XMLNS_text && name == XML_span)
-    {
-        // text span.
-        xml_element_expected(parent, XMLNS_text, XML_p);
-        m_formatted = true;
-    }
+    else
+        warn_unhandled();
 }
 
 bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
@@ -100,10 +111,17 @@ bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
         }
         else if (!m_contents.empty())
         {
-            // Unformatted simple text paragraph.
-            assert(m_contents.size() == 1);
-            const pstring& ps = m_contents.back();
-            m_string_index = mp_sstrings->add(ps.get(), ps.size());
+            // Unformatted simple text paragraph.  We may still get several 
+            // segments in presence of control characters separating the
+            // paragraph text.
+
+            vector<pstring>::const_iterator itr = m_contents.begin(), itr_end = m_contents.end();
+            for (; itr != itr_end; ++itr)
+            {
+                const pstring& ps = *itr;
+                mp_sstrings->append_segment(ps.get(), ps.size());
+            }
+            m_string_index = mp_sstrings->commit_segments();
         }
     }
     else if (ns == XMLNS_text && name == XML_span)
