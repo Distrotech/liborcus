@@ -224,11 +224,16 @@ void css_parser<_Handler>::quoted_value()
     {
         if (cur_char() == '"')
         {
-            next();
+            // End quote reached.
             break;
         }
         ++len;
     }
+
+    if (cur_char() != '"')
+        throw css_parse_error("end quote has never been reached.");
+
+    next();
     skip_blanks();
 
 #if ORCUS_DEBUG_CSS
