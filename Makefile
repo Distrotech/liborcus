@@ -124,6 +124,8 @@ CSS_HEADERS= \
 
 CSS_OBJFILES= \
 	$(OBJDIR)/orcus_css.o \
+	$(OBJDIR)/global.o \
+	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/pstring.o
 
 DEPENDS= \

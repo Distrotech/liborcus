@@ -27,9 +27,40 @@
 
 #include "orcus/css_parser.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/global.hpp"
+
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 using namespace orcus;
 using namespace std;
+
+namespace {
+
+void load_file_content(const char* filepath, string& strm)
+{
+    ifstream file(filepath);
+    if (!file)
+    {
+        // failed to open the specified file.
+        ostringstream os;
+        os << "failed to load " << filepath;
+        throw general_error(os.str());
+    }
+
+    ostringstream os;
+    os << file.rdbuf() << ' '; // extra char as the end position.
+    file.close();
+    strm = os.str();
+}
+
+class parser_handler
+{
+};
+
+}
 
 class orcus_css
 {
@@ -38,6 +69,8 @@ public:
     ~orcus_css();
 
     void read_file(const char* filepath);
+private:
+    void parse(const string& strm);
 };
 
 orcus_css::orcus_css() {}
@@ -45,6 +78,21 @@ orcus_css::~orcus_css() {}
 
 void orcus_css::read_file(const char* filepath)
 {
+    cout << "reading " << filepath << endl;
+    string strm;
+    load_file_content(filepath, strm);
+    parse(strm);
+}
+
+void orcus_css::parse(const string& strm)
+{
+    if (strm.empty())
+        return;
+
+    cout << "original: '" << strm << "'" << endl << endl;
+
+    css_parser<parser_handler> parser(&strm[0], strm.size());
+    parser.parse();
 }
 
 int main(int argc, char** argv)
