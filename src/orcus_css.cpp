@@ -62,6 +62,11 @@ class parser_handler
 public:
     parser_handler() : m_in_prop(false) {}
 
+    void at_rule_name(const char* p, size_t n)
+    {
+        cout << "@" << string(p, n).c_str();
+    }
+
     void selector_name(const char* p, size_t n)
     {
         cout << string(p, n).c_str();

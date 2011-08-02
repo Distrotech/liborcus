@@ -181,11 +181,13 @@ void css_parser<_Handler>::selector_name()
 {
     assert(has_char());
     char c = cur_char();
+    bool at_rule = false;
     if (c == '@')
     {
         // This is the name of an at-rule.
         next();
         c = cur_char();
+        at_rule = true;
     }
 
     if (!is_alpha(c) && c != '.')
@@ -195,7 +197,10 @@ void css_parser<_Handler>::selector_name()
     size_t len;
     identifier(p, len);
 
-    m_handler.selector_name(p, len);
+    if (at_rule)
+        m_handler.at_rule_name(p, len);
+    else
+        m_handler.selector_name(p, len);
 #if ORCUS_DEBUG_CSS
     std::string foo(p, len);
     std::cout << "class name: " << foo.c_str() << std::endl;
