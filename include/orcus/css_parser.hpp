@@ -49,6 +49,8 @@ public:
     void parse();
 
 private:
+    void skip_blanks();
+    void skip_blanks_reverse();
     void shrink_stream();
     void next();
 
@@ -82,27 +84,38 @@ void css_parser<_Handler>::parse()
 }
 
 template<typename _Handler>
-void css_parser<_Handler>::shrink_stream()
+void css_parser<_Handler>::skip_blanks()
 {
-    // Skip any leading blanks.
     while (has_char())
     {
         if (!is_blank(*mp_char))
             break;
         next();
     }
+}
 
-    size_t n = remaining_size();
-    if (!n)
-        return;
-
-    // Skip any trailing blanks.
-    const char* p = mp_char + n;
+template<typename _Handler>
+void css_parser<_Handler>::skip_blanks_reverse()
+{
+    const char* p = mp_char + remaining_size();
     for (; p != mp_char; --p, --m_length)
     {
         if (!is_blank(*p))
             break;
     }
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::shrink_stream()
+{
+    // Skip any leading blanks.
+    skip_blanks();
+
+    if (!remaining_size())
+        return;
+
+    // Skip any trailing blanks.
+    skip_blanks_reverse();
 
     // Skip leading <!-- if present.
 
@@ -112,7 +125,7 @@ void css_parser<_Handler>::shrink_stream()
         // Not enough stream left.  Bail out.
         return;
 
-    p = mp_char;
+    const char* p = mp_char;
     for (size_t i = 0; i < com_open_len; ++i, ++p)
     {
         if (*p != com_open[i])
@@ -122,17 +135,12 @@ void css_parser<_Handler>::shrink_stream()
     mp_char = p;
 
     // Skip leading blanks once again.
-    while (has_char())
-    {
-        if (!is_blank(*mp_char))
-            break;
-        next();
-    }
+    skip_blanks();
 
     // Skip trailing --> if present.
     const char* com_close = "-->";
     size_t com_close_len = std::strlen(com_close);
-    n = remaining_size();
+    size_t n = remaining_size();
     if (n < com_close_len)
         // Not enough stream left.  Bail out.
         return;
@@ -145,12 +153,7 @@ void css_parser<_Handler>::shrink_stream()
     }
     m_length -= com_close_len;
 
-    // Skip trailing blanks once again.
-    for (; p != mp_char; --p, --m_length)
-    {
-        if (!is_blank(*p))
-            break;
-    }
+    skip_blanks_reverse();
 }
 
 template<typename _Handler>
