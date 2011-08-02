@@ -67,7 +67,8 @@ private:
     // each handler must set the current position to the next unprocessed
     // non-blank character when it finishes.
     void rule();
-    void name();
+    void class_name();
+    void property_name();
     void property();
     void quoted_value();
     void value();
@@ -154,7 +155,7 @@ void css_parser<_Handler>::rule()
         char c = cur_char();
         if (is_alpha(c) || c == '.' || c == '@')
         {
-            name();
+            class_name();
         }
         else if (c == ',')
         {
@@ -174,7 +175,7 @@ void css_parser<_Handler>::rule()
 }
 
 template<typename _Handler>
-void css_parser<_Handler>::name()
+void css_parser<_Handler>::class_name()
 {
     assert(has_char());
     char c = cur_char();
@@ -192,7 +193,33 @@ void css_parser<_Handler>::name()
     }
     skip_blanks();
 
-    m_handler.name(p, len);
+    m_handler.class_name(p, len);
+#if ORCUS_DEBUG_CSS
+    std::string foo(p, len);
+    std::cout << "class name: " << foo.c_str() << std::endl;
+#endif
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::property_name()
+{
+    assert(has_char());
+    char c = cur_char();
+    if (!is_alpha(c) && c != '.' && c != '@')
+        throw css_parse_error("first character of a name must be an alphabet, a dot, or an @.");
+
+    const char* p = mp_char;
+    size_t len = 1;
+    for (next(); has_char(); next())
+    {
+        c = cur_char();
+        if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c))
+            break;
+        ++len;
+    }
+    skip_blanks();
+
+    m_handler.property_name(p, len);
 #if ORCUS_DEBUG_CSS
     std::string foo(p, len);
     std::cout << "name: " << foo.c_str() << std::endl;
@@ -203,7 +230,7 @@ template<typename _Handler>
 void css_parser<_Handler>::property()
 {
     // <name> : <value> , ... , <value>
-    name();
+    property_name();
     if (cur_char() != ':')
         throw css_parse_error("':' expected.");
     next();

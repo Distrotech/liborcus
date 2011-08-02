@@ -63,7 +63,12 @@ class parser_handler
 public:
     parser_handler() : m_in_prop(false), m_in_value(false) {}
 
-    void name(const char* p, size_t n)
+    void class_name(const char* p, size_t n)
+    {
+        cout << string(p, n).c_str();
+    }
+
+    void property_name(const char* p, size_t n)
     {
         if (m_in_value)
         {
