@@ -76,6 +76,8 @@ private:
     void property_sep();
     void block();
 
+    void identifier(const char*& p, size_t& len);
+
     void skip_blanks();
     void skip_blanks_reverse();
     void shrink_stream();
@@ -189,16 +191,9 @@ void css_parser<_Handler>::selector_name()
     if (!is_alpha(c) && c != '.')
         throw css_parse_error("first character of a name must be an alphabet or a dot.");
 
-    const char* p = mp_char;
-    size_t len = 1;
-    for (next(); has_char(); next())
-    {
-        c = cur_char();
-        if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c))
-            break;
-        ++len;
-    }
-    skip_blanks();
+    const char* p;
+    size_t len;
+    identifier(p, len);
 
     m_handler.selector_name(p, len);
 #if ORCUS_DEBUG_CSS
@@ -215,16 +210,9 @@ void css_parser<_Handler>::property_name()
     if (!is_alpha(c) && c != '.')
         throw css_parse_error("first character of a name must be an alphabet or a dot.");
 
-    const char* p = mp_char;
-    size_t len = 1;
-    for (next(); has_char(); next())
-    {
-        c = cur_char();
-        if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c))
-            break;
-        ++len;
-    }
-    skip_blanks();
+    const char* p;
+    size_t len;
+    identifier(p, len);
 
     m_handler.property_name(p, len);
 #if ORCUS_DEBUG_CSS
@@ -384,6 +372,21 @@ void css_parser<_Handler>::block()
 #if ORCUS_DEBUG_CSS
     std::cout << "}" << std::endl;
 #endif
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::identifier(const char*& p, size_t& len)
+{
+    p = mp_char;
+    len = 1;
+    for (next(); has_char(); next())
+    {
+        char c = cur_char();
+        if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c))
+            break;
+        ++len;
+    }
+    skip_blanks();
 }
 
 template<typename _Handler>
