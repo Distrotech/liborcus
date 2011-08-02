@@ -58,15 +58,29 @@ void load_file_content(const char* filepath, string& strm)
 
 class parser_handler
 {
+    bool m_in_prop:1;
+    bool m_in_value:1;
 public:
+    parser_handler() : m_in_prop(false), m_in_value(false) {}
+
     void name(const char* p, size_t n)
     {
-        cout << "name: " << string(p, n).c_str() << endl;
+        if (m_in_value)
+        {
+            cout << endl;
+            m_in_value = false;
+        }
+        if (m_in_prop)
+            cout << "    ";
+        cout << string(p, n).c_str();
     }
 
     void value(const char* p, size_t n)
     {
-        cout << "value: " << string(p, n).c_str() << endl;
+        if (!m_in_value)
+            cout << " :";
+        cout << " '" << string(p, n).c_str() << "'";
+        m_in_value = true;
     }
 
     void begin_parse()
@@ -81,12 +95,19 @@ public:
 
     void begin_properties()
     {
-        cout << "{" << endl;
+        cout << endl << "{" << endl;
+        m_in_prop = true;
     }
 
     void end_properties()
     {
+        if (m_in_value)
+        {
+            cout << endl;
+            m_in_value = false;
+        }
         cout << "}" << endl;
+        m_in_prop = false;
     }
 };
 

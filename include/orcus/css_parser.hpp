@@ -152,7 +152,7 @@ void css_parser<_Handler>::rule()
     while (has_char())
     {
         char c = cur_char();
-        if (is_alpha(c) || c == '.')
+        if (is_alpha(c) || c == '.' || c == '@')
         {
             name();
         }
@@ -178,8 +178,8 @@ void css_parser<_Handler>::name()
 {
     assert(has_char());
     char c = cur_char();
-    if (!is_alpha(c) && c != '.')
-        throw css_parse_error("first character of a name must be an alphabet or a dot.");
+    if (!is_alpha(c) && c != '.' && c != '@')
+        throw css_parse_error("first character of a name must be an alphabet, a dot, or an @.");
 
     const char* p = mp_char;
     size_t len = 1;
@@ -211,7 +211,14 @@ void css_parser<_Handler>::property()
     while (has_char())
     {
         value();
-        if (cur_char() != ',')
+        char c = cur_char();
+        if (c == ',')
+        {
+            // separated by commas.
+            next();
+            skip_blanks();
+        }
+        else if (c == ';')
             break;
     }
     skip_blanks();
@@ -258,7 +265,7 @@ void css_parser<_Handler>::value()
         return;
     }
 
-    if (!is_alpha(c) && !is_numeric(c) && c != '-' && c != '+')
+    if (!is_alpha(c) && !is_numeric(c) && c != '-' && c != '+' && c != '.')
     {
         std::ostringstream os;
         os << "illegal first character of a value '" << c << "'";
