@@ -32,12 +32,25 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <exception>
+#include <string>
+#include <cassert>
+#include <sstream>
+
 #if ORCUS_DEBUG_CSS
 #include <iostream>
-#include <string>
 #endif
 
 namespace orcus {
+
+class css_parse_error : public std::exception
+{
+    std::string m_msg;
+public:
+    css_parse_error(const std::string& msg) : m_msg(msg) {}
+    virtual ~css_parse_error() throw() {}
+    virtual const char* what() const throw() { return m_msg.c_str(); }
+};
 
 template<typename _Handler>
 class css_parser
@@ -49,16 +62,54 @@ public:
     void parse();
 
 private:
+    // Handlers - at the time a handler is called the current position is
+    // expected to point to the first unprocessed non-blank character, and
+    // each handler must set the current position to the next unprocessed
+    // non-blank character when it finishes.
+    void rule();
+    void name();
+    void property();
+    void value();
+    void name_sep();
+    void property_sep();
+    void open_paren();
+
     void skip_blanks();
     void skip_blanks_reverse();
     void shrink_stream();
     void next();
+    char cur_char() const;
 
     size_t remaining_size() const { return m_length - m_pos - 1; }
     bool has_char() const { return m_pos < m_length; }
-    bool is_blank(char c) const
+
+    static bool is_blank(char c)
     {
         return c == ' ' || c == '\t' || c == '\n';
+    }
+
+    static bool is_alpha(char c)
+    {
+        if ('a' <= c && c <= 'z')
+            return true;
+        if ('A' <= c && c <= 'Z')
+            return true;
+        return false;
+    }
+
+    static bool is_name_char(char c)
+    {
+        if (c == '-')
+            return true;
+
+        return false;
+    }
+
+    static bool is_numeric(char c)
+    {
+        if ('0' <= c && c <= '9')
+            return true;
+        return false;
     }
 
     const char* mp_char;
@@ -74,23 +125,152 @@ template<typename _Handler>
 void css_parser<_Handler>::parse()
 {
     shrink_stream();
-    std::cout << "'";
+
+#if ORCUS_DEBUG_CSS
+    std::cout << "compressed: '";
+    const char* p = mp_char;
+    for (size_t i = m_pos; i < m_length; ++i, ++p)
+        std::cout << *p;
+    std::cout << "'" << std::endl;
+#endif
+    for (; has_char(); next())
+        rule();
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::rule()
+{
+    // <name> , ... , <name> { <properties> }
     while (has_char())
     {
-        std::cout << *mp_char;
-        next();
+        char c = cur_char();
+        if (is_alpha(c) || c == '.')
+        {
+            name();
+        }
+        else if (c == ',')
+        {
+            name_sep();
+        }
+        else if (c == '{')
+        {
+            open_paren();
+        }
+        else
+        {
+            std::ostringstream os;
+            os << "failed to parse '" << c << "'";
+            throw css_parse_error(os.str());
+        }
     }
-    std::cout << "'" << std::endl;
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::name()
+{
+    assert(has_char());
+    char c = cur_char();
+    if (!is_alpha(c) && c != '.')
+        throw css_parse_error("first character of a name must be an alphabet or a dot.");
+
+    const char* p = mp_char;
+    size_t len = 1;
+    for (next(); has_char(); next())
+    {
+        c = cur_char();
+        if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c))
+            break;
+        ++len;
+    }
+    skip_blanks();
+
+#if ORCUS_DEBUG_CSS
+    std::string foo(p, len);
+    std::cout << "name: " << foo.c_str() << std::endl;
+#endif
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::property()
+{
+    // <name> : <value> , ... , <value>
+    name();
+    if (cur_char() != ':')
+        throw css_parse_error("':' expected.");
+    next();
+    skip_blanks();
+    while (has_char())
+    {
+        value();
+        if (cur_char() != ',')
+            break;
+    }
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::value()
+{
+    name();
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::name_sep()
+{
+    assert(cur_char() == ',');
+#if ORCUS_DEBUG_CSS
+    std::cout << "," << std::endl;
+#endif
+    next();
+    skip_blanks();
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::property_sep()
+{
+#if ORCUS_DEBUG_CSS
+    std::cout << ";" << std::endl;
+#endif
+    next();
+    skip_blanks();
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::open_paren()
+{
+    // '{' <property> ';' ... ';' <property> '}'
+
+    assert(cur_char() == '{');
+#if ORCUS_DEBUG_CSS
+    std::cout << "{" << std::endl;
+#endif
+    next();
+    skip_blanks();
+
+    // parse properties.
+    while (has_char())
+    {
+        property();
+        if (cur_char() != ';')
+            break;
+        property_sep();
+    }
+    
+    if (cur_char() != '}')
+        throw css_parse_error("} expected.");
+    skip_blanks();
+
+#if ORCUS_DEBUG_CSS
+    std::cout << "}" << std::endl;
+#endif
 }
 
 template<typename _Handler>
 void css_parser<_Handler>::skip_blanks()
 {
-    while (has_char())
+    for (; has_char(); next())
     {
         if (!is_blank(*mp_char))
             break;
-        next();
     }
 }
 
@@ -161,6 +341,12 @@ void css_parser<_Handler>::next()
 {
     ++m_pos;
     ++mp_char;
+}
+
+template<typename _Handler>
+char css_parser<_Handler>::cur_char() const
+{
+    return *mp_char;
 }
 
 }
