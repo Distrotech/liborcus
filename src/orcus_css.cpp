@@ -62,7 +62,7 @@ class parser_handler
 public:
     parser_handler() : m_in_prop(false) {}
 
-    void class_name(const char* p, size_t n)
+    void selector_name(const char* p, size_t n)
     {
         cout << string(p, n).c_str();
     }
@@ -87,13 +87,13 @@ public:
         cout << "========" << endl;
     }
 
-    void begin_properties()
+    void begin_block()
     {
         cout << endl << "{" << endl;
         m_in_prop = true;
     }
 
-    void end_properties()
+    void end_block()
     {
         cout << "}" << endl;
         m_in_prop = false;

@@ -67,7 +67,7 @@ private:
     // each handler must set the current position to the next unprocessed
     // non-blank character when it finishes.
     void rule();
-    void class_name();
+    void selector_name();
     void property_name();
     void property();
     void quoted_value();
@@ -155,7 +155,7 @@ void css_parser<_Handler>::rule()
         char c = cur_char();
         if (is_alpha(c) || c == '.' || c == '@')
         {
-            class_name();
+            selector_name();
         }
         else if (c == ',')
         {
@@ -175,7 +175,7 @@ void css_parser<_Handler>::rule()
 }
 
 template<typename _Handler>
-void css_parser<_Handler>::class_name()
+void css_parser<_Handler>::selector_name()
 {
     assert(has_char());
     char c = cur_char();
@@ -193,7 +193,7 @@ void css_parser<_Handler>::class_name()
     }
     skip_blanks();
 
-    m_handler.class_name(p, len);
+    m_handler.selector_name(p, len);
 #if ORCUS_DEBUG_CSS
     std::string foo(p, len);
     std::cout << "class name: " << foo.c_str() << std::endl;
@@ -349,7 +349,7 @@ void css_parser<_Handler>::properties()
 #if ORCUS_DEBUG_CSS
     std::cout << "{" << std::endl;
 #endif
-    m_handler.begin_properties();
+    m_handler.begin_block();
 
     next();
     skip_blanks();
@@ -369,7 +369,7 @@ void css_parser<_Handler>::properties()
     if (cur_char() != '}')
         throw css_parse_error("} expected.");
 
-    m_handler.end_properties();
+    m_handler.end_block();
 
     next();
     skip_blanks();
