@@ -119,6 +119,13 @@ PSTRING_TEST_OBJFILES= \
 	$(OBJDIR)/pstring.o \
 	$(OBJDIR)/pstring_intern_test.o
 
+CSS_HEADERS= \
+	$(INCDIR)/css_parser.hpp
+
+CSS_OBJFILES= \
+	$(OBJDIR)/orcus_css.o \
+	$(OBJDIR)/pstring.o
+
 DEPENDS= \
 	$(ODF_HEADERS) \
 	$(XLSX_HEADERS)
@@ -222,6 +229,11 @@ $(OBJDIR)/model/factory.o: $(SRCDIR)/model/factory.cpp $(DEPENDS)
 $(OBJDIR)/pstring_intern_test.o: $(SRCDIR)/pstring_intern_test.cpp $(INCDIR)/pstring.hpp
 	$(CXX) $(CPPFLAGS) -c $(SRCDIR)/pstring_intern_test.cpp -o $@
 
+# CSS parser
+
+$(OBJDIR)/orcus_css.o: $(SRCDIR)/orcus_css.cpp $(CSS_HEADERS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_css.cpp
+
 # executables
 
 orcus-ods: $(OBJDIR)/pre $(ODF_OBJFILES)
@@ -232,6 +244,9 @@ orcus-xlsx: $(OBJDIR)/pre $(XLSX_OBJFILES)
 
 pstring-intern-test: $(OBJDIR)/pre $(PSTRING_TEST_OBJFILES)
 	$(CXX) $(CPPFLAGS) $(LDFLAGS) $(PSTRING_TEST_OBJFILES) -o $@
+
+orcus-css: $(OBJDIR)/pre $(CSS_OBJFILES)
+	$(CXX) $(LDFLAGS) $(CSS_OBJFILES) -o $@
 
 test.pstring: pstring-intern-test
 	./pstring-intern-test
