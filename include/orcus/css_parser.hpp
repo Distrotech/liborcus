@@ -216,6 +216,25 @@ void css_parser<_Handler>::property()
 template<typename _Handler>
 void css_parser<_Handler>::quoted_value()
 {
+    assert(cur_char() == '"');
+    next();
+    const char* p = mp_char;
+    size_t len = 1;
+    for (next(); has_char(); next())
+    {
+        if (cur_char() == '"')
+        {
+            next();
+            break;
+        }
+        ++len;
+    }
+    skip_blanks();
+
+#if ORCUS_DEBUG_CSS
+    std::string foo(p, len);
+    std::cout << "quoted value: " << foo.c_str() << std::endl;
+#endif
 }
 
 template<typename _Handler>
@@ -223,6 +242,12 @@ void css_parser<_Handler>::value()
 {
     assert(has_char());
     char c = cur_char();
+    if (c == '"')
+    {
+        quoted_value();
+        return;
+    }
+
     if (!is_alpha(c) && !is_numeric(c) && c != '-' && c != '+')
     {
         std::ostringstream os;
