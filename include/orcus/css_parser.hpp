@@ -74,7 +74,7 @@ private:
     void value();
     void name_sep();
     void property_sep();
-    void properties();
+    void block();
 
     void skip_blanks();
     void skip_blanks_reverse();
@@ -163,7 +163,7 @@ void css_parser<_Handler>::rule()
         }
         else if (c == '{')
         {
-            properties();
+            block();
         }
         else
         {
@@ -179,8 +179,15 @@ void css_parser<_Handler>::selector_name()
 {
     assert(has_char());
     char c = cur_char();
-    if (!is_alpha(c) && c != '.' && c != '@')
-        throw css_parse_error("first character of a name must be an alphabet, a dot, or an @.");
+    if (c == '@')
+    {
+        // This is the name of an at-rule.
+        next();
+        c = cur_char();
+    }
+
+    if (!is_alpha(c) && c != '.')
+        throw css_parse_error("first character of a name must be an alphabet or a dot.");
 
     const char* p = mp_char;
     size_t len = 1;
@@ -341,7 +348,7 @@ void css_parser<_Handler>::property_sep()
 }
 
 template<typename _Handler>
-void css_parser<_Handler>::properties()
+void css_parser<_Handler>::block()
 {
     // '{' <property> ';' ... ';' <property> '}'
 
