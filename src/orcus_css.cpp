@@ -58,6 +58,36 @@ void load_file_content(const char* filepath, string& strm)
 
 class parser_handler
 {
+public:
+    void name(const char* p, size_t n)
+    {
+        cout << "name: " << string(p, n).c_str() << endl;
+    }
+
+    void value(const char* p, size_t n)
+    {
+        cout << "value: " << string(p, n).c_str() << endl;
+    }
+
+    void begin_parse()
+    {
+        cout << "========" << endl;
+    }
+
+    void end_parse()
+    {
+        cout << "========" << endl;
+    }
+
+    void begin_properties()
+    {
+        cout << "{" << endl;
+    }
+
+    void end_properties()
+    {
+        cout << "}" << endl;
+    }
 };
 
 }
@@ -91,7 +121,8 @@ void orcus_css::parse(const string& strm)
 
     cout << "original: '" << strm << "'" << endl << endl;
 
-    css_parser<parser_handler> parser(&strm[0], strm.size());
+    parser_handler handler;
+    css_parser<parser_handler> parser(&strm[0], strm.size(), handler);
     parser.parse();
 }
 

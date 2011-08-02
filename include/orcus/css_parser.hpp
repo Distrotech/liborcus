@@ -28,7 +28,7 @@
 #ifndef __ORCUS_CSS_PARSER_HPP__
 #define __ORCUS_CSS_PARSER_HPP__
 
-#define ORCUS_DEBUG_CSS 1
+#define ORCUS_DEBUG_CSS 0
 
 #include <cstdlib>
 #include <cstring>
@@ -58,7 +58,7 @@ class css_parser
 public:
     typedef _Handler handler_type;
 
-    css_parser(const char* p, size_t n);
+    css_parser(const char* p, size_t n, handler_type& hdl);
     void parse();
 
 private:
@@ -73,7 +73,7 @@ private:
     void value();
     void name_sep();
     void property_sep();
-    void open_paren();
+    void properties();
 
     void skip_blanks();
     void skip_blanks_reverse();
@@ -117,14 +117,15 @@ private:
         return false;
     }
 
+    handler_type& m_handler;
     const char* mp_char;
     size_t m_pos;
     size_t m_length;
 };
 
 template<typename _Handler>
-css_parser<_Handler>::css_parser(const char* p, size_t n) :
-    mp_char(p), m_pos(0), m_length(n) {}
+css_parser<_Handler>::css_parser(const char* p, size_t n, handler_type& hdl) :
+    m_handler(hdl), mp_char(p), m_pos(0), m_length(n) {}
 
 template<typename _Handler>
 void css_parser<_Handler>::parse()
@@ -138,8 +139,10 @@ void css_parser<_Handler>::parse()
         std::cout << *p;
     std::cout << "'" << std::endl;
 #endif
+    m_handler.begin_parse();
     for (; has_char(); next())
         rule();
+    m_handler.end_parse();
 }
 
 template<typename _Handler>
@@ -159,7 +162,7 @@ void css_parser<_Handler>::rule()
         }
         else if (c == '{')
         {
-            open_paren();
+            properties();
         }
         else
         {
@@ -189,6 +192,7 @@ void css_parser<_Handler>::name()
     }
     skip_blanks();
 
+    m_handler.name(p, len);
 #if ORCUS_DEBUG_CSS
     std::string foo(p, len);
     std::cout << "name: " << foo.c_str() << std::endl;
@@ -236,6 +240,7 @@ void css_parser<_Handler>::quoted_value()
     next();
     skip_blanks();
 
+    m_handler.value(p, len);
 #if ORCUS_DEBUG_CSS
     std::string foo(p, len);
     std::cout << "quoted value: " << foo.c_str() << std::endl;
@@ -271,6 +276,7 @@ void css_parser<_Handler>::value()
     }
     skip_blanks();
 
+    m_handler.value(p, len);
 #if ORCUS_DEBUG_CSS
     std::string foo(p, len);
     std::cout << "value: " << foo.c_str() << std::endl;
@@ -299,7 +305,7 @@ void css_parser<_Handler>::property_sep()
 }
 
 template<typename _Handler>
-void css_parser<_Handler>::open_paren()
+void css_parser<_Handler>::properties()
 {
     // '{' <property> ';' ... ';' <property> '}'
 
@@ -307,6 +313,8 @@ void css_parser<_Handler>::open_paren()
 #if ORCUS_DEBUG_CSS
     std::cout << "{" << std::endl;
 #endif
+    m_handler.begin_properties();
+
     next();
     skip_blanks();
 
@@ -324,6 +332,9 @@ void css_parser<_Handler>::open_paren()
     
     if (cur_char() != '}')
         throw css_parse_error("} expected.");
+
+    m_handler.end_properties();
+
     next();
     skip_blanks();
 
