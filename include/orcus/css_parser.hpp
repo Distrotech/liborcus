@@ -205,8 +205,8 @@ void css_parser<_Handler>::property_name()
 {
     assert(has_char());
     char c = cur_char();
-    if (!is_alpha(c) && c != '.' && c != '@')
-        throw css_parse_error("first character of a name must be an alphabet, a dot, or an @.");
+    if (!is_alpha(c) && c != '.')
+        throw css_parse_error("first character of a name must be an alphabet or a dot.");
 
     const char* p = mp_char;
     size_t len = 1;
@@ -222,7 +222,7 @@ void css_parser<_Handler>::property_name()
     m_handler.property_name(p, len);
 #if ORCUS_DEBUG_CSS
     std::string foo(p, len);
-    std::cout << "name: " << foo.c_str() << std::endl;
+    std::cout << "property name: " << foo.c_str() << std::endl;
 #endif
 }
 
@@ -230,6 +230,7 @@ template<typename _Handler>
 void css_parser<_Handler>::property()
 {
     // <name> : <value> , ... , <value>
+    m_handler.begin_property();
     property_name();
     if (cur_char() != ':')
         throw css_parse_error("':' expected.");
@@ -249,6 +250,7 @@ void css_parser<_Handler>::property()
             break;
     }
     skip_blanks();
+    m_handler.end_property();
 }
 
 template<typename _Handler>
@@ -360,7 +362,7 @@ void css_parser<_Handler>::properties()
             break;
         property_sep();
         if (cur_char() == '}')
-            // ';' immediately followed by '}'.  Do we allow this?
+            // ';' immediately followed by '}'.  This ';' here is optional but allowed.
             break;
     }
     
