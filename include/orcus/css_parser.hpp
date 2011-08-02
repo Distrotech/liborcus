@@ -69,6 +69,7 @@ private:
     void rule();
     void name();
     void property();
+    void quoted_value();
     void value();
     void name_sep();
     void property_sep();
@@ -99,8 +100,12 @@ private:
 
     static bool is_name_char(char c)
     {
-        if (c == '-')
-            return true;
+        switch (c)
+        {
+            case '-':
+            case '.':
+                return true;
+        }
 
         return false;
     }
@@ -205,12 +210,41 @@ void css_parser<_Handler>::property()
         if (cur_char() != ',')
             break;
     }
+    skip_blanks();
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::quoted_value()
+{
 }
 
 template<typename _Handler>
 void css_parser<_Handler>::value()
 {
-    name();
+    assert(has_char());
+    char c = cur_char();
+    if (!is_alpha(c) && !is_numeric(c) && c != '-' && c != '+')
+    {
+        std::ostringstream os;
+        os << "illegal first character of a value '" << c << "'";
+        throw css_parse_error(os.str());
+    }
+
+    const char* p = mp_char;
+    size_t len = 1;
+    for (next(); has_char(); next())
+    {
+        c = cur_char();
+        if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c))
+            break;
+        ++len;
+    }
+    skip_blanks();
+
+#if ORCUS_DEBUG_CSS
+    std::string foo(p, len);
+    std::cout << "value: " << foo.c_str() << std::endl;
+#endif
 }
 
 template<typename _Handler>
@@ -253,10 +287,14 @@ void css_parser<_Handler>::open_paren()
         if (cur_char() != ';')
             break;
         property_sep();
+        if (cur_char() == '}')
+            // ';' immediately followed by '}'.  Do we allow this?
+            break;
     }
     
     if (cur_char() != '}')
         throw css_parse_error("} expected.");
+    next();
     skip_blanks();
 
 #if ORCUS_DEBUG_CSS
