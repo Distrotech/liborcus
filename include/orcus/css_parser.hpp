@@ -67,6 +67,7 @@ private:
     // each handler must set the current position to the next unprocessed
     // non-blank character when it finishes.
     void rule();
+    void at_rule_name();
     void selector_name();
     void property_name();
     void property();
@@ -177,17 +178,36 @@ void css_parser<_Handler>::rule()
 }
 
 template<typename _Handler>
+void css_parser<_Handler>::at_rule_name()
+{
+    assert(has_char());
+    assert(cur_char() == '@');
+    next();
+    char c = cur_char();
+    if (!is_alpha(c))
+        throw css_parse_error("first character of an at-rule name must be an alphabet.");
+
+    const char* p;
+    size_t len;
+    identifier(p, len);
+
+    m_handler.at_rule_name(p, len);
+#if ORCUS_DEBUG_CSS
+    std::string foo(p, len);
+    std::cout << "at-rule name: " << foo.c_str() << std::endl;
+#endif
+}
+
+template<typename _Handler>
 void css_parser<_Handler>::selector_name()
 {
     assert(has_char());
     char c = cur_char();
-    bool at_rule = false;
     if (c == '@')
     {
         // This is the name of an at-rule.
-        next();
-        c = cur_char();
-        at_rule = true;
+        at_rule_name();
+        return;
     }
 
     if (!is_alpha(c) && c != '.')
@@ -197,13 +217,10 @@ void css_parser<_Handler>::selector_name()
     size_t len;
     identifier(p, len);
 
-    if (at_rule)
-        m_handler.at_rule_name(p, len);
-    else
-        m_handler.selector_name(p, len);
+    m_handler.selector_name(p, len);
 #if ORCUS_DEBUG_CSS
     std::string foo(p, len);
-    std::cout << "class name: " << foo.c_str() << std::endl;
+    std::cout << "selector name: " << foo.c_str() << std::endl;
 #endif
 }
 
