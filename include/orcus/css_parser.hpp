@@ -107,7 +107,6 @@ private:
         switch (c)
         {
             case '-':
-            case '.':
                 return true;
         }
 
@@ -190,6 +189,7 @@ void css_parser<_Handler>::at_rule_name()
     const char* p;
     size_t len;
     identifier(p, len);
+    skip_blanks();
 
     m_handler.at_rule_name(p, len);
 #if ORCUS_DEBUG_CSS
@@ -201,6 +201,8 @@ void css_parser<_Handler>::at_rule_name()
 template<typename _Handler>
 void css_parser<_Handler>::selector_name()
 {
+    // <element name> '.' <class name>
+
     assert(has_char());
     char c = cur_char();
     if (c == '@')
@@ -213,14 +215,24 @@ void css_parser<_Handler>::selector_name()
     if (!is_alpha(c) && c != '.')
         throw css_parse_error("first character of a name must be an alphabet or a dot.");
 
-    const char* p;
-    size_t len;
-    identifier(p, len);
+    const char* p_elem = NULL;
+    const char* p_class = NULL;
+    size_t len_elem = 0;
+    size_t len_class = 0;
+    if (c != '.')
+        identifier(p_elem, len_elem);
 
-    m_handler.selector_name(p, len);
+    if (cur_char() == '.')
+    {
+        next();
+        identifier(p_class, len_class);
+    }
+    skip_blanks();
+
+    m_handler.selector_name(p_elem, len_elem, p_class, len_class);
 #if ORCUS_DEBUG_CSS
-    std::string foo(p, len);
-    std::cout << "selector name: " << foo.c_str() << std::endl;
+    std::string elem_name(p_elem, len_elem), class_name(p_class, len_class);
+    std::cout << "selector name: (element)'" << elem_name.c_str() << "' (class)'" << class_name.c_str() << "'" << std::endl;
 #endif
 }
 
@@ -235,6 +247,7 @@ void css_parser<_Handler>::property_name()
     const char* p;
     size_t len;
     identifier(p, len);
+    skip_blanks();
 
     m_handler.property_name(p, len);
 #if ORCUS_DEBUG_CSS
@@ -323,7 +336,7 @@ void css_parser<_Handler>::value()
     for (next(); has_char(); next())
     {
         c = cur_char();
-        if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c))
+        if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c) && c != '.')
             break;
         ++len;
     }
@@ -379,7 +392,7 @@ void css_parser<_Handler>::block()
             break;
         property_sep();
         if (cur_char() == '}')
-            // ';' immediately followed by '}'.  This ';' here is optional but allowed.
+            // ';' after the last property.  This is optional but allowed.
             break;
     }
     
@@ -408,7 +421,6 @@ void css_parser<_Handler>::identifier(const char*& p, size_t& len)
             break;
         ++len;
     }
-    skip_blanks();
 }
 
 template<typename _Handler>

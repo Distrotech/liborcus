@@ -67,9 +67,9 @@ public:
         cout << "@" << string(p, n).c_str();
     }
 
-    void selector_name(const char* p, size_t n)
+    void selector_name(const char* p_elem, size_t n_elem, const char* p_class, size_t n_class)
     {
-        cout << string(p, n).c_str();
+        cout << "(elem='" << string(p_elem, n_elem).c_str() << "'; class='" << string(p_class, n_class).c_str() << "') ";
     }
 
     void property_name(const char* p, size_t n)
