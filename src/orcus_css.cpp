@@ -51,7 +51,7 @@ void load_file_content(const char* filepath, string& strm)
     }
 
     ostringstream os;
-    os << file.rdbuf() << ' '; // extra char as the end position.
+    os << file.rdbuf();
     file.close();
     strm = os.str();
 }
