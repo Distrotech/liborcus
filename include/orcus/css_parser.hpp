@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -151,7 +151,7 @@ void css_parser<_Handler>::parse()
 template<typename _Handler>
 void css_parser<_Handler>::rule()
 {
-    // <name> , ... , <name> { <properties> }
+    // <selector name> , ... , <selector name> <block>
     while (has_char())
     {
         char c = cur_char();
@@ -201,7 +201,11 @@ void css_parser<_Handler>::at_rule_name()
 template<typename _Handler>
 void css_parser<_Handler>::selector_name()
 {
+    // <element name>
+    // '.' <class name>
     // <element name> '.' <class name>
+    //
+    // Both element and class names are identifiers.
 
     assert(has_char());
     char c = cur_char();
@@ -239,6 +243,8 @@ void css_parser<_Handler>::selector_name()
 template<typename _Handler>
 void css_parser<_Handler>::property_name()
 {
+    // <identifier>
+
     assert(has_char());
     char c = cur_char();
     if (!is_alpha(c) && c != '.')
@@ -259,7 +265,8 @@ void css_parser<_Handler>::property_name()
 template<typename _Handler>
 void css_parser<_Handler>::property()
 {
-    // <name> : <value> , ... , <value>
+    // <property name> : <value> , ... , <value>
+
     m_handler.begin_property();
     property_name();
     if (cur_char() != ':')
@@ -286,6 +293,8 @@ void css_parser<_Handler>::property()
 template<typename _Handler>
 void css_parser<_Handler>::quoted_value()
 {
+    // Parse until the the end quote is reached.
+
     assert(cur_char() == '"');
     next();
     const char* p = mp_char;
@@ -373,7 +382,7 @@ void css_parser<_Handler>::property_sep()
 template<typename _Handler>
 void css_parser<_Handler>::block()
 {
-    // '{' <property> ';' ... ';' <property> '}'
+    // '{' <property> ';' ... ';' <property> ';'(optional) '}'
 
     assert(cur_char() == '{');
 #if ORCUS_DEBUG_CSS
@@ -395,7 +404,7 @@ void css_parser<_Handler>::block()
             // ';' after the last property.  This is optional but allowed.
             break;
     }
-    
+
     if (cur_char() != '}')
         throw css_parse_error("} expected.");
 
