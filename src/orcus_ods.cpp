@@ -35,8 +35,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <string>
-#include <cstring>
+#include <vector>
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
@@ -56,7 +55,7 @@ public:
 private:
     void list_content(struct zip* archive) const;
     void read_content(struct zip* archive);
-    void read_content_xml(const char* p, size_t size);
+    void read_content_xml(const uint8_t* p, size_t size);
 
 private:
     ::boost::shared_ptr<model::factory_base> mp_factory;
@@ -99,7 +98,7 @@ void orcus_ods::read_content(struct zip* archive)
     struct zip_file* zfd = zip_fopen(archive, file_stat.name, 0);
     if (zfd)
     {
-        string buf(static_cast<size_t>(file_stat.size), 0);
+        vector<uint8_t> buf(file_stat.size, 0);
         int buf_read = zip_fread(zfd, &buf[0], file_stat.size);
         cout << "actual buffer read: " << buf_read << endl;
         if (buf_read > 0)
@@ -108,9 +107,9 @@ void orcus_ods::read_content(struct zip* archive)
     }
 }
 
-void orcus_ods::read_content_xml(const char* p, size_t size)
+void orcus_ods::read_content_xml(const uint8_t* p, size_t size)
 {
-    xml_stream_parser parser(odf_tokens, reinterpret_cast<const uint8_t*>(p), size, "content.xml");
+    xml_stream_parser parser(odf_tokens, p, size, "content.xml");
     ::boost::scoped_ptr<ods_content_xml_handler> handler(
         new ods_content_xml_handler(odf_tokens, mp_factory.get()));
     parser.set_handler(handler.get());
