@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010, 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -50,12 +50,6 @@
 #include <cstring>
 #include <sstream>
 
-#define USE_FILE_BUFFER 0
-#if USE_FILE_BUFFER
-#include <fcntl.h>
-#include <sys/mman.h>
-#endif
-
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -65,50 +59,6 @@ using namespace std;
 using namespace orcus;
 
 namespace {
-
-#if USE_FILE_BUFFER
-struct temp_buf
-{
-    guint8* buf;
-    size_t  size;
-    char    name[18];
-};
-
-bool create_buffer(temp_buf& obj, size_t size)
-{
-    strcpy(obj.name, "/tmp/orcus-XXXXXX");
-    int fd = mkostemp(obj.name, O_RDWR | O_CREAT | O_TRUNC);
-
-    if (fd == -1)
-        return false;
-
-    do
-    {
-        if (lseek(fd, size - 1, SEEK_SET) == -1)
-            break;
-
-        if (write(fd, "", 1) != 1)
-            break;
-
-        obj.buf = (guint8*)mmap(0, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-        if (obj.buf == MAP_FAILED)
-            break;
-
-        obj.size = size;
-        return true;
-    }
-    while (false);
-
-    close(fd);
-    return false;
-}
-
-void destroy_buffer(temp_buf& obj)
-{
-    munmap(obj.buf, obj.size);
-    unlink(obj.name);
-}
-#endif
 
 class print_xml_content_types : unary_function<void, xml_part_t>
 {
@@ -141,7 +91,7 @@ struct print_sheet_info : unary_function<void, pair<pstring, const opc_rel_extra
 class gsf_infile_guard
 {
 public:
-    gsf_infile_guard(GsfInput* parent, const char* name, bool throw_on_failure = true) : 
+    gsf_infile_guard(GsfInput* parent, const char* name, bool throw_on_failure = true) :
         mp_input(NULL)
     {
         if (name)
@@ -164,10 +114,10 @@ public:
             g_object_ref(G_OBJECT(mp_input));
     }
 
-    ~gsf_infile_guard() 
+    ~gsf_infile_guard()
     {
         if (mp_input)
-            g_object_unref(G_OBJECT(mp_input)); 
+            g_object_unref(G_OBJECT(mp_input));
     }
 
     GsfInput* get() const { return mp_input; }
@@ -185,9 +135,9 @@ public:
     void read_file(const char* fpath);
 
     /**
-     * Read an xml part inside package.  The path is relative to the relation 
-     * file. 
-     * 
+     * Read an xml part inside package.  The path is relative to the relation
+     * file.
+     *
      * @param path the path to the xml part.
      * @param type schema type.
      */
@@ -195,9 +145,9 @@ public:
 
 private:
     /**
-     * Parse the [Content_Types].xml part to extract the paths and content 
-     * types of the other xml parts contained in the package. This is the 
-     * first part in the package to be parsed. 
+     * Parse the [Content_Types].xml part to extract the paths and content
+     * types of the other xml parts contained in the package. This is the
+     * first part in the package to be parsed.
      */
     void read_content_types();
 
@@ -221,8 +171,8 @@ private:
     void read_styles(const char* file_name);
 
     /**
-     * The top-level function that determines the order in which the 
-     * individual parts get parsed. 
+     * The top-level function that determines the order in which the
+     * individual parts get parsed.
      */
     void read_content();
 
@@ -246,7 +196,7 @@ orcus_xlsx::~orcus_xlsx() {}
 
 struct process_opc_rel : public unary_function<void, opc_rel_t>
 {
-    process_opc_rel(orcus_xlsx& parent, const opc_rel_extras_t* extras) : 
+    process_opc_rel(orcus_xlsx& parent, const opc_rel_extras_t* extras) :
         m_parent(parent), m_extras(extras) {}
 
     void operator() (const opc_rel_t& v)
@@ -274,7 +224,7 @@ void orcus_xlsx::read_file(const char* fpath)
     GError* err = NULL;
     GsfInput* input = gsf_input_stdio_new (fpath, &err);
     if (!input)
-    {    
+    {
         g_error_free (err);
         return;
     }
@@ -298,7 +248,7 @@ void orcus_xlsx::read_file(const char* fpath)
 void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_extra* data)
 {
     assert(!m_dir_stack.empty());
-    
+
     // Keep track of directovy movement to unwind to the original directory at
     // the end of this method.
     vector<gsf_infile_guard> dir_changed;
@@ -329,7 +279,7 @@ void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_ext
                 // Add a null directory to the change record to remove it at the end.
                 dir_changed.push_back(gsf_infile_guard(NULL, NULL, false));
             }
-            
+
             p_name = NULL;
             name_len = 0;
         }
@@ -386,7 +336,7 @@ void orcus_xlsx::read_content_types()
     xml_stream_parser parser(opc_tokens, content, size, "[Content_Types].xml");
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
         new xml_simple_stream_handler(new opc_content_types_context(opc_tokens)));
-    opc_content_types_context& context = 
+    opc_content_types_context& context =
         static_cast<opc_content_types_context&>(handler->get_context());
     parser.set_handler(handler.get());
     parser.parse();
@@ -429,7 +379,7 @@ void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
     const guint8* content = gsf_input_read(input_rels, size, NULL);
     xml_stream_parser parser(opc_tokens, content, size, path);
 
-    opc_relations_context& context = 
+    opc_relations_context& context =
         static_cast<opc_relations_context&>(m_opc_rel_handler.get_context());
     context.init();
     parser.set_handler(&m_opc_rel_handler);
@@ -450,7 +400,7 @@ void orcus_xlsx::read_workbook(const char* file_name)
     xml_stream_parser parser(ooxml_tokens, content, size, file_name);
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
         new xml_simple_stream_handler(new xlsx_workbook_context(ooxml_tokens)));
-    xlsx_workbook_context& context = 
+    xlsx_workbook_context& context =
         static_cast<xlsx_workbook_context&>(handler->get_context());
     parser.set_handler(handler.get());
     parser.parse();
@@ -556,7 +506,7 @@ void orcus_xlsx::list_content (GsfInput* input, int level)
 
     int child_count = gsf_infile_num_children (GSF_INFILE (input));
     bool is_dir = child_count >= 0;
-    
+
     for (int i = 0; i < level; ++i)
         printf("   ");
 
@@ -575,7 +525,7 @@ void orcus_xlsx::list_content (GsfInput* input, int level)
 
     puts ("{");
     for (int i = 0 ; i < child_count; ++i)
-    {    
+    {
         GsfInput* child = gsf_infile_child_by_index (GSF_INFILE (input), i);
         list_content(child, level+1);
         g_object_unref(G_OBJECT(child));
