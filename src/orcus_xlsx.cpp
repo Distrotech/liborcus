@@ -25,10 +25,16 @@
  *
  ************************************************************************/
 
+#define USE_LIBZIP 1
+
+#if USE_LIBZIP
+#include <zip.h>
+#else
 #include <gsf/gsf-utils.h>
 #include <gsf/gsf-input-stdio.h>
 #include <gsf/gsf-infile.h>
 #include <gsf/gsf-infile-zip.h>
+#endif
 
 #include "orcus/global.hpp"
 #include "orcus/xml_parser.hpp"
@@ -57,6 +63,193 @@
 
 using namespace std;
 using namespace orcus;
+
+#if USE_LIBZIP
+
+namespace {
+
+class print_xml_content_types : unary_function<void, xml_part_t>
+{
+public:
+    print_xml_content_types(const char* prefix) :
+        m_prefix(prefix) {}
+
+    void operator() (const xml_part_t& v) const
+    {
+        cout << "* " << m_prefix << ": " << v.first;
+        if (v.second)
+            cout << " (" << v.second << ")";
+        else
+            cout << " (<unknown content type>)";
+        cout << endl;
+    }
+private:
+    const char* m_prefix;
+};
+
+class orcus_xlsx : public ::boost::noncopyable
+{
+public:
+    orcus_xlsx(model::factory_base* factory);
+    ~orcus_xlsx();
+
+    void read_file(const char* fpath);
+
+    /**
+     * Read an xml part inside package.  The path is relative to the relation
+     * file.
+     *
+     * @param path the path to the xml part.
+     * @param type schema type.
+     */
+    void read_part(const pstring& path, const schema_t type, const opc_rel_extra* data);
+
+private:
+    void list_content() const;
+    void read_content();
+    void read_content_types();
+    void read_relations(const char* path, vector<opc_rel_t>& rels);
+
+private:
+    model::factory_base* mp_factory;
+    struct zip* m_archive;
+
+    xml_simple_stream_handler m_opc_rel_handler;
+
+    vector<xml_part_t> m_parts;
+    vector<xml_part_t> m_ext_defaults;
+    vector<string> m_dir_stack;
+};
+
+struct process_opc_rel : public unary_function<void, opc_rel_t>
+{
+    process_opc_rel(orcus_xlsx& parent, const opc_rel_extras_t* extras) :
+        m_parent(parent), m_extras(extras) {}
+
+    void operator() (const opc_rel_t& v)
+    {
+        const opc_rel_extra* data = NULL;
+        if (m_extras)
+        {
+            opc_rel_extras_t::const_iterator itr = m_extras->find(v.rid);
+            if (itr != m_extras->end())
+                data = itr->second;
+        }
+        m_parent.read_part(v.target, v.type, data);
+    }
+private:
+    orcus_xlsx& m_parent;
+    const opc_rel_extras_t* m_extras;
+};
+
+orcus_xlsx::orcus_xlsx(model::factory_base* factory) :
+    mp_factory(factory),
+    m_archive(NULL),
+    m_opc_rel_handler(new opc_relations_context(opc_tokens)) {}
+
+orcus_xlsx::~orcus_xlsx() {}
+
+void orcus_xlsx::read_file(const char* fpath)
+{
+    cout << "reading " << fpath << endl;
+
+    int error;
+    m_archive = zip_open(fpath, 0, &error);
+    if (!m_archive)
+    {
+        cout << "failed to open " << fpath << endl;
+        return;
+    }
+
+    m_dir_stack.push_back(string()); // push root directory.
+
+    list_content();
+    read_content();
+
+    zip_close(m_archive);
+}
+
+void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_extra* data)
+{
+}
+
+void orcus_xlsx::list_content() const
+{
+    zip_uint64_t num = zip_get_num_entries(m_archive, 0);
+    cout << "number of files this archive contains: " << num << endl;
+
+    for (zip_uint64_t i = 0; i < num; ++i)
+    {
+        const char* filename = zip_get_name(m_archive, i, 0);
+        cout << filename << endl;
+    }
+}
+
+void orcus_xlsx::read_content()
+{
+    if (m_dir_stack.empty())
+        return;
+
+    // [Content_Types].xml
+
+    read_content_types();
+    for_each(m_parts.begin(), m_parts.end(), print_xml_content_types("part name"));
+    for_each(m_ext_defaults.begin(), m_ext_defaults.end(), print_xml_content_types("extension default"));
+
+    // _rels/.rels
+
+    m_dir_stack.push_back(string("_rels/"));
+    vector<opc_rel_t> rels;
+    read_relations(".rels", rels);
+    m_dir_stack.pop_back();
+
+    for_each(rels.begin(), rels.end(), print_opc_rel());
+    for_each(rels.begin(), rels.end(), process_opc_rel(*this, NULL));
+}
+
+void orcus_xlsx::read_content_types()
+{
+    struct zip_stat file_stat;
+    if (zip_stat(m_archive, "[Content_Types].xml", 0, &file_stat))
+    {
+        cout << "failed to get stat on [Content_Types].xml" << endl;
+        return;
+    }
+
+    cout << "name: " << file_stat.name << "  size: " << file_stat.size << endl;
+    struct zip_file* zfd = zip_fopen(m_archive, file_stat.name, 0);
+    if (!zfd)
+    {
+        cout << "failed to open " << file_stat.name << endl;
+        return;
+    }
+
+    vector<uint8_t> buf(file_stat.size, 0);
+    int buf_read = zip_fread(zfd, &buf[0], file_stat.size);
+    cout << "actual buffer read: " << buf_read << endl;
+    if (buf_read > 0)
+    {
+        xml_stream_parser parser(opc_tokens, &buf[0], buf_read, "[Content_Types].xml");
+        ::boost::scoped_ptr<xml_simple_stream_handler> handler(
+            new xml_simple_stream_handler(new opc_content_types_context(opc_tokens)));
+        parser.set_handler(handler.get());
+        parser.parse();
+
+        opc_content_types_context& context =
+            static_cast<opc_content_types_context&>(handler->get_context());
+        context.pop_parts(m_parts);
+        context.pop_ext_defaults(m_ext_defaults);
+    }
+    zip_fclose(zfd);
+}
+
+void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
+{
+}
+
+}
+
+#else
 
 namespace {
 
@@ -537,6 +730,8 @@ void orcus_xlsx::list_content (GsfInput* input, int level)
 }
 
 }
+
+#endif
 
 int main(int argc, char** argv)
 {
