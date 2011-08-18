@@ -110,6 +110,8 @@ private:
     void read_content_types();
     void read_relations(const char* path, vector<opc_rel_t>& rels);
 
+    string get_current_dir() const;
+
 private:
     model::factory_base* mp_factory;
     struct zip* m_archive;
@@ -171,6 +173,7 @@ void orcus_xlsx::read_file(const char* fpath)
 
 void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_extra* data)
 {
+    cout << "path: " << path << endl;
 }
 
 void orcus_xlsx::list_content() const
@@ -245,6 +248,48 @@ void orcus_xlsx::read_content_types()
 
 void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
 {
+    string filepath = get_current_dir() + string(path);
+    cout << "file path: " << filepath << endl;
+
+    struct zip_stat file_stat;
+    if (zip_stat(m_archive, filepath.c_str(), 0, &file_stat))
+    {
+        cout << "failed to get stat on " << filepath << endl;
+        return;
+    }
+
+    cout << "name: " << file_stat.name << "  size: " << file_stat.size << endl;
+    struct zip_file* zfd = zip_fopen(m_archive, file_stat.name, 0);
+    if (!zfd)
+    {
+        cout << "failed to open " << file_stat.name << endl;
+        return;
+    }
+
+    vector<uint8_t> buf(file_stat.size, 0);
+    int buf_read = zip_fread(zfd, &buf[0], file_stat.size);
+    cout << "actual buffer read: " << buf_read << endl;
+    if (buf_read > 0)
+    {
+        xml_stream_parser parser(opc_tokens, &buf[0], file_stat.size, filepath);
+
+        opc_relations_context& context =
+            static_cast<opc_relations_context&>(m_opc_rel_handler.get_context());
+        context.init();
+        parser.set_handler(&m_opc_rel_handler);
+        parser.parse();
+        context.pop_rels(rels);
+    }
+    zip_fclose(zfd);
+}
+
+string orcus_xlsx::get_current_dir() const
+{
+    string pwd;
+    vector<string>::const_iterator itr = m_dir_stack.begin(), itr_end = m_dir_stack.end();
+    for (; itr != itr_end; ++itr)
+        pwd += *itr;
+    return pwd;
 }
 
 }
