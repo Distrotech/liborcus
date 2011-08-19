@@ -87,6 +87,15 @@ private:
     const char* m_prefix;
 };
 
+struct print_sheet_info : unary_function<void, pair<pstring, const opc_rel_extra*> >
+{
+    void operator() (const pair<pstring, const opc_rel_extra*>& v) const
+    {
+        const xlsx_rel_sheet_info* info = static_cast<const xlsx_rel_sheet_info*>(v.second);
+        cout << "sheet name: " << info->name << "  sheet id: " << info->id << "  relationship id: " << v.first << endl;
+    }
+};
+
 class orcus_xlsx : public ::boost::noncopyable
 {
 public:
@@ -109,10 +118,14 @@ private:
     void read_content();
     void read_content_types();
     void read_relations(const char* path, vector<opc_rel_t>& rels);
+    void read_workbook(const char* file_name);
+    void check_relation_part(const char* file_name, const opc_rel_extras_t* extras);
 
     string get_current_dir() const;
 
 private:
+    typedef vector<string> dir_stack_type;
+
     model::factory_base* mp_factory;
     struct zip* m_archive;
 
@@ -120,7 +133,7 @@ private:
 
     vector<xml_part_t> m_parts;
     vector<xml_part_t> m_ext_defaults;
-    vector<string> m_dir_stack;
+    dir_stack_type m_dir_stack;
 };
 
 struct process_opc_rel : public unary_function<void, opc_rel_t>
@@ -173,7 +186,76 @@ void orcus_xlsx::read_file(const char* fpath)
 
 void orcus_xlsx::read_part(const pstring& path, schema_t type, const opc_rel_extra* data)
 {
-    cout << "path: " << path << endl;
+    assert(!m_dir_stack.empty());
+
+    dir_stack_type dir_changed;
+
+    // Change current directory and read the in-file.
+    const char* p = path.get();
+    const char* p_name = NULL;
+    size_t name_len = 0;
+    for (size_t i = 0, n = path.size(); i < n; ++i, ++p)
+    {
+        if (!p_name)
+            p_name = p;
+
+        ++name_len;
+
+        if (*p == '/')
+        {
+            // Push a new directory.
+            string dir_name(p_name, name_len);
+            if (dir_name == "..")
+            {
+                dir_changed.push_back(m_dir_stack.back());
+                m_dir_stack.pop_back();
+            }
+            else
+            {
+                m_dir_stack.push_back(dir_name);
+
+                // Add a null directory to the change record to remove it at the end.
+                dir_changed.push_back(string());
+            }
+
+            p_name = NULL;
+            name_len = 0;
+        }
+    }
+
+    if (p_name)
+    {
+        // This is a file.
+        string file_name(p_name, name_len);
+
+        if (type == SCH_od_rels_office_doc)
+            read_workbook(file_name.c_str());
+//      else if (type == SCH_od_rels_worksheet)
+//          read_sheet(file_name.c_str(), static_cast<const xlsx_rel_sheet_info*>(data));
+//      else if (type == SCH_od_rels_shared_strings)
+//          read_shared_strings(file_name.c_str());
+//      else if (type == SCH_od_rels_styles)
+//          read_styles(file_name.c_str());
+        else
+        {
+            cout << "---" << endl;
+            cout << "unhandled relationship type: " << type << endl;
+        }
+    }
+
+    // Unwind to the original directory.
+    while (!dir_changed.empty())
+    {
+        const string& dir = dir_changed.back();
+        if (dir.empty())
+            // remove added directory.
+            m_dir_stack.pop_back();
+        else
+            // re-add removed directory.
+            m_dir_stack.push_back(dir);
+
+        dir_changed.pop_back();
+    }
 }
 
 void orcus_xlsx::list_content() const
@@ -248,7 +330,7 @@ void orcus_xlsx::read_content_types()
 
 void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
 {
-    string filepath = get_current_dir() + string(path);
+    string filepath = get_current_dir() + path;
     cout << "file path: " << filepath << endl;
 
     struct zip_stat file_stat;
@@ -281,6 +363,65 @@ void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
         context.pop_rels(rels);
     }
     zip_fclose(zfd);
+}
+
+void orcus_xlsx::read_workbook(const char* file_name)
+{
+    string filepath = get_current_dir() + file_name;
+    cout << "read_workbook: file path = " << filepath << endl;
+
+    struct zip_stat file_stat;
+    if (zip_stat(m_archive, filepath.c_str(), 0, &file_stat))
+    {
+        cout << "failed to get stat on " << filepath << endl;
+        return;
+    }
+
+    cout << "name: " << file_stat.name << "  size: " << file_stat.size << endl;
+    struct zip_file* zfd = zip_fopen(m_archive, file_stat.name, 0);
+    if (!zfd)
+    {
+        cout << "failed to open " << file_stat.name << endl;
+        return;
+    }
+
+    vector<uint8_t> buf(file_stat.size, 0);
+    int buf_read = zip_fread(zfd, &buf[0], file_stat.size);
+    cout << "actual buffer read: " << buf_read << endl;
+
+    ::boost::scoped_ptr<xml_simple_stream_handler> handler(
+        new xml_simple_stream_handler(new xlsx_workbook_context(ooxml_tokens)));
+
+    if (buf_read > 0)
+    {
+        xml_stream_parser parser(ooxml_tokens, &buf[0], buf_read, filepath);
+        parser.set_handler(handler.get());
+        parser.parse();
+    }
+    zip_fclose(zfd);
+
+    // Get sheet info from the context instance.
+    xlsx_workbook_context& context =
+        static_cast<xlsx_workbook_context&>(handler->get_context());
+    opc_rel_extras_t sheet_data;
+    context.pop_sheet_info(sheet_data);
+    for_each(sheet_data.begin(), sheet_data.end(), print_sheet_info());
+
+    check_relation_part(file_name, &sheet_data);
+}
+
+void orcus_xlsx::check_relation_part(const char* file_name, const opc_rel_extras_t* extra)
+{
+    // Read the relationship file associated with this file, located at
+    // _rels/<file name>.rels.
+    vector<opc_rel_t> rels;
+    m_dir_stack.push_back(string("_rels/"));
+    string rels_file_name = string(file_name) + ".rels";
+    read_relations(rels_file_name.c_str(), rels);
+    m_dir_stack.pop_back();
+
+    for_each(rels.begin(), rels.end(), print_opc_rel());
+    for_each(rels.begin(), rels.end(), process_opc_rel(*this, extra));
 }
 
 string orcus_xlsx::get_current_dir() const
