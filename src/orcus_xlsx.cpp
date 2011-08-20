@@ -157,6 +157,33 @@ private:
     const opc_rel_extras_t* m_extras;
 };
 
+struct zip_file* get_zip_stream_from_archive(
+    struct zip* archive, const string& filepath, vector<uint8_t>& buf, int& buf_read)
+{
+    buf_read = 0;
+    struct zip_stat file_stat;
+    if (zip_stat(archive, filepath.c_str(), 0, &file_stat))
+    {
+        cout << "failed to get stat on " << filepath << endl;
+        return NULL;
+    }
+
+    cout << "name: " << file_stat.name << "  size: " << file_stat.size << endl;
+    struct zip_file* zfd = zip_fopen(archive, file_stat.name, 0);
+    if (!zfd)
+    {
+        cout << "failed to open " << file_stat.name << endl;
+        return NULL;
+    }
+
+    vector<uint8_t> _buf(file_stat.size, 0);
+    buf_read = zip_fread(zfd, &_buf[0], file_stat.size);
+    cout << "actual buffer read: " << buf_read << endl;
+
+    buf.swap(_buf);
+    return zfd;
+}
+
 orcus_xlsx::orcus_xlsx(model::factory_base* factory) :
     mp_factory(factory),
     m_archive(NULL),
@@ -294,24 +321,13 @@ void orcus_xlsx::read_content()
 
 void orcus_xlsx::read_content_types()
 {
-    struct zip_stat file_stat;
-    if (zip_stat(m_archive, "[Content_Types].xml", 0, &file_stat))
-    {
-        cout << "failed to get stat on [Content_Types].xml" << endl;
-        return;
-    }
-
-    cout << "name: " << file_stat.name << "  size: " << file_stat.size << endl;
-    struct zip_file* zfd = zip_fopen(m_archive, file_stat.name, 0);
+    string filepath("[Content_Types].xml");
+    vector<uint8_t> buf;
+    int buf_read;
+    struct zip_file* zfd = get_zip_stream_from_archive(m_archive, filepath, buf, buf_read);
     if (!zfd)
-    {
-        cout << "failed to open " << file_stat.name << endl;
         return;
-    }
 
-    vector<uint8_t> buf(file_stat.size, 0);
-    int buf_read = zip_fread(zfd, &buf[0], file_stat.size);
-    cout << "actual buffer read: " << buf_read << endl;
     if (buf_read > 0)
     {
         xml_stream_parser parser(opc_tokens, &buf[0], buf_read, "[Content_Types].xml");
@@ -333,27 +349,15 @@ void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
     string filepath = get_current_dir() + path;
     cout << "file path: " << filepath << endl;
 
-    struct zip_stat file_stat;
-    if (zip_stat(m_archive, filepath.c_str(), 0, &file_stat))
-    {
-        cout << "failed to get stat on " << filepath << endl;
-        return;
-    }
-
-    cout << "name: " << file_stat.name << "  size: " << file_stat.size << endl;
-    struct zip_file* zfd = zip_fopen(m_archive, file_stat.name, 0);
+    vector<uint8_t> buf;
+    int buf_read;
+    struct zip_file* zfd = get_zip_stream_from_archive(m_archive, filepath, buf, buf_read);
     if (!zfd)
-    {
-        cout << "failed to open " << file_stat.name << endl;
         return;
-    }
 
-    vector<uint8_t> buf(file_stat.size, 0);
-    int buf_read = zip_fread(zfd, &buf[0], file_stat.size);
-    cout << "actual buffer read: " << buf_read << endl;
     if (buf_read > 0)
     {
-        xml_stream_parser parser(opc_tokens, &buf[0], file_stat.size, filepath);
+        xml_stream_parser parser(opc_tokens, &buf[0], buf_read, filepath);
 
         opc_relations_context& context =
             static_cast<opc_relations_context&>(m_opc_rel_handler.get_context());
@@ -370,24 +374,11 @@ void orcus_xlsx::read_workbook(const char* file_name)
     string filepath = get_current_dir() + file_name;
     cout << "read_workbook: file path = " << filepath << endl;
 
-    struct zip_stat file_stat;
-    if (zip_stat(m_archive, filepath.c_str(), 0, &file_stat))
-    {
-        cout << "failed to get stat on " << filepath << endl;
-        return;
-    }
-
-    cout << "name: " << file_stat.name << "  size: " << file_stat.size << endl;
-    struct zip_file* zfd = zip_fopen(m_archive, file_stat.name, 0);
+    vector<uint8_t> buf;
+    int buf_read;
+    struct zip_file* zfd = get_zip_stream_from_archive(m_archive, filepath, buf, buf_read);
     if (!zfd)
-    {
-        cout << "failed to open " << file_stat.name << endl;
         return;
-    }
-
-    vector<uint8_t> buf(file_stat.size, 0);
-    int buf_read = zip_fread(zfd, &buf[0], file_stat.size);
-    cout << "actual buffer read: " << buf_read << endl;
 
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
         new xml_simple_stream_handler(new xlsx_workbook_context(ooxml_tokens)));
