@@ -50,8 +50,8 @@ else
     DEFINES="$DEFINES -DMDDS_HASH_CONTAINER_BOOST"
 fi
 
-CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall `pkg-config --cflags libgsf-1 libzip` -std=c++0x"
-LDFLAGS="`pkg-config --libs libgsf-1 libzip` -lboost_thread"
+CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall `pkg-config --cflags libzip` -std=c++0x"
+LDFLAGS="`pkg-config --libs libzip` -lboost_thread"
 
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
