@@ -74,7 +74,7 @@ COMMON_OBJFILES= \
 	$(OBJDIR)/model/factory.o \
 	$(OBJDIR)/model/document.o \
 
-ODF_HEADERS= \
+ODS_HEADERS= \
 	$(COMMON_HEADERS) \
 	$(INCDIR)/types.hpp \
 	$(INCDIR)/orcus_ods.hpp \
@@ -83,7 +83,7 @@ ODF_HEADERS= \
 	$(INCDIR)/odf/ods_context.hpp \
 	$(INCDIR)/odf/para_context.hpp
 
-ODF_OBJFILES= \
+ODS_OBJFILES= \
 	$(COMMON_OBJFILES) \
 	$(OBJDIR)/orcus_ods.o \
 	$(OBJDIR)/odf/odf_tokens.o \
@@ -129,7 +129,7 @@ CSS_OBJFILES= \
 	$(OBJDIR)/pstring.o
 
 DEPENDS= \
-	$(ODF_HEADERS) \
+	$(ODS_HEADERS) \
 	$(XLSX_HEADERS)
 
 all: $(EXECS)
@@ -238,8 +238,8 @@ $(OBJDIR)/orcus_css.o: $(SRCDIR)/orcus_css.cpp $(CSS_HEADERS)
 
 # executables
 
-orcus-ods: $(OBJDIR)/pre $(ODF_OBJFILES)
-	$(CXX) $(LDFLAGS) $(ODF_OBJFILES) -o $@
+orcus-ods: $(OBJDIR)/pre $(ODS_OBJFILES)
+	$(CXX) $(LDFLAGS) $(ODS_OBJFILES) -o $@
 
 orcus-xlsx: $(OBJDIR)/pre $(XLSX_OBJFILES)
 	$(CXX) $(LDFLAGS) $(XLSX_OBJFILES) -o $@
