@@ -1,7 +1,7 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
- * 
+ * Copyright (c) 2010, 2011 Kohei Yoshida
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -55,14 +55,20 @@ public:
     virtual ~xml_structure_error() throw();
 };
 
-// ============================================================================
-
 void print_element(xmlns_token_t ns, xml_token_t name);
 
 /**
- * Print attributes to stdout for debugging purposes. 
+ * Print attributes to stdout for debugging purposes.
  */
 void print_attrs(const tokens& tokens, const xml_attrs_t& attrs);
+
+/**
+ * Load the content of a file into a file stream.
+ *
+ * @param filepath file to open
+ * @param strm content of the file
+ */
+void load_file_content(const char* filepath, std::string& strm);
 
 /**
  * Function object for deleting objects that are stored in map container as

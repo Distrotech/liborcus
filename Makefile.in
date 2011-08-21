@@ -128,6 +128,16 @@ CSS_OBJFILES= \
 	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/pstring.o
 
+CSV_HEADERS= \
+	$(INCDIR)/csv_parser.hpp \
+	$(INCDIR)/orcus_csv.hpp
+
+CSV_OBJFILES= \
+	$(OBJDIR)/orcus_csv.o \
+	$(OBJDIR)/global.o \
+	$(OBJDIR)/tokens.o \
+	$(OBJDIR)/pstring.o
+
 DEPENDS= \
 	$(ODS_HEADERS) \
 	$(XLSX_HEADERS)
@@ -236,6 +246,11 @@ $(OBJDIR)/pstring_intern_test.o: $(SRCDIR)/pstring_intern_test.cpp $(INCDIR)/pst
 $(OBJDIR)/orcus_css.o: $(SRCDIR)/orcus_css.cpp $(CSS_HEADERS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_css.cpp
 
+# CSV parser
+
+$(OBJDIR)/orcus_csv.o: $(SRCDIR)/orcus_csv.cpp $(CSS_HEADERS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_csv.cpp
+
 # executables
 
 orcus-ods: $(OBJDIR)/pre $(ODS_OBJFILES)
@@ -249,6 +264,9 @@ pstring-intern-test: $(OBJDIR)/pre $(PSTRING_TEST_OBJFILES)
 
 orcus-css: $(OBJDIR)/pre $(CSS_OBJFILES)
 	$(CXX) $(LDFLAGS) $(CSS_OBJFILES) -o $@
+
+orcus-csv: $(OBJDIR)/pre $(CSV_OBJFILES)
+	$(CXX) $(LDFLAGS) $(CSV_OBJFILES) -o $@
 
 test.pstring: pstring-intern-test
 	./pstring-intern-test

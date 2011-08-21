@@ -234,10 +234,12 @@
 					<F N="include/orcus/ooxml/xlsx_handler.hpp"/>
 					<F N="include/orcus/ooxml/xlsx_types.hpp"/>
 				</Folder>
+				<F N="include/orcus/css_parser.hpp"/>
+				<F N="include/orcus/csv_parser.hpp"/>
+				<F N="include/orcus/global.hpp"/>
+				<F N="include/orcus/orcus_csv.hpp"/>
 				<F N="include/orcus/orcus_ods.hpp"/>
 				<F N="include/orcus/orcus_xlsx.hpp"/>
-				<F N="include/orcus/css_parser.hpp"/>
-				<F N="include/orcus/global.hpp"/>
 				<F N="include/orcus/pstring.hpp"/>
 				<F N="include/orcus/sax.hpp"/>
 				<F N="include/orcus/tokens.hpp"/>
@@ -276,6 +278,7 @@
 			</Folder>
 			<F N="src/global.cpp"/>
 			<F N="src/orcus_css.cpp"/>
+			<F N="src/orcus_csv.cpp"/>
 			<F N="src/orcus_ods.cpp"/>
 			<F N="src/orcus_xlsx.cpp"/>
 			<F N="src/pstring.cpp"/>
@@ -287,7 +290,7 @@
 			<F N="src/xml_simple_handler.cpp"/>
 		</Folder>
 		<F
-			N="Makefile"
+			N="Makefile.in"
 			Type="Makefile"/>
 	</Files>
 </Project>
