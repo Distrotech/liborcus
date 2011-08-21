@@ -248,7 +248,7 @@ $(OBJDIR)/orcus_css.o: $(SRCDIR)/orcus_css.cpp $(CSS_HEADERS)
 
 # CSV parser
 
-$(OBJDIR)/orcus_csv.o: $(SRCDIR)/orcus_csv.cpp $(CSS_HEADERS)
+$(OBJDIR)/orcus_csv.o: $(SRCDIR)/orcus_csv.cpp $(CSV_HEADERS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_csv.cpp
 
 # executables
