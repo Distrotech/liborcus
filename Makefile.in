@@ -25,7 +25,7 @@
 #
 #***********************************************************************
 
-EXECS=orcus-ods orcus-xlsx
+EXECS=orcus-ods orcus-xlsx orcus-csv
 
 OBJDIR=./obj
 SRCDIR=./src

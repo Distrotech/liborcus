@@ -51,7 +51,7 @@ else
 fi
 
 CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall `pkg-config --cflags libzip` -std=c++0x"
-LDFLAGS="`pkg-config --libs libzip` -lboost_thread"
+LDFLAGS="`pkg-config --libs libzip`"
 
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
