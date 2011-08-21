@@ -27,6 +27,8 @@
 
 #include <zip.h>
 
+#include "orcus/orcus_ods.hpp"
+
 #include "orcus/xml_parser.hpp"
 #include "orcus/odf/ods_handler.hpp"
 #include "orcus/odf/odf_tokens.hpp"
@@ -38,28 +40,9 @@
 #include <vector>
 
 #include <boost/scoped_ptr.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/noncopyable.hpp>
 
 using namespace std;
 using namespace orcus;
-
-class orcus_ods : private ::boost::noncopyable
-{
-public:
-    orcus_ods(model::factory_base* factory);
-    ~orcus_ods();
-
-    void read_file(const char* fpath, const char* outpath);
-
-private:
-    void list_content(struct zip* archive) const;
-    void read_content(struct zip* archive);
-    void read_content_xml(const uint8_t* p, size_t size);
-
-private:
-    ::boost::shared_ptr<model::factory_base> mp_factory;
-};
 
 orcus_ods::orcus_ods(model::factory_base* factory) :
     mp_factory(factory)

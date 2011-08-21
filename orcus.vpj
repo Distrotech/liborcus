@@ -234,6 +234,7 @@
 					<F N="include/orcus/ooxml/xlsx_handler.hpp"/>
 					<F N="include/orcus/ooxml/xlsx_types.hpp"/>
 				</Folder>
+				<F N="include/orcus/orcus_ods.hpp"/>
 				<F N="include/orcus/orcus_xlsx.hpp"/>
 				<F N="include/orcus/css_parser.hpp"/>
 				<F N="include/orcus/global.hpp"/>
