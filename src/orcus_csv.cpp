@@ -60,7 +60,9 @@ void orcus_csv::parse(const string& strm)
         return;
 
     csv_handler handler;
-    csv_parser<csv_handler> parser(&strm[0], strm.size(), handler);
+    csv_parser_options options;
+    options.delimiters.push_back(',');
+    csv_parser<csv_handler> parser(&strm[0], strm.size(), handler, options);
     parser.parse();
 }
 

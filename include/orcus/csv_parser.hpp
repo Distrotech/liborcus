@@ -43,29 +43,50 @@
 
 namespace orcus {
 
+struct csv_parser_options
+{
+    std::string delimiters;
+};
+
+class csv_parse_error : public std::exception
+{
+    std::string m_msg;
+public:
+    csv_parse_error(const std::string& msg) : m_msg(msg) {}
+    virtual ~csv_parse_error() throw() {}
+    virtual const char* what() const throw() { return m_msg.c_str(); }
+};
+
 template<typename _Handler>
 class csv_parser
 {
 public:
     typedef _Handler handler_type;
 
-    csv_parser(const char* p, size_t n, handler_type& hdl);
+    csv_parser(const char* p, size_t n, handler_type& hdl, const csv_parser_options& options);
     void parse();
 
 private:
     handler_type& m_handler;
+    const csv_parser_options& m_options;
     const char* mp_char;
     size_t m_pos;
     size_t m_length;
 };
 
 template<typename _Handler>
-csv_parser<_Handler>::csv_parser(const char* p, size_t n, handler_type& hdl) :
-    m_handler(hdl), mp_char(p), m_pos(0), m_length(n) {}
+csv_parser<_Handler>::csv_parser(const char* p, size_t n, handler_type& hdl, const csv_parser_options& options) :
+    m_handler(hdl), m_options(options), mp_char(p), m_pos(0), m_length(n) {}
 
 template<typename _Handler>
 void csv_parser<_Handler>::parse()
 {
+#if ORCUS_DEBUG_CSV
+    const char* p = mp_char;
+    for (size_t i = m_pos; i < m_length; ++i, ++p)
+        std::cout << *p;
+    std::cout << std::endl;
+#endif
 }
 
 }
