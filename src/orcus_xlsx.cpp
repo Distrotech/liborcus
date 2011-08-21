@@ -27,6 +27,8 @@
 
 #include <zip.h>
 
+#include "orcus/orcus_xlsx.hpp"
+
 #include "orcus/global.hpp"
 #include "orcus/xml_parser.hpp"
 #include "orcus/xml_simple_handler.hpp"
@@ -35,11 +37,9 @@
 #include "orcus/ooxml/xlsx_context.hpp"
 #include "orcus/ooxml/opc_context.hpp"
 #include "orcus/ooxml/ooxml_tokens.hpp"
-#include "orcus/ooxml/schemas.hpp"
 #include "orcus/model/shared_strings.hpp"
 #include "orcus/model/sheet.hpp"
 #include "orcus/model/factory.hpp"
-#include "orcus/model/document.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -47,7 +47,6 @@
 #include <cstring>
 #include <sstream>
 
-#include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -83,60 +82,6 @@ struct print_sheet_info : unary_function<void, pair<pstring, const opc_rel_extra
         const xlsx_rel_sheet_info* info = static_cast<const xlsx_rel_sheet_info*>(v.second);
         cout << "sheet name: " << info->name << "  sheet id: " << info->id << "  relationship id: " << v.first << endl;
     }
-};
-
-class orcus_xlsx : public ::boost::noncopyable
-{
-public:
-    orcus_xlsx(model::factory_base* factory);
-    ~orcus_xlsx();
-
-    void read_file(const char* fpath);
-
-    /**
-     * Read an xml part inside package.  The path is relative to the relation
-     * file.
-     *
-     * @param path the path to the xml part.
-     * @param type schema type.
-     */
-    void read_part(const pstring& path, const schema_t type, const opc_rel_extra* data);
-
-private:
-    void list_content() const;
-    void read_content();
-    void read_content_types();
-    void read_relations(const char* path, vector<opc_rel_t>& rels);
-    void read_workbook(const char* file_name);
-
-    /**
-     * Parse a sheet xml part that contains data stored in a single sheet.
-     */
-    void read_sheet(const char* file_name, const xlsx_rel_sheet_info* data);
-
-    /**
-     * Parse sharedStrings.xml part that contains a list of strings referenced
-     * in the document.
-     */
-    void read_shared_strings(const char* file_name);
-
-    void read_styles(const char* file_name);
-
-    void check_relation_part(const char* file_name, const opc_rel_extras_t* extras);
-
-    string get_current_dir() const;
-
-private:
-    typedef vector<string> dir_stack_type;
-
-    model::factory_base* mp_factory;
-    struct zip* m_archive;
-
-    xml_simple_stream_handler m_opc_rel_handler;
-
-    vector<xml_part_t> m_parts;
-    vector<xml_part_t> m_ext_defaults;
-    dir_stack_type m_dir_stack;
 };
 
 struct process_opc_rel : public unary_function<void, opc_rel_t>
@@ -185,6 +130,8 @@ struct zip_file* get_zip_stream_from_archive(
 
     buf.swap(_buf);
     return zfd;
+}
+
 }
 
 orcus_xlsx::orcus_xlsx(model::factory_base* factory) :
@@ -504,8 +451,6 @@ string orcus_xlsx::get_current_dir() const
     for (; itr != itr_end; ++itr)
         pwd += *itr;
     return pwd;
-}
-
 }
 
 int main(int argc, char** argv)
