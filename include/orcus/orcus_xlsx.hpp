@@ -29,13 +29,14 @@
 #define __ORCUS_ORCUS_XLSX_HPP__
 
 #include "orcus/ooxml/schemas.hpp"
-#include "orcus/model/document.hpp"
 #include "orcus/xml_simple_handler.hpp"
 
 #include <boost/noncopyable.hpp>
 #include <vector>
 
 namespace orcus {
+
+namespace model { class factory_base; }
 
 struct xlsx_rel_sheet_info;
 

@@ -40,6 +40,7 @@
 #include "orcus/model/shared_strings.hpp"
 #include "orcus/model/sheet.hpp"
 #include "orcus/model/factory.hpp"
+#include "orcus/model/document.hpp"
 
 #include <cstdlib>
 #include <iostream>
