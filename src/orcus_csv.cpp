@@ -30,8 +30,11 @@
 #include "orcus/csv_parser.hpp"
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
+#include "orcus/model/factory.hpp"
+#include "orcus/model/document.hpp"
 
 #include <iostream>
+#include <boost/scoped_ptr.hpp>
 
 using namespace orcus;
 using namespace std;
@@ -45,6 +48,8 @@ class csv_handler
 }
 
 namespace orcus {
+
+orcus_csv::orcus_csv(model::interface::factory* factory) : mp_factory(factory) {}
 
 void orcus_csv::read_file(const char* filepath)
 {
@@ -73,7 +78,9 @@ int main(int argc, char** argv)
     if (argc != 2)
         return EXIT_FAILURE;
 
-    orcus_csv app;
+    ::boost::scoped_ptr<model::document> doc(new model::document);
+
+    orcus_csv app(new model::factory(doc.get()));
     app.read_file(argv[1]);
     pstring::intern::dispose();
 

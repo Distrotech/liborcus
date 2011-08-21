@@ -29,16 +29,25 @@
 #define __ORCUS_ORCUS_CSV_HPP__
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 namespace orcus {
+
+namespace model { namespace interface {
+    class factory;
+}}
 
 class orcus_csv
 {
 public:
+    orcus_csv(model::interface::factory* factory);
     void read_file(const char* filepath);
 
 private:
     void parse(const std::string& strm);
+
+private:
+    ::boost::shared_ptr<model::interface::factory> mp_factory;
 };
 
 }

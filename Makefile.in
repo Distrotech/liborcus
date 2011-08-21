@@ -136,7 +136,12 @@ CSV_OBJFILES= \
 	$(OBJDIR)/orcus_csv.o \
 	$(OBJDIR)/global.o \
 	$(OBJDIR)/tokens.o \
-	$(OBJDIR)/pstring.o
+	$(OBJDIR)/pstring.o \
+	$(OBJDIR)/model/sheet.o \
+	$(OBJDIR)/model/shared_strings.o \
+	$(OBJDIR)/model/styles.o \
+	$(OBJDIR)/model/factory.o \
+	$(OBJDIR)/model/document.o \
 
 DEPENDS= \
 	$(ODS_HEADERS) \
