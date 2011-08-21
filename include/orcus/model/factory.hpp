@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -34,15 +34,15 @@ namespace orcus { namespace model {
 
 class document;
 
-class factory : public factory_base
+class factory : public interface::factory
 {
 public:
     factory(document* doc);
     virtual ~factory();
 
-    virtual shared_strings_base* get_shared_strings();
-    virtual styles_base* get_styles();
-    virtual sheet_base* append_sheet(const char* sheet_name, size_t sheet_name_length);
+    virtual interface::shared_strings* get_shared_strings();
+    virtual interface::styles* get_styles();
+    virtual interface::sheet* append_sheet(const char* sheet_name, size_t sheet_name_length);
 
 private:
     document* mp_document;

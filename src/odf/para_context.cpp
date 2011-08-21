@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -36,7 +36,7 @@ using namespace std;
 
 namespace orcus {
 
-text_para_context::text_para_context(const tokens& tokens, model::shared_strings_base* ssb) :
+text_para_context::text_para_context(const tokens& tokens, model::interface::shared_strings* ssb) :
     xml_context_base(tokens),
     mp_sstrings(ssb),
     m_string_index(0),
@@ -111,7 +111,7 @@ bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
         }
         else if (!m_contents.empty())
         {
-            // Unformatted simple text paragraph.  We may still get several 
+            // Unformatted simple text paragraph.  We may still get several
             // segments in presence of control characters separating the
             // paragraph text.
 

@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -32,40 +32,40 @@
 
 #include "orcus/model/global.hpp"
 
-namespace orcus { namespace model {
+namespace orcus { namespace model { namespace interface {
 
 /**
- * Interface class designed to be derived by the implementor. 
+ * Interface class designed to be derived by the implementor.
  */
-class shared_strings_base
+class shared_strings
 {
 public:
-    virtual ~shared_strings_base() = 0;
+    virtual ~shared_strings() = 0;
 
     /**
-     * Append new string to the string list.  Order of insertion is important 
-     * since that determines the numerical ID values of inserted strings. 
-     * Note that this method assumes that the caller knows the string being 
+     * Append new string to the string list.  Order of insertion is important
+     * since that determines the numerical ID values of inserted strings.
+     * Note that this method assumes that the caller knows the string being
      * appended is not yet in the pool.
-     *  
-     * @param s pointer to the first character of the string array.  The 
+     *
+     * @param s pointer to the first character of the string array.  The
      *          string array doesn't necessary have to be null-terminated.
-     * @param n length of the string. 
-     *  
-     * @return ID of the string just inserted. 
+     * @param n length of the string.
+     *
+     * @return ID of the string just inserted.
      */
     virtual size_t append(const char* s, size_t n) = 0;
 
     /**
-     * Similar to the append method, it adds new string to the string pool; 
-     * however, this method checks if the string being added is already in the 
-     * pool before each insertion, to avoid duplicated strings. 
-     * 
-     * @param s pointer to the first character of the string array.  The 
+     * Similar to the append method, it adds new string to the string pool;
+     * however, this method checks if the string being added is already in the
+     * pool before each insertion, to avoid duplicated strings.
+     *
+     * @param s pointer to the first character of the string array.  The
      *          string array doesn't necessary have to be null-terminated.
-     * @param n length of the string. 
-     *  
-     * @return ID of the string just inserted. 
+     * @param n length of the string.
+     *
+     * @return ID of the string just inserted.
      */
     virtual size_t add(const char* s, size_t n) = 0;
 
@@ -77,15 +77,15 @@ public:
     virtual size_t commit_segments() = 0;
 };
 
-inline shared_strings_base::~shared_strings_base() {}
+inline shared_strings::~shared_strings() {}
 
 /**
  * Interface for styles.
  */
-class styles_base
+class styles
 {
 public:
-    virtual ~styles_base() = 0;
+    virtual ~styles() = 0;
 
     // font
 
@@ -107,7 +107,7 @@ public:
     // border
 
     virtual void set_border_count(size_t n) = 0;
-    virtual void set_border_style(border_direction_t dir, const char* s, size_t n) = 0;
+    virtual void set_border_style(orcus::model::border_direction_t dir, const char* s, size_t n) = 0;
     virtual void commit_border() = 0;
 
     // cell style xf
@@ -137,65 +137,65 @@ public:
     virtual void commit_cell_style() = 0;
 };
 
-inline styles_base::~styles_base() {}
+inline styles::~styles() {}
 
 /**
  * Interface for sheet.
  */
-class sheet_base
+class sheet
 {
 public:
-    virtual ~sheet_base() = 0;
+    virtual ~sheet() = 0;
 
     /**
-     * Set string value to a cell. 
-     * 
+     * Set string value to a cell.
+     *
      * @param row row ID
      * @param col column ID
      * @param sindex 0-based string index in the shared string table.
      */
-    virtual void set_string(row_t row, col_t col, size_t sindex) = 0;
+    virtual void set_string(orcus::model::row_t row, orcus::model::col_t col, size_t sindex) = 0;
 
     /**
      * Set numerical value to a cell.
-     * 
+     *
      * @param row row ID
      * @param col column ID
      * @param value value being assigned to the cell.
      */
-    virtual void set_value(row_t row, col_t col, double value) = 0;
+    virtual void set_value(orcus::model::row_t row, orcus::model::col_t col, double value) = 0;
 
     /**
-     * Set cell format to specified cell.  The cell format is referred to by 
+     * Set cell format to specified cell.  The cell format is referred to by
      * the xf (cell format) index in the styles table.
-     * 
+     *
      * @param row row ID
      * @param col column ID
      * @param index 0-based xf (cell format) index
      */
-    virtual void set_format(row_t row, col_t col, size_t xf_index) = 0;
+    virtual void set_format(orcus::model::row_t row, orcus::model::col_t col, size_t xf_index) = 0;
 };
 
-inline sheet_base::~sheet_base() {}
+inline sheet::~sheet() {}
 
 /**
  * This interface provides the filters a means to instantiate concrete
- * classes that implement the above interfaces.  The client code never has 
- * to manually delete objects returned by its methods; the implementor of 
+ * classes that implement the above interfaces.  The client code never has
+ * to manually delete objects returned by its methods; the implementor of
  * this interface must manage the life cycles of objects it returns.
  */
-class factory_base
+class factory
 {
 public:
-    virtual ~factory_base() = 0;
+    virtual ~factory() = 0;
 
-    virtual shared_strings_base* get_shared_strings() = 0;
-    virtual styles_base* get_styles() = 0;
-    virtual sheet_base* append_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
+    virtual shared_strings* get_shared_strings() = 0;
+    virtual styles* get_styles() = 0;
+    virtual sheet* append_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
 };
 
-inline factory_base::~factory_base() {}
+inline factory::~factory() {}
 
-}}
+}}}
 
 #endif

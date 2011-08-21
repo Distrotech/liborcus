@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -35,11 +35,7 @@
 
 namespace orcus {
 
-namespace model {
-
-class shared_strings_base;
-
-}
+namespace model { namespace interface { class shared_strings; }}
 
 class tokens;
 
@@ -49,7 +45,7 @@ class tokens;
 class text_para_context : public xml_context_base
 {
 public:
-    text_para_context(const tokens& tokens, model::shared_strings_base* ssb);
+    text_para_context(const tokens& tokens, model::interface::shared_strings* ssb);
     virtual ~text_para_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -64,7 +60,7 @@ public:
     bool empty() const;
 
 private:
-    model::shared_strings_base* mp_sstrings;
+    model::interface::shared_strings* mp_sstrings;
     ::std::vector<pstring> m_contents;
     size_t m_string_index;
     bool m_formatted;

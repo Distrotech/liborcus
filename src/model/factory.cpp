@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -42,17 +42,17 @@ factory::~factory()
 {
 }
 
-shared_strings_base* factory::get_shared_strings()
+interface::shared_strings* factory::get_shared_strings()
 {
     return mp_document->get_shared_strings();
 }
 
-styles_base* factory::get_styles()
+interface::styles* factory::get_styles()
 {
     return mp_document->get_styles();
 }
 
-sheet_base* factory::append_sheet(const char* sheet_name, size_t sheet_name_length)
+interface::sheet* factory::append_sheet(const char* sheet_name, size_t sheet_name_length)
 {
     return mp_document->append_sheet(pstring(sheet_name, sheet_name_length));
 }

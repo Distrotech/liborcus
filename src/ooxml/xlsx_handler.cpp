@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -35,7 +35,7 @@ using namespace std;
 
 namespace orcus {
 
-xlsx_sheet_xml_handler::xlsx_sheet_xml_handler(const tokens& tokens, model::sheet_base* sheet)
+xlsx_sheet_xml_handler::xlsx_sheet_xml_handler(const tokens& tokens, model::interface::sheet* sheet)
 {
     m_context_stack.push_back(new xlsx_sheet_context(tokens, sheet));
 }
@@ -69,7 +69,7 @@ void xlsx_sheet_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
     // We need to keep at least one context because of print_html() call.
     if (ended && m_context_stack.size() > 1)
     {
-        // Call end_child_context of the parent context to provide a way for 
+        // Call end_child_context of the parent context to provide a way for
         // the two adjacent contexts to communicate with each other.
         context_stack_type::reverse_iterator itr_cur = m_context_stack.rbegin();
         context_stack_type::reverse_iterator itr_par = itr_cur + 1;

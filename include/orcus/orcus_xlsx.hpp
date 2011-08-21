@@ -36,14 +36,14 @@
 
 namespace orcus {
 
-namespace model { class factory_base; }
+namespace model { namespace interface { class factory; }}
 
 struct xlsx_rel_sheet_info;
 
 class orcus_xlsx : public ::boost::noncopyable
 {
 public:
-    orcus_xlsx(model::factory_base* factory);
+    orcus_xlsx(model::interface::factory* factory);
     ~orcus_xlsx();
 
     void read_file(const char* fpath);
@@ -84,7 +84,7 @@ private:
 private:
     typedef std::vector<std::string> dir_stack_type;
 
-    model::factory_base* mp_factory;
+    model::interface::factory* mp_factory;
     struct zip* m_archive;
 
     xml_simple_stream_handler m_opc_rel_handler;

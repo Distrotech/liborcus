@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010, 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -201,7 +201,7 @@ class cell_attr_parser : public unary_function<xml_attr_t, void>
     size_t m_xf;
 
 public:
-    cell_attr_parser() : 
+    cell_attr_parser() :
         m_type(xlsx_sheet_context::cell_type_value),
         m_address(0,0),
         m_xf(0) {}
@@ -281,7 +281,7 @@ private:
 
 }
 
-xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, model::sheet_base* sheet) :
+xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, model::interface::sheet* sheet) :
     xml_context_base(tokens),
     mp_sheet(sheet),
     m_cur_row(0),
@@ -317,7 +317,7 @@ void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const
         {
             print_attrs(get_tokens(), attrs);
 
-            xmlns_token_t default_ns = 
+            xmlns_token_t default_ns =
                 for_each(attrs.begin(), attrs.end(), worksheet_attr_parser()).get_default_ns();
 
             // the namespace for worksheet element comes from its own 'xmlns' attribute.
@@ -408,7 +408,7 @@ bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
                     }
                     break;
                 }
-    
+
                 m_cur_str.clear();
             }
 
@@ -487,7 +487,7 @@ public:
 
 }
 
-xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, model::shared_strings_base* strings) :
+xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, model::interface::shared_strings* strings) :
     xml_context_base(tokens), mp_strings(strings), m_in_segments(false) {}
 
 xlsx_shared_strings_context::~xlsx_shared_strings_context() {}
@@ -645,9 +645,9 @@ public:
 class border_attr_parser : public unary_function<xml_attr_t, void>
 {
     model::border_direction_t m_dir;
-    model::styles_base& m_styles;
+    model::interface::styles& m_styles;
 public:
-    border_attr_parser(model::border_direction_t dir, model::styles_base& styles) : 
+    border_attr_parser(model::border_direction_t dir, model::interface::styles& styles) :
         m_dir(dir), m_styles(styles) {}
 
     void operator() (const xml_attr_t& attr)
@@ -663,9 +663,9 @@ public:
 
 class cell_style_attr_parser : public unary_function<xml_attr_t, void>
 {
-    model::styles_base& m_styles;
+    model::interface::styles& m_styles;
 public:
-    cell_style_attr_parser(model::styles_base& styles) : 
+    cell_style_attr_parser(model::interface::styles& styles) :
         m_styles(styles) {}
 
     void operator() (const xml_attr_t& attr)
@@ -693,9 +693,9 @@ public:
 
 class xf_attr_parser : public unary_function<xml_attr_t, void>
 {
-    model::styles_base& m_styles;
+    model::interface::styles& m_styles;
 public:
-    xf_attr_parser(model::styles_base& styles) :
+    xf_attr_parser(model::interface::styles& styles) :
         m_styles(styles) {}
 
     void operator() (const xml_attr_t& attr)
@@ -746,11 +746,11 @@ public:
 
 class fill_color_attr_parser : public unary_function<xml_attr_t, void>
 {
-    model::styles_base& m_styles;
+    model::interface::styles& m_styles;
     const tokens& m_tokens;
     bool m_foreground;
 public:
-    fill_color_attr_parser(model::styles_base& styles, const tokens& _tokens, bool fg) :
+    fill_color_attr_parser(model::interface::styles& styles, const tokens& _tokens, bool fg) :
         m_styles(styles), m_tokens(_tokens), m_foreground(fg) {}
 
     void operator() (const xml_attr_t& attr)
@@ -801,7 +801,7 @@ private:
 
 }
 
-xlsx_styles_context::xlsx_styles_context(const tokens& tokens, model::styles_base* styles) :
+xlsx_styles_context::xlsx_styles_context(const tokens& tokens, model::interface::styles* styles) :
     xml_context_base(tokens), mp_styles(styles), m_cell_style_xf(false) {}
 
 xlsx_styles_context::~xlsx_styles_context() {}

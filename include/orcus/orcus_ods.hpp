@@ -33,12 +33,12 @@
 
 namespace orcus {
 
-namespace model { class factory_base; }
+namespace model { namespace interface { class factory; }}
 
 class orcus_ods : private ::boost::noncopyable
 {
 public:
-    orcus_ods(model::factory_base* factory);
+    orcus_ods(model::interface::factory* factory);
     ~orcus_ods();
 
     void read_file(const char* fpath, const char* outpath);
@@ -49,7 +49,7 @@ private:
     void read_content_xml(const uint8_t* p, size_t size);
 
 private:
-    ::boost::shared_ptr<model::factory_base> mp_factory;
+    ::boost::shared_ptr<model::interface::factory> mp_factory;
 };
 
 }

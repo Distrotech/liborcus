@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010, 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -39,11 +39,7 @@ namespace orcus {
 class tokens;
 class ods_content_xml_context;
 
-namespace model {
-
-class factory_base;
-
-}
+namespace model { namespace interface { class factory; }}
 
 /**
  * Handler for parsing the content.xml part.
@@ -51,7 +47,7 @@ class factory_base;
 class ods_content_xml_handler : public xml_stream_handler
 {
 public:
-    ods_content_xml_handler(const tokens& tokens, model::factory_base* factory);
+    ods_content_xml_handler(const tokens& tokens, model::interface::factory* factory);
     virtual ~ods_content_xml_handler();
 
     virtual void start_document();
@@ -64,7 +60,7 @@ private:
     xml_context_base& get_current_context();
 
 private:
-    model::factory_base* mp_factory;
+    model::interface::factory* mp_factory;
     typedef ::boost::ptr_vector<xml_context_base> context_stack_type;
     context_stack_type m_context_stack;
 };

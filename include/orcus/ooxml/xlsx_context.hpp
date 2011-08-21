@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010, 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -37,11 +37,11 @@
 
 namespace orcus {
 
-namespace model {
-    class sheet_base;
-    class shared_strings_base;
-    class styles_base;
-}
+namespace model { namespace interface {
+    class sheet;
+    class shared_strings;
+    class styles;
+}}
 
 /**
  * Context for xl/workbook.xml.
@@ -78,7 +78,7 @@ class xlsx_sheet_context : public xml_context_base
 public:
     enum cell_type { cell_type_string, cell_type_value };
 
-    xlsx_sheet_context(const tokens& tokens, model::sheet_base* sheet);
+    xlsx_sheet_context(const tokens& tokens, model::interface::sheet* sheet);
     virtual ~xlsx_sheet_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -90,7 +90,7 @@ public:
     virtual void characters(const pstring& str);
 
 private:
-    model::sheet_base* mp_sheet; /// sheet model instance for the loaded document.
+    model::interface::sheet* mp_sheet; /// sheet model instance for the loaded document.
     model::row_t m_cur_row;
     model::col_t m_cur_col;
     cell_type    m_cur_cell_type;
@@ -104,7 +104,7 @@ private:
 class xlsx_shared_strings_context : public xml_context_base
 {
 public:
-    xlsx_shared_strings_context(const tokens& tokens, model::shared_strings_base* strings);
+    xlsx_shared_strings_context(const tokens& tokens, model::interface::shared_strings* strings);
     virtual ~xlsx_shared_strings_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -116,7 +116,7 @@ public:
     virtual void characters(const pstring& str);
 
 private:
-    model::shared_strings_base* mp_strings;
+    model::interface::shared_strings* mp_strings;
     pstring m_cur_str;
     bool m_in_segments;
 };
@@ -128,7 +128,7 @@ private:
 class xlsx_styles_context : public xml_context_base
 {
 public:
-    xlsx_styles_context(const tokens& tokens, model::styles_base* styles);
+    xlsx_styles_context(const tokens& tokens, model::interface::styles* styles);
     virtual ~xlsx_styles_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -140,7 +140,7 @@ public:
     virtual void characters(const pstring& str);
 
 private:
-    model::styles_base* mp_styles;
+    model::interface::styles* mp_styles;
     bool m_cell_style_xf;
 };
 

@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -42,7 +42,7 @@ namespace orcus { namespace model {
 /**
  * This class handles global pool of string instances.
  */
-class shared_strings : public shared_strings_base, private ::boost::noncopyable
+class shared_strings : public interface::shared_strings, private ::boost::noncopyable
 {
     typedef ::std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
 
@@ -96,7 +96,7 @@ private:
     ::std::vector<pstring> m_strings;
 
     /**
-     * Container for all format runs of all formatted strings.  Format runs 
+     * Container for all format runs of all formatted strings.  Format runs
      * are mapped with the string IDs.
      */
     format_runs_map_type m_formats;
