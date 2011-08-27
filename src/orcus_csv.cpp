@@ -43,6 +43,12 @@ namespace {
 
 class csv_handler
 {
+public:
+    void begin_parse() {}
+    void end_parse() {}
+    void begin_row() {}
+    void end_row() {}
+    void cell(const char* p, size_t n) {}
 };
 
 }
@@ -65,7 +71,7 @@ void orcus_csv::parse(const string& strm)
         return;
 
     csv_handler handler;
-    csv_parser_options options;
+    csv_parser_config options;
     options.delimiters.push_back(',');
     csv_parser<csv_handler> parser(&strm[0], strm.size(), handler, options);
     parser.parse();
