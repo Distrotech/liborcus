@@ -88,6 +88,7 @@ int main(int argc, char** argv)
 
     orcus_csv app(new model::factory(doc.get()));
     app.read_file(argv[1]);
+    doc->dump_html("./obj");
     pstring::intern::dispose();
 
     return EXIT_SUCCESS;
