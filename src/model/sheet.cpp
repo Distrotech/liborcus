@@ -36,6 +36,7 @@
 #include <algorithm>
 #include <sstream>
 #include <vector>
+#include <cassert>
 
 #include <mdds/mixed_type_matrix.hpp>
 
@@ -81,6 +82,14 @@ sheet::~sheet()
     for_each(m_sheet.begin(), m_sheet.end(), delete_map_object<sheet_type>());
     for_each(m_cell_formats.begin(), m_cell_formats.end(), 
              delete_map_object<cell_format_type>());
+}
+
+void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
+{
+    shared_strings* ss = m_doc.get_shared_strings();
+    assert(ss);
+    size_t si = ss->add(p, n);
+    set_string(row, col, si);
 }
 
 void sheet::set_string(row_t row, col_t col, size_t sindex)

@@ -148,6 +148,17 @@ public:
     virtual ~sheet() = 0;
 
     /**
+     * Set raw string value to a cell and have the implementation 
+     * auto-recognize its data type. 
+     * 
+     * @param row row ID
+     * @param col column ID
+     * @param p pointer to the first character of the raw string value.
+     * @param n size of the raw string value.
+     */
+    virtual void set_auto(orcus::model::row_t row, orcus::model::col_t col, const char* p, size_t n) = 0;
+
+    /**
      * Set string value to a cell.
      *
      * @param row row ID
@@ -182,7 +193,11 @@ inline sheet::~sheet() {}
  * This interface provides the filters a means to instantiate concrete
  * classes that implement the above interfaces.  The client code never has
  * to manually delete objects returned by its methods; the implementor of
- * this interface must manage the life cycles of objects it returns.
+ * this interface must manage the life cycles of objects it returns. 
+ *  
+ * The implementor of this interface normally wraps the document instance 
+ * inside it and have the document instance manage the life cycles of 
+ * various objects it creates. 
  */
 class factory
 {

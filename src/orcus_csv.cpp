@@ -33,6 +33,7 @@
 #include "orcus/model/factory.hpp"
 #include "orcus/model/document.hpp"
 
+#include <cstring>
 #include <iostream>
 #include <boost/scoped_ptr.hpp>
 
@@ -44,11 +45,35 @@ namespace {
 class csv_handler
 {
 public:
-    void begin_parse() {}
+    csv_handler(model::interface::factory& factory) :
+        m_factory(factory), mp_sheet(NULL), m_row(0), m_col(0) {}
+
+    void begin_parse()
+    {
+        const char* sheet_name = "data";
+        mp_sheet = m_factory.append_sheet(sheet_name, strlen(sheet_name));
+    }
+
     void end_parse() {}
     void begin_row() {}
-    void end_row() {}
-    void cell(const char* p, size_t n) {}
+
+    void end_row()
+    {
+        ++m_row;
+        m_col = 0;
+    }
+
+    void cell(const char* p, size_t n)
+    {
+        mp_sheet->set_auto(m_row, m_col, p, n);
+        ++m_col;
+    }
+
+private:
+    model::interface::factory& m_factory;
+    model::interface::sheet* mp_sheet;
+    model::row_t m_row;
+    model::col_t m_col;
 };
 
 }
@@ -70,7 +95,7 @@ void orcus_csv::parse(const string& strm)
     if (strm.empty())
         return;
 
-    csv_handler handler;
+    csv_handler handler(*mp_factory);
     csv_parser_config config;
     config.delimiters.push_back(',');
     csv_parser<csv_handler> parser(&strm[0], strm.size(), handler, config);
@@ -88,6 +113,7 @@ int main(int argc, char** argv)
 
     orcus_csv app(new model::factory(doc.get()));
     app.read_file(argv[1]);
+    doc->dump();
     doc->dump_html("./obj");
     pstring::intern::dispose();
 
