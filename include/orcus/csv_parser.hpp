@@ -65,7 +65,7 @@ class csv_parser
 public:
     typedef _Handler handler_type;
 
-    csv_parser(const char* p, size_t n, handler_type& hdl, const csv_parser_config& options);
+    csv_parser(const char* p, size_t n, handler_type& hdl, const csv_parser_config& config);
     void parse();
 
 private:
@@ -88,8 +88,8 @@ private:
 };
 
 template<typename _Handler>
-csv_parser<_Handler>::csv_parser(const char* p, size_t n, handler_type& hdl, const csv_parser_config& options) :
-    m_handler(hdl), m_config(options), mp_char(p), m_pos(0), m_length(n) {}
+csv_parser<_Handler>::csv_parser(const char* p, size_t n, handler_type& hdl, const csv_parser_config& config) :
+    m_handler(hdl), m_config(config), mp_char(p), m_pos(0), m_length(n) {}
 
 template<typename _Handler>
 void csv_parser<_Handler>::parse()
