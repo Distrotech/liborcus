@@ -279,6 +279,7 @@
 			<F N="src/global.cpp"/>
 			<F N="src/orcus_css.cpp"/>
 			<F N="src/orcus_csv.cpp"/>
+			<F N="src/orcus_csv_main.cpp"/>
 			<F N="src/orcus_ods.cpp"/>
 			<F N="src/orcus_xlsx.cpp"/>
 			<F N="src/pstring.cpp"/>

@@ -30,12 +30,10 @@
 #include "orcus/csv_parser.hpp"
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
-#include "orcus/model/factory.hpp"
-#include "orcus/model/document.hpp"
+#include "orcus/model/interface.hpp"
 
 #include <cstring>
 #include <iostream>
-#include <boost/scoped_ptr.hpp>
 
 using namespace orcus;
 using namespace std;
@@ -112,18 +110,3 @@ void orcus_csv::parse(const string& strm)
 
 }
 
-int main(int argc, char** argv)
-{
-    if (argc != 2)
-        return EXIT_FAILURE;
-
-    ::boost::scoped_ptr<model::document> doc(new model::document);
-
-    orcus_csv app(new model::factory(doc.get()));
-    app.read_file(argv[1]);
-    doc->dump();
-    doc->dump_html("./obj");
-    pstring::intern::dispose();
-
-    return EXIT_SUCCESS;
-}

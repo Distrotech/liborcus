@@ -134,6 +134,7 @@ CSV_HEADERS= \
 
 CSV_OBJFILES= \
 	$(OBJDIR)/orcus_csv.o \
+	$(OBJDIR)/orcus_csv_main.o \
 	$(OBJDIR)/global.o \
 	$(OBJDIR)/tokens.o \
 	$(OBJDIR)/pstring.o \
@@ -255,6 +256,9 @@ $(OBJDIR)/orcus_css.o: $(SRCDIR)/orcus_css.cpp $(CSS_HEADERS)
 
 $(OBJDIR)/orcus_csv.o: $(SRCDIR)/orcus_csv.cpp $(CSV_HEADERS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_csv.cpp
+
+$(OBJDIR)/orcus_csv_main.o: $(SRCDIR)/orcus_csv_main.cpp $(CSV_HEADERS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_csv_main.cpp
 
 # executables
 
