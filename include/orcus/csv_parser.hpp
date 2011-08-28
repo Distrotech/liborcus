@@ -49,6 +49,10 @@ struct csv_parser_config
 {
     std::string delimiters;
     char text_qualifier;
+    bool trim_cell_value:1;
+
+    csv_parser_config() :
+        trim_cell_value(true) {}
 };
 
 class csv_parse_error : public std::exception
@@ -81,6 +85,11 @@ private:
     void row();
     void cell();
     void quoted_cell();
+
+    /**
+     * Push cell value to the handler.
+     */
+    void push_cell_value(const char* p, size_t n);
 
     static bool is_blank(char c)
     {
@@ -191,10 +200,7 @@ void csv_parser<_Handler>::cell()
     if (!len)
         p = NULL;
 
-    m_handler.cell(p, len);
-#if ORCUS_DEBUG_CSV
-    cout << "(cell:'" << std::string(p, len) << "')";
-#endif
+    push_cell_value(p, len);
 }
 
 template<typename _Handler>
@@ -215,10 +221,7 @@ void csv_parser<_Handler>::quoted_cell()
         if (!has_char())
         {
             // Stream ended prematurely.  Handle it gracefully.
-#if ORCUS_DEBUG_CSV
-    cout << "(quoted cell:'" << std::string(p, len) << "')";
-#endif
-            m_handler.cell(p, len);
+            push_cell_value(p, len);
             return;
         }
     }
@@ -237,9 +240,38 @@ void csv_parser<_Handler>::quoted_cell()
     if (!len)
         p = NULL;
 
+    push_cell_value(p, len);
+}
+
+template<typename _Handler>
+void csv_parser<_Handler>::push_cell_value(const char* p, size_t n)
+{
+    size_t len = n;
+
+    if (m_config.trim_cell_value)
+    {
+        // Trim any leading blanks.
+        for (size_t i = 0; i < n; ++i, --len, ++p)
+        {
+            if (!is_blank(*p))
+                break;
+        }
+
+        // Trim any trailing blanks.
+        if (len)
+        {
+            const char* p_end = p + (len-1);
+            for (; p != p_end; --p_end, --len)
+            {
+                if (!is_blank(*p_end))
+                    break;
+            }
+        }
+    }
+
     m_handler.cell(p, len);
 #if ORCUS_DEBUG_CSV
-    cout << "(quoted cell:'" << std::string(p, len) << "')";
+    cout << "(cell:'" << std::string(p, len) << "')";
 #endif
 }
 
