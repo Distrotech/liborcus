@@ -223,7 +223,17 @@ void csv_parser<_Handler>::quoted_cell()
         }
     }
 
+    assert(is_text_qualifier(c));
     next(); // Skip the closing quote.
+    c = cur_char();
+    if (!is_delim(c))
+    {
+        std::ostringstream os;
+        os << "A quoted cell value must be immediately followed by a delimiter. ";
+        os << "'" << c << "' is found instead.";
+        throw csv_parse_error(os.str());
+    }
+
     if (!len)
         p = NULL;
 

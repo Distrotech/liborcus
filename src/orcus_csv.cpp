@@ -100,7 +100,14 @@ void orcus_csv::parse(const string& strm)
     config.delimiters.push_back(',');
     config.text_qualifier = '"';
     csv_parser<csv_handler> parser(&strm[0], strm.size(), handler, config);
-    parser.parse();
+    try
+    {
+        parser.parse();
+    }
+    catch (const csv_parse_error& e)
+    {
+        cout << "parse failed: " << e.what() << endl;
+    }
 }
 
 }
