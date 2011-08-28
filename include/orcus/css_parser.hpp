@@ -143,7 +143,7 @@ void css_parser<_Handler>::parse()
     std::cout << "'" << std::endl;
 #endif
     m_handler.begin_parse();
-    for (; has_char(); next())
+    while (has_char())
         rule();
     m_handler.end_parse();
 }
