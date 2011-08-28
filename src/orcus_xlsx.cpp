@@ -25,8 +25,6 @@
  *
  ************************************************************************/
 
-#include <zip.h>
-
 #include "orcus/orcus_xlsx.hpp"
 
 #include "orcus/global.hpp"
@@ -37,10 +35,9 @@
 #include "orcus/ooxml/xlsx_context.hpp"
 #include "orcus/ooxml/opc_context.hpp"
 #include "orcus/ooxml/ooxml_tokens.hpp"
-#include "orcus/model/shared_strings.hpp"
-#include "orcus/model/sheet.hpp"
-#include "orcus/model/factory.hpp"
-#include "orcus/model/document.hpp"
+#include "orcus/model/interface.hpp"
+
+#include <zip.h>
 
 #include <cstdlib>
 #include <iostream>
@@ -454,18 +451,3 @@ string orcus_xlsx::get_current_dir() const
     return pwd;
 }
 
-int main(int argc, char** argv)
-{
-    if (argc != 2)
-        return EXIT_FAILURE;
-
-    ::boost::scoped_ptr<model::document> doc(new model::document);
-    ::boost::scoped_ptr<model::factory> factory(new model::factory(doc.get()));
-    orcus_xlsx app(factory.get());
-    app.read_file(argv[1]);
-//  doc->dump();
-//  doc->dump_html("./obj");
-//  pstring::intern::dump();
-    pstring::intern::dispose();
-    return EXIT_SUCCESS;
-}

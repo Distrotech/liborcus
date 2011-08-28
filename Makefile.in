@@ -108,6 +108,7 @@ XLSX_HEADERS= \
 XLSX_OBJFILES = \
 	$(COMMON_OBJFILES) \
 	$(OBJDIR)/orcus_xlsx.o \
+	$(OBJDIR)/orcus_xlsx_main.o \
 	$(OBJDIR)/ooxml/ooxml_tokens.o \
 	$(OBJDIR)/ooxml/opc_context.o \
 	$(OBJDIR)/ooxml/xlsx_handler.o \
@@ -170,6 +171,9 @@ $(OBJDIR)/orcus_ods_main.o: $(SRCDIR)/orcus_ods_main.cpp $(DEPENDS)
 
 $(OBJDIR)/orcus_xlsx.o: $(SRCDIR)/orcus_xlsx.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_xlsx.cpp
+
+$(OBJDIR)/orcus_xlsx_main.o: $(SRCDIR)/orcus_xlsx_main.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_xlsx_main.cpp
 
 $(OBJDIR)/global.o: $(SRCDIR)/global.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/global.cpp

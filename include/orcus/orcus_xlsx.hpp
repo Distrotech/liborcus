@@ -34,6 +34,8 @@
 #include <boost/noncopyable.hpp>
 #include <vector>
 
+struct zip;
+
 namespace orcus {
 
 namespace model { namespace interface { class factory; }}
