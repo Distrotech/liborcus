@@ -2,4 +2,6 @@
 6,7,8,9,10
 1.1,1.2,1.3,1.4,1.5
 ,,,,data,
-with space,  right aligned,left aligned   ,  centered   
+with space,  right aligned,left aligned   ,  centered
+normal,23.89,"When time comes, I will go",,,other
+'single quote, and handle me',

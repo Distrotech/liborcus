@@ -48,6 +48,7 @@ namespace orcus {
 struct csv_parser_config
 {
     std::string delimiters;
+    char text_qualifier;
 };
 
 class csv_parse_error : public std::exception
@@ -74,10 +75,17 @@ private:
     char cur_char() const;
 
     bool is_delim(char c) const;
+    bool is_text_qualifier(char c) const;
 
     // handlers
     void row();
     void cell();
+    void quoted_cell();
+
+    static bool is_blank(char c)
+    {
+        return c == ' ' || c == '\t';
+    }
 
 private:
     handler_type& m_handler;
@@ -127,12 +135,22 @@ bool csv_parser<_Handler>::is_delim(char c) const
 }
 
 template<typename _Handler>
+bool csv_parser<_Handler>::is_text_qualifier(char c) const
+{
+    return m_config.text_qualifier == c;
+}
+
+template<typename _Handler>
 void csv_parser<_Handler>::row()
 {
     m_handler.begin_row();
     while (true)
     {
-        cell();
+        if (is_text_qualifier(cur_char()))
+            quoted_cell();
+        else
+            cell();
+
         if (!has_char())
         {
             m_handler.end_row();
@@ -176,6 +194,42 @@ void csv_parser<_Handler>::cell()
     m_handler.cell(p, len);
 #if ORCUS_DEBUG_CSV
     cout << "(cell:'" << std::string(p, len) << "')";
+#endif
+}
+
+template<typename _Handler>
+void csv_parser<_Handler>::quoted_cell()
+{
+    char c = cur_char();
+    assert(is_text_qualifier(c));
+    next(); // Skip the opening quote.
+    if (!has_char())
+        return;
+
+    const char* p = mp_char;
+    size_t len = 0;
+    for (c = cur_char(); !is_text_qualifier(c); c = cur_char())
+    {
+        ++len;
+        next();
+        if (!has_char())
+        {
+            // Stream ended prematurely.  Handle it gracefully.
+#if ORCUS_DEBUG_CSV
+    cout << "(quoted cell:'" << std::string(p, len) << "')";
+#endif
+            m_handler.cell(p, len);
+            return;
+        }
+    }
+
+    next(); // Skip the closing quote.
+    if (!len)
+        p = NULL;
+
+    m_handler.cell(p, len);
+#if ORCUS_DEBUG_CSV
+    cout << "(quoted cell:'" << std::string(p, len) << "')";
 #endif
 }
 
