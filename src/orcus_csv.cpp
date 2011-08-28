@@ -35,8 +35,9 @@
 #include <cstring>
 #include <iostream>
 
-using namespace orcus;
 using namespace std;
+
+namespace orcus {
 
 namespace {
 
@@ -75,8 +76,6 @@ private:
 };
 
 }
-
-namespace orcus {
 
 orcus_csv::orcus_csv(model::interface::factory* factory) : mp_factory(factory) {}
 
