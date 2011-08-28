@@ -86,6 +86,7 @@ ODS_HEADERS= \
 ODS_OBJFILES= \
 	$(COMMON_OBJFILES) \
 	$(OBJDIR)/orcus_ods.o \
+	$(OBJDIR)/orcus_ods_main.o \
 	$(OBJDIR)/odf/odf_tokens.o \
 	$(OBJDIR)/odf/ods_handler.o \
 	$(OBJDIR)/odf/ods_context.o \
@@ -163,6 +164,9 @@ $(OBJDIR)/pre:
 
 $(OBJDIR)/orcus_ods.o: $(SRCDIR)/orcus_ods.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_ods.cpp
+
+$(OBJDIR)/orcus_ods_main.o: $(SRCDIR)/orcus_ods_main.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_ods_main.cpp
 
 $(OBJDIR)/orcus_xlsx.o: $(SRCDIR)/orcus_xlsx.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/orcus_xlsx.cpp

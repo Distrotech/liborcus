@@ -25,15 +25,12 @@
  *
  ************************************************************************/
 
-#include <zip.h>
-
 #include "orcus/orcus_ods.hpp"
-
 #include "orcus/xml_parser.hpp"
 #include "orcus/odf/ods_handler.hpp"
 #include "orcus/odf/odf_tokens.hpp"
-#include "orcus/model/document.hpp"
-#include "orcus/model/factory.hpp"
+
+#include <zip.h>
 
 #include <cstdlib>
 #include <iostream>
@@ -115,17 +112,3 @@ void orcus_ods::read_file(const char* fpath)
     zip_close(archive);
 }
 
-int main(int argc, char** argv)
-{
-    if (argc != 2)
-        return EXIT_FAILURE;
-
-    ::boost::scoped_ptr<model::document> doc(new model::document);
-
-    orcus_ods app(new model::factory(doc.get()));
-    app.read_file(argv[1]);
-//  doc->dump();
-    pstring::intern::dispose();
-
-    return EXIT_SUCCESS;
-}

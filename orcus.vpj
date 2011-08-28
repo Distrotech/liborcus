@@ -281,6 +281,7 @@
 			<F N="src/orcus_csv.cpp"/>
 			<F N="src/orcus_csv_main.cpp"/>
 			<F N="src/orcus_ods.cpp"/>
+			<F N="src/orcus_ods_main.cpp"/>
 			<F N="src/orcus_xlsx.cpp"/>
 			<F N="src/pstring.cpp"/>
 			<F N="src/pstring_intern_test.cpp"/>

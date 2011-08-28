@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2011 Kohei Yoshida
- *
+ * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -25,37 +25,25 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_ORCUS_ODS_HPP__
-#define __ORCUS_ORCUS_ODS_HPP__
+#include "orcus/orcus_ods.hpp"
+#include "orcus/model/document.hpp"
+#include "orcus/model/factory.hpp"
 
-#include "orcus/model/interface.hpp"
+#include <boost/scoped_ptr.hpp>
 
-#include <boost/shared_ptr.hpp>
-#include <boost/noncopyable.hpp>
+using namespace orcus;
 
-struct zip;
-
-namespace orcus {
-
-namespace model { namespace interface { class factory; }}
-
-class orcus_ods : private ::boost::noncopyable
+int main(int argc, char** argv)
 {
-public:
-    orcus_ods(model::interface::factory* factory);
-    ~orcus_ods();
+    if (argc != 2)
+        return EXIT_FAILURE;
 
-    void read_file(const char* fpath);
+    ::boost::scoped_ptr<model::document> doc(new model::document);
 
-private:
-    void list_content(struct zip* archive) const;
-    void read_content(struct zip* archive);
-    void read_content_xml(const uint8_t* p, size_t size);
+    orcus_ods app(new model::factory(doc.get()));
+    app.read_file(argv[1]);
+//  doc->dump();
+    pstring::intern::dispose();
 
-private:
-    ::boost::shared_ptr<model::interface::factory> mp_factory;
-};
-
+    return EXIT_SUCCESS;
 }
-
-#endif
