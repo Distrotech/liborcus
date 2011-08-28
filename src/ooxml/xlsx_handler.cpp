@@ -66,14 +66,16 @@ void xlsx_sheet_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
 {
     bool ended = get_current_context().end_element(ns, name);
 
-    // We need to keep at least one context because of print_html() call.
-    if (ended && m_context_stack.size() > 1)
+    if (ended)
     {
-        // Call end_child_context of the parent context to provide a way for
-        // the two adjacent contexts to communicate with each other.
-        context_stack_type::reverse_iterator itr_cur = m_context_stack.rbegin();
-        context_stack_type::reverse_iterator itr_par = itr_cur + 1;
-        itr_par->end_child_context(ns, name, &(*itr_cur));
+        if (m_context_stack.size() > 1)
+        {
+            // Call end_child_context of the parent context to provide a way for
+            // the two adjacent contexts to communicate with each other.
+            context_stack_type::reverse_iterator itr_cur = m_context_stack.rbegin();
+            context_stack_type::reverse_iterator itr_par = itr_cur + 1;
+            itr_par->end_child_context(ns, name, &(*itr_cur));
+        }
         m_context_stack.pop_back();
     }
 }
