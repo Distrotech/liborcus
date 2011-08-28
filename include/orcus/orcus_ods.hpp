@@ -41,7 +41,7 @@ public:
     orcus_ods(model::interface::factory* factory);
     ~orcus_ods();
 
-    void read_file(const char* fpath, const char* outpath);
+    void read_file(const char* fpath);
 
 private:
     void list_content(struct zip* archive) const;

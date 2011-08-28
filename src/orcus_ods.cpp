@@ -99,7 +99,7 @@ void orcus_ods::read_content_xml(const uint8_t* p, size_t size)
     parser.parse();
 }
 
-void orcus_ods::read_file(const char* fpath, const char* outpath)
+void orcus_ods::read_file(const char* fpath)
 {
     cout << "reading " << fpath << endl;
     int error;
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
     ::boost::scoped_ptr<model::document> doc(new model::document);
 
     orcus_ods app(new model::factory(doc.get()));
-    app.read_file(argv[1], "out.html");
+    app.read_file(argv[1]);
 //  doc->dump();
     pstring::intern::dispose();
 
