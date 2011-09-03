@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -31,11 +31,12 @@
 #include <cstdlib>
 #include <string>
 #include <cstring>
+#include <iostream>
 
 namespace orcus {
 
 /**
- * This string class does not store any char arrays, but it only stores the 
+ * This string class does not store any char arrays, but it only stores the
  * position of the first char in the memory, and the size of the char array.
  */
 class pstring
@@ -44,11 +45,11 @@ class pstring
 
 public:
     /**
-     * Create a new string instance and hold it internally until 
+     * Create a new string instance and hold it internally until
      * intern::dispose() gets called.
-     * 
+     *
      * @param str string to intern.
-     * 
+     *
      * @return pstring instance pointing to the interned string.
      */
     static pstring intern(const char* str);
@@ -58,14 +59,14 @@ public:
     struct intern
     {
         /**
-         * Destroy all interned string instances.  Call this before the 
-         * program exits. 
+         * Destroy all interned string instances.  Call this before the
+         * program exits.
          */
         static void dispose();
 
         /**
-         * Return how many strings have been interned so far. 
-         * 
+         * Return how many strings have been interned so far.
+         *
          * @return size_t number of interned string instances.
          */
         static size_t size();

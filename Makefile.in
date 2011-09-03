@@ -41,6 +41,7 @@ OPC_SCHEMAPATH=$(ROOTDIR)/misc/ooxml-ecma-376/OpenPackagingConventions-XMLSchema
 
 CPPFLAGS=@CPPFLAGS@
 LDFLAGS=@LDFLAGS@
+PKG_CONFIG_PATH=@PKG_CONFIG_PATH@
 
 COMMON_HEADERS= \
 	$(INCDIR)/xml_handler.hpp \

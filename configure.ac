@@ -17,6 +17,10 @@ AC_ARG_WITH(mdds-include-path,
     AS_HELP_STRING([--with-mdds-include-path], [specify include path for mdds headers.])
 ,)
 
+AC_ARG_WITH(ixion-path,
+    AS_HELP_STRING([--with-ixion-path], [specify path to ixion library.])
+,)
+
 ORCUS_API_VERSION=orcus_api_version
 AC_SUBST(ORCUS_API_VERSION)
 
@@ -41,6 +45,8 @@ AC_FUNC_STRTOD
 AC_CHECK_FUNCS([gettimeofday])
 
 DEFINES="-D_REENTRANT"
+PKG_CONFIG_PATH=
+
 AC_MSG_CHECKING([mdds include path])
 if test "z$with_mdds_include_path" = "z"; then
     AC_MSG_RESULT([no])
@@ -50,9 +56,19 @@ else
     DEFINES="$DEFINES -DMDDS_HASH_CONTAINER_BOOST"
 fi
 
-CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall `pkg-config --cflags libzip` -std=c++0x"
-LDFLAGS="`pkg-config --libs libzip`"
+AC_MSG_CHECKING([ixion library path])
+if test "z$with_ixion_path" = "z"; then
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([ixion library path not specified.])
+else
+    AC_MSG_RESULT([$with_ixion_path])
+    PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$with_ixion_path/lib/pkgconfig
+fi
 
+CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall `pkg-config --cflags libzip ixion-0.4` -std=c++0x"
+LDFLAGS="`pkg-config --libs libzip ixion-0.4`"
+
+AC_SUBST(PKG_CONFIG_PATH)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
