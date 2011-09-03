@@ -279,6 +279,35 @@ private:
     }
 };
 
+class formula_attr_parser : public unary_function<xml_attr_t, void>
+{
+    pstring m_type;
+    pstring m_ref;
+    int m_shared_index;
+public:
+    formula_attr_parser() : m_shared_index(-1) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_t:
+                m_type = attr.value;
+            break;
+            case XML_ref:
+                m_ref = attr.value;
+            break;
+            case XML_si:
+                m_shared_index = strtoul(attr.value.get(), NULL, 10);
+            break;
+        }
+    }
+
+    pstring get_type() const { return m_type; }
+    pstring get_ref() const { return m_ref; }
+    int get_shared_index() const { return m_shared_index; }
+};
+
 }
 
 xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, model::interface::sheet* sheet) :
@@ -372,6 +401,17 @@ void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const
             m_cur_col = func.get_col();
             m_cur_cell_type = func.get_cell_type();
             m_cur_cell_xf = func.get_xf();
+            m_cur_shared_formula_id = -1;
+        }
+        break;
+        case XML_f:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_c);
+            formula_attr_parser func;
+            func = for_each(attrs.begin(), attrs.end(), func);
+            m_cur_formula_type = func.get_type();
+            m_cur_formula_ref = func.get_ref();
+            m_cur_shared_formula_id = func.get_shared_index();
         }
         break;
         case XML_v:
@@ -414,6 +454,21 @@ bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
 
             if (m_cur_cell_xf)
                 mp_sheet->set_format(m_cur_row, m_cur_col, m_cur_cell_xf);
+        }
+        break;
+        case XML_f:
+        {
+            cout << "cell: row=" << m_cur_row << "; col=" << m_cur_col << "; ";
+
+            if (m_cur_shared_formula_id >= 0)
+            {
+                cout << "shared formula: index = " << m_cur_shared_formula_id;
+                if (!m_cur_str.empty())
+                    cout << "; " << m_cur_str;
+                cout << endl;
+            }
+            else
+                cout << "formula: " << m_cur_str << endl;
         }
         break;
     }

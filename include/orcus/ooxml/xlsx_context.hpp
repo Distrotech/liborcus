@@ -96,6 +96,9 @@ private:
     cell_type    m_cur_cell_type;
     size_t       m_cur_cell_xf;
     pstring      m_cur_str;
+    pstring      m_cur_formula_type;
+    pstring      m_cur_formula_ref;
+    int          m_cur_shared_formula_id;
 };
 
 /**
