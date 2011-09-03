@@ -46,6 +46,7 @@ AC_CHECK_FUNCS([gettimeofday])
 
 DEFINES="-D_REENTRANT"
 PKG_CONFIG_PATH=
+LD_RUN_PATH=
 
 AC_MSG_CHECKING([mdds include path])
 if test "z$with_mdds_include_path" = "z"; then
@@ -63,12 +64,14 @@ if test "z$with_ixion_path" = "z"; then
 else
     AC_MSG_RESULT([$with_ixion_path])
     PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$with_ixion_path/lib/pkgconfig
+    LD_RUN_PATH=$LD_RUN_PATH:$with_ixion_path/lib
 fi
 
 CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall `pkg-config --cflags libzip ixion-0.4` -std=c++0x"
 LDFLAGS="`pkg-config --libs libzip ixion-0.4`"
 
 AC_SUBST(PKG_CONFIG_PATH)
+AC_SUBST(LD_RUN_PATH)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
