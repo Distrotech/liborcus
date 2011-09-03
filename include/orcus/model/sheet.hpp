@@ -79,6 +79,10 @@ public:
     virtual void set_string(row_t row, col_t col, size_t sindex);
     virtual void set_value(row_t row, col_t col, double value);
     virtual void set_format(row_t row, col_t col, size_t index);
+    virtual void set_formula(row_t row, col_t col, formula_grammar_t grammar, const char* p, size_t n);
+    virtual void set_shared_formula(row_t row, col_t col, formula_grammar_t grammar, size_t sindex, const char* p, size_t n);
+    virtual void set_shared_formula(row_t row, col_t col, size_t sindex);
+    virtual void set_formula_result(row_t row, col_t col, const char* p, size_t n);
 
     row_t row_size() const;
     col_t col_size() const;

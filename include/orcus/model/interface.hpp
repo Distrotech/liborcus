@@ -148,9 +148,9 @@ public:
     virtual ~sheet() = 0;
 
     /**
-     * Set raw string value to a cell and have the implementation 
-     * auto-recognize its data type. 
-     * 
+     * Set raw string value to a cell and have the implementation
+     * auto-recognize its data type.
+     *
      * @param row row ID
      * @param col column ID
      * @param p pointer to the first character of the raw string value.
@@ -185,6 +185,55 @@ public:
      * @param index 0-based xf (cell format) index
      */
     virtual void set_format(orcus::model::row_t row, orcus::model::col_t col, size_t xf_index) = 0;
+
+    /**
+     * Set normal, non-shared formula expression to specified cell.
+     *
+     * @param row row ID
+     * @param col column ID
+     * @param grammar grammar used in the formula expression
+     * @param p pointer to the first character of the raw formula expression
+     *          string.
+     * @param n size of the raw formula expression string.
+     */
+    virtual void set_formula(
+        orcus::model::row_t row, orcus::model::col_t col, orcus::model::formula_grammar_t grammar,
+         const char* p, size_t n) = 0;
+
+    /**
+     * Set shared formula expression to specified cell.  This call also
+     * registers the formula expression to a common formula expression pool to
+     * allow it to be looked up by the specified index later.
+     *
+     * @param row row ID
+     * @param col column ID
+     * @param grammar grammar used in the formula expression
+     * @param sindex shared formula index (0-based)
+     * @param p pointer to the first character of the raw formula expression
+     *          string.
+     * @param n size of the raw formula expression string.
+     */
+    virtual void set_shared_formula(
+        orcus::model::row_t row, orcus::model::col_t col, orcus::model::formula_grammar_t grammar,
+        size_t sindex, const char* p, size_t n) = 0;
+
+    /**
+     * Set shared formula to specified cell by shared formula index.  The
+     * formula expression itself associated with the index must be defined.
+     *
+     * @param row row ID
+     * @param col column ID
+     * @param grammar grammar used in the formula expression
+     * @param sindex shared formula index (0-based)
+     * @param p pointer to the first character of the raw formula expression
+     *          string.
+     * @param n size of the raw formula expression string.
+     */
+    virtual void set_shared_formula(
+        orcus::model::row_t row, orcus::model::col_t col, size_t sindex) = 0;
+
+    virtual void set_formula_result(
+        orcus::model::row_t row, orcus::model::col_t col, const char* p, size_t n) = 0;
 };
 
 inline sheet::~sheet() {}
@@ -193,11 +242,11 @@ inline sheet::~sheet() {}
  * This interface provides the filters a means to instantiate concrete
  * classes that implement the above interfaces.  The client code never has
  * to manually delete objects returned by its methods; the implementor of
- * this interface must manage the life cycles of objects it returns. 
- *  
- * The implementor of this interface normally wraps the document instance 
- * inside it and have the document instance manage the life cycles of 
- * various objects it creates. 
+ * this interface must manage the life cycles of objects it returns.
+ *
+ * The implementor of this interface normally wraps the document instance
+ * inside it and have the document instance manage the life cycles of
+ * various objects it creates.
  */
 class factory
 {

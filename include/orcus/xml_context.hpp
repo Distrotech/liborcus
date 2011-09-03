@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -59,21 +59,22 @@ protected:
     const xml_token_pair_t& get_current_element() const;
     void warn_unhandled() const;
     void warn_unexpected() const;
+    void warn(const char* msg) const;
 
     void set_default_ns(xmlns_token_t ns);
     xmlns_token_t get_default_ns() const;
 
     /**
-     * Check if observed element equals expected element.  If not, it throws an 
-     * xml_structure_error exception. 
-     * 
+     * Check if observed element equals expected element.  If not, it throws an
+     * xml_structure_error exception.
+     *
      * @param elem element observed.
      * @param ns namespace of expected element.
-     * @param name name of expected element. 
-     * @param error custom error message if needed. 
+     * @param name name of expected element.
+     * @param error custom error message if needed.
      */
     void xml_element_expected(
-        const xml_token_pair_t& elem, xmlns_token_t ns, xml_token_t name, 
+        const xml_token_pair_t& elem, xmlns_token_t ns, xml_token_t name,
         const ::std::string* error = NULL);
 
     void xml_element_expected(

@@ -44,6 +44,13 @@ enum border_direction_t
     border_diagonal
 };
 
+enum formula_grammar_t
+{
+    xlsx_2007,
+    xlsx_2010,
+    ods
+};
+
 }}
 
 #endif

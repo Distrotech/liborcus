@@ -236,8 +236,20 @@ private:
     {
         // TODO: check if there are other cell types.
         xlsx_sheet_context::cell_type t = xlsx_sheet_context::cell_type_value;
-        if (!s.empty() && s[0] == 's')
+        if (s == "s")
             t = xlsx_sheet_context::cell_type_string;
+        else if (s == "str")
+            // formula string
+            t = xlsx_sheet_context::cell_type_formula_string;
+        else if (s == "b")
+            // boolean
+            t = xlsx_sheet_context::cell_type_boolean;
+        else if (s == "e")
+            // error
+            t = xlsx_sheet_context::cell_type_error;
+        else if (s == "inlineStr")
+            t = xlsx_sheet_context::cell_type_inline_string;
+
         return t;
     }
 
@@ -447,6 +459,8 @@ bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
                         mp_sheet->set_value(m_cur_row, m_cur_col, val);
                     }
                     break;
+                    default:
+                        warn("unhanlded cell content type");
                 }
 
                 m_cur_str.clear();

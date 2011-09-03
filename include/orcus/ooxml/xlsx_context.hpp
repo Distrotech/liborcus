@@ -76,7 +76,14 @@ private:
 class xlsx_sheet_context : public xml_context_base
 {
 public:
-    enum cell_type { cell_type_string, cell_type_value };
+    enum cell_type {
+        cell_type_string,
+        cell_type_formula_string,
+        cell_type_value,
+        cell_type_boolean,
+        cell_type_error,
+        cell_type_inline_string
+    };
 
     xlsx_sheet_context(const tokens& tokens, model::interface::sheet* sheet);
     virtual ~xlsx_sheet_context();

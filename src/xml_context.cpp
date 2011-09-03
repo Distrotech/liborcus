@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -119,6 +119,11 @@ void xml_context_base::warn_unexpected() const
     cerr << endl;
 }
 
+void xml_context_base::warn(const char* msg) const
+{
+    cerr << "warning: " << msg << endl;
+}
+
 void xml_context_base::set_default_ns(xmlns_token_t ns)
 {
     m_default_ns = ns;
@@ -130,7 +135,7 @@ xmlns_token_t xml_context_base::get_default_ns() const
 }
 
 void xml_context_base::xml_element_expected(
-    const xml_token_pair_t& elem, xmlns_token_t ns, xml_token_t name, 
+    const xml_token_pair_t& elem, xmlns_token_t ns, xml_token_t name,
     const string* error)
 {
     if (elem.first == ns && elem.second == name)

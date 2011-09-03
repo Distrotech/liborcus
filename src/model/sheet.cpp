@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010, 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -80,7 +80,7 @@ sheet::sheet(document& doc) :
 sheet::~sheet()
 {
     for_each(m_sheet.begin(), m_sheet.end(), delete_map_object<sheet_type>());
-    for_each(m_cell_formats.begin(), m_cell_formats.end(), 
+    for_each(m_cell_formats.begin(), m_cell_formats.end(),
              delete_map_object<cell_format_type>());
 }
 
@@ -126,6 +126,24 @@ void sheet::set_format(row_t row, col_t col, size_t index)
     con.insert_back(col, col+1, index);
 
     update_size(row, col);
+}
+
+void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
+                        const char* p, size_t n)
+{
+}
+
+void sheet::set_shared_formula(row_t row, col_t col, formula_grammar_t grammar,
+                               size_t sindex, const char* p, size_t n)
+{
+}
+
+void sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
+{
+}
+
+void sheet::set_formula_result(row_t row, col_t col, const char* p, size_t n)
+{
 }
 
 row_t sheet::row_size() const
@@ -293,7 +311,7 @@ void print_formatted_text(_OSTREAM& strm, const pstring& text, const shared_stri
             strm << string(&text[pos], run.pos - pos);
             pos = run.pos;
         }
-        
+
         if (!run.size)
             continue;
 
@@ -386,15 +404,15 @@ void sheet::dump_html(const string& filepath) const
 
     {
         elem root(file, p_html);
-    
+
         if (m_sheet.empty())
             // nothing to print.
             return;
-    
+
         size_t col_count = col_size();
 
         const shared_strings* sstrings = m_doc.get_shared_strings();
-    
+
         elem table(file, p_table, p_table_attrs);
         sheet_type::const_iterator itr = m_sheet.begin(), itr_end = m_sheet.end();
         row_t row = 0;
