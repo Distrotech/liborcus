@@ -32,6 +32,7 @@
 #include "orcus/pstring.hpp"
 
 #include <mdds/flat_segment_tree.hpp>
+#include <ixion/formula_tokens.hpp>
 
 #include <unordered_map>
 #include <map>
@@ -49,7 +50,7 @@ class sheet : public interface::sheet
     static const row_t max_row_limit;
     static const col_t max_col_limit;
 
-    enum cell_type { ct_string, ct_value };
+    enum cell_type { ct_string, ct_value, ct_formula };
 
     /**
      * The value of the cell may mean different things in different cell

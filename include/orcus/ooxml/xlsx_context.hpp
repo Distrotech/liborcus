@@ -71,44 +71,6 @@ private:
 };
 
 /**
- * Top-level context for xl/worksheets/sheet<num>.xml.
- */
-class xlsx_sheet_context : public xml_context_base
-{
-public:
-    enum cell_type {
-        cell_type_string,
-        cell_type_formula_string,
-        cell_type_value,
-        cell_type_boolean,
-        cell_type_error,
-        cell_type_inline_string
-    };
-
-    xlsx_sheet_context(const tokens& tokens, model::interface::sheet* sheet);
-    virtual ~xlsx_sheet_context();
-
-    virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
-    virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
-    virtual void end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child);
-
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
-    virtual bool end_element(xmlns_token_t ns, xml_token_t name);
-    virtual void characters(const pstring& str);
-
-private:
-    model::interface::sheet* mp_sheet; /// sheet model instance for the loaded document.
-    model::row_t m_cur_row;
-    model::col_t m_cur_col;
-    cell_type    m_cur_cell_type;
-    size_t       m_cur_cell_xf;
-    pstring      m_cur_str;
-    pstring      m_cur_formula_type;
-    pstring      m_cur_formula_ref;
-    int          m_cur_shared_formula_id;
-};
-
-/**
  * Context for xl/sharedStrings.xml part.
  */
 class xlsx_shared_strings_context : public xml_context_base
