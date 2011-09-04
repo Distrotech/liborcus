@@ -67,12 +67,14 @@ else
     LD_RUN_PATH=$LD_RUN_PATH:$with_ixion_path/lib
 fi
 
-CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall `pkg-config --cflags libzip ixion-0.4` -std=c++0x"
-LDFLAGS="`pkg-config --libs libzip ixion-0.4`"
+PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip ixion-0.4"
+PKG_CONFIG_LDFLAGS="pkg-config --libs libzip ixion-0.4"
+CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall -std=c++0x"
 
 AC_SUBST(PKG_CONFIG_PATH)
 AC_SUBST(LD_RUN_PATH)
 AC_SUBST(CPPFLAGS)
-AC_SUBST(LDFLAGS)
+AC_SUBST(PKG_CONFIG_CPPFLAGS)
+AC_SUBST(PKG_CONFIG_LDFLAGS)
 
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile setenv)
