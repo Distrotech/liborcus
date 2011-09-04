@@ -203,6 +203,10 @@ void sheet::dump() const
                     os << c.value;
                     mx.set_string(row, col, new string(os.str()));
                 }
+                case ct_formula:
+                {
+                    // TODO: handle this.
+                }
                 break;
             }
         }
@@ -483,6 +487,9 @@ void sheet::dump_html(const string& filepath) const
                     break;
                     case ct_value:
                         os << c.value;
+                    break;
+                    case ct_formula:
+                        // TODO : Handle this.
                     break;
                 }
 

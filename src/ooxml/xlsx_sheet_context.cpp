@@ -121,13 +121,12 @@ public:
 private:
     xlsx_sheet_context::cell_type to_cell_type(const pstring& s) const
     {
-        // TODO: check if there are other cell types.
         xlsx_sheet_context::cell_type t = xlsx_sheet_context::cell_type_value;
         if (s == "s")
             t = xlsx_sheet_context::cell_type_string;
         else if (s == "str")
             // formula string
-            t = xlsx_sheet_context::cell_type_formula;
+            t = xlsx_sheet_context::cell_type_formula_string;
         else if (s == "b")
             // boolean
             t = xlsx_sheet_context::cell_type_boolean;
