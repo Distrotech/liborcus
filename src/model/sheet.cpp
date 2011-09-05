@@ -133,6 +133,7 @@ void sheet::set_format(row_t row, col_t col, size_t index)
 void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
                         const char* p, size_t n)
 {
+#if 0
     auto_ptr<ixion::formula_tokens_t> tokens(new ixion::formula_tokens_t);
     ixion::parse_formula_string(p, n, *tokens);
     m_formula_tokens.push_back(tokens);
@@ -141,6 +142,7 @@ void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
     row_type* row_store = get_row(row, col);
     row_store->insert(
         row_type::value_type(col, cell(ct_formula, static_cast<double>(index))));
+#endif
 }
 
 void sheet::set_shared_formula(row_t row, col_t col, formula_grammar_t grammar,

@@ -73,6 +73,7 @@ COMMON_OBJFILES= \
 	$(OBJDIR)/model/styles.o \
 	$(OBJDIR)/model/factory.o \
 	$(OBJDIR)/model/document.o \
+	$(OBJDIR)/model/formula_context.o
 
 ODS_HEADERS= \
 	$(COMMON_HEADERS) \
@@ -259,6 +260,9 @@ $(OBJDIR)/model/document.o: $(SRCDIR)/model/document.cpp $(DEPENDS)
 
 $(OBJDIR)/model/factory.o: $(SRCDIR)/model/factory.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/factory.cpp
+
+$(OBJDIR)/model/formula_context.o: $(SRCDIR)/model/formula_context.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/model/formula_context.cpp
 
 # pstring intern test
 
