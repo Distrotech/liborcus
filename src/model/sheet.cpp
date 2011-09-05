@@ -37,8 +37,10 @@
 #include <sstream>
 #include <vector>
 #include <cassert>
+#include <memory>
 
 #include <mdds/mixed_type_matrix.hpp>
+#include <ixion/formula.hpp>
 
 using namespace std;
 
@@ -131,6 +133,14 @@ void sheet::set_format(row_t row, col_t col, size_t index)
 void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
                         const char* p, size_t n)
 {
+    auto_ptr<ixion::formula_tokens_t> tokens(new ixion::formula_tokens_t);
+    ixion::parse_formula_string(p, n, *tokens);
+    m_formula_tokens.push_back(tokens);
+    size_t index = m_formula_tokens.size() - 1;
+
+    row_type* row_store = get_row(row, col);
+    row_store->insert(
+        row_type::value_type(col, cell(ct_formula, static_cast<double>(index))));
 }
 
 void sheet::set_shared_formula(row_t row, col_t col, formula_grammar_t grammar,
@@ -205,7 +215,8 @@ void sheet::dump() const
                 }
                 case ct_formula:
                 {
-                    // TODO: handle this.
+                    // TODO : print formula result.
+                    mx.set_string(row, col, new string("formula"));
                 }
                 break;
             }
@@ -489,7 +500,8 @@ void sheet::dump_html(const string& filepath) const
                         os << c.value;
                     break;
                     case ct_formula:
-                        // TODO : Handle this.
+                        // TODO : print formula result.
+                        os << "formula";
                     break;
                 }
 

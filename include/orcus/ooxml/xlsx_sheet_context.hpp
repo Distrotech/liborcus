@@ -64,6 +64,9 @@ public:
     virtual void characters(const pstring& str);
 
 private:
+    void end_element_cell();
+
+private:
     model::interface::sheet* mp_sheet; /// sheet model instance for the loaded document.
     model::row_t m_cur_row;
     model::col_t m_cur_col;
@@ -74,7 +77,7 @@ private:
     pstring      m_cur_formula_type;
     pstring      m_cur_formula_ref;
     pstring      m_cur_formula_str;
-    int          m_cur_shared_formula_id;
+    int          m_cur_shared_formula_id; /// 0-based shared formula index.
 };
 
 }

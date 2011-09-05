@@ -212,7 +212,8 @@ xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, model::interface::s
     xml_context_base(tokens),
     mp_sheet(sheet),
     m_cur_row(0),
-    m_cur_cell_type(cell_type_value)
+    m_cur_cell_type(cell_type_value),
+    m_cur_shared_formula_id(-1)
 {
 }
 
@@ -299,7 +300,6 @@ void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const
             m_cur_col = func.get_col();
             m_cur_cell_type = func.get_cell_type();
             m_cur_cell_xf = func.get_xf();
-            m_cur_shared_formula_id = -1;
         }
         break;
         case XML_f:
@@ -326,35 +326,7 @@ bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
     switch (name)
     {
         case XML_c:
-        {
-            if (!m_cur_value.empty())
-            {
-                switch (m_cur_cell_type)
-                {
-                    case cell_type_string:
-                    {
-                        // string cell
-                        size_t str_id = strtoul(m_cur_value.get(), NULL, 10);
-                        mp_sheet->set_string(m_cur_row, m_cur_col, str_id);
-                    }
-                    break;
-                    case cell_type_value:
-                    {
-                        // value cell
-                        double val = strtod(m_cur_value.get(), NULL);
-                        mp_sheet->set_value(m_cur_row, m_cur_col, val);
-                    }
-                    break;
-                    default:
-                        warn("unhanlded cell content type");
-                }
-            }
-
-            if (m_cur_cell_xf)
-                mp_sheet->set_format(m_cur_row, m_cur_col, m_cur_cell_xf);
-
-            m_cur_value.clear();
-        }
+            end_element_cell();
         break;
         case XML_f:
         {
@@ -384,6 +356,64 @@ bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
 void xlsx_sheet_context::characters(const pstring& str)
 {
     m_cur_str = str;
+}
+
+void xlsx_sheet_context::end_element_cell()
+{
+    if (!m_cur_formula_str.empty())
+    {
+        if (m_cur_formula_type == "shared" && m_cur_shared_formula_id >= 0)
+        {
+            // normal (non-shared) formula expression
+            mp_sheet->set_shared_formula(
+                m_cur_row, m_cur_col, model::xlsx_2007, m_cur_shared_formula_id,
+                m_cur_formula_str.get(), m_cur_formula_str.size());
+        }
+        else
+        {
+            // shared formula expression
+            mp_sheet->set_formula(
+                m_cur_row, m_cur_col, model::xlsx_2007, m_cur_formula_str.get(),
+                m_cur_formula_str.size());
+        }
+    }
+    else if (m_cur_formula_type == "shared" && m_cur_shared_formula_id >= 0)
+    {
+        // shared formula without formula expression
+        mp_sheet->set_shared_formula(m_cur_row, m_cur_col, m_cur_shared_formula_id);
+    }
+    else if (!m_cur_value.empty())
+    {
+        switch (m_cur_cell_type)
+        {
+            case cell_type_string:
+            {
+                // string cell
+                size_t str_id = strtoul(m_cur_value.get(), NULL, 10);
+                mp_sheet->set_string(m_cur_row, m_cur_col, str_id);
+            }
+            break;
+            case cell_type_value:
+            {
+                // value cell
+                double val = strtod(m_cur_value.get(), NULL);
+                mp_sheet->set_value(m_cur_row, m_cur_col, val);
+            }
+            break;
+            default:
+                warn("unhanlded cell content type");
+        }
+    }
+
+    if (m_cur_cell_xf)
+        mp_sheet->set_format(m_cur_row, m_cur_col, m_cur_cell_xf);
+
+    // reset cell related parameters.
+    m_cur_value.clear();
+    m_cur_formula_type.clear();
+    m_cur_formula_ref.clear();
+    m_cur_formula_str.clear();
+    m_cur_shared_formula_id = -1;
 }
 
 }

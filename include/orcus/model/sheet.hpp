@@ -34,7 +34,7 @@
 #include <mdds/flat_segment_tree.hpp>
 #include <ixion/formula_tokens.hpp>
 
-#include <unordered_map>
+#include <boost/unordered_map.hpp>
 #include <map>
 
 namespace orcus { namespace model {
@@ -68,7 +68,7 @@ class sheet : public interface::sheet
     };
 public:
     typedef ::mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
-    typedef ::std::unordered_map<row_t, segment_col_index_type*> cell_format_type;
+    typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
 
     typedef ::std::map<col_t, cell>       row_type;
     typedef ::std::map<row_t, row_type*>  sheet_type;
@@ -98,10 +98,13 @@ private:
 
 private:
     document& m_doc;
-    sheet_type  m_sheet;  /// group of rows.
+    sheet_type m_sheet;  /// group of rows.
     mutable cell_format_type m_cell_formats;
     row_t m_max_row;
     col_t m_max_col;
+
+    /** formula token storage for non-shared formula expressions */
+    boost::ptr_vector<ixion::formula_tokens_t> m_formula_tokens;
 };
 
 }}
