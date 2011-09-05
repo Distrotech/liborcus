@@ -102,6 +102,7 @@ XLSX_HEADERS= \
 	$(INCDIR)/ooxml/schemas.hpp \
 	$(INCDIR)/ooxml/xlsx_context.hpp \
 	$(INCDIR)/ooxml/xlsx_sheet_context.hpp \
+	$(INCDIR)/ooxml/xlsx_workbook_context.hpp \
 	$(INCDIR)/ooxml/xlsx_handler.hpp \
 	$(INCDIR)/ooxml/ooxml_types.hpp \
 	$(INCDIR)/ooxml/xlsx_types.hpp
@@ -114,6 +115,7 @@ XLSX_OBJFILES = \
 	$(OBJDIR)/ooxml/opc_context.o \
 	$(OBJDIR)/ooxml/xlsx_handler.o \
 	$(OBJDIR)/ooxml/xlsx_context.o \
+	$(OBJDIR)/ooxml/xlsx_workbook_context.o \
 	$(OBJDIR)/ooxml/xlsx_sheet_context.o \
 	$(OBJDIR)/ooxml/content_types.o \
 	$(OBJDIR)/ooxml/global.o \
@@ -237,6 +239,9 @@ $(OBJDIR)/ooxml/xlsx_context.o: $(SRCDIR)/ooxml/xlsx_context.cpp $(DEPENDS)
 
 $(OBJDIR)/ooxml/xlsx_sheet_context.o: $(SRCDIR)/ooxml/xlsx_sheet_context.cpp $(DEPENDS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/xlsx_sheet_context.cpp
+
+$(OBJDIR)/ooxml/xlsx_workbook_context.o: $(SRCDIR)/ooxml/xlsx_workbook_context.cpp $(DEPENDS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $(SRCDIR)/ooxml/xlsx_workbook_context.cpp
 
 # model directory
 

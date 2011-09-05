@@ -234,6 +234,7 @@
 					<F N="include/orcus/ooxml/xlsx_handler.hpp"/>
 					<F N="include/orcus/ooxml/xlsx_sheet_context.hpp"/>
 					<F N="include/orcus/ooxml/xlsx_types.hpp"/>
+					<F N="include/orcus/ooxml/xlsx_workbook_context.hpp"/>
 				</Folder>
 				<F N="include/orcus/css_parser.hpp"/>
 				<F N="include/orcus/csv_parser.hpp"/>
@@ -277,6 +278,7 @@
 				<F N="src/ooxml/xlsx_context.cpp"/>
 				<F N="src/ooxml/xlsx_handler.cpp"/>
 				<F N="src/ooxml/xlsx_sheet_context.cpp"/>
+				<F N="src/ooxml/xlsx_workbook_context.cpp"/>
 			</Folder>
 			<F N="src/global.cpp"/>
 			<F N="src/orcus_css.cpp"/>
