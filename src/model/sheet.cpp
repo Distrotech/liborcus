@@ -215,6 +215,7 @@ void sheet::dump() const
                     os << c.value;
                     mx.set_string(row, col, new string(os.str()));
                 }
+                break;
                 case ct_formula:
                 {
                     // TODO : print formula result.
