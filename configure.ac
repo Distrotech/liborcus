@@ -65,6 +65,20 @@ else
     AC_MSG_RESULT([$with_ixion_path])
     PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$with_ixion_path/lib/pkgconfig
     LD_RUN_PATH=$LD_RUN_PATH:$with_ixion_path/lib
+    CXXFLAGS=`PKG_CONFIG_PATH=$PKG_CONFIG_PATH pkg-config --cflags ixion-0.4`
+    AC_MSG_CHECKING([usability of ixion headers])
+    AC_LANG_PUSH([C++])
+    AC_TRY_RUN([
+
+#include <ixion/formula.hpp>
+
+int main()
+{
+    return 0;
+}
+
+    ], [AC_MSG_RESULT(OK)], [AC_MSG_ERROR([ixion headers not usable.  Check your ixion path to make sure it's correct.])])
+    AC_LANG_POP([C++])
 fi
 
 PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip ixion-0.4"
@@ -78,3 +92,12 @@ AC_SUBST(PKG_CONFIG_CPPFLAGS)
 AC_SUBST(PKG_CONFIG_LDFLAGS)
 
 AC_OUTPUT(Makefile setenv)
+
+AC_MSG_NOTICE([completed successfully.
+
+Before running make, run
+
+  source ./setenv
+
+to set up your build environment.
+])
