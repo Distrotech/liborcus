@@ -30,9 +30,9 @@
 
 #include <ixion/interface/model_context.hpp>
 
-namespace orcus {
+namespace orcus { namespace model {
 
-namespace model { class document; }
+class document;
 
 class formula_context : public ixion::interface::model_context
 {
@@ -56,6 +56,6 @@ private:
     ixion::formula_name_resolver* mp_name_resolver;
 };
 
-}
+}}
 
 #endif

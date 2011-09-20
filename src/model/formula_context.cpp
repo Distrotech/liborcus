@@ -31,7 +31,7 @@
 #include <ixion/formula_name_resolver.hpp>
 #include <ixion/matrix.hpp>
 
-namespace orcus {
+namespace orcus { namespace model {
 
 formula_context::formula_context(model::document& doc) :
     m_doc(doc),
@@ -90,4 +90,5 @@ ixion::matrix formula_context::get_range_value(const ixion::abs_range_t& range) 
     return ixion::matrix(0, 0);
 }
 
-}
+}}
+
