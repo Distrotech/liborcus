@@ -150,6 +150,7 @@ CSV_OBJFILES= \
 	$(OBJDIR)/model/styles.o \
 	$(OBJDIR)/model/factory.o \
 	$(OBJDIR)/model/document.o \
+	$(OBJDIR)/model/formula_context.o
 
 DEPENDS= \
 	$(ODS_HEADERS) \

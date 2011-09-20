@@ -33,7 +33,7 @@
 
 namespace orcus { namespace model {
 
-formula_context::formula_context(model::document& doc) :
+formula_context::formula_context(document& doc) :
     m_doc(doc),
     mp_config(new ixion::config),
     mp_name_resolver(new ixion::formula_name_resolver_a1) {}
@@ -55,6 +55,11 @@ const ixion::formula_name_resolver& formula_context::get_name_resolver() const
 }
 
 const ixion::base_cell* formula_context::get_cell(const ixion::abs_address_t& addr) const
+{
+    return NULL;
+}
+
+ixion::base_cell* formula_context::get_cell(const ixion::abs_address_t& addr)
 {
     return NULL;
 }
@@ -88,6 +93,41 @@ const std::string* formula_context::get_named_expression_name(const ixion::formu
 ixion::matrix formula_context::get_range_value(const ixion::abs_range_t& range) const
 {
     return ixion::matrix(0, 0);
+}
+
+ixion::interface::session_handler* formula_context::get_session_handler() const
+{
+    return NULL;
+}
+
+ixion::formula_tokens_t* formula_context::get_formula_tokens(size_t identifier)
+{
+    return NULL;
+}
+
+const ixion::formula_tokens_t* formula_context::get_formula_tokens(size_t identifier) const
+{
+    return NULL;
+}
+
+size_t formula_context::add_formula_tokens(ixion::formula_tokens_t* p)
+{
+    return 0;
+}
+
+void formula_context::remove_formula_tokens(size_t identifier)
+{
+
+}
+
+size_t formula_context::add_string(const char* p, size_t n)
+{
+    return 0;
+}
+
+const std::string* formula_context::get_string(size_t identifier) const
+{
+    return NULL;
 }
 
 }}

@@ -37,18 +37,26 @@ class document;
 class formula_context : public ixion::interface::model_context
 {
 public:
-    formula_context(model::document& doc);
+    formula_context(document& doc);
     virtual ~formula_context();
 
     virtual const ixion::config& get_config() const;
     virtual const ixion::formula_name_resolver& get_name_resolver() const;
     virtual const ixion::base_cell* get_cell(const ixion::abs_address_t& addr) const;
+    virtual ixion::base_cell* get_cell(const ixion::abs_address_t& addr);
     virtual ixion::interface::cells_in_range* get_cells_in_range(const ixion::abs_range_t& range) const;
     virtual std::string get_cell_name(const ixion::base_cell* p) const;
     virtual ixion::abs_address_t get_cell_position(const ixion::base_cell* p) const;
     virtual const ixion::formula_cell* get_named_expression(const ::std::string& name) const;
     virtual const std::string* get_named_expression_name(const ixion::formula_cell* expr) const;
     virtual ixion::matrix get_range_value(const ixion::abs_range_t& range) const;
+    virtual ixion::interface::session_handler* get_session_handler() const;
+    virtual ixion::formula_tokens_t* get_formula_tokens(size_t identifier);
+    virtual const ixion::formula_tokens_t* get_formula_tokens(size_t identifier) const;
+    virtual size_t add_formula_tokens(ixion::formula_tokens_t* p);
+    virtual void remove_formula_tokens(size_t identifier);
+    virtual size_t add_string(const char* p, size_t n);
+    virtual const std::string* get_string(size_t identifier) const;
 
 private:
     model::document& m_doc;

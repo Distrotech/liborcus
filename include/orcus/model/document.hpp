@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -39,6 +39,7 @@ namespace orcus { namespace model {
 
 class shared_strings;
 class styles;
+class formula_context;
 
 /**
  * Internal document representation used only for testing the filters.
@@ -46,9 +47,9 @@ class styles;
 class document : private ::boost::noncopyable
 {
     /**
-     * Single sheet entry which consists of a sheet name and a sheet data. 
-     * Use the printer function object to print sheet content with for_each 
-     * function. 
+     * Single sheet entry which consists of a sheet name and a sheet data.
+     * Use the printer function object to print sheet content with for_each
+     * function.
      */
     struct sheet_item : private ::boost::noncopyable
     {
@@ -80,6 +81,9 @@ public:
     styles* get_styles();
     const styles* get_styles() const;
 
+    formula_context& get_formula_context();
+    const formula_context& get_formula_context() const;
+
     sheet* append_sheet(const pstring& sheet_name);
 
     /**
@@ -88,9 +92,9 @@ public:
     void dump() const;
 
     /**
-     * File name should not contain an extension.  The final name will be 
-     * [filename] + _ + [sheet name] + .html. 
-     * 
+     * File name should not contain an extension.  The final name will be
+     * [filename] + _ + [sheet name] + .html.
+     *
      * @param filename base file name
      */
     void dump_html(const ::std::string& filename) const;
@@ -99,6 +103,7 @@ private:
     ::boost::ptr_vector<sheet_item> m_sheets;
     shared_strings* mp_strings;
     styles* mp_styles;
+    formula_context* mp_formula_cxt;
 };
 
 }}
