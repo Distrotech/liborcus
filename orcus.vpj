@@ -257,6 +257,7 @@
 			<Folder Name="model">
 				<F N="src/model/document.cpp"/>
 				<F N="src/model/factory.cpp"/>
+				<F N="src/model/formula_context.cpp"/>
 				<F N="src/model/shared_strings.cpp"/>
 				<F N="src/model/sheet.cpp"/>
 				<F N="src/model/styles.cpp"/>
