@@ -29,11 +29,12 @@
 #define __ORCUS_MODEL_GLOBAL_HPP__
 
 #include <cstdint>
+#include <ixion/types.hpp>
 
 namespace orcus { namespace model {
 
-typedef uint32_t row_t;
-typedef uint32_t col_t;
+typedef ixion::row_t row_t;
+typedef ixion::col_t col_t;
 
 enum border_direction_t
 {

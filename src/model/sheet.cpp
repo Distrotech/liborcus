@@ -72,9 +72,6 @@ private:
 const row_t sheet::max_row_limit = 1048575;
 const col_t sheet::max_col_limit = 1023;
 
-sheet::cell::cell() : type(ct_value), value(0.0) {}
-sheet::cell::cell(cell_type _type, double _value) : type(_type), value(_value) {}
-
 sheet::sheet(document& doc) :
     m_doc(doc), m_max_row(0), m_max_col(0)
 {
@@ -98,13 +95,13 @@ void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
 void sheet::set_string(row_t row, col_t col, size_t sindex)
 {
     row_type* p = get_row(row, col);
-    p->insert(row_type::value_type(col, cell(ct_string, static_cast<double>(sindex))));
+    p->insert(col, new ixion::string_cell(sindex));
 }
 
 void sheet::set_value(row_t row, col_t col, double value)
 {
     row_type* p = get_row(row, col);
-    p->insert(row_type::value_type(col, cell(ct_value, value)));
+    p->insert(col, new ixion::numeric_cell(value));
 }
 
 void sheet::set_format(row_t row, col_t col, size_t index)
@@ -142,8 +139,7 @@ void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
     size_t index = m_formula_tokens.size() - 1;
 
     row_type* row_store = get_row(row, col);
-    row_store->insert(
-        row_type::value_type(col, cell(ct_formula, static_cast<double>(index))));
+    row_store->insert(col, new ixion::formula_cell(index));
 }
 
 void sheet::set_shared_formula(row_t row, col_t col, formula_grammar_t grammar,
@@ -200,28 +196,28 @@ void sheet::dump() const
         for (; itr_row != itr_row_end; ++itr_row)
         {
             col_t col = itr_row->first;
-            const cell& c = itr_row->second;
-            switch (c.type)
+            const ixion::base_cell& c = *itr_row->second;
+            switch (c.get_celltype())
             {
-                case ct_string:
+                case ixion::celltype_string:
                 {
-                    size_t sindex = static_cast<size_t>(c.value);
+                    size_t sindex = c.get_identifier();
                     const pstring& ps = sstrings->get(sindex);
                     mx.set_string(row, col, new string(ps.get(), ps.size()));
                 }
                 break;
-                case ct_value:
+                case ixion::celltype_numeric:
                 {
                     ostringstream os;
-                    os << c.value;
+                    os << c.get_value();
                     mx.set_string(row, col, new string(os.str()));
                 }
                 break;
-                case ct_formula:
+                case ixion::celltype_formula:
                 {
                     // TODO : print the formula result.  For now, let's just
                     // print the formula expression.
-                    size_t index = static_cast<size_t>(c.value);
+                    size_t index = c.get_identifier();
                     if (index < m_formula_tokens.size())
                     {
                         const ixion::formula_tokens_t& t = m_formula_tokens[index];
@@ -495,13 +491,13 @@ void sheet::dump_html(const string& filepath) const
                 }
 
                 elem td(file, p_td, style.c_str());
-                const cell& c = itr_row->second;
+                const ixion::base_cell& c = *itr_row->second;
                 ostringstream os;
-                switch (c.type)
+                switch (c.get_celltype())
                 {
-                    case ct_string:
+                    case ixion::celltype_string:
                     {
-                        size_t sindex = static_cast<size_t>(c.value);
+                        size_t sindex = c.get_identifier();
                         const pstring& ps = sstrings->get(sindex);
                         const shared_strings::format_runs_type* pformat = sstrings->get_format_runs(sindex);
                         if (pformat)
@@ -510,10 +506,10 @@ void sheet::dump_html(const string& filepath) const
                             os << ps;
                     }
                     break;
-                    case ct_value:
-                        os << c.value;
+                    case ixion::celltype_numeric:
+                        os << c.get_value();
                     break;
-                    case ct_formula:
+                    case ixion::celltype_formula:
                         // TODO : print formula result.
                         os << "formula";
                     break;

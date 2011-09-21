@@ -33,7 +33,9 @@
 
 #include <mdds/flat_segment_tree.hpp>
 #include <ixion/formula_tokens.hpp>
+#include <ixion/cell.hpp>
 
+#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/unordered_map.hpp>
 #include <map>
 
@@ -50,28 +52,12 @@ class sheet : public interface::sheet
     static const row_t max_row_limit;
     static const col_t max_col_limit;
 
-    enum cell_type { ct_string, ct_value, ct_formula };
-
-    /**
-     * The value of the cell may mean different things in different cell
-     * types: for a value cell it's the value, and for a string cell it's an
-     * index of the string stored in the cell, to be looked up in the shared
-     * string pool.
-     */
-    struct cell
-    {
-        cell_type   type;
-        double      value;
-
-        cell();
-        cell(cell_type _type, double _value);
-    };
 public:
     typedef ::mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
     typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
 
-    typedef ::std::map<col_t, cell>       row_type;
-    typedef ::std::map<row_t, row_type*>  rows_type;
+    typedef boost::ptr_map<col_t, ixion::base_cell> row_type;
+    typedef ::std::map<row_t, row_type*> rows_type;
 
     sheet(document& doc);
     virtual ~sheet();
