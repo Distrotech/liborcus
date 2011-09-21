@@ -100,22 +100,22 @@ ixion::interface::session_handler* formula_context::get_session_handler() const
     return NULL;
 }
 
-ixion::formula_tokens_t* formula_context::get_formula_tokens(size_t identifier)
+ixion::formula_tokens_t* formula_context::get_formula_tokens(ixion::sheet_t sheet, size_t identifier)
 {
     return NULL;
 }
 
-const ixion::formula_tokens_t* formula_context::get_formula_tokens(size_t identifier) const
+const ixion::formula_tokens_t* formula_context::get_formula_tokens(ixion::sheet_t sheet, size_t identifier) const
 {
     return NULL;
 }
 
-size_t formula_context::add_formula_tokens(ixion::formula_tokens_t* p)
+size_t formula_context::add_formula_tokens(ixion::sheet_t sheet, ixion::formula_tokens_t* p)
 {
     return 0;
 }
 
-void formula_context::remove_formula_tokens(size_t identifier)
+void formula_context::remove_formula_tokens(ixion::sheet_t sheet, size_t identifier)
 {
 
 }

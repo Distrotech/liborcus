@@ -51,10 +51,10 @@ public:
     virtual const std::string* get_named_expression_name(const ixion::formula_cell* expr) const;
     virtual ixion::matrix get_range_value(const ixion::abs_range_t& range) const;
     virtual ixion::interface::session_handler* get_session_handler() const;
-    virtual ixion::formula_tokens_t* get_formula_tokens(size_t identifier);
-    virtual const ixion::formula_tokens_t* get_formula_tokens(size_t identifier) const;
-    virtual size_t add_formula_tokens(ixion::formula_tokens_t* p);
-    virtual void remove_formula_tokens(size_t identifier);
+    virtual ixion::formula_tokens_t* get_formula_tokens(ixion::sheet_t sheet, size_t identifier);
+    virtual const ixion::formula_tokens_t* get_formula_tokens(ixion::sheet_t sheet, size_t identifier) const;
+    virtual size_t add_formula_tokens(ixion::sheet_t sheet, ixion::formula_tokens_t* p);
+    virtual void remove_formula_tokens(ixion::sheet_t sheet, size_t identifier);
     virtual size_t add_string(const char* p, size_t n);
     virtual const std::string* get_string(size_t identifier) const;
 
