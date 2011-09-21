@@ -30,6 +30,7 @@
 #include "orcus/global.hpp"
 #include "orcus/model/shared_strings.hpp"
 #include "orcus/model/document.hpp"
+#include "orcus/model/formula_context.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -133,16 +134,16 @@ void sheet::set_format(row_t row, col_t col, size_t index)
 void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
                         const char* p, size_t n)
 {
-#if 0
     auto_ptr<ixion::formula_tokens_t> tokens(new ixion::formula_tokens_t);
-    ixion::parse_formula_string(p, n, *tokens);
+    const formula_context& cxt = m_doc.get_formula_context();
+    ixion::abs_address_t pos(row, col, 0);
+    ixion::parse_formula_string(cxt, pos, p, n, *tokens);
     m_formula_tokens.push_back(tokens);
     size_t index = m_formula_tokens.size() - 1;
 
     row_type* row_store = get_row(row, col);
     row_store->insert(
         row_type::value_type(col, cell(ct_formula, static_cast<double>(index))));
-#endif
 }
 
 void sheet::set_shared_formula(row_t row, col_t col, formula_grammar_t grammar,
@@ -218,8 +219,18 @@ void sheet::dump() const
                 break;
                 case ct_formula:
                 {
-                    // TODO : print formula result.
-                    mx.set_string(row, col, new string("formula"));
+                    // TODO : print the formula result.  For now, let's just
+                    // print the formula expression.
+                    size_t index = static_cast<size_t>(c.value);
+                    if (index < m_formula_tokens.size())
+                    {
+                        const ixion::formula_tokens_t& t = m_formula_tokens[index];
+                        auto_ptr<string> str(new string);
+                        ixion::abs_address_t pos(row, col, 0);
+                        ixion::print_formula_tokens(
+                            m_doc.get_formula_context(), pos, t, *str);
+                        mx.set_string(row, col, str.release());
+                    }
                 }
                 break;
             }
