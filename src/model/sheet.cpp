@@ -82,7 +82,7 @@ sheet::sheet(document& doc) :
 
 sheet::~sheet()
 {
-    for_each(m_sheet.begin(), m_sheet.end(), delete_map_object<sheet_type>());
+    for_each(m_rows.begin(), m_rows.end(), delete_map_object<rows_type>());
     for_each(m_cell_formats.begin(), m_cell_formats.end(),
              delete_map_object<cell_format_type>());
 }
@@ -161,7 +161,7 @@ void sheet::set_formula_result(row_t row, col_t col, const char* p, size_t n)
 
 row_t sheet::row_size() const
 {
-    if (m_sheet.empty())
+    if (m_rows.empty())
         return 0;
 
     return m_max_row + 1;
@@ -169,7 +169,7 @@ row_t sheet::row_size() const
 
 col_t sheet::col_size() const
 {
-    if (m_sheet.empty())
+    if (m_rows.empty())
         return 0;
 
     return m_max_col + 1;
@@ -181,7 +181,7 @@ void sheet::dump() const
     size_t col_count = col_size();
     cout << "rows: " << row_count << "  cols: " << col_count << endl;
 
-    if (m_sheet.empty())
+    if (m_rows.empty())
         // nothing to print.
         return;
 
@@ -191,7 +191,7 @@ void sheet::dump() const
     mx_type mx(row_count, col_count, ::mdds::matrix_density_sparse_empty);
 
     // Put all cell values into matrix as string elements first.
-    sheet_type::const_iterator itr = m_sheet.begin(), itr_end = m_sheet.end();
+    rows_type::const_iterator itr = m_rows.begin(), itr_end = m_rows.end();
     for (; itr != itr_end; ++itr)
     {
         row_t row = itr->first;
@@ -434,7 +434,7 @@ void sheet::dump_html(const string& filepath) const
     {
         elem root(file, p_html);
 
-        if (m_sheet.empty())
+        if (m_rows.empty())
             // nothing to print.
             return;
 
@@ -443,7 +443,7 @@ void sheet::dump_html(const string& filepath) const
         const shared_strings* sstrings = m_doc.get_shared_strings();
 
         elem table(file, p_table, p_table_attrs);
-        sheet_type::const_iterator itr = m_sheet.begin(), itr_end = m_sheet.end();
+        rows_type::const_iterator itr = m_rows.begin(), itr_end = m_rows.end();
         row_t row = 0;
         for (; itr != itr_end; ++itr, ++row)
         {
@@ -567,11 +567,11 @@ void sheet::update_size(row_t row, col_t col)
 
 sheet::row_type* sheet::get_row(row_t row, col_t col)
 {
-    sheet_type::iterator itr = m_sheet.find(row);
-    if (itr == m_sheet.end())
+    rows_type::iterator itr = m_rows.find(row);
+    if (itr == m_rows.end())
     {
         // This row doesn't exist yet.  Create it.
-        pair<sheet_type::iterator, bool> r = m_sheet.insert(sheet_type::value_type(row, new row_type));
+        pair<rows_type::iterator, bool> r = m_rows.insert(rows_type::value_type(row, new row_type));
         if (!r.second)
             throw general_error("failed to insert a new row instance.");
         itr = r.first;

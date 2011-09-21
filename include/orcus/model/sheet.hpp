@@ -71,7 +71,7 @@ public:
     typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
 
     typedef ::std::map<col_t, cell>       row_type;
-    typedef ::std::map<row_t, row_type*>  sheet_type;
+    typedef ::std::map<row_t, row_type*>  rows_type;
 
     sheet(document& doc);
     virtual ~sheet();
@@ -98,7 +98,7 @@ private:
 
 private:
     document& m_doc;
-    sheet_type m_sheet;  /// group of rows.
+    rows_type m_rows;  /// group of rows.
     mutable cell_format_type m_cell_formats;
     row_t m_max_row;
     col_t m_max_col;
