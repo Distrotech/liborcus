@@ -143,13 +143,17 @@
 			<F N="../ixion/include/ixion/depends_tracker.hpp"/>
 			<F N="../ixion/include/ixion/depth_first_search.hpp"/>
 			<F N="../ixion/include/ixion/formula.hpp"/>
+			<F N="../ixion/include/ixion/formula_function_opcode.hpp"/>
 			<F N="../ixion/include/ixion/formula_functions.hpp"/>
 			<F N="../ixion/include/ixion/formula_interpreter.hpp"/>
 			<F N="../ixion/include/ixion/formula_lexer.hpp"/>
 			<F N="../ixion/include/ixion/formula_name_resolver.hpp"/>
+			<F N="../ixion/include/ixion/formula_opcode.hpp"/>
 			<F N="../ixion/include/ixion/formula_parser.hpp"/>
 			<F N="../ixion/include/ixion/formula_result.hpp"/>
 			<F N="../ixion/include/ixion/formula_tokens.hpp"/>
+			<F N="../ixion/include/ixion/formula_tokens_fwd.hpp"/>
+			<F N="../ixion/include/ixion/function_objects.hpp"/>
 			<F N="../ixion/include/ixion/global.hpp"/>
 			<F N="../ixion/include/ixion/lexer_tokens.hpp"/>
 			<F N="../ixion/include/ixion/hash_container/map.hpp"/>
@@ -158,9 +162,11 @@
 			<F N="../ixion/include/ixion/model_context.hpp"/>
 			<F N="../ixion/include/ixion/interface/model_context.hpp"/>
 			<F N="../ixion/include/ixion/model_parser.hpp"/>
+			<F N="../ixion/include/ixion/session_handler.hpp"/>
 			<F N="../ixion/include/ixion/hash_container/set.hpp"/>
 			<F N="../ixion/include/ixion/sort_input_parser.hpp"/>
 			<F N="../ixion/include/ixion/thread.hpp"/>
+			<F N="../ixion/include/ixion/types.hpp"/>
 		</Folder>
 		<Folder
 			Name="Resource Files"

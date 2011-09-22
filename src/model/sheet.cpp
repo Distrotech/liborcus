@@ -133,14 +133,17 @@ void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
 {
     // Tokenize the formula string and store it.
     auto_ptr<ixion::formula_tokens_t> tokens(new ixion::formula_tokens_t);
-    const formula_context& cxt = m_doc.get_formula_context();
+    formula_context& cxt = m_doc.get_formula_context();
     ixion::abs_address_t pos(m_sheet, row, col);
     ixion::parse_formula_string(cxt, pos, p, n, *tokens);
     m_formula_tokens.push_back(tokens);
     size_t index = m_formula_tokens.size() - 1;
 
     row_type* row_store = get_row(row, col);
-    row_store->insert(col, new ixion::formula_cell(index));
+    std::auto_ptr<ixion::formula_cell> cell(new ixion::formula_cell(index));
+    ixion::formula_cell* pcell = cell.get();
+    row_store->insert(col, cell);
+    ixion::register_formula_cell(cxt, pos, pcell);
 }
 
 void sheet::set_shared_formula(row_t row, col_t col, formula_grammar_t grammar,
@@ -230,6 +233,8 @@ void sheet::dump() const
                     }
                 }
                 break;
+                default:
+                    ;
             }
         }
     }
@@ -514,6 +519,8 @@ void sheet::dump_html(const string& filepath) const
                         // TODO : print formula result.
                         os << "formula";
                     break;
+                    default:
+                        ;
                 }
 
                 file << os.str();

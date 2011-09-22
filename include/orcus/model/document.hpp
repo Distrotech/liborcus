@@ -86,6 +86,8 @@ public:
 
     sheet* append_sheet(const pstring& sheet_name);
 
+    void calc_formulas();
+
     /**
      * Dump document content to stdout for debugging.
      */

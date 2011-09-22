@@ -107,6 +107,10 @@ sheet* document::append_sheet(const pstring& sheet_name)
     return &m_sheets.back().data;
 }
 
+void document::calc_formulas()
+{
+}
+
 void document::dump() const
 {
     cout << "----------------------------------------------------------------------" << endl;
