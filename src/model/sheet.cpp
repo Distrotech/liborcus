@@ -72,8 +72,8 @@ private:
 const row_t sheet::max_row_limit = 1048575;
 const col_t sheet::max_col_limit = 1023;
 
-sheet::sheet(document& doc) :
-    m_doc(doc), m_max_row(0), m_max_col(0)
+sheet::sheet(document& doc, sheet_t sheet) :
+    m_doc(doc), m_max_row(0), m_max_col(0), m_sheet(sheet)
 {
 }
 
@@ -131,9 +131,10 @@ void sheet::set_format(row_t row, col_t col, size_t index)
 void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
                         const char* p, size_t n)
 {
+    // Tokenize the formula string and store it.
     auto_ptr<ixion::formula_tokens_t> tokens(new ixion::formula_tokens_t);
     const formula_context& cxt = m_doc.get_formula_context();
-    ixion::abs_address_t pos(row, col, 0);
+    ixion::abs_address_t pos(m_sheet, row, col);
     ixion::parse_formula_string(cxt, pos, p, n, *tokens);
     m_formula_tokens.push_back(tokens);
     size_t index = m_formula_tokens.size() - 1;

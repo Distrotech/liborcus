@@ -55,7 +55,7 @@ class document : private ::boost::noncopyable
     {
         pstring name;
         sheet   data;
-        sheet_item(document& doc, const pstring& _name);
+        sheet_item(document& doc, const pstring& _name, sheet_t sheet);
 
         struct printer : public ::std::unary_function<sheet_item, void>
         {

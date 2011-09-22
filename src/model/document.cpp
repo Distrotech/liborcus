@@ -36,7 +36,8 @@ using namespace std;
 
 namespace orcus { namespace model {
 
-document::sheet_item::sheet_item(document& doc, const pstring& _name) : name(_name), data(doc) {}
+document::sheet_item::sheet_item(document& doc, const pstring& _name, sheet_t sheet) :
+    name(_name), data(doc, sheet) {}
 
 void document::sheet_item::printer::operator() (const sheet_item& item) const
 {
@@ -101,7 +102,8 @@ const formula_context& document::get_formula_context() const
 
 sheet* document::append_sheet(const pstring& sheet_name)
 {
-    m_sheets.push_back(new sheet_item(*this, sheet_name.intern()));
+    sheet_t sheet = static_cast<sheet_t>(m_sheets.size());
+    m_sheets.push_back(new sheet_item(*this, sheet_name.intern(), sheet));
     return &m_sheets.back().data;
 }
 

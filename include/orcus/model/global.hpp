@@ -35,6 +35,7 @@ namespace orcus { namespace model {
 
 typedef ixion::row_t row_t;
 typedef ixion::col_t col_t;
+typedef ixion::sheet_t sheet_t;
 
 enum border_direction_t
 {

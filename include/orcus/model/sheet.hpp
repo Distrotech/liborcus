@@ -59,7 +59,7 @@ public:
     typedef boost::ptr_map<col_t, ixion::base_cell> row_type;
     typedef ::std::map<row_t, row_type*> rows_type;
 
-    sheet(document& doc);
+    sheet(document& doc, sheet_t sheet);
     virtual ~sheet();
 
     virtual void set_auto(orcus::model::row_t row, orcus::model::col_t col, const char* p, size_t n);
@@ -88,6 +88,7 @@ private:
     mutable cell_format_type m_cell_formats;
     row_t m_max_row;
     col_t m_max_col;
+    const sheet_t m_sheet; /// sheet ID
 
     /** formula token storage for non-shared formula expressions */
     boost::ptr_vector<ixion::formula_tokens_t> m_formula_tokens;
