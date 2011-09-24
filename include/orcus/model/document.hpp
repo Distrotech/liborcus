@@ -32,6 +32,8 @@
 #include "orcus/model/sheet.hpp"
 #include "orcus/pstring.hpp"
 
+#include <ixion/types.hpp>
+
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/noncopyable.hpp>
 
@@ -46,6 +48,8 @@ class formula_context;
  */
 class document : private ::boost::noncopyable
 {
+    friend class sheet;
+
     /**
      * Single sheet entry which consists of a sheet name and a sheet data.
      * Use the printer function object to print sheet content with for_each
@@ -102,10 +106,14 @@ public:
     void dump_html(const ::std::string& filename) const;
 
 private:
+    void insert_dirty_cell(ixion::formula_cell* cell);
+
+private:
     ::boost::ptr_vector<sheet_item> m_sheets;
     shared_strings* mp_strings;
     styles* mp_styles;
     formula_context* mp_formula_cxt;
+    ixion::dirty_cells_t m_dirty_cells;
 };
 
 }}

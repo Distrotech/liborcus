@@ -144,6 +144,7 @@ void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
     ixion::formula_cell* pcell = cell.get();
     row_store->insert(col, cell);
     ixion::register_formula_cell(cxt, pos, pcell);
+    m_doc.insert_dirty_cell(pcell);
 }
 
 void sheet::set_shared_formula(row_t row, col_t col, formula_grammar_t grammar,

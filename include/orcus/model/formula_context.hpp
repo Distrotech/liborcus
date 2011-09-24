@@ -49,6 +49,7 @@ public:
     virtual ixion::abs_address_t get_cell_position(const ixion::base_cell* p) const;
     virtual const ixion::formula_cell* get_named_expression(const ::std::string& name) const;
     virtual const std::string* get_named_expression_name(const ixion::formula_cell* expr) const;
+    virtual void get_cells(const ixion::abs_range_t& range, std::vector<ixion::base_cell*>& cells);
     virtual ixion::matrix get_range_value(const ixion::abs_range_t& range) const;
     virtual ixion::interface::session_handler* get_session_handler() const;
     virtual ixion::formula_tokens_t* get_formula_tokens(ixion::sheet_t sheet, size_t identifier);

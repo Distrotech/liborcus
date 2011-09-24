@@ -90,6 +90,10 @@ const std::string* formula_context::get_named_expression_name(const ixion::formu
     return NULL;
 }
 
+void formula_context::get_cells(const ixion::abs_range_t& range, std::vector<ixion::base_cell*>& cells)
+{
+}
+
 ixion::matrix formula_context::get_range_value(const ixion::abs_range_t& range) const
 {
     return ixion::matrix(0, 0);

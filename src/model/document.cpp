@@ -30,6 +30,8 @@
 #include "orcus/model/styles.hpp"
 #include "orcus/model/formula_context.hpp"
 
+#include <ixion/formula.hpp>
+
 #include <iostream>
 
 using namespace std;
@@ -109,6 +111,8 @@ sheet* document::append_sheet(const pstring& sheet_name)
 
 void document::calc_formulas()
 {
+    cout << "dirty cells: " << m_dirty_cells.size() << endl;
+    ixion::calculate_cells(get_formula_context(), m_dirty_cells, 0);
 }
 
 void document::dump() const
@@ -125,6 +129,11 @@ void document::dump() const
 void document::dump_html(const string& filepath) const
 {
     for_each(m_sheets.begin(), m_sheets.end(), sheet_item::html_printer(filepath));
+}
+
+void document::insert_dirty_cell(ixion::formula_cell* cell)
+{
+    m_dirty_cells.insert(cell);
 }
 
 }}
