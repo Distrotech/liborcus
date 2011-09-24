@@ -226,7 +226,7 @@ void sheet::dump() const
                     {
                         const ixion::formula_tokens_t& t = m_formula_tokens[index];
                         auto_ptr<string> str(new string);
-                        ixion::abs_address_t pos(row, col, 0);
+                        ixion::abs_address_t pos(m_sheet, row, col);
                         ixion::print_formula_tokens(
                             m_doc.get_formula_context(), pos, t, *str);
                         mx.set_string(row, col, str.release());
