@@ -74,6 +74,7 @@ public:
     row_t row_size() const;
     col_t col_size() const;
 
+    bool find_cell_position(const ixion::base_cell* p, ixion::abs_address_t& pos) const;
     const ixion::formula_tokens_t* get_formula_tokens(size_t identifier) const;
 
     void dump() const;

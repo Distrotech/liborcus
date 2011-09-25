@@ -90,8 +90,7 @@ std::string formula_context::get_cell_name(const ixion::base_cell* p) const
 
 ixion::abs_address_t formula_context::get_cell_position(const ixion::base_cell* p) const
 {
-    throw general_error("formula_context::get_cell_position not implemented!");
-    return ixion::abs_address_t();
+    return m_doc.get_cell_position(p);
 }
 
 const ixion::formula_cell* formula_context::get_named_expression(const std::string& name) const

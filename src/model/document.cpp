@@ -74,6 +74,18 @@ document::~document()
     delete mp_formula_cxt;
 }
 
+ixion::abs_address_t document::get_cell_position(const ixion::base_cell* p) const
+{
+     boost::ptr_vector<sheet_item>::const_iterator itr = m_sheets.begin(), itr_end = m_sheets.end();
+     ixion::abs_address_t pos;
+     for (; itr != itr_end; ++itr)
+     {
+         if (itr->data.find_cell_position(p, pos))
+             break;
+     }
+     return pos;
+}
+
 const ixion::formula_tokens_t* document::get_formula_tokens(
     sheet_t sheet_id, size_t identifier) const
 {

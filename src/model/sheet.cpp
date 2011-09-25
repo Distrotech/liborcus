@@ -176,6 +176,28 @@ col_t sheet::col_size() const
     return m_max_col + 1;
 }
 
+bool sheet::find_cell_position(const ixion::base_cell* p, ixion::abs_address_t& pos) const
+{
+    rows_type::const_iterator itr = m_rows.begin(), itr_end = m_rows.end();
+    for (; itr != itr_end; ++itr)
+    {
+        row_t row = itr->first;
+        row_type* cells = itr->second;
+        row_type::const_iterator itr_row = cells->begin(), itr_row_end = cells->end();
+        for (; itr_row != itr_row_end; ++itr_row)
+        {
+            if (itr_row->second == p)
+            {
+                // cell found!
+                col_t col = itr_row->first;
+                pos = ixion::abs_address_t(m_sheet, row, col);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 const ixion::formula_tokens_t* sheet::get_formula_tokens(size_t identifier) const
 {
     if (identifier >= m_formula_tokens.size())
