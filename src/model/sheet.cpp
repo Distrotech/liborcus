@@ -42,6 +42,7 @@
 
 #include <mdds/mixed_type_matrix.hpp>
 #include <ixion/formula.hpp>
+#include <ixion/formula_result.hpp>
 
 using namespace std;
 
@@ -259,17 +260,24 @@ void sheet::dump() const
                 break;
                 case ixion::celltype_formula:
                 {
-                    // TODO : print the formula result.  For now, let's just
-                    // print the formula expression.
+                    // print the formula and the formula result.
                     size_t index = c.get_identifier();
                     if (index < m_formula_tokens.size())
                     {
+                        ostringstream os;
                         const ixion::formula_tokens_t& t = m_formula_tokens[index];
-                        auto_ptr<string> str(new string);
                         ixion::abs_address_t pos(m_sheet, row, col);
+                        string formula;
                         ixion::print_formula_tokens(
-                            m_doc.get_formula_context(), pos, t, *str);
-                        mx.set_string(row, col, str.release());
+                            m_doc.get_formula_context(), pos, t, formula);
+                        os << formula;
+
+                        const ixion::formula_result* res =
+                            static_cast<const ixion::formula_cell&>(c).get_result_cache();
+                        if (res)
+                            os << " (" << res->str() << ")";
+
+                        mx.set_string(row, col, new string(os.str()));
                     }
                 }
                 break;
