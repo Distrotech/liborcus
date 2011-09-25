@@ -32,6 +32,7 @@
 #include "orcus/model/formula_context.hpp"
 
 #include <ixion/formula.hpp>
+#include <ixion/formula_result.hpp>
 
 #include <iostream>
 
@@ -126,7 +127,18 @@ sheet* document::append_sheet(const pstring& sheet_name)
 void document::calc_formulas()
 {
     cout << "dirty cells: " << m_dirty_cells.size() << endl;
-    ixion::calculate_cells(get_formula_context(), m_dirty_cells, 0);
+    ixion::interface::model_context& cxt = get_formula_context();
+    ixion::calculate_cells(cxt, m_dirty_cells, 0);
+    ixion::dirty_cells_t::const_iterator itr = m_dirty_cells.begin(), itr_end = m_dirty_cells.end();
+    for (; itr != itr_end; ++itr)
+    {
+        const ixion::formula_cell* cell = *itr;
+        const ixion::formula_result* res = cell->get_result_cache();
+        if (!res)
+            continue;
+
+        cout << cxt.get_cell_name(cell) << ":" << res->str() << endl;
+    }
 }
 
 void document::dump() const

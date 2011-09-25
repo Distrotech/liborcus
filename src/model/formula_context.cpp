@@ -27,6 +27,7 @@
 
 #include "orcus/model/formula_context.hpp"
 #include "orcus/model/document.hpp"
+#include "orcus/global.hpp"
 
 #include <ixion/config.hpp>
 #include <ixion/formula_name_resolver.hpp>
@@ -57,52 +58,57 @@ const ixion::formula_name_resolver& formula_context::get_name_resolver() const
 
 const ixion::base_cell* formula_context::get_cell(const ixion::abs_address_t& addr) const
 {
+    throw general_error("formula_context::get_cell not implemented!");
     return NULL;
 }
 
 ixion::base_cell* formula_context::get_cell(const ixion::abs_address_t& addr)
 {
+    throw general_error("formula_context::get_cell not implemented!");
     return NULL;
 }
 
 ixion::interface::cells_in_range*
 formula_context::get_cells_in_range(const ixion::abs_range_t& range)
 {
+    throw general_error("formula_context::get_cells_in_range not implemented!");
     return NULL;
 }
 
 ixion::interface::const_cells_in_range*
 formula_context::get_cells_in_range(const ixion::abs_range_t& range) const
 {
+    throw general_error("formula_context::get_cells_in_range not implemented!");
     return NULL;
 }
 
 std::string formula_context::get_cell_name(const ixion::base_cell* p) const
 {
+    throw general_error("formula_context::get_cell_name not implemented!");
     return std::string();
 }
 
 ixion::abs_address_t formula_context::get_cell_position(const ixion::base_cell* p) const
 {
+    throw general_error("formula_context::get_cell_position not implemented!");
     return ixion::abs_address_t();
 }
 
 const ixion::formula_cell* formula_context::get_named_expression(const std::string& name) const
 {
+    throw general_error("formula_context::get_named_expression not implemented!");
     return NULL;
 }
 
 const std::string* formula_context::get_named_expression_name(const ixion::formula_cell* expr) const
 {
+    throw general_error("formula_context::get_named_expression_name not implemented!");
     return NULL;
-}
-
-void formula_context::get_cells(const ixion::abs_range_t& range, std::vector<ixion::base_cell*>& cells)
-{
 }
 
 ixion::matrix formula_context::get_range_value(const ixion::abs_range_t& range) const
 {
+    throw general_error("formula_context::get_range_value not implemented!");
     return ixion::matrix(0, 0);
 }
 
@@ -118,21 +124,24 @@ const ixion::formula_tokens_t* formula_context::get_formula_tokens(ixion::sheet_
 
 size_t formula_context::add_formula_tokens(ixion::sheet_t sheet, ixion::formula_tokens_t* p)
 {
+    throw general_error("formula_context::add_formula_tokens not implemented!");
     return 0;
 }
 
 void formula_context::remove_formula_tokens(ixion::sheet_t sheet, size_t identifier)
 {
-
+    throw general_error("formula_context::remove_formula_tokens not implemented!");
 }
 
 size_t formula_context::add_string(const char* p, size_t n)
 {
+    throw general_error("formula_context::add_string not implemented!");
     return 0;
 }
 
 const std::string* formula_context::get_string(size_t identifier) const
 {
+    throw general_error("formula_context::get_string not implemented!");
     return NULL;
 }
 
