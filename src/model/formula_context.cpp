@@ -69,15 +69,13 @@ ixion::base_cell* formula_context::get_cell(const ixion::abs_address_t& addr)
 ixion::interface::cells_in_range*
 formula_context::get_cells_in_range(const ixion::abs_range_t& range)
 {
-    throw general_error("formula_context::get_cells_in_range not implemented!");
-    return NULL;
+    return new cells_in_range(range, m_doc);
 }
 
 ixion::interface::const_cells_in_range*
 formula_context::get_cells_in_range(const ixion::abs_range_t& range) const
 {
-    throw general_error("formula_context::get_cells_in_range not implemented!");
-    return NULL;
+    return new const_cells_in_range(range, m_doc);
 }
 
 std::string formula_context::get_cell_name(const ixion::base_cell* p) const
@@ -140,6 +138,70 @@ const std::string* formula_context::get_string(size_t identifier) const
 {
     throw general_error("formula_context::get_string not implemented!");
     return NULL;
+}
+
+class cells_in_range_impl
+{
+    typedef std::vector<const ixion::base_cell*> cells_type;
+    cells_type m_cells;
+    cells_type::const_iterator m_beg;
+    cells_type::const_iterator m_end;
+    cells_type::const_iterator m_cur;
+public:
+    cells_in_range_impl(const ixion::abs_range_t& range, const document& doc)
+    {
+        doc.get_cells(range, m_cells);
+        m_beg = m_cells.begin();
+        m_end = m_cells.end();
+    }
+
+    const ixion::base_cell* first()
+    {
+        m_cur = m_beg;
+        return m_cur == m_end ? NULL : *m_cur;
+    }
+
+    const ixion::base_cell* next()
+    {
+        ++m_cur;
+        return m_cur == m_end ? NULL : *m_cur;
+    }
+};
+
+cells_in_range::cells_in_range(const ixion::abs_range_t& range, const document& doc) :
+    mp_impl(new cells_in_range_impl(range, doc)) {}
+
+cells_in_range::~cells_in_range()
+{
+    delete mp_impl;
+}
+
+ixion::base_cell* cells_in_range::first()
+{
+    return const_cast<ixion::base_cell*>(mp_impl->first());
+}
+
+ixion::base_cell* cells_in_range::next()
+{
+    return const_cast<ixion::base_cell*>(mp_impl->next());
+}
+
+const_cells_in_range::const_cells_in_range(const ixion::abs_range_t& range, const document& doc) :
+    mp_impl(new cells_in_range_impl(range, doc)) {}
+
+const_cells_in_range::~const_cells_in_range()
+{
+    delete mp_impl;
+}
+
+const ixion::base_cell* const_cells_in_range::first()
+{
+    return mp_impl->first();
+}
+
+const ixion::base_cell* const_cells_in_range::next()
+{
+    return mp_impl->next();
 }
 
 }}

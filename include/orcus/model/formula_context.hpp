@@ -29,10 +29,12 @@
 #define __ORCUS_MODEL_FORMULA_CONTEXT_HPP__
 
 #include <ixion/interface/model_context.hpp>
+#include <ixion/interface/cells_in_range.hpp>
 
 namespace orcus { namespace model {
 
 class document;
+class cells_in_range_impl;
 
 class formula_context : public ixion::interface::model_context
 {
@@ -62,6 +64,28 @@ private:
     model::document& m_doc;
     ixion::config* mp_config;
     ixion::formula_name_resolver* mp_name_resolver;
+};
+
+class cells_in_range : public ixion::interface::cells_in_range
+{
+public:
+    cells_in_range(const ixion::abs_range_t& range, const document& doc);
+    virtual ~cells_in_range();
+    virtual ixion::base_cell* first();
+    virtual ixion::base_cell* next();
+private:
+    cells_in_range_impl* mp_impl;
+};
+
+class const_cells_in_range : public ixion::interface::const_cells_in_range
+{
+public:
+    const_cells_in_range(const ixion::abs_range_t& range, const document& doc);
+    virtual ~const_cells_in_range();
+    virtual const ixion::base_cell* first();
+    virtual const ixion::base_cell* next();
+private:
+    cells_in_range_impl* mp_impl;
 };
 
 }}

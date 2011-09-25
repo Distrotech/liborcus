@@ -84,6 +84,17 @@ const ixion::base_cell* document::get_cell(const ixion::abs_address_t& addr) con
     return get_cell_from_sheets(addr);
 }
 
+void document::get_cells(const ixion::abs_range_t& range, std::vector<const ixion::base_cell*>& cells) const
+{
+    // For now only a single sheet range is supported.
+    size_t sheet_id = static_cast<size_t>(range.first.sheet);
+    if (sheet_id >= m_sheets.size())
+        return;
+
+    const sheet& sheet = m_sheets[sheet_id].data;
+    sheet.get_cells(range.first.row, range.first.column, range.last.row, range.last.column, cells);
+}
+
 ixion::abs_address_t document::get_cell_position(const ixion::base_cell* p) const
 {
      boost::ptr_vector<sheet_item>::const_iterator itr = m_sheets.begin(), itr_end = m_sheets.end();

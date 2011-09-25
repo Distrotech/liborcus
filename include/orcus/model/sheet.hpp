@@ -76,6 +76,7 @@ public:
 
     ixion::base_cell* get_cell(row_t row, col_t col);
     const ixion::base_cell* get_cell(row_t row, col_t col) const;
+    void get_cells(row_t row1, col_t col1, row_t row2, col_t col2, std::vector<const ixion::base_cell*>& cells) const;
 
     bool find_cell_position(const ixion::base_cell* p, ixion::abs_address_t& pos) const;
     const ixion::formula_tokens_t* get_formula_tokens(size_t identifier) const;

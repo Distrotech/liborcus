@@ -187,6 +187,20 @@ const ixion::base_cell* sheet::get_cell(row_t row, col_t col) const
     return get_cell_by_position(row, col);
 }
 
+void sheet::get_cells(row_t row1, col_t col1, row_t row2, col_t col2, std::vector<const ixion::base_cell*>& cells) const
+{
+    rows_type::const_iterator itr1 = m_rows.lower_bound(row1);
+    rows_type::const_iterator itr2 = m_rows.upper_bound(row2);
+    for (rows_type::const_iterator itr = itr1; itr != itr2; ++itr)
+    {
+        const row_type& row = *itr->second;
+        row_type::const_iterator itr_row1 = row.lower_bound(col1);
+        row_type::const_iterator itr_row2 = row.upper_bound(col2);
+        for (row_type::const_iterator itr_row = itr_row1; itr_row != itr_row2; ++itr_row)
+            cells.push_back(itr_row->second);
+    }
+}
+
 bool sheet::find_cell_position(const ixion::base_cell* p, ixion::abs_address_t& pos) const
 {
     rows_type::const_iterator itr = m_rows.begin(), itr_end = m_rows.end();
