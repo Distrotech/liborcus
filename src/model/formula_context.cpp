@@ -82,8 +82,8 @@ formula_context::get_cells_in_range(const ixion::abs_range_t& range) const
 
 std::string formula_context::get_cell_name(const ixion::base_cell* p) const
 {
-    throw general_error("formula_context::get_cell_name not implemented!");
-    return std::string();
+    ixion::abs_address_t pos = get_cell_position(p);
+    return get_name_resolver().get_name(pos);
 }
 
 ixion::abs_address_t formula_context::get_cell_position(const ixion::base_cell* p) const
