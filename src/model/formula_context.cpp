@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "orcus/model/formula_context.hpp"
+#include "orcus/model/document.hpp"
 
 #include <ixion/config.hpp>
 #include <ixion/formula_name_resolver.hpp>
@@ -110,14 +111,9 @@ ixion::interface::session_handler* formula_context::get_session_handler() const
     return NULL;
 }
 
-ixion::formula_tokens_t* formula_context::get_formula_tokens(ixion::sheet_t sheet, size_t identifier)
-{
-    return NULL;
-}
-
 const ixion::formula_tokens_t* formula_context::get_formula_tokens(ixion::sheet_t sheet, size_t identifier) const
 {
-    return NULL;
+    return m_doc.get_formula_tokens(sheet, identifier);
 }
 
 size_t formula_context::add_formula_tokens(ixion::sheet_t sheet, ixion::formula_tokens_t* p)

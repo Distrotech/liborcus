@@ -176,6 +176,13 @@ col_t sheet::col_size() const
     return m_max_col + 1;
 }
 
+const ixion::formula_tokens_t* sheet::get_formula_tokens(size_t identifier) const
+{
+    if (identifier >= m_formula_tokens.size())
+        return NULL;
+    return &m_formula_tokens[identifier];
+}
+
 void sheet::dump() const
 {
     size_t row_count = row_size();

@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "orcus/model/document.hpp"
+#include "orcus/model/sheet.hpp"
 #include "orcus/model/shared_strings.hpp"
 #include "orcus/model/styles.hpp"
 #include "orcus/model/formula_context.hpp"
@@ -70,6 +71,19 @@ document::~document()
     delete mp_strings;
     delete mp_styles;
     delete mp_formula_cxt;
+}
+
+const ixion::formula_tokens_t* document::get_formula_tokens(
+    sheet_t sheet_id, size_t identifier) const
+{
+    if (sheet_id < 0)
+        return NULL;
+
+    if (sheet_id >= m_sheets.size())
+        return NULL;
+
+    const sheet& sh = m_sheets[sheet_id].data;
+    return sh.get_formula_tokens(identifier);
 }
 
 shared_strings* document::get_shared_strings()

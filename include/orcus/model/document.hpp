@@ -79,6 +79,8 @@ public:
     document();
     ~document();
 
+    const ixion::formula_tokens_t* get_formula_tokens(sheet_t sheet_id, size_t identifier) const;
+
     shared_strings* get_shared_strings();
     const shared_strings* get_shared_strings() const;
 

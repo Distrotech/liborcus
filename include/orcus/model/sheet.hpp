@@ -74,6 +74,8 @@ public:
     row_t row_size() const;
     col_t col_size() const;
 
+    const ixion::formula_tokens_t* get_formula_tokens(size_t identifier) const;
+
     void dump() const;
     void dump_html(const ::std::string& filepath) const;
 
