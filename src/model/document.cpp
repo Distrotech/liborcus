@@ -74,6 +74,22 @@ document::~document()
     delete mp_formula_cxt;
 }
 
+ixion::base_cell* document::get_cell(const ixion::abs_address_t& addr)
+{
+    if (addr.sheet < 0 || addr.sheet >= m_sheets.size())
+        return NULL;
+
+    return m_sheets[addr.sheet].data.get_cell(addr.row, addr.column);
+}
+
+const ixion::base_cell* document::get_cell(const ixion::abs_address_t& addr) const
+{
+    if (addr.sheet < 0 || addr.sheet >= m_sheets.size())
+        return NULL;
+
+    return m_sheets[addr.sheet].data.get_cell(addr.row, addr.column);
+}
+
 ixion::abs_address_t document::get_cell_position(const ixion::base_cell* p) const
 {
      boost::ptr_vector<sheet_item>::const_iterator itr = m_sheets.begin(), itr_end = m_sheets.end();

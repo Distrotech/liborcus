@@ -79,6 +79,9 @@ public:
     document();
     ~document();
 
+    ixion::base_cell* get_cell(const ixion::abs_address_t& addr);
+    const ixion::base_cell* get_cell(const ixion::abs_address_t& addr) const;
+
     ixion::abs_address_t get_cell_position(const ixion::base_cell* p) const;
     const ixion::formula_tokens_t* get_formula_tokens(sheet_t sheet_id, size_t identifier) const;
 

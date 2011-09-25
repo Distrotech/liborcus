@@ -58,14 +58,12 @@ const ixion::formula_name_resolver& formula_context::get_name_resolver() const
 
 const ixion::base_cell* formula_context::get_cell(const ixion::abs_address_t& addr) const
 {
-    throw general_error("formula_context::get_cell not implemented!");
-    return NULL;
+    return m_doc.get_cell(addr);
 }
 
 ixion::base_cell* formula_context::get_cell(const ixion::abs_address_t& addr)
 {
-    throw general_error("formula_context::get_cell not implemented!");
-    return NULL;
+    return m_doc.get_cell(addr);
 }
 
 ixion::interface::cells_in_range*

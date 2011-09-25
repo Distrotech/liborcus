@@ -176,6 +176,16 @@ col_t sheet::col_size() const
     return m_max_col + 1;
 }
 
+ixion::base_cell* sheet::get_cell(row_t row, col_t col)
+{
+    return const_cast<ixion::base_cell*>(get_cell_by_position(row, col));
+}
+
+const ixion::base_cell* sheet::get_cell(row_t row, col_t col) const
+{
+    return get_cell_by_position(row, col);
+}
+
 bool sheet::find_cell_position(const ixion::base_cell* p, ixion::abs_address_t& pos) const
 {
     rows_type::const_iterator itr = m_rows.begin(), itr_end = m_rows.end();
@@ -470,7 +480,7 @@ void sheet::dump_html(const string& filepath) const
             // nothing to print.
             return;
 
-        size_t col_count = col_size();
+        col_t col_count = col_size();
 
         const shared_strings* sstrings = m_doc.get_shared_strings();
 
@@ -589,6 +599,20 @@ void sheet::dump_html(const string& filepath) const
             }
         }
     }
+}
+
+const ixion::base_cell* sheet::get_cell_by_position(row_t row, col_t col) const
+{
+    rows_type::const_iterator itr = m_rows.find(row);
+    if (itr == m_rows.end())
+        return NULL;
+
+    const row_type& cells = *itr->second;
+    row_type::const_iterator itr_row = cells.find(col);
+    if (itr_row == cells.end())
+        return NULL;
+
+    return itr_row->second;
 }
 
 void sheet::update_size(row_t row, col_t col)

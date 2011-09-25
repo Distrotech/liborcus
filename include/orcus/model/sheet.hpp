@@ -74,6 +74,9 @@ public:
     row_t row_size() const;
     col_t col_size() const;
 
+    ixion::base_cell* get_cell(row_t row, col_t col);
+    const ixion::base_cell* get_cell(row_t row, col_t col) const;
+
     bool find_cell_position(const ixion::base_cell* p, ixion::abs_address_t& pos) const;
     const ixion::formula_tokens_t* get_formula_tokens(size_t identifier) const;
 
@@ -81,6 +84,7 @@ public:
     void dump_html(const ::std::string& filepath) const;
 
 private:
+    const ixion::base_cell* get_cell_by_position(row_t row, col_t col) const;
     void update_size(row_t row, col_t col);
     row_type* get_row(row_t row, col_t col);
     size_t get_cell_format(row_t row, col_t col) const;
