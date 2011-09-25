@@ -65,6 +65,12 @@ ixion::base_cell* formula_context::get_cell(const ixion::abs_address_t& addr)
 }
 
 ixion::interface::cells_in_range*
+formula_context::get_cells_in_range(const ixion::abs_range_t& range)
+{
+    return NULL;
+}
+
+ixion::interface::const_cells_in_range*
 formula_context::get_cells_in_range(const ixion::abs_range_t& range) const
 {
     return NULL;

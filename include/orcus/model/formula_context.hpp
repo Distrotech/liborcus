@@ -44,7 +44,8 @@ public:
     virtual const ixion::formula_name_resolver& get_name_resolver() const;
     virtual const ixion::base_cell* get_cell(const ixion::abs_address_t& addr) const;
     virtual ixion::base_cell* get_cell(const ixion::abs_address_t& addr);
-    virtual ixion::interface::cells_in_range* get_cells_in_range(const ixion::abs_range_t& range) const;
+    virtual ixion::interface::cells_in_range* get_cells_in_range(const ixion::abs_range_t& range);
+    virtual ixion::interface::const_cells_in_range* get_cells_in_range(const ixion::abs_range_t& range) const;
     virtual std::string get_cell_name(const ixion::base_cell* p) const;
     virtual ixion::abs_address_t get_cell_position(const ixion::base_cell* p) const;
     virtual const ixion::formula_cell* get_named_expression(const ::std::string& name) const;
