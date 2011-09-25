@@ -43,6 +43,7 @@
 #include <mdds/mixed_type_matrix.hpp>
 #include <ixion/formula.hpp>
 #include <ixion/formula_result.hpp>
+#include <ixion/matrix.hpp>
 
 using namespace std;
 
@@ -199,6 +200,43 @@ void sheet::get_cells(row_t row1, col_t col1, row_t row2, col_t col2, std::vecto
         for (row_type::const_iterator itr_row = itr_row1; itr_row != itr_row2; ++itr_row)
             cells.push_back(itr_row->second);
     }
+}
+
+ixion::matrix sheet::get_range_value(row_t row1, col_t col1, row_t row2, col_t col2) const
+{
+    if (row2 < row1 || col2 < col1)
+        return ixion::matrix(0, 0);
+
+    size_t rows = row2 - row1 + 1;
+    size_t cols = col2 - col1 + 1;
+    ixion::matrix ret(rows, cols);
+    rows_type::const_iterator itr1 = m_rows.lower_bound(row1);
+    rows_type::const_iterator itr2 = m_rows.upper_bound(row2);
+    for (rows_type::const_iterator itr = itr1; itr != itr2; ++itr)
+    {
+        row_t row_id = itr->first;
+        const row_type& row = *itr->second;
+        row_type::const_iterator itr_row1 = row.lower_bound(col1);
+        row_type::const_iterator itr_row2 = row.upper_bound(col2);
+        for (row_type::const_iterator itr_row = itr_row1; itr_row != itr_row2; ++itr_row)
+        {
+            col_t col_id = itr_row->first;
+            const ixion::base_cell& c = *itr_row->second;
+            switch (c.get_celltype())
+            {
+                case ixion::celltype_string:
+                    // TODO: implement this.
+                break;
+                case ixion::celltype_numeric:
+                case ixion::celltype_formula:
+                    ret.set(row_id, col_id, c.get_value());
+                break;
+                default:
+                    ;
+            }
+        }
+    }
+    return ret;
 }
 
 bool sheet::find_cell_position(const ixion::base_cell* p, ixion::abs_address_t& pos) const

@@ -103,8 +103,7 @@ const std::string* formula_context::get_named_expression_name(const ixion::formu
 
 ixion::matrix formula_context::get_range_value(const ixion::abs_range_t& range) const
 {
-    throw general_error("formula_context::get_range_value not implemented!");
-    return ixion::matrix(0, 0);
+    return m_doc.get_range_value(range);
 }
 
 ixion::interface::session_handler* formula_context::get_session_handler() const
