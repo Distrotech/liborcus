@@ -112,6 +112,7 @@ public:
     void dump_html(const ::std::string& filename) const;
 
 private:
+    const ixion::base_cell* get_cell_from_sheets(const ixion::abs_address_t& addr) const;
     void insert_dirty_cell(ixion::formula_cell* cell);
 
 private:

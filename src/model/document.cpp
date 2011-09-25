@@ -76,18 +76,12 @@ document::~document()
 
 ixion::base_cell* document::get_cell(const ixion::abs_address_t& addr)
 {
-    if (addr.sheet < 0 || addr.sheet >= m_sheets.size())
-        return NULL;
-
-    return m_sheets[addr.sheet].data.get_cell(addr.row, addr.column);
+    return const_cast<ixion::base_cell*>(get_cell_from_sheets(addr));
 }
 
 const ixion::base_cell* document::get_cell(const ixion::abs_address_t& addr) const
 {
-    if (addr.sheet < 0 || addr.sheet >= m_sheets.size())
-        return NULL;
-
-    return m_sheets[addr.sheet].data.get_cell(addr.row, addr.column);
+    return get_cell_from_sheets(addr);
 }
 
 ixion::abs_address_t document::get_cell_position(const ixion::base_cell* p) const
@@ -154,19 +148,8 @@ sheet* document::append_sheet(const pstring& sheet_name)
 
 void document::calc_formulas()
 {
-    cout << "dirty cells: " << m_dirty_cells.size() << endl;
     ixion::interface::model_context& cxt = get_formula_context();
     ixion::calculate_cells(cxt, m_dirty_cells, 0);
-    ixion::dirty_cells_t::const_iterator itr = m_dirty_cells.begin(), itr_end = m_dirty_cells.end();
-    for (; itr != itr_end; ++itr)
-    {
-        const ixion::formula_cell* cell = *itr;
-        const ixion::formula_result* res = cell->get_result_cache();
-        if (!res)
-            continue;
-
-        cout << cxt.get_cell_name(cell) << ":" << res->str() << endl;
-    }
 }
 
 void document::dump() const
@@ -183,6 +166,14 @@ void document::dump() const
 void document::dump_html(const string& filepath) const
 {
     for_each(m_sheets.begin(), m_sheets.end(), sheet_item::html_printer(filepath));
+}
+
+const ixion::base_cell* document::get_cell_from_sheets(const ixion::abs_address_t& addr) const
+{
+    if (addr.sheet < 0 || static_cast<size_t>(addr.sheet) >= m_sheets.size())
+        return NULL;
+
+    return m_sheets[addr.sheet].data.get_cell(addr.row, addr.column);
 }
 
 void document::insert_dirty_cell(ixion::formula_cell* cell)
