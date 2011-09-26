@@ -33,6 +33,8 @@
 #include <ixion/formula_name_resolver.hpp>
 #include <ixion/matrix.hpp>
 
+#include <sstream>
+
 namespace orcus { namespace model {
 
 formula_context::formula_context(document& doc) :
@@ -91,7 +93,10 @@ ixion::abs_address_t formula_context::get_cell_position(const ixion::base_cell* 
 
 const ixion::formula_cell* formula_context::get_named_expression(const std::string& name) const
 {
-    throw general_error("formula_context::get_named_expression not implemented!");
+    std::ostringstream os;
+    os << "formula_context::get_named_expression not implemented!";
+    os << " (name: " << name << ")";
+    throw general_error(os.str());
     return NULL;
 }
 
