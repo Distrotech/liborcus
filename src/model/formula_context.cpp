@@ -134,6 +134,7 @@ void formula_context::remove_formula_tokens(ixion::sheet_t sheet, size_t identif
 
 const ixion::formula_tokens_t* formula_context::get_shared_formula_tokens(ixion::sheet_t sheet, size_t identifier) const
 {
+    throw general_error("formula_context::get_shared_formula_tokens not implemented!");
     return NULL;
 }
 

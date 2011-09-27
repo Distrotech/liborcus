@@ -44,6 +44,7 @@
 #include <ixion/formula.hpp>
 #include <ixion/formula_result.hpp>
 #include <ixion/matrix.hpp>
+#include <ixion/formula_name_resolver.hpp>
 
 using namespace std;
 
@@ -69,10 +70,28 @@ private:
     size_t m_colsize;
 };
 
+struct delete_shared_tokens : public std::unary_function<sheet::shared_tokens, void>
+{
+    void operator() (const sheet::shared_tokens& v)
+    {
+        delete v.tokens;
+    }
+};
+
 }
 
 const row_t sheet::max_row_limit = 1048575;
 const col_t sheet::max_col_limit = 1023;
+
+sheet::shared_tokens::shared_tokens() : tokens(NULL) {}
+sheet::shared_tokens::shared_tokens(ixion::formula_tokens_t* _tokens, const ixion::abs_range_t& _range) :
+    tokens(_tokens), range(_range) {}
+sheet::shared_tokens::shared_tokens(const shared_tokens& r) : tokens(r.tokens), range(r.range) {}
+
+bool sheet::shared_tokens::operator== (const shared_tokens& r) const
+{
+    return tokens == r.tokens && range == r.range;
+}
 
 sheet::sheet(document& doc, sheet_t sheet) :
     m_doc(doc), m_max_row(0), m_max_col(0), m_sheet(sheet)
@@ -85,6 +104,8 @@ sheet::~sheet()
     for_each(m_cell_formats.begin(), m_cell_formats.end(),
              delete_map_object<cell_format_type>());
     for_each(m_formula_tokens.begin(), m_formula_tokens.end(), delete_element<ixion::formula_tokens_t>());
+    for_each(m_shared_formula_tokens.begin(), m_shared_formula_tokens.end(),
+             delete_shared_tokens());
 }
 
 void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
@@ -151,9 +172,52 @@ void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
 }
 
 void sheet::set_shared_formula(
-    row_t row, col_t col, formula_grammar_t grammar,
-    size_t sindex, const char* p_formula, size_t n_formula, const char* p_range, size_t n_range)
+    row_t row, col_t col, formula_grammar_t grammar, size_t sindex,
+    const char* p_formula, size_t n_formula, const char* p_range, size_t n_range)
 {
+    // Tokenize the formula string and store it.
+    auto_ptr<ixion::formula_tokens_t> tokens(new ixion::formula_tokens_t);
+    formula_context& cxt = m_doc.get_formula_context();
+    ixion::abs_address_t pos(m_sheet, row, col);
+    ixion::parse_formula_string(cxt, pos, p_formula, n_formula, *tokens);
+    ixion::formula_name_resolver_a1 resolver;
+    ixion::formula_name_type name_type = resolver.resolve(p_range, n_range, ixion::abs_address_t());
+    ixion::abs_range_t range;
+    switch (name_type.type)
+    {
+        case ixion::formula_name_type::cell_reference:
+            range.first.sheet = name_type.address.sheet;
+            range.first.row = name_type.address.row;
+            range.first.column = name_type.address.col;
+            range.last = range.first;
+        break;
+        case ixion::formula_name_type::range_reference:
+            range.first.sheet = name_type.range.first.sheet;
+            range.first.row = name_type.range.first.row;
+            range.first.column = name_type.range.first.col;
+            range.last.sheet = name_type.range.last.sheet;
+            range.last.row = name_type.range.last.row;
+            range.last.column = name_type.range.last.col;
+        break;
+        default:
+        {
+            std::ostringstream os;
+            os << "failed to resolve shared formula range. ";
+            os << "(" << string(p_range, n_range) << ")";
+            throw general_error(os.str());
+        }
+    }
+
+    size_t index = m_shared_formula_tokens.size();
+    m_shared_formula_tokens.push_back(shared_tokens(tokens.release(), range));
+
+    row_type* row_store = get_row(row, col);
+    std::auto_ptr<ixion::formula_cell> cell(new ixion::formula_cell(index));
+    cell->set_shared(true);
+    ixion::formula_cell* pcell = cell.get();
+    row_store->insert(col, cell);
+    ixion::register_formula_cell(cxt, pos, pcell);
+    m_doc.insert_dirty_cell(pcell);
 }
 
 void sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
