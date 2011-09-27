@@ -57,6 +57,12 @@ public:
     virtual const ixion::formula_tokens_t* get_formula_tokens(ixion::sheet_t sheet, size_t identifier) const;
     virtual size_t add_formula_tokens(ixion::sheet_t sheet, ixion::formula_tokens_t* p);
     virtual void remove_formula_tokens(ixion::sheet_t sheet, size_t identifier);
+
+    virtual const ixion::formula_tokens_t* get_shared_formula_tokens(ixion::sheet_t sheet, size_t identifier) const;
+    virtual size_t set_formula_tokens_shared(ixion::sheet_t sheet, size_t identifier);
+    virtual ixion::abs_range_t get_shared_formula_range(ixion::sheet_t sheet, size_t identifier) const;
+    virtual void set_shared_formula_range(ixion::sheet_t sheet, size_t identifier, const ixion::abs_range_t& range);
+
     virtual size_t add_string(const char* p, size_t n);
     virtual const std::string* get_string(size_t identifier) const;
 

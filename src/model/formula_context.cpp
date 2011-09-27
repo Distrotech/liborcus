@@ -132,6 +132,26 @@ void formula_context::remove_formula_tokens(ixion::sheet_t sheet, size_t identif
     throw general_error("formula_context::remove_formula_tokens not implemented!");
 }
 
+const ixion::formula_tokens_t* formula_context::get_shared_formula_tokens(ixion::sheet_t sheet, size_t identifier) const
+{
+    return NULL;
+}
+
+size_t formula_context::set_formula_tokens_shared(ixion::sheet_t sheet, size_t identifier)
+{
+    throw general_error("formula_context::set_formula_tokens_shared not implemented!");
+}
+
+ixion::abs_range_t formula_context::get_shared_formula_range(ixion::sheet_t sheet, size_t identifier) const
+{
+    throw general_error("formula_context::get_shared_formula_range not implemented!");
+}
+
+void formula_context::set_shared_formula_range(ixion::sheet_t sheet, size_t identifier, const ixion::abs_range_t& range)
+{
+    throw general_error("formula_context::set_shared_formula_range not implemented!");
+}
+
 size_t formula_context::add_string(const char* p, size_t n)
 {
     throw general_error("formula_context::add_string not implemented!");

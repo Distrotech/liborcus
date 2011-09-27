@@ -38,6 +38,7 @@
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/unordered_map.hpp>
 #include <map>
+#include <deque>
 
 namespace orcus { namespace model {
 
@@ -100,7 +101,7 @@ private:
     const sheet_t m_sheet; /// sheet ID
 
     /** formula token storage for non-shared formula expressions */
-    boost::ptr_vector<ixion::formula_tokens_t> m_formula_tokens;
+    std::deque<ixion::formula_tokens_t*> m_formula_tokens;
 };
 
 }}

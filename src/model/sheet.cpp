@@ -84,6 +84,7 @@ sheet::~sheet()
     for_each(m_rows.begin(), m_rows.end(), delete_map_object<rows_type>());
     for_each(m_cell_formats.begin(), m_cell_formats.end(),
              delete_map_object<cell_format_type>());
+    for_each(m_formula_tokens.begin(), m_formula_tokens.end(), delete_element<ixion::formula_tokens_t>());
 }
 
 void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
@@ -138,7 +139,7 @@ void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
     formula_context& cxt = m_doc.get_formula_context();
     ixion::abs_address_t pos(m_sheet, row, col);
     ixion::parse_formula_string(cxt, pos, p, n, *tokens);
-    m_formula_tokens.push_back(tokens);
+    m_formula_tokens.push_back(tokens.release());
     size_t index = m_formula_tokens.size() - 1;
 
     row_type* row_store = get_row(row, col);
@@ -265,7 +266,7 @@ const ixion::formula_tokens_t* sheet::get_formula_tokens(size_t identifier) cons
 {
     if (identifier >= m_formula_tokens.size())
         return NULL;
-    return &m_formula_tokens[identifier];
+    return m_formula_tokens[identifier];
 }
 
 void sheet::dump() const
@@ -317,7 +318,7 @@ void sheet::dump() const
                     if (index < m_formula_tokens.size())
                     {
                         ostringstream os;
-                        const ixion::formula_tokens_t& t = m_formula_tokens[index];
+                        const ixion::formula_tokens_t& t = *m_formula_tokens[index];
                         ixion::abs_address_t pos(m_sheet, row, col);
                         string formula;
                         ixion::print_formula_tokens(
