@@ -364,14 +364,15 @@ void xlsx_sheet_context::end_element_cell()
     {
         if (m_cur_formula_type == "shared" && m_cur_shared_formula_id >= 0)
         {
-            // normal (non-shared) formula expression
+            // shared formula expression
             mp_sheet->set_shared_formula(
                 m_cur_row, m_cur_col, model::xlsx_2007, m_cur_shared_formula_id,
-                m_cur_formula_str.get(), m_cur_formula_str.size());
+                m_cur_formula_str.get(), m_cur_formula_str.size(),
+                m_cur_formula_ref.get(), m_cur_formula_ref.size());
         }
         else
         {
-            // shared formula expression
+            // normal (non-shared) formula expression
             mp_sheet->set_formula(
                 m_cur_row, m_cur_col, model::xlsx_2007, m_cur_formula_str.get(),
                 m_cur_formula_str.size());

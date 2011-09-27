@@ -209,13 +209,13 @@ public:
      * @param col column ID
      * @param grammar grammar used in the formula expression
      * @param sindex shared formula index (0-based)
-     * @param p pointer to the first character of the raw formula expression
-     *          string.
-     * @param n size of the raw formula expression string.
+     * @param p_formula pointer to the first character of the raw formula
+     *          expression string.
+     * @param n_formula size of the raw formula expression string.
      */
     virtual void set_shared_formula(
         orcus::model::row_t row, orcus::model::col_t col, orcus::model::formula_grammar_t grammar,
-        size_t sindex, const char* p, size_t n) = 0;
+        size_t sindex, const char* p_formula, size_t n_formula, const char* p_range, size_t n_range) = 0;
 
     /**
      * Set shared formula to specified cell by shared formula index.  The

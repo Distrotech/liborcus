@@ -114,7 +114,7 @@ const ixion::formula_tokens_t* document::get_formula_tokens(
     if (sheet_id < 0)
         return NULL;
 
-    if (sheet_id >= m_sheets.size())
+    if (static_cast<size_t>(sheet_id) >= m_sheets.size())
         return NULL;
 
     const sheet& sh = m_sheets[sheet_id].data;
