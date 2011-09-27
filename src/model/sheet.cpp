@@ -208,9 +208,12 @@ void sheet::set_shared_formula(
         }
     }
 
-    size_t index = m_shared_formula_tokens.size();
-    m_shared_formula_tokens.push_back(shared_tokens(tokens.release(), range));
-    set_shared_formula(row, col, index);
+    if (sindex >= m_shared_formula_tokens.size())
+        m_shared_formula_tokens.resize(sindex+1);
+
+    m_shared_formula_tokens[sindex].tokens = tokens.release();
+    m_shared_formula_tokens[sindex].range = range;
+    set_shared_formula(row, col, sindex);
 }
 
 void sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
