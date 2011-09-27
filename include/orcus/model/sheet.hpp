@@ -96,7 +96,7 @@ public:
     ixion::matrix get_range_value(row_t row1, col_t col1, row_t row2, col_t col2) const;
 
     bool find_cell_position(const ixion::base_cell* p, ixion::abs_address_t& pos) const;
-    const ixion::formula_tokens_t* get_formula_tokens(size_t identifier) const;
+    const ixion::formula_tokens_t* get_formula_tokens(size_t identifier, bool shared) const;
 
     void dump() const;
     void dump_html(const ::std::string& filepath) const;

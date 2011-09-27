@@ -210,18 +210,21 @@ void sheet::set_shared_formula(
 
     size_t index = m_shared_formula_tokens.size();
     m_shared_formula_tokens.push_back(shared_tokens(tokens.release(), range));
-
-    row_type* row_store = get_row(row, col);
-    std::auto_ptr<ixion::formula_cell> cell(new ixion::formula_cell(index));
-    cell->set_shared(true);
-    ixion::formula_cell* pcell = cell.get();
-    row_store->insert(col, cell);
-    ixion::register_formula_cell(cxt, pos, pcell);
-    m_doc.insert_dirty_cell(pcell);
+    set_shared_formula(row, col, index);
 }
 
 void sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
 {
+    row_type* row_store = get_row(row, col);
+    std::auto_ptr<ixion::formula_cell> cell(new ixion::formula_cell(sindex));
+    cell->set_shared(true);
+    ixion::formula_cell* pcell = cell.get();
+    row_store->insert(col, cell);
+
+    formula_context& cxt = m_doc.get_formula_context();
+    ixion::abs_address_t pos(m_sheet, row, col);
+    ixion::register_formula_cell(cxt, pos, pcell);
+    m_doc.insert_dirty_cell(pcell);
 }
 
 void sheet::set_formula_result(row_t row, col_t col, const char* p, size_t n)
@@ -327,10 +330,19 @@ bool sheet::find_cell_position(const ixion::base_cell* p, ixion::abs_address_t& 
     return false;
 }
 
-const ixion::formula_tokens_t* sheet::get_formula_tokens(size_t identifier) const
+const ixion::formula_tokens_t* sheet::get_formula_tokens(size_t identifier, bool shared) const
 {
+    if (shared)
+    {
+        if (identifier >= m_shared_formula_tokens.size())
+            return NULL;
+
+        return m_shared_formula_tokens[identifier].tokens;
+    }
+
     if (identifier >= m_formula_tokens.size())
         return NULL;
+
     return m_formula_tokens[identifier];
 }
 

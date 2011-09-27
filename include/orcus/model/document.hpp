@@ -84,7 +84,7 @@ public:
     void get_cells(const ixion::abs_range_t& range, std::vector<const ixion::base_cell*>& cells) const;
 
     ixion::abs_address_t get_cell_position(const ixion::base_cell* p) const;
-    const ixion::formula_tokens_t* get_formula_tokens(sheet_t sheet_id, size_t identifier) const;
+    const ixion::formula_tokens_t* get_formula_tokens(sheet_t sheet_id, size_t identifier, bool shared) const;
     ixion::matrix get_range_value(const ixion::abs_range_t& range) const;
 
     shared_strings* get_shared_strings();

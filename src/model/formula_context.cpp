@@ -118,7 +118,7 @@ ixion::interface::session_handler* formula_context::get_session_handler() const
 
 const ixion::formula_tokens_t* formula_context::get_formula_tokens(ixion::sheet_t sheet, size_t identifier) const
 {
-    return m_doc.get_formula_tokens(sheet, identifier);
+    return m_doc.get_formula_tokens(sheet, identifier, false);
 }
 
 size_t formula_context::add_formula_tokens(ixion::sheet_t sheet, ixion::formula_tokens_t* p)
@@ -134,8 +134,7 @@ void formula_context::remove_formula_tokens(ixion::sheet_t sheet, size_t identif
 
 const ixion::formula_tokens_t* formula_context::get_shared_formula_tokens(ixion::sheet_t sheet, size_t identifier) const
 {
-    throw general_error("formula_context::get_shared_formula_tokens not implemented!");
-    return NULL;
+    return m_doc.get_formula_tokens(sheet, identifier, true);
 }
 
 size_t formula_context::set_formula_tokens_shared(ixion::sheet_t sheet, size_t identifier)

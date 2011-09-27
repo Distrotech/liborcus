@@ -109,7 +109,7 @@ ixion::abs_address_t document::get_cell_position(const ixion::base_cell* p) cons
 }
 
 const ixion::formula_tokens_t* document::get_formula_tokens(
-    sheet_t sheet_id, size_t identifier) const
+    sheet_t sheet_id, size_t identifier, bool shared) const
 {
     if (sheet_id < 0)
         return NULL;
@@ -118,7 +118,7 @@ const ixion::formula_tokens_t* document::get_formula_tokens(
         return NULL;
 
     const sheet& sh = m_sheets[sheet_id].data;
-    return sh.get_formula_tokens(identifier);
+    return sh.get_formula_tokens(identifier, shared);
 }
 
 ixion::matrix document::get_range_value(const ixion::abs_range_t& range) const
