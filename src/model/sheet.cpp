@@ -387,7 +387,7 @@ void sheet::dump() const
                 case ixion::celltype_numeric:
                 {
                     ostringstream os;
-                    os << c.get_value();
+                    os << c.get_value() << " [v]";
                     mx.set_string(row, col, new string(os.str()));
                 }
                 break;
