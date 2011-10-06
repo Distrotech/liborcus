@@ -66,6 +66,9 @@ public:
     virtual size_t add_string(const char* p, size_t n);
     virtual const std::string* get_string(size_t identifier) const;
 
+    virtual ixion::sheet_t get_sheet_index(const char* p, size_t n) const;
+    virtual std::string get_sheet_name(ixion::sheet_t sheet) const;
+
 private:
     model::document& m_doc;
     ixion::config* mp_config;

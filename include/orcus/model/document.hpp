@@ -50,6 +50,7 @@ class document : private ::boost::noncopyable
 {
     friend class sheet;
 
+public:
     /**
      * Single sheet entry which consists of a sheet name and a sheet data.
      * Use the printer function object to print sheet content with for_each
@@ -75,7 +76,6 @@ class document : private ::boost::noncopyable
         };
     };
 
-public:
     document();
     ~document();
 
@@ -112,6 +112,9 @@ public:
      * @param filename base file name
      */
     void dump_html(const ::std::string& filename) const;
+
+    ixion::sheet_t get_sheet_index(const pstring& name) const;
+    pstring get_sheet_name(ixion::sheet_t) const;
 
 private:
     const ixion::base_cell* get_cell_from_sheets(const ixion::abs_address_t& addr) const;

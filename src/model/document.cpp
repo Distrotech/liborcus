@@ -190,6 +190,45 @@ void document::dump_html(const string& filepath) const
     for_each(m_sheets.begin(), m_sheets.end(), sheet_item::html_printer(filepath));
 }
 
+namespace {
+
+class find_sheet_by_name : std::unary_function<document::sheet_item, bool>
+{
+    const pstring& m_name;
+public:
+    find_sheet_by_name(const pstring& name) : m_name(name) {}
+    bool operator() (const document::sheet_item& v) const
+    {
+        return v.name == m_name;
+    }
+};
+
+}
+
+ixion::sheet_t document::get_sheet_index(const pstring& name) const
+{
+    boost::ptr_vector<sheet_item>::const_iterator itr =
+        std::find_if(m_sheets.begin(), m_sheets.end(), find_sheet_by_name(name));
+
+    if (itr == m_sheets.end())
+        return ixion::invalid_sheet;
+
+    size_t pos = std::distance(m_sheets.begin(), itr);
+    return static_cast<ixion::sheet_t>(pos);
+}
+
+pstring document::get_sheet_name(ixion::sheet_t sheet) const
+{
+    if (sheet < 0)
+        return pstring();
+
+    size_t pos = static_cast<size_t>(sheet);
+    if (pos >= m_sheets.size())
+        return pstring();
+
+    return m_sheets[pos].name;
+}
+
 const ixion::base_cell* document::get_cell_from_sheets(const ixion::abs_address_t& addr) const
 {
     if (addr.sheet < 0 || static_cast<size_t>(addr.sheet) >= m_sheets.size())
