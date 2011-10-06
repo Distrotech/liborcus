@@ -301,7 +301,7 @@ ixion::matrix sheet::get_range_value(row_t row1, col_t col1, row_t row2, col_t c
                 break;
                 case ixion::celltype_numeric:
                 case ixion::celltype_formula:
-                    ret.set(row_id, col_id, c.get_value());
+                    ret.set(row_id-row1, col_id-col1, c.get_value());
                 break;
                 default:
                     ;
