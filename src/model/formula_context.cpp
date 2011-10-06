@@ -40,7 +40,7 @@ namespace orcus { namespace model {
 formula_context::formula_context(document& doc) :
     m_doc(doc),
     mp_config(new ixion::config),
-    mp_name_resolver(new ixion::formula_name_resolver_a1) {}
+    mp_name_resolver(new ixion::formula_name_resolver_a1(this)) {}
 
 formula_context::~formula_context()
 {
