@@ -703,8 +703,30 @@ void sheet::dump_html(const string& filepath) const
                         os << c.get_value();
                     break;
                     case ixion::celltype_formula:
-                        // TODO : print formula result.
-                        os << "formula";
+                    {
+                        // print the formula and the formula result.
+                        size_t index = c.get_identifier();
+                        bool shared = static_cast<const ixion::formula_cell&>(c).is_shared();
+                        const ixion::formula_tokens_t* t = NULL;
+                        if (!shared && index < m_formula_tokens.size())
+                            t = m_formula_tokens[index];
+                        else if (shared && index < m_shared_formula_tokens.size())
+                            t = m_shared_formula_tokens[index].tokens;
+
+                        if (t)
+                        {
+                            ixion::abs_address_t pos(m_sheet, row, col);
+                            string formula;
+                            ixion::print_formula_tokens(
+                                m_doc.get_formula_context(), pos, *t, formula);
+                            os << formula;
+
+                            const ixion::formula_result* res =
+                                static_cast<const ixion::formula_cell&>(c).get_result_cache();
+                            if (res)
+                                os << " (" << res->str() << ")";
+                        }
+                    }
                     break;
                     default:
                         ;
