@@ -28,7 +28,7 @@
 #ifndef __ORCUS_CSV_PARSER_HPP__
 #define __ORCUS_CSV_PARSER_HPP__
 
-#define ORCUS_DEBUG_CSV 1
+#define ORCUS_DEBUG_CSV 0
 
 #include <cstdlib>
 #include <cstring>
