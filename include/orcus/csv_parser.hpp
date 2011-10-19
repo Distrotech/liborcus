@@ -399,7 +399,7 @@ void csv_parser<_Handler>::push_cell_value(const char* p, size_t n)
 
     m_handler.cell(p, len);
 #if ORCUS_DEBUG_CSV
-    cout << "(cell:'" << std::string(p, len) << "')";
+    cout << "(cell:'" << std::string(p, len) << "')" << endl;
 #endif
 }
 
