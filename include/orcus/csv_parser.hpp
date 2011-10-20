@@ -91,7 +91,7 @@ private:
     void parse_cell_with_quote(const char* p0, size_t len0);
     void skip_blanks();
 
-    void ensure_cell_buf_size(size_t size_requested);
+    void append_to_cell_buf(const char* p, size_t len);
 
     /**
      * Push cell value to the handler.
@@ -276,10 +276,8 @@ void csv_parser<_Handler>::parse_cell_with_quote(const char* p0, size_t len0)
     assert(is_text_qualifier(cur_char()));
 
     // Push the preceding chars to the temp buffer.
-    ensure_cell_buf_size(len0);
-    char* p_dest = &m_cell_buf[0];
-    std::strncpy(p_dest, p0, len0);
-    m_cell_buf_size = len0;
+    m_cell_buf_size = 0;
+    append_to_cell_buf(p0, len0);
 
     // Parse the rest, until the closing quote.
     next();
@@ -297,11 +295,7 @@ void csv_parser<_Handler>::parse_cell_with_quote(const char* p0, size_t len0)
         if (has_next() && is_text_qualifier(next_char()))
         {
             // double quotation.  Copy the current segment to the cell buffer.
-            ensure_cell_buf_size(m_cell_buf_size + cur_len);
-            p_dest = &m_cell_buf[0];
-            p_dest += m_cell_buf_size;
-            std::strncpy(p_dest, p_cur, cur_len);
-            m_cell_buf_size += cur_len;
+            append_to_cell_buf(p_cur, cur_len);
 
             next(); // to the 2nd quote.
             p_cur = mp_char;
@@ -311,11 +305,7 @@ void csv_parser<_Handler>::parse_cell_with_quote(const char* p0, size_t len0)
 
         // closing quote.  Flush the current segment to the cell
         // buffer, push the value to the handler, and exit normally.
-        ensure_cell_buf_size(m_cell_buf_size + cur_len);
-        p_dest = &m_cell_buf[0];
-        p_dest += m_cell_buf_size;
-        std::strncpy(p_dest, p_cur, cur_len);
-        m_cell_buf_size += cur_len;
+        append_to_cell_buf(p_cur, cur_len);
 
         push_cell_value(&m_cell_buf[0], m_cell_buf_size);
         next();
@@ -338,10 +328,15 @@ void csv_parser<_Handler>::skip_blanks()
 }
 
 template<typename _Handler>
-void csv_parser<_Handler>::ensure_cell_buf_size(size_t size_requested)
+void csv_parser<_Handler>::append_to_cell_buf(const char* p, size_t len)
 {
-    if (m_cell_buf.size() < size_requested)
-        m_cell_buf.resize(size_requested, '\0');
+    size_t size_needed = m_cell_buf_size + len;
+    if (m_cell_buf.size() < size_needed)
+        m_cell_buf.resize(size_needed);
+
+    char* p_dest = &m_cell_buf[m_cell_buf_size];
+    std::strncpy(p_dest, p, len);
+    m_cell_buf_size += len;
 }
 
 template<typename _Handler>
