@@ -91,6 +91,7 @@ private:
     void parse_cell_with_quote(const char* p0, size_t len0);
     void skip_blanks();
 
+    void init_cell_buf();
     void append_to_cell_buf(const char* p, size_t len);
 
     /**
@@ -276,7 +277,7 @@ void csv_parser<_Handler>::parse_cell_with_quote(const char* p0, size_t len0)
     assert(is_text_qualifier(cur_char()));
 
     // Push the preceding chars to the temp buffer.
-    m_cell_buf_size = 0;
+    init_cell_buf();
     append_to_cell_buf(p0, len0);
 
     // Parse the rest, until the closing quote.
@@ -325,6 +326,12 @@ void csv_parser<_Handler>::skip_blanks()
         if (!is_blank(*mp_char))
             break;
     }
+}
+
+template<typename _Handler>
+void csv_parser<_Handler>::init_cell_buf()
+{
+    m_cell_buf_size = 0;
 }
 
 template<typename _Handler>
