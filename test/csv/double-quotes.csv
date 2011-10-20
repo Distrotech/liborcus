@@ -1,1 +1,3 @@
-"normal quote","test""test",not quoted,"normal quote, and foo"
+"normal quote", "test""test", not quoted, "normal quote, and foo"
+"""single literal quote""", """""double literal quote"""""
+"""single literal quote and ""quoted value"" inside""", not quoted but has "quoted value" inside
