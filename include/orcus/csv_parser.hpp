@@ -224,7 +224,7 @@ void csv_parser<_Handler>::quoted_cell()
 {
 #if ORCUS_DEBUG_CSV
     using namespace std;
-    cout << "quoted cell begins" << endl;
+    cout << "--- quoted cell" << endl;
 #endif
     char c = cur_char();
     assert(is_text_qualifier(c));
@@ -239,36 +239,53 @@ void csv_parser<_Handler>::quoted_cell()
 #if ORCUS_DEBUG_CSV
     cout << "'" << c << "'" << endl;
 #endif
-        ++len;
         next();
         if (!has_char())
         {
             // Stream ended prematurely.  Handle it gracefully.
+            ++len;
             push_cell_value(p0, len);
             return;
         }
 
         if (is_text_qualifier(c))
         {
+#if ORCUS_DEBUG_CSV
+            cout << "quote" << endl;
+#endif
             if (has_char())
             {
                 // Check if the next char is also a text qualifier.
                 const char* p = mp_char;
                 if (is_text_qualifier(*p))
                 {
+#if ORCUS_DEBUG_CSV
+                    cout << "double quote" << endl;
+#endif
+                    ++len;
                     parse_cell_with_quote(p0, len);
                     return;
                 }
+                else
+                {
+#if ORCUS_DEBUG_CSV
+                    cout << "single quote" << endl;
+#endif
+                    break;
+                }
             }
-            break;
         }
     }
 
     assert(is_text_qualifier(c));
-    next(); // Skip the closing quote.
+//  next(); // Skip the closing quote.
+#if ORCUS_DEBUG_CSV
+    cout << "char after the quote: '" << cur_char() << "'" << endl;
+#endif
     skip_blanks();
     c = cur_char();
-    if (!is_delim(c) && c != '\n')
+
+    if (has_char() && !is_delim(c) && c != '\n')
     {
         std::ostringstream os;
         os << "A quoted cell value must be immediately followed by a delimiter. ";
@@ -280,6 +297,9 @@ void csv_parser<_Handler>::quoted_cell()
         p0 = NULL;
 
     push_cell_value(p0, len);
+#if ORCUS_DEBUG_CSV
+    cout << "---" << endl;
+#endif
 }
 
 template<typename _Handler>
@@ -296,10 +316,6 @@ void csv_parser<_Handler>::parse_cell_with_quote(const char* p0, size_t len0)
     char* p_dest = &m_cell_buf[0];
     std::strncpy(p_dest, p0, len0);
     m_cell_buf_size = len0;
-
-#if ORCUS_DEBUG_CSV
-    cout << "buffer: " << m_cell_buf << " (" << __LINE__ << ")" << endl;
-#endif
 
     // Parse the rest, until the closing quote.
     next();
@@ -342,16 +358,17 @@ void csv_parser<_Handler>::parse_cell_with_quote(const char* p0, size_t len0)
                 std::strncpy(p_dest, p_cur, cur_len);
                 m_cell_buf_size += cur_len;
 
-#if ORCUS_DEBUG_CSV
-                cout << "buffer: " << m_cell_buf << " (" << __LINE__ << ")" << endl;
-#endif
                 push_cell_value(&m_cell_buf[0], m_cell_buf.size());
+                next();
+                skip_blanks();
+
+#if ORCUS_DEBUG_CSV
+                cout << "---" << endl;
+#endif
+                return;
             }
         }
     }
-#if ORCUS_DEBUG_CSV
-        cout << "---" << endl;
-#endif
 }
 
 template<typename _Handler>
