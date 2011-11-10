@@ -36,7 +36,7 @@ namespace orcus { namespace model {
 class document;
 class cells_in_range_impl;
 
-class formula_context : public ixion::interface::model_context
+class formula_context : public ixion::iface::model_context
 {
 public:
     formula_context(document& doc);
@@ -46,14 +46,14 @@ public:
     virtual const ixion::formula_name_resolver& get_name_resolver() const;
     virtual const ixion::base_cell* get_cell(const ixion::abs_address_t& addr) const;
     virtual ixion::base_cell* get_cell(const ixion::abs_address_t& addr);
-    virtual ixion::interface::cells_in_range* get_cells_in_range(const ixion::abs_range_t& range);
-    virtual ixion::interface::const_cells_in_range* get_cells_in_range(const ixion::abs_range_t& range) const;
+    virtual ixion::iface::cells_in_range* get_cells_in_range(const ixion::abs_range_t& range);
+    virtual ixion::iface::const_cells_in_range* get_cells_in_range(const ixion::abs_range_t& range) const;
     virtual std::string get_cell_name(const ixion::base_cell* p) const;
     virtual ixion::abs_address_t get_cell_position(const ixion::base_cell* p) const;
     virtual const ixion::formula_cell* get_named_expression(const ::std::string& name) const;
     virtual const std::string* get_named_expression_name(const ixion::formula_cell* expr) const;
     virtual ixion::matrix get_range_value(const ixion::abs_range_t& range) const;
-    virtual ixion::interface::session_handler* get_session_handler() const;
+    virtual ixion::iface::session_handler* get_session_handler() const;
     virtual const ixion::formula_tokens_t* get_formula_tokens(ixion::sheet_t sheet, size_t identifier) const;
     virtual size_t add_formula_tokens(ixion::sheet_t sheet, ixion::formula_tokens_t* p);
     virtual void remove_formula_tokens(ixion::sheet_t sheet, size_t identifier);
@@ -75,7 +75,7 @@ private:
     ixion::formula_name_resolver* mp_name_resolver;
 };
 
-class cells_in_range : public ixion::interface::cells_in_range
+class cells_in_range : public ixion::iface::cells_in_range
 {
 public:
     cells_in_range(const ixion::abs_range_t& range, const document& doc);
@@ -86,7 +86,7 @@ private:
     cells_in_range_impl* mp_impl;
 };
 
-class const_cells_in_range : public ixion::interface::const_cells_in_range
+class const_cells_in_range : public ixion::iface::const_cells_in_range
 {
 public:
     const_cells_in_range(const ixion::abs_range_t& range, const document& doc);

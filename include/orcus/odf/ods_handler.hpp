@@ -39,7 +39,7 @@ namespace orcus {
 class tokens;
 class ods_content_xml_context;
 
-namespace model { namespace interface { class factory; }}
+namespace model { namespace iface { class factory; }}
 
 /**
  * Handler for parsing the content.xml part.
@@ -47,7 +47,7 @@ namespace model { namespace interface { class factory; }}
 class ods_content_xml_handler : public xml_stream_handler
 {
 public:
-    ods_content_xml_handler(const tokens& tokens, model::interface::factory* factory);
+    ods_content_xml_handler(const tokens& tokens, model::iface::factory* factory);
     virtual ~ods_content_xml_handler();
 
     virtual void start_document();
@@ -60,7 +60,7 @@ private:
     xml_context_base& get_current_context();
 
 private:
-    model::interface::factory* mp_factory;
+    model::iface::factory* mp_factory;
     typedef ::boost::ptr_vector<xml_context_base> context_stack_type;
     context_stack_type m_context_stack;
 };

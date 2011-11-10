@@ -208,7 +208,7 @@ public:
 
 }
 
-xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, model::interface::sheet* sheet) :
+xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, model::iface::sheet* sheet) :
     xml_context_base(tokens),
     mp_sheet(sheet),
     m_cur_row(0),

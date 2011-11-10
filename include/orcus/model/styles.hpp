@@ -35,7 +35,7 @@
 
 namespace orcus { namespace model {
 
-class styles : public interface::styles
+class styles : public iface::styles
 {
 public:
     struct font

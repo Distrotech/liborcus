@@ -170,7 +170,7 @@ sheet* document::append_sheet(const pstring& sheet_name)
 
 void document::calc_formulas()
 {
-    ixion::interface::model_context& cxt = get_formula_context();
+    ixion::iface::model_context& cxt = get_formula_context();
     ixion::calculate_cells(cxt, m_dirty_cells, 0);
 }
 

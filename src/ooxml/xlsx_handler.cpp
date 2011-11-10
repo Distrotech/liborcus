@@ -36,7 +36,7 @@ using namespace std;
 
 namespace orcus {
 
-xlsx_sheet_xml_handler::xlsx_sheet_xml_handler(const tokens& tokens, model::interface::sheet* sheet)
+xlsx_sheet_xml_handler::xlsx_sheet_xml_handler(const tokens& tokens, model::iface::sheet* sheet)
 {
     m_context_stack.push_back(new xlsx_sheet_context(tokens, sheet));
 }

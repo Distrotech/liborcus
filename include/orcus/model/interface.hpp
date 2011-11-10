@@ -32,7 +32,7 @@
 
 #include "orcus/model/global.hpp"
 
-namespace orcus { namespace model { namespace interface {
+namespace orcus { namespace model { namespace iface {
 
 /**
  * Interface class designed to be derived by the implementor.

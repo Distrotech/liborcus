@@ -48,7 +48,7 @@ class document;
  * This class represents a single sheet instance in the internal document
  * model.
  */
-class sheet : public interface::sheet
+class sheet : public iface::sheet
 {
     static const row_t max_row_limit;
     static const col_t max_col_limit;

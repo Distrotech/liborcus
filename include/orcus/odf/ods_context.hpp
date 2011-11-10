@@ -35,7 +35,7 @@
 
 namespace orcus {
 
-namespace model { namespace interface { class factory; }}
+namespace model { namespace iface { class factory; }}
 
 class ods_content_xml_context : public xml_context_base
 {
@@ -52,7 +52,7 @@ public:
         cell_attr();
     };
 
-    ods_content_xml_context(const tokens& tokens, model::interface::factory* factory);
+    ods_content_xml_context(const tokens& tokens, model::iface::factory* factory);
     virtual ~ods_content_xml_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -77,8 +77,8 @@ private:
     void end_cell();
 
 private:
-    model::interface::factory* mp_factory;
-    ::std::vector<model::interface::sheet*> m_tables;
+    model::iface::factory* mp_factory;
+    ::std::vector<model::iface::sheet*> m_tables;
 
     row_attr    m_row_attr;
     cell_attr   m_cell_attr;

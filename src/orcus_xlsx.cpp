@@ -134,7 +134,7 @@ struct zip_file* get_zip_stream_from_archive(
 
 }
 
-orcus_xlsx::orcus_xlsx(model::interface::factory* factory) :
+orcus_xlsx::orcus_xlsx(model::iface::factory* factory) :
     mp_factory(factory),
     m_archive(NULL),
     m_opc_rel_handler(new opc_relations_context(opc_tokens)) {}
@@ -372,7 +372,7 @@ void orcus_xlsx::read_sheet(const char* file_name, const xlsx_rel_sheet_info* da
     if (buf_read > 0)
     {
         xml_stream_parser parser(ooxml_tokens, &buf[0], buf_read, file_name);
-        model::interface::sheet* sheet = mp_factory->append_sheet(data->name.get(), data->name.size());
+        model::iface::sheet* sheet = mp_factory->append_sheet(data->name.get(), data->name.size());
         ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler(ooxml_tokens, sheet));
         parser.set_handler(handler.get());
         parser.parse();

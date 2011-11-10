@@ -42,17 +42,17 @@ factory::~factory()
 {
 }
 
-interface::shared_strings* factory::get_shared_strings()
+iface::shared_strings* factory::get_shared_strings()
 {
     return mp_document->get_shared_strings();
 }
 
-interface::styles* factory::get_styles()
+iface::styles* factory::get_styles()
 {
     return mp_document->get_styles();
 }
 
-interface::sheet* factory::append_sheet(const char* sheet_name, size_t sheet_name_length)
+iface::sheet* factory::append_sheet(const char* sheet_name, size_t sheet_name_length)
 {
     return mp_document->append_sheet(pstring(sheet_name, sheet_name_length));
 }

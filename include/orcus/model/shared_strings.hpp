@@ -42,7 +42,7 @@ namespace orcus { namespace model {
 /**
  * This class handles global pool of string instances.
  */
-class shared_strings : public interface::shared_strings, private ::boost::noncopyable
+class shared_strings : public iface::shared_strings, private ::boost::noncopyable
 {
     typedef ::std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
 

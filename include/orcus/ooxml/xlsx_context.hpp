@@ -37,7 +37,7 @@
 
 namespace orcus {
 
-namespace model { namespace interface {
+namespace model { namespace iface {
     class sheet;
     class shared_strings;
     class styles;
@@ -49,7 +49,7 @@ namespace model { namespace interface {
 class xlsx_shared_strings_context : public xml_context_base
 {
 public:
-    xlsx_shared_strings_context(const tokens& tokens, model::interface::shared_strings* strings);
+    xlsx_shared_strings_context(const tokens& tokens, model::iface::shared_strings* strings);
     virtual ~xlsx_shared_strings_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -61,7 +61,7 @@ public:
     virtual void characters(const pstring& str);
 
 private:
-    model::interface::shared_strings* mp_strings;
+    model::iface::shared_strings* mp_strings;
     pstring m_cur_str;
     bool m_in_segments;
 };
@@ -73,7 +73,7 @@ private:
 class xlsx_styles_context : public xml_context_base
 {
 public:
-    xlsx_styles_context(const tokens& tokens, model::interface::styles* styles);
+    xlsx_styles_context(const tokens& tokens, model::iface::styles* styles);
     virtual ~xlsx_styles_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -85,7 +85,7 @@ public:
     virtual void characters(const pstring& str);
 
 private:
-    model::interface::styles* mp_styles;
+    model::iface::styles* mp_styles;
     bool m_cell_style_xf;
 };
 

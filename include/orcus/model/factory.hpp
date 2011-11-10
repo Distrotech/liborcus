@@ -34,15 +34,15 @@ namespace orcus { namespace model {
 
 class document;
 
-class factory : public interface::factory
+class factory : public iface::factory
 {
 public:
     factory(document* doc);
     virtual ~factory();
 
-    virtual interface::shared_strings* get_shared_strings();
-    virtual interface::styles* get_styles();
-    virtual interface::sheet* append_sheet(const char* sheet_name, size_t sheet_name_length);
+    virtual iface::shared_strings* get_shared_strings();
+    virtual iface::styles* get_styles();
+    virtual iface::sheet* append_sheet(const char* sheet_name, size_t sheet_name_length);
 
 private:
     document* mp_document;

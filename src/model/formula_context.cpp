@@ -68,13 +68,13 @@ ixion::base_cell* formula_context::get_cell(const ixion::abs_address_t& addr)
     return m_doc.get_cell(addr);
 }
 
-ixion::interface::cells_in_range*
+ixion::iface::cells_in_range*
 formula_context::get_cells_in_range(const ixion::abs_range_t& range)
 {
     return new cells_in_range(range, m_doc);
 }
 
-ixion::interface::const_cells_in_range*
+ixion::iface::const_cells_in_range*
 formula_context::get_cells_in_range(const ixion::abs_range_t& range) const
 {
     return new const_cells_in_range(range, m_doc);
@@ -111,7 +111,7 @@ ixion::matrix formula_context::get_range_value(const ixion::abs_range_t& range) 
     return m_doc.get_range_value(range);
 }
 
-ixion::interface::session_handler* formula_context::get_session_handler() const
+ixion::iface::session_handler* formula_context::get_session_handler() const
 {
     return NULL;
 }

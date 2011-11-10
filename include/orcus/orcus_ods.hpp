@@ -37,12 +37,12 @@ struct zip;
 
 namespace orcus {
 
-namespace model { namespace interface { class factory; }}
+namespace model { namespace iface { class factory; }}
 
 class orcus_ods : private ::boost::noncopyable
 {
 public:
-    orcus_ods(model::interface::factory* factory);
+    orcus_ods(model::iface::factory* factory);
     ~orcus_ods();
 
     void read_file(const char* fpath);
@@ -53,7 +53,7 @@ private:
     void read_content_xml(const uint8_t* p, size_t size);
 
 private:
-    ::boost::shared_ptr<model::interface::factory> mp_factory;
+    ::boost::shared_ptr<model::iface::factory> mp_factory;
 };
 
 }

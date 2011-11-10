@@ -41,7 +41,7 @@
 using namespace std;
 using namespace orcus;
 
-orcus_ods::orcus_ods(model::interface::factory* factory) :
+orcus_ods::orcus_ods(model::iface::factory* factory) :
     mp_factory(factory)
 {
 }
