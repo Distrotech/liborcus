@@ -65,7 +65,7 @@ else
     AC_MSG_RESULT([$with_ixion_path])
     PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$with_ixion_path/lib/pkgconfig
     LD_RUN_PATH=$LD_RUN_PATH:$with_ixion_path/lib
-    CXXFLAGS=`PKG_CONFIG_PATH=$PKG_CONFIG_PATH pkg-config --cflags ixion-0.4`
+    CXXFLAGS=`PKG_CONFIG_PATH=$PKG_CONFIG_PATH pkg-config --cflags libixion-0.4`
     AC_MSG_CHECKING([usability of ixion headers])
     AC_LANG_PUSH([C++])
     AC_TRY_RUN([
@@ -81,8 +81,8 @@ int main()
     AC_LANG_POP([C++])
 fi
 
-PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip ixion-0.4"
-PKG_CONFIG_LDFLAGS="pkg-config --libs libzip ixion-0.4"
+PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip libixion-0.4"
+PKG_CONFIG_LDFLAGS="pkg-config --libs libzip libixion-0.4"
 CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall -std=c++0x"
 
 AC_SUBST(PKG_CONFIG_PATH)
