@@ -31,6 +31,7 @@
 
 #include <ixion/config.hpp>
 #include <ixion/formula_name_resolver.hpp>
+#include <ixion/cell_listener_tracker.hpp>
 #include <ixion/matrix.hpp>
 
 #include <sstream>
@@ -40,7 +41,8 @@ namespace orcus { namespace model {
 formula_context::formula_context(document& doc) :
     m_doc(doc),
     mp_config(new ixion::config),
-    mp_name_resolver(new ixion::formula_name_resolver_a1(this)) {}
+    mp_name_resolver(new ixion::formula_name_resolver_a1(this)),
+    mp_cell_listener_tracker(new ixion::cell_listener_tracker(*this)) {}
 
 formula_context::~formula_context()
 {
@@ -56,6 +58,11 @@ const ixion::config& formula_context::get_config() const
 const ixion::formula_name_resolver& formula_context::get_name_resolver() const
 {
     return *mp_name_resolver;
+}
+
+ixion::cell_listener_tracker& formula_context::get_cell_listener_tracker()
+{
+    return *mp_cell_listener_tracker;
 }
 
 const ixion::base_cell* formula_context::get_cell(const ixion::abs_address_t& addr) const

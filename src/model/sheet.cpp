@@ -414,7 +414,7 @@ void sheet::dump() const
                         const ixion::formula_result* res =
                             static_cast<const ixion::formula_cell&>(c).get_result_cache();
                         if (res)
-                            os << " (" << res->str() << ")";
+                            os << " (" << res->str(m_doc.get_formula_context()) << ")";
 
                         mx.set_string(row, col, new string(os.str()));
                     }
@@ -724,7 +724,7 @@ void sheet::dump_html(const string& filepath) const
                             const ixion::formula_result* res =
                                 static_cast<const ixion::formula_cell&>(c).get_result_cache();
                             if (res)
-                                os << " (" << res->str() << ")";
+                                os << " (" << res->str(m_doc.get_formula_context()) << ")";
                         }
                     }
                     break;

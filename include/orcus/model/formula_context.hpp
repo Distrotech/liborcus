@@ -44,6 +44,7 @@ public:
 
     virtual const ixion::config& get_config() const;
     virtual const ixion::formula_name_resolver& get_name_resolver() const;
+    virtual ixion::cell_listener_tracker& get_cell_listener_tracker();
     virtual const ixion::base_cell* get_cell(const ixion::abs_address_t& addr) const;
     virtual ixion::base_cell* get_cell(const ixion::abs_address_t& addr);
     virtual ixion::iface::cells_in_range* get_cells_in_range(const ixion::abs_range_t& range);
@@ -73,6 +74,7 @@ private:
     model::document& m_doc;
     ixion::config* mp_config;
     ixion::formula_name_resolver* mp_name_resolver;
+    ixion::cell_listener_tracker* mp_cell_listener_tracker;
 };
 
 class cells_in_range : public ixion::iface::cells_in_range
