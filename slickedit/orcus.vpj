@@ -1,0 +1,245 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+	Version="10.0"
+	VendorName="SlickEdit"
+	TemplateName="Other C/C++"
+	WorkingDir=".">
+	<Config
+		Name="Debug"
+		Type="cpp"
+		DebugCallbackName="gdb"
+		OutputFile="%bdorcus"
+		CompilerConfigName="Latest Version">
+		<Menu>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				CaptureOutputWith="ProcessBuffer"
+				OutputExts="*.o"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='cc -c -g %i %defd -o "%bd%n.o" "%f"'/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link">
+				<Exec CmdLine='cc -g -o "%o" %f %libs'/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" build "%w" "%r"'/>
+			</Target>
+			<Target
+				Name="Rebuild"
+				MenuCaption="&amp;Rebuild"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" rebuild "%w" "%r"'/>
+			</Target>
+			<Target
+				Name="Debug"
+				MenuCaption="&amp;Debug"
+				SaveOption="SaveNone"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				RunFromDir="%rw">
+				<Exec CmdLine='vsdebugio -prog "%o"'/>
+			</Target>
+			<Target
+				Name="Execute"
+				MenuCaption="E&amp;xecute"
+				SaveOption="SaveNone"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%o"'/>
+			</Target>
+		</Menu>
+	</Config>
+	<Config
+		Name="Release"
+		Type="cpp"
+		DebugCallbackName="gdb"
+		OutputFile="%bdorcus"
+		CompilerConfigName="Latest Version">
+		<Menu>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveCurrent"
+				OutputExts="*.o"
+				RunFromDir="%rw">
+				<Exec CmdLine='cc -c -O %i %defd -o "%bd%n.o" "%f"'/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link">
+				<Exec CmdLine='cc -O -o "%o" %f %libs'/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" build "%w" "%r"'/>
+			</Target>
+			<Target
+				Name="Rebuild"
+				MenuCaption="&amp;Rebuild"
+				CaptureOutputWith="ProcessBuffer"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" rebuild "%w" "%r"'/>
+			</Target>
+			<Target
+				Name="Debug"
+				MenuCaption="&amp;Debug"
+				SaveOption="SaveNone"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				RunFromDir="%rw">
+				<Exec CmdLine='vsdebugio -prog "%o"'/>
+			</Target>
+			<Target
+				Name="Execute"
+				MenuCaption="E&amp;xecute"
+				SaveOption="SaveNone"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%o"'/>
+			</Target>
+		</Menu>
+	</Config>
+	<Rules Name="Compile">
+		<Rule
+			InputExts="*.s"
+			OutputExts="*.o"
+			LinkObject="1">
+			<Exec CmdLine='as -o "%bd%n.o" "%f"'/>
+		</Rule>
+	</Rules>
+	<CustomFolders>
+		<Folder
+			Name="Source Files"
+			Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
+		</Folder>
+		<Folder
+			Name="Header Files"
+			Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
+		</Folder>
+		<Folder
+			Name="Resource Files"
+			Filters="*.ico;*.cur;*.dlg"/>
+		<Folder
+			Name="Bitmaps"
+			Filters="*.bmp"/>
+		<Folder
+			Name="Other Files"
+			Filters="">
+		</Folder>
+	</CustomFolders>
+	<Files AutoFolders="DirectoryView">
+		<Folder Name="../include">
+			<Folder Name="orcus">
+				<Folder Name="model">
+					<F N="../include/orcus/model/document.hpp"/>
+					<F N="../include/orcus/model/factory.hpp"/>
+					<F N="../include/orcus/model/formula_context.hpp"/>
+					<F N="../include/orcus/model/global.hpp"/>
+					<F N="../include/orcus/model/interface.hpp"/>
+					<F N="../include/orcus/model/shared_strings.hpp"/>
+					<F N="../include/orcus/model/sheet.hpp"/>
+					<F N="../include/orcus/model/styles.hpp"/>
+				</Folder>
+				<Folder Name="odf">
+					<F N="../include/orcus/odf/odf_token_constants.hpp"/>
+					<F N="../include/orcus/odf/odf_token_constants.inl"/>
+					<F N="../include/orcus/odf/odf_tokens.hpp"/>
+					<F N="../include/orcus/odf/ods_context.hpp"/>
+					<F N="../include/orcus/odf/ods_handler.hpp"/>
+					<F N="../include/orcus/odf/para_context.hpp"/>
+				</Folder>
+				<Folder Name="ooxml">
+					<F N="../include/orcus/ooxml/content_types.hpp"/>
+					<F N="../include/orcus/ooxml/global.hpp"/>
+					<F N="../include/orcus/ooxml/ooxml_token_constants.hpp"/>
+					<F N="../include/orcus/ooxml/ooxml_token_constants.inl"/>
+					<F N="../include/orcus/ooxml/ooxml_tokens.hpp"/>
+					<F N="../include/orcus/ooxml/ooxml_types.hpp"/>
+					<F N="../include/orcus/ooxml/opc_context.hpp"/>
+					<F N="../include/orcus/ooxml/opc_token_constants.hpp"/>
+					<F N="../include/orcus/ooxml/opc_token_constants.inl"/>
+					<F N="../include/orcus/ooxml/schemas.hpp"/>
+					<F N="../include/orcus/ooxml/xlsx_context.hpp"/>
+					<F N="../include/orcus/ooxml/xlsx_handler.hpp"/>
+					<F N="../include/orcus/ooxml/xlsx_sheet_context.hpp"/>
+					<F N="../include/orcus/ooxml/xlsx_types.hpp"/>
+					<F N="../include/orcus/ooxml/xlsx_workbook_context.hpp"/>
+				</Folder>
+				<F N="../include/orcus/css_parser.hpp"/>
+				<F N="../include/orcus/csv_parser.hpp"/>
+				<F N="../include/orcus/global.hpp"/>
+				<F N="../include/orcus/orcus_csv.hpp"/>
+				<F N="../include/orcus/orcus_ods.hpp"/>
+				<F N="../include/orcus/orcus_xlsx.hpp"/>
+				<F N="../include/orcus/pstring.hpp"/>
+				<F N="../include/orcus/sax.hpp"/>
+				<F N="../include/orcus/tokens.hpp"/>
+				<F N="../include/orcus/types.hpp"/>
+				<F N="../include/orcus/xml_context.hpp"/>
+				<F N="../include/orcus/xml_handler.hpp"/>
+				<F N="../include/orcus/xml_parser.hpp"/>
+				<F N="../include/orcus/xml_simple_handler.hpp"/>
+			</Folder>
+		</Folder>
+		<Folder Name="../src">
+			<Folder Name="liborcus">
+				<F N="../src/liborcus/global.cpp"/>
+				<F N="../src/liborcus/model_document.cpp"/>
+				<F N="../src/liborcus/model_factory.cpp"/>
+				<F N="../src/liborcus/model_formula_context.cpp"/>
+				<F N="../src/liborcus/model_shared_strings.cpp"/>
+				<F N="../src/liborcus/model_sheet.cpp"/>
+				<F N="../src/liborcus/model_styles.cpp"/>
+				<F N="../src/liborcus/odf_ods_context.cpp"/>
+				<F N="../src/liborcus/odf_ods_handler.cpp"/>
+				<F N="../src/liborcus/odf_para_context.cpp"/>
+				<F N="../src/liborcus/odf_tokens.cpp"/>
+				<F N="../src/liborcus/odf_tokens.inl"/>
+				<F N="../src/liborcus/ooxml_content_types.cpp"/>
+				<F N="../src/liborcus/ooxml_global.cpp"/>
+				<F N="../src/liborcus/ooxml_opc_context.cpp"/>
+				<F N="../src/liborcus/ooxml_opc_tokens.inl"/>
+				<F N="../src/liborcus/ooxml_schemas.cpp"/>
+				<F N="../src/liborcus/ooxml_tokens.cpp"/>
+				<F N="../src/liborcus/ooxml_tokens.inl"/>
+				<F N="../src/liborcus/ooxml_xlsx_context.cpp"/>
+				<F N="../src/liborcus/ooxml_xlsx_handler.cpp"/>
+				<F N="../src/liborcus/ooxml_xlsx_sheet_context.cpp"/>
+				<F N="../src/liborcus/ooxml_xlsx_workbook_context.cpp"/>
+				<F N="../src/liborcus/orcus_css.cpp"/>
+				<F N="../src/liborcus/orcus_csv.cpp"/>
+				<F N="../src/liborcus/orcus_ods.cpp"/>
+				<F N="../src/liborcus/orcus_xlsx.cpp"/>
+				<F N="../src/liborcus/pstring.cpp"/>
+				<F N="../src/liborcus/pstring_intern_test.cpp"/>
+				<F N="../src/liborcus/tokens.cpp"/>
+				<F N="../src/liborcus/xml_context.cpp"/>
+				<F N="../src/liborcus/xml_handler.cpp"/>
+				<F N="../src/liborcus/xml_parser.cpp"/>
+				<F N="../src/liborcus/xml_simple_handler.cpp"/>
+			</Folder>
+			<F N="../src/orcus_csv_main.cpp"/>
+			<F N="../src/orcus_ods_main.cpp"/>
+			<F N="../src/orcus_xlsx_main.cpp"/>
+		</Folder>
+	</Files>
+</Project>
