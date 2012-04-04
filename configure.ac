@@ -61,6 +61,20 @@ if test "z$with_mdds_include_path" = "z"; then
 else
     AC_MSG_RESULT([$with_mdds_include_path])
     DEFINES="$DEFINES -DMDDS_HASH_CONTAINER_BOOST"
+    CPPFLAGS="-I$with_mdds_include_path"
+    AC_MSG_CHECKING([usability of mdds headers])
+    AC_LANG_PUSH([C++])
+    AC_TRY_RUN([
+
+#include <mdds/flat_segment_tree.hpp>
+
+int main()
+{
+    return 0;
+}
+
+    ], [AC_MSG_RESULT(OK)], [AC_MSG_ERROR([mdds headers not usable.  Check your mdds path to make sure it's correct.])])
+    AC_LANG_POP([C++])
 fi
 
 AC_MSG_CHECKING([ixion library path])
@@ -69,8 +83,8 @@ if test "z$with_ixion_path" = "z"; then
     AC_MSG_ERROR([ixion library path not specified.])
 else
     AC_MSG_RESULT([$with_ixion_path])
-    PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$with_ixion_path/lib/pkgconfig
-    LD_RUN_PATH=$LD_RUN_PATH:$with_ixion_path/lib
+    PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$with_ixion_path/lib/pkgconfig:$with_ixion_path/lib64/pkgconfig
+    LD_RUN_PATH=$LD_RUN_PATH:$with_ixion_path/lib:$with_ixion_path/lib64
     CXXFLAGS=`PKG_CONFIG_PATH=$PKG_CONFIG_PATH pkg-config --cflags libixion-0.4`
     AC_MSG_CHECKING([usability of ixion headers])
     AC_LANG_PUSH([C++])
@@ -99,6 +113,7 @@ AC_SUBST(PKG_CONFIG_LDFLAGS)
 
 AC_CONFIG_FILES([Makefile
                  liborcus.pc
+                 setenv
                  include/Makefile
                  include/orcus/Makefile
                  include/orcus/model/Makefile
