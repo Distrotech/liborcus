@@ -20,6 +20,12 @@ pre:
 odf_tokens.cpp: pre
 ooxml_tokens.cpp: pre
 
+clean-generic:
+	rm -f pre
+	rm -f odf_tokens.inl odf_tokens.txt
+	rm -f ooxml_tokens.inl ooxml_tokens.txt
+	rm -f ooxml_opc_tokens.inl ooxml_opc_tokens.txt
+
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	global.cpp \
