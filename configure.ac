@@ -12,6 +12,7 @@ m4_define([orcus_api_version],
 
 AC_PREREQ([2.63])
 AC_INIT([orcus], [orcus_version])
+AM_INIT_AUTOMAKE
 
 AC_ARG_WITH(mdds-include-path,
     AS_HELP_STRING([--with-mdds-include-path], [specify include path for mdds headers.])
@@ -26,8 +27,13 @@ AC_SUBST(ORCUS_API_VERSION)
 
 AC_CONFIG_MACRO_DIR([m4])
 
+for top_builddir in . .. ../.. $ac_auxdir $ac_auxdir/..; do
+    test -f $top_builddir/configure && break
+done
+
 # Checks for programs.
 AC_PROG_CXX
+AC_PROG_LIBTOOL
 
 # Checks for libraries.
 
@@ -91,7 +97,18 @@ AC_SUBST(CPPFLAGS)
 AC_SUBST(PKG_CONFIG_CPPFLAGS)
 AC_SUBST(PKG_CONFIG_LDFLAGS)
 
-AC_OUTPUT(Makefile setenv)
+AC_CONFIG_FILES([Makefile
+                 liborcus.pc
+                 include/Makefile
+                 include/orcus/Makefile
+                 include/orcus/model/Makefile
+                 include/orcus/odf/Makefile
+                 include/orcus/ooxml/Makefile
+                 src/Makefile
+                 src/liborcus/Makefile
+])
+
+AC_OUTPUT
 
 AC_MSG_NOTICE([completed successfully.
 

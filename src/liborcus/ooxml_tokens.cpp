@@ -37,7 +37,7 @@ namespace ooxml {
 
 namespace opc {
 
-#include "opc_tokens.inl"
+#include "ooxml_opc_tokens.inl"
 
 }
 

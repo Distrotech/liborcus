@@ -253,53 +253,49 @@
 				<F N="include/orcus/xml_simple_handler.hpp"/>
 			</Folder>
 		</Folder>
-		<Folder Name="src">
-			<Folder Name="model">
-				<F N="src/model/document.cpp"/>
-				<F N="src/model/factory.cpp"/>
-				<F N="src/model/formula_context.cpp"/>
-				<F N="src/model/shared_strings.cpp"/>
-				<F N="src/model/sheet.cpp"/>
-				<F N="src/model/styles.cpp"/>
-			</Folder>
-			<Folder Name="odf">
-				<F N="src/odf/odf_tokens.cpp"/>
-				<F N="src/odf/odf_tokens.inl"/>
-				<F N="src/odf/ods_context.cpp"/>
-				<F N="src/odf/ods_handler.cpp"/>
-				<F N="src/odf/para_context.cpp"/>
-			</Folder>
-			<Folder Name="ooxml">
-				<F N="src/ooxml/content_types.cpp"/>
-				<F N="src/ooxml/global.cpp"/>
-				<F N="src/ooxml/ooxml_tokens.cpp"/>
-				<F N="src/ooxml/ooxml_tokens.inl"/>
-				<F N="src/ooxml/opc_context.cpp"/>
-				<F N="src/ooxml/opc_tokens.inl"/>
-				<F N="src/ooxml/schemas.cpp"/>
-				<F N="src/ooxml/xlsx_context.cpp"/>
-				<F N="src/ooxml/xlsx_handler.cpp"/>
-				<F N="src/ooxml/xlsx_sheet_context.cpp"/>
-				<F N="src/ooxml/xlsx_workbook_context.cpp"/>
-			</Folder>
-			<F N="src/global.cpp"/>
-			<F N="src/orcus_css.cpp"/>
-			<F N="src/orcus_csv.cpp"/>
-			<F N="src/orcus_csv_main.cpp"/>
-			<F N="src/orcus_ods.cpp"/>
-			<F N="src/orcus_ods_main.cpp"/>
-			<F N="src/orcus_xlsx.cpp"/>
-			<F N="src/orcus_xlsx_main.cpp"/>
-			<F N="src/pstring.cpp"/>
-			<F N="src/pstring_intern_test.cpp"/>
-			<F N="src/tokens.cpp"/>
-			<F N="src/xml_context.cpp"/>
-			<F N="src/xml_handler.cpp"/>
-			<F N="src/xml_parser.cpp"/>
-			<F N="src/xml_simple_handler.cpp"/>
+		<Folder Name="misc">
+			<F N="misc/libzip_test.cpp"/>
 		</Folder>
-		<F
-			N="Makefile.in"
-			Type="Makefile"/>
+		<Folder Name="src">
+			<Folder Name="liborcus">
+				<F N="src/liborcus/global.cpp"/>
+				<F N="src/liborcus/model_document.cpp"/>
+				<F N="src/liborcus/model_factory.cpp"/>
+				<F N="src/liborcus/model_formula_context.cpp"/>
+				<F N="src/liborcus/model_shared_strings.cpp"/>
+				<F N="src/liborcus/model_sheet.cpp"/>
+				<F N="src/liborcus/model_styles.cpp"/>
+				<F N="src/liborcus/odf_ods_context.cpp"/>
+				<F N="src/liborcus/odf_ods_handler.cpp"/>
+				<F N="src/liborcus/odf_para_context.cpp"/>
+				<F N="src/liborcus/odf_tokens.cpp"/>
+				<F N="src/liborcus/odf_tokens.inl"/>
+				<F N="src/liborcus/ooxml_content_types.cpp"/>
+				<F N="src/liborcus/ooxml_global.cpp"/>
+				<F N="src/liborcus/ooxml_opc_context.cpp"/>
+				<F N="src/liborcus/ooxml_opc_tokens.inl"/>
+				<F N="src/liborcus/ooxml_schemas.cpp"/>
+				<F N="src/liborcus/ooxml_tokens.cpp"/>
+				<F N="src/liborcus/ooxml_tokens.inl"/>
+				<F N="src/liborcus/ooxml_xlsx_context.cpp"/>
+				<F N="src/liborcus/ooxml_xlsx_handler.cpp"/>
+				<F N="src/liborcus/ooxml_xlsx_sheet_context.cpp"/>
+				<F N="src/liborcus/ooxml_xlsx_workbook_context.cpp"/>
+				<F N="src/liborcus/orcus_css.cpp"/>
+				<F N="src/liborcus/orcus_csv.cpp"/>
+				<F N="src/liborcus/orcus_ods.cpp"/>
+				<F N="src/liborcus/orcus_xlsx.cpp"/>
+				<F N="src/liborcus/pstring.cpp"/>
+				<F N="src/liborcus/pstring_intern_test.cpp"/>
+				<F N="src/liborcus/tokens.cpp"/>
+				<F N="src/liborcus/xml_context.cpp"/>
+				<F N="src/liborcus/xml_handler.cpp"/>
+				<F N="src/liborcus/xml_parser.cpp"/>
+				<F N="src/liborcus/xml_simple_handler.cpp"/>
+			</Folder>
+			<F N="src/orcus_csv_main.cpp"/>
+			<F N="src/orcus_ods_main.cpp"/>
+			<F N="src/orcus_xlsx_main.cpp"/>
+		</Folder>
 	</Files>
 </Project>

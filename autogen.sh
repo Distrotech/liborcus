@@ -1,6 +1,12 @@
 #!/bin/sh
 
-# Create configure script from configure.ac.
-autoconf || exit 1
+touch ChangeLog
 
-./configure $@
+if [ ! -e ltmain.sh ]; then
+    libtoolize
+fi
+
+aclocal -I m4
+automake --gnu --add-missing
+autoconf
+test x$NOCONFIGURE = x && ./configure $@
