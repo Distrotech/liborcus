@@ -52,7 +52,7 @@ struct csv_parser_config
     bool trim_cell_value:1;
 
     csv_parser_config() :
-        trim_cell_value(true) {}
+        trim_cell_value(false) {}
 };
 
 class csv_parse_error : public std::exception
