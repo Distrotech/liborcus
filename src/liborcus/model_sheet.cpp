@@ -250,30 +250,6 @@ col_t sheet::col_size() const
     return m_max_col + 1;
 }
 
-ixion::base_cell* sheet::get_cell(row_t row, col_t col)
-{
-    return const_cast<ixion::base_cell*>(get_cell_by_position(row, col));
-}
-
-const ixion::base_cell* sheet::get_cell(row_t row, col_t col) const
-{
-    return get_cell_by_position(row, col);
-}
-
-void sheet::get_cells(row_t row1, col_t col1, row_t row2, col_t col2, std::vector<const ixion::base_cell*>& cells) const
-{
-    rows_type::const_iterator itr1 = m_rows.lower_bound(row1);
-    rows_type::const_iterator itr2 = m_rows.upper_bound(row2);
-    for (rows_type::const_iterator itr = itr1; itr != itr2; ++itr)
-    {
-        const row_type& row = *itr->second;
-        row_type::const_iterator itr_row1 = row.lower_bound(col1);
-        row_type::const_iterator itr_row2 = row.upper_bound(col2);
-        for (row_type::const_iterator itr_row = itr_row1; itr_row != itr_row2; ++itr_row)
-            cells.push_back(itr_row->second);
-    }
-}
-
 ixion::matrix sheet::get_range_value(row_t row1, col_t col1, row_t row2, col_t col2) const
 {
     if (row2 < row1 || col2 < col1)
@@ -309,28 +285,6 @@ ixion::matrix sheet::get_range_value(row_t row1, col_t col1, row_t row2, col_t c
         }
     }
     return ret;
-}
-
-bool sheet::find_cell_position(const ixion::base_cell* p, ixion::abs_address_t& pos) const
-{
-    rows_type::const_iterator itr = m_rows.begin(), itr_end = m_rows.end();
-    for (; itr != itr_end; ++itr)
-    {
-        row_t row = itr->first;
-        row_type* cells = itr->second;
-        row_type::const_iterator itr_row = cells->begin(), itr_row_end = cells->end();
-        for (; itr_row != itr_row_end; ++itr_row)
-        {
-            if (itr_row->second == p)
-            {
-                // cell found!
-                col_t col = itr_row->first;
-                pos = ixion::abs_address_t(m_sheet, row, col);
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 const ixion::formula_tokens_t* sheet::get_formula_tokens(size_t identifier, bool shared) const
@@ -768,20 +722,6 @@ void sheet::dump_html(const string& filepath) const
             }
         }
     }
-}
-
-const ixion::base_cell* sheet::get_cell_by_position(row_t row, col_t col) const
-{
-    rows_type::const_iterator itr = m_rows.find(row);
-    if (itr == m_rows.end())
-        return NULL;
-
-    const row_type& cells = *itr->second;
-    row_type::const_iterator itr_row = cells.find(col);
-    if (itr_row == cells.end())
-        return NULL;
-
-    return itr_row->second;
 }
 
 void sheet::update_size(row_t row, col_t col)

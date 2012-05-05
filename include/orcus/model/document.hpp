@@ -79,11 +79,6 @@ public:
     document();
     ~document();
 
-    ixion::base_cell* get_cell(const ixion::abs_address_t& addr);
-    const ixion::base_cell* get_cell(const ixion::abs_address_t& addr) const;
-    void get_cells(const ixion::abs_range_t& range, std::vector<const ixion::base_cell*>& cells) const;
-
-    ixion::abs_address_t get_cell_position(const ixion::base_cell* p) const;
     const ixion::formula_tokens_t* get_formula_tokens(sheet_t sheet_id, size_t identifier, bool shared) const;
     ixion::matrix get_range_value(const ixion::abs_range_t& range) const;
 
@@ -117,7 +112,6 @@ public:
     pstring get_sheet_name(ixion::sheet_t) const;
 
 private:
-    const ixion::base_cell* get_cell_from_sheets(const ixion::abs_address_t& addr) const;
     void insert_dirty_cell(ixion::formula_cell* cell);
 
 private:
@@ -125,7 +119,7 @@ private:
     shared_strings* mp_strings;
     styles* mp_styles;
     formula_context* mp_formula_cxt;
-    ixion::dirty_cells_t m_dirty_cells;
+    ixion::dirty_formula_cells_t m_dirty_cells;
 };
 
 }}

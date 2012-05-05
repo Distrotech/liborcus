@@ -75,39 +75,6 @@ document::~document()
     delete mp_formula_cxt;
 }
 
-ixion::base_cell* document::get_cell(const ixion::abs_address_t& addr)
-{
-    return const_cast<ixion::base_cell*>(get_cell_from_sheets(addr));
-}
-
-const ixion::base_cell* document::get_cell(const ixion::abs_address_t& addr) const
-{
-    return get_cell_from_sheets(addr);
-}
-
-void document::get_cells(const ixion::abs_range_t& range, std::vector<const ixion::base_cell*>& cells) const
-{
-    // For now only a single sheet range is supported.
-    size_t sheet_id = static_cast<size_t>(range.first.sheet);
-    if (sheet_id >= m_sheets.size())
-        return;
-
-    const sheet& sheet = m_sheets[sheet_id].data;
-    sheet.get_cells(range.first.row, range.first.column, range.last.row, range.last.column, cells);
-}
-
-ixion::abs_address_t document::get_cell_position(const ixion::base_cell* p) const
-{
-     boost::ptr_vector<sheet_item>::const_iterator itr = m_sheets.begin(), itr_end = m_sheets.end();
-     ixion::abs_address_t pos;
-     for (; itr != itr_end; ++itr)
-     {
-         if (itr->data.find_cell_position(p, pos))
-             break;
-     }
-     return pos;
-}
-
 const ixion::formula_tokens_t* document::get_formula_tokens(
     sheet_t sheet_id, size_t identifier, bool shared) const
 {
@@ -227,14 +194,6 @@ pstring document::get_sheet_name(ixion::sheet_t sheet) const
         return pstring();
 
     return m_sheets[pos].name;
-}
-
-const ixion::base_cell* document::get_cell_from_sheets(const ixion::abs_address_t& addr) const
-{
-    if (addr.sheet < 0 || static_cast<size_t>(addr.sheet) >= m_sheets.size())
-        return NULL;
-
-    return m_sheets[addr.sheet].data.get_cell(addr.row, addr.column);
 }
 
 void document::insert_dirty_cell(ixion::formula_cell* cell)

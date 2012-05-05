@@ -90,19 +90,14 @@ public:
     row_t row_size() const;
     col_t col_size() const;
 
-    ixion::base_cell* get_cell(row_t row, col_t col);
-    const ixion::base_cell* get_cell(row_t row, col_t col) const;
-    void get_cells(row_t row1, col_t col1, row_t row2, col_t col2, std::vector<const ixion::base_cell*>& cells) const;
     ixion::matrix get_range_value(row_t row1, col_t col1, row_t row2, col_t col2) const;
 
-    bool find_cell_position(const ixion::base_cell* p, ixion::abs_address_t& pos) const;
     const ixion::formula_tokens_t* get_formula_tokens(size_t identifier, bool shared) const;
 
     void dump() const;
     void dump_html(const ::std::string& filepath) const;
 
 private:
-    const ixion::base_cell* get_cell_by_position(row_t row, col_t col) const;
     void update_size(row_t row, col_t col);
     row_type* get_row(row_t row, col_t col);
     size_t get_cell_format(row_t row, col_t col) const;
