@@ -33,6 +33,7 @@
 #include "orcus/pstring.hpp"
 
 #include <ixion/types.hpp>
+#include <ixion/model_context.hpp>
 
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/noncopyable.hpp>
@@ -44,7 +45,8 @@ class styles;
 class formula_context;
 
 /**
- * Internal document representation used only for testing the filters.
+ * Internal document representation used only for testing the filters.  It
+ * uses ixion's model_context implementation to store raw cell values.
  */
 class document : private ::boost::noncopyable
 {
@@ -88,8 +90,8 @@ public:
     styles* get_styles();
     const styles* get_styles() const;
 
-    formula_context& get_formula_context();
-    const formula_context& get_formula_context() const;
+    ixion::model_context& get_model_context();
+    const ixion::model_context& get_model_context() const;
 
     sheet* append_sheet(const pstring& sheet_name);
 
@@ -112,13 +114,13 @@ public:
     pstring get_sheet_name(ixion::sheet_t) const;
 
 private:
-    void insert_dirty_cell(ixion::formula_cell* cell);
+    void insert_dirty_cell(const ixion::abs_address_t& pos);
 
 private:
+    ixion::model_context m_context;
     ::boost::ptr_vector<sheet_item> m_sheets;
     shared_strings* mp_strings;
     styles* mp_styles;
-    formula_context* mp_formula_cxt;
     ixion::dirty_formula_cells_t m_dirty_cells;
 };
 

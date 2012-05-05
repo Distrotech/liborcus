@@ -44,12 +44,12 @@ public:
     virtual const ixion::formula_name_resolver& get_name_resolver() const;
     virtual ixion::cell_listener_tracker& get_cell_listener_tracker();
 
-    virtual bool is_empty(const abs_address_t& addr) const = 0;
-    virtual celltype_t get_celltype(const abs_address_t& addr) const = 0;
-    virtual double get_numeric_value(const abs_address_t& addr) const = 0;
-    virtual size_t get_string_identifier(const abs_address_t& addr) const = 0;
-    virtual const formula_cell* get_formula_cell(const abs_address_t& addr) const = 0;
-    virtual formula_cell* get_formula_cell(const abs_address_t& addr) = 0;
+    virtual bool is_empty(const ixion::abs_address_t& addr) const = 0;
+    virtual ixion::celltype_t get_celltype(const ixion::abs_address_t& addr) const = 0;
+    virtual double get_numeric_value(const ixion::abs_address_t& addr) const = 0;
+    virtual size_t get_string_identifier(const ixion::abs_address_t& addr) const = 0;
+    virtual const ixion::formula_cell* get_formula_cell(const ixion::abs_address_t& addr) const = 0;
+    virtual ixion::formula_cell* get_formula_cell(const ixion::abs_address_t& addr) = 0;
 
     virtual const ixion::formula_cell* get_named_expression(const ::std::string& name) const;
     virtual const std::string* get_named_expression_name(const ixion::formula_cell* expr) const;

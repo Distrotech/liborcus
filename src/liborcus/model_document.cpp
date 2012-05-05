@@ -29,7 +29,6 @@
 #include "orcus/model/sheet.hpp"
 #include "orcus/model/shared_strings.hpp"
 #include "orcus/model/styles.hpp"
-#include "orcus/model/formula_context.hpp"
 
 #include <ixion/formula.hpp>
 #include <ixion/formula_result.hpp>
@@ -63,8 +62,7 @@ void document::sheet_item::html_printer::operator() (const sheet_item& item) con
 
 document::document() :
     mp_strings(new shared_strings),
-    mp_styles(new styles),
-    mp_formula_cxt(new formula_context(*this))
+    mp_styles(new styles)
 {
 }
 
@@ -72,7 +70,6 @@ document::~document()
 {
     delete mp_strings;
     delete mp_styles;
-    delete mp_formula_cxt;
 }
 
 const ixion::formula_tokens_t* document::get_formula_tokens(
@@ -118,14 +115,14 @@ const styles* document::get_styles() const
     return mp_styles;
 }
 
-formula_context& document::get_formula_context()
+ixion::model_context& document::get_model_context()
 {
-    return *mp_formula_cxt;
+    return m_context;
 }
 
-const formula_context& document::get_formula_context() const
+const ixion::model_context& document::get_model_context() const
 {
-    return *mp_formula_cxt;
+    return m_context;
 }
 
 sheet* document::append_sheet(const pstring& sheet_name)
@@ -137,7 +134,7 @@ sheet* document::append_sheet(const pstring& sheet_name)
 
 void document::calc_formulas()
 {
-    ixion::iface::model_context& cxt = get_formula_context();
+    ixion::iface::model_context& cxt = get_model_context();
     ixion::calculate_cells(cxt, m_dirty_cells, 0);
 }
 
@@ -196,9 +193,9 @@ pstring document::get_sheet_name(ixion::sheet_t sheet) const
     return m_sheets[pos].name;
 }
 
-void document::insert_dirty_cell(ixion::formula_cell* cell)
+void document::insert_dirty_cell(const ixion::abs_address_t& pos)
 {
-    m_dirty_cells.insert(cell);
+    m_dirty_cells.insert(pos);
 }
 
 }}

@@ -70,9 +70,6 @@ public:
     typedef ::mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
     typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
 
-    typedef boost::ptr_map<col_t, ixion::base_cell> row_type;
-    typedef ::std::map<row_t, row_type*> rows_type;
-
     sheet(document& doc, sheet_t sheet);
     virtual ~sheet();
 
@@ -99,12 +96,10 @@ public:
 
 private:
     void update_size(row_t row, col_t col);
-    row_type* get_row(row_t row, col_t col);
     size_t get_cell_format(row_t row, col_t col) const;
 
 private:
     document& m_doc;
-    rows_type m_rows;  /// group of rows.
     mutable cell_format_type m_cell_formats;
     row_t m_max_row;
     col_t m_max_col;
