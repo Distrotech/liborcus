@@ -37,6 +37,8 @@
 
 #include <boost/noncopyable.hpp>
 
+namespace ixion { class model_context; }
+
 namespace orcus { namespace model {
 
 /**
@@ -45,6 +47,8 @@ namespace orcus { namespace model {
 class shared_strings : public iface::shared_strings, private ::boost::noncopyable
 {
     typedef ::std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
+
+    shared_strings(); // disabled
 
 public:
     struct format_run
@@ -66,7 +70,7 @@ public:
     // format runs for all shared strings, mapped by string IDs.
     typedef ::std::unordered_map<size_t, format_runs_type*> format_runs_map_type;
 
-    shared_strings();
+    shared_strings(ixion::model_context& cxt);
     virtual ~shared_strings();
 
     virtual size_t append(const char* s, size_t n);
@@ -79,21 +83,12 @@ public:
     virtual void append_segment(const char* s, size_t n);
     virtual size_t commit_segments();
 
-    bool has(size_t index) const;
-    const pstring& get(size_t index) const;
     const format_runs_type* get_format_runs(size_t index) const;
 
     void dump() const;
 
-
 private:
-    size_t append_to_pool(const pstring& ps);
-
-private:
-    /**
-     * String pool, contains only simple unformatted strings.
-     */
-    ::std::vector<pstring> m_strings;
+    ixion::model_context& m_cxt;
 
     /**
      * Container for all format runs of all formatted strings.  Format runs

@@ -61,9 +61,10 @@ void document::sheet_item::html_printer::operator() (const sheet_item& item) con
 }
 
 document::document() :
-    mp_strings(new shared_strings),
+    mp_strings(NULL),
     mp_styles(new styles)
 {
+    mp_strings = new shared_strings(m_context);
 }
 
 document::~document()

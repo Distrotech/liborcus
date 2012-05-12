@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2011 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -29,6 +29,8 @@
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
 
+#include <ixion/model_context.hpp>
+
 #include <iostream>
 #include <algorithm>
 #include <cassert>
@@ -38,7 +40,7 @@ using namespace std;
 namespace orcus { namespace model {
 
 shared_strings::format_run::format_run() :
-    pos(0), size(0), 
+    pos(0), size(0),
     font_size(0),
     bold(false), italic(false) {}
 
@@ -66,14 +68,14 @@ bool shared_strings::format_run::formatted() const
     return false;
 }
 
-shared_strings::shared_strings() :
-    mp_cur_format_runs(NULL)
+shared_strings::shared_strings(ixion::model_context& cxt) :
+    m_cxt(cxt), mp_cur_format_runs(NULL)
 {
 }
 
 shared_strings::~shared_strings()
 {
-    for_each(m_formats.begin(), m_formats.end(), 
+    for_each(m_formats.begin(), m_formats.end(),
              delete_map_object<format_runs_map_type>());
 
     // This pointer should be NULL.
@@ -83,42 +85,12 @@ shared_strings::~shared_strings()
 
 size_t shared_strings::append(const char* s, size_t n)
 {
-    pstring ps = pstring(s, n).intern();
-    return append_to_pool(ps);
+    return m_cxt.add_string(s, n);
 }
 
 size_t shared_strings::add(const char* s, size_t n)
 {
-    pstring ps = pstring(s, n).intern();
-
-    // Check if this string is already in the pool.
-    str_index_map_type::const_iterator itr = m_set.find(ps);
-    if (itr != m_set.end())
-    {
-        // It's already in the pool.
-        return itr->second;
-    }
-
-    // Not in the pool yet.  Insert it into the pool.
-    return append_to_pool(ps);
-}
-
-size_t shared_strings::append_to_pool(const pstring& ps)
-{
-    size_t index = m_strings.size();
-    m_strings.push_back(ps);
-    m_set.insert(str_index_map_type::value_type(ps, index));
-    return index;
-}
-
-bool shared_strings::has(size_t index) const
-{
-    return index < m_strings.size();
-}
-
-const pstring& shared_strings::get(size_t index) const
-{
-    return m_strings[index];
+    return m_cxt.add_string(s, n);
 }
 
 const shared_strings::format_runs_type* shared_strings::get_format_runs(size_t index) const
@@ -163,10 +135,10 @@ void shared_strings::append_segment(const char* s, size_t n)
         // Record the position and size of the format run.
         m_cur_format.pos = start_pos;
         m_cur_format.size = n;
-        
+
         if (!mp_cur_format_runs)
             mp_cur_format_runs = new format_runs_type;
-    
+
         mp_cur_format_runs->push_back(m_cur_format);
         m_cur_format.reset();
     }
@@ -174,9 +146,8 @@ void shared_strings::append_segment(const char* s, size_t n)
 
 size_t shared_strings::commit_segments()
 {
-    pstring ps = pstring(m_cur_segment_string.data(), m_cur_segment_string.size()).intern();
+    size_t sindex = m_cxt.add_string(m_cur_segment_string.data(), m_cur_segment_string.size());
     m_cur_segment_string.clear();
-    size_t sindex = append_to_pool(ps);
     m_formats.insert(format_runs_map_type::value_type(sindex, mp_cur_format_runs));
     mp_cur_format_runs = NULL;
     return sindex;
@@ -199,8 +170,7 @@ public:
 
 void shared_strings::dump() const
 {
-    cout << "number of shared strings: " << m_strings.size() << endl;
-//  for_each(m_strings.begin(), m_strings.end(), print_string());
+    cout << "number of shared strings: " << m_cxt.get_string_count() << endl;
 }
 
 }}
