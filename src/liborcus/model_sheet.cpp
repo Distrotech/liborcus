@@ -315,6 +315,8 @@ void sheet::dump() const
                     }
                 }
                 break;
+                default:
+                    ;
             }
         }
     }
@@ -405,7 +407,7 @@ private:
 };
 
 template<typename _OSTREAM>
-void print_formatted_text(_OSTREAM& strm, const pstring& text, const shared_strings::format_runs_type& formats)
+void print_formatted_text(_OSTREAM& strm, const string& text, const shared_strings::format_runs_type& formats)
 {
     typedef html_elem<_OSTREAM> elem;
 
@@ -419,7 +421,7 @@ void print_formatted_text(_OSTREAM& strm, const pstring& text, const shared_stri
         if (pos < run.pos)
         {
             // flush unformatted text.
-            strm << string(&text[pos], run.pos - pos);
+            strm << text;
             pos = run.pos;
         }
 
@@ -510,60 +512,31 @@ void sheet::dump_html(const string& filepath) const
     const char* p_table = "table";
     const char* p_tr    = "tr";
     const char* p_td    = "td";
-    const char* p_table_attrs      = "border:1px solid rgb(220,220,220); border-collapse:collapse;";
-    const char* p_empty_cell_attrs = "border:1px solid rgb(220,220,220); color:white;";
+    const char* p_table_attrs      = "border:1px solid rgb(220,220,220); border-collapse:collapse; ";
+    const char* p_empty_cell_attrs = "border:1px solid rgb(220,220,220); color:white; ";
+
+    const ixion::model_context& cxt = m_doc.get_model_context();
+    ixion::abs_range_t range = cxt.get_data_range(m_sheet);
 
     {
         elem root(file, p_html);
-#if 0
-        if (m_rows.empty())
-            // nothing to print.
-            return;
 
-        col_t col_count = col_size();
+        if (!range.valid())
+            // Sheet is empty.  Nothing to print.
+            return;
 
         const shared_strings* sstrings = m_doc.get_shared_strings();
 
         elem table(file, p_table, p_table_attrs);
-        rows_type::const_iterator itr = m_rows.begin(), itr_end = m_rows.end();
-        row_t row = 0;
-        for (; itr != itr_end; ++itr, ++row)
+
+        row_t row_count = range.last.row + 1;
+        col_t col_count = range.last.column + 1;
+        for (row_t row = 0; row < row_count; ++row)
         {
-            row_t this_row = itr->first;
-            for (; row < this_row; ++row)
-            {
-                // Insert empty row(s).
-                elem tr(file, p_tr, p_table_attrs);
-                for (col_t col = 0; col < col_count; ++col)
-                {
-                    size_t xf = get_cell_format(row, col);
-                    string style;
-                    if (xf)
-                    {
-                        // Apply cell format.
-                        styles* p_styles = m_doc.get_styles();
-                        const styles::xf* fmt = p_styles->get_cell_xf(xf);
-                        if (fmt)
-                            build_style_string(style, *p_styles, *fmt);
-                    }
-                    style += p_empty_cell_attrs;
-                    elem td(file, p_td, style.c_str());
-                    file << '-'; // empty cell.
-                }
-            }
-            const row_type& row_con = *itr->second;
-            row_type::const_iterator itr_row = row_con.begin(), itr_row_end = row_con.end();
             elem tr(file, p_tr, p_table_attrs);
-            col_t col = 0;
-            for (; itr_row != itr_row_end; ++itr_row, ++col)
+            for (col_t col = 0; col < col_count; ++col)
             {
-                for (; col < itr_row->first; ++col)
-                {
-                    string style;
-                    style += p_empty_cell_attrs;
-                    elem td(file, p_td, style.c_str());
-                    file << '-'; // empty cell.
-                }
+                ixion::abs_address_t pos(m_sheet,row,col);
 
                 size_t xf = get_cell_format(row, col);
                 string style = p_table_attrs;
@@ -576,46 +549,51 @@ void sheet::dump_html(const string& filepath) const
                         build_style_string(style, *p_styles, *fmt);
                 }
 
+                ixion::celltype_t ct = cxt.get_celltype(pos);
+                if (ct == ixion::celltype_empty)
+                {
+                    string style;
+                    style += p_empty_cell_attrs;
+                    elem td(file, p_td, style.c_str());
+                    file << '-'; // empty cell.
+                    continue;
+                }
+
                 elem td(file, p_td, style.c_str());
-                const ixion::base_cell& c = *itr_row->second;
                 ostringstream os;
-                switch (c.get_celltype())
+                switch (ct)
                 {
                     case ixion::celltype_string:
                     {
-                        size_t sindex = c.get_identifier();
-                        const pstring& ps = sstrings->get(sindex);
+                        size_t sindex = cxt.get_string_identifier(pos);
+                        const string* p = cxt.get_string(sindex);
+                        assert(p);
                         const shared_strings::format_runs_type* pformat = sstrings->get_format_runs(sindex);
                         if (pformat)
-                            print_formatted_text<ostringstream>(os, ps, *pformat);
+                            print_formatted_text<ostringstream>(os, *p, *pformat);
                         else
-                            os << ps;
+                            os << *p;
                     }
                     break;
                     case ixion::celltype_numeric:
-                        os << c.get_value();
+                        os << cxt.get_numeric_value(pos);
                     break;
                     case ixion::celltype_formula:
                     {
                         // print the formula and the formula result.
-                        size_t index = c.get_identifier();
-                        bool shared = static_cast<const ixion::formula_cell&>(c).is_shared();
-                        const ixion::formula_tokens_t* t = NULL;
-                        if (!shared && index < m_formula_tokens.size())
-                            t = m_formula_tokens[index];
-                        else if (shared && index < m_shared_formula_tokens.size())
-                            t = m_shared_formula_tokens[index].tokens;
-
+                        const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
+                        assert(cell);
+                        size_t index = cell->get_identifier();
+                        const ixion::formula_tokens_t* t = cxt.get_formula_tokens(m_sheet, index);
                         if (t)
                         {
-                            ixion::abs_address_t pos(m_sheet, row, col);
+                            ostringstream os;
                             string formula;
                             ixion::print_formula_tokens(
                                 m_doc.get_model_context(), pos, *t, formula);
                             os << formula;
 
-                            const ixion::formula_result* res =
-                                static_cast<const ixion::formula_cell&>(c).get_result_cache();
+                            const ixion::formula_result* res = cell->get_result_cache();
                             if (res)
                                 os << " (" << res->str(m_doc.get_model_context()) << ")";
                         }
@@ -627,40 +605,7 @@ void sheet::dump_html(const string& filepath) const
 
                 file << os.str();
             }
-
-            for (; col < col_count; ++col)
-            {
-                string style;
-                style += p_empty_cell_attrs;
-                style += "\"";
-                elem td(file, p_td, style.c_str());
-                file << '-'; // empty cell.
-            }
         }
-
-        row_t row_count = row_size();
-        for (; row < row_count; ++row)
-        {
-            // Insert empty row(s).
-            elem tr(file, p_tr, p_table_attrs);
-            for (col_t col = 0; col < col_count; ++col)
-            {
-                size_t xf = get_cell_format(row, col);
-                string style;
-                if (xf)
-                {
-                    // Apply cell format.
-                    styles* p_styles = m_doc.get_styles();
-                    const styles::xf* fmt = p_styles->get_cell_xf(xf);
-                    if (fmt)
-                        build_style_string(style, *p_styles, *fmt);
-                }
-                style += p_empty_cell_attrs;
-                elem td(file, p_td, style.c_str());
-                file << '-'; // empty cell.
-            }
-        }
-#endif
     }
 }
 
