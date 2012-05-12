@@ -254,22 +254,6 @@ ixion::matrix sheet::get_range_value(row_t row1, col_t col1, row_t row2, col_t c
     return cxt.get_range_value(range);
 }
 
-const ixion::formula_tokens_t* sheet::get_formula_tokens(size_t identifier, bool shared) const
-{
-    if (shared)
-    {
-        if (identifier >= m_shared_formula_tokens.size())
-            return NULL;
-
-        return m_shared_formula_tokens[identifier].tokens;
-    }
-
-    if (identifier >= m_formula_tokens.size())
-        return NULL;
-
-    return m_formula_tokens[identifier];
-}
-
 void sheet::dump() const
 {
     const ixion::model_context& cxt = m_doc.get_model_context();

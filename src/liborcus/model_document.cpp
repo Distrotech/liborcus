@@ -72,19 +72,6 @@ document::~document()
     delete mp_styles;
 }
 
-const ixion::formula_tokens_t* document::get_formula_tokens(
-    sheet_t sheet_id, size_t identifier, bool shared) const
-{
-    if (sheet_id < 0)
-        return NULL;
-
-    if (static_cast<size_t>(sheet_id) >= m_sheets.size())
-        return NULL;
-
-    const sheet& sh = m_sheets[sheet_id].data;
-    return sh.get_formula_tokens(identifier, shared);
-}
-
 ixion::matrix document::get_range_value(const ixion::abs_range_t& range) const
 {
     if (range.first.sheet < 0 || static_cast<size_t>(range.first.sheet) >= m_sheets.size())
