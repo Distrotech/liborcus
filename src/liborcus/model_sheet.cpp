@@ -30,7 +30,6 @@
 #include "orcus/global.hpp"
 #include "orcus/model/shared_strings.hpp"
 #include "orcus/model/document.hpp"
-#include "orcus/model/formula_context.hpp"
 
 #include <iostream>
 #include <fstream>

@@ -152,7 +152,6 @@
 				<Folder Name="model">
 					<F N="../include/orcus/model/document.hpp"/>
 					<F N="../include/orcus/model/factory.hpp"/>
-					<F N="../include/orcus/model/formula_context.hpp"/>
 					<F N="../include/orcus/model/global.hpp"/>
 					<F N="../include/orcus/model/interface.hpp"/>
 					<F N="../include/orcus/model/shared_strings.hpp"/>
@@ -205,7 +204,6 @@
 				<F N="../src/liborcus/global.cpp"/>
 				<F N="../src/liborcus/model_document.cpp"/>
 				<F N="../src/liborcus/model_factory.cpp"/>
-				<F N="../src/liborcus/model_formula_context.cpp"/>
 				<F N="../src/liborcus/model_shared_strings.cpp"/>
 				<F N="../src/liborcus/model_sheet.cpp"/>
 				<F N="../src/liborcus/model_styles.cpp"/>

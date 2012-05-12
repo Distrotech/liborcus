@@ -42,7 +42,6 @@ namespace orcus { namespace model {
 
 class shared_strings;
 class styles;
-class formula_context;
 
 /**
  * Internal document representation used only for testing the filters.  It

@@ -31,7 +31,6 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	global.cpp \
 	model_document.cpp \
 	model_factory.cpp \
-	model_formula_context.cpp \
 	model_shared_strings.cpp \
 	model_sheet.cpp \
 	model_styles.cpp \
