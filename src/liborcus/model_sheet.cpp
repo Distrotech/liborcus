@@ -274,21 +274,22 @@ const ixion::formula_tokens_t* sheet::get_formula_tokens(size_t identifier, bool
 void sheet::dump() const
 {
     const ixion::model_context& cxt = m_doc.get_model_context();
-#if 0
-    size_t row_count = row_size();
-    size_t col_count = col_size();
-    cout << "rows: " << row_count << "  cols: " << col_count << endl;
-
-    if (m_rows.empty())
-        // nothing to print.
+    ixion::abs_range_t range = cxt.get_data_range(m_sheet);
+    if (!range.valid())
+        // Sheet is empty.  Nothing to print.
         return;
+
+    size_t row_count = range.last.row + 1;
+    size_t col_count = range.last.column + 1;
+    cout << "rows: " << row_count << "  cols: " << col_count << endl;
 
     const shared_strings* sstrings = m_doc.get_shared_strings();
 
-    typedef ::mdds::mixed_type_matrix<string, bool> mx_type;
-    mx_type mx(row_count, col_count, ::mdds::matrix_density_sparse_empty);
+    typedef mdds::mixed_type_matrix<string, bool> mx_type;
+    mx_type mx(row_count, col_count, mdds::matrix_density_sparse_empty);
 
     // Put all cell values into matrix as string elements first.
+#if 0
 
     rows_type::const_iterator itr = m_rows.begin(), itr_end = m_rows.end();
     for (; itr != itr_end; ++itr)
