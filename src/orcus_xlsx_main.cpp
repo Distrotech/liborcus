@@ -43,8 +43,8 @@ int main(int argc, char** argv)
     orcus_xlsx app(factory.get());
     app.read_file(argv[1]);
     doc->calc_formulas();
-    doc->dump();
-    doc->dump_html("./obj");
+//  doc->dump();
+//  doc->dump_html("./obj");
 //  pstring::intern::dump();
     pstring::intern::dispose();
     return EXIT_SUCCESS;
