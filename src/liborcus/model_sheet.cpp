@@ -312,32 +312,24 @@ void sheet::dump() const
                 case ixion::celltype_formula:
                 {
                     // print the formula and the formula result.
-#if 0
-                    size_t index = c.get_identifier();
-                    bool shared = static_cast<const ixion::formula_cell&>(c).is_shared();
-                    const ixion::formula_tokens_t* t = NULL;
-                    if (!shared && index < m_formula_tokens.size())
-                        t = m_formula_tokens[index];
-                    else if (shared && index < m_shared_formula_tokens.size())
-                        t = m_shared_formula_tokens[index].tokens;
-
+                    const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
+                    assert(cell);
+                    size_t index = cell->get_identifier();
+                    const ixion::formula_tokens_t* t = cxt.get_formula_tokens(m_sheet, index);
                     if (t)
                     {
                         ostringstream os;
-                        ixion::abs_address_t pos(m_sheet, row, col);
                         string formula;
                         ixion::print_formula_tokens(
                             m_doc.get_model_context(), pos, *t, formula);
                         os << formula;
 
-                        const ixion::formula_result* res =
-                            static_cast<const ixion::formula_cell&>(c).get_result_cache();
+                        const ixion::formula_result* res = cell->get_result_cache();
                         if (res)
                             os << " (" << res->str(m_doc.get_model_context()) << ")";
 
                         mx.set_string(row, col, new string(os.str()));
                     }
-#endif
                 }
                 break;
             }
