@@ -283,43 +283,36 @@ void sheet::dump() const
     size_t col_count = range.last.column + 1;
     cout << "rows: " << row_count << "  cols: " << col_count << endl;
 
-    const shared_strings* sstrings = m_doc.get_shared_strings();
-
     typedef mdds::mixed_type_matrix<string, bool> mx_type;
     mx_type mx(row_count, col_count, mdds::matrix_density_sparse_empty);
 
     // Put all cell values into matrix as string elements first.
-#if 0
-
-    rows_type::const_iterator itr = m_rows.begin(), itr_end = m_rows.end();
-    for (; itr != itr_end; ++itr)
+    for (size_t row = 0; row < row_count; ++row)
     {
-        row_t row = itr->first;
-        const row_type& row_con = *itr->second;
-        row_type::const_iterator itr_row = row_con.begin(), itr_row_end = row_con.end();
-        for (; itr_row != itr_row_end; ++itr_row)
+        for (size_t col = 0; col < col_count; ++col)
         {
-            col_t col = itr_row->first;
-            const ixion::base_cell& c = *itr_row->second;
-            switch (c.get_celltype())
+            ixion::abs_address_t pos(m_sheet,row,col);
+            switch (cxt.get_celltype(pos))
             {
                 case ixion::celltype_string:
                 {
-                    size_t sindex = c.get_identifier();
-                    const pstring& ps = sstrings->get(sindex);
-                    mx.set_string(row, col, new string(ps.get(), ps.size()));
+                    size_t sindex = cxt.get_string_identifier(pos);
+                    const string* p = cxt.get_string(sindex);
+                    assert(p);
+                    mx.set_string(row, col, new string(*p));
                 }
                 break;
                 case ixion::celltype_numeric:
                 {
                     ostringstream os;
-                    os << c.get_value() << " [v]";
+                    os << cxt.get_numeric_value(pos) << " [v]";
                     mx.set_string(row, col, new string(os.str()));
                 }
                 break;
                 case ixion::celltype_formula:
                 {
                     // print the formula and the formula result.
+#if 0
                     size_t index = c.get_identifier();
                     bool shared = static_cast<const ixion::formula_cell&>(c).is_shared();
                     const ixion::formula_tokens_t* t = NULL;
@@ -344,10 +337,9 @@ void sheet::dump() const
 
                         mx.set_string(row, col, new string(os.str()));
                     }
+#endif
                 }
                 break;
-                default:
-                    ;
             }
         }
     }
@@ -410,7 +402,6 @@ void sheet::dump() const
         cout << endl;
         cout << sep << endl;
     }
-#endif
 }
 
 namespace {
