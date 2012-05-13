@@ -103,7 +103,6 @@ sheet::~sheet()
 {
     for_each(m_cell_formats.begin(), m_cell_formats.end(),
              delete_map_object<cell_format_type>());
-    for_each(m_formula_tokens.begin(), m_formula_tokens.end(), delete_element<ixion::formula_tokens_t>());
     for_each(m_shared_formula_tokens.begin(), m_shared_formula_tokens.end(),
              delete_shared_tokens());
 }

@@ -103,9 +103,6 @@ private:
     col_t m_max_col;
     const sheet_t m_sheet; /// sheet ID
 
-    /** formula token storage for non-shared formula expressions */
-    std::deque<ixion::formula_tokens_t*> m_formula_tokens;
-
     shared_tokens_type m_shared_formula_tokens;
 };
 
