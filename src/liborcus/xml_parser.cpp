@@ -30,14 +30,16 @@
 #include "orcus/tokens.hpp"
 #include "orcus/sax.hpp"
 
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-
 #include <iostream>
 #include <vector>
 #include <sstream>
 
 #define USE_LIBXML 0
+
+#if USE_LIBXML
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#endif
 
 using namespace std;
 
