@@ -54,18 +54,6 @@ class sheet : public iface::sheet
     static const col_t max_col_limit;
 
 public:
-    struct shared_tokens
-    {
-        ixion::formula_tokens_t* tokens;
-        ixion::abs_range_t range;
-
-        shared_tokens();
-        shared_tokens(ixion::formula_tokens_t* _tokens, const ixion::abs_range_t& _range);
-        shared_tokens(const shared_tokens& r);
-
-        bool operator== (const shared_tokens& r) const;
-    };
-    typedef std::vector<shared_tokens> shared_tokens_type;
 
     typedef ::mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
     typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
@@ -102,8 +90,6 @@ private:
     row_t m_max_row;
     col_t m_max_col;
     const sheet_t m_sheet; /// sheet ID
-
-    shared_tokens_type m_shared_formula_tokens;
 };
 
 }}
