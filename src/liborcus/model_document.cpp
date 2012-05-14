@@ -117,6 +117,7 @@ sheet* document::append_sheet(const pstring& sheet_name)
 {
     sheet_t sheet = static_cast<sheet_t>(m_sheets.size());
     m_sheets.push_back(new sheet_item(*this, sheet_name.intern(), sheet));
+    m_context.append_sheet(sheet_name.get(), sheet_name.size());
     return &m_sheets.back().data;
 }
 
