@@ -330,6 +330,7 @@ bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
         break;
         case XML_f:
         {
+#if 0
             cout << "cell: row=" << m_cur_row << "; col=" << m_cur_col << "; ";
 
             if (m_cur_shared_formula_id >= 0)
@@ -341,6 +342,7 @@ bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
             }
             else
                 cout << "formula: " << m_cur_str << endl;
+#endif
 
             m_cur_formula_str = m_cur_str;
         }
