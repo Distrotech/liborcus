@@ -195,7 +195,9 @@ void csv_parser<_Handler>::row()
 
         assert(is_delim(c));
         next();
-        skip_blanks();
+
+        if (m_config.trim_cell_value)
+            skip_blanks();
     }
 }
 
