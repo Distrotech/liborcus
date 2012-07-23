@@ -236,6 +236,7 @@
 				<F N="../src/liborcus/xml_simple_handler.cpp"/>
 			</Folder>
 			<F N="../src/orcus_csv_main.cpp"/>
+			<F N="../src/orcus_csv_test.cpp"/>
 			<F N="../src/orcus_ods_main.cpp"/>
 			<F N="../src/orcus_xlsx_main.cpp"/>
 		</Folder>

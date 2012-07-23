@@ -1,1 +1,6 @@
 *.inl
+*.lo
+*.la
+*.o
+Makefile
+Makefile.in
