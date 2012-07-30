@@ -29,8 +29,9 @@
 #define __ORCUS_MODEL_DOCUMENT_HPP__
 
 #include "orcus/model/interface.hpp"
-#include "orcus/model/sheet.hpp"
 #include "orcus/pstring.hpp"
+
+#include "sheet.hpp"
 
 #include <ixion/types.hpp>
 #include <ixion/model_context.hpp>

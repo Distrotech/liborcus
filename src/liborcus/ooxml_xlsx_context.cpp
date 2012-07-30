@@ -32,8 +32,7 @@
 #include "orcus/ooxml/ooxml_token_constants.hpp"
 #include "orcus/ooxml/ooxml_types.hpp"
 #include "orcus/ooxml/schemas.hpp"
-#include "orcus/model/sheet.hpp"
-#include "orcus/model/shared_strings.hpp"
+#include "orcus/model/interface.hpp"
 
 #include <iostream>
 #include <fstream>

@@ -29,13 +29,17 @@
 #define __ORCUS_ODSCONTEXT_HPP__
 
 #include "orcus/xml_context.hpp"
-#include "orcus/model/sheet.hpp"
 
 #include <vector>
 
 namespace orcus {
 
-namespace model { namespace iface { class factory; }}
+namespace model { namespace iface {
+
+class factory;
+class sheet;
+
+}}
 
 class ods_content_xml_context : public xml_context_base
 {

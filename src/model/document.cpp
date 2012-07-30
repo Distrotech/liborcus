@@ -25,10 +25,11 @@
  *
  ************************************************************************/
 
-#include "orcus/model/document.hpp"
-#include "orcus/model/sheet.hpp"
-#include "orcus/model/shared_strings.hpp"
-#include "orcus/model/styles.hpp"
+#include "document.hpp"
+
+#include "sheet.hpp"
+#include "shared_strings.hpp"
+#include "styles.hpp"
 
 #include <ixion/formula.hpp>
 #include <ixion/formula_result.hpp>

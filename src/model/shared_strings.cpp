@@ -25,7 +25,8 @@
  *
  ************************************************************************/
 
-#include "orcus/model/shared_strings.hpp"
+#include "shared_strings.hpp"
+
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
 

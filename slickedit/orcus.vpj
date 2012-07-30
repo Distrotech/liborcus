@@ -150,13 +150,8 @@
 		<Folder Name="../include">
 			<Folder Name="orcus">
 				<Folder Name="model">
-					<F N="../include/orcus/model/document.hpp"/>
-					<F N="../include/orcus/model/factory.hpp"/>
 					<F N="../include/orcus/model/global.hpp"/>
 					<F N="../include/orcus/model/interface.hpp"/>
-					<F N="../include/orcus/model/shared_strings.hpp"/>
-					<F N="../include/orcus/model/sheet.hpp"/>
-					<F N="../include/orcus/model/styles.hpp"/>
 				</Folder>
 				<Folder Name="odf">
 					<F N="../include/orcus/odf/odf_token_constants.hpp"/>
@@ -199,26 +194,21 @@
 				<F N="../include/orcus/xml_simple_handler.hpp"/>
 			</Folder>
 		</Folder>
+		<Folder Name="../misc">
+			<F N="../misc/libzip_test.cpp"/>
+		</Folder>
 		<Folder Name="../src">
 			<Folder Name="liborcus">
 				<F N="../src/liborcus/global.cpp"/>
-				<F N="../src/liborcus/model_document.cpp"/>
-				<F N="../src/liborcus/model_factory.cpp"/>
-				<F N="../src/liborcus/model_shared_strings.cpp"/>
-				<F N="../src/liborcus/model_sheet.cpp"/>
-				<F N="../src/liborcus/model_styles.cpp"/>
 				<F N="../src/liborcus/odf_ods_context.cpp"/>
 				<F N="../src/liborcus/odf_ods_handler.cpp"/>
 				<F N="../src/liborcus/odf_para_context.cpp"/>
 				<F N="../src/liborcus/odf_tokens.cpp"/>
-				<F N="../src/liborcus/odf_tokens.inl"/>
 				<F N="../src/liborcus/ooxml_content_types.cpp"/>
 				<F N="../src/liborcus/ooxml_global.cpp"/>
 				<F N="../src/liborcus/ooxml_opc_context.cpp"/>
-				<F N="../src/liborcus/ooxml_opc_tokens.inl"/>
 				<F N="../src/liborcus/ooxml_schemas.cpp"/>
 				<F N="../src/liborcus/ooxml_tokens.cpp"/>
-				<F N="../src/liborcus/ooxml_tokens.inl"/>
 				<F N="../src/liborcus/ooxml_xlsx_context.cpp"/>
 				<F N="../src/liborcus/ooxml_xlsx_handler.cpp"/>
 				<F N="../src/liborcus/ooxml_xlsx_sheet_context.cpp"/>
@@ -234,6 +224,18 @@
 				<F N="../src/liborcus/xml_handler.cpp"/>
 				<F N="../src/liborcus/xml_parser.cpp"/>
 				<F N="../src/liborcus/xml_simple_handler.cpp"/>
+			</Folder>
+			<Folder Name="model">
+				<F N="../src/model/document.cpp"/>
+				<F N="../src/model/document.hpp"/>
+				<F N="../src/model/factory.cpp"/>
+				<F N="../src/model/factory.hpp"/>
+				<F N="../src/model/shared_strings.cpp"/>
+				<F N="../src/model/shared_strings.hpp"/>
+				<F N="../src/model/sheet.cpp"/>
+				<F N="../src/model/sheet.hpp"/>
+				<F N="../src/model/styles.cpp"/>
+				<F N="../src/model/styles.hpp"/>
 			</Folder>
 			<F N="../src/orcus_csv_main.cpp"/>
 			<F N="../src/orcus_csv_test.cpp"/>

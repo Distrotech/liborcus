@@ -25,11 +25,13 @@
  *
  ************************************************************************/
 
-#include "orcus/model/sheet.hpp"
-#include "orcus/model/styles.hpp"
+#include "sheet.hpp"
+
+#include "styles.hpp"
+#include "shared_strings.hpp"
+#include "document.hpp"
+
 #include "orcus/global.hpp"
-#include "orcus/model/shared_strings.hpp"
-#include "orcus/model/document.hpp"
 
 #include <iostream>
 #include <fstream>

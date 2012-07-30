@@ -25,9 +25,10 @@
  *
  ************************************************************************/
 
-#include "orcus/model/factory.hpp"
-#include "orcus/model/document.hpp"
 #include "orcus/orcus_csv.hpp"
+
+#include "model/factory.hpp"
+#include "model/document.hpp"
 
 #include <boost/scoped_ptr.hpp>
 

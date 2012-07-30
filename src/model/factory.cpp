@@ -25,11 +25,12 @@
  *
  ************************************************************************/
 
-#include "orcus/model/factory.hpp"
-#include "orcus/model/shared_strings.hpp"
-#include "orcus/model/styles.hpp"
-#include "orcus/model/sheet.hpp"
-#include "orcus/model/document.hpp"
+#include "factory.hpp"
+
+#include "shared_strings.hpp"
+#include "styles.hpp"
+#include "sheet.hpp"
+#include "document.hpp"
 
 namespace orcus { namespace model {
 

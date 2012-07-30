@@ -29,11 +29,6 @@ clean-generic:
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	global.cpp \
-	model_document.cpp \
-	model_factory.cpp \
-	model_shared_strings.cpp \
-	model_sheet.cpp \
-	model_styles.cpp \
 	odf_ods_context.cpp \
 	odf_ods_handler.cpp \
 	odf_para_context.cpp \
