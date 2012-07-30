@@ -46,13 +46,13 @@ class ods_content_xml_context : public xml_context_base
 public:
     struct row_attr
     {
-        uint32_t number_rows_repeated;
+        int number_rows_repeated;
         row_attr();
     };
 
     struct cell_attr
     {
-        uint32_t number_columns_repeated;
+        int number_columns_repeated;
         cell_attr();
     };
 
@@ -87,8 +87,8 @@ private:
     row_attr    m_row_attr;
     cell_attr   m_cell_attr;
 
-    uint32_t m_row;
-    uint32_t m_col;
+    int m_row;
+    int m_col;
     size_t m_para_index;
     bool m_has_content;
 };

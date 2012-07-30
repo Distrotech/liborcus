@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,11 +28,12 @@
 #include "orcus/pstring.hpp"
 
 #include <cassert>
-#include <unordered_set>
 #include <iostream>
 #include <vector>
 
 #include <boost/thread/mutex.hpp>
+#include <boost/unordered_set.hpp>
+#include <boost/functional/hash.hpp>
 
 using namespace std;
 
@@ -44,7 +45,7 @@ struct pstring_hash
 {
     size_t operator() (const string* p) const { return m_hash(*p); }
 private:
-    hash<string> m_hash;
+    boost::hash<string> m_hash;
 };
 
 struct pstring_equal_to
@@ -86,7 +87,7 @@ private:
     vector<const string*>& m_store;
 };
 
-typedef unordered_set<string*, pstring_hash, pstring_equal_to> pstring_store_type;
+typedef boost::unordered_set<string*, pstring_hash, pstring_equal_to> pstring_store_type;
 
 /**
  * Internal cache to store interned string instances.

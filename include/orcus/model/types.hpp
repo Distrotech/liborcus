@@ -28,13 +28,12 @@
 #ifndef __ORCUS_MODEL_GLOBAL_HPP__
 #define __ORCUS_MODEL_GLOBAL_HPP__
 
-#include <cstdint>
-
 namespace orcus { namespace model {
 
 typedef int row_t;
 typedef int col_t;
 typedef int sheet_t;
+typedef unsigned char color_elem_t;
 
 enum border_direction_t
 {

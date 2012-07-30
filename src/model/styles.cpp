@@ -44,7 +44,7 @@ styles::color::color() :
 {
 }
 
-styles::color::color(uint8_t _alpha, uint8_t _red, uint8_t _green, uint8_t _blue) :
+styles::color::color(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue) :
     alpha(_alpha), red(_red), green(_green), blue(_blue)
 {
 }
@@ -159,12 +159,12 @@ void styles::set_fill_pattern_type(const char* s, size_t n)
     m_cur_fill.pattern_type = pstring(s, n).intern();
 }
 
-void styles::set_fill_fg_color(uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue)
+void styles::set_fill_fg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
 {
     m_cur_fill.fg_color = color(alpha, red, green, blue);
 }
 
-void styles::set_fill_bg_color(uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue)
+void styles::set_fill_bg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
 {
     m_cur_fill.bg_color = color(alpha, red, green, blue);
 }

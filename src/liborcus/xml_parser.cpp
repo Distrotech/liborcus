@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -91,7 +91,7 @@ void name_to_tokens(const xmlChar* name, xmlns_token_t& nstoken, xml_token_t& to
 
 #if 0
     if (in_ns)
-    {    
+    {
         ostringstream os;
         os << "element name is not properly namespaced: " << name;
         throw xml_stream_parser::parse_error(os.str());
@@ -258,7 +258,7 @@ const char* xml_stream_parser::parse_error::what() const throw()
     return m_msg.c_str();
 }
 
-xml_stream_parser::xml_stream_parser(const tokens& tokens, const uint8_t* content, size_t size, const string& name) :
+xml_stream_parser::xml_stream_parser(const tokens& tokens, const char* content, size_t size, const string& name) :
     m_tokens(tokens), mp_handler(NULL), m_content(content), m_size(size), m_name(name)
 {
 }
@@ -271,12 +271,12 @@ void xml_stream_parser::parse()
 {
 #if USE_LIBXML
     parser_context cxt(*this);
-    xmlSAXUserParseMemory(sax_handler, &cxt, reinterpret_cast<const char*>(m_content), m_size);
+    xmlSAXUserParseMemory(sax_handler, &cxt, m_content, m_size);
 #else
     if (!mp_handler)
         return;
 
-    sax_parser<xml_stream_handler, tokens> sax(reinterpret_cast<const char*>(m_content), m_size, m_tokens, *mp_handler);
+    sax_parser<xml_stream_handler, tokens> sax(m_content, m_size, m_tokens, *mp_handler);
     sax.parse();
 #endif
 }

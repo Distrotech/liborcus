@@ -376,10 +376,10 @@ public:
         {
             case XML_rgb:
             {
-                uint8_t alpha;
-                uint8_t red;
-                uint8_t green;
-                uint8_t blue;
+                model::color_elem_t alpha;
+                model::color_elem_t red;
+                model::color_elem_t green;
+                model::color_elem_t blue;
                 if (!to_rgb(attr.value, alpha, red, green, blue))
                     // invalid RGB color format.
                     return;
@@ -398,7 +398,7 @@ public:
     }
 
 private:
-    bool to_rgb(const pstring& ps, uint8_t& alpha, uint8_t& red, uint8_t& green, uint8_t& blue) const
+    bool to_rgb(const pstring& ps, model::color_elem_t& alpha, model::color_elem_t& red, model::color_elem_t& green, model::color_elem_t& blue) const
     {
         // RGB string is a 8-character string representing 32-bit hexadecimal
         // number e.g. 'FF004A12' (alpha - red - green - blue)

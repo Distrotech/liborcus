@@ -32,7 +32,6 @@
 #include "orcus/model/types.hpp"
 #include "orcus/ooxml/xlsx_types.hpp"
 
-#include <unordered_map>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {

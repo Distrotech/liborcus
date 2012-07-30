@@ -30,7 +30,6 @@
 
 #include <exception>
 #include <string>
-#include <cstdint>
 
 #include "orcus/types.hpp"
 
@@ -91,11 +90,6 @@ struct delete_map_object : public ::std::unary_function<typename T::value_type, 
         delete v.second;
     }
 };
-
-inline ::std::ostream& operator<< (::std::ostream& os, const uint8_t val)
-{
-    return os << static_cast<const unsigned int>(val);
-}
 
 }
 

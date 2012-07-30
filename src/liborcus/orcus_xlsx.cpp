@@ -106,7 +106,7 @@ private:
 };
 
 struct zip_file* get_zip_stream_from_archive(
-    struct zip* archive, const string& filepath, vector<uint8_t>& buf, int& buf_read)
+    struct zip* archive, const string& filepath, vector<char>& buf, int& buf_read)
 {
     buf_read = 0;
     struct zip_stat file_stat;
@@ -124,7 +124,7 @@ struct zip_file* get_zip_stream_from_archive(
         return NULL;
     }
 
-    vector<uint8_t> _buf(file_stat.size, 0);
+    vector<char> _buf(file_stat.size, 0);
     buf_read = zip_fread(zfd, &_buf[0], file_stat.size);
     cout << "actual buffer read: " << buf_read << endl;
 
@@ -272,7 +272,7 @@ void orcus_xlsx::read_content()
 void orcus_xlsx::read_content_types()
 {
     string filepath("[Content_Types].xml");
-    vector<uint8_t> buf;
+    vector<char> buf;
     int buf_read;
     struct zip_file* zfd = get_zip_stream_from_archive(m_archive, filepath, buf, buf_read);
     if (!zfd)
@@ -299,7 +299,7 @@ void orcus_xlsx::read_relations(const char* path, vector<opc_rel_t>& rels)
     string filepath = get_current_dir() + path;
     cout << "file path: " << filepath << endl;
 
-    vector<uint8_t> buf;
+    vector<char> buf;
     int buf_read;
     struct zip_file* zfd = get_zip_stream_from_archive(m_archive, filepath, buf, buf_read);
     if (!zfd)
@@ -324,7 +324,7 @@ void orcus_xlsx::read_workbook(const char* file_name)
     string filepath = get_current_dir() + file_name;
     cout << "read_workbook: file path = " << filepath << endl;
 
-    vector<uint8_t> buf;
+    vector<char> buf;
     int buf_read;
     struct zip_file* zfd = get_zip_stream_from_archive(m_archive, filepath, buf, buf_read);
     if (!zfd)
@@ -357,7 +357,7 @@ void orcus_xlsx::read_sheet(const char* file_name, const xlsx_rel_sheet_info* da
     string filepath = get_current_dir() + file_name;
     cout << "read_sheet: file path = " << filepath << endl;
 
-    vector<uint8_t> buf;
+    vector<char> buf;
     int buf_read;
     struct zip_file* zfd = get_zip_stream_from_archive(m_archive, filepath, buf, buf_read);
     if (!zfd)
@@ -388,7 +388,7 @@ void orcus_xlsx::read_shared_strings(const char* file_name)
     string filepath = get_current_dir() + file_name;
     cout << "read_shared_strings: file path = " << filepath << endl;
 
-    vector<uint8_t> buf;
+    vector<char> buf;
     int buf_read;
     struct zip_file* zfd = get_zip_stream_from_archive(m_archive, filepath, buf, buf_read);
     if (!zfd)
@@ -411,7 +411,7 @@ void orcus_xlsx::read_styles(const char* file_name)
     string filepath = get_current_dir() + file_name;
     cout << "read_styles: file path = " << filepath << endl;
 
-    vector<uint8_t> buf;
+    vector<char> buf;
     int buf_read;
     struct zip_file* zfd = get_zip_stream_from_archive(m_archive, filepath, buf, buf_read);
     if (!zfd)

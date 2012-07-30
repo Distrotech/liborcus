@@ -150,8 +150,8 @@
 		<Folder Name="../include">
 			<Folder Name="orcus">
 				<Folder Name="model">
-					<F N="../include/orcus/model/global.hpp"/>
 					<F N="../include/orcus/model/interface.hpp"/>
+					<F N="../include/orcus/model/types.hpp"/>
 				</Folder>
 				<Folder Name="odf">
 					<F N="../include/orcus/odf/odf_token_constants.hpp"/>

@@ -78,7 +78,7 @@ void orcus_ods::read_content(struct zip* archive)
     struct zip_file* zfd = zip_fopen(archive, file_stat.name, 0);
     if (zfd)
     {
-        vector<uint8_t> buf(file_stat.size, 0);
+        vector<char> buf(file_stat.size, 0);
         int buf_read = zip_fread(zfd, &buf[0], file_stat.size);
         cout << "actual buffer read: " << buf_read << endl;
         if (buf_read > 0)
@@ -87,7 +87,7 @@ void orcus_ods::read_content(struct zip* archive)
     }
 }
 
-void orcus_ods::read_content_xml(const uint8_t* p, size_t size)
+void orcus_ods::read_content_xml(const char* p, size_t size)
 {
     xml_stream_parser parser(odf_tokens, p, size, "content.xml");
     ::boost::scoped_ptr<ods_content_xml_handler> handler(

@@ -76,7 +76,7 @@ public:
             char* endptr;
             long val = strtol(attr.value.str().c_str(), &endptr, 10);
             if (endptr != attr.value.str())
-                m_attr.number_rows_repeated = static_cast<uint32_t>(val);
+                m_attr.number_rows_repeated = val;
         }
     }
 private:
@@ -98,7 +98,7 @@ public:
             char* endptr;
             long val = strtol(attr.value.str().c_str(), &endptr, 10);
             if (endptr != attr.value.str())
-                m_attr.number_columns_repeated = static_cast<uint32_t>(val);
+                m_attr.number_columns_repeated = static_cast<int>(val);
         }
     }
 private:
@@ -339,7 +339,7 @@ void ods_content_xml_context::end_cell()
     ++m_col;
     if (m_cell_attr.number_columns_repeated > 1)
     {
-        uint32_t col_upper = m_col + m_cell_attr.number_columns_repeated - 2;
+        int col_upper = m_col + m_cell_attr.number_columns_repeated - 2;
         for (; m_col <= col_upper; ++m_col)
         {
             if (m_has_content)

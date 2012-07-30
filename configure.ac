@@ -103,7 +103,7 @@ fi
 
 PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip libixion-0.4"
 PKG_CONFIG_LDFLAGS="pkg-config --libs libzip libixion-0.4"
-CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall -std=c++0x"
+CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall"
 
 AC_SUBST(PKG_CONFIG_PATH)
 AC_SUBST(LD_RUN_PATH)

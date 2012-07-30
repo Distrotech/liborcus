@@ -50,7 +50,7 @@ public:
 private:
     void list_content(struct zip* archive) const;
     void read_content(struct zip* archive);
-    void read_content_xml(const uint8_t* p, size_t size);
+    void read_content_xml(const char* p, size_t size);
 
 private:
     ::boost::shared_ptr<model::iface::factory> mp_factory;

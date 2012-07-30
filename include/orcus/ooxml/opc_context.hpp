@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -31,7 +31,7 @@
 #include "orcus/xml_context.hpp"
 #include "orcus/ooxml/ooxml_types.hpp"
 
-#include <unordered_set>
+#include <boost/unordered_set.hpp>
 #include <vector>
 
 namespace orcus {
@@ -44,7 +44,7 @@ namespace orcus {
 class opc_content_types_context : public xml_context_base
 {
 public:
-    typedef ::std::unordered_set<pstring, pstring::hash> ct_cache_type;
+    typedef boost::unordered_set<pstring, pstring::hash> ct_cache_type;
 
     opc_content_types_context(const tokens& _tokens);
     virtual ~opc_content_types_context();
@@ -58,17 +58,17 @@ public:
     virtual void characters(const pstring &str);
 
     /**
-     * Swap stored xml part info with the instance passed as the argument. 
-     * Calling this will clear the storage. 
-     * 
+     * Swap stored xml part info with the instance passed as the argument.
+     * Calling this will clear the storage.
+     *
      * @param parts instance to swap the stored xml part info with.
      */
     void pop_parts(::std::vector<xml_part_t>& parts);
 
     /**
-     * Swap stored xml extension info with the instance passed as the 
-     * argument. Calling this will clear the storage. 
-     * 
+     * Swap stored xml extension info with the instance passed as the
+     * argument. Calling this will clear the storage.
+     *
      * @param parts instance to swap the stored extension info with.
      */
     void pop_ext_defaults(::std::vector<xml_part_t>& ext_defaults);
@@ -85,7 +85,7 @@ private:
 class opc_relations_context : public xml_context_base
 {
 public:
-    typedef ::std::unordered_set<pstring, pstring::hash> schema_cache_type;
+    typedef boost::unordered_set<pstring, pstring::hash> schema_cache_type;
 
     opc_relations_context(const tokens& _tokens);
     virtual ~opc_relations_context();

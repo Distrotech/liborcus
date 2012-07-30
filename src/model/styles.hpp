@@ -51,13 +51,13 @@ public:
 
     struct color
     {
-        uint8_t alpha;
-        uint8_t red;
-        uint8_t green;
-        uint8_t blue;
+        color_elem_t alpha;
+        color_elem_t red;
+        color_elem_t green;
+        color_elem_t blue;
 
         color();
-        color(uint8_t _alpha, uint8_t _red, uint8_t _green, uint8_t _blue);
+        color(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue);
 
         void reset();
     };
@@ -134,8 +134,8 @@ public:
 
     virtual void set_fill_count(size_t n);
     virtual void set_fill_pattern_type(const char* s, size_t n);
-    virtual void set_fill_fg_color(uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue);
-    virtual void set_fill_bg_color(uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue);
+    virtual void set_fill_fg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
+    virtual void set_fill_bg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
     virtual void commit_fill();
 
     virtual void set_border_count(size_t n);

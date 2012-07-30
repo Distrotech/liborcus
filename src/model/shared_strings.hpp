@@ -33,9 +33,9 @@
 
 #include <cstdlib>
 #include <vector>
-#include <unordered_map>
 
 #include <boost/noncopyable.hpp>
+#include <boost/unordered_map.hpp>
 
 namespace ixion { class model_context; }
 
@@ -46,7 +46,7 @@ namespace orcus { namespace model {
  */
 class shared_strings : public iface::shared_strings, private ::boost::noncopyable
 {
-    typedef ::std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
+    typedef boost::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
 
     shared_strings(); // disabled
 
@@ -68,7 +68,7 @@ public:
     // format runs for single string
     typedef ::std::vector<format_run> format_runs_type;
     // format runs for all shared strings, mapped by string IDs.
-    typedef ::std::unordered_map<size_t, format_runs_type*> format_runs_map_type;
+    typedef boost::unordered_map<size_t, format_runs_type*> format_runs_map_type;
 
     shared_strings(ixion::model_context& cxt);
     virtual ~shared_strings();
