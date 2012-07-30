@@ -101,8 +101,10 @@ int main()
     AC_LANG_POP([C++])
 fi
 
-PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip libixion-0.4"
-PKG_CONFIG_LDFLAGS="pkg-config --libs libzip libixion-0.4"
+PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip"
+PKG_CONFIG_LDFLAGS="pkg-config --libs libzip"
+PKG_CONFIG_CPPFLAGS_MODEL="pkg-config --cflags libixion-0.4"
+PKG_CONFIG_LDFLAGS_MODEL="pkg-config --libs libixion-0.4"
 CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall"
 
 AC_SUBST(PKG_CONFIG_PATH)
@@ -110,6 +112,8 @@ AC_SUBST(LD_RUN_PATH)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(PKG_CONFIG_CPPFLAGS)
 AC_SUBST(PKG_CONFIG_LDFLAGS)
+AC_SUBST(PKG_CONFIG_CPPFLAGS_MODEL)
+AC_SUBST(PKG_CONFIG_LDFLAGS_MODEL)
 
 AC_CONFIG_FILES([Makefile
                  liborcus.pc
