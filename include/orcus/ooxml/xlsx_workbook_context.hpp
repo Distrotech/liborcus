@@ -29,7 +29,7 @@
 #define __ORCUS_XLSX_WORKBOOK_CONTEXT_HPP__
 
 #include "orcus/xml_context.hpp"
-#include "orcus/model/global.hpp"
+#include "orcus/model/types.hpp"
 #include "orcus/ooxml/xlsx_types.hpp"
 
 #include <boost/unordered_map.hpp>

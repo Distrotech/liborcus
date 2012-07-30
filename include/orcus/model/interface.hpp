@@ -30,7 +30,7 @@
 
 #include <cstdlib>
 
-#include "orcus/model/global.hpp"
+#include "types.hpp"
 
 namespace orcus { namespace model { namespace iface {
 
