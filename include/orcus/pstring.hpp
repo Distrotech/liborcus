@@ -28,6 +28,8 @@
 #ifndef __ORCUS_PSTRING_HPP__
 #define __ORCUS_PSTRING_HPP__
 
+#include "orcus/env.hpp"
+
 #include <cstdlib>
 #include <string>
 #include <cstring>
@@ -39,7 +41,7 @@ namespace orcus {
  * This string class does not store any char arrays, but it only stores the
  * position of the first char in the memory, and the size of the char array.
  */
-class pstring
+class ORCUS_DLLPUBLIC pstring
 {
     friend ::std::ostream& operator<< (::std::ostream& os, const pstring& str);
 

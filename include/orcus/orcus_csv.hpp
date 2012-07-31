@@ -28,6 +28,8 @@
 #ifndef __ORCUS_ORCUS_CSV_HPP__
 #define __ORCUS_ORCUS_CSV_HPP__
 
+#include "orcus/env.hpp"
+
 #include <string>
 #include <boost/shared_ptr.hpp>
 
@@ -37,7 +39,7 @@ namespace model { namespace iface {
     class factory;
 }}
 
-class orcus_csv
+class ORCUS_DLLPUBLIC orcus_csv
 {
 public:
     orcus_csv(model::iface::factory* factory);

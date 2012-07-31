@@ -114,7 +114,7 @@ int main()
     fi
 fi
 
-CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -Wall"
+CPPFLAGS="$DEFINES -Os -fvisibility=hidden -I./include -I$with_mdds_include_path -Wall"
 
 if test "z$enable_symbols" = "zyes"; then
     CPPFLAGS="$CPPFLAGS -g"

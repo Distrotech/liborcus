@@ -29,6 +29,7 @@
 #define __ORCUS_ORCUS_ODS_HPP__
 
 #include "orcus/model/interface.hpp"
+#include "orcus/env.hpp"
 
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
@@ -39,7 +40,7 @@ namespace orcus {
 
 namespace model { namespace iface { class factory; }}
 
-class orcus_ods : private ::boost::noncopyable
+class ORCUS_DLLPUBLIC orcus_ods : private ::boost::noncopyable
 {
 public:
     orcus_ods(model::iface::factory* factory);

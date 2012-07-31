@@ -30,6 +30,7 @@
 
 #include "orcus/model/interface.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/env.hpp"
 
 #include "sheet.hpp"
 
@@ -48,7 +49,7 @@ class styles;
  * Internal document representation used only for testing the filters.  It
  * uses ixion's model_context implementation to store raw cell values.
  */
-class document : private ::boost::noncopyable
+class ORCUS_DLLPUBLIC document : private ::boost::noncopyable
 {
     friend class sheet;
 

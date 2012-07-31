@@ -180,6 +180,7 @@
 				</Folder>
 				<F N="../include/orcus/css_parser.hpp"/>
 				<F N="../include/orcus/csv_parser.hpp"/>
+				<F N="../include/orcus/env.hpp"/>
 				<F N="../include/orcus/global.hpp"/>
 				<F N="../include/orcus/orcus_csv.hpp"/>
 				<F N="../include/orcus/orcus_ods.hpp"/>

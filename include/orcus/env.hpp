@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011 Kohei Yoshida
+ * Copyright (c) 2012 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,30 +25,32 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_MODEL_FACTORY_HPP__
-#define __ORCUS_MODEL_FACTORY_HPP__
+#ifndef __ORCUS_ENV_HPP__
+#define __ORCUS_ENV_HPP__
 
-#include "orcus/model/interface.hpp"
-#include "orcus/env.hpp"
-
-namespace orcus { namespace model {
-
-class document;
-
-class ORCUS_DLLPUBLIC factory : public iface::factory
-{
-public:
-    factory(document* doc);
-    virtual ~factory();
-
-    virtual iface::shared_strings* get_shared_strings();
-    virtual iface::styles* get_styles();
-    virtual iface::sheet* append_sheet(const char* sheet_name, size_t sheet_name_length);
-
-private:
-    document* mp_document;
-};
-
-}}
+#if defined _WIN32 || defined __CYGWIN__
+  #ifdef __ORCUS_BUILDING_DLL
+    #ifdef __GNUC__
+      #define ORCUS_DLLPUBLIC __attribute__ ((dllexport))
+    #else
+      #define ORCUS_DLLPUBLIC __declspec(dllexport)
+    #endif
+  #else
+    #ifdef __GNUC__
+      #define ORCUS_DLLPUBLIC __attribute__ ((dllimport))
+    #else
+      #define ORCUS_DLLPUBLIC __declspec(dllimport)
+    #endif
+  #endif
+  #define ORCUS_DLLLOCAL
+#else
+  #if __GNUC__ >= 4
+    #define ORCUS_DLLPUBLIC __attribute__ ((visibility ("default")))
+    #define ORCUS_DLLLOCAL  __attribute__ ((visibility ("hidden")))
+  #else
+    #define ORCUS_DLLPUBLIC
+    #define ORCUS_DLLLOCAL
+  #endif
+#endif
 
 #endif

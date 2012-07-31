@@ -30,6 +30,7 @@
 
 #include "orcus/ooxml/schemas.hpp"
 #include "orcus/xml_simple_handler.hpp"
+#include "orcus/env.hpp"
 
 #include <boost/noncopyable.hpp>
 #include <vector>
@@ -42,7 +43,7 @@ namespace model { namespace iface { class factory; }}
 
 struct xlsx_rel_sheet_info;
 
-class orcus_xlsx : public ::boost::noncopyable
+class ORCUS_DLLPUBLIC orcus_xlsx : public ::boost::noncopyable
 {
 public:
     orcus_xlsx(model::iface::factory* factory);
