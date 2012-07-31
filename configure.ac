@@ -141,6 +141,7 @@ AM_CONDITIONAL(BUILD_MODEL, test "z$enable_model" != "zno")
 
 AC_CONFIG_FILES([Makefile
                  liborcus.pc
+                 VERSION
                  setenv
                  include/Makefile
                  include/orcus/Makefile
