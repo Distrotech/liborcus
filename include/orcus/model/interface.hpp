@@ -31,6 +31,7 @@
 #include <cstdlib>
 
 #include "types.hpp"
+#include "../env.hpp"
 
 namespace orcus { namespace model { namespace iface {
 
@@ -40,7 +41,7 @@ namespace orcus { namespace model { namespace iface {
 class shared_strings
 {
 public:
-    virtual ~shared_strings() = 0;
+    ORCUS_DLLPUBLIC virtual ~shared_strings() = 0;
 
     /**
      * Append new string to the string list.  Order of insertion is important
@@ -77,15 +78,13 @@ public:
     virtual size_t commit_segments() = 0;
 };
 
-inline shared_strings::~shared_strings() {}
-
 /**
  * Interface for styles.
  */
 class styles
 {
 public:
-    virtual ~styles() = 0;
+    ORCUS_DLLPUBLIC virtual ~styles() = 0;
 
     // font
 
@@ -137,15 +136,13 @@ public:
     virtual void commit_cell_style() = 0;
 };
 
-inline styles::~styles() {}
-
 /**
  * Interface for sheet.
  */
 class sheet
 {
 public:
-    virtual ~sheet() = 0;
+    ORCUS_DLLPUBLIC virtual ~sheet() = 0;
 
     /**
      * Set raw string value to a cell and have the implementation
@@ -236,8 +233,6 @@ public:
         orcus::model::row_t row, orcus::model::col_t col, const char* p, size_t n) = 0;
 };
 
-inline sheet::~sheet() {}
-
 /**
  * This interface provides the filters a means to instantiate concrete
  * classes that implement the above interfaces.  The client code never has
@@ -251,14 +246,12 @@ inline sheet::~sheet() {}
 class factory
 {
 public:
-    virtual ~factory() = 0;
+    ORCUS_DLLPUBLIC virtual ~factory() = 0;
 
     virtual shared_strings* get_shared_strings() = 0;
     virtual styles* get_styles() = 0;
     virtual sheet* append_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
 };
-
-inline factory::~factory() {}
 
 }}}
 

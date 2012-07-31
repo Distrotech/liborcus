@@ -201,6 +201,7 @@
 		<Folder Name="../src">
 			<Folder Name="liborcus">
 				<F N="../src/liborcus/global.cpp"/>
+				<F N="../src/liborcus/model_interface.cpp"/>
 				<F N="../src/liborcus/odf_ods_context.cpp"/>
 				<F N="../src/liborcus/odf_ods_handler.cpp"/>
 				<F N="../src/liborcus/odf_para_context.cpp"/>

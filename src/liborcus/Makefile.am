@@ -9,6 +9,7 @@ INCLUDES = -I$(top_srcdir)/include
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	global.cpp \
+	model_interface.cpp \
 	odf_ods_context.cpp \
 	odf_ods_handler.cpp \
 	odf_para_context.cpp \
