@@ -27,6 +27,11 @@ AC_ARG_ENABLE(model,
         [disable the model implementation part of orcus.  Note that the command line utilities will not be built when this is disabled.])
 )
 
+AC_ARG_ENABLE(symbols,
+    AS_HELP_STRING([--enable-symbols],
+        [enable debug symbols.])
+)
+
 ORCUS_API_VERSION=orcus_api_version
 AC_SUBST(ORCUS_API_VERSION)
 
@@ -113,7 +118,11 @@ PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip"
 PKG_CONFIG_LDFLAGS="pkg-config --libs libzip"
 PKG_CONFIG_CPPFLAGS_MODEL="pkg-config --cflags libixion-0.4"
 PKG_CONFIG_LDFLAGS_MODEL="pkg-config --libs libixion-0.4"
-CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -g -Wall"
+CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -Wall"
+
+if test "z$enable_symbols" = "zyes"; then
+    CPPFLAGS="$CPPFLAGS -g"
+fi
 
 AC_SUBST(PKG_CONFIG_PATH)
 AC_SUBST(LD_RUN_PATH)
