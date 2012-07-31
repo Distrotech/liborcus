@@ -22,6 +22,11 @@ AC_ARG_WITH(ixion-path,
     AS_HELP_STRING([--with-ixion-path], [specify path to ixion library.])
 ,)
 
+AC_ARG_ENABLE(model,
+    AS_HELP_STRING([--disable-model],
+        [disable the model implementation part of orcus.  Note that the command line utilities will not be built when this is disabled.])
+)
+
 ORCUS_API_VERSION=orcus_api_version
 AC_SUBST(ORCUS_API_VERSION)
 
@@ -77,28 +82,31 @@ int main()
     AC_LANG_POP([C++])
 fi
 
-AC_MSG_CHECKING([ixion library path])
-if test "z$with_ixion_path" = "z"; then
-    AC_MSG_RESULT([no])
-    AC_MSG_ERROR([ixion library path not specified.])
-else
-    AC_MSG_RESULT([$with_ixion_path])
-    PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$with_ixion_path/lib/pkgconfig:$with_ixion_path/lib64/pkgconfig
-    LD_RUN_PATH=$LD_RUN_PATH:$with_ixion_path/lib:$with_ixion_path/lib64
-    CXXFLAGS=`PKG_CONFIG_PATH=$PKG_CONFIG_PATH pkg-config --cflags libixion-0.4`
-    AC_MSG_CHECKING([usability of ixion headers])
-    AC_LANG_PUSH([C++])
-    AC_TRY_RUN([
+if test "z$enable_model" != "zno"; then
 
-#include <ixion/formula.hpp>
+    AC_MSG_CHECKING([ixion library path])
+    if test "z$with_ixion_path" = "z"; then
+        AC_MSG_RESULT([no])
+        AC_MSG_ERROR([ixion library path not specified.])
+    else
+        AC_MSG_RESULT([$with_ixion_path])
+        PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$with_ixion_path/lib/pkgconfig:$with_ixion_path/lib64/pkgconfig
+        LD_RUN_PATH=$LD_RUN_PATH:$with_ixion_path/lib:$with_ixion_path/lib64
+        CXXFLAGS=`PKG_CONFIG_PATH=$PKG_CONFIG_PATH pkg-config --cflags libixion-0.4`
+        AC_MSG_CHECKING([usability of ixion headers])
+        AC_LANG_PUSH([C++])
+        AC_TRY_RUN([
 
-int main()
-{
-    return 0;
-}
+    #include <ixion/formula.hpp>
 
-    ], [AC_MSG_RESULT(OK)], [AC_MSG_ERROR([ixion headers not usable.  Check your ixion path to make sure it's correct.])])
-    AC_LANG_POP([C++])
+    int main()
+    {
+        return 0;
+    }
+
+        ], [AC_MSG_RESULT(OK)], [AC_MSG_ERROR([ixion headers not usable.  Check your ixion path to make sure it's correct.])])
+        AC_LANG_POP([C++])
+    fi
 fi
 
 PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip"
@@ -114,6 +122,8 @@ AC_SUBST(PKG_CONFIG_CPPFLAGS)
 AC_SUBST(PKG_CONFIG_LDFLAGS)
 AC_SUBST(PKG_CONFIG_CPPFLAGS_MODEL)
 AC_SUBST(PKG_CONFIG_LDFLAGS_MODEL)
+
+AM_CONDITIONAL(BUILD_MODEL, test "z$enable_model" != "zno")
 
 AC_CONFIG_FILES([Makefile
                  liborcus.pc

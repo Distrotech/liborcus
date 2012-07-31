@@ -1,5 +1,7 @@
 SUBDIRS = liborcus model .
 
+if BUILD_MODEL
+
 INCLUDES = -I$(top_srcdir)/include
 
 bin_PROGRAMS = orcus-csv orcus-ods orcus-xlsx \
@@ -40,3 +42,5 @@ orcus_csv_test_LDADD = \
 orcus_csv_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
 TESTS = orcus-csv-test
+
+endif

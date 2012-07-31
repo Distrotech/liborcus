@@ -1,3 +1,4 @@
+if BUILD_MODEL
 
 INCLUDES = -I$(top_srcdir)/include
 
@@ -13,3 +14,4 @@ liborcus_model_impl_@ORCUS_API_VERSION@_la_CPPFLAGS = `@PKG_CONFIG_CPPFLAGS_MODE
 liborcus_model_impl_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined `@PKG_CONFIG_LDFLAGS_MODEL@`
 liborcus_model_impl_@ORCUS_API_VERSION@_la_LIBADD =
 
+endif
