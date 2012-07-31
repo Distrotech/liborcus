@@ -31,7 +31,6 @@
 #include "orcus/model/interface.hpp"
 #include "orcus/env.hpp"
 
-#include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 
 struct zip;
@@ -54,7 +53,7 @@ private:
     void read_content_xml(const char* p, size_t size);
 
 private:
-    ::boost::shared_ptr<model::iface::factory> mp_factory;
+    model::iface::factory* mp_factory;
 };
 
 }

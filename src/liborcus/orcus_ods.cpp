@@ -91,7 +91,7 @@ void orcus_ods::read_content_xml(const char* p, size_t size)
 {
     xml_stream_parser parser(odf_tokens, p, size, "content.xml");
     ::boost::scoped_ptr<ods_content_xml_handler> handler(
-        new ods_content_xml_handler(odf_tokens, mp_factory.get()));
+        new ods_content_xml_handler(odf_tokens, mp_factory));
     parser.set_handler(handler.get());
     parser.parse();
 }

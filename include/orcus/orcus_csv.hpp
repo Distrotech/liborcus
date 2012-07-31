@@ -31,7 +31,6 @@
 #include "orcus/env.hpp"
 
 #include <string>
-#include <boost/shared_ptr.hpp>
 
 namespace orcus {
 
@@ -49,7 +48,7 @@ private:
     void parse(const std::string& strm);
 
 private:
-    ::boost::shared_ptr<model::iface::factory> mp_factory;
+    model::iface::factory* mp_factory;
 };
 
 }
