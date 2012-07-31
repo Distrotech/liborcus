@@ -102,12 +102,12 @@ if test "z$enable_model" != "zno"; then
         AC_LANG_PUSH([C++])
         AC_TRY_RUN([
 
-    #include <ixion/formula.hpp>
+#include <ixion/formula.hpp>
 
-    int main()
-    {
-        return 0;
-    }
+int main()
+{
+    return 0;
+}
 
         ], [AC_MSG_RESULT(OK)], [AC_MSG_ERROR([ixion headers not usable.  Check your ixion path to make sure it's correct.])])
         AC_LANG_POP([C++])
