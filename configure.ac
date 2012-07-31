@@ -114,15 +114,19 @@ int main()
     fi
 fi
 
-PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip"
-PKG_CONFIG_LDFLAGS="pkg-config --libs libzip"
-PKG_CONFIG_CPPFLAGS_MODEL="pkg-config --cflags libixion-0.4"
-PKG_CONFIG_LDFLAGS_MODEL="pkg-config --libs libixion-0.4"
 CPPFLAGS="$DEFINES -Os -I./include -I$with_mdds_include_path -Wall"
 
 if test "z$enable_symbols" = "zyes"; then
     CPPFLAGS="$CPPFLAGS -g"
 fi
+
+# for liborcus filters
+PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip"
+PKG_CONFIG_LDFLAGS="pkg-config --libs libzip"
+
+# for liborcus model implementation
+PKG_CONFIG_CPPFLAGS_MODEL="pkg-config --cflags libixion-0.4"
+PKG_CONFIG_LDFLAGS_MODEL="pkg-config --libs libixion-0.4"
 
 AC_SUBST(PKG_CONFIG_PATH)
 AC_SUBST(LD_RUN_PATH)
@@ -132,6 +136,7 @@ AC_SUBST(PKG_CONFIG_LDFLAGS)
 AC_SUBST(PKG_CONFIG_CPPFLAGS_MODEL)
 AC_SUBST(PKG_CONFIG_LDFLAGS_MODEL)
 
+# conditionals to pass to makefiles.
 AM_CONDITIONAL(BUILD_MODEL, test "z$enable_model" != "zno")
 
 AC_CONFIG_FILES([Makefile
