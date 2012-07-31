@@ -1,30 +1,10 @@
+SUBDIRS = pre .
 
 INCDIR = $(top_srcdir)/include
 SRCDIR = $(top_srcdir)/src/liborcus
 BINDIR = $(top_srcdir)/bin
 
 INCLUDES = -I$(top_srcdir)/include
-
-ODF_SCHEMAPATH = $(top_builddir)/misc/OpenDocument-schema-v1.2-cd04.rng
-OOXML_SCHEMAPATH = $(top_builddir)/misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip
-OPC_SCHEMAPATH = $(top_builddir)/misc/ooxml-ecma-376/OpenPackagingConventions-XMLSchema.zip
-
-pre:
-	$(BINDIR)/gen-odf-tokens.py $(ODF_SCHEMAPATH) $(INCDIR)/orcus/odf/odf_token_constants.inl $(SRCDIR)/odf_tokens.inl $(SRCDIR)/odf_tokens.txt
-	$(BINDIR)/gen-ooxml-tokens.py -t ooxml $(OOXML_SCHEMAPATH) \
-		$(INCDIR)/orcus/ooxml/ooxml_token_constants.inl $(SRCDIR)/ooxml_tokens.inl $(SRCDIR)/ooxml_tokens.txt
-	$(BINDIR)/gen-ooxml-tokens.py -t opc $(OPC_SCHEMAPATH) \
-		$(INCDIR)/orcus/ooxml/opc_token_constants.inl $(SRCDIR)/ooxml_opc_tokens.inl $(SRCDIR)/ooxml_opc_tokens.txt
-	touch $@
-
-odf_tokens.cpp: pre
-ooxml_tokens.cpp: pre
-
-clean-generic:
-	rm -f pre
-	rm -f odf_tokens.inl odf_tokens.txt
-	rm -f ooxml_tokens.inl ooxml_tokens.txt
-	rm -f ooxml_opc_tokens.inl ooxml_opc_tokens.txt
 
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
