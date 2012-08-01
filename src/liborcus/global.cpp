@@ -27,6 +27,7 @@
 
 #include "orcus/global.hpp"
 #include "orcus/tokens.hpp"
+#include "orcus/exception.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -36,25 +37,6 @@
 using namespace std;
 
 namespace orcus {
-
-general_error::general_error(const string& msg) :
-    m_msg(msg)
-{
-}
-
-general_error::~general_error() throw()
-{
-}
-
-const char* general_error::what() const throw()
-{
-    return m_msg.c_str();
-}
-
-xml_structure_error::xml_structure_error(const string& msg) :
-    general_error(msg) {}
-
-xml_structure_error::~xml_structure_error() throw() {}
 
 namespace {
 

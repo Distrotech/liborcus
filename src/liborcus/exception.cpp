@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2012 Kohei Yoshida
+ * Copyright (c) 2012 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,27 +25,29 @@
  *
  ************************************************************************/
 
-#include "orcus/orcus_xlsx.hpp"
-#include "model/factory.hpp"
-#include "model/document.hpp"
+#include "orcus/exception.hpp"
 
-#include <boost/scoped_ptr.hpp>
+using namespace std;
 
-using namespace orcus;
+namespace orcus {
 
-int main(int argc, char** argv)
+general_error::general_error(const string& msg) :
+    m_msg(msg)
 {
-    if (argc != 2)
-        return EXIT_FAILURE;
+}
 
-    ::boost::scoped_ptr<model::document> doc(new model::document);
-    ::boost::scoped_ptr<model::factory> factory(new model::factory(doc.get()));
-    orcus_xlsx app(factory.get());
-    app.read_file(argv[1]);
-    doc->calc_formulas();
-    doc->dump();
-//  doc->dump_html("./obj");
-//  pstring::intern::dump();
-    pstring::intern::dispose();
-    return EXIT_SUCCESS;
+general_error::~general_error() throw()
+{
+}
+
+const char* general_error::what() const throw()
+{
+    return m_msg.c_str();
+}
+
+xml_structure_error::xml_structure_error(const string& msg) :
+    general_error(msg) {}
+
+xml_structure_error::~xml_structure_error() throw() {}
+
 }

@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -29,6 +29,7 @@
 #include "orcus/ooxml/opc_token_constants.hpp"
 #include "orcus/ooxml/content_types.hpp"
 #include "orcus/ooxml/schemas.hpp"
+#include "orcus/exception.hpp"
 #include "orcus/global.hpp"
 
 #include <cassert>
@@ -44,7 +45,7 @@ namespace {
 class types_attr_parser : public unary_function<void, xml_attr_t>
 {
 public:
-    explicit types_attr_parser() : 
+    explicit types_attr_parser() :
         m_default_ns(XMLNS_UNKNOWN_TOKEN) {}
 
     types_attr_parser(const types_attr_parser& r) :
@@ -72,7 +73,7 @@ class part_ext_attr_parser : public unary_function<void, xml_attr_t>
 {
 public:
     part_ext_attr_parser(
-        opc_content_types_context::ct_cache_type* p_ct_cache, xml_token_t attr_name) : 
+        opc_content_types_context::ct_cache_type* p_ct_cache, xml_token_t attr_name) :
         mp_ct_cache(p_ct_cache),
         m_attr_name(attr_name),
         m_content_type(NULL) {}
@@ -80,7 +81,7 @@ public:
     part_ext_attr_parser(const part_ext_attr_parser& r) :
         mp_ct_cache(r.mp_ct_cache),
         m_attr_name(r.m_attr_name),
-        m_name(r.m_name), 
+        m_name(r.m_name),
         m_content_type(r.m_content_type) {}
 
     void operator() (const xml_attr_t& attr)
@@ -97,7 +98,7 @@ public:
 private:
     content_type_t to_content_type(const pstring& p) const
     {
-        opc_content_types_context::ct_cache_type::const_iterator itr = 
+        opc_content_types_context::ct_cache_type::const_iterator itr =
             mp_ct_cache->find(p);
         if (itr == mp_ct_cache->end())
         {
@@ -154,7 +155,7 @@ void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name
 
             print_attrs(get_tokens(), attrs);
 
-            xmlns_token_t default_ns = 
+            xmlns_token_t default_ns =
                 for_each(attrs.begin(), attrs.end(), types_attr_parser()).get_default_ns();
 
             // the namespace for Types element comes from its own 'xmlns' attribute.
@@ -181,7 +182,7 @@ void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name
             part_ext_attr_parser func(&m_ct_cache, XML_Extension);
             func = for_each(attrs.begin(), attrs.end(), func);
 
-            // Like the part names, we need to use allocated strings for 
+            // Like the part names, we need to use allocated strings for
             // extension names.
             m_ext_defaults.push_back(
                 xml_part_t(func.get_name().intern(), func.get_content_type()));
@@ -221,7 +222,7 @@ namespace {
 class rels_attr_parser : public unary_function<void, xml_attr_t>
 {
 public:
-    explicit rels_attr_parser() : 
+    explicit rels_attr_parser() :
         m_default_ns(XMLNS_UNKNOWN_TOKEN) {}
 
     rels_attr_parser(const rels_attr_parser& r) :
@@ -275,7 +276,7 @@ public:
 private:
     schema_t to_schema(const pstring& p) const
     {
-        opc_relations_context::schema_cache_type::const_iterator itr = 
+        opc_relations_context::schema_cache_type::const_iterator itr =
             mp_schema_cache->find(p);
         if (itr == mp_schema_cache->end())
         {

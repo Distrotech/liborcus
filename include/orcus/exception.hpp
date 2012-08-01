@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2012 Kohei Yoshida
+ * Copyright (c) 2012 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,27 +25,33 @@
  *
  ************************************************************************/
 
-#include "orcus/orcus_xlsx.hpp"
-#include "model/factory.hpp"
-#include "model/document.hpp"
+#ifndef __ORCUS_EXCEPTION_HPP__
+#define __ORCUS_EXCEPTION_HPP__
 
-#include <boost/scoped_ptr.hpp>
+#include <exception>
+#include <string>
 
-using namespace orcus;
+#include "env.hpp"
 
-int main(int argc, char** argv)
+namespace orcus {
+
+class ORCUS_DLLPUBLIC general_error : public ::std::exception
 {
-    if (argc != 2)
-        return EXIT_FAILURE;
+public:
+    explicit general_error(const ::std::string& msg);
+    virtual ~general_error() throw();
+    virtual const char* what() const throw();
+private:
+    ::std::string m_msg;
+};
 
-    ::boost::scoped_ptr<model::document> doc(new model::document);
-    ::boost::scoped_ptr<model::factory> factory(new model::factory(doc.get()));
-    orcus_xlsx app(factory.get());
-    app.read_file(argv[1]);
-    doc->calc_formulas();
-    doc->dump();
-//  doc->dump_html("./obj");
-//  pstring::intern::dump();
-    pstring::intern::dispose();
-    return EXIT_SUCCESS;
+class ORCUS_DLLPUBLIC xml_structure_error : public general_error
+{
+public:
+    explicit xml_structure_error(const ::std::string& msg);
+    virtual ~xml_structure_error() throw();
+};
+
 }
+
+#endif

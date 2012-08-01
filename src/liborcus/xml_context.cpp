@@ -26,7 +26,7 @@
  ************************************************************************/
 
 #include "orcus/xml_context.hpp"
-#include "orcus/global.hpp"
+#include "orcus/exception.hpp"
 #include "orcus/tokens.hpp"
 
 #include <iostream>

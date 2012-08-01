@@ -28,7 +28,6 @@
 #ifndef __ORCUS_GLOBAL_HPP__
 #define __ORCUS_GLOBAL_HPP__
 
-#include <exception>
 #include <string>
 
 #include "orcus/types.hpp"
@@ -36,23 +35,6 @@
 namespace orcus {
 
 class tokens;
-
-class general_error : public ::std::exception
-{
-public:
-    explicit general_error(const ::std::string& msg);
-    virtual ~general_error() throw();
-    virtual const char* what() const throw();
-private:
-    ::std::string m_msg;
-};
-
-class xml_structure_error : public general_error
-{
-public:
-    explicit xml_structure_error(const ::std::string& msg);
-    virtual ~xml_structure_error() throw();
-};
 
 void print_element(xmlns_token_t ns, xml_token_t name);
 

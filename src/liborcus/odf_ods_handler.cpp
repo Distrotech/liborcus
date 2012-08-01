@@ -27,7 +27,7 @@
 
 #include "orcus/odf/ods_handler.hpp"
 #include "orcus/odf/ods_context.hpp"
-#include "orcus/global.hpp"
+#include "orcus/exception.hpp"
 
 #include <iostream>
 

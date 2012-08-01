@@ -5,6 +5,7 @@ liborcus_HEADERS = \
 	css_parser.hpp \
 	csv_parser.hpp \
 	env.hpp \
+	exception.hpp \
 	global.hpp \
 	orcus_csv.hpp \
 	orcus_ods.hpp \
