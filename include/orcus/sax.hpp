@@ -1,7 +1,7 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
- * 
+ * Copyright (c) 2010-2012 Kohei Yoshida
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -47,15 +47,15 @@ template<typename _Attr, typename _Tokens>
 class attr_printer : public ::std::unary_function<_Attr, void>
 {
 public:
-    attr_printer(const _Tokens& tokens, const ::std::string& indent) : 
+    attr_printer(const _Tokens& tokens, const ::std::string& indent) :
         m_tokens(tokens), m_indent(indent) {}
 
     void operator() (const _Attr& attr) const
     {
         using namespace std;
-        cout << m_indent << "  attribute: " 
-            << m_tokens.get_nstoken_name(attr.ns) << ":" 
-            << m_tokens.get_token_name(attr.name) << "=\"" 
+        cout << m_indent << "  attribute: "
+            << m_tokens.get_nstoken_name(attr.ns) << ":"
+            << m_tokens.get_token_name(attr.name) << "=\""
             << attr.value.str() << "\"" << endl;
     }
 private:
@@ -65,12 +65,12 @@ private:
 
 }
 
-/** 
- * Template-based sax parser that doesn't use function pointer for 
+/**
+ * Template-based sax parser that doesn't use function pointer for
  * callbacks for better performance, especially on large XML streams.
  */
 template<typename _Handler, typename _Tokens>
-class sax_parser
+class sax_token_parser
 {
 public:
     typedef _Handler    handler_type;
@@ -92,8 +92,8 @@ public:
         ::std::string m_msg;
     };
 
-    sax_parser(const char* content, const size_t size, const tokens_map& tokens, handler_type& handler);
-    ~sax_parser();
+    sax_token_parser(const char* content, const size_t size, const tokens_map& tokens, handler_type& handler);
+    ~sax_token_parser();
 
     void parse();
 
@@ -107,10 +107,10 @@ private:
     void nest_down()
     {
         assert(m_nest_level > 0);
-        --m_nest_level; 
+        --m_nest_level;
     }
 
-    char cur_char() const 
+    char cur_char() const
     {
 //      if (m_pos >= m_size)
 //          throw malformed_xml_error("xml stream ended prematurely.");
@@ -128,8 +128,8 @@ private:
     void blank();
 
     /**
-     * Parse XML header that occurs at the beginning of every XML stream i.e. 
-     * <?xml version="..." encoding="..." ?> 
+     * Parse XML header that occurs at the beginning of every XML stream i.e.
+     * <?xml version="..." encoding="..." ?>
      */
     void header();
     void body();
@@ -163,25 +163,25 @@ private:
 };
 
 template<typename _Handler, typename _Tokens>
-sax_parser<_Handler,_Tokens>::sax_parser(
+sax_token_parser<_Handler,_Tokens>::sax_token_parser(
     const char* content, const size_t size, const tokens_map& tokens, handler_type& handler) :
-    m_content(content), 
-    m_char(content), 
-    m_size(size), 
-    m_pos(0), 
-    m_nest_level(0), 
-    m_tokens(tokens), 
+    m_content(content),
+    m_char(content),
+    m_size(size),
+    m_pos(0),
+    m_nest_level(0),
+    m_tokens(tokens),
     m_handler(handler)
 {
 }
 
 template<typename _Handler, typename _Tokens>
-sax_parser<_Handler,_Tokens>::~sax_parser()
+sax_token_parser<_Handler,_Tokens>::~sax_token_parser()
 {
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::parse()
+void sax_token_parser<_Handler,_Tokens>::parse()
 {
     using namespace std;
     m_pos = 0;
@@ -194,7 +194,7 @@ void sax_parser<_Handler,_Tokens>::parse()
 }
 
 template<typename _Handler, typename _Tokens>
-::std::string sax_parser<_Handler,_Tokens>::indent() const
+::std::string sax_token_parser<_Handler,_Tokens>::indent() const
 {
     ::std::ostringstream os;
     for (size_t i = 0; i < m_nest_level; ++i)
@@ -203,7 +203,7 @@ template<typename _Handler, typename _Tokens>
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::blank()
+void sax_token_parser<_Handler,_Tokens>::blank()
 {
     char c = cur_char();
     while (is_blank(c))
@@ -211,7 +211,7 @@ void sax_parser<_Handler,_Tokens>::blank()
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::header()
+void sax_token_parser<_Handler,_Tokens>::header()
 {
     char c = cur_char();
     if (c != '<' || next_char() != '?' || next_char() != 'x' || next_char() != 'm' || next_char() != 'l')
@@ -241,7 +241,7 @@ void sax_parser<_Handler,_Tokens>::header()
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::body()
+void sax_token_parser<_Handler,_Tokens>::body()
 {
     while (m_pos < m_size)
     {
@@ -253,7 +253,7 @@ void sax_parser<_Handler,_Tokens>::body()
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::element()
+void sax_token_parser<_Handler,_Tokens>::element()
 {
     assert(cur_char() == '<');
     char c = next_char();
@@ -264,7 +264,7 @@ void sax_parser<_Handler,_Tokens>::element()
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::element_open()
+void sax_token_parser<_Handler,_Tokens>::element_open()
 {
     assert(is_alpha(cur_char()));
 
@@ -324,7 +324,7 @@ void sax_parser<_Handler,_Tokens>::element_open()
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::element_close()
+void sax_token_parser<_Handler,_Tokens>::element_close()
 {
     assert(cur_char() == '/');
     nest_down();
@@ -355,7 +355,7 @@ void sax_parser<_Handler,_Tokens>::element_close()
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::characters()
+void sax_token_parser<_Handler,_Tokens>::characters()
 {
     size_t first = m_pos;
     char c = cur_char();
@@ -375,7 +375,7 @@ void sax_parser<_Handler,_Tokens>::characters()
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::attribute()
+void sax_token_parser<_Handler,_Tokens>::attribute()
 {
     pstring _name, _value;
     nstoken_type ns_token = tokens_map::XMLNS_UNKNOWN_TOKEN;
@@ -403,7 +403,7 @@ void sax_parser<_Handler,_Tokens>::attribute()
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::name(pstring& str)
+void sax_token_parser<_Handler,_Tokens>::name(pstring& str)
 {
     size_t first = m_pos;
     char c = cur_char();
@@ -422,7 +422,7 @@ void sax_parser<_Handler,_Tokens>::name(pstring& str)
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::value(pstring& str)
+void sax_token_parser<_Handler,_Tokens>::value(pstring& str)
 {
     char c = cur_char();
     if (c != '"')
@@ -441,20 +441,20 @@ void sax_parser<_Handler,_Tokens>::value(pstring& str)
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::clear_attributes()
+void sax_token_parser<_Handler,_Tokens>::clear_attributes()
 {
     m_attrs.clear();
 }
 
 template<typename _Handler, typename _Tokens>
-void sax_parser<_Handler,_Tokens>::print_attributes() const
+void sax_token_parser<_Handler,_Tokens>::print_attributes() const
 {
     using namespace std;
     for_each(m_attrs.begin(), m_attrs.end(), sax::attr_printer<attr_type, tokens_map>(m_tokens, indent()));
 }
 
 template<typename _Handler, typename _Tokens>
-bool sax_parser<_Handler,_Tokens>::is_blank(char c)
+bool sax_token_parser<_Handler,_Tokens>::is_blank(char c)
 {
     if (c == ' ')
         return true;
@@ -465,7 +465,7 @@ bool sax_parser<_Handler,_Tokens>::is_blank(char c)
 }
 
 template<typename _Handler, typename _Tokens>
-bool sax_parser<_Handler,_Tokens>::is_alpha(char c)
+bool sax_token_parser<_Handler,_Tokens>::is_alpha(char c)
 {
     if ('a' <= c && c <= 'z')
         return true;
@@ -475,7 +475,7 @@ bool sax_parser<_Handler,_Tokens>::is_alpha(char c)
 }
 
 template<typename _Handler, typename _Tokens>
-bool sax_parser<_Handler,_Tokens>::is_name_char(char c)
+bool sax_token_parser<_Handler,_Tokens>::is_name_char(char c)
 {
     if (c == '-')
         return true;
@@ -484,7 +484,7 @@ bool sax_parser<_Handler,_Tokens>::is_name_char(char c)
 }
 
 template<typename _Handler, typename _Tokens>
-bool sax_parser<_Handler,_Tokens>::is_numeric(char c)
+bool sax_token_parser<_Handler,_Tokens>::is_numeric(char c)
 {
     if ('0' <= c && c <= '9')
         return true;

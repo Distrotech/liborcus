@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2010-2012 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -64,7 +64,7 @@ void xml_stream_parser::parse()
     if (!mp_handler)
         return;
 
-    sax_parser<xml_stream_handler, tokens> sax(m_content, m_size, m_tokens, *mp_handler);
+    sax_token_parser<xml_stream_handler, tokens> sax(m_content, m_size, m_tokens, *mp_handler);
     sax.parse();
 }
 
