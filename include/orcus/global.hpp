@@ -30,7 +30,8 @@
 
 #include <string>
 
-#include "orcus/types.hpp"
+#include "types.hpp"
+#include "env.hpp"
 
 namespace orcus {
 
@@ -49,7 +50,7 @@ void print_attrs(const tokens& tokens, const xml_attrs_t& attrs);
  * @param filepath file to open
  * @param strm content of the file
  */
-void load_file_content(const char* filepath, std::string& strm);
+ORCUS_DLLPUBLIC void load_file_content(const char* filepath, std::string& strm);
 
 template<typename _T>
 struct delete_element : public std::unary_function<_T*, void>

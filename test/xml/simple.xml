@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xml:ns="http://gitorious.org/orcus">
+    <child/>
+    <child attr1="value1" attr2="value2"/>
+    <child>
+        <baby>some text</baby>
+    </child>
+</root>
+

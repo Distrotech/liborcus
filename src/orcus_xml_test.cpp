@@ -26,35 +26,53 @@
  ************************************************************************/
 
 #include "orcus/sax_parser.hpp"
+#include "orcus/global.hpp"
 
 #include <cstdlib>
+#include <cassert>
+#include <iostream>
 
 using namespace orcus;
+using namespace std;
 
 class sax_handler
 {
 public:
     void start_element(const pstring& ns, const pstring& name)
     {
+        cout << "start element: ns='" << ns << "' name='" << name << "'" << endl;
     }
 
     void end_element(const pstring& ns, const pstring& name)
     {
+        cout << "end element: ns='" << ns << "' name='" << name << "'" << endl;
     }
 
     void characters(const pstring& val)
     {
+        cout << "char: '" << val << "'" << endl;
     }
 
     void attribute(const pstring& ns, const pstring& name, const pstring& val)
     {
+        cout << "attr: ns='" << ns << "' name='" << name << "'" << " value='" << val << "'" << endl;
     }
 };
 
+void test_xml_simple()
+{
+    string strm;
+    load_file_content("../test/xml/simple.xml", strm);
+    assert(!strm.empty());
+
+    sax_handler hdl;
+    sax_parser<sax_handler> parser(strm.c_str(), strm.size(), hdl);
+    parser.parse();
+}
+
 int main()
 {
-    sax_handler hdl;
-    sax_parser<sax_handler> parser(NULL, 0, hdl);
+    test_xml_simple();
 
     return EXIT_SUCCESS;
 }

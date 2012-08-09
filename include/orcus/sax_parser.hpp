@@ -154,7 +154,6 @@ void sax_parser<_Handler>::parse()
     header();
     blank();
     body();
-    cout << "finished parsing" << endl;
 }
 
 template<typename _Handler>
@@ -232,6 +231,8 @@ void sax_parser<_Handler>::element_open()
         name(elem_name);
     }
 
+    m_handler.start_element(ns_name, elem_name);
+
     while (true)
     {
         blank();
@@ -242,7 +243,6 @@ void sax_parser<_Handler>::element_open()
             if (next_char() != '>')
                 throw malformed_xml_error("expected '/>' to self-close the element.");
             next();
-            m_handler.start_element(ns_name, elem_name);
             m_handler.end_element(ns_name, elem_name);
             return;
         }
@@ -250,7 +250,6 @@ void sax_parser<_Handler>::element_open()
         {
             // End of opening element: <element>
             next();
-            m_handler.start_element(ns_name, elem_name);
             nest_up();
             return;
         }
