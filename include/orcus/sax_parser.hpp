@@ -76,6 +76,17 @@ private:
         --m_nest_level;
     }
 
+    inline bool has_char() const { return m_pos < m_size; }
+
+    inline size_t remains() const
+    {
+#if ORCUS_DEBUG_SAX_PARSER
+        if (m_pos >= m_size)
+            throw malformed_xml_error("xml stream ended prematurely.");
+#endif
+        return m_size - m_pos;
+    }
+
     char cur_char() const
     {
 #if ORCUS_DEBUG_SAX_PARSER
@@ -106,6 +117,8 @@ private:
     void element();
     void element_open();
     void element_close();
+    void special_tag();
+    void comment();
     void content();
     void characters();
     void attribute();
@@ -196,7 +209,7 @@ void sax_parser<_Handler>::header()
 template<typename _Handler>
 void sax_parser<_Handler>::body()
 {
-    while (m_pos < m_size)
+    while (has_char())
     {
         if (cur_char() == '<')
             element();
@@ -210,10 +223,17 @@ void sax_parser<_Handler>::element()
 {
     assert(cur_char() == '<');
     char c = next_char();
-    if (c == '/')
-        element_close();
-    else
-        element_open();
+    switch (c)
+    {
+        case '/':
+            element_close();
+        break;
+        case '!':
+            special_tag();
+        break;
+        default:
+            element_open();
+    }
 }
 
 template<typename _Handler>
@@ -278,6 +298,65 @@ void sax_parser<_Handler>::element_close()
     next();
 
     m_handler.end_element(ns_name, elem_name);
+}
+
+template<typename _Handler>
+void sax_parser<_Handler>::special_tag()
+{
+    assert(cur_char() == '!');
+    // This can be either <![CDATA, <!--, or <!DOCTYPE.
+    size_t len = remains();
+    if (len < 2)
+        throw malformed_xml_error("special tag too short.");
+
+    switch (next_char())
+    {
+        case '-':
+        {
+            // Possibly comment.
+            if (next_char() != '-')
+                throw malformed_xml_error("comment expected.");
+
+            len = remains();
+            if (len < 3)
+                throw malformed_xml_error("malformed comment.");
+
+            next();
+            comment();
+        }
+        break;
+        default:
+            // TODO: Handle CDATA and DOCTYPE.
+            throw malformed_xml_error("failed to parse special tag.");
+    }
+}
+
+template<typename _Handler>
+void sax_parser<_Handler>::comment()
+{
+    // Parse until we reach '-->'.
+    size_t len = remains();
+    assert(len > 3);
+    char c = cur_char();
+    size_t i = 0;
+    bool hyphen = false;
+    for (; i < len; ++i, c = next_char())
+    {
+        if (c == '-')
+        {
+            if (!hyphen)
+                // first hyphen.
+                hyphen = true;
+            else
+                // second hyphen.
+                break;
+        }
+    }
+
+    if (len - i < 2 || next_char() != '>')
+        throw malformed_xml_error("'--' should not occur in comment other than in the closing tag.");
+
+    next();
 }
 
 template<typename _Handler>
