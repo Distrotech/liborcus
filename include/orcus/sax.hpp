@@ -92,6 +92,10 @@ public:
 
 private:
 
+    /**
+     * Re-route callbacks from the internal sax_parser into the token_parser
+     * callbacks.
+     */
     class handler_wrapper
     {
         std::vector<attr_type> m_attrs;
