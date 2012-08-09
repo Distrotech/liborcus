@@ -38,6 +38,11 @@ using namespace std;
 class sax_handler
 {
 public:
+    void declaration()
+    {
+        cout << "declaration" << endl;
+    }
+
     void start_element(const pstring& ns, const pstring& name)
     {
         cout << "start element: ns='" << ns << "' name='" << name << "'" << endl;

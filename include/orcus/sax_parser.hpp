@@ -39,6 +39,10 @@
 
 namespace orcus {
 
+/**
+ * Template-based sax parser that doesn't use function pointer for
+ * callbacks for better performance, especially on large XML streams.
+ */
 template<typename _Handler>
 class sax_parser
 {
@@ -204,6 +208,8 @@ void sax_parser<_Handler>::header()
         throw malformed_xml_error("xml header must end with '?>'.");
 
     next();
+
+    m_handler.declaration();
 }
 
 template<typename _Handler>
@@ -251,8 +257,6 @@ void sax_parser<_Handler>::element_open()
         name(elem_name);
     }
 
-    m_handler.start_element(ns_name, elem_name);
-
     while (true)
     {
         blank();
@@ -263,6 +267,7 @@ void sax_parser<_Handler>::element_open()
             if (next_char() != '>')
                 throw malformed_xml_error("expected '/>' to self-close the element.");
             next();
+            m_handler.start_element(ns_name, elem_name);
             m_handler.end_element(ns_name, elem_name);
             return;
         }
@@ -271,6 +276,7 @@ void sax_parser<_Handler>::element_open()
             // End of opening element: <element>
             next();
             nest_up();
+            m_handler.start_element(ns_name, elem_name);
             return;
         }
         else
