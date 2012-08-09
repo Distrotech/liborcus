@@ -187,8 +187,8 @@
 				<F N="../include/orcus/orcus_ods.hpp"/>
 				<F N="../include/orcus/orcus_xlsx.hpp"/>
 				<F N="../include/orcus/pstring.hpp"/>
-				<F N="../include/orcus/sax.hpp"/>
 				<F N="../include/orcus/sax_parser.hpp"/>
+				<F N="../include/orcus/sax_token_parser.hpp"/>
 				<F N="../include/orcus/tokens.hpp"/>
 				<F N="../include/orcus/types.hpp"/>
 				<F N="../include/orcus/xml_context.hpp"/>

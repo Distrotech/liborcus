@@ -11,8 +11,8 @@ liborcus_HEADERS = \
 	orcus_ods.hpp \
 	orcus_xlsx.hpp \
 	pstring.hpp \
-	sax.hpp \
 	sax_parser.hpp \
+	sax_token_parser.hpp \
 	tokens.hpp \
 	types.hpp \
 	xml_context.hpp \

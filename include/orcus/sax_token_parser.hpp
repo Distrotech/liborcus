@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_SAX_HPP__
-#define __ORCUS_SAX_HPP__
+#ifndef __ORCUS_SAX_TOKEN_PARSER_HPP__
+#define __ORCUS_SAX_TOKEN_PARSER_HPP__
 
 #include <vector>
 #include <algorithm>

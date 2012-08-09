@@ -28,7 +28,7 @@
 #include "orcus/xml_parser.hpp"
 #include "orcus/xml_handler.hpp"
 #include "orcus/tokens.hpp"
-#include "orcus/sax.hpp"
+#include "orcus/sax_token_parser.hpp"
 
 #include <iostream>
 #include <vector>
