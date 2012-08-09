@@ -72,19 +72,6 @@ public:
     typedef typename tokens_map::nstoken_type   nstoken_type;
     typedef typename tokens_map::attr_type      attr_type;
 
-    class malformed_xml_error : public ::std::exception
-    {
-    public:
-        malformed_xml_error(const ::std::string& msg) : m_msg(msg) {}
-        virtual ~malformed_xml_error() throw() {}
-        virtual const char* what() const throw()
-        {
-            return m_msg.c_str();
-        }
-    private:
-        ::std::string m_msg;
-    };
-
     sax_token_parser(const char* content, const size_t size, const tokens_map& tokens, handler_type& handler);
     ~sax_token_parser();
 
