@@ -28,6 +28,11 @@
 #include "orcus/dom_tree.hpp"
 #include "orcus/exception.hpp"
 
+#include <iostream>
+#include <sstream>
+
+using namespace std;
+
 namespace orcus {
 
 dom_tree::attr::attr(const pstring& _ns, const pstring& _name, const pstring& _value) :
@@ -35,10 +40,28 @@ dom_tree::attr::attr(const pstring& _ns, const pstring& _name, const pstring& _v
 
 dom_tree::node::~node() {}
 
-dom_tree::element::element(const pstring& _ns, const pstring& _name) : ns(_ns), name(_name) {}
+dom_tree::element::element(const pstring& _ns, const pstring& _name) : node(node_element), ns(_ns), name(_name) {}
+
+string dom_tree::element::print() const
+{
+    ostringstream os;
+    if (!ns.empty())
+        os << ns << ':';
+    os << name;
+    return os.str();
+}
+
 dom_tree::element::~element() {}
 
-dom_tree::content::content(const pstring& _value) : value(_value) {}
+dom_tree::content::content(const pstring& _value) : node(node_content), value(_value) {}
+
+string dom_tree::content::print() const
+{
+    ostringstream os;
+    os << '"' << value << '"';
+    return os.str();
+}
+
 dom_tree::content::~content() {}
 
 dom_tree::dom_tree() :
@@ -103,6 +126,117 @@ void dom_tree::set_characters(const pstring& val)
 void dom_tree::set_attribute(const pstring& ns, const pstring& name, const pstring& val)
 {
     m_cur_attrs.push_back(attr(ns, name, val));
+}
+
+namespace {
+
+struct scope : boost::noncopyable
+{
+    typedef std::vector<const dom_tree::element*> elements_type;
+    string name;
+    elements_type elements;
+    elements_type::const_iterator current_pos;
+
+    scope(const string& _name, dom_tree::element* _element) :
+        name(_name)
+    {
+        elements.push_back(_element);
+        current_pos = elements.begin();
+    }
+
+    scope(const string& _name) : name(_name) {}
+};
+
+typedef boost::ptr_vector<scope> scopes_type;
+
+void print_scope(ostringstream& os, const scopes_type& scopes)
+{
+    if (scopes.empty())
+        throw general_error("scope stack shouldn't be empty while dumping tree.");
+
+    // Skip the first scope which is root.
+    scopes_type::const_iterator it = scopes.begin(), it_end = scopes.end();
+    for (++it; it != it_end; ++it)
+        os << "/" << it->name;
+}
+
+}
+
+void dom_tree::dump() const
+{
+    if (!m_root)
+        return;
+
+    scopes_type scopes;
+    ostringstream os;
+
+    // Print the element.
+
+    // Print the attributes.
+
+    // Move on to child nodes.
+    scopes.push_back(new scope(string(), m_root));
+    while (!scopes.empty())
+    {
+        bool new_scope = false;
+
+        // Iterate through all elements in the current scope.
+        scope& cur_scope = scopes.back();
+        for (; cur_scope.current_pos != cur_scope.elements.end(); ++cur_scope.current_pos)
+        {
+            const element* elem = *cur_scope.current_pos;
+            assert(elem);
+            print_scope(os, scopes);
+            os << "/" << elem->name << endl;
+
+            if (elem->child_nodes.empty())
+                continue;
+
+            // This element has child nodes.  Push a new scope and populate it
+            // with all child elements, but skip content nodes.
+            dom_tree::nodes_type::const_iterator it = elem->child_nodes.begin(), it_end = elem->child_nodes.end();
+            scope::elements_type elements;
+            for (; it != it_end; ++it)
+            {
+                switch (it->type)
+                {
+                    case node_element:
+                    {
+                        const element* p = static_cast<const element*>(&(*it));
+                        elements.push_back(p);
+                    }
+                    break;
+                    case node_content:
+                    {
+                        print_scope(os, scopes);
+                        const content& con = static_cast<const content&>(*it);
+                        os << "/" << elem->name << '"' << con.value << '"' << endl;
+                    }
+                    break;
+                    default:
+                        throw general_error("unknown node type during the dump.");
+                }
+            }
+
+            if (elements.empty())
+                continue;
+
+            // Push a new scope, and restart the loop with the new scope.
+            ++cur_scope.current_pos;
+            scopes.push_back(new scope(elem->name.str()));
+            scopes.back().elements.swap(elements);
+            scopes.back().current_pos = scopes.back().elements.begin();
+            new_scope = true;
+            break;
+        }
+
+        if (new_scope)
+            continue;
+
+        scopes.pop_back();
+    }
+
+    cout << os.str();
 }
 
 }

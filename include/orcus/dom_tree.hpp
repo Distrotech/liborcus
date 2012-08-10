@@ -38,6 +38,7 @@ namespace orcus {
 
 class ORCUS_DLLPUBLIC dom_tree : boost::noncopyable
 {
+public:
     struct attr
     {
         pstring ns;
@@ -49,9 +50,16 @@ class ORCUS_DLLPUBLIC dom_tree : boost::noncopyable
 
     typedef std::vector<attr> attrs_type;
 
+    enum node_type { node_element, node_content };
+
     struct node
     {
+        node_type type;
+
+        node(node_type _type) : type(_type) {}
+
         virtual ~node() = 0;
+        virtual std::string print() const = 0;
     };
 
     typedef boost::ptr_vector<node> nodes_type;
@@ -64,18 +72,21 @@ class ORCUS_DLLPUBLIC dom_tree : boost::noncopyable
         nodes_type child_nodes;
 
         element(const pstring& _ns, const pstring& _name);
+        virtual std::string print() const;
         virtual ~element();
     };
+
+    typedef std::vector<element*> element_stack_type;
 
     struct content : public node
     {
         pstring value;
 
         content(const pstring& _value);
+        virtual std::string print() const;
         virtual ~content();
     };
 
-public:
     dom_tree();
     ~dom_tree();
 
@@ -85,10 +96,12 @@ public:
     void set_characters(const pstring& val);
     void set_attribute(const pstring& ns, const pstring& name, const pstring& val);
 
+    void dump() const;
+
 private:
     attrs_type m_doc_attrs;
     attrs_type m_cur_attrs;
-    std::vector<element*> m_elem_stack;
+    element_stack_type m_elem_stack;
     element* m_root;
 };
 

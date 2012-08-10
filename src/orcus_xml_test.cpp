@@ -70,6 +70,11 @@ public:
 //      cout << "attr: ns='" << ns << "' name='" << name << "'" << " value='" << val << "'" << endl;
         m_tree.set_attribute(ns, name, val);
     }
+
+    void dump()
+    {
+        m_tree.dump();
+    }
 };
 
 void test_xml_simple()
@@ -81,6 +86,7 @@ void test_xml_simple()
     sax_handler hdl;
     sax_parser<sax_handler> parser(strm.c_str(), strm.size(), hdl);
     parser.parse();
+    hdl.dump();
 }
 
 int main()
