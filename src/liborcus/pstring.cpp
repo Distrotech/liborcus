@@ -215,8 +215,9 @@ pstring pstring::trim() const
             case 0x0D:
                 continue;
             default:
-                break;
+                ;
         }
+        break;
     }
 
     if (p == p_end)
@@ -235,8 +236,9 @@ pstring pstring::trim() const
             case 0x0D:
                 continue;
             default:
-                break;
+                ;
         }
+        break;
     }
 
     ++p_end;

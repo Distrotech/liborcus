@@ -120,7 +120,7 @@ void dom_tree::set_characters(const pstring& val)
         return;
 
     element* p = m_elem_stack.back();
-    p->child_nodes.push_back(new content(val));
+    p->child_nodes.push_back(new content(val2));
 }
 
 void dom_tree::set_attribute(const pstring& ns, const pstring& name, const pstring& val)
