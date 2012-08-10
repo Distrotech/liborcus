@@ -113,6 +113,7 @@ public:
         return !operator==(str);
     }
 
+    pstring trim() const;
 
     bool empty() const { return m_size == 0; }
 

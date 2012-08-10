@@ -92,6 +92,10 @@ void dom_tree::set_characters(const pstring& val)
         // No root element has been encountered.  Ignore this.
         return;
 
+    pstring val2 = val.trim();
+    if (val2.empty())
+        return;
+
     element* p = m_elem_stack.back();
     p->child_nodes.push_back(new content(val));
 }

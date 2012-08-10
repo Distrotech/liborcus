@@ -201,6 +201,48 @@ bool pstring::operator== (const char* str) const
     return ::std::strncmp(str, m_pos, n) == 0;
 }
 
+pstring pstring::trim() const
+{
+    const char* p = m_pos;
+    const char* p_end = p + m_size;
+    // Find the first non-space character.
+    for ( ;p != p_end; ++p)
+    {
+        switch (*p)
+        {
+            case ' ':
+            case 0x0A:
+            case 0x0D:
+                continue;
+            default:
+                break;
+        }
+    }
+
+    if (p == p_end)
+    {
+        // This string is empty.
+        return pstring();
+    }
+
+    // Find the last non-space character.
+    for (--p_end; p_end != p; --p_end)
+    {
+        switch (*p_end)
+        {
+            case ' ':
+            case 0x0A:
+            case 0x0D:
+                continue;
+            default:
+                break;
+        }
+    }
+
+    ++p_end;
+    return pstring(p, p_end-p);
+}
+
 pstring pstring::intern() const
 {
     return intern(m_pos, m_size);
