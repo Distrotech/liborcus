@@ -4,7 +4,7 @@ if BUILD_MODEL
 
 INCLUDES = -I$(top_srcdir)/include
 
-bin_PROGRAMS = orcus-csv orcus-ods orcus-xlsx \
+bin_PROGRAMS = orcus-csv orcus-ods orcus-xlsx orcus-xml \
 	orcus-test-common orcus-test-csv orcus-test-xml \
 	orcus-format-xml
 
@@ -40,6 +40,17 @@ orcus_xlsx_LDADD = \
 	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
 orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
+# orcus-xml
+
+orcus_xml_SOURCES = \
+	orcus_xml_main.cpp
+
+orcus_xml_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
+
+orcus_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
 # orcus-format-xml
 

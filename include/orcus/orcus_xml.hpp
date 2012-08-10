@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2012 Kohei Yoshida
+ * Copyright (c) 2012 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,12 +25,10 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_ORCUS_CSV_HPP__
-#define __ORCUS_ORCUS_CSV_HPP__
+#ifndef __ORCUS_ORCUS_XML_HPP__
+#define __ORCUS_ORCUS_XML_HPP__
 
 #include "env.hpp"
-
-#include <string>
 
 namespace orcus {
 
@@ -38,14 +36,11 @@ namespace model { namespace iface {
     class factory;
 }}
 
-class ORCUS_DLLPUBLIC orcus_csv
+class ORCUS_DLLPUBLIC orcus_xml
 {
 public:
-    orcus_csv(model::iface::factory* factory);
+    orcus_xml(model::iface::factory* factory);
     void read_file(const char* filepath);
-
-private:
-    void parse(const std::string& strm);
 
 private:
     model::iface::factory* mp_factory;

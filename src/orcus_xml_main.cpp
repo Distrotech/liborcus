@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2012 Kohei Yoshida
+ * Copyright (c) 2012 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,32 +25,30 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_ORCUS_CSV_HPP__
-#define __ORCUS_ORCUS_CSV_HPP__
+#include "orcus/orcus_xml.hpp"
 
-#include "env.hpp"
+#include "model/factory.hpp"
+#include "model/document.hpp"
 
-#include <string>
+#include <boost/scoped_ptr.hpp>
 
-namespace orcus {
+#include <cstdlib>
 
-namespace model { namespace iface {
-    class factory;
-}}
+using namespace orcus;
+using namespace std;
 
-class ORCUS_DLLPUBLIC orcus_csv
+int main(int argc, char** argv)
 {
-public:
-    orcus_csv(model::iface::factory* factory);
-    void read_file(const char* filepath);
+    if (argc != 2)
+        return EXIT_FAILURE;
 
-private:
-    void parse(const std::string& strm);
+    boost::scoped_ptr<model::document> doc(new model::document);
+    boost::scoped_ptr<model::factory> fact(new model::factory(doc.get()));
 
-private:
-    model::iface::factory* mp_factory;
-};
+    orcus_xml app(fact.get());
+    app.read_file(argv[1]);
+    doc->dump();
+    pstring::intern::dispose();
 
+    return EXIT_SUCCESS;
 }
-
-#endif

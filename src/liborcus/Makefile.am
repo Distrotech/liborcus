@@ -29,6 +29,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	orcus_csv.cpp \
 	orcus_ods.cpp \
 	orcus_xlsx.cpp \
+	orcus_xml.cpp \
 	pstring.cpp \
 	tokens.cpp \
 	xml_context.cpp \

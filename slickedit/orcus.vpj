@@ -187,6 +187,7 @@
 				<F N="../include/orcus/orcus_csv.hpp"/>
 				<F N="../include/orcus/orcus_ods.hpp"/>
 				<F N="../include/orcus/orcus_xlsx.hpp"/>
+				<F N="../include/orcus/orcus_xml.hpp"/>
 				<F N="../include/orcus/pstring.hpp"/>
 				<F N="../include/orcus/sax_parser.hpp"/>
 				<F N="../include/orcus/sax_token_parser.hpp"/>
@@ -224,6 +225,7 @@
 				<F N="../src/liborcus/orcus_csv.cpp"/>
 				<F N="../src/liborcus/orcus_ods.cpp"/>
 				<F N="../src/liborcus/orcus_xlsx.cpp"/>
+				<F N="../src/liborcus/orcus_xml.cpp"/>
 				<F N="../src/liborcus/pstring.cpp"/>
 				<F N="../src/liborcus/pstring_intern_test.cpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>
@@ -251,6 +253,7 @@
 			<F N="../src/orcus_test_csv.cpp"/>
 			<F N="../src/orcus_test_xml.cpp"/>
 			<F N="../src/orcus_xlsx_main.cpp"/>
+			<F N="../src/orcus_xml_main.cpp"/>
 		</Folder>
 	</Files>
 </Project>
