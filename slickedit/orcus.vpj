@@ -246,6 +246,7 @@
 			</Folder>
 			<F N="../src/orcus_csv_main.cpp"/>
 			<F N="../src/orcus_ods_main.cpp"/>
+			<F N="../src/orcus_test_common.cpp"/>
 			<F N="../src/orcus_test_csv.cpp"/>
 			<F N="../src/orcus_test_xml.cpp"/>
 			<F N="../src/orcus_xlsx_main.cpp"/>
