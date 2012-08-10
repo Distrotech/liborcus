@@ -32,6 +32,11 @@ AC_ARG_ENABLE(symbols,
         [enable debug symbols.])
 )
 
+AC_ARG_ENABLE(debug,
+    AS_HELP_STRING([--disable-debug],
+        [disable debug.])
+)
+
 ORCUS_API_VERSION=orcus_api_version
 AC_SUBST(ORCUS_API_VERSION)
 
@@ -61,6 +66,11 @@ AC_FUNC_STRTOD
 AC_CHECK_FUNCS([gettimeofday])
 
 DEFINES="-D_REENTRANT"
+
+if test "z$enable_debug" == "zno"; then
+    DEFINES="$DEFINES -DNDEBUG"
+fi
+
 PKG_CONFIG_PATH=
 LD_RUN_PATH=
 
