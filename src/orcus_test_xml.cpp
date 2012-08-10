@@ -43,31 +43,26 @@ class sax_handler
 public:
     void declaration()
     {
-//      cout << "declaration" << endl;
         m_tree.end_declaration();
     }
 
     void start_element(const pstring& ns, const pstring& name)
     {
-//      cout << "start element: ns='" << ns << "' name='" << name << "'" << endl;
         m_tree.start_element(ns, name);
     }
 
     void end_element(const pstring& ns, const pstring& name)
     {
-//      cout << "end element: ns='" << ns << "' name='" << name << "'" << endl;
         m_tree.end_element(ns, name);
     }
 
     void characters(const pstring& val)
     {
-//      cout << "char: '" << val << "'" << endl;
         m_tree.set_characters(val);
     }
 
     void attribute(const pstring& ns, const pstring& name, const pstring& val)
     {
-//      cout << "attr: ns='" << ns << "' name='" << name << "'" << " value='" << val << "'" << endl;
         m_tree.set_attribute(ns, name, val);
     }
 
