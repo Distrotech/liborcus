@@ -73,34 +73,46 @@ public:
     }
 };
 
-void test_xml_simple()
+const char* files[] = {
+    "../test/xml/simple.xml"
+};
+
+void test_xml_sax_parser()
 {
-    string strm;
-    load_file_content("../test/xml/simple.xml", strm);
-    assert(!strm.empty());
+    size_t n = sizeof(files)/sizeof(files[0]);
+    for (size_t i = 0; i < n; ++i)
+    {
+        const char* file = files[i];
+        string strm;
+        cout << "testing " << file << endl;
+        load_file_content(file, strm);
+        assert(!strm.empty());
 
-    sax_handler hdl;
-    sax_parser<sax_handler> parser(strm.c_str(), strm.size(), hdl);
-    parser.parse();
+        sax_handler hdl;
+        sax_parser<sax_handler> parser(strm.c_str(), strm.size(), hdl);
+        parser.parse();
 
-    // Get the compact form of the content.
-    ostringstream os;
-    hdl.dump(os);
-    strm = os.str(); // re-use this.
+        // Get the compact form of the content.
+        ostringstream os;
+        hdl.dump(os);
+        strm = os.str(); // re-use this.
 
-    // Load the check form.
-    string check;
-    load_file_content("../test/xml/simple.xml.check", check);
-    pstring psource(strm.c_str(), strm.size());
-    pstring pcheck(check.c_str(), check.size());
+        // Load the check form.
+        string check;
+        string path(file);
+        path += ".check";
+        load_file_content(path.c_str(), check);
+        pstring psource(strm.c_str(), strm.size());
+        pstring pcheck(check.c_str(), check.size());
 
-    // They must be equal, minus preceding or trailing spaces (if any).
-    assert(psource.trim() == pcheck.trim());
+        // They must be equal, minus preceding or trailing spaces (if any).
+        assert(psource.trim() == pcheck.trim());
+    }
 }
 
 int main()
 {
-    test_xml_simple();
+    test_xml_sax_parser();
 
     return EXIT_SUCCESS;
 }
