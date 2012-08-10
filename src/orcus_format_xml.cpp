@@ -34,6 +34,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
 using namespace orcus;
 using namespace std;
@@ -68,9 +69,9 @@ public:
         m_tree.set_attribute(ns, name, val);
     }
 
-    void dump()
+    void dump(ostream& os)
     {
-        m_tree.dump();
+        m_tree.dump_compact(os);
     }
 };
 
@@ -87,7 +88,9 @@ int main(int argc, char** argv)
     sax_handler hdl;
     sax_parser<sax_handler> parser(strm.c_str(), strm.size(), hdl);
     parser.parse();
-    hdl.dump();
+    ostringstream os;
+    hdl.dump(os);
+    cout << os.str();
 
     return EXIT_SUCCESS;
 }

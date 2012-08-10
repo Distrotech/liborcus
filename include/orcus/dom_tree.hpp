@@ -98,7 +98,7 @@ public:
     void set_characters(const pstring& val);
     void set_attribute(const pstring& ns, const pstring& name, const pstring& val);
 
-    void dump() const;
+    void dump_compact(std::ostream& os) const;
 
 private:
     attrs_type m_doc_attrs;

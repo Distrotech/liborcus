@@ -32,6 +32,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
 using namespace orcus;
 using namespace std;
@@ -66,9 +67,9 @@ public:
         m_tree.set_attribute(ns, name, val);
     }
 
-    void dump()
+    void dump(ostream& os)
     {
-        m_tree.dump();
+        m_tree.dump_compact(os);
     }
 };
 
@@ -81,7 +82,20 @@ void test_xml_simple()
     sax_handler hdl;
     sax_parser<sax_handler> parser(strm.c_str(), strm.size(), hdl);
     parser.parse();
-    hdl.dump();
+
+    // Get the compact form of the content.
+    ostringstream os;
+    hdl.dump(os);
+    strm = os.str(); // re-use this.
+
+    // Load the check form.
+    string check;
+    load_file_content("../test/xml/simple.xml.check", check);
+    pstring psource(strm.c_str(), strm.size());
+    pstring pcheck(check.c_str(), check.size());
+
+    // They must be equal, minus preceding or trailing spaces (if any).
+    assert(psource.trim() == pcheck.trim());
 }
 
 int main()

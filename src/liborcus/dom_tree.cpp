@@ -145,7 +145,7 @@ struct scope : boost::noncopyable
 
 typedef boost::ptr_vector<scope> scopes_type;
 
-void print_scope(ostringstream& os, const scopes_type& scopes)
+void print_scope(ostream& os, const scopes_type& scopes)
 {
     if (scopes.empty())
         throw general_error("scope stack shouldn't be empty while dumping tree.");
@@ -166,13 +166,12 @@ struct sort_by_name : std::binary_function<dom_tree::attr, dom_tree::attr, bool>
 
 }
 
-void dom_tree::dump() const
+void dom_tree::dump_compact(ostream& os) const
 {
     if (!m_root)
         return;
 
     scopes_type scopes;
-    ostringstream os;
 
     scopes.push_back(new scope(string(), m_root));
     while (!scopes.empty())
@@ -239,8 +238,6 @@ void dom_tree::dump() const
 
         scopes.pop_back();
     }
-
-    cout << os.str();
 }
 
 ostream& operator<< (ostream& os, const dom_tree::attr& at)

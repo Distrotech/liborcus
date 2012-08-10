@@ -1,0 +1,13 @@
+/root
+/root@xmlns="http://gitorious.org/orcus"
+/root/child
+/root/child
+/root/child@attr1="value1"
+/root/child@attr2="value2"
+/root/child
+/root/child/baby
+/root/child/baby"some text"
+/root"before comment|"
+/root"|after comment"
+/root/child
+/root/child@attr3="value3"
