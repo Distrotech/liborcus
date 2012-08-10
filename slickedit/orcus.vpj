@@ -180,6 +180,7 @@
 				</Folder>
 				<F N="../include/orcus/css_parser.hpp"/>
 				<F N="../include/orcus/csv_parser.hpp"/>
+				<F N="../include/orcus/dom_tree.hpp"/>
 				<F N="../include/orcus/env.hpp"/>
 				<F N="../include/orcus/exception.hpp"/>
 				<F N="../include/orcus/global.hpp"/>
@@ -202,6 +203,7 @@
 		</Folder>
 		<Folder Name="../src">
 			<Folder Name="liborcus">
+				<F N="../src/liborcus/dom_tree.cpp"/>
 				<F N="../src/liborcus/exception.cpp"/>
 				<F N="../src/liborcus/global.cpp"/>
 				<F N="../src/liborcus/model_interface.cpp"/>

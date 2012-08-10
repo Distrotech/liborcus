@@ -4,6 +4,7 @@ liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus
 liborcus_HEADERS = \
 	css_parser.hpp \
 	csv_parser.hpp \
+	dom_tree.hpp \
 	env.hpp \
 	exception.hpp \
 	global.hpp \

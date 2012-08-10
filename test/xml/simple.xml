@@ -6,6 +6,6 @@
     <child>
         <baby>some text</baby>
     </child>
-    before comment<!-- another comment -->after comment
+    before comment|<!-- another comment -->|after comment
 </root>
 

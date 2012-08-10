@@ -8,6 +8,7 @@ INCLUDES = -I$(top_srcdir)/include
 
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
+	dom_tree.cpp \
 	exception.cpp \
 	global.cpp \
 	model_interface.cpp \
