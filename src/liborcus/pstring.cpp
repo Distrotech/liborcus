@@ -187,6 +187,22 @@ bool pstring::operator== (const pstring& r) const
     return true;
 }
 
+bool pstring::operator< (const pstring& r) const
+{
+    size_t n = std::min(m_size, r.m_size);
+    const char* p1 = m_pos;
+    const char* p2 = r.m_pos;
+    for (size_t i = 0; i < n; ++i, ++p1, ++p2)
+    {
+        if (*p1 == *p2)
+            continue;
+
+        return *p1 < *p2;
+    }
+
+    return m_size < r.m_size;
+}
+
 bool pstring::operator== (const char* str) const
 {
     size_t n = ::std::strlen(str);

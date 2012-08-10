@@ -2,7 +2,7 @@
 <!-- this is a comment -->
 <root xmlns="http://gitorious.org/orcus">
     <child/>
-    <child attr1="value1" attr2="value2"/>
+    <child attr2="value2" attr1="value1"/>
     <child>
         <baby>some text</baby>
     </child>

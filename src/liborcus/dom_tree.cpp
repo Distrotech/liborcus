@@ -156,6 +156,14 @@ void print_scope(ostringstream& os, const scopes_type& scopes)
         os << "/" << it->name;
 }
 
+struct sort_by_name : std::binary_function<dom_tree::attr, dom_tree::attr, bool>
+{
+    bool operator() (const dom_tree::attr& left, const dom_tree::attr& right) const
+    {
+        return left.name < right.name;
+    }
+};
+
 }
 
 void dom_tree::dump() const
@@ -189,6 +197,18 @@ void dom_tree::dump() const
             const element* elem = static_cast<const element*>(this_node);
             os << "/" << *elem << endl;
 
+            {
+                // Dump attributes.
+                attrs_type attrs = elem->attrs;
+                sort(attrs.begin(), attrs.end(), sort_by_name());
+                attrs_type::const_iterator it = attrs.begin(), it_end = attrs.end();
+                for (; it != it_end; ++it)
+                {
+                    print_scope(os, scopes);
+                    os << "/" << *elem << "@" << *it << endl;
+                }
+            }
+
             if (elem->child_nodes.empty())
                 continue;
 
@@ -221,6 +241,14 @@ void dom_tree::dump() const
     }
 
     cout << os.str();
+}
+
+ostream& operator<< (ostream& os, const dom_tree::attr& at)
+{
+    if (!at.ns.empty())
+        os << at.ns << ":";
+    os << at.name << "=\"" << at.value << '"';
+    return os;
 }
 
 ostream& operator<< (ostream& os, const dom_tree::node& nd)

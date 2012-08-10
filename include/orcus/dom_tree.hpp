@@ -107,6 +107,7 @@ private:
     element* m_root;
 };
 
+std::ostream& operator<< (std::ostream& os, const dom_tree::attr& at);
 std::ostream& operator<< (std::ostream& os, const dom_tree::node& nd);
 
 }

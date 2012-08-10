@@ -106,6 +106,8 @@ public:
         return !operator==(r);
     }
 
+    bool operator< (const pstring& r) const;
+
     bool operator== (const char* str) const;
 
     bool operator!= (const char* str) const
