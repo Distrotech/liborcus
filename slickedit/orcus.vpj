@@ -245,6 +245,7 @@
 				<F N="../src/model/styles.hpp"/>
 			</Folder>
 			<F N="../src/orcus_csv_main.cpp"/>
+			<F N="../src/orcus_format_xml.cpp"/>
 			<F N="../src/orcus_ods_main.cpp"/>
 			<F N="../src/orcus_test_common.cpp"/>
 			<F N="../src/orcus_test_csv.cpp"/>
