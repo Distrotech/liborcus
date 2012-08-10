@@ -2,5 +2,12 @@
 *.lo
 *.la
 *.o
+*.pc
+*.pyc
 Makefile
 Makefile.in
+.deps
+.libs
+*.m4
+autom4te.cache
+libtool
