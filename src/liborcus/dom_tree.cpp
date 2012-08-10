@@ -132,16 +132,16 @@ namespace {
 
 struct scope : boost::noncopyable
 {
-    typedef std::vector<const dom_tree::element*> elements_type;
+    typedef std::vector<const dom_tree::node*> nodes_type;
     string name;
-    elements_type elements;
-    elements_type::const_iterator current_pos;
+    nodes_type nodes;
+    nodes_type::const_iterator current_pos;
 
-    scope(const string& _name, dom_tree::element* _element) :
+    scope(const string& _name, dom_tree::node* _node) :
         name(_name)
     {
-        elements.push_back(_element);
-        current_pos = elements.begin();
+        nodes.push_back(_node);
+        current_pos = nodes.begin();
     }
 
     scope(const string& _name) : name(_name) {}
@@ -182,11 +182,19 @@ void dom_tree::dump() const
 
         // Iterate through all elements in the current scope.
         scope& cur_scope = scopes.back();
-        for (; cur_scope.current_pos != cur_scope.elements.end(); ++cur_scope.current_pos)
+        for (; cur_scope.current_pos != cur_scope.nodes.end(); ++cur_scope.current_pos)
         {
-            const element* elem = *cur_scope.current_pos;
-            assert(elem);
+            const node* this_node = *cur_scope.current_pos;
+            assert(this_node);
             print_scope(os, scopes);
+            if (this_node->type == node_content)
+            {
+                const content* con = static_cast<const content*>(this_node);
+                os << '"' << con->value << '"' << endl;
+                continue;
+            }
+
+            const element* elem = static_cast<const element*>(this_node);
             os << "/" << elem->name << endl;
 
             if (elem->child_nodes.empty())
@@ -195,37 +203,17 @@ void dom_tree::dump() const
             // This element has child nodes.  Push a new scope and populate it
             // with all child elements, but skip content nodes.
             dom_tree::nodes_type::const_iterator it = elem->child_nodes.begin(), it_end = elem->child_nodes.end();
-            scope::elements_type elements;
+            scope::nodes_type nodes;
             for (; it != it_end; ++it)
-            {
-                switch (it->type)
-                {
-                    case node_element:
-                    {
-                        const element* p = static_cast<const element*>(&(*it));
-                        elements.push_back(p);
-                    }
-                    break;
-                    case node_content:
-                    {
-                        print_scope(os, scopes);
-                        const content& con = static_cast<const content&>(*it);
-                        os << "/" << elem->name << '"' << con.value << '"' << endl;
-                    }
-                    break;
-                    default:
-                        throw general_error("unknown node type during the dump.");
-                }
-            }
+                nodes.push_back(&(*it));
 
-            if (elements.empty())
-                continue;
+            assert(!nodes.empty());
 
             // Push a new scope, and restart the loop with the new scope.
             ++cur_scope.current_pos;
             scopes.push_back(new scope(elem->name.str()));
-            scopes.back().elements.swap(elements);
-            scopes.back().current_pos = scopes.back().elements.begin();
+            scopes.back().nodes.swap(nodes);
+            scopes.back().current_pos = scopes.back().nodes.begin();
             new_scope = true;
             break;
         }

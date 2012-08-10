@@ -7,5 +7,6 @@
         <baby>some text</baby>
     </child>
     before comment|<!-- another comment -->|after comment
+    <child attr3="value3"/>
 </root>
 
