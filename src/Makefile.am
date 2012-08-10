@@ -5,8 +5,8 @@ if BUILD_MODEL
 INCLUDES = -I$(top_srcdir)/include
 
 bin_PROGRAMS = orcus-csv orcus-ods orcus-xlsx \
-	orcus-csv-test \
-	orcus-xml-test
+	orcus-test-csv \
+	orcus-test-xml
 
 orcus_csv_SOURCES = \
 	orcus_csv_main.cpp
@@ -35,20 +35,20 @@ orcus_xlsx_LDADD = \
 
 orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
-orcus_csv_test_SOURCES = orcus_csv_test.cpp
-orcus_csv_test_LDADD = \
+orcus_test_csv_SOURCES = orcus_test_csv.cpp
+orcus_test_csv_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
-orcus_csv_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+orcus_test_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
-orcus_xml_test_SOURCES = orcus_xml_test.cpp
-orcus_xml_test_LDADD = \
+orcus_test_xml_SOURCES = orcus_test_xml.cpp
+orcus_test_xml_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
-orcus_xml_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
-TESTS = orcus-csv-test orcus-xml-test
+TESTS = orcus-test-csv orcus-test-xml
 
 endif
