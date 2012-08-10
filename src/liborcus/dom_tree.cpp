@@ -170,11 +170,6 @@ void dom_tree::dump() const
     scopes_type scopes;
     ostringstream os;
 
-    // Print the element.
-
-    // Print the attributes.
-
-    // Move on to child nodes.
     scopes.push_back(new scope(string(), m_root));
     while (!scopes.empty())
     {
@@ -189,11 +184,13 @@ void dom_tree::dump() const
             print_scope(os, scopes);
             if (this_node->type == node_content)
             {
+                // This is a text content.
                 const content* con = static_cast<const content*>(this_node);
                 os << '"' << con->value << '"' << endl;
                 continue;
             }
 
+            assert(this_node->type == node_element);
             const element* elem = static_cast<const element*>(this_node);
             os << "/" << elem->name << endl;
 
@@ -212,8 +209,10 @@ void dom_tree::dump() const
             // Push a new scope, and restart the loop with the new scope.
             ++cur_scope.current_pos;
             scopes.push_back(new scope(elem->name.str()));
-            scopes.back().nodes.swap(nodes);
-            scopes.back().current_pos = scopes.back().nodes.begin();
+            scope& child_scope = scopes.back();
+            child_scope.nodes.swap(nodes);
+            child_scope.current_pos = child_scope.nodes.begin();
+
             new_scope = true;
             break;
         }
