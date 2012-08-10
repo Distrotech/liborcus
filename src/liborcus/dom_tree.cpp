@@ -42,24 +42,20 @@ dom_tree::node::~node() {}
 
 dom_tree::element::element(const pstring& _ns, const pstring& _name) : node(node_element), ns(_ns), name(_name) {}
 
-string dom_tree::element::print() const
+void dom_tree::element::print(ostream& os) const
 {
-    ostringstream os;
     if (!ns.empty())
         os << ns << ':';
     os << name;
-    return os.str();
 }
 
 dom_tree::element::~element() {}
 
 dom_tree::content::content(const pstring& _value) : node(node_content), value(_value) {}
 
-string dom_tree::content::print() const
+void dom_tree::content::print(ostream& os) const
 {
-    ostringstream os;
     os << '"' << value << '"';
-    return os.str();
 }
 
 dom_tree::content::~content() {}
@@ -185,14 +181,13 @@ void dom_tree::dump() const
             if (this_node->type == node_content)
             {
                 // This is a text content.
-                const content* con = static_cast<const content*>(this_node);
-                os << '"' << con->value << '"' << endl;
+                os << *this_node << endl;
                 continue;
             }
 
             assert(this_node->type == node_element);
             const element* elem = static_cast<const element*>(this_node);
-            os << "/" << elem->name << endl;
+            os << "/" << *elem << endl;
 
             if (elem->child_nodes.empty())
                 continue;
@@ -208,7 +203,9 @@ void dom_tree::dump() const
 
             // Push a new scope, and restart the loop with the new scope.
             ++cur_scope.current_pos;
-            scopes.push_back(new scope(elem->name.str()));
+            ostringstream elem_name;
+            elem_name << *elem;
+            scopes.push_back(new scope(elem_name.str()));
             scope& child_scope = scopes.back();
             child_scope.nodes.swap(nodes);
             child_scope.current_pos = child_scope.nodes.begin();
@@ -224,6 +221,12 @@ void dom_tree::dump() const
     }
 
     cout << os.str();
+}
+
+ostream& operator<< (ostream& os, const dom_tree::node& nd)
+{
+    nd.print(os);
+    return os;
 }
 
 }

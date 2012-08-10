@@ -31,6 +31,8 @@
 #include "pstring.hpp"
 
 #include <vector>
+#include <ostream>
+
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/noncopyable.hpp>
 
@@ -59,7 +61,7 @@ public:
         node(node_type _type) : type(_type) {}
 
         virtual ~node() = 0;
-        virtual std::string print() const = 0;
+        virtual void print(std::ostream& os) const = 0;
     };
 
     typedef boost::ptr_vector<node> nodes_type;
@@ -72,7 +74,7 @@ public:
         nodes_type child_nodes;
 
         element(const pstring& _ns, const pstring& _name);
-        virtual std::string print() const;
+        virtual void print(std::ostream& os) const;
         virtual ~element();
     };
 
@@ -83,7 +85,7 @@ public:
         pstring value;
 
         content(const pstring& _value);
-        virtual std::string print() const;
+        virtual void print(std::ostream& os) const;
         virtual ~content();
     };
 
@@ -104,6 +106,8 @@ private:
     element_stack_type m_elem_stack;
     element* m_root;
 };
+
+std::ostream& operator<< (std::ostream& os, const dom_tree::node& nd);
 
 }
 
