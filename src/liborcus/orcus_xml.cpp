@@ -26,14 +26,106 @@
  ************************************************************************/
 
 #include "orcus/orcus_xml.hpp"
+#include "orcus/global.hpp"
+#include "orcus/sax_parser.hpp"
+
+#define ORCUS_DEBUG_XML 1
+
+#if ORCUS_DEBUG_XML
+#include <iostream>
+#endif
+
+using namespace std;
 
 namespace orcus {
+
+namespace {
+
+class xml_map_sax_handler
+{
+public:
+    void declaration()
+    {
+    }
+
+    void start_element(const pstring& ns, const pstring& name)
+    {
+    }
+
+    void end_element(const pstring& ns, const pstring& name)
+    {
+    }
+
+    void characters(const pstring& val)
+    {
+    }
+
+    void attribute(const pstring& ns, const pstring& name, const pstring& val)
+    {
+    }
+
+    void dump(ostream& os)
+    {
+    }
+};
+
+class xml_data_sax_handler
+{
+public:
+    void declaration()
+    {
+    }
+
+    void start_element(const pstring& ns, const pstring& name)
+    {
+    }
+
+    void end_element(const pstring& ns, const pstring& name)
+    {
+    }
+
+    void characters(const pstring& val)
+    {
+    }
+
+    void attribute(const pstring& ns, const pstring& name, const pstring& val)
+    {
+    }
+
+    void dump(ostream& os)
+    {
+    }
+};
+
+}
 
 orcus_xml::orcus_xml(model::iface::factory* factory) :
     mp_factory(factory) {}
 
+void orcus_xml::read_map_file(const char* filepath)
+{
+    cout << "reading map file " << filepath << endl;
+    string strm;
+    load_file_content(filepath, strm);
+    if (strm.empty())
+        return;
+
+    xml_map_sax_handler handler;
+    sax_parser<xml_map_sax_handler> parser(strm.c_str(), strm.size(), handler);
+    parser.parse();
+}
+
 void orcus_xml::read_file(const char* filepath)
 {
+    cout << "reading file " << filepath << endl;
+    string strm;
+    load_file_content(filepath, strm);
+    if (strm.empty())
+        return;
+
+    xml_data_sax_handler handler;
+    sax_parser<xml_data_sax_handler> parser(strm.c_str(), strm.size(), handler);
+    parser.parse();
 }
 
 }

@@ -40,6 +40,7 @@ class ORCUS_DLLPUBLIC orcus_xml
 {
 public:
     orcus_xml(model::iface::factory* factory);
+    void read_map_file(const char* filepath);
     void read_file(const char* filepath);
 
 private:
