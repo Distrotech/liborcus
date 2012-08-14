@@ -29,8 +29,11 @@
 #define __ORCUS_ORCUS_XML_HPP__
 
 #include "env.hpp"
+#include "model/types.hpp"
 
 namespace orcus {
+
+class pstring;
 
 namespace model { namespace iface {
     class factory;
@@ -40,6 +43,13 @@ class ORCUS_DLLPUBLIC orcus_xml
 {
 public:
     orcus_xml(model::iface::factory* factory);
+
+    void set_cell_link(const pstring& xpath, const pstring& sheet, model::row_t row, model::col_t col);
+
+    void start_range(const pstring& sheet, model::row_t row, model::col_t col);
+    void append_field_link(const pstring& xpath);
+    void commit_range();
+
     void read_map_file(const char* filepath);
     void read_file(const char* filepath);
 

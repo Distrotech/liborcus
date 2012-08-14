@@ -35,6 +35,8 @@
 #include <iostream>
 #endif
 
+#include <vector>
+
 using namespace std;
 
 namespace orcus {
@@ -43,29 +45,102 @@ namespace {
 
 class xml_map_sax_handler
 {
+    struct attr
+    {
+        pstring ns;
+        pstring name;
+        pstring val;
+
+        attr(const pstring& _ns, const pstring& _name, const pstring& _val) :
+            ns(_ns), name(_name), val(_val) {}
+    };
+
+    struct scope
+    {
+        pstring ns;
+        pstring name;
+
+        scope(const pstring& _ns, const pstring& _name) :
+            ns(_ns), name(_name) {}
+    };
+
+    vector<attr> m_attrs;
+    vector<scope> m_scopes;
+    orcus_xml& m_app;
+
 public:
+    xml_map_sax_handler(orcus_xml& app) : m_app(app) {}
+
     void declaration()
     {
+        m_attrs.clear();
     }
 
     void start_element(const pstring& ns, const pstring& name)
     {
+        pstring xpath, sheet;
+        model::row_t row = -1;
+        model::col_t col = -1;
+        vector<attr>::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
+
+        if (name == "cell")
+        {
+            for (; it != it_end; ++it)
+            {
+                if (it->name == "xpath")
+                    xpath = it->val;
+                else if (it->name == "sheet")
+                    sheet = it->val;
+                else if (it->name == "row")
+                    row = strtol(it->val.get(), NULL, 10);
+                else if (it->name == "column")
+                    col = strtol(it->val.get(), NULL, 10);
+            }
+
+            m_app.set_cell_link(xpath, sheet, row, col);
+        }
+        else if (name == "range")
+        {
+            for (; it != it_end; ++it)
+            {
+                if (it->name == "sheet")
+                    sheet = it->val;
+                else if (it->name == "row")
+                    row = strtol(it->val.get(), NULL, 10);
+                else if (it->name == "column")
+                    col = strtol(it->val.get(), NULL, 10);
+            }
+
+            m_app.start_range(sheet, row, col);
+        }
+        else if (name == "field")
+        {
+            for (; it != it_end; ++it)
+            {
+                if (it->name == "xpath")
+                    xpath = it->val;
+            }
+
+            m_app.append_field_link(xpath);
+        }
+
+        m_scopes.push_back(scope(ns, name));
+        m_attrs.clear();
     }
 
     void end_element(const pstring& ns, const pstring& name)
     {
+        if (name == "range")
+            m_app.commit_range();
+
+        m_scopes.pop_back();
     }
 
-    void characters(const pstring& val)
-    {
-    }
+    void characters(const pstring&) {}
 
     void attribute(const pstring& ns, const pstring& name, const pstring& val)
     {
-    }
-
-    void dump(ostream& os)
-    {
+        m_attrs.push_back(attr(ns, name, val));
     }
 };
 
@@ -91,16 +166,32 @@ public:
     void attribute(const pstring& ns, const pstring& name, const pstring& val)
     {
     }
-
-    void dump(ostream& os)
-    {
-    }
 };
 
 }
 
 orcus_xml::orcus_xml(model::iface::factory* factory) :
     mp_factory(factory) {}
+
+void orcus_xml::set_cell_link(const pstring& xpath, const pstring& sheet, model::row_t row, model::col_t col)
+{
+    cout << "cell: xpath='" << xpath << "' sheet='" << sheet << "' row=" << row << " column=" << col << endl;
+}
+
+void orcus_xml::start_range(const pstring& sheet, model::row_t row, model::col_t col)
+{
+    cout << "start range: sheet='" << sheet << "' row=" << row << " column=" << col << endl;
+}
+
+void orcus_xml::append_field_link(const pstring& xpath)
+{
+    cout << "field: xpath='" << xpath << "'" << endl;
+}
+
+void orcus_xml::commit_range()
+{
+    cout << "commit range" << endl;
+}
 
 void orcus_xml::read_map_file(const char* filepath)
 {
@@ -110,7 +201,7 @@ void orcus_xml::read_map_file(const char* filepath)
     if (strm.empty())
         return;
 
-    xml_map_sax_handler handler;
+    xml_map_sax_handler handler(*this);
     sax_parser<xml_map_sax_handler> parser(strm.c_str(), strm.size(), handler);
     parser.parse();
 }
