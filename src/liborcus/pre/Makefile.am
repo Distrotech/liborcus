@@ -17,6 +17,8 @@ gen:
 		$(INCDIR)/orcus/ooxml/opc_token_constants.inl $(SRCDIR)/ooxml_opc_tokens.inl $(SRCDIR)/ooxml_opc_tokens.txt
 	touch $@
 
+check: all
+
 clean-generic:
 	rm -f gen
 	rm -f $(SRCDIR)/odf_tokens.inl $(SRCDIR)/odf_tokens.txt
