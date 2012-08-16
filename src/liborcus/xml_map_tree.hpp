@@ -83,7 +83,7 @@ private:
             field_in_range* field_ref;
         };
 
-        element(const pstring& name);
+        element(const pstring& _name, element_type _type);
         ~element();
     };
 

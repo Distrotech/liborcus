@@ -46,6 +46,9 @@ xml_map_tree::cell_reference::cell_reference(const pstring& _sheet, model::row_t
 xml_map_tree::cell_reference::cell_reference(const cell_reference& r) :
     sheet(r.sheet), row(r.row), col(r.col) {}
 
+xml_map_tree::element::element(const pstring& _name, element_type _type) :
+    name(_name), type(_type), child_elements(NULL) {}
+
 xml_map_tree::element::~element()
 {
 }
