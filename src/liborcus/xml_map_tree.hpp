@@ -28,8 +28,8 @@
 #ifndef __ORCUS_XML_MAP_TREE_HPP__
 #define __ORCUS_XML_MAP_TREE_HPP__
 
-#include "pstring.hpp"
-#include "model/types.hpp"
+#include "orcus/pstring.hpp"
+#include "orcus/model/types.hpp"
 #include "string_pool.hpp"
 
 #include <boost/noncopyable.hpp>

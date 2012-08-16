@@ -191,12 +191,10 @@
 				<F N="../include/orcus/pstring.hpp"/>
 				<F N="../include/orcus/sax_parser.hpp"/>
 				<F N="../include/orcus/sax_token_parser.hpp"/>
-				<F N="../include/orcus/string_pool.hpp"/>
 				<F N="../include/orcus/tokens.hpp"/>
 				<F N="../include/orcus/types.hpp"/>
 				<F N="../include/orcus/xml_context.hpp"/>
 				<F N="../include/orcus/xml_handler.hpp"/>
-				<F N="../include/orcus/xml_map_tree.hpp"/>
 				<F N="../include/orcus/xml_parser.hpp"/>
 				<F N="../include/orcus/xml_simple_handler.hpp"/>
 			</Folder>
@@ -231,10 +229,12 @@
 				<F N="../src/liborcus/pstring.cpp"/>
 				<F N="../src/liborcus/pstring_intern_test.cpp"/>
 				<F N="../src/liborcus/string_pool.cpp"/>
+				<F N="../src/liborcus/string_pool.hpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>
 				<F N="../src/liborcus/xml_context.cpp"/>
 				<F N="../src/liborcus/xml_handler.cpp"/>
 				<F N="../src/liborcus/xml_map_tree.cpp"/>
+				<F N="../src/liborcus/xml_map_tree.hpp"/>
 				<F N="../src/liborcus/xml_parser.cpp"/>
 				<F N="../src/liborcus/xml_simple_handler.cpp"/>
 			</Folder>

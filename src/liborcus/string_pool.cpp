@@ -25,7 +25,8 @@
  *
  ************************************************************************/
 
-#include "orcus/string_pool.hpp"
+#include "string_pool.hpp"
+
 #include "orcus/global.hpp"
 #include "orcus/pstring.hpp"
 #include "orcus/exception.hpp"

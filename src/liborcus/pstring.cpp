@@ -26,7 +26,7 @@
  ************************************************************************/
 
 #include "orcus/pstring.hpp"
-#include "orcus/string_pool.hpp"
+#include "string_pool.hpp"
 
 #include <cassert>
 #include <iostream>

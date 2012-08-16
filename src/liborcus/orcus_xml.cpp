@@ -30,6 +30,8 @@
 #include "orcus/sax_parser.hpp"
 #include "orcus/model/interface.hpp"
 
+#include "xml_map_tree.hpp"
+
 #define ORCUS_DEBUG_XML 1
 
 #if ORCUS_DEBUG_XML

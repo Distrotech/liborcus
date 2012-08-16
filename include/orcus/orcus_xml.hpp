@@ -30,7 +30,6 @@
 
 #include "env.hpp"
 #include "model/types.hpp"
-#include "xml_map_tree.hpp"
 
 namespace orcus {
 

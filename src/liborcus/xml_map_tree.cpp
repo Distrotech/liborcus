@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/xml_map_tree.hpp"
+#include "xml_map_tree.hpp"
 
 namespace orcus {
 
