@@ -27,6 +27,14 @@
 
 #include "xml_map_tree.hpp"
 
+#define ORCUS_DEBUG_XML 1
+
+#if ORCUS_DEBUG_XML
+#include <iostream>
+#endif
+
+using namespace std;
+
 namespace orcus {
 
 xml_map_tree::cell_reference::cell_reference() :
@@ -38,6 +46,10 @@ xml_map_tree::cell_reference::cell_reference(const pstring& _sheet, model::row_t
 xml_map_tree::cell_reference::cell_reference(const cell_reference& r) :
     sheet(r.sheet), row(r.row), col(r.col) {}
 
+xml_map_tree::element::~element()
+{
+}
+
 xml_map_tree::xml_map_tree() : m_root(NULL) {}
 xml_map_tree::~xml_map_tree()
 {
@@ -46,11 +58,19 @@ xml_map_tree::~xml_map_tree()
 
 void xml_map_tree::set_cell_link(const pstring& xpath, const cell_reference& ref)
 {
+    cout << "cell link: " << xpath << " (ref=" << ref << ")" << endl;
 }
 
 void xml_map_tree::set_range_field_link(
    const pstring& xpath, const cell_reference& ref, int column_pos)
 {
+    cout << "range field link: " << xpath << " (ref=" << ref << "; column=" << column_pos << ")" << endl;
+}
+
+std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_reference& ref)
+{
+    os << "[sheet='" << ref.sheet << "' row=" << ref.row << " column=" << ref.col << "]";
+    return os;
 }
 
 }

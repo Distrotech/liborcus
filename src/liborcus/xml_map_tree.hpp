@@ -32,6 +32,8 @@
 #include "orcus/model/types.hpp"
 #include "string_pool.hpp"
 
+#include <ostream>
+
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
@@ -43,6 +45,11 @@ namespace orcus {
 class xml_map_tree : boost::noncopyable
 {
 public:
+    /**
+     * Reference to a single cell position.  Used both for single cell as well
+     * as range links.  For a range link, this represents the upper-left cell
+     * of a range.
+     */
     struct cell_reference
     {
         pstring sheet;
@@ -75,6 +82,9 @@ private:
             cell_reference* cell_ref;
             field_in_range* field_ref;
         };
+
+        element(const pstring& name);
+        ~element();
     };
 
 public:
@@ -91,6 +101,8 @@ private:
 
     element* m_root;
 };
+
+std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_reference& ref);
 
 }
 

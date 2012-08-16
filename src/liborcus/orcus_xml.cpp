@@ -194,26 +194,23 @@ orcus_xml::orcus_xml(model::iface::factory* factory) :
 
 void orcus_xml::set_cell_link(const pstring& xpath, const pstring& sheet, model::row_t row, model::col_t col)
 {
-    cout << "cell: xpath='" << xpath << "' sheet='" << sheet << "' row=" << row << " column=" << col << endl;
     mp_impl->m_map_tree.set_cell_link(xpath, xml_map_tree::cell_reference(sheet, row, col));
 }
 
 void orcus_xml::start_range(const pstring& sheet, model::row_t row, model::col_t col)
 {
-    cout << "start range: sheet='" << sheet << "' row=" << row << " column=" << col << endl;
     mp_impl->m_cur_range_ref = xml_map_tree::cell_reference(sheet, row, col);
     mp_impl->m_cur_column_pos = 0;
 }
 
 void orcus_xml::append_field_link(const pstring& xpath)
 {
-    cout << "field: xpath='" << xpath << "'" << endl;
     mp_impl->m_map_tree.set_range_field_link(xpath, mp_impl->m_cur_range_ref, mp_impl->m_cur_column_pos++);
 }
 
 void orcus_xml::commit_range()
 {
-    cout << "commit range" << endl;
+    mp_impl->m_cur_range_ref = xml_map_tree::cell_reference();
     mp_impl->m_cur_column_pos = -1;
 }
 
