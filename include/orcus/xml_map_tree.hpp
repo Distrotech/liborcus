@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010-2012 Kohei Yoshida
+ * Copyright (c) 2012 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,61 +25,55 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_GLOBAL_HPP__
-#define __ORCUS_GLOBAL_HPP__
+#ifndef __ORCUS_XML_MAP_TREE_HPP__
+#define __ORCUS_XML_MAP_TREE_HPP__
 
-#include "types.hpp"
-#include "env.hpp"
+#include "pstring.hpp"
+#include "model/types.hpp"
 
-#include <string>
-#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
+#include <vector>
 
 namespace orcus {
 
-class tokens;
-
-void print_element(xmlns_token_t ns, xml_token_t name);
-
 /**
- * Print attributes to stdout for debugging purposes.
+ * Tree representing XML-to-sheet mapping for mapped XML import.
  */
-void print_attrs(const tokens& tokens, const xml_attrs_t& attrs);
-
-/**
- * Load the content of a file into a file stream.
- *
- * @param filepath file to open
- * @param strm content of the file
- */
-ORCUS_DLLPUBLIC void load_file_content(const char* filepath, std::string& strm);
-
-template<typename _T>
-struct default_deleter : public std::unary_function<_T*, void>
+class xml_map_tree
 {
-    void operator() (_T* p)
+    struct cell_reference
     {
-        delete p;
-    }
-};
+        pstring sheet;
+        model::row_t row;
+        model::col_t col;
+    };
 
-/**
- * Function object for deleting objects that are stored in map container as
- * pointers.
- */
-template<typename T>
-struct delete_map_object : public ::std::unary_function<typename T::value_type, void>
-{
-    void operator() (typename T::value_type& v)
+    struct field_in_range
     {
-        delete v.second;
-    }
-};
+        cell_reference ref;
+        int column_pos;
+    };
 
-template<typename _T, typename _Deleter = default_deleter<_T> >
-class unique_ptr : public boost::interprocess::unique_ptr<_T, _Deleter>
-{
+    struct element;
+    typedef std::vector<element> element_list_type;
+
+    enum element_type { non_leaf, cell_ref, range_field_ref };
+
+    struct element
+    {
+        element_type type;
+        union {
+            element_list_type* child_elements;
+            cell_reference* cell_ref;
+            field_in_range* field_ref;
+        };
+    };
+
 public:
-    unique_ptr(_T* p) : boost::interprocess::unique_ptr<_T, _Deleter>(p) {}
+    xml_map_tree();
+    ~xml_map_tree();
+
+private:
+
 };
 
 }

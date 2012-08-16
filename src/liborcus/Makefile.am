@@ -31,9 +31,11 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	orcus_xlsx.cpp \
 	orcus_xml.cpp \
 	pstring.cpp \
+	string_pool.cpp \
 	tokens.cpp \
 	xml_context.cpp \
 	xml_handler.cpp \
+	xml_map_tree.cpp \
 	xml_parser.cpp \
 	xml_simple_handler.cpp
 

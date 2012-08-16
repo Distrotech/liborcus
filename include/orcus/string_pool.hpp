@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010-2012 Kohei Yoshida
+ * Copyright (c) 2012 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,61 +25,50 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_GLOBAL_HPP__
-#define __ORCUS_GLOBAL_HPP__
-
-#include "types.hpp"
-#include "env.hpp"
+#ifndef __ORCUS_STRING_POOL_HPP__
+#define __ORCUS_STRING_POOL_HPP__
 
 #include <string>
-#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
+#include <boost/unordered_set.hpp>
+#include <boost/functional/hash.hpp>
 
 namespace orcus {
 
-class tokens;
-
-void print_element(xmlns_token_t ns, xml_token_t name);
+class pstring;
 
 /**
- * Print attributes to stdout for debugging purposes.
+ * Implements string hash map.
  */
-void print_attrs(const tokens& tokens, const xml_attrs_t& attrs);
-
-/**
- * Load the content of a file into a file stream.
- *
- * @param filepath file to open
- * @param strm content of the file
- */
-ORCUS_DLLPUBLIC void load_file_content(const char* filepath, std::string& strm);
-
-template<typename _T>
-struct default_deleter : public std::unary_function<_T*, void>
+class string_pool
 {
-    void operator() (_T* p)
+    struct string_hash
     {
-        delete p;
-    }
-};
+        size_t operator() (const std::string* p) const;
+    private:
+        boost::hash<std::string> m_hash;
+    };
 
-/**
- * Function object for deleting objects that are stored in map container as
- * pointers.
- */
-template<typename T>
-struct delete_map_object : public ::std::unary_function<typename T::value_type, void>
-{
-    void operator() (typename T::value_type& v)
+    struct string_equal_to
     {
-        delete v.second;
-    }
-};
+        bool operator() (const std::string* p1, const std::string* p2) const;
+    private:
+        std::equal_to<std::string> m_equal_to;
+    };
 
-template<typename _T, typename _Deleter = default_deleter<_T> >
-class unique_ptr : public boost::interprocess::unique_ptr<_T, _Deleter>
-{
+    typedef boost::unordered_set<std::string*, string_hash, string_equal_to> string_store_type;
+
 public:
-    unique_ptr(_T* p) : boost::interprocess::unique_ptr<_T, _Deleter>(p) {}
+    string_pool();
+    ~string_pool();
+
+    pstring intern(const char* str);
+    pstring intern(const char* str, size_t n);
+    void dump() const;
+    void clear();
+    size_t size() const;
+
+private:
+    string_store_type m_store;
 };
 
 }

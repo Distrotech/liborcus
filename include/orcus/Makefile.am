@@ -15,9 +15,11 @@ liborcus_HEADERS = \
 	pstring.hpp \
 	sax_parser.hpp \
 	sax_token_parser.hpp \
+	string_pool.hpp \
 	tokens.hpp \
 	types.hpp \
 	xml_context.hpp \
 	xml_handler.hpp \
+	xml_map_tree.hpp \
 	xml_parser.hpp \
 	xml_simple_handler.hpp
