@@ -29,7 +29,28 @@
 
 namespace orcus {
 
-xml_map_tree::xml_map_tree() {}
-xml_map_tree::~xml_map_tree() {}
+xml_map_tree::cell_reference::cell_reference() :
+    row(-1), col(-1) {}
+
+xml_map_tree::cell_reference::cell_reference(const pstring& _sheet, model::row_t _row, model::col_t _col) :
+    sheet(_sheet), row(_row), col(_col) {}
+
+xml_map_tree::cell_reference::cell_reference(const cell_reference& r) :
+    sheet(r.sheet), row(r.row), col(r.col) {}
+
+xml_map_tree::xml_map_tree() : m_root(NULL) {}
+xml_map_tree::~xml_map_tree()
+{
+    delete m_root;
+}
+
+void xml_map_tree::set_cell_link(const pstring& xpath, const cell_reference& ref)
+{
+}
+
+void xml_map_tree::set_range_field_link(
+   const pstring& xpath, const cell_reference& ref, int column_pos)
+{
+}
 
 }

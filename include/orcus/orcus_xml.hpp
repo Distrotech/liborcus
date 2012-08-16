@@ -30,6 +30,7 @@
 
 #include "env.hpp"
 #include "model/types.hpp"
+#include "xml_map_tree.hpp"
 
 namespace orcus {
 
@@ -39,8 +40,12 @@ namespace model { namespace iface {
     class factory;
 }}
 
+struct orcus_xml_impl;
+
 class ORCUS_DLLPUBLIC orcus_xml
 {
+    orcus_xml(const orcus_xml&); // disabled
+
 public:
     orcus_xml(model::iface::factory* factory);
 
@@ -54,7 +59,7 @@ public:
     void read_file(const char* filepath);
 
 private:
-    model::iface::factory* mp_factory;
+    orcus_xml_impl* mp_impl;
 };
 
 }

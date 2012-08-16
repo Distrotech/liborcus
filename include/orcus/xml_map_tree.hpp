@@ -30,23 +30,31 @@
 
 #include "pstring.hpp"
 #include "model/types.hpp"
+#include "string_pool.hpp"
 
-#include <vector>
+#include <boost/noncopyable.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
 
 /**
  * Tree representing XML-to-sheet mapping for mapped XML import.
  */
-class xml_map_tree
+class xml_map_tree : boost::noncopyable
 {
+public:
     struct cell_reference
     {
         pstring sheet;
         model::row_t row;
         model::col_t col;
+
+        cell_reference();
+        cell_reference(const pstring& _sheet, model::row_t _row, model::col_t _col);
+        cell_reference(const cell_reference& r);
     };
 
+private:
     struct field_in_range
     {
         cell_reference ref;
@@ -54,12 +62,13 @@ class xml_map_tree
     };
 
     struct element;
-    typedef std::vector<element> element_list_type;
+    typedef boost::ptr_vector<element> element_list_type;
 
     enum element_type { non_leaf, cell_ref, range_field_ref };
 
-    struct element
+    struct element : boost::noncopyable
     {
+        pstring name;
         element_type type;
         union {
             element_list_type* child_elements;
@@ -72,8 +81,15 @@ public:
     xml_map_tree();
     ~xml_map_tree();
 
-private:
+    void set_cell_link(const pstring& xpath, const cell_reference& ref);
+    void set_range_field_link(
+       const pstring& xpath, const cell_reference& ref, int column_pos);
 
+private:
+    /** pool of element names. */
+    string_pool m_names;
+
+    element* m_root;
 };
 
 }

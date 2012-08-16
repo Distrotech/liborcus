@@ -28,6 +28,7 @@
 #include "orcus/orcus_xml.hpp"
 #include "orcus/global.hpp"
 #include "orcus/sax_parser.hpp"
+#include "orcus/model/interface.hpp"
 
 #define ORCUS_DEBUG_XML 1
 
@@ -170,27 +171,48 @@ public:
 
 }
 
+struct orcus_xml_impl
+{
+    model::iface::factory* mp_factory;
+
+    /** xml element tree that represents all mapped paths. */
+    xml_map_tree m_map_tree;
+
+    /** column position of a field in a current range */
+    int m_cur_column_pos;
+
+    xml_map_tree::cell_reference m_cur_range_ref;
+};
+
 orcus_xml::orcus_xml(model::iface::factory* factory) :
-    mp_factory(factory) {}
+    mp_impl(new orcus_xml_impl)
+{
+    mp_impl->mp_factory = factory;
+}
 
 void orcus_xml::set_cell_link(const pstring& xpath, const pstring& sheet, model::row_t row, model::col_t col)
 {
     cout << "cell: xpath='" << xpath << "' sheet='" << sheet << "' row=" << row << " column=" << col << endl;
+    mp_impl->m_map_tree.set_cell_link(xpath, xml_map_tree::cell_reference(sheet, row, col));
 }
 
 void orcus_xml::start_range(const pstring& sheet, model::row_t row, model::col_t col)
 {
     cout << "start range: sheet='" << sheet << "' row=" << row << " column=" << col << endl;
+    mp_impl->m_cur_range_ref = xml_map_tree::cell_reference(sheet, row, col);
+    mp_impl->m_cur_column_pos = 0;
 }
 
 void orcus_xml::append_field_link(const pstring& xpath)
 {
     cout << "field: xpath='" << xpath << "'" << endl;
+    mp_impl->m_map_tree.set_range_field_link(xpath, mp_impl->m_cur_range_ref, mp_impl->m_cur_column_pos++);
 }
 
 void orcus_xml::commit_range()
 {
     cout << "commit range" << endl;
+    mp_impl->m_cur_column_pos = -1;
 }
 
 void orcus_xml::read_map_file(const char* filepath)
