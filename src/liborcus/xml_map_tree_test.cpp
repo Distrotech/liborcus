@@ -29,6 +29,7 @@
 
 #include <cstdlib>
 #include <cassert>
+#include <iostream>
 
 using namespace orcus;
 using namespace std;
@@ -41,6 +42,7 @@ void test_path_insertion()
     ref.row = 2;
     ref.col = 1;
 
+    // Single cell links
     tree.set_cell_link("/data/elem1", ref);
     const xml_map_tree::element* p = tree.get_link("/data/elem1");
     assert(p && p->type == xml_map_tree::element_cell_ref);
@@ -72,6 +74,34 @@ void test_path_insertion()
     assert(p->cell_ref->sheet == "test2");
     assert(p->cell_ref->row == 10);
     assert(p->cell_ref->col == 5);
+
+    // Range field links
+    ref.row = 5;
+    ref.col = 0;
+    ref.sheet = pstring("test3");
+    tree.set_range_field_link("/data/entries/entry/id", ref, 0);
+    tree.set_range_field_link("/data/entries/entry/name", ref, 1);
+    tree.set_range_field_link("/data/entries/entry/score", ref, 2);
+    p = tree.get_link("/data/entries/entry/id");
+    assert(p && p->type == xml_map_tree::element_range_field_ref);
+    assert(p->field_ref->ref.sheet == "test3");
+    assert(p->field_ref->ref.row == 5);
+    assert(p->field_ref->ref.col == 0);
+    assert(p->field_ref->column_pos == 0);
+
+    p = tree.get_link("/data/entries/entry/name");
+    assert(p && p->type == xml_map_tree::element_range_field_ref);
+    assert(p->field_ref->ref.sheet == "test3");
+    assert(p->field_ref->ref.row == 5);
+    assert(p->field_ref->ref.col == 0);
+    assert(p->field_ref->column_pos == 1);
+
+    p = tree.get_link("/data/entries/entry/score");
+    assert(p && p->type == xml_map_tree::element_range_field_ref);
+    assert(p->field_ref->ref.sheet == "test3");
+    assert(p->field_ref->ref.row == 5);
+    assert(p->field_ref->ref.col == 0);
+    assert(p->field_ref->column_pos == 2);
 }
 
 int main()
