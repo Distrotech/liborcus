@@ -218,7 +218,6 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
 
     // Get the root element first.
     pstring name = parser.next();
-    cout << name << " (root)" << endl;
     if (m_root)
     {
         // Make sure the root element's names are the same.
@@ -247,13 +246,9 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
             // Insert a new element of this name.
             children.push_back(new element(m_names.intern(name.get(), name.size()), element_non_leaf));
             cur_element = &children.back();
-            cout << name << " (new)" << endl;
         }
         else
-        {
             cur_element = &(*it);
-            cout << name << endl;
-        }
 
         name = name_next;
     }
@@ -261,7 +256,6 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
     assert(cur_element);
 
     // Insert a leaf node.
-    cout << name << " (leaf)" << endl;
 
     // Check if an element of the same name already exists.
     element_list_type& children = *cur_element->child_elements;
