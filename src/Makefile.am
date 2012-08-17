@@ -5,8 +5,10 @@ if BUILD_MODEL
 INCLUDES = -I$(top_srcdir)/include
 
 bin_PROGRAMS = orcus-csv orcus-ods orcus-xlsx orcus-xml \
-	orcus-test-common orcus-test-csv orcus-test-xml \
 	orcus-format-xml
+
+EXTRA_PROGRAMS = \
+	orcus-test-common orcus-test-csv orcus-test-xml
 
 # orcus-csv
 

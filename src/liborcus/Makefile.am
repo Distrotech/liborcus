@@ -6,6 +6,8 @@ BINDIR = $(top_srcdir)/bin
 
 INCLUDES = -I$(top_srcdir)/include
 
+EXTRA_PROGRAMS = liborcus-test-xml-map-tree
+
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	dom_tree.cpp \
@@ -39,8 +41,17 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	xml_parser.cpp \
 	xml_simple_handler.cpp
 
+liborcus_test_xml_map_tree_SOURCES = \
+	string_pool.cpp \
+	xml_map_tree.cpp \
+	xml_map_tree_test.cpp
+
+liborcus_test_xml_map_tree_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la
+
 liborcus_@ORCUS_API_VERSION@_la_CPPFLAGS = `@PKG_CONFIG_CPPFLAGS@`
 liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined `@PKG_CONFIG_LDFLAGS@`
 
 liborcus_@ORCUS_API_VERSION@_la_LIBADD =
 
+TESTS = liborcus-test-xml-map-tree
