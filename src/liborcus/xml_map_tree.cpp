@@ -117,10 +117,50 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath)
     if (*p != '/')
         throw xpath_error("first character must be '/'.");
 
+    // Start from the char after the '/'.
     const char* path = ++p;
     size_t len = 0;
     pstring name;
-    for (size_t i = 1, n = xpath.size(); i < n; ++i, ++p, ++len)
+    size_t start = 1; // starting position
+
+    element* cur_element = m_root;
+
+    if (!m_root)
+    {
+        // Try to get the root element.
+        for (size_t i = start, n = xpath.size(); i < n; ++i, ++p, ++len)
+        {
+            if (*p != '/')
+                continue;
+
+            // '/' encountered.
+            if (!len)
+                throw xpath_error("empty element name is not allowed.");
+
+            name = pstring(path, len);
+            cout << name << " (new root)" << endl;
+            m_root = new element(name, element_non_leaf);
+
+            // Skip to the next char.
+            start = ++i;
+            path = ++p;
+            len = 0;
+            break;
+        }
+
+        if (!m_root)
+        {
+            // This means the xpath consists of just one level i.e. '/root'.
+            // Should we support this?
+            throw xpath_error("path must consist of at least two levels.");
+        }
+
+        cur_element = m_root;
+    }
+
+    assert(cur_element);
+
+    for (size_t i = start, n = xpath.size(); i < n; ++i, ++p, ++len)
     {
         if (*p != '/')
             continue;
@@ -129,6 +169,7 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath)
         if (!len)
             throw xpath_error("empty element name is not allowed.");
 
+        // Insert a non-leaf element.
         name = pstring(path, len);
         cout << name << endl;
 
