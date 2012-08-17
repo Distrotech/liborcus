@@ -98,7 +98,8 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_reference& ref
 
     cout << "cell link: " << xpath << " (ref=" << ref << ")" << endl;
     element* p = get_element(xpath, element_cell_ref);
-    assert(p);
+    assert(p && p->cell_ref);
+    *p->cell_ref = ref;
 }
 
 void xml_map_tree::set_range_field_link(
@@ -109,7 +110,9 @@ void xml_map_tree::set_range_field_link(
 
     cout << "range field link: " << xpath << " (ref=" << ref << "; column=" << column_pos << ")" << endl;
     element* p = get_element(xpath, element_range_field_ref);
-    assert(p);
+    assert(p && p->field_ref);
+    p->field_ref->ref = ref;
+    p->field_ref->column_pos = column_pos;
 }
 
 namespace {
@@ -203,7 +206,7 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
         if (it == children.end())
         {
             // Insert a new element of this name.
-            children.push_back(new element(name, element_non_leaf));
+            children.push_back(new element(m_names.intern(path, len), element_non_leaf));
             cur_element = &children.back();
             cout << name << " (new)" << endl;
         }
@@ -234,7 +237,7 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
     if (it != children.end())
         throw xpath_error("This path is already linked.  You can't link the same path twice.");
 
-    children.push_back(new element(name, type));
+    children.push_back(new element(m_names.intern(path, len), type));
     return &children.back();
 }
 
