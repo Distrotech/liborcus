@@ -28,17 +28,29 @@
 #include "xml_map_tree.hpp"
 
 #include <cstdlib>
+#include <cassert>
 
 using namespace orcus;
 using namespace std;
 
-void test()
+void test_path_insertion()
 {
     xml_map_tree tree;
+    xml_map_tree::cell_reference ref;
+    ref.sheet = pstring("test");
+    ref.row = 2;
+    ref.col = 1;
+
+    tree.set_cell_link("/data/elem1", ref);
+    const xml_map_tree::element* p = tree.get_link("/data/elem1");
+    assert(p && p->type == xml_map_tree::element_cell_ref);
+    assert(p->cell_ref->sheet == "test");
+    assert(p->cell_ref->row == 2);
+    assert(p->cell_ref->col == 1);
 }
 
 int main()
 {
-    test();
+    test_path_insertion();
     return EXIT_SUCCESS;
 }

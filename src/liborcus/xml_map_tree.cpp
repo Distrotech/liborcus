@@ -128,6 +128,87 @@ public:
     }
 };
 
+class xpath_parser
+{
+    const char* mp_char;
+    const char* mp_end;
+    size_t m_size;
+public:
+    xpath_parser(const char* p, size_t n) : mp_char(p), mp_end(p+n), m_size(n)
+    {
+        if (!n)
+            xml_map_tree::xpath_error("empty path");
+
+        if (*p != '/')
+            xml_map_tree::xpath_error("first character must be '/'.");
+
+        ++mp_char;
+    }
+
+    pstring next()
+    {
+        if (mp_char == mp_end)
+            return pstring();
+
+        const char* p0 = mp_char;
+        size_t len = 0;
+        for (;mp_char != mp_end; ++mp_char, ++len)
+        {
+            if (*mp_char != '/')
+                continue;
+
+            // '/' encountered.
+            ++mp_char; // skip the '/'.
+            return pstring(p0, len);
+        }
+
+        // '/' has never been encountered.  It must be the last name in the path.
+        return pstring(p0, len);
+    }
+};
+
+}
+
+const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
+{
+    if (!m_root)
+        return NULL;
+
+    if (xpath.empty())
+        return NULL;
+
+    const element* cur_element = m_root;
+
+    xpath_parser parser(xpath.get(), xpath.size());
+
+    // Check the root element first.
+    pstring name = parser.next();
+    if (cur_element->name != name)
+        return NULL;
+
+    for (name = parser.next();!name.empty(); name = parser.next())
+    {
+        // See if an element of this name exists below the current element.
+        if (cur_element->type != element_non_leaf)
+            return NULL;
+
+        if (!cur_element->child_elements)
+            return NULL;
+
+        element_list_type::const_iterator it =
+            std::find_if(cur_element->child_elements->begin(), cur_element->child_elements->end(), find_by_name(name));
+        if (it == cur_element->child_elements->end())
+            // No such child element exists.
+            return NULL;
+
+        cur_element = &(*it);
+    }
+
+    if (cur_element->type == element_non_leaf)
+        // Non-leaf elements are not links.
+        return NULL;
+
+    return cur_element;
 }
 
 xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_type type)

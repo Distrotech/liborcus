@@ -45,13 +45,16 @@ namespace orcus {
  */
 class xml_map_tree : boost::noncopyable
 {
+public:
+    /**
+     * Error indicating improper xpath syntax.
+     */
     class xpath_error : public general_error
     {
     public:
         xpath_error(const std::string& msg);
     };
 
-public:
     /**
      * Reference to a single cell position.  Used both for single cell as well
      * as range links.  For a range link, this represents the upper-left cell
@@ -100,6 +103,8 @@ public:
     void set_cell_link(const pstring& xpath, const cell_reference& ref);
     void set_range_field_link(
        const pstring& xpath, const cell_reference& ref, int column_pos);
+
+    const element* get_link(const pstring& xpath) const;
 
 private:
     element* get_element(const pstring& xpath, element_type type);
