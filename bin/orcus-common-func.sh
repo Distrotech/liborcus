@@ -6,7 +6,7 @@ orcus_exec()
     PROGDIR=`dirname $0`
     ROOTDIR=$PROGDIR/..
     EXECPATH=$ROOTDIR/src/.libs/$EXEC
-    export LD_LIBRARY_PATH=$ROOTDIR/src/liborcus/.libs
+    export LD_LIBRARY_PATH=$ROOTDIR/src/liborcus/.libs:$ROOTDIR/src/model/.libs:
     cd $ROOTDIR
 
     ARG_ONE=$1
