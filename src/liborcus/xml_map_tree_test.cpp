@@ -47,6 +47,31 @@ void test_path_insertion()
     assert(p->cell_ref->sheet == "test");
     assert(p->cell_ref->row == 2);
     assert(p->cell_ref->col == 1);
+
+    const xml_map_tree::element* elem1 = p;
+
+    ref.row = 3;
+    ref.col = 2;
+    tree.set_cell_link("/data/elem2", ref);
+    p = tree.get_link("/data/elem2");
+    assert(p && p->type == xml_map_tree::element_cell_ref);
+    assert(p->cell_ref->sheet == "test");
+    assert(p->cell_ref->row == 3);
+    assert(p->cell_ref->col == 2);
+
+    // The link in elem1 should be unchanged.
+    p = tree.get_link("/data/elem1");
+    assert(p == elem1);
+
+    ref.sheet = pstring("test2");
+    ref.row = 10;
+    ref.col = 5;
+    tree.set_cell_link("/data/meta/title", ref);
+    p = tree.get_link("/data/meta/title");
+    assert(p && p->type == xml_map_tree::element_cell_ref);
+    assert(p->cell_ref->sheet == "test2");
+    assert(p->cell_ref->row == 10);
+    assert(p->cell_ref->col == 5);
 }
 
 int main()
