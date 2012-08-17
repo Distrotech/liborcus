@@ -68,7 +68,6 @@ public:
         cell_reference(const cell_reference& r);
     };
 
-private:
     struct field_in_range
     {
         cell_reference ref;
@@ -103,7 +102,7 @@ public:
        const pstring& xpath, const cell_reference& ref, int column_pos);
 
 private:
-    element* get_element(const pstring& xpath);
+    element* get_element(const pstring& xpath, element_type type);
 
 private:
     /** pool of element names. */

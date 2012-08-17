@@ -97,7 +97,8 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_reference& ref
         return;
 
     cout << "cell link: " << xpath << " (ref=" << ref << ")" << endl;
-    element* p = get_element(xpath);
+    element* p = get_element(xpath, element_cell_ref);
+    assert(p);
 }
 
 void xml_map_tree::set_range_field_link(
@@ -107,10 +108,26 @@ void xml_map_tree::set_range_field_link(
         return;
 
     cout << "range field link: " << xpath << " (ref=" << ref << "; column=" << column_pos << ")" << endl;
-    element* p = get_element(xpath);
+    element* p = get_element(xpath, element_range_field_ref);
+    assert(p);
 }
 
-xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath)
+namespace {
+
+class find_by_name : std::unary_function<xml_map_tree::element, bool>
+{
+    pstring m_name;
+public:
+    find_by_name(const pstring& name) : m_name(name) {}
+    bool operator() (const xml_map_tree::element& e) const
+    {
+        return m_name == e.name;
+    }
+};
+
+}
+
+xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_type type)
 {
     assert(!xpath.empty());
     const char* p = xpath.get();
@@ -125,40 +142,48 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath)
 
     element* cur_element = m_root;
 
-    if (!m_root)
+    // Get the root element first.
+    for (size_t i = start, n = xpath.size(); i < n; ++i, ++p, ++len)
     {
-        // Try to get the root element.
-        for (size_t i = start, n = xpath.size(); i < n; ++i, ++p, ++len)
+        if (*p != '/')
+            continue;
+
+        // '/' encountered.
+        if (!len)
+            throw xpath_error("empty element name is not allowed.");
+
+        name = pstring(path, len);
+        cout << name << " (root)" << endl;
+        if (m_root)
         {
-            if (*p != '/')
-                continue;
-
-            // '/' encountered.
-            if (!len)
-                throw xpath_error("empty element name is not allowed.");
-
-            name = pstring(path, len);
-            cout << name << " (new root)" << endl;
-            m_root = new element(name, element_non_leaf);
-
-            // Skip to the next char.
-            start = ++i;
-            path = ++p;
-            len = 0;
-            break;
+            // Make sure the root element's names are the same.
+            if (m_root->name != name)
+                xpath_error("path begins with inconsistent root level name.");
+        }
+        else
+        {
+            // First time the root element is encountered.
+            m_root = new element(m_names.intern(path, len), element_non_leaf);
         }
 
-        if (!m_root)
-        {
-            // This means the xpath consists of just one level i.e. '/root'.
-            // Should we support this?
-            throw xpath_error("path must consist of at least two levels.");
-        }
-
-        cur_element = m_root;
+        // Skip to the next char.
+        start = ++i;
+        path = ++p;
+        len = 0;
+        break;
     }
 
+    if (!m_root)
+    {
+        // This means the xpath consists of just one level i.e. '/root'.
+        // Should we support this?
+        throw xpath_error("path must consist of at least two levels.");
+    }
+
+    cur_element = m_root;
+
     assert(cur_element);
+    assert(cur_element->child_elements);
 
     for (size_t i = start, n = xpath.size(); i < n; ++i, ++p, ++len)
     {
@@ -171,7 +196,22 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath)
 
         // Insert a non-leaf element.
         name = pstring(path, len);
-        cout << name << endl;
+
+        // Check if the current element contains a chile element of the same name.
+        element_list_type& children = *cur_element->child_elements;
+        element_list_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(name));
+        if (it == children.end())
+        {
+            // Insert a new element of this name.
+            children.push_back(new element(name, element_non_leaf));
+            cur_element = &children.back();
+            cout << name << " (new)" << endl;
+        }
+        else
+        {
+            cur_element = &(*it);
+            cout << name << endl;
+        }
 
         // Skip to the next char.
         ++i;
@@ -182,10 +222,20 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath)
     if (!len)
         throw xpath_error("empty element name is not allowed.");
 
-    name = pstring(path, len);
-    cout << name << endl;
+    assert(cur_element);
 
-    return NULL;
+    // Insert a leaf node.
+    name = pstring(path, len);
+    cout << name << " (leaf)" << endl;
+
+    // Check if an element of the same name already exists.
+    element_list_type& children = *cur_element->child_elements;
+    element_list_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(name));
+    if (it != children.end())
+        throw xpath_error("This path is already linked.  You can't link the same path twice.");
+
+    children.push_back(new element(name, type));
+    return &children.back();
 }
 
 std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_reference& ref)
