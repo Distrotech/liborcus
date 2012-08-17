@@ -214,80 +214,38 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
 xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_type type)
 {
     assert(!xpath.empty());
-    const char* p = xpath.get();
-    if (*p != '/')
-        throw xpath_error("first character must be '/'.");
-
-    // Start from the char after the '/'.
-    const char* path = ++p;
-    size_t len = 0;
-    pstring name;
-    size_t start = 1; // starting position
-
-    element* cur_element = m_root;
+    xpath_parser parser(xpath.get(), xpath.size());
 
     // Get the root element first.
-    for (size_t i = start, n = xpath.size(); i < n; ++i, ++p, ++len)
+    pstring name = parser.next();
+    cout << name << " (root)" << endl;
+    if (m_root)
     {
-        if (*p != '/')
-            continue;
-
-        // '/' encountered.
-        if (!len)
-            throw xpath_error("empty element name is not allowed.");
-
-        name = pstring(path, len);
-        cout << name << " (root)" << endl;
-        if (m_root)
-        {
-            // Make sure the root element's names are the same.
-            if (m_root->name != name)
-                xpath_error("path begins with inconsistent root level name.");
-        }
-        else
-        {
-            // First time the root element is encountered.
-            m_root = new element(m_names.intern(path, len), element_non_leaf);
-        }
-
-        // Skip to the next char.
-        start = ++i;
-        path = ++p;
-        len = 0;
-        break;
+        // Make sure the root element's names are the same.
+        if (m_root->name != name)
+            xpath_error("path begins with inconsistent root level name.");
+    }
+    else
+    {
+        // First time the root element is encountered.
+        m_root = new element(m_names.intern(name.get(), name.size()), element_non_leaf);
     }
 
-    if (!m_root)
-    {
-        // This means the xpath consists of just one level i.e. '/root'.
-        // Should we support this?
-        throw xpath_error("path must consist of at least two levels.");
-    }
-
-    cur_element = m_root;
+    element* cur_element = m_root;
 
     assert(cur_element);
     assert(cur_element->child_elements);
 
-    for (size_t i = start, n = xpath.size(); i < n; ++i, ++p, ++len)
+    name = parser.next();
+    for (pstring name_next = parser.next();!name_next.empty(); name_next = parser.next())
     {
-        if (*p != '/')
-            continue;
-
-        // '/' encountered.
-        if (!len)
-            throw xpath_error("empty element name is not allowed.");
-
-        // Insert a non-leaf element.
-        name = pstring(path, len);
-
         // Check if the current element contains a chile element of the same name.
         element_list_type& children = *cur_element->child_elements;
         element_list_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(name));
         if (it == children.end())
         {
             // Insert a new element of this name.
-            children.push_back(new element(m_names.intern(path, len), element_non_leaf));
+            children.push_back(new element(m_names.intern(name.get(), name.size()), element_non_leaf));
             cur_element = &children.back();
             cout << name << " (new)" << endl;
         }
@@ -297,19 +255,12 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
             cout << name << endl;
         }
 
-        // Skip to the next char.
-        ++i;
-        path = ++p;
-        len = 0;
+        name = name_next;
     }
-
-    if (!len)
-        throw xpath_error("empty element name is not allowed.");
 
     assert(cur_element);
 
     // Insert a leaf node.
-    name = pstring(path, len);
     cout << name << " (leaf)" << endl;
 
     // Check if an element of the same name already exists.
@@ -318,7 +269,7 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
     if (it != children.end())
         throw xpath_error("This path is already linked.  You can't link the same path twice.");
 
-    children.push_back(new element(m_names.intern(path, len), type));
+    children.push_back(new element(m_names.intern(name.get(), name.size()), type));
     return &children.back();
 }
 
