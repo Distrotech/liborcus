@@ -56,7 +56,6 @@ public:
 
     void append_sheet(const pstring& name);
 
-    void read_map_file(const char* filepath);
     void read_file(const char* filepath);
 
 private:
