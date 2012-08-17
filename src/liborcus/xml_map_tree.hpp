@@ -30,6 +30,7 @@
 
 #include "orcus/pstring.hpp"
 #include "orcus/model/types.hpp"
+#include "orcus/exception.hpp"
 #include "string_pool.hpp"
 
 #include <ostream>
@@ -44,6 +45,12 @@ namespace orcus {
  */
 class xml_map_tree : boost::noncopyable
 {
+    class xpath_error : public general_error
+    {
+    public:
+        xpath_error(const std::string& msg);
+    };
+
 public:
     /**
      * Reference to a single cell position.  Used both for single cell as well
@@ -71,7 +78,7 @@ private:
     struct element;
     typedef boost::ptr_vector<element> element_list_type;
 
-    enum element_type { non_leaf, cell_ref, range_field_ref };
+    enum element_type { element_non_leaf, element_cell_ref, element_range_field_ref };
 
     struct element : boost::noncopyable
     {
@@ -94,6 +101,9 @@ public:
     void set_cell_link(const pstring& xpath, const cell_reference& ref);
     void set_range_field_link(
        const pstring& xpath, const cell_reference& ref, int column_pos);
+
+private:
+    element* get_element(const pstring& xpath);
 
 private:
     /** pool of element names. */
