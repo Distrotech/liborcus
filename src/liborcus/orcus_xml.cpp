@@ -121,10 +121,28 @@ public:
             for (; it != it_end; ++it)
             {
                 if (it->name == "xpath")
+                {
                     xpath = it->val;
+                    break;
+                }
             }
 
             m_app.append_field_link(xpath);
+        }
+        else if (name == "sheet")
+        {
+            pstring sheet_name;
+            for (; it != it_end; ++it)
+            {
+                if (it->name == "name")
+                {
+                    sheet_name = it->val;
+                    break;
+                }
+            }
+
+            if (!sheet_name.empty())
+                m_app.append_sheet(sheet_name);
         }
 
         m_scopes.push_back(scope(ns, name));
@@ -212,6 +230,14 @@ void orcus_xml::commit_range()
 {
     mp_impl->m_cur_range_ref = xml_map_tree::cell_reference();
     mp_impl->m_cur_column_pos = -1;
+}
+
+void orcus_xml::append_sheet(const pstring& name)
+{
+    if (name.empty())
+        return;
+
+    mp_impl->mp_factory->append_sheet(name.get(), name.size());
 }
 
 void orcus_xml::read_map_file(const char* filepath)

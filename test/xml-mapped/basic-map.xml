@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <map xmlns="http://gitorious.org/orcus/xml-map">
+    <sheet name="data"/>
     <cell xpath="/data/label" row="0" column="0" sheet="data"/>
     <cell xpath="/data/header/title" row="1" column="0" sheet="data"/>
     <cell xpath="/data/footer/date" row="1" column="2" sheet="data"/>
