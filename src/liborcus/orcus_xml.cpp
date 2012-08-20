@@ -110,16 +110,20 @@ public:
             case xml_map_tree::element_cell_ref:
             {
                 const xml_map_tree::cell_reference& ref = *mp_current_elem->cell_ref;
-                if (ref.sheet.empty())
-                    return;
+                assert(!ref.sheet.empty());
 
-                cout << "sheet name: " << ref.sheet << endl;
                 model::iface::sheet* sheet = m_factory.get_sheet(ref.sheet.get(), ref.sheet.size());
                 if (sheet)
                     sheet->set_auto(ref.row, ref.col, val_trimmed.get(), val_trimmed.size());
             }
             break;
             case xml_map_tree::element_range_field_ref:
+            {
+                const xml_map_tree::field_in_range& field = *mp_current_elem->field_ref;
+                assert(!field.ref.sheet.empty());
+
+                // TODO: handle this.
+            }
             break;
             case xml_map_tree::element_non_leaf:
             default:
