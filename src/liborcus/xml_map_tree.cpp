@@ -234,6 +234,9 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_reference& ref
     element* p = get_element(xpath, element_cell_ref);
     assert(p && p->cell_ref);
     *p->cell_ref = ref;
+
+    // Make sure the sheet name string is persistent.
+    p->cell_ref->sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
 }
 
 void xml_map_tree::set_range_field_link(
@@ -247,6 +250,9 @@ void xml_map_tree::set_range_field_link(
     assert(p && p->field_ref);
     p->field_ref->ref = ref;
     p->field_ref->column_pos = column_pos;
+
+    // Make sure the sheet name string is persistent.
+    p->field_ref->ref.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
 }
 
 const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
@@ -266,7 +272,7 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
     if (cur_element->name != name)
         return NULL;
 
-    for (name = parser.next();!name.empty(); name = parser.next())
+    for (name = parser.next(); !name.empty(); name = parser.next())
     {
         // See if an element of this name exists below the current element.
         if (cur_element->type != element_non_leaf)
