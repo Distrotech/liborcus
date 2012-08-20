@@ -131,6 +131,19 @@ void test_tree_walk()
     assert(elem);
     assert(elem->name == "title");
     assert(elem->type == xml_map_tree::element_cell_ref);
+
+    elem = walker.pop_element("title");
+    assert(elem);
+    assert(elem->name == "header");
+    assert(elem->type == xml_map_tree::element_non_leaf);
+
+    elem = walker.pop_element("header");
+    assert(elem);
+    assert(elem->name == "data");
+    assert(elem->type == xml_map_tree::element_non_leaf);
+
+    elem = walker.pop_element("data");
+    assert(!elem);
 }
 
 int main()
