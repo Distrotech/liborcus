@@ -95,6 +95,8 @@ public:
 
         element(const pstring& _name, element_type _type);
         ~element();
+
+        const element* get_child(const pstring& _name) const;
     };
 
 public:
@@ -104,8 +106,10 @@ public:
      */
     class walker
     {
+        typedef std::vector<const element*> element_stack_type;
         const xml_map_tree& m_parent;
-        const element* mp_current;
+        element_stack_type m_stack;
+        int m_content_depth;
     public:
         walker(const xml_map_tree& parent);
         walker(const walker& r);

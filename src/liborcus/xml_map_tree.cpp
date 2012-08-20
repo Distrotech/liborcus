@@ -37,102 +37,6 @@ using namespace std;
 
 namespace orcus {
 
-xml_map_tree::xpath_error::xpath_error(const string& msg) : general_error(msg) {}
-
-xml_map_tree::cell_reference::cell_reference() :
-    row(-1), col(-1) {}
-
-xml_map_tree::cell_reference::cell_reference(const pstring& _sheet, model::row_t _row, model::col_t _col) :
-    sheet(_sheet), row(_row), col(_col) {}
-
-xml_map_tree::cell_reference::cell_reference(const cell_reference& r) :
-    sheet(r.sheet), row(r.row), col(r.col) {}
-
-xml_map_tree::element::element(const pstring& _name, element_type _type) :
-    name(_name), type(_type)
-{
-    switch (type)
-    {
-        case element_cell_ref:
-            cell_ref = new cell_reference;
-        break;
-        case element_non_leaf:
-            child_elements = new element_list_type;
-        break;
-        case element_range_field_ref:
-            field_ref = new field_in_range;
-        break;
-        default:
-            throw general_error("unexpected element type in the constructor.");
-    }
-}
-
-xml_map_tree::element::~element()
-{
-    switch (type)
-    {
-        case element_cell_ref:
-            delete cell_ref;
-        break;
-        case element_non_leaf:
-            delete child_elements;
-        break;
-        case element_range_field_ref:
-            delete field_ref;
-        break;
-        default:
-            throw general_error("unexpected element type in the destructor.");
-    }
-}
-
-xml_map_tree::walker::walker(const xml_map_tree& parent) : m_parent(parent), mp_current(NULL) {}
-xml_map_tree::walker::walker(const xml_map_tree::walker& r) : m_parent(r.m_parent), mp_current(r.mp_current) {}
-
-void xml_map_tree::walker::reset()
-{
-    mp_current = NULL;
-}
-
-const xml_map_tree::element* xml_map_tree::walker::push_element(const pstring& name)
-{
-    return NULL;
-}
-
-const xml_map_tree::element* xml_map_tree::walker::pop_element(const pstring& name)
-{
-    return NULL;
-}
-
-xml_map_tree::xml_map_tree() : m_root(NULL) {}
-xml_map_tree::~xml_map_tree()
-{
-    delete m_root;
-}
-
-void xml_map_tree::set_cell_link(const pstring& xpath, const cell_reference& ref)
-{
-    if (xpath.empty())
-        return;
-
-    cout << "cell link: " << xpath << " (ref=" << ref << ")" << endl;
-    element* p = get_element(xpath, element_cell_ref);
-    assert(p && p->cell_ref);
-    *p->cell_ref = ref;
-}
-
-void xml_map_tree::set_range_field_link(
-   const pstring& xpath, const cell_reference& ref, int column_pos)
-{
-    if (xpath.empty())
-        return;
-
-    cout << "range field link: " << xpath << " (ref=" << ref << "; column=" << column_pos << ")" << endl;
-    element* p = get_element(xpath, element_range_field_ref);
-    assert(p && p->field_ref);
-    p->field_ref->ref = ref;
-    p->field_ref->column_pos = column_pos;
-}
-
 namespace {
 
 class find_by_name : std::unary_function<xml_map_tree::element, bool>
@@ -185,6 +89,164 @@ public:
     }
 };
 
+}
+
+xml_map_tree::xpath_error::xpath_error(const string& msg) : general_error(msg) {}
+
+xml_map_tree::cell_reference::cell_reference() :
+    row(-1), col(-1) {}
+
+xml_map_tree::cell_reference::cell_reference(const pstring& _sheet, model::row_t _row, model::col_t _col) :
+    sheet(_sheet), row(_row), col(_col) {}
+
+xml_map_tree::cell_reference::cell_reference(const cell_reference& r) :
+    sheet(r.sheet), row(r.row), col(r.col) {}
+
+xml_map_tree::element::element(const pstring& _name, element_type _type) :
+    name(_name), type(_type)
+{
+    switch (type)
+    {
+        case element_cell_ref:
+            cell_ref = new cell_reference;
+        break;
+        case element_non_leaf:
+            child_elements = new element_list_type;
+        break;
+        case element_range_field_ref:
+            field_ref = new field_in_range;
+        break;
+        default:
+            throw general_error("unexpected element type in the constructor.");
+    }
+}
+
+xml_map_tree::element::~element()
+{
+    switch (type)
+    {
+        case element_cell_ref:
+            delete cell_ref;
+        break;
+        case element_non_leaf:
+            delete child_elements;
+        break;
+        case element_range_field_ref:
+            delete field_ref;
+        break;
+        default:
+            throw general_error("unexpected element type in the destructor.");
+    }
+}
+
+const xml_map_tree::element* xml_map_tree::element::get_child(const pstring& _name) const
+{
+    if (type != element_non_leaf)
+        return NULL;
+
+    assert(child_elements);
+
+    element_list_type::const_iterator it =
+        std::find_if(child_elements->begin(), child_elements->end(), find_by_name(name));
+
+    return it == child_elements->end() ? NULL : &(*it);
+}
+
+xml_map_tree::walker::walker(const xml_map_tree& parent) :
+    m_parent(parent), m_content_depth(0) {}
+xml_map_tree::walker::walker(const xml_map_tree::walker& r) :
+    m_parent(r.m_parent), m_stack(r.m_stack), m_content_depth(r.m_content_depth) {}
+
+void xml_map_tree::walker::reset()
+{
+    m_stack.clear();
+    m_content_depth = 0;
+}
+
+const xml_map_tree::element* xml_map_tree::walker::push_element(const pstring& name)
+{
+    if (m_stack.empty())
+    {
+        if (!m_parent.m_root)
+            // Tree is empty.
+            return NULL;
+
+        const element* p = m_parent.m_root;
+        if (p->name != name)
+            // Names differ.
+            return NULL;
+
+        m_stack.push_back(p);
+        return p;
+    }
+
+    if (m_stack.back()->type == element_non_leaf)
+    {
+        // Check if the current element has a child of the same name.
+        const element* p = m_stack.back()->get_child(name);
+        if (p)
+        {
+            m_stack.push_back(p);
+            return p;
+        }
+
+        // The path matched up to this point, but no more.
+        ++m_content_depth;
+        return NULL;
+    }
+
+    // Current element is linked.
+    assert(m_stack.back()->type != element_non_leaf);
+    ++m_content_depth;
+    return m_stack.back();
+}
+
+const xml_map_tree::element* xml_map_tree::walker::pop_element(const pstring& name)
+{
+    if (m_content_depth)
+    {
+        --m_content_depth;
+        return m_stack.back();
+    }
+
+    if (m_stack.empty())
+        throw general_error("Element was popped while the stack was empty.");
+
+    if (m_stack.back()->name != name)
+        throw general_error("Closing element has a different name than the opening element.");
+
+    m_stack.pop_back();
+    return m_stack.back();
+}
+
+xml_map_tree::xml_map_tree() : m_root(NULL) {}
+xml_map_tree::~xml_map_tree()
+{
+    delete m_root;
+}
+
+void xml_map_tree::set_cell_link(const pstring& xpath, const cell_reference& ref)
+{
+    if (xpath.empty())
+        return;
+
+    cout << "cell link: " << xpath << " (ref=" << ref << ")" << endl;
+    element* p = get_element(xpath, element_cell_ref);
+    assert(p && p->cell_ref);
+    *p->cell_ref = ref;
+}
+
+void xml_map_tree::set_range_field_link(
+   const pstring& xpath, const cell_reference& ref, int column_pos)
+{
+    if (xpath.empty())
+        return;
+
+    cout << "range field link: " << xpath << " (ref=" << ref << "; column=" << column_pos << ")" << endl;
+    element* p = get_element(xpath, element_range_field_ref);
+    assert(p && p->field_ref);
+    p->field_ref->ref = ref;
+    p->field_ref->column_pos = column_pos;
 }
 
 const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
