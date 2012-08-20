@@ -86,7 +86,7 @@ sheet::sheet(document& doc, sheet_t sheet) :
 sheet::~sheet()
 {
     for_each(m_cell_formats.begin(), m_cell_formats.end(),
-             delete_map_object<cell_format_type>());
+             map_object_deleter<cell_format_type>());
 }
 
 void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)

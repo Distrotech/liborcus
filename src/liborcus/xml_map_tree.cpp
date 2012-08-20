@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "xml_map_tree.hpp"
+#include "orcus/global.hpp"
 
 #define ORCUS_DEBUG_XML 1
 
@@ -222,6 +223,7 @@ const xml_map_tree::element* xml_map_tree::walker::pop_element(const pstring& na
 xml_map_tree::xml_map_tree() : m_root(NULL) {}
 xml_map_tree::~xml_map_tree()
 {
+    std::for_each(m_field_refs.begin(), m_field_refs.end(), map_object_deleter<field_ref_map_type>());
     delete m_root;
 }
 
@@ -239,20 +241,33 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_reference& ref
     p->cell_ref->sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
 }
 
-void xml_map_tree::set_range_field_link(
-   const pstring& xpath, const cell_reference& ref, int column_pos)
+void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_reference& ref)
 {
     if (xpath.empty())
         return;
 
-    cout << "range field link: " << xpath << " (ref=" << ref << "; column=" << column_pos << ")" << endl;
+    // Make sure the sheet name string is persistent.
+    cell_reference ref_safe = ref;
+    ref_safe.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
+
+    ref_element_list_type* refs = NULL;
+    field_ref_map_type::iterator it = m_field_refs.lower_bound(ref_safe);
+    if (it == m_field_refs.end() || m_field_refs.key_comp()(ref, it->first))
+    {
+        // This reference does not exist yet.  Insert a new one.
+        it = m_field_refs.insert(it, field_ref_map_type::value_type(ref_safe, new ref_element_list_type));
+    }
+
+    refs = it->second;
+    assert(refs);
+
+    cout << "range field link: " << xpath << " (ref=" << ref_safe << ")" << endl;
     element* p = get_element(xpath, element_range_field_ref);
     assert(p && p->field_ref);
-    p->field_ref->ref = ref;
-    p->field_ref->column_pos = column_pos;
+    p->field_ref->ref = ref_safe;
+    p->field_ref->column_pos = refs->size();
 
-    // Make sure the sheet name string is persistent.
-    p->field_ref->ref.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
+    refs->push_back(p);
 }
 
 const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
@@ -362,6 +377,17 @@ std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_reference& 
 {
     os << "[sheet='" << ref.sheet << "' row=" << ref.row << " column=" << ref.col << "]";
     return os;
+}
+
+bool operator< (const xml_map_tree::cell_reference& left, const xml_map_tree::cell_reference& right)
+{
+    if (left.sheet != right.sheet)
+        return left.sheet < right.sheet;
+
+    if (left.row != right.row)
+        return left.row < right.row;
+
+    return left.col < right.col;
 }
 
 }

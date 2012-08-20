@@ -79,9 +79,9 @@ void test_path_insertion()
     ref.row = 5;
     ref.col = 0;
     ref.sheet = pstring("test3");
-    tree.set_range_field_link("/data/entries/entry/id", ref, 0);
-    tree.set_range_field_link("/data/entries/entry/name", ref, 1);
-    tree.set_range_field_link("/data/entries/entry/score", ref, 2);
+    tree.append_range_field_link("/data/entries/entry/id", ref);
+    tree.append_range_field_link("/data/entries/entry/name", ref);
+    tree.append_range_field_link("/data/entries/entry/score", ref);
     p = tree.get_link("/data/entries/entry/id");
     assert(p && p->type == xml_map_tree::element_range_field_ref);
     assert(p->field_ref->ref.sheet == "test3");

@@ -77,7 +77,7 @@ shared_strings::shared_strings(ixion::model_context& cxt) :
 shared_strings::~shared_strings()
 {
     for_each(m_formats.begin(), m_formats.end(),
-             delete_map_object<format_runs_map_type>());
+             map_object_deleter<format_runs_map_type>());
 
     // This pointer should be NULL.
     assert(!mp_cur_format_runs);

@@ -34,6 +34,7 @@
 #include "string_pool.hpp"
 
 #include <ostream>
+#include <map>
 
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -79,6 +80,7 @@ public:
 
     struct element;
     typedef boost::ptr_vector<element> element_list_type;
+    typedef std::vector<const element*> ref_element_list_type;
 
     enum element_type { element_non_leaf, element_cell_ref, element_range_field_ref };
 
@@ -123,8 +125,7 @@ public:
     ~xml_map_tree();
 
     void set_cell_link(const pstring& xpath, const cell_reference& ref);
-    void set_range_field_link(
-       const pstring& xpath, const cell_reference& ref, int column_pos);
+    void append_range_field_link(const pstring& xpath, const cell_reference& ref);
 
     const element* get_link(const pstring& xpath) const;
 
@@ -134,6 +135,9 @@ private:
     element* get_element(const pstring& xpath, element_type type);
 
 private:
+    typedef std::map<cell_reference, ref_element_list_type*> field_ref_map_type;
+    field_ref_map_type m_field_refs;
+
     /** pool of element names. */
     string_pool m_names;
 
@@ -141,6 +145,8 @@ private:
 };
 
 std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_reference& ref);
+
+bool operator< (const xml_map_tree::cell_reference& left, const xml_map_tree::cell_reference& right);
 
 }
 

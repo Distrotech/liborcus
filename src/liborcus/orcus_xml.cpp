@@ -146,9 +146,6 @@ struct orcus_xml_impl
     /** xml element tree that represents all mapped paths. */
     xml_map_tree m_map_tree;
 
-    /** column position of a field in a current range */
-    int m_cur_column_pos;
-
     xml_map_tree::cell_reference m_cur_range_ref;
 };
 
@@ -166,18 +163,16 @@ void orcus_xml::set_cell_link(const pstring& xpath, const pstring& sheet, model:
 void orcus_xml::start_range(const pstring& sheet, model::row_t row, model::col_t col)
 {
     mp_impl->m_cur_range_ref = xml_map_tree::cell_reference(sheet, row, col);
-    mp_impl->m_cur_column_pos = 0;
 }
 
 void orcus_xml::append_field_link(const pstring& xpath)
 {
-    mp_impl->m_map_tree.set_range_field_link(xpath, mp_impl->m_cur_range_ref, mp_impl->m_cur_column_pos++);
+    mp_impl->m_map_tree.append_range_field_link(xpath, mp_impl->m_cur_range_ref);
 }
 
 void orcus_xml::commit_range()
 {
     mp_impl->m_cur_range_ref = xml_map_tree::cell_reference();
-    mp_impl->m_cur_column_pos = -1;
 }
 
 void orcus_xml::append_sheet(const pstring& name)

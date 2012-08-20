@@ -67,7 +67,7 @@ struct default_deleter : public std::unary_function<_T*, void>
  * pointers.
  */
 template<typename T>
-struct delete_map_object : public ::std::unary_function<typename T::value_type, void>
+struct map_object_deleter : public ::std::unary_function<typename T::value_type, void>
 {
     void operator() (typename T::value_type& v)
     {
