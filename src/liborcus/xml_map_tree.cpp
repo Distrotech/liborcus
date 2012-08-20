@@ -147,7 +147,7 @@ const xml_map_tree::element* xml_map_tree::element::get_child(const pstring& _na
     assert(child_elements);
 
     element_list_type::const_iterator it =
-        std::find_if(child_elements->begin(), child_elements->end(), find_by_name(name));
+        std::find_if(child_elements->begin(), child_elements->end(), find_by_name(_name));
 
     return it == child_elements->end() ? NULL : &(*it);
 }

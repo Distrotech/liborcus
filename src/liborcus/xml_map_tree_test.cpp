@@ -104,8 +104,38 @@ void test_path_insertion()
     assert(p->field_ref->column_pos == 2);
 }
 
+void test_tree_walk()
+{
+    xml_map_tree tree;
+    xml_map_tree::cell_reference ref;
+    ref.sheet = pstring("test");
+    ref.row = 2;
+    ref.col = 1;
+
+    tree.set_cell_link("/data/header/title", ref);
+    xml_map_tree::walker walker = tree.get_tree_walker();
+    walker.reset();
+
+    // Root element.
+    const xml_map_tree::element* elem = walker.push_element("data");
+    assert(elem);
+    assert(elem->name == "data");
+    assert(elem->type == xml_map_tree::element_non_leaf);
+
+    elem = walker.push_element("header");
+    assert(elem);
+    assert(elem->name == "header");
+    assert(elem->type == xml_map_tree::element_non_leaf);
+
+    elem = walker.push_element("title");
+    assert(elem);
+    assert(elem->name == "title");
+    assert(elem->type == xml_map_tree::element_cell_ref);
+}
+
 int main()
 {
     test_path_insertion();
+    test_tree_walk();
     return EXIT_SUCCESS;
 }
