@@ -72,11 +72,11 @@ class xml_data_sax_handler
 
     model::iface::factory& m_factory;
     xml_map_tree::walker m_map_tree_walker;
-    bool m_content;
+    const xml_map_tree::element* mp_current_elem;
 
 public:
     xml_data_sax_handler(model::iface::factory& factory, const xml_map_tree& map_tree) :
-        m_factory(factory), m_map_tree_walker(map_tree.get_tree_walker()), m_content(false) {}
+        m_factory(factory), m_map_tree_walker(map_tree.get_tree_walker()), mp_current_elem(NULL) {}
 
     void declaration()
     {
@@ -87,21 +87,44 @@ public:
     {
         m_scopes.push_back(scope(ns, name));
         m_attrs.clear();
-        const xml_map_tree::element* p = m_map_tree_walker.push_element(name);
-        m_content = p && (p->type != xml_map_tree::element_non_leaf);
+        mp_current_elem = m_map_tree_walker.push_element(name);
     }
 
     void end_element(const pstring& ns, const pstring& name)
     {
         m_scopes.pop_back();
-        const xml_map_tree::element* p = m_map_tree_walker.pop_element(name);
-        m_content = p && (p->type != xml_map_tree::element_non_leaf);
+        mp_current_elem = m_map_tree_walker.pop_element(name);
     }
 
     void characters(const pstring& val)
     {
-        if (m_content)
-            cout << val << endl;
+        if (!mp_current_elem)
+            return;
+
+        pstring val_trimmed = val.trim();
+        if (val_trimmed.empty())
+            return;
+
+        switch (mp_current_elem->type)
+        {
+            case xml_map_tree::element_cell_ref:
+            {
+                const xml_map_tree::cell_reference& ref = *mp_current_elem->cell_ref;
+                if (ref.sheet.empty())
+                    return;
+
+                cout << "sheet name: " << ref.sheet << endl;
+                model::iface::sheet* sheet = m_factory.get_sheet(ref.sheet.get(), ref.sheet.size());
+                if (sheet)
+                    sheet->set_auto(ref.row, ref.col, val_trimmed.get(), val_trimmed.size());
+            }
+            break;
+            case xml_map_tree::element_range_field_ref:
+            break;
+            case xml_map_tree::element_non_leaf:
+            default:
+                ;
+        }
     }
 
     void attribute(const pstring& ns, const pstring& name, const pstring& val)

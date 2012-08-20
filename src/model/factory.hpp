@@ -44,6 +44,7 @@ public:
     virtual iface::shared_strings* get_shared_strings();
     virtual iface::styles* get_styles();
     virtual iface::sheet* append_sheet(const char* sheet_name, size_t sheet_name_length);
+    virtual iface::sheet* get_sheet(const char* sheet_name, size_t sheet_name_length);
 
 private:
     document* mp_document;

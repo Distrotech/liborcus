@@ -251,6 +251,7 @@ public:
     virtual shared_strings* get_shared_strings() = 0;
     virtual styles* get_styles() = 0;
     virtual sheet* append_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
+    virtual sheet* get_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
 };
 
 }}}

@@ -58,4 +58,9 @@ iface::sheet* factory::append_sheet(const char* sheet_name, size_t sheet_name_le
     return mp_document->append_sheet(pstring(sheet_name, sheet_name_length));
 }
 
+iface::sheet* factory::get_sheet(const char* sheet_name, size_t sheet_name_length)
+{
+    return mp_document->get_sheet(pstring(sheet_name, sheet_name_length));
+}
+
 }}

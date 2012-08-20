@@ -94,6 +94,7 @@ public:
     const ixion::model_context& get_model_context() const;
 
     sheet* append_sheet(const pstring& sheet_name);
+    sheet* get_sheet(const pstring& sheet_name);
 
     void calc_formulas();
 

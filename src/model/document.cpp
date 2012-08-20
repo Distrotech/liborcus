@@ -41,6 +41,21 @@ using namespace std;
 
 namespace orcus { namespace model {
 
+namespace {
+
+class find_sheet_by_name : std::unary_function<document::sheet_item, bool>
+{
+    const pstring& m_name;
+public:
+    find_sheet_by_name(const pstring& name) : m_name(name) {}
+    bool operator() (const document::sheet_item& v) const
+    {
+        return v.name == m_name;
+    }
+};
+
+}
+
 document::sheet_item::sheet_item(document& doc, const pstring& _name, sheet_t sheet) :
     name(_name), data(doc, sheet) {}
 
@@ -122,6 +137,17 @@ sheet* document::append_sheet(const pstring& sheet_name)
     return &m_sheets.back().data;
 }
 
+sheet* document::get_sheet(const pstring& sheet_name)
+{
+    boost::ptr_vector<sheet_item>::iterator it =
+        std::find_if(m_sheets.begin(), m_sheets.end(), find_sheet_by_name(sheet_name));
+
+    if (it == m_sheets.end())
+        return NULL;
+
+    return &it->data;
+}
+
 void document::calc_formulas()
 {
     ixion::iface::model_context& cxt = get_model_context();
@@ -142,21 +168,6 @@ void document::dump() const
 void document::dump_html(const string& filepath) const
 {
     for_each(m_sheets.begin(), m_sheets.end(), sheet_item::html_printer(filepath));
-}
-
-namespace {
-
-class find_sheet_by_name : std::unary_function<document::sheet_item, bool>
-{
-    const pstring& m_name;
-public:
-    find_sheet_by_name(const pstring& name) : m_name(name) {}
-    bool operator() (const document::sheet_item& v) const
-    {
-        return v.name == m_name;
-    }
-};
-
 }
 
 ixion::sheet_t document::get_sheet_index(const pstring& name) const
