@@ -71,11 +71,12 @@ class xml_data_sax_handler
     vector<scope> m_scopes;
 
     model::iface::factory& m_factory;
-    xml_map_tree& m_map_tree;
+    xml_map_tree::walker m_map_tree_walker;
+    bool m_content;
 
 public:
-    xml_data_sax_handler(model::iface::factory& factory, xml_map_tree& map_tree) :
-        m_factory(factory), m_map_tree(map_tree) {}
+    xml_data_sax_handler(model::iface::factory& factory, const xml_map_tree& map_tree) :
+        m_factory(factory), m_map_tree_walker(map_tree.get_tree_walker()), m_content(false) {}
 
     void declaration()
     {
@@ -84,20 +85,23 @@ public:
 
     void start_element(const pstring& ns, const pstring& name)
     {
-        cout << "start: " << ns << ":" << name << endl;
         m_scopes.push_back(scope(ns, name));
         m_attrs.clear();
+        const xml_map_tree::element* p = m_map_tree_walker.push_element(name);
+        m_content = p && (p->type != xml_map_tree::element_non_leaf);
     }
 
     void end_element(const pstring& ns, const pstring& name)
     {
-        cout << "end: " << ns << ":" << name << endl;
         m_scopes.pop_back();
+        const xml_map_tree::element* p = m_map_tree_walker.pop_element(name);
+        m_content = p && (p->type != xml_map_tree::element_non_leaf);
     }
 
     void characters(const pstring& val)
     {
-        cout << "char: " << val << endl;
+        if (m_content)
+            cout << val << endl;
     }
 
     void attribute(const pstring& ns, const pstring& name, const pstring& val)

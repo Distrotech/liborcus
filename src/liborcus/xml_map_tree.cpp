@@ -216,7 +216,7 @@ const xml_map_tree::element* xml_map_tree::walker::pop_element(const pstring& na
         throw general_error("Closing element has a different name than the opening element.");
 
     m_stack.pop_back();
-    return m_stack.back();
+    return m_stack.empty() ? NULL : m_stack.back();
 }
 
 xml_map_tree::xml_map_tree() : m_root(NULL) {}
