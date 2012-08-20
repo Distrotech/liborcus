@@ -48,25 +48,61 @@ namespace {
 
 class xml_data_sax_handler
 {
+    struct attr
+    {
+        pstring ns; // TODO: we need to manage namespace externally.
+        pstring name;
+        pstring val;
+
+        attr(const pstring& _ns, const pstring& _name, const pstring& _val) :
+            ns(_ns), name(_name), val(_val) {}
+    };
+
+    struct scope
+    {
+        pstring ns;  // TODO: we need to manage namespace externally.
+        pstring name;
+
+        scope(const pstring& _ns, const pstring& _name) :
+            ns(_ns), name(_name) {}
+    };
+
+    vector<attr> m_attrs;
+    vector<scope> m_scopes;
+
+    model::iface::factory& m_factory;
+    xml_map_tree& m_map_tree;
+
 public:
+    xml_data_sax_handler(model::iface::factory& factory, xml_map_tree& map_tree) :
+        m_factory(factory), m_map_tree(map_tree) {}
+
     void declaration()
     {
+        m_attrs.clear();
     }
 
     void start_element(const pstring& ns, const pstring& name)
     {
+        cout << "start: " << ns << ":" << name << endl;
+        m_scopes.push_back(scope(ns, name));
+        m_attrs.clear();
     }
 
     void end_element(const pstring& ns, const pstring& name)
     {
+        cout << "end: " << ns << ":" << name << endl;
+        m_scopes.pop_back();
     }
 
     void characters(const pstring& val)
     {
+        cout << "char: " << val << endl;
     }
 
     void attribute(const pstring& ns, const pstring& name, const pstring& val)
     {
+        m_attrs.push_back(attr(ns, name, val));
     }
 };
 
@@ -129,7 +165,7 @@ void orcus_xml::read_file(const char* filepath)
     if (strm.empty())
         return;
 
-    xml_data_sax_handler handler;
+    xml_data_sax_handler handler(*mp_impl->mp_factory, mp_impl->m_map_tree);
     sax_parser<xml_data_sax_handler> parser(strm.c_str(), strm.size(), handler);
     parser.parse();
 }

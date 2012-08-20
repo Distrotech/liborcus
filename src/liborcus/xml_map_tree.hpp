@@ -84,6 +84,7 @@ public:
 
     struct element : boost::noncopyable
     {
+        pstring ns;  // TODO: we need to manage namespace externally.
         pstring name;
         element_type type;
         union {
@@ -97,6 +98,23 @@ public:
     };
 
 public:
+
+    /**
+     * Wrapper class to allow walking through the element tree.
+     */
+    class walker
+    {
+        const xml_map_tree& m_parent;
+        const element* mp_current;
+    public:
+        walker(const xml_map_tree& parent);
+        walker(const walker& r);
+
+        void reset();
+        const element* push_element(const pstring& name);
+        const element* pop_element(const pstring& name);
+    };
+
     xml_map_tree();
     ~xml_map_tree();
 
@@ -105,6 +123,8 @@ public:
        const pstring& xpath, const cell_reference& ref, int column_pos);
 
     const element* get_link(const pstring& xpath) const;
+
+    walker get_tree_walker() const;
 
 private:
     element* get_element(const pstring& xpath, element_type type);

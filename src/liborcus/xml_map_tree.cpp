@@ -85,6 +85,24 @@ xml_map_tree::element::~element()
     }
 }
 
+xml_map_tree::walker::walker(const xml_map_tree& parent) : m_parent(parent), mp_current(NULL) {}
+xml_map_tree::walker::walker(const xml_map_tree::walker& r) : m_parent(r.m_parent), mp_current(r.mp_current) {}
+
+void xml_map_tree::walker::reset()
+{
+    mp_current = NULL;
+}
+
+const xml_map_tree::element* xml_map_tree::walker::push_element(const pstring& name)
+{
+    return NULL;
+}
+
+const xml_map_tree::element* xml_map_tree::walker::pop_element(const pstring& name)
+{
+    return NULL;
+}
+
 xml_map_tree::xml_map_tree() : m_root(NULL) {}
 xml_map_tree::~xml_map_tree()
 {
@@ -209,6 +227,11 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
         return NULL;
 
     return cur_element;
+}
+
+xml_map_tree::walker xml_map_tree::get_tree_walker() const
+{
+    return walker(*this);
 }
 
 xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_type type)
