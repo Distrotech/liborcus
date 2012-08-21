@@ -40,6 +40,7 @@
 #include <vector>
 #include <cassert>
 #include <memory>
+#include <cstdlib>
 
 #include <mdds/mixed_type_matrix.hpp>
 #include <ixion/formula.hpp>
@@ -92,7 +93,17 @@ sheet::~sheet()
 void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
 {
     ixion::model_context& cxt = m_doc.get_model_context();
-    cxt.set_string_cell(ixion::abs_address_t(m_sheet,row,col), p, n);
+
+    // First, see if this can be parsed as a number.
+    char* endptr = NULL;
+    double val = strtod(p, &endptr);
+    const char* endptr_check = p + n;
+    if (endptr == endptr_check)
+        // Treat this as a numeric value.
+        cxt.set_numeric_cell(ixion::abs_address_t(m_sheet,row,col), val);
+    else
+        // Treat this as a string value.
+        cxt.set_string_cell(ixion::abs_address_t(m_sheet,row,col), p, n);
 }
 
 void sheet::set_string(row_t row, col_t col, size_t sindex)
