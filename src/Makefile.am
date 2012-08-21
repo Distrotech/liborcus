@@ -8,7 +8,10 @@ bin_PROGRAMS = orcus-csv orcus-ods orcus-xlsx orcus-xml \
 	orcus-format-xml
 
 EXTRA_PROGRAMS = \
-	orcus-test-common orcus-test-csv orcus-test-xml
+	orcus-test-common \
+	orcus-test-csv \
+	orcus-test-xml \
+	orcus-test-xml-mapped
 
 # orcus-csv
 
@@ -90,9 +93,19 @@ orcus_test_xml_LDADD = \
 
 orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
+# orcus-test-xml-mapped
+
+orcus_test_xml_mapped_SOURCES = orcus_test_xml_mapped.cpp
+orcus_test_xml_mapped_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
+
+orcus_test_xml_mapped_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
 TESTS = \
 	orcus-test-common \
 	orcus-test-csv \
-	orcus-test-xml
+	orcus-test-xml \
+	orcus-test-xml-mapped
 
 endif

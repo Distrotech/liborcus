@@ -194,7 +194,7 @@ int main(int argc, char** argv)
     orcus_xml app(fact.get());
     read_map_file(app, argv[1]);
     app.read_file(argv[2]);
-    doc->dump();
+    doc->dump_check();
     pstring::intern::dispose();
 
     return EXIT_SUCCESS;

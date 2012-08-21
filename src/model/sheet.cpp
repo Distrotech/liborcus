@@ -92,6 +92,9 @@ sheet::~sheet()
 
 void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
 {
+    if (!p || !n)
+        return;
+
     ixion::model_context& cxt = m_doc.get_model_context();
 
     // First, see if this can be parsed as a number.

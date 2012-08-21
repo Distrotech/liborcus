@@ -69,6 +69,7 @@ void document::sheet_item::printer::operator() (const sheet_item& item) const
 void document::sheet_item::check_printer::operator() (const sheet_item& item) const
 {
     cout << "sheet: " << item.name << endl;
+    cout << endl;
     item.data.dump_check();
 }
 
