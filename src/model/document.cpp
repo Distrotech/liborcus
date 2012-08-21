@@ -66,6 +66,12 @@ void document::sheet_item::printer::operator() (const sheet_item& item) const
     item.data.dump();
 }
 
+void document::sheet_item::check_printer::operator() (const sheet_item& item) const
+{
+    cout << "sheet: " << item.name << endl;
+    item.data.dump_check();
+}
+
 document::sheet_item::html_printer::html_printer(const string& filepath) :
     m_filepath(filepath) {}
 
@@ -163,6 +169,11 @@ void document::dump() const
 
     cout << "number of sheets: " << m_sheets.size() << endl;
     for_each(m_sheets.begin(), m_sheets.end(), sheet_item::printer());
+}
+
+void document::dump_check() const
+{
+    for_each(m_sheets.begin(), m_sheets.end(), sheet_item::check_printer());
 }
 
 void document::dump_html(const string& filepath) const

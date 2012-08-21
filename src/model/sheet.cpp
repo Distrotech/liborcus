@@ -323,6 +323,77 @@ void sheet::dump() const
     }
 }
 
+void sheet::dump_check() const
+{
+    const ixion::model_context& cxt = m_doc.get_model_context();
+    ixion::abs_range_t range = cxt.get_data_range(m_sheet);
+    if (!range.valid())
+        // Sheet is empty.  Nothing to print.
+        return;
+
+    ostringstream os;
+
+    size_t row_count = range.last.row + 1;
+    size_t col_count = range.last.column + 1;
+
+    for (size_t row = 0; row < row_count; ++row)
+    {
+        for (size_t col = 0; col < col_count; ++col)
+        {
+            ixion::abs_address_t pos(m_sheet, row, col);
+            switch (cxt.get_celltype(pos))
+            {
+                case ixion::celltype_string:
+                {
+                    os << "row: " << row << "; column: " << col << " " << endl;
+                    os << "type: string" << endl;
+                    size_t sindex = cxt.get_string_identifier(pos);
+                    const string* p = cxt.get_string(sindex);
+                    assert(p);
+                    os << "value: '" << *p << "'" << endl;
+                    os << endl;
+                }
+                break;
+                case ixion::celltype_numeric:
+                {
+                    os << "row: " << row << "; column: " << col << " " << endl;
+                    os << "type: numeric" << endl;
+                    os << "value: " << cxt.get_numeric_value(pos) << endl;
+                    os << endl;
+                }
+                break;
+                case ixion::celltype_formula:
+                {
+                    os << "row: " << row << "; column: " << col << " " << endl;
+                    os << "type: formula" << endl;
+                    // print the formula and the formula result.
+                    const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
+                    assert(cell);
+                    size_t index = cell->get_identifier();
+                    const ixion::formula_tokens_t* t = cxt.get_formula_tokens(m_sheet, index);
+                    if (t)
+                    {
+                        string formula;
+                        ixion::print_formula_tokens(
+                            m_doc.get_model_context(), pos, *t, formula);
+                        os << "expression: " << formula << endl;
+
+                        const ixion::formula_result* res = cell->get_result_cache();
+                        if (res)
+                            os << "result: " << res->str(m_doc.get_model_context()) << endl;
+                    }
+                    os << endl;
+                }
+                break;
+                default:
+                    ;
+            }
+        }
+    }
+
+    cout << os.str();
+}
+
 namespace {
 
 template<typename _OSTREAM>

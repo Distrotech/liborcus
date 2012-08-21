@@ -70,6 +70,11 @@ public:
             void operator() (const sheet_item& item) const;
         };
 
+        struct check_printer : public std::unary_function<sheet_item, void>
+        {
+            void operator() (const sheet_item& item) const;
+        };
+
         struct html_printer : public ::std::unary_function<sheet_item, void>
         {
             html_printer(const ::std::string& filepath);
@@ -102,6 +107,12 @@ public:
      * Dump document content to stdout for debugging.
      */
     void dump() const;
+
+    /**
+     * Dump document content to stdout in the special format used for content
+     * verification during unit test.
+     */
+    void dump_check() const;
 
     /**
      * File name should not contain an extension.  The final name will be
