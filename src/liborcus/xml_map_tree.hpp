@@ -72,16 +72,35 @@ public:
         cell_reference(const cell_reference& r);
     };
 
-    struct field_in_range
-    {
-        cell_reference ref;
-        int column_pos;
-    };
-
     struct element;
     typedef boost::ptr_vector<element> element_list_type;
     typedef std::vector<const element*> ref_element_list_type;
-    typedef std::map<cell_reference, ref_element_list_type*> range_ref_map_type;
+
+    struct range_reference : boost::noncopyable
+    {
+        /**
+         * List of elements comprising the fields, in order of appearance from
+         * left to right.
+         */
+        ref_element_list_type elements;
+
+        /**
+         * Vertical offset from the top-left corner. Used during data
+         * parsing.
+         */
+        model::row_t row_offset;
+
+        range_reference();
+    };
+
+    struct field_in_range
+    {
+        cell_reference ref;
+        range_reference* range_ref;
+        model::col_t column_pos;
+    };
+
+    typedef std::map<cell_reference, range_reference*> range_ref_map_type;
 
     enum element_type { element_non_leaf, element_cell_ref, element_range_field_ref };
 
@@ -132,7 +151,7 @@ public:
 
     walker get_tree_walker() const;
 
-    const range_ref_map_type& get_range_references() const;
+    range_ref_map_type& get_range_references();
 
 private:
     element* get_element(const pstring& xpath, element_type type);

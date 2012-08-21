@@ -121,8 +121,17 @@ public:
             {
                 const xml_map_tree::field_in_range& field = *mp_current_elem->field_ref;
                 assert(!field.ref.sheet.empty());
+                assert(field.range_ref);
 
-                // TODO: handle this.
+                if (field.column_pos == 0)
+                    ++field.range_ref->row_offset;
+
+                model::iface::sheet* sheet = m_factory.get_sheet(field.ref.sheet.get(), field.ref.sheet.size());
+                if (sheet)
+                    sheet->set_auto(
+                       field.ref.row + field.range_ref->row_offset,
+                       field.ref.col + field.column_pos,
+                       val_trimmed.get(), val_trimmed.size());
             }
             break;
             case xml_map_tree::element_non_leaf:
@@ -191,18 +200,20 @@ void orcus_xml::read_file(const char* filepath)
     if (strm.empty())
         return;
 
-    // Insert the range headers first.
-    const xml_map_tree::range_ref_map_type& range_refs = mp_impl->m_map_tree.get_range_references();
-    xml_map_tree::range_ref_map_type::const_iterator it_ref = range_refs.begin(), it_ref_end = range_refs.end();
+    // Insert the range headers and reset the row offset counters.
+    xml_map_tree::range_ref_map_type& range_refs = mp_impl->m_map_tree.get_range_references();
+    xml_map_tree::range_ref_map_type::iterator it_ref = range_refs.begin(), it_ref_end = range_refs.end();
     for (; it_ref != it_ref_end; ++it_ref)
     {
         const xml_map_tree::cell_reference& ref = it_ref->first;
-        const xml_map_tree::ref_element_list_type& elems = *it_ref->second;
+        xml_map_tree::range_reference& range_ref = *it_ref->second;
+        range_ref.row_offset = 0; // Reset the row offset.
+
         model::iface::sheet* sheet = mp_impl->mp_factory->get_sheet(ref.sheet.get(), ref.sheet.size());
         if (!sheet)
             continue;
 
-        xml_map_tree::ref_element_list_type::const_iterator it = elems.begin(), it_end = elems.end();
+        xml_map_tree::ref_element_list_type::const_iterator it = range_ref.elements.begin(), it_end = range_ref.elements.end();
         model::row_t row = ref.row;
         model::col_t col = ref.col;
         for (; it != it_end; ++it)
@@ -212,6 +223,7 @@ void orcus_xml::read_file(const char* filepath)
         }
     }
 
+    // Parse the content xml.
     xml_data_sax_handler handler(*mp_impl->mp_factory, mp_impl->m_map_tree);
     sax_parser<xml_data_sax_handler> parser(strm.c_str(), strm.size(), handler);
     parser.parse();
