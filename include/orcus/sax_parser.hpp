@@ -35,7 +35,7 @@
 
 #include "pstring.hpp"
 
-#define ORCUS_DEBUG_SAX_PARSER 0
+#define ORCUS_DEBUG_SAX_PARSER 1
 
 namespace orcus {
 
@@ -369,9 +369,8 @@ template<typename _Handler>
 void sax_parser<_Handler>::characters()
 {
     size_t first = m_pos;
-    char c = cur_char();
-    while (c != '<')
-        c = next_char();
+    while (has_char() && cur_char() != '<')
+        next();
 
     if (m_pos > first)
     {

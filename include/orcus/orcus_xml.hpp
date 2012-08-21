@@ -47,6 +47,7 @@ class ORCUS_DLLPUBLIC orcus_xml
 
 public:
     orcus_xml(model::iface::factory* factory);
+    ~orcus_xml();
 
     void set_cell_link(const pstring& xpath, const pstring& sheet, model::row_t row, model::col_t col);
 

@@ -164,6 +164,11 @@ orcus_xml::orcus_xml(model::iface::factory* factory) :
     mp_impl->mp_factory = factory;
 }
 
+orcus_xml::~orcus_xml()
+{
+    delete mp_impl;
+}
+
 void orcus_xml::set_cell_link(const pstring& xpath, const pstring& sheet, model::row_t row, model::col_t col)
 {
     mp_impl->m_map_tree.set_cell_link(xpath, xml_map_tree::cell_reference(sheet, row, col));
