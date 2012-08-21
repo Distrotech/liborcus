@@ -81,6 +81,7 @@ public:
     struct element;
     typedef boost::ptr_vector<element> element_list_type;
     typedef std::vector<const element*> ref_element_list_type;
+    typedef std::map<cell_reference, ref_element_list_type*> range_ref_map_type;
 
     enum element_type { element_non_leaf, element_cell_ref, element_range_field_ref };
 
@@ -131,12 +132,13 @@ public:
 
     walker get_tree_walker() const;
 
+    const range_ref_map_type& get_range_references() const;
+
 private:
     element* get_element(const pstring& xpath, element_type type);
 
 private:
-    typedef std::map<cell_reference, ref_element_list_type*> field_ref_map_type;
-    field_ref_map_type m_field_refs;
+    range_ref_map_type m_field_refs;
 
     /** pool of element names. */
     string_pool m_names;

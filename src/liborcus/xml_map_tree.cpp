@@ -223,7 +223,7 @@ const xml_map_tree::element* xml_map_tree::walker::pop_element(const pstring& na
 xml_map_tree::xml_map_tree() : m_root(NULL) {}
 xml_map_tree::~xml_map_tree()
 {
-    std::for_each(m_field_refs.begin(), m_field_refs.end(), map_object_deleter<field_ref_map_type>());
+    std::for_each(m_field_refs.begin(), m_field_refs.end(), map_object_deleter<range_ref_map_type>());
     delete m_root;
 }
 
@@ -251,11 +251,11 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_refe
     ref_safe.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
 
     ref_element_list_type* refs = NULL;
-    field_ref_map_type::iterator it = m_field_refs.lower_bound(ref_safe);
+    range_ref_map_type::iterator it = m_field_refs.lower_bound(ref_safe);
     if (it == m_field_refs.end() || m_field_refs.key_comp()(ref, it->first))
     {
         // This reference does not exist yet.  Insert a new one.
-        it = m_field_refs.insert(it, field_ref_map_type::value_type(ref_safe, new ref_element_list_type));
+        it = m_field_refs.insert(it, range_ref_map_type::value_type(ref_safe, new ref_element_list_type));
     }
 
     refs = it->second;
@@ -315,6 +315,11 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
 xml_map_tree::walker xml_map_tree::get_tree_walker() const
 {
     return walker(*this);
+}
+
+const xml_map_tree::range_ref_map_type& xml_map_tree::get_range_references() const
+{
+    return m_field_refs;
 }
 
 xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_type type)

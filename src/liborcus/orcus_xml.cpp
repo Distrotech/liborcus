@@ -191,6 +191,27 @@ void orcus_xml::read_file(const char* filepath)
     if (strm.empty())
         return;
 
+    // Insert the range headers first.
+    const xml_map_tree::range_ref_map_type& range_refs = mp_impl->m_map_tree.get_range_references();
+    xml_map_tree::range_ref_map_type::const_iterator it_ref = range_refs.begin(), it_ref_end = range_refs.end();
+    for (; it_ref != it_ref_end; ++it_ref)
+    {
+        const xml_map_tree::cell_reference& ref = it_ref->first;
+        const xml_map_tree::ref_element_list_type& elems = *it_ref->second;
+        model::iface::sheet* sheet = mp_impl->mp_factory->get_sheet(ref.sheet.get(), ref.sheet.size());
+        if (!sheet)
+            continue;
+
+        xml_map_tree::ref_element_list_type::const_iterator it = elems.begin(), it_end = elems.end();
+        model::row_t row = ref.row;
+        model::col_t col = ref.col;
+        for (; it != it_end; ++it)
+        {
+            const xml_map_tree::element& e = **it;
+            sheet->set_auto(row, col++, e.name.get(), e.name.size());
+        }
+    }
+
     xml_data_sax_handler handler(*mp_impl->mp_factory, mp_impl->m_map_tree);
     sax_parser<xml_data_sax_handler> parser(strm.c_str(), strm.size(), handler);
     parser.parse();
