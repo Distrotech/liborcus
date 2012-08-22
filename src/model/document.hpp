@@ -34,6 +34,8 @@
 
 #include "sheet.hpp"
 
+#include <ostream>
+
 #include <ixion/types.hpp>
 #include <ixion/model_context.hpp>
 
@@ -70,8 +72,11 @@ public:
             void operator() (const sheet_item& item) const;
         };
 
-        struct check_printer : public std::unary_function<sheet_item, void>
+        class check_printer : public std::unary_function<sheet_item, void>
         {
+            std::ostream& m_os;
+        public:
+            check_printer(std::ostream& os);
             void operator() (const sheet_item& item) const;
         };
 
@@ -112,7 +117,7 @@ public:
      * Dump document content to stdout in the special format used for content
      * verification during unit test.
      */
-    void dump_check() const;
+    void dump_check(std::ostream& os) const;
 
     /**
      * File name should not contain an extension.  The final name will be

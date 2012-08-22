@@ -66,11 +66,13 @@ void document::sheet_item::printer::operator() (const sheet_item& item) const
     item.data.dump();
 }
 
+document::sheet_item::check_printer::check_printer(std::ostream& os) : m_os(os) {}
+
 void document::sheet_item::check_printer::operator() (const sheet_item& item) const
 {
-    cout << "sheet: " << item.name << endl;
-    cout << endl;
-    item.data.dump_check();
+    m_os << "sheet: " << item.name << endl;
+    m_os << endl;
+    item.data.dump_check(m_os);
 }
 
 document::sheet_item::html_printer::html_printer(const string& filepath) :
@@ -172,9 +174,9 @@ void document::dump() const
     for_each(m_sheets.begin(), m_sheets.end(), sheet_item::printer());
 }
 
-void document::dump_check() const
+void document::dump_check(ostream& os) const
 {
-    for_each(m_sheets.begin(), m_sheets.end(), sheet_item::check_printer());
+    for_each(m_sheets.begin(), m_sheets.end(), sheet_item::check_printer(os));
 }
 
 void document::dump_html(const string& filepath) const

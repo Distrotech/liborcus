@@ -25,17 +25,18 @@
  *
  ************************************************************************/
 
-#include <cstdlib>
-#include <cassert>
-#include <string>
-#include <iostream>
-
 #include "orcus/orcus_xml.hpp"
 #include "orcus/global.hpp"
 #include "model/factory.hpp"
 #include "model/document.hpp"
 
 #include "xml_map_sax_handler.hpp"
+
+#include <cstdlib>
+#include <cassert>
+#include <string>
+#include <iostream>
+#include <sstream>
 
 #include <boost/scoped_ptr.hpp>
 
@@ -57,16 +58,32 @@ void test_mapped_xml_import()
         string map_file = base_name + "-map.xml";
         string check_file = base_name + ".check";
 
+        // Load the data file content.
         cout << "reading " << data_file << endl;
         load_file_content(data_file.c_str(), strm);
 
         boost::scoped_ptr<model::document> doc(new model::document);
         boost::scoped_ptr<model::factory> fact(new model::factory(doc.get()));
 
+        // Parse the map file to define map rules, and parse the data file.
         orcus_xml app(fact.get());
         read_map_file(app, map_file.c_str());
         app.read_file(data_file.c_str());
-        doc->dump_check();
+
+        // Check the content of the document against static check file.
+        ostringstream os;
+        doc->dump_check(os);
+        string loaded = os.str();
+        load_file_content(check_file.c_str(), strm);
+
+        assert(!loaded.empty());
+        assert(!strm.empty());
+
+        pstring p1(&loaded[0], loaded.size()), p2(&strm[0], strm.size());
+
+        p1 = p1.trim();
+        p2 = p2.trim();
+        assert(p1 == p2);
     }
 }
 

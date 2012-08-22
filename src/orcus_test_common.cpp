@@ -48,6 +48,8 @@ void test_common_pstring()
         assert(ps1 == trimmed); // nothing to trim.
         assert(ps1 == ps2.trim());
         assert(ps1 == ps3.trim());
+        assert(ps1.size() == ps2.trim().size());
+        assert(ps1.size() == ps3.trim().size());
     }
 }
 

@@ -337,15 +337,13 @@ void sheet::dump() const
     }
 }
 
-void sheet::dump_check() const
+void sheet::dump_check(ostream& os) const
 {
     const ixion::model_context& cxt = m_doc.get_model_context();
     ixion::abs_range_t range = cxt.get_data_range(m_sheet);
     if (!range.valid())
         // Sheet is empty.  Nothing to print.
         return;
-
-    ostringstream os;
 
     size_t row_count = range.last.row + 1;
     size_t col_count = range.last.column + 1;
@@ -359,7 +357,7 @@ void sheet::dump_check() const
             {
                 case ixion::celltype_string:
                 {
-                    os << "row: " << row << "; column: " << col << " " << endl;
+                    os << "row: " << row << "; column: " << col << endl;
                     os << "type: string" << endl;
                     size_t sindex = cxt.get_string_identifier(pos);
                     const string* p = cxt.get_string(sindex);
@@ -370,7 +368,7 @@ void sheet::dump_check() const
                 break;
                 case ixion::celltype_numeric:
                 {
-                    os << "row: " << row << "; column: " << col << " " << endl;
+                    os << "row: " << row << "; column: " << col << endl;
                     os << "type: numeric" << endl;
                     os << "value: " << cxt.get_numeric_value(pos) << endl;
                     os << endl;
@@ -378,7 +376,7 @@ void sheet::dump_check() const
                 break;
                 case ixion::celltype_formula:
                 {
-                    os << "row: " << row << "; column: " << col << " " << endl;
+                    os << "row: " << row << "; column: " << col << endl;
                     os << "type: formula" << endl;
                     // print the formula and the formula result.
                     const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
@@ -404,8 +402,6 @@ void sheet::dump_check() const
             }
         }
     }
-
-    cout << os.str();
 }
 
 namespace {
