@@ -85,10 +85,10 @@ public:
         ref_element_list_type elements;
 
         /**
-         * Vertical offset from the top-left corner. Used during data
-         * parsing.
+         * Total number of rows comprising data.  This does not include the
+         * label row at the top.
          */
-        model::row_t row_offset;
+        model::row_t row_size;
 
         range_reference();
     };

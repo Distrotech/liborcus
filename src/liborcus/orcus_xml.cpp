@@ -124,12 +124,12 @@ public:
                 assert(field.range_ref);
 
                 if (field.column_pos == 0)
-                    ++field.range_ref->row_offset;
+                    ++field.range_ref->row_size;
 
                 model::iface::sheet* sheet = m_factory.get_sheet(field.ref.sheet.get(), field.ref.sheet.size());
                 if (sheet)
                     sheet->set_auto(
-                       field.ref.row + field.range_ref->row_offset,
+                       field.ref.row + field.range_ref->row_size,
                        field.ref.col + field.column_pos,
                        val_trimmed.get(), val_trimmed.size());
             }
@@ -212,7 +212,7 @@ void orcus_xml::read_file(const char* filepath)
     {
         const xml_map_tree::cell_reference& ref = it_ref->first;
         xml_map_tree::range_reference& range_ref = *it_ref->second;
-        range_ref.row_offset = 0; // Reset the row offset.
+        range_ref.row_size = 0; // Reset the row offset.
 
         model::iface::sheet* sheet = mp_impl->mp_factory->get_sheet(ref.sheet.get(), ref.sheet.size());
         if (!sheet)
