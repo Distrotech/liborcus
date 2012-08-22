@@ -25,53 +25,52 @@
  *
  ************************************************************************/
 
-#include <cstdlib>
-#include <cassert>
-#include <string>
-#include <iostream>
+#ifndef __ORCUS_XML_MAP_SAX_HANDLER_HPP__
+#define __ORCUS_XML_MAP_SAX_HANDLER_HPP__
 
-#include "orcus/orcus_xml.hpp"
-#include "orcus/global.hpp"
-#include "model/factory.hpp"
-#include "model/document.hpp"
+#include "orcus/pstring.hpp"
 
-#include "xml_map_sax_handler.hpp"
+#include <vector>
 
-#include <boost/scoped_ptr.hpp>
+namespace orcus {
 
-using namespace std;
-using namespace orcus;
+class orcus_xml;
 
-const char* files[] = {
-    "../test/xml-mapped/basic"
+class xml_map_sax_handler
+{
+    struct attr
+    {
+        pstring ns;
+        pstring name;
+        pstring val;
+
+        attr(const pstring& _ns, const pstring& _name, const pstring& _val);
+    };
+
+    struct scope
+    {
+        pstring ns;
+        pstring name;
+
+        scope(const pstring& _ns, const pstring& _name);
+    };
+
+    std::vector<attr> m_attrs;
+    std::vector<scope> m_scopes;
+    orcus_xml& m_app;
+
+public:
+    xml_map_sax_handler(orcus_xml& app);
+
+    void declaration();
+    void start_element(const pstring& ns, const pstring& name);
+    void end_element(const pstring& ns, const pstring& name);
+    void characters(const pstring&);
+    void attribute(const pstring& ns, const pstring& name, const pstring& val);
 };
 
-void test_mapped_xml_import()
-{
-    string strm;
-    size_t n = sizeof(files)/sizeof(files[0]);
-    for (size_t i = 0; i < n; ++i)
-    {
-        string base_name(files[i]);
-        string data_file = base_name + ".xml";
-        string map_file = base_name + "-map.xml";
-        string check_file = base_name + ".check";
+void read_map_file(orcus_xml& app, const char* filepath);
 
-        cout << "reading " << data_file << endl;
-        load_file_content(data_file.c_str(), strm);
-
-        boost::scoped_ptr<model::document> doc(new model::document);
-        boost::scoped_ptr<model::factory> fact(new model::factory(doc.get()));
-
-        orcus_xml app(fact.get());
-        read_map_file(app, map_file.c_str());
-        app.read_file(data_file.c_str());
-        doc->dump_check();
-    }
 }
 
-int main()
-{
-    test_mapped_xml_import();
-    return EXIT_SUCCESS;
-}
+#endif

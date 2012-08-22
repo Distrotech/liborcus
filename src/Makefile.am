@@ -49,6 +49,7 @@ orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 # orcus-xml
 
 orcus_xml_SOURCES = \
+	xml_map_sax_handler.cpp \
 	orcus_xml_main.cpp
 
 orcus_xml_LDADD = \
@@ -95,7 +96,10 @@ orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
 # orcus-test-xml-mapped
 
-orcus_test_xml_mapped_SOURCES = orcus_test_xml_mapped.cpp
+orcus_test_xml_mapped_SOURCES = \
+	xml_map_sax_handler.cpp \
+	orcus_test_xml_mapped.cpp
+
 orcus_test_xml_mapped_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
