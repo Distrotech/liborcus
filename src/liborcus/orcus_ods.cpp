@@ -39,7 +39,9 @@
 #include <boost/scoped_ptr.hpp>
 
 using namespace std;
-using namespace orcus;
+
+namespace orcus {
+
 
 orcus_ods::orcus_ods(spreadsheet::iface::factory* factory) :
     mp_factory(factory)
@@ -112,3 +114,4 @@ void orcus_ods::read_file(const char* fpath)
     zip_close(archive);
 }
 
+}
