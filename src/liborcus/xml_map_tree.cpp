@@ -111,7 +111,7 @@ xml_map_tree::element::element(const pstring& _name, element_type _type) :
     switch (type)
     {
         case element_cell_ref:
-            cell_ref = new cell_position;
+            cell_ref = new cell_reference;
         break;
         case element_non_leaf:
             child_elements = new element_list_type;
@@ -237,10 +237,10 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
     cout << "cell link: " << xpath << " (ref=" << ref << ")" << endl;
     element* p = get_element(xpath, element_cell_ref);
     assert(p && p->cell_ref);
-    *p->cell_ref = ref;
+    p->cell_ref->pos = ref;
 
     // Make sure the sheet name string is persistent.
-    p->cell_ref->sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
+    p->cell_ref->pos.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
 }
 
 void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_position& ref)

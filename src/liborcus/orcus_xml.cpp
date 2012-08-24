@@ -109,12 +109,12 @@ public:
         {
             case xml_map_tree::element_cell_ref:
             {
-                const xml_map_tree::cell_position& ref = *mp_current_elem->cell_ref;
-                assert(!ref.sheet.empty());
+                const xml_map_tree::cell_reference& ref = *mp_current_elem->cell_ref;
+                assert(!ref.pos.sheet.empty());
 
-                model::iface::sheet* sheet = m_factory.get_sheet(ref.sheet.get(), ref.sheet.size());
+                model::iface::sheet* sheet = m_factory.get_sheet(ref.pos.sheet.get(), ref.pos.sheet.size());
                 if (sheet)
-                    sheet->set_auto(ref.row, ref.col, val_trimmed.get(), val_trimmed.size());
+                    sheet->set_auto(ref.pos.row, ref.pos.col, val_trimmed.get(), val_trimmed.size());
             }
             break;
             case xml_map_tree::element_range_field_ref:

@@ -72,6 +72,11 @@ public:
         cell_position(const cell_position& r);
     };
 
+    struct cell_reference : boost::noncopyable
+    {
+        cell_position pos;
+    };
+
     struct element;
     typedef boost::ptr_vector<element> element_list_type;
     typedef std::vector<const element*> ref_element_list_type;
@@ -111,7 +116,7 @@ public:
         element_type type;
         union {
             element_list_type* child_elements;
-            cell_position* cell_ref;
+            cell_reference* cell_ref;
             field_in_range* field_ref;
         };
 

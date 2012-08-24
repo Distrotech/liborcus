@@ -46,9 +46,9 @@ void test_path_insertion()
     tree.set_cell_link("/data/elem1", ref);
     const xml_map_tree::element* p = tree.get_link("/data/elem1");
     assert(p && p->type == xml_map_tree::element_cell_ref);
-    assert(p->cell_ref->sheet == "test");
-    assert(p->cell_ref->row == 2);
-    assert(p->cell_ref->col == 1);
+    assert(p->cell_ref->pos.sheet == "test");
+    assert(p->cell_ref->pos.row == 2);
+    assert(p->cell_ref->pos.col == 1);
 
     const xml_map_tree::element* elem1 = p;
 
@@ -57,9 +57,9 @@ void test_path_insertion()
     tree.set_cell_link("/data/elem2", ref);
     p = tree.get_link("/data/elem2");
     assert(p && p->type == xml_map_tree::element_cell_ref);
-    assert(p->cell_ref->sheet == "test");
-    assert(p->cell_ref->row == 3);
-    assert(p->cell_ref->col == 2);
+    assert(p->cell_ref->pos.sheet == "test");
+    assert(p->cell_ref->pos.row == 3);
+    assert(p->cell_ref->pos.col == 2);
 
     // The link in elem1 should be unchanged.
     p = tree.get_link("/data/elem1");
@@ -71,9 +71,9 @@ void test_path_insertion()
     tree.set_cell_link("/data/meta/title", ref);
     p = tree.get_link("/data/meta/title");
     assert(p && p->type == xml_map_tree::element_cell_ref);
-    assert(p->cell_ref->sheet == "test2");
-    assert(p->cell_ref->row == 10);
-    assert(p->cell_ref->col == 5);
+    assert(p->cell_ref->pos.sheet == "test2");
+    assert(p->cell_ref->pos.row == 10);
+    assert(p->cell_ref->pos.col == 5);
 
     // Range field links
     ref.row = 5;
