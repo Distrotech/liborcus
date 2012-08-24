@@ -22,9 +22,9 @@ AC_ARG_WITH(ixion-path,
     AS_HELP_STRING([--with-ixion-path], [specify path to ixion library.])
 ,)
 
-AC_ARG_ENABLE(model,
-    AS_HELP_STRING([--disable-model],
-        [disable the model implementation part of orcus.  Note that the command line utilities will not be built when this is disabled.])
+AC_ARG_ENABLE(spreadsheet,
+    AS_HELP_STRING([--disable-spreadsheet],
+        [disable the spreadsheet implementation part of orcus.  Note that the spreadsheet-specific command line utilities will not be built when this is disabled.])
 )
 
 AC_ARG_ENABLE(symbols,
@@ -97,7 +97,7 @@ int main()
     AC_LANG_POP([C++])
 fi
 
-if test "z$enable_model" != "zno"; then
+if test "z$enable_spreadsheet" != "zno"; then
 
     AC_MSG_CHECKING([ixion library path])
     if test "z$with_ixion_path" = "z"; then
@@ -134,20 +134,20 @@ fi
 PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip"
 PKG_CONFIG_LDFLAGS="pkg-config --libs libzip"
 
-# for liborcus model implementation
-PKG_CONFIG_CPPFLAGS_MODEL="pkg-config --cflags libixion-0.4"
-PKG_CONFIG_LDFLAGS_MODEL="pkg-config --libs libixion-0.4"
+# for liborcus spreadsheet implementation
+PKG_CONFIG_CPPFLAGS_SPREADSHEET="pkg-config --cflags libixion-0.4"
+PKG_CONFIG_LDFLAGS_SPREADSHEET="pkg-config --libs libixion-0.4"
 
 AC_SUBST(PKG_CONFIG_PATH)
 AC_SUBST(LD_RUN_PATH)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(PKG_CONFIG_CPPFLAGS)
 AC_SUBST(PKG_CONFIG_LDFLAGS)
-AC_SUBST(PKG_CONFIG_CPPFLAGS_MODEL)
-AC_SUBST(PKG_CONFIG_LDFLAGS_MODEL)
+AC_SUBST(PKG_CONFIG_CPPFLAGS_SPREADSHEET)
+AC_SUBST(PKG_CONFIG_LDFLAGS_SPREADSHEET)
 
 # conditionals to pass to makefiles.
-AM_CONDITIONAL(BUILD_MODEL, test "z$enable_model" != "zno")
+AM_CONDITIONAL(BUILD_SPREADSHEET, test "z$enable_spreadsheet" != "zno")
 
 AC_CONFIG_FILES([Makefile
                  liborcus.pc
