@@ -31,7 +31,7 @@
 #include "orcus/model/interface.hpp"
 #include "orcus/env.hpp"
 
-namespace orcus { namespace model {
+namespace orcus { namespace spreadsheet {
 
 class document;
 

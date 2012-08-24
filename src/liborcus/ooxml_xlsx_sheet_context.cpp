@@ -60,7 +60,7 @@ public:
         if (attr.name == XML_r)
         {
             // row index
-            m_row = static_cast<model::row_t>(
+            m_row = static_cast<spreadsheet::row_t>(
                 strtoul(attr.value.str().c_str(), NULL, 10));
             if (!m_row)
                 throw xml_structure_error("row number can never be zero!");
@@ -69,19 +69,19 @@ public:
         }
     }
 
-    model::row_t get_row() const { return m_row; }
+    spreadsheet::row_t get_row() const { return m_row; }
 
 private:
-    model::row_t m_row;
+    spreadsheet::row_t m_row;
 };
 
 class cell_attr_parser : public std::unary_function<xml_attr_t, void>
 {
     struct address
     {
-        model::row_t row;
-        model::col_t col;
-        address(model::row_t _row, model::col_t _col) : row(_row), col(_col) {}
+        spreadsheet::row_t row;
+        spreadsheet::col_t col;
+        address(spreadsheet::row_t _row, spreadsheet::col_t _col) : row(_row), col(_col) {}
     };
 
     xlsx_sheet_context::cell_type m_type;
@@ -115,8 +115,8 @@ public:
 
     xlsx_sheet_context::cell_type get_cell_type() const { return m_type; }
 
-    model::row_t get_row() const { return m_address.row; }
-    model::col_t get_col() const { return m_address.col; }
+    spreadsheet::row_t get_row() const { return m_address.row; }
+    spreadsheet::col_t get_col() const { return m_address.col; }
     size_t get_xf() const { return m_xf; }
 
 private:
@@ -142,8 +142,8 @@ private:
 
     address to_cell_address(const pstring& s) const
     {
-        model::row_t row = 0;
-        model::col_t col = 0;
+        spreadsheet::row_t row = 0;
+        spreadsheet::col_t col = 0;
         const char* p = s.get();
         size_t n = s.size();
         for (size_t i = 0; i < n; ++i, ++p)
@@ -152,12 +152,12 @@ private:
             if ('A' <= c && c <= 'Z')
             {
                 col *= 26;
-                col += static_cast<model::col_t>(c - 'A' + 1);
+                col += static_cast<spreadsheet::col_t>(c - 'A' + 1);
             }
             else if ('0' <= c && c <= '9')
             {
                 row *= 10;
-                row += static_cast<model::row_t>(c - '0');
+                row += static_cast<spreadsheet::row_t>(c - '0');
             }
             else
             {
@@ -209,7 +209,7 @@ public:
 
 }
 
-xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, model::iface::sheet* sheet) :
+xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, spreadsheet::iface::sheet* sheet) :
     xml_context_base(tokens),
     mp_sheet(sheet),
     m_cur_row(0),
@@ -369,7 +369,7 @@ void xlsx_sheet_context::end_element_cell()
         {
             // shared formula expression
             mp_sheet->set_shared_formula(
-                m_cur_row, m_cur_col, model::xlsx_2007, m_cur_shared_formula_id,
+                m_cur_row, m_cur_col, spreadsheet::xlsx_2007, m_cur_shared_formula_id,
                 m_cur_formula_str.get(), m_cur_formula_str.size(),
                 m_cur_formula_ref.get(), m_cur_formula_ref.size());
         }
@@ -377,7 +377,7 @@ void xlsx_sheet_context::end_element_cell()
         {
             // normal (non-shared) formula expression
             mp_sheet->set_formula(
-                m_cur_row, m_cur_col, model::xlsx_2007, m_cur_formula_str.get(),
+                m_cur_row, m_cur_col, spreadsheet::xlsx_2007, m_cur_formula_str.get(),
                 m_cur_formula_str.size());
         }
     }

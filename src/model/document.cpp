@@ -39,7 +39,7 @@
 
 using namespace std;
 
-namespace orcus { namespace model {
+namespace orcus { namespace spreadsheet {
 
 namespace {
 

@@ -42,7 +42,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/noncopyable.hpp>
 
-namespace orcus { namespace model {
+namespace orcus { namespace spreadsheet {
 
 class shared_strings;
 class styles;

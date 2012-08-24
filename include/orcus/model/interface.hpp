@@ -33,7 +33,7 @@
 #include "types.hpp"
 #include "../env.hpp"
 
-namespace orcus { namespace model { namespace iface {
+namespace orcus { namespace spreadsheet { namespace iface {
 
 /**
  * Interface class designed to be derived by the implementor.
@@ -106,7 +106,7 @@ public:
     // border
 
     virtual void set_border_count(size_t n) = 0;
-    virtual void set_border_style(orcus::model::border_direction_t dir, const char* s, size_t n) = 0;
+    virtual void set_border_style(orcus::spreadsheet::border_direction_t dir, const char* s, size_t n) = 0;
     virtual void commit_border() = 0;
 
     // cell style xf
@@ -153,7 +153,7 @@ public:
      * @param p pointer to the first character of the raw string value.
      * @param n size of the raw string value.
      */
-    virtual void set_auto(orcus::model::row_t row, orcus::model::col_t col, const char* p, size_t n) = 0;
+    virtual void set_auto(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, const char* p, size_t n) = 0;
 
     /**
      * Set string value to a cell.
@@ -162,7 +162,7 @@ public:
      * @param col column ID
      * @param sindex 0-based string index in the shared string table.
      */
-    virtual void set_string(orcus::model::row_t row, orcus::model::col_t col, size_t sindex) = 0;
+    virtual void set_string(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, size_t sindex) = 0;
 
     /**
      * Set numerical value to a cell.
@@ -171,7 +171,7 @@ public:
      * @param col column ID
      * @param value value being assigned to the cell.
      */
-    virtual void set_value(orcus::model::row_t row, orcus::model::col_t col, double value) = 0;
+    virtual void set_value(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, double value) = 0;
 
     /**
      * Set cell format to specified cell.  The cell format is referred to by
@@ -181,7 +181,7 @@ public:
      * @param col column ID
      * @param index 0-based xf (cell format) index
      */
-    virtual void set_format(orcus::model::row_t row, orcus::model::col_t col, size_t xf_index) = 0;
+    virtual void set_format(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, size_t xf_index) = 0;
 
     /**
      * Set normal, non-shared formula expression to specified cell.
@@ -194,7 +194,7 @@ public:
      * @param n size of the raw formula expression string.
      */
     virtual void set_formula(
-        orcus::model::row_t row, orcus::model::col_t col, orcus::model::formula_grammar_t grammar,
+        orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, orcus::spreadsheet::formula_grammar_t grammar,
          const char* p, size_t n) = 0;
 
     /**
@@ -211,7 +211,7 @@ public:
      * @param n_formula size of the raw formula expression string.
      */
     virtual void set_shared_formula(
-        orcus::model::row_t row, orcus::model::col_t col, orcus::model::formula_grammar_t grammar,
+        orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, orcus::spreadsheet::formula_grammar_t grammar,
         size_t sindex, const char* p_formula, size_t n_formula, const char* p_range, size_t n_range) = 0;
 
     /**
@@ -227,10 +227,10 @@ public:
      * @param n size of the raw formula expression string.
      */
     virtual void set_shared_formula(
-        orcus::model::row_t row, orcus::model::col_t col, size_t sindex) = 0;
+        orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, size_t sindex) = 0;
 
     virtual void set_formula_result(
-        orcus::model::row_t row, orcus::model::col_t col, const char* p, size_t n) = 0;
+        orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, const char* p, size_t n) = 0;
 };
 
 /**

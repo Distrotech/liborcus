@@ -97,7 +97,7 @@ xml_map_tree::xpath_error::xpath_error(const string& msg) : general_error(msg) {
 xml_map_tree::cell_position::cell_position() :
     row(-1), col(-1) {}
 
-xml_map_tree::cell_position::cell_position(const pstring& _sheet, model::row_t _row, model::col_t _col) :
+xml_map_tree::cell_position::cell_position(const pstring& _sheet, spreadsheet::row_t _row, spreadsheet::col_t _col) :
     sheet(_sheet), row(_row), col(_col) {}
 
 xml_map_tree::cell_position::cell_position(const cell_position& r) :

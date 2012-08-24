@@ -62,8 +62,8 @@ void test_mapped_xml_import()
         cout << "reading " << data_file << endl;
         load_file_content(data_file.c_str(), strm);
 
-        boost::scoped_ptr<model::document> doc(new model::document);
-        boost::scoped_ptr<model::factory> fact(new model::factory(doc.get()));
+        boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
+        boost::scoped_ptr<spreadsheet::factory> fact(new spreadsheet::factory(doc.get()));
 
         // Parse the map file to define map rules, and parse the data file.
         orcus_xml app(fact.get());

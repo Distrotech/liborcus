@@ -35,7 +35,7 @@ namespace orcus {
 
 class pstring;
 
-namespace model { namespace iface {
+namespace spreadsheet { namespace iface {
     class factory;
 }}
 
@@ -46,12 +46,12 @@ class ORCUS_DLLPUBLIC orcus_xml
     orcus_xml(const orcus_xml&); // disabled
 
 public:
-    orcus_xml(model::iface::factory* factory);
+    orcus_xml(spreadsheet::iface::factory* factory);
     ~orcus_xml();
 
-    void set_cell_link(const pstring& xpath, const pstring& sheet, model::row_t row, model::col_t col);
+    void set_cell_link(const pstring& xpath, const pstring& sheet, spreadsheet::row_t row, spreadsheet::col_t col);
 
-    void start_range(const pstring& sheet, model::row_t row, model::col_t col);
+    void start_range(const pstring& sheet, spreadsheet::row_t row, spreadsheet::col_t col);
     void append_field_link(const pstring& xpath);
     void commit_range();
 

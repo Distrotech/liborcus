@@ -52,8 +52,8 @@ void xml_map_sax_handler::declaration()
 void xml_map_sax_handler::start_element(const sax_parser_element& elem)
 {
     pstring xpath, sheet;
-    model::row_t row = -1;
-    model::col_t col = -1;
+    spreadsheet::row_t row = -1;
+    spreadsheet::col_t col = -1;
     vector<attr>::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
 
     if (elem.name == "cell")

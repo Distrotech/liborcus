@@ -36,7 +36,7 @@
 
 namespace orcus {
 
-namespace model { namespace iface {
+namespace spreadsheet { namespace iface {
 
 class sheet;
 
@@ -45,7 +45,7 @@ class sheet;
 class xlsx_sheet_xml_handler : public xml_stream_handler
 {
 public:
-    xlsx_sheet_xml_handler(const tokens& tokens, model::iface::sheet* sheet);
+    xlsx_sheet_xml_handler(const tokens& tokens, spreadsheet::iface::sheet* sheet);
     virtual ~xlsx_sheet_xml_handler();
 
     virtual void start_document();

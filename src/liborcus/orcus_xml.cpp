@@ -70,12 +70,12 @@ class xml_data_sax_handler
     vector<attr> m_attrs;
     vector<scope> m_scopes;
 
-    model::iface::factory& m_factory;
+    spreadsheet::iface::factory& m_factory;
     xml_map_tree::walker m_map_tree_walker;
     const xml_map_tree::element* mp_current_elem;
 
 public:
-    xml_data_sax_handler(model::iface::factory& factory, const xml_map_tree& map_tree) :
+    xml_data_sax_handler(spreadsheet::iface::factory& factory, const xml_map_tree& map_tree) :
         m_factory(factory), m_map_tree_walker(map_tree.get_tree_walker()), mp_current_elem(NULL) {}
 
     void declaration()
@@ -144,7 +144,7 @@ public:
                 const xml_map_tree::cell_reference& ref = *mp_current_elem->cell_ref;
                 assert(!ref.pos.sheet.empty());
 
-                model::iface::sheet* sheet = m_factory.get_sheet(ref.pos.sheet.get(), ref.pos.sheet.size());
+                spreadsheet::iface::sheet* sheet = m_factory.get_sheet(ref.pos.sheet.get(), ref.pos.sheet.size());
                 if (sheet)
                     sheet->set_auto(ref.pos.row, ref.pos.col, val_trimmed.get(), val_trimmed.size());
             }
@@ -158,7 +158,7 @@ public:
                 if (field.column_pos == 0)
                     ++field.range_ref->row_size;
 
-                model::iface::sheet* sheet = m_factory.get_sheet(field.ref.sheet.get(), field.ref.sheet.size());
+                spreadsheet::iface::sheet* sheet = m_factory.get_sheet(field.ref.sheet.get(), field.ref.sheet.size());
                 if (sheet)
                     sheet->set_auto(
                        field.ref.row + field.range_ref->row_size,
@@ -182,7 +182,7 @@ public:
 
 struct orcus_xml_impl
 {
-    model::iface::factory* mp_factory;
+    spreadsheet::iface::factory* mp_factory;
 
     /** xml element tree that represents all mapped paths. */
     xml_map_tree m_map_tree;
@@ -190,7 +190,7 @@ struct orcus_xml_impl
     xml_map_tree::cell_position m_cur_range_ref;
 };
 
-orcus_xml::orcus_xml(model::iface::factory* factory) :
+orcus_xml::orcus_xml(spreadsheet::iface::factory* factory) :
     mp_impl(new orcus_xml_impl)
 {
     mp_impl->mp_factory = factory;
@@ -201,12 +201,12 @@ orcus_xml::~orcus_xml()
     delete mp_impl;
 }
 
-void orcus_xml::set_cell_link(const pstring& xpath, const pstring& sheet, model::row_t row, model::col_t col)
+void orcus_xml::set_cell_link(const pstring& xpath, const pstring& sheet, spreadsheet::row_t row, spreadsheet::col_t col)
 {
     mp_impl->m_map_tree.set_cell_link(xpath, xml_map_tree::cell_position(sheet, row, col));
 }
 
-void orcus_xml::start_range(const pstring& sheet, model::row_t row, model::col_t col)
+void orcus_xml::start_range(const pstring& sheet, spreadsheet::row_t row, spreadsheet::col_t col)
 {
     mp_impl->m_cur_range_ref = xml_map_tree::cell_position(sheet, row, col);
 }
@@ -246,13 +246,13 @@ void orcus_xml::read_file(const char* filepath)
         xml_map_tree::range_reference& range_ref = *it_ref->second;
         range_ref.row_size = 0; // Reset the row offset.
 
-        model::iface::sheet* sheet = mp_impl->mp_factory->get_sheet(ref.sheet.get(), ref.sheet.size());
+        spreadsheet::iface::sheet* sheet = mp_impl->mp_factory->get_sheet(ref.sheet.get(), ref.sheet.size());
         if (!sheet)
             continue;
 
         xml_map_tree::ref_element_list_type::const_iterator it = range_ref.elements.begin(), it_end = range_ref.elements.end();
-        model::row_t row = ref.row;
-        model::col_t col = ref.col;
+        spreadsheet::row_t row = ref.row;
+        spreadsheet::col_t col = ref.col;
         for (; it != it_end; ++it)
         {
             const xml_map_tree::element& e = **it;

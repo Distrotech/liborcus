@@ -38,8 +38,8 @@ int main(int argc, char** argv)
     if (argc != 2)
         return EXIT_FAILURE;
 
-    ::boost::scoped_ptr<model::document> doc(new model::document);
-    ::boost::scoped_ptr<model::factory> factory(new model::factory(doc.get()));
+    ::boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
+    ::boost::scoped_ptr<spreadsheet::factory> factory(new spreadsheet::factory(doc.get()));
     orcus_xlsx app(factory.get());
     app.read_file(argv[1]);
     doc->calc_formulas();

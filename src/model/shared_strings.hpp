@@ -39,7 +39,7 @@
 
 namespace ixion { class model_context; }
 
-namespace orcus { namespace model {
+namespace orcus { namespace spreadsheet {
 
 /**
  * This class handles global pool of string instances.

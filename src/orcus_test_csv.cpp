@@ -40,9 +40,9 @@ using namespace std;
 int main()
 {
     cout << "test starts" << endl;
-    boost::scoped_ptr<model::document> doc(new model::document);
+    boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
 
-    orcus_csv app(new model::factory(doc.get()));
+    orcus_csv app(new spreadsheet::factory(doc.get()));
     app.read_file("../test/csv/simple-numbers.csv");
     doc->dump();
     pstring::intern::dispose();

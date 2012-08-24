@@ -38,7 +38,7 @@
 
 using namespace std;
 
-namespace orcus { namespace model {
+namespace orcus { namespace spreadsheet {
 
 shared_strings::format_run::format_run() :
     pos(0), size(0),

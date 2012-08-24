@@ -33,7 +33,7 @@
 
 #include <vector>
 
-namespace orcus { namespace model {
+namespace orcus { namespace spreadsheet {
 
 class styles : public iface::styles
 {

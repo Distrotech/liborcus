@@ -121,7 +121,7 @@ ods_content_xml_context::cell_attr::cell_attr() :
 
 // ============================================================================
 
-ods_content_xml_context::ods_content_xml_context(const tokens& tokens, model::iface::factory* factory) :
+ods_content_xml_context::ods_content_xml_context(const tokens& tokens, spreadsheet::iface::factory* factory) :
     xml_context_base(tokens),
     mp_factory(factory),
     m_row(0), m_col(0),

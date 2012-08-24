@@ -27,7 +27,7 @@
 
 #include "orcus/model/interface.hpp"
 
-namespace orcus { namespace model { namespace iface {
+namespace orcus { namespace spreadsheet { namespace iface {
 
 shared_strings::~shared_strings() {}
 

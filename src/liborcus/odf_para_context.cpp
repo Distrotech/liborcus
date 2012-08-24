@@ -36,7 +36,7 @@ using namespace std;
 
 namespace orcus {
 
-text_para_context::text_para_context(const tokens& tokens, model::iface::shared_strings* ssb) :
+text_para_context::text_para_context(const tokens& tokens, spreadsheet::iface::shared_strings* ssb) :
     xml_context_base(tokens),
     mp_sstrings(ssb),
     m_string_index(0),

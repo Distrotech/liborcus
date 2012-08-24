@@ -41,7 +41,7 @@
 #include <deque>
 #include <ostream>
 
-namespace orcus { namespace model {
+namespace orcus { namespace spreadsheet {
 
 class document;
 
@@ -62,7 +62,7 @@ public:
     sheet(document& doc, sheet_t sheet);
     virtual ~sheet();
 
-    virtual void set_auto(orcus::model::row_t row, orcus::model::col_t col, const char* p, size_t n);
+    virtual void set_auto(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, const char* p, size_t n);
     virtual void set_string(row_t row, col_t col, size_t sindex);
     virtual void set_value(row_t row, col_t col, double value);
     virtual void set_format(row_t row, col_t col, size_t index);

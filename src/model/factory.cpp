@@ -32,7 +32,7 @@
 #include "sheet.hpp"
 #include "document.hpp"
 
-namespace orcus { namespace model {
+namespace orcus { namespace spreadsheet {
 
 factory::factory(document* doc) :
     mp_document(doc)

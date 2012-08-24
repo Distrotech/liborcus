@@ -27,7 +27,7 @@
 
 #include "styles.hpp"
 
-namespace orcus { namespace model {
+namespace orcus { namespace spreadsheet {
 
 styles::font::font() :
     size(0.0), bold(false), italic(false)

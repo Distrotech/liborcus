@@ -55,8 +55,8 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    boost::scoped_ptr<model::document> doc(new model::document);
-    boost::scoped_ptr<model::factory> fact(new model::factory(doc.get()));
+    boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
+    boost::scoped_ptr<spreadsheet::factory> fact(new spreadsheet::factory(doc.get()));
 
     orcus_xml app(fact.get());
     read_map_file(app, argv[1]);

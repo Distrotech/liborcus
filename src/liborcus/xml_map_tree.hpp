@@ -64,11 +64,11 @@ public:
     struct cell_position
     {
         pstring sheet;
-        model::row_t row;
-        model::col_t col;
+        spreadsheet::row_t row;
+        spreadsheet::col_t col;
 
         cell_position();
-        cell_position(const pstring& _sheet, model::row_t _row, model::col_t _col);
+        cell_position(const pstring& _sheet, spreadsheet::row_t _row, spreadsheet::col_t _col);
         cell_position(const cell_position& r);
     };
 
@@ -100,7 +100,7 @@ public:
          * Total number of rows comprising data.  This does not include the
          * label row at the top.
          */
-        model::row_t row_size;
+        spreadsheet::row_t row_size;
 
         range_reference();
     };
@@ -109,7 +109,7 @@ public:
     {
         cell_position ref;
         range_reference* range_ref;
-        model::col_t column_pos;
+        spreadsheet::col_t column_pos;
     };
 
     typedef std::map<cell_position, range_reference*> range_ref_map_type;

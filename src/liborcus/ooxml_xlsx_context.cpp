@@ -104,7 +104,7 @@ public:
 
 }
 
-xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, model::iface::shared_strings* strings) :
+xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, spreadsheet::iface::shared_strings* strings) :
     xml_context_base(tokens), mp_strings(strings), m_in_segments(false) {}
 
 xlsx_shared_strings_context::~xlsx_shared_strings_context() {}
@@ -261,10 +261,10 @@ public:
 
 class border_attr_parser : public unary_function<xml_attr_t, void>
 {
-    model::border_direction_t m_dir;
-    model::iface::styles& m_styles;
+    spreadsheet::border_direction_t m_dir;
+    spreadsheet::iface::styles& m_styles;
 public:
-    border_attr_parser(model::border_direction_t dir, model::iface::styles& styles) :
+    border_attr_parser(spreadsheet::border_direction_t dir, spreadsheet::iface::styles& styles) :
         m_dir(dir), m_styles(styles) {}
 
     void operator() (const xml_attr_t& attr)
@@ -280,9 +280,9 @@ public:
 
 class cell_style_attr_parser : public unary_function<xml_attr_t, void>
 {
-    model::iface::styles& m_styles;
+    spreadsheet::iface::styles& m_styles;
 public:
-    cell_style_attr_parser(model::iface::styles& styles) :
+    cell_style_attr_parser(spreadsheet::iface::styles& styles) :
         m_styles(styles) {}
 
     void operator() (const xml_attr_t& attr)
@@ -310,9 +310,9 @@ public:
 
 class xf_attr_parser : public unary_function<xml_attr_t, void>
 {
-    model::iface::styles& m_styles;
+    spreadsheet::iface::styles& m_styles;
 public:
-    xf_attr_parser(model::iface::styles& styles) :
+    xf_attr_parser(spreadsheet::iface::styles& styles) :
         m_styles(styles) {}
 
     void operator() (const xml_attr_t& attr)
@@ -363,11 +363,11 @@ public:
 
 class fill_color_attr_parser : public unary_function<xml_attr_t, void>
 {
-    model::iface::styles& m_styles;
+    spreadsheet::iface::styles& m_styles;
     const tokens& m_tokens;
     bool m_foreground;
 public:
-    fill_color_attr_parser(model::iface::styles& styles, const tokens& _tokens, bool fg) :
+    fill_color_attr_parser(spreadsheet::iface::styles& styles, const tokens& _tokens, bool fg) :
         m_styles(styles), m_tokens(_tokens), m_foreground(fg) {}
 
     void operator() (const xml_attr_t& attr)
@@ -376,10 +376,10 @@ public:
         {
             case XML_rgb:
             {
-                model::color_elem_t alpha;
-                model::color_elem_t red;
-                model::color_elem_t green;
-                model::color_elem_t blue;
+                spreadsheet::color_elem_t alpha;
+                spreadsheet::color_elem_t red;
+                spreadsheet::color_elem_t green;
+                spreadsheet::color_elem_t blue;
                 if (!to_rgb(attr.value, alpha, red, green, blue))
                     // invalid RGB color format.
                     return;
@@ -398,7 +398,7 @@ public:
     }
 
 private:
-    bool to_rgb(const pstring& ps, model::color_elem_t& alpha, model::color_elem_t& red, model::color_elem_t& green, model::color_elem_t& blue) const
+    bool to_rgb(const pstring& ps, spreadsheet::color_elem_t& alpha, spreadsheet::color_elem_t& red, spreadsheet::color_elem_t& green, spreadsheet::color_elem_t& blue) const
     {
         // RGB string is a 8-character string representing 32-bit hexadecimal
         // number e.g. 'FF004A12' (alpha - red - green - blue)
@@ -418,7 +418,7 @@ private:
 
 }
 
-xlsx_styles_context::xlsx_styles_context(const tokens& tokens, model::iface::styles* styles) :
+xlsx_styles_context::xlsx_styles_context(const tokens& tokens, spreadsheet::iface::styles* styles) :
     xml_context_base(tokens), mp_styles(styles), m_cell_style_xf(false) {}
 
 xlsx_styles_context::~xlsx_styles_context() {}
@@ -553,35 +553,35 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         case XML_top:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_border);
-            border_attr_parser func(model::border_top, *mp_styles);
+            border_attr_parser func(spreadsheet::border_top, *mp_styles);
             for_each(attrs.begin(), attrs.end(), func);
         }
         break;
         case XML_bottom:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_border);
-            border_attr_parser func(model::border_bottom, *mp_styles);
+            border_attr_parser func(spreadsheet::border_bottom, *mp_styles);
             for_each(attrs.begin(), attrs.end(), func);
         }
         break;
         case XML_left:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_border);
-            border_attr_parser func(model::border_left, *mp_styles);
+            border_attr_parser func(spreadsheet::border_left, *mp_styles);
             for_each(attrs.begin(), attrs.end(), func);
         }
         break;
         case XML_right:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_border);
-            border_attr_parser func(model::border_right, *mp_styles);
+            border_attr_parser func(spreadsheet::border_right, *mp_styles);
             for_each(attrs.begin(), attrs.end(), func);
         }
         break;
         case XML_diagonal:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_border);
-            border_attr_parser func(model::border_diagonal, *mp_styles);
+            border_attr_parser func(spreadsheet::border_diagonal, *mp_styles);
             for_each(attrs.begin(), attrs.end(), func);
         }
         break;

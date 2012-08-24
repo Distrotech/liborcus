@@ -28,7 +28,7 @@
 #ifndef __ORCUS_MODEL_GLOBAL_HPP__
 #define __ORCUS_MODEL_GLOBAL_HPP__
 
-namespace orcus { namespace model {
+namespace orcus { namespace spreadsheet {
 
 typedef int row_t;
 typedef int col_t;

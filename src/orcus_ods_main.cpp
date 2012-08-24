@@ -38,8 +38,8 @@ int main(int argc, char** argv)
     if (argc != 2)
         return EXIT_FAILURE;
 
-    boost::scoped_ptr<model::document> doc(new model::document);
-    boost::scoped_ptr<model::factory> fact(new model::factory(doc.get()));
+    boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
+    boost::scoped_ptr<spreadsheet::factory> fact(new spreadsheet::factory(doc.get()));
     orcus_ods app(fact.get());
     app.read_file(argv[1]);
 //  doc->dump();
