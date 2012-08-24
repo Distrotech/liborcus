@@ -27,6 +27,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	ooxml_xlsx_handler.cpp \
 	ooxml_xlsx_sheet_context.cpp \
 	ooxml_xlsx_workbook_context.cpp \
+	opc_reader.cpp \
 	orcus_css.cpp \
 	orcus_csv.cpp \
 	orcus_ods.cpp \

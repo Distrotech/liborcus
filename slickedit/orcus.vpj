@@ -184,6 +184,7 @@
 				<F N="../include/orcus/env.hpp"/>
 				<F N="../include/orcus/exception.hpp"/>
 				<F N="../include/orcus/global.hpp"/>
+				<F N="../include/orcus/opc_reader.hpp"/>
 				<F N="../include/orcus/orcus_csv.hpp"/>
 				<F N="../include/orcus/orcus_ods.hpp"/>
 				<F N="../include/orcus/orcus_xlsx.hpp"/>
@@ -221,6 +222,7 @@
 				<F N="../src/liborcus/ooxml_xlsx_handler.cpp"/>
 				<F N="../src/liborcus/ooxml_xlsx_sheet_context.cpp"/>
 				<F N="../src/liborcus/ooxml_xlsx_workbook_context.cpp"/>
+				<F N="../src/liborcus/opc_reader.cpp"/>
 				<F N="../src/liborcus/orcus_css.cpp"/>
 				<F N="../src/liborcus/orcus_csv.cpp"/>
 				<F N="../src/liborcus/orcus_ods.cpp"/>

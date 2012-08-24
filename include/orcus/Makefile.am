@@ -8,6 +8,7 @@ liborcus_HEADERS = \
 	env.hpp \
 	exception.hpp \
 	global.hpp \
+	opc_reader.hpp \
 	orcus_csv.hpp \
 	orcus_ods.hpp \
 	orcus_xlsx.hpp \

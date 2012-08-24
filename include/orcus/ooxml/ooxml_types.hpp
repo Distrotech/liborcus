@@ -61,7 +61,12 @@ struct opc_rel_t
 /**
  * Used only to allow custom data associated with a relationship.
  */
-struct opc_rel_extra {};
+struct opc_rel_extra
+{
+    virtual ~opc_rel_extra() = 0;
+};
+
+inline opc_rel_extra::~opc_rel_extra() {}
 
 typedef boost::unordered_map<pstring, const opc_rel_extra*, pstring::hash>
     opc_rel_extras_t;

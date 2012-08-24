@@ -38,6 +38,8 @@ struct xlsx_rel_sheet_info : public opc_rel_extra
     size_t  id;
 
     xlsx_rel_sheet_info() : id(0) {}
+
+    virtual ~xlsx_rel_sheet_info() {}
 };
 
 }
