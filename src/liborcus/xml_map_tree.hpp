@@ -75,6 +75,13 @@ public:
     struct cell_reference : boost::noncopyable
     {
         cell_position pos;
+
+        const char* element_open_begin;
+        const char* element_open_end;
+        const char* element_close_begin;
+        const char* element_close_end;
+
+        cell_reference();
     };
 
     struct element;

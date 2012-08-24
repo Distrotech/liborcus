@@ -103,6 +103,9 @@ xml_map_tree::cell_position::cell_position(const pstring& _sheet, model::row_t _
 xml_map_tree::cell_position::cell_position(const cell_position& r) :
     sheet(r.sheet), row(r.row), col(r.col) {}
 
+xml_map_tree::cell_reference::cell_reference() :
+    element_open_begin(NULL), element_open_end(NULL), element_close_begin(NULL), element_close_end(NULL) {}
+
 xml_map_tree::range_reference::range_reference() : row_size(0) {}
 
 xml_map_tree::element::element(const pstring& _name, element_type _type) :

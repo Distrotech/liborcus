@@ -88,10 +88,42 @@ public:
         m_scopes.push_back(scope(elem.ns, elem.name));
         m_attrs.clear();
         mp_current_elem = m_map_tree_walker.push_element(elem.name);
+
+        if (!mp_current_elem)
+            return;
+
+        // Store the start element position in stream for linked elements.
+        switch (mp_current_elem->type)
+        {
+            case xml_map_tree::element_cell_ref:
+                mp_current_elem->cell_ref->element_open_begin = elem.begin_pos;
+                mp_current_elem->cell_ref->element_open_end = elem.end_pos;
+            break;
+            case xml_map_tree::element_range_field_ref:
+            break;
+            default:
+                ;
+        }
     }
 
     void end_element(const sax_parser_element& elem)
     {
+        if (mp_current_elem)
+        {
+            // Store the end element position in stream for linked elements.
+            switch (mp_current_elem->type)
+            {
+                case xml_map_tree::element_cell_ref:
+                    mp_current_elem->cell_ref->element_close_begin = elem.begin_pos;
+                    mp_current_elem->cell_ref->element_close_end = elem.end_pos;
+                break;
+                case xml_map_tree::element_range_field_ref:
+                break;
+                default:
+                    ;
+            }
+        }
+
         m_scopes.pop_back();
         mp_current_elem = m_map_tree_walker.pop_element(elem.name);
     }
