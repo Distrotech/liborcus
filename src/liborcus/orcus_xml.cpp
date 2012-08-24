@@ -109,7 +109,7 @@ public:
         {
             case xml_map_tree::element_cell_ref:
             {
-                const xml_map_tree::cell_reference& ref = *mp_current_elem->cell_ref;
+                const xml_map_tree::cell_position& ref = *mp_current_elem->cell_ref;
                 assert(!ref.sheet.empty());
 
                 model::iface::sheet* sheet = m_factory.get_sheet(ref.sheet.get(), ref.sheet.size());
@@ -155,7 +155,7 @@ struct orcus_xml_impl
     /** xml element tree that represents all mapped paths. */
     xml_map_tree m_map_tree;
 
-    xml_map_tree::cell_reference m_cur_range_ref;
+    xml_map_tree::cell_position m_cur_range_ref;
 };
 
 orcus_xml::orcus_xml(model::iface::factory* factory) :
@@ -171,12 +171,12 @@ orcus_xml::~orcus_xml()
 
 void orcus_xml::set_cell_link(const pstring& xpath, const pstring& sheet, model::row_t row, model::col_t col)
 {
-    mp_impl->m_map_tree.set_cell_link(xpath, xml_map_tree::cell_reference(sheet, row, col));
+    mp_impl->m_map_tree.set_cell_link(xpath, xml_map_tree::cell_position(sheet, row, col));
 }
 
 void orcus_xml::start_range(const pstring& sheet, model::row_t row, model::col_t col)
 {
-    mp_impl->m_cur_range_ref = xml_map_tree::cell_reference(sheet, row, col);
+    mp_impl->m_cur_range_ref = xml_map_tree::cell_position(sheet, row, col);
 }
 
 void orcus_xml::append_field_link(const pstring& xpath)
@@ -186,7 +186,7 @@ void orcus_xml::append_field_link(const pstring& xpath)
 
 void orcus_xml::commit_range()
 {
-    mp_impl->m_cur_range_ref = xml_map_tree::cell_reference();
+    mp_impl->m_cur_range_ref = xml_map_tree::cell_position();
 }
 
 void orcus_xml::append_sheet(const pstring& name)
@@ -210,7 +210,7 @@ void orcus_xml::read_file(const char* filepath)
     xml_map_tree::range_ref_map_type::iterator it_ref = range_refs.begin(), it_ref_end = range_refs.end();
     for (; it_ref != it_ref_end; ++it_ref)
     {
-        const xml_map_tree::cell_reference& ref = it_ref->first;
+        const xml_map_tree::cell_position& ref = it_ref->first;
         xml_map_tree::range_reference& range_ref = *it_ref->second;
         range_ref.row_size = 0; // Reset the row offset.
 

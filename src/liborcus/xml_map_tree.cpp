@@ -94,13 +94,13 @@ public:
 
 xml_map_tree::xpath_error::xpath_error(const string& msg) : general_error(msg) {}
 
-xml_map_tree::cell_reference::cell_reference() :
+xml_map_tree::cell_position::cell_position() :
     row(-1), col(-1) {}
 
-xml_map_tree::cell_reference::cell_reference(const pstring& _sheet, model::row_t _row, model::col_t _col) :
+xml_map_tree::cell_position::cell_position(const pstring& _sheet, model::row_t _row, model::col_t _col) :
     sheet(_sheet), row(_row), col(_col) {}
 
-xml_map_tree::cell_reference::cell_reference(const cell_reference& r) :
+xml_map_tree::cell_position::cell_position(const cell_position& r) :
     sheet(r.sheet), row(r.row), col(r.col) {}
 
 xml_map_tree::range_reference::range_reference() : row_size(0) {}
@@ -111,7 +111,7 @@ xml_map_tree::element::element(const pstring& _name, element_type _type) :
     switch (type)
     {
         case element_cell_ref:
-            cell_ref = new cell_reference;
+            cell_ref = new cell_position;
         break;
         case element_non_leaf:
             child_elements = new element_list_type;
@@ -229,7 +229,7 @@ xml_map_tree::~xml_map_tree()
     delete m_root;
 }
 
-void xml_map_tree::set_cell_link(const pstring& xpath, const cell_reference& ref)
+void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
 {
     if (xpath.empty())
         return;
@@ -243,13 +243,13 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_reference& ref
     p->cell_ref->sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
 }
 
-void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_reference& ref)
+void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_position& ref)
 {
     if (xpath.empty())
         return;
 
     // Make sure the sheet name string is persistent.
-    cell_reference ref_safe = ref;
+    cell_position ref_safe = ref;
     ref_safe.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
 
     range_reference* range_ref = NULL;
@@ -381,13 +381,13 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
     return &children.back();
 }
 
-std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_reference& ref)
+std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_position& ref)
 {
     os << "[sheet='" << ref.sheet << "' row=" << ref.row << " column=" << ref.col << "]";
     return os;
 }
 
-bool operator< (const xml_map_tree::cell_reference& left, const xml_map_tree::cell_reference& right)
+bool operator< (const xml_map_tree::cell_position& left, const xml_map_tree::cell_position& right)
 {
     if (left.sheet != right.sheet)
         return left.sheet < right.sheet;

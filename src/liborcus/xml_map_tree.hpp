@@ -57,19 +57,19 @@ public:
     };
 
     /**
-     * Reference to a single cell position.  Used both for single cell as well
-     * as range links.  For a range link, this represents the upper-left cell
-     * of a range.
+     * A single cell position.  Used both for single cell as well as range
+     * links.  For a range link, this represents the upper-left cell of a
+     * range.
      */
-    struct cell_reference
+    struct cell_position
     {
         pstring sheet;
         model::row_t row;
         model::col_t col;
 
-        cell_reference();
-        cell_reference(const pstring& _sheet, model::row_t _row, model::col_t _col);
-        cell_reference(const cell_reference& r);
+        cell_position();
+        cell_position(const pstring& _sheet, model::row_t _row, model::col_t _col);
+        cell_position(const cell_position& r);
     };
 
     struct element;
@@ -95,12 +95,12 @@ public:
 
     struct field_in_range
     {
-        cell_reference ref;
+        cell_position ref;
         range_reference* range_ref;
         model::col_t column_pos;
     };
 
-    typedef std::map<cell_reference, range_reference*> range_ref_map_type;
+    typedef std::map<cell_position, range_reference*> range_ref_map_type;
 
     enum element_type { element_non_leaf, element_cell_ref, element_range_field_ref };
 
@@ -111,7 +111,7 @@ public:
         element_type type;
         union {
             element_list_type* child_elements;
-            cell_reference* cell_ref;
+            cell_position* cell_ref;
             field_in_range* field_ref;
         };
 
@@ -144,8 +144,8 @@ public:
     xml_map_tree();
     ~xml_map_tree();
 
-    void set_cell_link(const pstring& xpath, const cell_reference& ref);
-    void append_range_field_link(const pstring& xpath, const cell_reference& ref);
+    void set_cell_link(const pstring& xpath, const cell_position& ref);
+    void append_range_field_link(const pstring& xpath, const cell_position& ref);
 
     const element* get_link(const pstring& xpath) const;
 
@@ -165,9 +165,9 @@ private:
     element* m_root;
 };
 
-std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_reference& ref);
+std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_position& ref);
 
-bool operator< (const xml_map_tree::cell_reference& left, const xml_map_tree::cell_reference& right);
+bool operator< (const xml_map_tree::cell_position& left, const xml_map_tree::cell_position& right);
 
 }
 

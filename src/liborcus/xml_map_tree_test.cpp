@@ -37,7 +37,7 @@ using namespace std;
 void test_path_insertion()
 {
     xml_map_tree tree;
-    xml_map_tree::cell_reference ref;
+    xml_map_tree::cell_position ref;
     ref.sheet = pstring("test");
     ref.row = 2;
     ref.col = 1;
@@ -107,7 +107,7 @@ void test_path_insertion()
 void test_tree_walk()
 {
     xml_map_tree tree;
-    xml_map_tree::cell_reference ref;
+    xml_map_tree::cell_position ref;
     ref.sheet = pstring("test");
     ref.row = 2;
     ref.col = 1;
