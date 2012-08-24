@@ -112,8 +112,7 @@ void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
     cout << "read_workbook: file path = " << filepath << endl;
 
     opc_reader::zip_stream strm;
-    m_opc_reader.get_zip_stream(filepath, strm);
-    if (!strm.zfd)
+    if (!m_opc_reader.get_zip_stream(filepath, strm))
         return;
 
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
@@ -145,8 +144,7 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, con
     cout << "read_sheet: file path = " << filepath << endl;
 
     opc_reader::zip_stream strm;
-    m_opc_reader.get_zip_stream(filepath, strm);
-    if (!strm.zfd)
+    if (!m_opc_reader.get_zip_stream(filepath, strm))
         return;
 
     if (data)
@@ -175,8 +173,7 @@ void orcus_xlsx::read_shared_strings(const string& dir_path, const string& file_
     cout << "read_shared_strings: file path = " << filepath << endl;
 
     opc_reader::zip_stream strm;
-    m_opc_reader.get_zip_stream(filepath, strm);
-    if (!strm.zfd)
+    if (!m_opc_reader.get_zip_stream(filepath, strm))
         return;
 
     if (strm.buffer_read > 0)
@@ -197,8 +194,7 @@ void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
     cout << "read_styles: file path = " << filepath << endl;
 
     opc_reader::zip_stream strm;
-    m_opc_reader.get_zip_stream(filepath, strm);
-    if (!strm.zfd)
+    if (!m_opc_reader.get_zip_stream(filepath, strm))
         return;
 
     if (strm.buffer_read > 0)

@@ -136,11 +136,13 @@ void opc_reader::read_file(const char* fpath)
     zip_close(m_archive);
 }
 
-void opc_reader::get_zip_stream(const string& path, zip_stream& data)
+bool opc_reader::get_zip_stream(const string& path, zip_stream& data)
 {
     vector<char> buf;
     int buf_read;
     data.zfd = get_zip_stream_from_archive(m_archive, path, data.buffer, data.buffer_read);
+
+    return data.zfd != NULL;
 }
 
 void opc_reader::close_zip_stream(zip_stream& data)
