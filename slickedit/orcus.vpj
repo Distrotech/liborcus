@@ -165,6 +165,7 @@
 					<F N="../include/orcus/ooxml/ooxml_tokens.hpp"/>
 					<F N="../include/orcus/ooxml/ooxml_types.hpp"/>
 					<F N="../include/orcus/ooxml/opc_context.hpp"/>
+					<F N="../include/orcus/ooxml/opc_reader.hpp"/>
 					<F N="../include/orcus/ooxml/opc_token_constants.hpp"/>
 					<F N="../include/orcus/ooxml/opc_token_constants.inl"/>
 					<F N="../include/orcus/ooxml/schemas.hpp"/>
@@ -184,7 +185,6 @@
 				<F N="../include/orcus/env.hpp"/>
 				<F N="../include/orcus/exception.hpp"/>
 				<F N="../include/orcus/global.hpp"/>
-				<F N="../include/orcus/opc_reader.hpp"/>
 				<F N="../include/orcus/orcus_csv.hpp"/>
 				<F N="../include/orcus/orcus_ods.hpp"/>
 				<F N="../include/orcus/orcus_xlsx.hpp"/>

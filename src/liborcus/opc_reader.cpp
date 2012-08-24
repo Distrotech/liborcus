@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/opc_reader.hpp"
+#include "orcus/ooxml/opc_reader.hpp"
 #include "orcus/ooxml/global.hpp"
 #include "orcus/ooxml/opc_context.hpp"
 #include "orcus/ooxml/ooxml_tokens.hpp"

@@ -29,7 +29,7 @@
 #define __ORCUS_ORCUS_XLSX_HPP__
 
 #include "env.hpp"
-#include "opc_reader.hpp"
+#include "ooxml/opc_reader.hpp"
 
 #include <boost/noncopyable.hpp>
 
