@@ -164,7 +164,6 @@ sax_parser<_Handler>::~sax_parser()
 template<typename _Handler>
 void sax_parser<_Handler>::parse()
 {
-    using namespace std;
     m_pos = 0;
     m_nest_level = 0;
     m_char = m_content;

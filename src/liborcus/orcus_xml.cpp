@@ -205,7 +205,7 @@ void orcus_xml::read_file(const char* filepath)
     if (strm.empty())
         return;
 
-    // Insert the range headers and reset the row offset counters.
+    // Insert the range headers and reset the row size counters.
     xml_map_tree::range_ref_map_type& range_refs = mp_impl->m_map_tree.get_range_references();
     xml_map_tree::range_ref_map_type::iterator it_ref = range_refs.begin(), it_ref_end = range_refs.end();
     for (; it_ref != it_ref_end; ++it_ref)
@@ -232,6 +232,11 @@ void orcus_xml::read_file(const char* filepath)
     xml_data_sax_handler handler(*mp_impl->mp_factory, mp_impl->m_map_tree);
     sax_parser<xml_data_sax_handler> parser(strm.c_str(), strm.size(), handler);
     parser.parse();
+}
+
+void orcus_xml::write_file(const char* filepath)
+{
+    cout << "writing to " << filepath << endl;
 }
 
 }

@@ -58,6 +58,7 @@ public:
     void append_sheet(const pstring& name);
 
     void read_file(const char* filepath);
+    void write_file(const char* filepath);
 
 private:
     orcus_xml_impl* mp_impl;

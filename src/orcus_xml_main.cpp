@@ -42,7 +42,7 @@ namespace {
 
 void print_help()
 {
-    cout << "Usage: orcus-xml [map file] [data file]" << endl;
+    cout << "Usage: orcus-xml [map file] [data file] [transformed data file (optional)]" << endl;
 }
 
 }
@@ -61,7 +61,13 @@ int main(int argc, char** argv)
     orcus_xml app(fact.get());
     read_map_file(app, argv[1]);
     app.read_file(argv[2]);
-    doc->dump();
+    if (argc > 3)
+        // Write transformed xml content to file.
+        app.write_file(argv[3]);
+    else
+        // Dump document content to stdout.
+        doc->dump();
+
     pstring::intern::dispose();
 
     return EXIT_SUCCESS;
