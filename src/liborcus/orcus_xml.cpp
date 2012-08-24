@@ -83,17 +83,17 @@ public:
         m_attrs.clear();
     }
 
-    void start_element(const pstring& ns, const pstring& name)
+    void start_element(const sax_parser_element& elem)
     {
-        m_scopes.push_back(scope(ns, name));
+        m_scopes.push_back(scope(elem.ns, elem.name));
         m_attrs.clear();
-        mp_current_elem = m_map_tree_walker.push_element(name);
+        mp_current_elem = m_map_tree_walker.push_element(elem.name);
     }
 
-    void end_element(const pstring& ns, const pstring& name)
+    void end_element(const sax_parser_element& elem)
     {
         m_scopes.pop_back();
-        mp_current_elem = m_map_tree_walker.pop_element(name);
+        mp_current_elem = m_map_tree_walker.pop_element(elem.name);
     }
 
     void characters(const pstring& val)

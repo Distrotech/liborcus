@@ -28,7 +28,7 @@
 #ifndef __ORCUS_XML_MAP_SAX_HANDLER_HPP__
 #define __ORCUS_XML_MAP_SAX_HANDLER_HPP__
 
-#include "orcus/pstring.hpp"
+#include "orcus/sax_parser.hpp"
 
 #include <vector>
 
@@ -63,8 +63,8 @@ public:
     xml_map_sax_handler(orcus_xml& app);
 
     void declaration();
-    void start_element(const pstring& ns, const pstring& name);
-    void end_element(const pstring& ns, const pstring& name);
+    void start_element(const sax_parser_element& elem);
+    void end_element(const sax_parser_element& elem);
     void characters(const pstring&);
     void attribute(const pstring& ns, const pstring& name, const pstring& val);
 };

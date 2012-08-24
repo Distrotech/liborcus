@@ -47,14 +47,14 @@ public:
         m_tree.end_declaration();
     }
 
-    void start_element(const pstring& ns, const pstring& name)
+    void start_element(const sax_parser_element& elem)
     {
-        m_tree.start_element(ns, name);
+        m_tree.start_element(elem.ns, elem.name);
     }
 
-    void end_element(const pstring& ns, const pstring& name)
+    void end_element(const sax_parser_element& elem)
     {
-        m_tree.end_element(ns, name);
+        m_tree.end_element(elem.ns, elem.name);
     }
 
     void characters(const pstring& val)

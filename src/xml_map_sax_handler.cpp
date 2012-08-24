@@ -49,14 +49,14 @@ void xml_map_sax_handler::declaration()
     m_attrs.clear();
 }
 
-void xml_map_sax_handler::start_element(const pstring& ns, const pstring& name)
+void xml_map_sax_handler::start_element(const sax_parser_element& elem)
 {
     pstring xpath, sheet;
     model::row_t row = -1;
     model::col_t col = -1;
     vector<attr>::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
 
-    if (name == "cell")
+    if (elem.name == "cell")
     {
         for (; it != it_end; ++it)
         {
@@ -72,7 +72,7 @@ void xml_map_sax_handler::start_element(const pstring& ns, const pstring& name)
 
         m_app.set_cell_link(xpath, sheet, row, col);
     }
-    else if (name == "range")
+    else if (elem.name == "range")
     {
         for (; it != it_end; ++it)
         {
@@ -86,7 +86,7 @@ void xml_map_sax_handler::start_element(const pstring& ns, const pstring& name)
 
         m_app.start_range(sheet, row, col);
     }
-    else if (name == "field")
+    else if (elem.name == "field")
     {
         for (; it != it_end; ++it)
         {
@@ -99,7 +99,7 @@ void xml_map_sax_handler::start_element(const pstring& ns, const pstring& name)
 
         m_app.append_field_link(xpath);
     }
-    else if (name == "sheet")
+    else if (elem.name == "sheet")
     {
         pstring sheet_name;
         for (; it != it_end; ++it)
@@ -115,13 +115,13 @@ void xml_map_sax_handler::start_element(const pstring& ns, const pstring& name)
             m_app.append_sheet(sheet_name);
     }
 
-    m_scopes.push_back(scope(ns, name));
+    m_scopes.push_back(scope(elem.ns, elem.name));
     m_attrs.clear();
 }
 
-void xml_map_sax_handler::end_element(const pstring& ns, const pstring& name)
+void xml_map_sax_handler::end_element(const sax_parser_element& elem)
 {
-    if (name == "range")
+    if (elem.name == "range")
         m_app.commit_range();
 
     m_scopes.pop_back();

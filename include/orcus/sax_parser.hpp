@@ -40,6 +40,16 @@
 namespace orcus {
 
 /**
+ * Element properties passed by sax_parser to its handler's open_element()
+ * and close_element() calls.
+ */
+struct sax_parser_element
+{
+    pstring ns;
+    pstring name;
+};
+
+/**
  * Template-based sax parser that doesn't use function pointer for
  * callbacks for better performance, especially on large XML streams.
  */
@@ -246,14 +256,14 @@ void sax_parser<_Handler>::element_open()
 {
     assert(is_alpha(cur_char()));
 
-    pstring ns_name, elem_name;
-    name(elem_name);
+    sax_parser_element elem;
+    name(elem.name);
     if (cur_char() == ':')
     {
         // this element name is namespaced.
-        ns_name = elem_name;
+        elem.ns = elem.name;
         next();
-        name(elem_name);
+        name(elem.name);
     }
 
     while (true)
@@ -266,8 +276,8 @@ void sax_parser<_Handler>::element_open()
             if (next_char() != '>')
                 throw malformed_xml_error("expected '/>' to self-close the element.");
             next();
-            m_handler.start_element(ns_name, elem_name);
-            m_handler.end_element(ns_name, elem_name);
+            m_handler.start_element(elem);
+            m_handler.end_element(elem);
             return;
         }
         else if (c == '>')
@@ -275,7 +285,7 @@ void sax_parser<_Handler>::element_open()
             // End of opening element: <element>
             next();
             nest_up();
-            m_handler.start_element(ns_name, elem_name);
+            m_handler.start_element(elem);
             return;
         }
         else
@@ -289,20 +299,20 @@ void sax_parser<_Handler>::element_close()
     assert(cur_char() == '/');
     nest_down();
     next();
-    pstring ns_name, elem_name;
-    name(elem_name);
+    sax_parser_element elem;
+    name(elem.name);
     if (cur_char() == ':')
     {
-        ns_name = elem_name;
+        elem.ns = elem.name;
         next();
-        name(elem_name);
+        name(elem.name);
     }
 
     if (cur_char() != '>')
         throw malformed_xml_error("expected '>' to close the element.");
     next();
 
-    m_handler.end_element(ns_name, elem_name);
+    m_handler.end_element(elem);
 }
 
 template<typename _Handler>

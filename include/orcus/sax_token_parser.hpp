@@ -98,18 +98,18 @@ private:
             m_attrs.clear();
         }
 
-        void start_element(const pstring& ns, const pstring& name)
+        void start_element(const sax_parser_element& elem)
         {
-            token_type elem_token = tokenize(name);
-            nstoken_type elem_nstoken = tokenize_ns(ns);
+            token_type elem_token = tokenize(elem.name);
+            nstoken_type elem_nstoken = tokenize_ns(elem.ns);
             m_handler.start_element(elem_nstoken, elem_token, m_attrs);
             m_attrs.clear();
         }
 
-        void end_element(const pstring& ns, const pstring& name)
+        void end_element(const sax_parser_element& elem)
         {
-            token_type elem_token = tokenize(name);
-            nstoken_type elem_nstoken = tokenize_ns(ns);
+            token_type elem_token = tokenize(elem.name);
+            nstoken_type elem_nstoken = tokenize_ns(elem.ns);
             m_handler.end_element(elem_nstoken, elem_token);
         }
 
