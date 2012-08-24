@@ -87,7 +87,7 @@ public:
     opc_reader(part_handler& handler);
 
     void read_file(const char* fpath);
-    bool get_zip_stream(const std::string& path, zip_stream& data);
+    bool open_zip_stream(const std::string& path, zip_stream& data);
     void close_zip_stream(zip_stream& data);
 
     /**
