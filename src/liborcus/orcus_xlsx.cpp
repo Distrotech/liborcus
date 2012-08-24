@@ -52,7 +52,8 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
-using namespace orcus;
+
+namespace orcus {
 
 namespace {
 
@@ -453,3 +454,4 @@ string orcus_xlsx::get_current_dir() const
     return pwd;
 }
 
+}
