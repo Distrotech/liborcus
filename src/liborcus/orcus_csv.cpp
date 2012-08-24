@@ -30,7 +30,7 @@
 #include "orcus/csv_parser.hpp"
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
-#include "orcus/model/interface.hpp"
+#include "orcus/spreadsheet/interface.hpp"
 
 #include <cstring>
 #include <iostream>

@@ -37,7 +37,7 @@
 #include "orcus/ooxml/xlsx_workbook_context.hpp"
 #include "orcus/ooxml/opc_context.hpp"
 #include "orcus/ooxml/ooxml_tokens.hpp"
-#include "orcus/model/interface.hpp"
+#include "orcus/spreadsheet/interface.hpp"
 
 #include <zip.h>
 

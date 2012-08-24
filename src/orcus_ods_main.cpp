@@ -26,8 +26,8 @@
  ************************************************************************/
 
 #include "orcus/orcus_ods.hpp"
-#include "model/document.hpp"
-#include "model/factory.hpp"
+#include "spreadsheet/document.hpp"
+#include "spreadsheet/factory.hpp"
 
 #include <boost/scoped_ptr.hpp>
 

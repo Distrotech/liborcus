@@ -28,7 +28,7 @@
 #ifndef __ORCUS_MODEL_FACTORY_HPP__
 #define __ORCUS_MODEL_FACTORY_HPP__
 
-#include "orcus/model/interface.hpp"
+#include "orcus/spreadsheet/interface.hpp"
 #include "orcus/env.hpp"
 
 namespace orcus { namespace spreadsheet {

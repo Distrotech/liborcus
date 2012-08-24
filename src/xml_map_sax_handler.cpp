@@ -27,7 +27,7 @@
 
 #include "xml_map_sax_handler.hpp"
 
-#include "orcus/model/types.hpp"
+#include "orcus/spreadsheet/types.hpp"
 #include "orcus/orcus_xml.hpp"
 #include "orcus/global.hpp"
 #include "orcus/sax_parser.hpp"

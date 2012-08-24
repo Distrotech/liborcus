@@ -149,10 +149,6 @@
 	<Files AutoFolders="DirectoryView">
 		<Folder Name="../include">
 			<Folder Name="orcus">
-				<Folder Name="model">
-					<F N="../include/orcus/model/interface.hpp"/>
-					<F N="../include/orcus/model/types.hpp"/>
-				</Folder>
 				<Folder Name="odf">
 					<F N="../include/orcus/odf/odf_token_constants.hpp"/>
 					<F N="../include/orcus/odf/odf_token_constants.inl"/>
@@ -177,6 +173,10 @@
 					<F N="../include/orcus/ooxml/xlsx_sheet_context.hpp"/>
 					<F N="../include/orcus/ooxml/xlsx_types.hpp"/>
 					<F N="../include/orcus/ooxml/xlsx_workbook_context.hpp"/>
+				</Folder>
+				<Folder Name="spreadsheet">
+					<F N="../include/orcus/spreadsheet/interface.hpp"/>
+					<F N="../include/orcus/spreadsheet/types.hpp"/>
 				</Folder>
 				<F N="../include/orcus/css_parser.hpp"/>
 				<F N="../include/orcus/csv_parser.hpp"/>
@@ -239,17 +239,17 @@
 				<F N="../src/liborcus/xml_parser.cpp"/>
 				<F N="../src/liborcus/xml_simple_handler.cpp"/>
 			</Folder>
-			<Folder Name="model">
-				<F N="../src/model/document.cpp"/>
-				<F N="../src/model/document.hpp"/>
-				<F N="../src/model/factory.cpp"/>
-				<F N="../src/model/factory.hpp"/>
-				<F N="../src/model/shared_strings.cpp"/>
-				<F N="../src/model/shared_strings.hpp"/>
-				<F N="../src/model/sheet.cpp"/>
-				<F N="../src/model/sheet.hpp"/>
-				<F N="../src/model/styles.cpp"/>
-				<F N="../src/model/styles.hpp"/>
+			<Folder Name="spreadsheet">
+				<F N="../src/spreadsheet/document.cpp"/>
+				<F N="../src/spreadsheet/document.hpp"/>
+				<F N="../src/spreadsheet/factory.cpp"/>
+				<F N="../src/spreadsheet/factory.hpp"/>
+				<F N="../src/spreadsheet/shared_strings.cpp"/>
+				<F N="../src/spreadsheet/shared_strings.hpp"/>
+				<F N="../src/spreadsheet/sheet.cpp"/>
+				<F N="../src/spreadsheet/sheet.hpp"/>
+				<F N="../src/spreadsheet/styles.cpp"/>
+				<F N="../src/spreadsheet/styles.hpp"/>
 			</Folder>
 			<F N="../src/orcus_csv_main.cpp"/>
 			<F N="../src/orcus_format_xml.cpp"/>

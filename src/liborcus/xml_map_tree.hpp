@@ -29,7 +29,7 @@
 #define __ORCUS_XML_MAP_TREE_HPP__
 
 #include "orcus/pstring.hpp"
-#include "orcus/model/types.hpp"
+#include "orcus/spreadsheet/types.hpp"
 #include "orcus/exception.hpp"
 #include "string_pool.hpp"
 

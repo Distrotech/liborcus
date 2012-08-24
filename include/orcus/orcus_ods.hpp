@@ -28,7 +28,7 @@
 #ifndef __ORCUS_ORCUS_ODS_HPP__
 #define __ORCUS_ORCUS_ODS_HPP__
 
-#include "orcus/model/interface.hpp"
+#include "orcus/spreadsheet/interface.hpp"
 #include "orcus/env.hpp"
 
 #include <boost/noncopyable.hpp>

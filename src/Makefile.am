@@ -1,4 +1,4 @@
-SUBDIRS = liborcus model .
+SUBDIRS = liborcus spreadsheet .
 
 if BUILD_MODEL
 
@@ -20,7 +20,7 @@ orcus_csv_SOURCES = \
 
 orcus_csv_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
 orcus_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
@@ -31,7 +31,7 @@ orcus_ods_SOURCES = \
 
 orcus_ods_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
 orcus_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
@@ -42,7 +42,7 @@ orcus_xlsx_SOURCES = \
 
 orcus_xlsx_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
 orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
@@ -54,7 +54,7 @@ orcus_xml_SOURCES = \
 
 orcus_xml_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
 orcus_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
@@ -63,7 +63,7 @@ orcus_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 orcus_format_xml_SOURCES = orcus_format_xml.cpp
 orcus_format_xml_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
 orcus_format_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
@@ -72,7 +72,7 @@ orcus_format_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 orcus_test_common_SOURCES = orcus_test_common.cpp
 orcus_test_common_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
 orcus_test_common_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
@@ -81,7 +81,7 @@ orcus_test_common_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 orcus_test_csv_SOURCES = orcus_test_csv.cpp
 orcus_test_csv_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
 orcus_test_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
@@ -90,7 +90,7 @@ orcus_test_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 orcus_test_xml_SOURCES = orcus_test_xml.cpp
 orcus_test_xml_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
 orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
@@ -102,7 +102,7 @@ orcus_test_xml_mapped_SOURCES = \
 
 orcus_test_xml_mapped_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	model/liborcus-model-impl-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-model-impl-@ORCUS_API_VERSION@.la
 
 orcus_test_xml_mapped_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 

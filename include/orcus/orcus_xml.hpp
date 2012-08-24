@@ -29,7 +29,7 @@
 #define __ORCUS_ORCUS_XML_HPP__
 
 #include "env.hpp"
-#include "model/types.hpp"
+#include "spreadsheet/types.hpp"
 
 namespace orcus {
 

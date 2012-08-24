@@ -28,7 +28,7 @@
 #ifndef __ORCUS_MODEL_SHARED_STRINGS_HPP__
 #define __ORCUS_MODEL_SHARED_STRINGS_HPP__
 
-#include "orcus/model/interface.hpp"
+#include "orcus/spreadsheet/interface.hpp"
 #include "orcus/pstring.hpp"
 
 #include <cstdlib>

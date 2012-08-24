@@ -29,7 +29,7 @@
 #include "orcus/odf/para_context.hpp"
 #include "orcus/odf/odf_token_constants.hpp"
 #include "orcus/global.hpp"
-#include "orcus/model/interface.hpp"
+#include "orcus/spreadsheet/interface.hpp"
 
 #include <iostream>
 #include <fstream>

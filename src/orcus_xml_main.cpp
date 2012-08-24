@@ -26,8 +26,8 @@
  ************************************************************************/
 
 #include "orcus/orcus_xml.hpp"
-#include "model/factory.hpp"
-#include "model/document.hpp"
+#include "spreadsheet/factory.hpp"
+#include "spreadsheet/document.hpp"
 
 #include "xml_map_sax_handler.hpp"
 

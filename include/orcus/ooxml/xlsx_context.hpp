@@ -29,7 +29,7 @@
 #define __ORCUS_XLSX_CONTEXT_HPP__
 
 #include "orcus/xml_context.hpp"
-#include "orcus/model/types.hpp"
+#include "orcus/spreadsheet/types.hpp"
 #include "orcus/ooxml/xlsx_types.hpp"
 
 #include <boost/ptr_container/ptr_vector.hpp>

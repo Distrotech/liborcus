@@ -155,13 +155,13 @@ AC_CONFIG_FILES([Makefile
                  setenv
                  include/Makefile
                  include/orcus/Makefile
-                 include/orcus/model/Makefile
+                 include/orcus/spreadsheet/Makefile
                  include/orcus/odf/Makefile
                  include/orcus/ooxml/Makefile
                  src/Makefile
                  src/liborcus/pre/Makefile
                  src/liborcus/Makefile
-                 src/model/Makefile
+                 src/spreadsheet/Makefile
 ])
 
 AC_OUTPUT
