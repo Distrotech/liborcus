@@ -44,15 +44,35 @@ namespace orcus {
 class pstring;
 struct opc_rel_extra;
 
+/**
+ * Class to handle parsing through all xml parts stored in a file packaged
+ * according to the Open Package Convention (OPC).
+ */
 class opc_reader : boost::noncopyable
 {
     typedef std::vector<std::string> dir_stack_type;
 
 public:
+    /**
+     * Interface class for the user of opc_reader to receive callback to
+     * handle each xml part.
+     */
     class part_handler
     {
     public:
         virtual ~part_handler() = 0;
+
+        /**
+         * Client code needs to implement this method to handle each xml part.
+         *
+         * @param type schema type signifying the content type stored in this
+         *             part.
+         * @param dir_path directory path relative to package root.
+         * @param file_name name of the xml part without the directory path.
+         * @param data extra data passed on from the client code.
+         *
+         * @return true if handled, false if not handled.
+         */
         virtual bool handle_part(
             schema_t type, const std::string& dir_path, const std::string& file_name, const opc_rel_extra* data) = 0;
     };
@@ -78,6 +98,15 @@ public:
      * @param type schema type.
      */
     void read_part(const pstring& path, const schema_t type, const opc_rel_extra* data);
+
+    /**
+     * Check if a relation file exists for a given xml part, and if it does,
+     * read and process it.
+     *
+     * @param file_name name of the current xml part.
+     * @param extras optional extra data file for client code to pass on to
+     *               the next xml part(s).
+     */
     void check_relation_part(const std::string& file_name, const opc_rel_extras_t* extras);
 
 private:
