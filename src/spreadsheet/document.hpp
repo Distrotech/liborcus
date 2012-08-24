@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_MODEL_DOCUMENT_HPP__
-#define __ORCUS_MODEL_DOCUMENT_HPP__
+#ifndef __ORCUS_SPREADSHEET_DOCUMENT_HPP__
+#define __ORCUS_SPREADSHEET_DOCUMENT_HPP__
 
 #include "orcus/spreadsheet/interface.hpp"
 #include "orcus/pstring.hpp"

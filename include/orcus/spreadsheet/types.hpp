@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_MODEL_GLOBAL_HPP__
-#define __ORCUS_MODEL_GLOBAL_HPP__
+#ifndef __ORCUS_SPREADSHEET_GLOBAL_HPP__
+#define __ORCUS_SPREADSHEET_GLOBAL_HPP__
 
 namespace orcus { namespace spreadsheet {
 
