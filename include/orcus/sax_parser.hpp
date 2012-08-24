@@ -45,8 +45,10 @@ namespace orcus {
  */
 struct sax_parser_element
 {
-    pstring ns;
-    pstring name;
+    pstring ns;            // element namespace (optional)
+    pstring name;          // element name
+    const char* begin_pos; // position of the opening brace '<'.
+    const char* end_pos;   // position of the char after the closing brace '>'.
 };
 
 /**
@@ -129,8 +131,8 @@ private:
     void header();
     void body();
     void element();
-    void element_open();
-    void element_close();
+    void element_open(const char* begin_pos);
+    void element_close(const char* begin_pos);
     void special_tag();
     void comment();
     void content();
@@ -237,26 +239,29 @@ template<typename _Handler>
 void sax_parser<_Handler>::element()
 {
     assert(cur_char() == '<');
+    const char* pos = m_char;
     char c = next_char();
     switch (c)
     {
         case '/':
-            element_close();
+            element_close(pos);
         break;
         case '!':
             special_tag();
         break;
         default:
-            element_open();
+            element_open(pos);
     }
 }
 
 template<typename _Handler>
-void sax_parser<_Handler>::element_open()
+void sax_parser<_Handler>::element_open(const char* begin_pos)
 {
     assert(is_alpha(cur_char()));
 
     sax_parser_element elem;
+    elem.begin_pos = begin_pos;
+
     name(elem.name);
     if (cur_char() == ':')
     {
@@ -276,6 +281,7 @@ void sax_parser<_Handler>::element_open()
             if (next_char() != '>')
                 throw malformed_xml_error("expected '/>' to self-close the element.");
             next();
+            elem.end_pos = m_char;
             m_handler.start_element(elem);
             m_handler.end_element(elem);
             return;
@@ -284,6 +290,7 @@ void sax_parser<_Handler>::element_open()
         {
             // End of opening element: <element>
             next();
+            elem.end_pos = m_char;
             nest_up();
             m_handler.start_element(elem);
             return;
@@ -294,12 +301,14 @@ void sax_parser<_Handler>::element_open()
 }
 
 template<typename _Handler>
-void sax_parser<_Handler>::element_close()
+void sax_parser<_Handler>::element_close(const char* begin_pos)
 {
     assert(cur_char() == '/');
     nest_down();
     next();
     sax_parser_element elem;
+    elem.begin_pos = begin_pos;
+
     name(elem.name);
     if (cur_char() == ':')
     {
@@ -311,6 +320,7 @@ void sax_parser<_Handler>::element_close()
     if (cur_char() != '>')
         throw malformed_xml_error("expected '>' to close the element.");
     next();
+    elem.end_pos = m_char;
 
     m_handler.end_element(elem);
 }
