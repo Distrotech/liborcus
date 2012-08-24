@@ -81,7 +81,7 @@ private:
     const opc_rel_extras_t* m_extras;
 };
 
-struct zip_file* get_zip_stream_from_archive(
+struct ::zip_file* get_zip_stream_from_archive(
     struct zip* archive, const string& filepath, vector<char>& buf, int& buf_read)
 {
     buf_read = 0;
@@ -93,7 +93,7 @@ struct zip_file* get_zip_stream_from_archive(
     }
 
     cout << "name: " << file_stat.name << "  size: " << file_stat.size << endl;
-    struct zip_file* zfd = zip_fopen(archive, file_stat.name, 0);
+    struct ::zip_file* zfd = zip_fopen(archive, file_stat.name, 0);
     if (!zfd)
     {
         cout << "failed to open " << file_stat.name << endl;
@@ -134,6 +134,18 @@ void opc_reader::read_file(const char* fpath)
     read_content();
 
     zip_close(m_archive);
+}
+
+void opc_reader::get_zip_stream(const string& path, zip_stream& data)
+{
+    vector<char> buf;
+    int buf_read;
+    data.zfd = get_zip_stream_from_archive(m_archive, path, data.buffer, data.buffer_read);
+}
+
+void opc_reader::close_zip_stream(zip_stream& data)
+{
+    zip_fclose(data.zfd);
 }
 
 void opc_reader::read_part(const pstring& path, const schema_t type, const opc_rel_extra* data)
@@ -202,13 +214,13 @@ void opc_reader::read_part(const pstring& path, const schema_t type, const opc_r
     }
 }
 
-void opc_reader::check_relation_part(const char* file_name, const opc_rel_extras_t* extra)
+void opc_reader::check_relation_part(const std::string& file_name, const opc_rel_extras_t* extra)
 {
     // Read the relationship file associated with this file, located at
     // _rels/<file name>.rels.
     vector<opc_rel_t> rels;
     m_dir_stack.push_back(string("_rels/"));
-    string rels_file_name = string(file_name) + ".rels";
+    string rels_file_name = file_name + ".rels";
     read_relations(rels_file_name.c_str(), rels);
     m_dir_stack.pop_back();
 

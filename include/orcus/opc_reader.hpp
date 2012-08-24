@@ -37,6 +37,7 @@
 #include <boost/noncopyable.hpp>
 
 struct zip;
+struct zip_file;
 
 namespace orcus {
 
@@ -56,9 +57,18 @@ public:
             schema_t type, const std::string& dir_path, const std::string& file_name, const opc_rel_extra* data) = 0;
     };
 
+    struct zip_stream
+    {
+        std::vector<char> buffer;
+        int buffer_read;
+        struct ::zip_file* zfd;
+    };
+
     opc_reader(part_handler& handler);
 
     void read_file(const char* fpath);
+    void get_zip_stream(const std::string& path, zip_stream& data);
+    void close_zip_stream(zip_stream& data);
 
     /**
      * Read an xml part inside package.  The path is relative to the relation
@@ -68,7 +78,7 @@ public:
      * @param type schema type.
      */
     void read_part(const pstring& path, const schema_t type, const opc_rel_extra* data);
-    void check_relation_part(const char* file_name, const opc_rel_extras_t* extras);
+    void check_relation_part(const std::string& file_name, const opc_rel_extras_t* extras);
 
 private:
 

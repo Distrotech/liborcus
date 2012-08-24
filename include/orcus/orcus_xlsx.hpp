@@ -28,14 +28,10 @@
 #ifndef __ORCUS_ORCUS_XLSX_HPP__
 #define __ORCUS_ORCUS_XLSX_HPP__
 
-#include "orcus/ooxml/schemas.hpp"
-#include "orcus/xml_simple_handler.hpp"
-#include "orcus/env.hpp"
+#include "env.hpp"
+#include "opc_reader.hpp"
 
 #include <boost/noncopyable.hpp>
-#include <vector>
-
-struct zip;
 
 namespace orcus {
 
@@ -45,56 +41,43 @@ struct xlsx_rel_sheet_info;
 
 class ORCUS_DLLPUBLIC orcus_xlsx : public ::boost::noncopyable
 {
+    class opc_handler : public opc_reader::part_handler
+    {
+        orcus_xlsx& m_parent;
+    public:
+        opc_handler(orcus_xlsx& parent);
+        virtual ~opc_handler();
+        virtual bool handle_part(
+            schema_t type, const std::string& dir_path, const std::string& file_name, const opc_rel_extra* data);
+    };
+
 public:
     orcus_xlsx(spreadsheet::iface::factory* factory);
     ~orcus_xlsx();
 
     void read_file(const char* fpath);
 
-    /**
-     * Read an xml part inside package.  The path is relative to the relation
-     * file.
-     *
-     * @param path the path to the xml part.
-     * @param type schema type.
-     */
-    void read_part(const pstring& path, const schema_t type, const opc_rel_extra* data);
-
 private:
-    void list_content() const;
-    void read_content();
-    void read_content_types();
-    void read_relations(const char* path, std::vector<opc_rel_t>& rels);
-    void read_workbook(const char* file_name);
+
+    void read_workbook(const std::string& dir_path, const std::string& file_name);
 
     /**
      * Parse a sheet xml part that contains data stored in a single sheet.
      */
-    void read_sheet(const char* file_name, const xlsx_rel_sheet_info* data);
+    void read_sheet(const std::string& dir_path, const std::string& file_name, const xlsx_rel_sheet_info* data);
 
     /**
      * Parse sharedStrings.xml part that contains a list of strings referenced
      * in the document.
      */
-    void read_shared_strings(const char* file_name);
+    void read_shared_strings(const std::string& dir_path, const std::string& file_name);
 
-    void read_styles(const char* file_name);
-
-    void check_relation_part(const char* file_name, const opc_rel_extras_t* extras);
-
-    std::string get_current_dir() const;
+    void read_styles(const std::string& dir_path, const std::string& file_name);
 
 private:
-    typedef std::vector<std::string> dir_stack_type;
-
     spreadsheet::iface::factory* mp_factory;
-    struct zip* m_archive;
-
-    xml_simple_stream_handler m_opc_rel_handler;
-
-    std::vector<xml_part_t> m_parts;
-    std::vector<xml_part_t> m_ext_defaults;
-    dir_stack_type m_dir_stack;
+    opc_handler m_opc_handler;
+    opc_reader m_opc_reader;
 };
 
 }
