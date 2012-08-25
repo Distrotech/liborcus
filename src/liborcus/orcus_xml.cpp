@@ -102,24 +102,6 @@ public:
 
         m_attrs.clear();
         mp_current_elem = m_map_tree_walker.push_element(elem.name);
-
-        if (!mp_current_elem)
-            return;
-
-        cur.type = mp_current_elem->type;
-
-        // Store the start element position in stream for linked elements.
-        switch (mp_current_elem->type)
-        {
-            case xml_map_tree::element_cell_ref:
-                mp_current_elem->cell_ref->element_open_begin = elem.begin_pos;
-                mp_current_elem->cell_ref->element_open_end = elem.end_pos;
-            break;
-            case xml_map_tree::element_range_field_ref:
-            break;
-            default:
-                ;
-        }
     }
 
     void end_element(const sax_parser_element& elem)
@@ -129,9 +111,12 @@ public:
         if (mp_current_elem)
         {
             // Store the end element position in stream for linked elements.
+            const scope& cur = m_scopes.back();
             switch (mp_current_elem->type)
             {
                 case xml_map_tree::element_cell_ref:
+                    mp_current_elem->cell_ref->element_open_begin = cur.element_open_begin;
+                    mp_current_elem->cell_ref->element_open_end = cur.element_open_end;
                     mp_current_elem->cell_ref->element_close_begin = elem.begin_pos;
                     mp_current_elem->cell_ref->element_close_end = elem.end_pos;
                     m_link_positions.push_back(mp_current_elem);
