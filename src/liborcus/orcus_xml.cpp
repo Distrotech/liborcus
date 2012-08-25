@@ -62,9 +62,15 @@ class xml_data_sax_handler
     {
         pstring ns;  // TODO: we need to manage namespace externally.
         pstring name;
+        const char* element_open_begin;
+        const char* element_open_end;
+
+        xml_map_tree::element_type type;
 
         scope(const pstring& _ns, const pstring& _name) :
-            ns(_ns), name(_name) {}
+            ns(_ns), name(_name),
+            element_open_begin(NULL), element_open_end(NULL),
+            type(xml_map_tree::element_unknown) {}
     };
 
     vector<attr> m_attrs;
@@ -86,11 +92,17 @@ public:
     void start_element(const sax_parser_element& elem)
     {
         m_scopes.push_back(scope(elem.ns, elem.name));
+        scope& cur = m_scopes.back();
+        cur.element_open_begin = elem.begin_pos;
+        cur.element_open_end = elem.end_pos;
+
         m_attrs.clear();
         mp_current_elem = m_map_tree_walker.push_element(elem.name);
 
         if (!mp_current_elem)
             return;
+
+        cur.type = mp_current_elem->type;
 
         // Store the start element position in stream for linked elements.
         switch (mp_current_elem->type)
@@ -108,6 +120,8 @@ public:
 
     void end_element(const sax_parser_element& elem)
     {
+        assert(!m_scopes.empty());
+
         if (mp_current_elem)
         {
             // Store the end element position in stream for linked elements.
@@ -184,6 +198,9 @@ struct orcus_xml_impl
 {
     spreadsheet::iface::factory* mp_factory;
 
+    /** original xml data stream. */
+    string m_data_strm;
+
     /** xml element tree that represents all mapped paths. */
     xml_map_tree m_map_tree;
 
@@ -232,7 +249,7 @@ void orcus_xml::append_sheet(const pstring& name)
 void orcus_xml::read_file(const char* filepath)
 {
     cout << "reading file " << filepath << endl;
-    string strm;
+    string& strm = mp_impl->m_data_strm;
     load_file_content(filepath, strm);
     if (strm.empty())
         return;

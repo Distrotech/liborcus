@@ -102,6 +102,11 @@ public:
          */
         spreadsheet::row_t row_size;
 
+        const char* element_open_begin;
+        const char* element_open_end;
+        const char* element_close_begin;
+        const char* element_close_end;
+
         range_reference();
     };
 
@@ -114,7 +119,7 @@ public:
 
     typedef std::map<cell_position, range_reference*> range_ref_map_type;
 
-    enum element_type { element_non_leaf, element_cell_ref, element_range_field_ref };
+    enum element_type { element_non_leaf, element_cell_ref, element_range_field_ref, element_unknown };
 
     struct element : boost::noncopyable
     {

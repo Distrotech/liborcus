@@ -3,7 +3,8 @@
 	Version="10.0"
 	VendorName="SlickEdit"
 	TemplateName="Other C/C++"
-	WorkingDir=".">
+	WorkingDir="."
+	VCSProject="Git:">
 	<Config
 		Name="Debug"
 		Type="cpp"
