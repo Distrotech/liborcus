@@ -77,12 +77,16 @@ class xml_data_sax_handler
     vector<scope> m_scopes;
 
     spreadsheet::iface::factory& m_factory;
+    xml_map_tree::ref_element_list_type& m_link_positions;
     xml_map_tree::walker m_map_tree_walker;
     const xml_map_tree::element* mp_current_elem;
 
 public:
-    xml_data_sax_handler(spreadsheet::iface::factory& factory, const xml_map_tree& map_tree) :
-        m_factory(factory), m_map_tree_walker(map_tree.get_tree_walker()), mp_current_elem(NULL) {}
+    xml_data_sax_handler(
+       spreadsheet::iface::factory& factory, xml_map_tree::ref_element_list_type& link_positions, const xml_map_tree& map_tree) :
+        m_factory(factory),
+        m_link_positions(link_positions),
+        m_map_tree_walker(map_tree.get_tree_walker()), mp_current_elem(NULL) {}
 
     void declaration()
     {
@@ -130,6 +134,7 @@ public:
                 case xml_map_tree::element_cell_ref:
                     mp_current_elem->cell_ref->element_close_begin = elem.begin_pos;
                     mp_current_elem->cell_ref->element_close_end = elem.end_pos;
+                    m_link_positions.push_back(mp_current_elem);
                 break;
                 case xml_map_tree::element_range_field_ref:
                 break;
@@ -203,6 +208,14 @@ struct orcus_xml_impl
 
     /** xml element tree that represents all mapped paths. */
     xml_map_tree m_map_tree;
+
+    /**
+     * Positions of all linked elements, single and range reference alike.
+     * Stored link elements must be sorted in order of stream positions, and
+     * as such, no linked elements should be nested; there should never be a
+     * linked element inside the substructure of another linked element.
+     */
+    xml_map_tree::ref_element_list_type m_link_positions;
 
     xml_map_tree::cell_position m_cur_range_ref;
 };
@@ -278,7 +291,7 @@ void orcus_xml::read_file(const char* filepath)
     }
 
     // Parse the content xml.
-    xml_data_sax_handler handler(*mp_impl->mp_factory, mp_impl->m_map_tree);
+    xml_data_sax_handler handler(*mp_impl->mp_factory, mp_impl->m_link_positions, mp_impl->m_map_tree);
     sax_parser<xml_data_sax_handler> parser(strm.c_str(), strm.size(), handler);
     parser.parse();
 }
@@ -286,6 +299,26 @@ void orcus_xml::read_file(const char* filepath)
 void orcus_xml::write_file(const char* filepath)
 {
     cout << "writing to " << filepath << endl;
+
+    const xml_map_tree::ref_element_list_type& links = mp_impl->m_link_positions;
+    xml_map_tree::ref_element_list_type::const_iterator it = links.begin(), it_end = links.end();
+    for (; it != it_end; ++it)
+    {
+        const xml_map_tree::element& elem = **it;
+        switch (elem.type)
+        {
+            case xml_map_tree::element_cell_ref:
+            {
+                const char* s = elem.cell_ref->element_open_begin;
+                const char* e = elem.cell_ref->element_close_end;
+                pstring segment(s, e-s);
+                cout << "'" << segment << "'" << endl;
+            }
+            break;
+            default:
+                ;
+        }
+    }
 }
 
 }
