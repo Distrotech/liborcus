@@ -172,7 +172,7 @@ public:
     range_ref_map_type& get_range_references();
 
 private:
-    element* get_element(const pstring& xpath, element_type type);
+    void get_element_stack(const pstring& xpath, element_type type, element_list_type& elem_stack);
 
 private:
     range_ref_map_type m_field_refs;

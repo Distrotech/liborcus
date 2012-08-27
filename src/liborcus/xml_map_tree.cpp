@@ -240,7 +240,10 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
         return;
 
     cout << "cell link: " << xpath << " (ref=" << ref << ")" << endl;
-    element* p = get_element(xpath, element_cell_ref);
+    element_list_type elem_stack;
+    get_element_stack(xpath, element_cell_ref, elem_stack);
+    assert(!elem_stack.empty());
+    element* p = elem_stack.back();
     assert(p && p->cell_ref);
     p->cell_ref->pos = ref;
 
@@ -269,7 +272,10 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     assert(range_ref);
 
     cout << "range field link: " << xpath << " (ref=" << ref_safe << ")" << endl;
-    element* p = get_element(xpath, element_range_field_ref);
+    element_list_type elem_stack;
+    get_element_stack(xpath, element_range_field_ref, elem_stack);
+    assert(!elem_stack.empty());
+    element* p = elem_stack.back();
     assert(p && p->field_ref);
     p->field_ref->ref = ref_safe;
     p->field_ref->range_ref = range_ref;
@@ -330,10 +336,12 @@ xml_map_tree::range_ref_map_type& xml_map_tree::get_range_references()
     return m_field_refs;
 }
 
-xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_type type)
+void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, element_list_type& elem_stack)
 {
     assert(!xpath.empty());
     xpath_parser parser(xpath.get(), xpath.size());
+
+    element_list_type elem_stack_new;
 
     // Get the root element first.
     pstring name = parser.next();
@@ -349,8 +357,8 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
         m_root = new element(m_names.intern(name.get(), name.size()), element_non_leaf);
     }
 
-    element* cur_element = m_root;
-
+    elem_stack_new.push_back(m_root);
+    element* cur_element = elem_stack_new.back();
     assert(cur_element);
     assert(cur_element->child_elements);
 
@@ -369,6 +377,7 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
         else
             cur_element = &(*it);
 
+        elem_stack_new.push_back(cur_element);
         name = name_next;
     }
 
@@ -383,7 +392,9 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
         throw xpath_error("This path is already linked.  You can't link the same path twice.");
 
     children.push_back(new element(m_names.intern(name.get(), name.size()), type));
-    return &children.back();
+    elem_stack_new.push_back(&children.back());
+
+    elem_stack.swap(elem_stack_new);
 }
 
 std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_position& ref)
