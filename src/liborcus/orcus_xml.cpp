@@ -39,6 +39,7 @@
 #endif
 
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -291,29 +292,51 @@ void orcus_xml::read_file(const char* filepath)
 
 void orcus_xml::write_file(const char* filepath)
 {
-    cout << "writing to " << filepath << endl;
+    if (mp_impl->m_data_strm.empty())
+        return;
 
     const xml_map_tree::const_element_list_type& links = mp_impl->m_link_positions;
+    if (links.empty())
+        // nothing to write.
+        return;
+
+    cout << "writing to " << filepath << endl;
+    ofstream file(filepath);
+
+    if (!file)
+        throw general_error("Failed to create output file.");
+
     xml_map_tree::const_element_list_type::const_iterator it = links.begin(), it_end = links.end();
+    const char* begin_pos = &mp_impl->m_data_strm[0];
     for (; it != it_end; ++it)
     {
         const xml_map_tree::element& elem = **it;
         if (elem.type == xml_map_tree::element_cell_ref)
         {
+            // Single cell link
             const char* s = elem.cell_ref->element_open_begin;
             const char* e = elem.cell_ref->element_close_end;
-            pstring segment(s, e-s);
-            cout << "'" << segment << "'" << endl;
+            file << pstring(begin_pos, s-begin_pos);
+            file << pstring(s, e-s);
+            begin_pos = e;
         }
         else if (elem.range_parent)
         {
+            // Range link
             const xml_map_tree::range_reference& ref = *elem.range_parent;
             const char* s = ref.element_open_begin;
             const char* e = ref.element_close_end;
-            pstring segment(s, e-s);
-            cout << "'" << segment << "'" << endl;
+            file << pstring(begin_pos, s-begin_pos);
+            file << pstring(s, e-s);
+            begin_pos = e;
         }
+        else
+            throw general_error("Non-link element type encountered.");
     }
+
+    // Flush the remaining stream.
+    const char* strm_end = &mp_impl->m_data_strm[mp_impl->m_data_strm.size()-1];
+    file << pstring(begin_pos, strm_end-begin_pos);
 }
 
 }
