@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_SPREADSHEET_FACTORY_HPP__
-#define __ORCUS_SPREADSHEET_FACTORY_HPP__
+#ifndef __ORCUS_SPREADSHEET_IMPORT_FACTORY_HPP__
+#define __ORCUS_SPREADSHEET_IMPORT_FACTORY_HPP__
 
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/env.hpp"

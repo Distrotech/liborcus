@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_SPREADSHEET_INTERFACE_HPP__
-#define __ORCUS_SPREADSHEET_INTERFACE_HPP__
+#ifndef __ORCUS_SPREADSHEET_IMPORT_INTERFACE_HPP__
+#define __ORCUS_SPREADSHEET_IMPORT_INTERFACE_HPP__
 
 #include <cstdlib>
 
