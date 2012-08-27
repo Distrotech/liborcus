@@ -300,7 +300,8 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     {
         // First field link in this range.
         element_list_type::iterator it_end = elem_stack.end();
-        --it_end; // Skip the leaf node, which is used as a field in a range.
+        --it_end; // Skip the leaf element, which is used as a field in a range.
+        --it_end; // Skip the next-up element, which is used to group a single record entry.
         m_cur_range_parent.assign(elem_stack.begin(), it_end);
     }
     else
@@ -324,8 +325,8 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
             break;
         }
 
-        if (m_cur_range_parent.size() <= 2)
-            throw xpath_error("Two field links in the same range reference must at least share the first two levels of their paths.");
+        if (m_cur_range_parent.size() <= 1)
+            throw xpath_error("Two field links in the same range reference must at least share the first level of their paths.");
     }
 }
 
