@@ -173,7 +173,7 @@ public:
     void set_cell_link(const pstring& xpath, const cell_position& ref);
 
     void start_range();
-    void append_range_field_link(const pstring& xpath, const cell_position& ref);
+    void append_range_field_link(const pstring& xpath, const cell_position& pos);
     void commit_range();
 
     const element* get_link(const pstring& xpath) const;

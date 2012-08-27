@@ -257,22 +257,22 @@ void xml_map_tree::start_range()
     mp_cur_range_ref = NULL;
 }
 
-void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_position& ref)
+void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_position& pos)
 {
     if (xpath.empty())
         return;
 
     range_reference* range_ref = NULL;
-    range_ref_map_type::iterator it = m_field_refs.lower_bound(ref);
-    if (it == m_field_refs.end() || m_field_refs.key_comp()(ref, it->first))
+    range_ref_map_type::iterator it = m_field_refs.lower_bound(pos);
+    if (it == m_field_refs.end() || m_field_refs.key_comp()(pos, it->first))
     {
         // This reference does not exist yet.  Insert a new one.
 
         // Make sure the sheet name string is persistent.
-        cell_position ref_safe = ref;
-        ref_safe.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
+        cell_position pos_safe = pos;
+        pos_safe.sheet = m_names.intern(pos.sheet.get(), pos.sheet.size());
 
-        it = m_field_refs.insert(it, range_ref_map_type::value_type(ref_safe, new range_reference(ref_safe)));
+        it = m_field_refs.insert(it, range_ref_map_type::value_type(pos_safe, new range_reference(pos_safe)));
     }
 
     range_ref = it->second;
@@ -281,7 +281,7 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     if (!mp_cur_range_ref)
         mp_cur_range_ref = range_ref;
 
-    cout << "range field link: " << xpath << " (ref=" << ref << ")" << endl;
+    cout << "range field link: " << xpath << " (ref=" << pos << ")" << endl;
     element_list_type elem_stack;
     get_element_stack(xpath, element_range_field_ref, elem_stack);
     if (elem_stack.size() <= 3)
