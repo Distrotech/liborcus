@@ -6,7 +6,8 @@
     <cell xpath="/data/footer/date" row="1" column="2" sheet="data"/>
     <range row="3" column="0" sheet="data">
         <field xpath="/data/entries/entry/id"/>
-        <field xpath="/data/entries/entry/name"/>
+        <field xpath="/data/entries/entry/name/first"/>
+        <field xpath="/data/entries/entry/name/last"/>
         <field xpath="/data/entries/entry/score"/>
     </range>
 </map>

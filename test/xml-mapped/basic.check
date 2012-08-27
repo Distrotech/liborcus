@@ -18,9 +18,13 @@ value: 'id'
 
 row: 3; column: 1
 type: string
-value: 'name'
+value: 'first'
 
 row: 3; column: 2
+type: string
+value: 'last'
+
+row: 3; column: 3
 type: string
 value: 'score'
 
@@ -30,9 +34,13 @@ value: 1
 
 row: 4; column: 1
 type: string
-value: 'Bill Clinton'
+value: 'Bill'
 
 row: 4; column: 2
+type: string
+value: 'Clinton'
+
+row: 4; column: 3
 type: numeric
 value: 456
 
@@ -42,9 +50,13 @@ value: 2
 
 row: 5; column: 1
 type: string
-value: 'David Cameron'
+value: 'David'
 
 row: 5; column: 2
+type: string
+value: 'Cameron'
+
+row: 5; column: 3
 type: numeric
 value: 323
 
@@ -54,9 +66,13 @@ value: 3
 
 row: 6; column: 1
 type: string
-value: 'Barak Obama'
+value: 'Barak'
 
 row: 6; column: 2
+type: string
+value: 'Obama'
+
+row: 6; column: 3
 type: numeric
 value: 234
 
@@ -66,9 +82,13 @@ value: 4
 
 row: 7; column: 1
 type: string
-value: 'Yoshihiko Noda'
+value: 'Yoshihiko'
 
 row: 7; column: 2
+type: string
+value: 'Noda'
+
+row: 7; column: 3
 type: numeric
 value: 192
 
@@ -78,9 +98,13 @@ value: 5
 
 row: 8; column: 1
 type: string
-value: 'Angela Merkel'
+value: 'Angela'
 
 row: 8; column: 2
+type: string
+value: 'Merkel'
+
+row: 8; column: 3
 type: numeric
 value: 210
 

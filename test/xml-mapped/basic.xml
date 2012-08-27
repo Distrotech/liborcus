@@ -6,19 +6,19 @@
     </header>
     <entries>
         <entry>
-            <id>1</id><name>Bill Clinton</name><score>456</score>
+            <id>1</id><name><first>Bill</first><last>Clinton</last></name><score>456</score>
         </entry>
         <entry>
-            <id>2</id><name>David Cameron</name><score>323</score>
+            <id>2</id><name><first>David</first><last>Cameron</last></name><score>323</score>
         </entry>
         <entry>
-            <id>3</id><name>Barak Obama</name><score>234</score>
+            <id>3</id><name><first>Barak</first><last>Obama</last></name><score>234</score>
         </entry>
         <entry>
-            <id>4</id><name>Yoshihiko Noda</name><score>192</score>
+            <id>4</id><name><first>Yoshihiko</first><last>Noda</last></name><score>192</score>
         </entry>
         <entry>
-            <id>5</id><name>Angela Merkel</name><score>210</score>
+            <id>5</id><name><first>Angela</first><last>Merkel</last></name><score>210</score>
         </entry>
     </entries>
     <footer>
