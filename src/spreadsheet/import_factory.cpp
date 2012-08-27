@@ -25,31 +25,42 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_SPREADSHEET_FACTORY_HPP__
-#define __ORCUS_SPREADSHEET_FACTORY_HPP__
+#include "import_factory.hpp"
 
-#include "orcus/spreadsheet/interface.hpp"
-#include "orcus/env.hpp"
+#include "shared_strings.hpp"
+#include "styles.hpp"
+#include "sheet.hpp"
+#include "document.hpp"
 
 namespace orcus { namespace spreadsheet {
 
-class document;
-
-class ORCUS_DLLPUBLIC factory : public iface::factory
+import_factory::import_factory(document* doc) :
+    mp_document(doc)
 {
-public:
-    factory(document* doc);
-    virtual ~factory();
+}
 
-    virtual iface::shared_strings* get_shared_strings();
-    virtual iface::styles* get_styles();
-    virtual iface::sheet* append_sheet(const char* sheet_name, size_t sheet_name_length);
-    virtual iface::sheet* get_sheet(const char* sheet_name, size_t sheet_name_length);
+import_factory::~import_factory()
+{
+}
 
-private:
-    document* mp_document;
-};
+iface::shared_strings* import_factory::get_shared_strings()
+{
+    return mp_document->get_shared_strings();
+}
+
+iface::styles* import_factory::get_styles()
+{
+    return mp_document->get_styles();
+}
+
+iface::sheet* import_factory::append_sheet(const char* sheet_name, size_t sheet_name_length)
+{
+    return mp_document->append_sheet(pstring(sheet_name, sheet_name_length));
+}
+
+iface::sheet* import_factory::get_sheet(const char* sheet_name, size_t sheet_name_length)
+{
+    return mp_document->get_sheet(pstring(sheet_name, sheet_name_length));
+}
 
 }}
-
-#endif

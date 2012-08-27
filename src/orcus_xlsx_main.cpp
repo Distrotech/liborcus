@@ -26,7 +26,7 @@
  ************************************************************************/
 
 #include "orcus/orcus_xlsx.hpp"
-#include "spreadsheet/factory.hpp"
+#include "spreadsheet/import_factory.hpp"
 #include "spreadsheet/document.hpp"
 
 #include <boost/scoped_ptr.hpp>
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
 
     ::boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-    ::boost::scoped_ptr<spreadsheet::factory> factory(new spreadsheet::factory(doc.get()));
+    ::boost::scoped_ptr<spreadsheet::import_factory> factory(new spreadsheet::import_factory(doc.get()));
     orcus_xlsx app(factory.get());
     app.read_file(argv[1]);
     doc->calc_formulas();

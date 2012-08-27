@@ -27,7 +27,7 @@
 
 #include "orcus/orcus_csv.hpp"
 
-#include "spreadsheet/factory.hpp"
+#include "spreadsheet/import_factory.hpp"
 #include "spreadsheet/document.hpp"
 
 #include <boost/scoped_ptr.hpp>
@@ -42,7 +42,7 @@ int main()
     cout << "test starts" << endl;
     boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
 
-    orcus_csv app(new spreadsheet::factory(doc.get()));
+    orcus_csv app(new spreadsheet::import_factory(doc.get()));
     app.read_file("../test/csv/simple-numbers.csv");
     doc->dump();
     pstring::intern::dispose();

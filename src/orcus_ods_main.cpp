@@ -27,7 +27,7 @@
 
 #include "orcus/orcus_ods.hpp"
 #include "spreadsheet/document.hpp"
-#include "spreadsheet/factory.hpp"
+#include "spreadsheet/import_factory.hpp"
 
 #include <boost/scoped_ptr.hpp>
 
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
 
     boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-    boost::scoped_ptr<spreadsheet::factory> fact(new spreadsheet::factory(doc.get()));
+    boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
     orcus_ods app(fact.get());
     app.read_file(argv[1]);
 //  doc->dump();

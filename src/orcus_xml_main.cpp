@@ -26,7 +26,7 @@
  ************************************************************************/
 
 #include "orcus/orcus_xml.hpp"
-#include "spreadsheet/factory.hpp"
+#include "spreadsheet/import_factory.hpp"
 #include "spreadsheet/document.hpp"
 
 #include "xml_map_sax_handler.hpp"
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
     }
 
     boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-    boost::scoped_ptr<spreadsheet::factory> fact(new spreadsheet::factory(doc.get()));
+    boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
 
     orcus_xml app(fact.get());
     read_map_file(app, argv[1]);

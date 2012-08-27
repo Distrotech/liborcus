@@ -36,7 +36,7 @@ namespace orcus {
 
 namespace spreadsheet { namespace iface {
 
-class factory;
+class import_factory;
 class sheet;
 
 }}
@@ -56,7 +56,7 @@ public:
         cell_attr();
     };
 
-    ods_content_xml_context(const tokens& tokens, spreadsheet::iface::factory* factory);
+    ods_content_xml_context(const tokens& tokens, spreadsheet::iface::import_factory* factory);
     virtual ~ods_content_xml_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -81,7 +81,7 @@ private:
     void end_cell();
 
 private:
-    spreadsheet::iface::factory* mp_factory;
+    spreadsheet::iface::import_factory* mp_factory;
     ::std::vector<spreadsheet::iface::sheet*> m_tables;
 
     row_attr    m_row_attr;

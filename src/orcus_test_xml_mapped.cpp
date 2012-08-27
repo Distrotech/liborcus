@@ -27,7 +27,7 @@
 
 #include "orcus/orcus_xml.hpp"
 #include "orcus/global.hpp"
-#include "spreadsheet/factory.hpp"
+#include "spreadsheet/import_factory.hpp"
 #include "spreadsheet/document.hpp"
 
 #include "xml_map_sax_handler.hpp"
@@ -63,7 +63,7 @@ void test_mapped_xml_import()
         load_file_content(data_file.c_str(), strm);
 
         boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-        boost::scoped_ptr<spreadsheet::factory> fact(new spreadsheet::factory(doc.get()));
+        boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
 
         // Parse the map file to define map rules, and parse the data file.
         orcus_xml app(fact.get());

@@ -5,7 +5,7 @@ INCLUDES = -I$(top_srcdir)/include
 lib_LTLIBRARIES = liborcus-spreadsheet-impl-@ORCUS_API_VERSION@.la
 liborcus_spreadsheet_impl_@ORCUS_API_VERSION@_la_SOURCES = \
 	document.cpp \
-	factory.cpp \
+	import_factory.cpp \
 	shared_strings.cpp \
 	sheet.cpp \
 	styles.cpp

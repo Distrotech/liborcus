@@ -36,7 +36,7 @@ namespace orcus {
 class pstring;
 
 namespace spreadsheet { namespace iface {
-    class factory;
+    class import_factory;
 }}
 
 struct orcus_xml_impl;
@@ -46,7 +46,7 @@ class ORCUS_DLLPUBLIC orcus_xml
     orcus_xml(const orcus_xml&); // disabled
 
 public:
-    orcus_xml(spreadsheet::iface::factory* factory);
+    orcus_xml(spreadsheet::iface::import_factory* factory);
     ~orcus_xml();
 
     void set_cell_link(const pstring& xpath, const pstring& sheet, spreadsheet::row_t row, spreadsheet::col_t col);

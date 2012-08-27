@@ -44,7 +44,7 @@ namespace {
 class csv_handler
 {
 public:
-    csv_handler(spreadsheet::iface::factory& factory) :
+    csv_handler(spreadsheet::iface::import_factory& factory) :
         m_factory(factory), mp_sheet(NULL), m_row(0), m_col(0) {}
 
     void begin_parse()
@@ -69,7 +69,7 @@ public:
     }
 
 private:
-    spreadsheet::iface::factory& m_factory;
+    spreadsheet::iface::import_factory& m_factory;
     spreadsheet::iface::sheet* mp_sheet;
     spreadsheet::row_t m_row;
     spreadsheet::col_t m_col;
@@ -77,7 +77,7 @@ private:
 
 }
 
-orcus_csv::orcus_csv(spreadsheet::iface::factory* factory) : mp_factory(factory) {}
+orcus_csv::orcus_csv(spreadsheet::iface::import_factory* factory) : mp_factory(factory) {}
 
 void orcus_csv::read_file(const char* filepath)
 {

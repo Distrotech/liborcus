@@ -94,7 +94,7 @@ bool orcus_xlsx::opc_handler::handle_part(
     return false;
 }
 
-orcus_xlsx::orcus_xlsx(spreadsheet::iface::factory* factory) :
+orcus_xlsx::orcus_xlsx(spreadsheet::iface::import_factory* factory) :
     mp_factory(factory),
     m_opc_handler(*this),
     m_opc_reader(m_opc_handler) {}

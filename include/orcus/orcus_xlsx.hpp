@@ -35,7 +35,7 @@
 
 namespace orcus {
 
-namespace spreadsheet { namespace iface { class factory; }}
+namespace spreadsheet { namespace iface { class import_factory; }}
 
 struct xlsx_rel_sheet_info;
 
@@ -52,7 +52,7 @@ class ORCUS_DLLPUBLIC orcus_xlsx : public ::boost::noncopyable
     };
 
 public:
-    orcus_xlsx(spreadsheet::iface::factory* factory);
+    orcus_xlsx(spreadsheet::iface::import_factory* factory);
     ~orcus_xlsx();
 
     void read_file(const char* fpath);
@@ -75,7 +75,7 @@ private:
     void read_styles(const std::string& dir_path, const std::string& file_name);
 
 private:
-    spreadsheet::iface::factory* mp_factory;
+    spreadsheet::iface::import_factory* mp_factory;
     opc_handler m_opc_handler;
     opc_reader m_opc_reader;
 };

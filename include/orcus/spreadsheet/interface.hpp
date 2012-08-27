@@ -243,10 +243,10 @@ public:
  * inside it and have the document instance manage the life cycles of
  * various objects it creates.
  */
-class factory
+class import_factory
 {
 public:
-    ORCUS_DLLPUBLIC virtual ~factory() = 0;
+    ORCUS_DLLPUBLIC virtual ~import_factory() = 0;
 
     virtual shared_strings* get_shared_strings() = 0;
     virtual styles* get_styles() = 0;

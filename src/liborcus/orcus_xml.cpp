@@ -77,14 +77,14 @@ class xml_data_sax_handler
     vector<attr> m_attrs;
     vector<scope> m_scopes;
 
-    spreadsheet::iface::factory& m_factory;
+    spreadsheet::iface::import_factory& m_factory;
     xml_map_tree::const_element_list_type& m_link_positions;
     xml_map_tree::walker m_map_tree_walker;
     const xml_map_tree::element* mp_current_elem;
 
 public:
     xml_data_sax_handler(
-       spreadsheet::iface::factory& factory, xml_map_tree::const_element_list_type& link_positions, const xml_map_tree& map_tree) :
+       spreadsheet::iface::import_factory& factory, xml_map_tree::const_element_list_type& link_positions, const xml_map_tree& map_tree) :
         m_factory(factory),
         m_link_positions(link_positions),
         m_map_tree_walker(map_tree.get_tree_walker()), mp_current_elem(NULL) {}
@@ -193,7 +193,7 @@ public:
 
 struct orcus_xml_impl
 {
-    spreadsheet::iface::factory* mp_factory;
+    spreadsheet::iface::import_factory* mp_factory;
 
     /** original xml data stream. */
     string m_data_strm;
@@ -212,7 +212,7 @@ struct orcus_xml_impl
     xml_map_tree::cell_position m_cur_range_ref;
 };
 
-orcus_xml::orcus_xml(spreadsheet::iface::factory* factory) :
+orcus_xml::orcus_xml(spreadsheet::iface::import_factory* factory) :
     mp_impl(new orcus_xml_impl)
 {
     mp_impl->mp_factory = factory;

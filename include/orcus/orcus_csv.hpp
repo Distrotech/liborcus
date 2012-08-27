@@ -35,20 +35,20 @@
 namespace orcus {
 
 namespace spreadsheet { namespace iface {
-    class factory;
+    class import_factory;
 }}
 
 class ORCUS_DLLPUBLIC orcus_csv
 {
 public:
-    orcus_csv(spreadsheet::iface::factory* factory);
+    orcus_csv(spreadsheet::iface::import_factory* factory);
     void read_file(const char* filepath);
 
 private:
     void parse(const std::string& strm);
 
 private:
-    spreadsheet::iface::factory* mp_factory;
+    spreadsheet::iface::import_factory* mp_factory;
 };
 
 }

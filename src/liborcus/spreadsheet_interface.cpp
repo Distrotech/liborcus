@@ -35,6 +35,6 @@ styles::~styles() {}
 
 sheet::~sheet() {}
 
-factory::~factory() {}
+import_factory::~import_factory() {}
 
 }}}

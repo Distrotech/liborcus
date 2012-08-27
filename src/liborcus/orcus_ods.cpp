@@ -43,7 +43,7 @@ using namespace std;
 namespace orcus {
 
 
-orcus_ods::orcus_ods(spreadsheet::iface::factory* factory) :
+orcus_ods::orcus_ods(spreadsheet::iface::import_factory* factory) :
     mp_factory(factory)
 {
 }
