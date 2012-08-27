@@ -209,7 +209,6 @@
 				<F N="../src/liborcus/dom_tree.cpp"/>
 				<F N="../src/liborcus/exception.cpp"/>
 				<F N="../src/liborcus/global.cpp"/>
-				<F N="../src/liborcus/model_interface.cpp"/>
 				<F N="../src/liborcus/odf_ods_context.cpp"/>
 				<F N="../src/liborcus/odf_ods_handler.cpp"/>
 				<F N="../src/liborcus/odf_para_context.cpp"/>
@@ -231,6 +230,7 @@
 				<F N="../src/liborcus/orcus_xml.cpp"/>
 				<F N="../src/liborcus/pstring.cpp"/>
 				<F N="../src/liborcus/pstring_intern_test.cpp"/>
+				<F N="../src/liborcus/spreadsheet_interface.cpp"/>
 				<F N="../src/liborcus/string_pool.cpp"/>
 				<F N="../src/liborcus/string_pool.hpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>

@@ -13,7 +13,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	dom_tree.cpp \
 	exception.cpp \
 	global.cpp \
-	model_interface.cpp \
+	spreadsheet_interface.cpp \
 	odf_ods_context.cpp \
 	odf_ods_handler.cpp \
 	odf_para_context.cpp \
