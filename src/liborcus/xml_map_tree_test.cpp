@@ -84,23 +84,23 @@ void test_path_insertion()
     tree.append_range_field_link("/data/entries/entry/score", ref);
     p = tree.get_link("/data/entries/entry/id");
     assert(p && p->type == xml_map_tree::element_range_field_ref);
-    assert(p->field_ref->ref.sheet == "test3");
-    assert(p->field_ref->ref.row == 5);
-    assert(p->field_ref->ref.col == 0);
+    assert(p->field_ref->range_ref->pos.sheet == "test3");
+    assert(p->field_ref->range_ref->pos.row == 5);
+    assert(p->field_ref->range_ref->pos.col == 0);
     assert(p->field_ref->column_pos == 0);
 
     p = tree.get_link("/data/entries/entry/name");
     assert(p && p->type == xml_map_tree::element_range_field_ref);
-    assert(p->field_ref->ref.sheet == "test3");
-    assert(p->field_ref->ref.row == 5);
-    assert(p->field_ref->ref.col == 0);
+    assert(p->field_ref->range_ref->pos.sheet == "test3");
+    assert(p->field_ref->range_ref->pos.row == 5);
+    assert(p->field_ref->range_ref->pos.col == 0);
     assert(p->field_ref->column_pos == 1);
 
     p = tree.get_link("/data/entries/entry/score");
     assert(p && p->type == xml_map_tree::element_range_field_ref);
-    assert(p->field_ref->ref.sheet == "test3");
-    assert(p->field_ref->ref.row == 5);
-    assert(p->field_ref->ref.col == 0);
+    assert(p->field_ref->range_ref->pos.sheet == "test3");
+    assert(p->field_ref->range_ref->pos.row == 5);
+    assert(p->field_ref->range_ref->pos.col == 0);
     assert(p->field_ref->column_pos == 2);
 }
 

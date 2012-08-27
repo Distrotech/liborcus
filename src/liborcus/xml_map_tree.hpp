@@ -91,6 +91,8 @@ public:
 
     struct range_reference : boost::noncopyable
     {
+        cell_position pos;
+
         /**
          * List of elements comprising the fields, in order of appearance from
          * left to right.
@@ -108,12 +110,11 @@ public:
         const char* element_close_begin;
         const char* element_close_end;
 
-        range_reference();
+        range_reference(const cell_position& _pos);
     };
 
     struct field_in_range
     {
-        cell_position ref;
         range_reference* range_ref;
         spreadsheet::col_t column_pos;
     };

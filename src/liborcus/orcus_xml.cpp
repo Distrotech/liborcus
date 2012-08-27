@@ -156,17 +156,18 @@ public:
             case xml_map_tree::element_range_field_ref:
             {
                 const xml_map_tree::field_in_range& field = *mp_current_elem->field_ref;
-                assert(!field.ref.sheet.empty());
                 assert(field.range_ref);
+                assert(!field.range_ref->pos.sheet.empty());
 
                 if (field.column_pos == 0)
                     ++field.range_ref->row_size;
 
-                spreadsheet::iface::sheet* sheet = m_factory.get_sheet(field.ref.sheet.get(), field.ref.sheet.size());
+                const xml_map_tree::cell_position& pos = field.range_ref->pos;
+                spreadsheet::iface::sheet* sheet = m_factory.get_sheet(pos.sheet.get(), pos.sheet.size());
                 if (sheet)
                     sheet->set_auto(
-                       field.ref.row + field.range_ref->row_size,
-                       field.ref.col + field.column_pos,
+                       pos.row + field.range_ref->row_size,
+                       pos.col + field.column_pos,
                        val_trimmed.get(), val_trimmed.size());
             }
             break;

@@ -106,8 +106,8 @@ xml_map_tree::cell_position::cell_position(const cell_position& r) :
 xml_map_tree::cell_reference::cell_reference() :
     element_open_begin(NULL), element_open_end(NULL), element_close_begin(NULL), element_close_end(NULL) {}
 
-xml_map_tree::range_reference::range_reference() :
-    row_size(0),
+xml_map_tree::range_reference::range_reference(const cell_position& _pos) :
+    pos(_pos), row_size(0),
     element_open_begin(NULL), element_open_end(NULL), element_close_begin(NULL), element_close_end(NULL) {}
 
 xml_map_tree::element::element(const pstring& _name, element_type _type) :
@@ -262,16 +262,17 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     if (xpath.empty())
         return;
 
-    // Make sure the sheet name string is persistent.
-    cell_position ref_safe = ref;
-    ref_safe.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
-
     range_reference* range_ref = NULL;
-    range_ref_map_type::iterator it = m_field_refs.lower_bound(ref_safe);
+    range_ref_map_type::iterator it = m_field_refs.lower_bound(ref);
     if (it == m_field_refs.end() || m_field_refs.key_comp()(ref, it->first))
     {
         // This reference does not exist yet.  Insert a new one.
-        it = m_field_refs.insert(it, range_ref_map_type::value_type(ref_safe, new range_reference));
+
+        // Make sure the sheet name string is persistent.
+        cell_position ref_safe = ref;
+        ref_safe.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
+
+        it = m_field_refs.insert(it, range_ref_map_type::value_type(ref_safe, new range_reference(ref_safe)));
     }
 
     range_ref = it->second;
@@ -280,7 +281,7 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     if (!mp_cur_range_ref)
         mp_cur_range_ref = range_ref;
 
-    cout << "range field link: " << xpath << " (ref=" << ref_safe << ")" << endl;
+    cout << "range field link: " << xpath << " (ref=" << ref << ")" << endl;
     element_list_type elem_stack;
     get_element_stack(xpath, element_range_field_ref, elem_stack);
     if (elem_stack.size() <= 3)
@@ -288,7 +289,6 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
 
     element* p = elem_stack.back();
     assert(p && p->field_ref);
-    p->field_ref->ref = ref_safe;
     p->field_ref->range_ref = range_ref;
     p->field_ref->column_pos = range_ref->elements.size();
 
