@@ -289,7 +289,7 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
 
     element* p = elem_stack.back();
     assert(p && p->field_ref);
-    p->field_ref->range_ref = range_ref;
+    p->field_ref->ref = range_ref;
     p->field_ref->column_pos = range_ref->elements.size();
 
     range_ref->elements.push_back(p);

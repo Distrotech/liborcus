@@ -115,7 +115,7 @@ public:
 
     struct field_in_range
     {
-        range_reference* range_ref;
+        range_reference* ref;
         spreadsheet::col_t column_pos;
     };
 
