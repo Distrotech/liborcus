@@ -112,19 +112,24 @@ public:
         {
             // Store the end element position in stream for linked elements.
             const scope& cur = m_scopes.back();
-            switch (mp_current_elem->type)
+            if (mp_current_elem->type == xml_map_tree::element_cell_ref)
             {
-                case xml_map_tree::element_cell_ref:
-                    mp_current_elem->cell_ref->element_open_begin = cur.element_open_begin;
-                    mp_current_elem->cell_ref->element_open_end = cur.element_open_end;
-                    mp_current_elem->cell_ref->element_close_begin = elem.begin_pos;
-                    mp_current_elem->cell_ref->element_close_end = elem.end_pos;
-                    m_link_positions.push_back(mp_current_elem);
-                break;
-                case xml_map_tree::element_range_field_ref:
-                break;
-                default:
-                    ;
+                // single link element.
+                mp_current_elem->cell_ref->element_open_begin = cur.element_open_begin;
+                mp_current_elem->cell_ref->element_open_end = cur.element_open_end;
+                mp_current_elem->cell_ref->element_close_begin = elem.begin_pos;
+                mp_current_elem->cell_ref->element_close_end = elem.end_pos;
+                m_link_positions.push_back(mp_current_elem);
+            }
+            else if (mp_current_elem->range_parent)
+            {
+                // parent of range link elements.
+                xml_map_tree::range_reference& ref = *mp_current_elem->range_parent;
+                ref.element_open_begin = cur.element_open_begin;
+                ref.element_open_end = cur.element_open_end;
+                ref.element_close_begin = elem.begin_pos;
+                ref.element_close_end = elem.end_pos;
+                m_link_positions.push_back(mp_current_elem);
             }
         }
 
@@ -293,18 +298,20 @@ void orcus_xml::write_file(const char* filepath)
     for (; it != it_end; ++it)
     {
         const xml_map_tree::element& elem = **it;
-        switch (elem.type)
+        if (elem.type == xml_map_tree::element_cell_ref)
         {
-            case xml_map_tree::element_cell_ref:
-            {
-                const char* s = elem.cell_ref->element_open_begin;
-                const char* e = elem.cell_ref->element_close_end;
-                pstring segment(s, e-s);
-                cout << "'" << segment << "'" << endl;
-            }
-            break;
-            default:
-                ;
+            const char* s = elem.cell_ref->element_open_begin;
+            const char* e = elem.cell_ref->element_close_end;
+            pstring segment(s, e-s);
+            cout << "'" << segment << "'" << endl;
+        }
+        else if (elem.range_parent)
+        {
+            const xml_map_tree::range_reference& ref = *elem.range_parent;
+            const char* s = ref.element_open_begin;
+            const char* e = ref.element_close_end;
+            pstring segment(s, e-s);
+            cout << "'" << segment << "'" << endl;
         }
     }
 }
