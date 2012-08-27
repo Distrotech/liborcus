@@ -119,7 +119,7 @@ xml_map_tree::element::element(const pstring& _name, element_type _type) :
             cell_ref = new cell_reference;
         break;
         case element_non_leaf:
-            child_elements = new element_list_type;
+            child_elements = new element_store_type;
         break;
         case element_range_field_ref:
             field_ref = new field_in_range;
@@ -154,7 +154,7 @@ const xml_map_tree::element* xml_map_tree::element::get_child(const pstring& _na
 
     assert(child_elements);
 
-    element_list_type::const_iterator it =
+    element_store_type::const_iterator it =
         std::find_if(child_elements->begin(), child_elements->end(), find_by_name(_name));
 
     return it == child_elements->end() ? NULL : &(*it);
@@ -304,7 +304,7 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
         if (!cur_element->child_elements)
             return NULL;
 
-        element_list_type::const_iterator it =
+        element_store_type::const_iterator it =
             std::find_if(cur_element->child_elements->begin(), cur_element->child_elements->end(), find_by_name(name));
         if (it == cur_element->child_elements->end())
             // No such child element exists.
@@ -358,8 +358,8 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
     for (pstring name_next = parser.next();!name_next.empty(); name_next = parser.next())
     {
         // Check if the current element contains a chile element of the same name.
-        element_list_type& children = *cur_element->child_elements;
-        element_list_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(name));
+        element_store_type& children = *cur_element->child_elements;
+        element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(name));
         if (it == children.end())
         {
             // Insert a new element of this name.
@@ -377,8 +377,8 @@ xml_map_tree::element* xml_map_tree::get_element(const pstring& xpath, element_t
     // Insert a leaf node.
 
     // Check if an element of the same name already exists.
-    element_list_type& children = *cur_element->child_elements;
-    element_list_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(name));
+    element_store_type& children = *cur_element->child_elements;
+    element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(name));
     if (it != children.end())
         throw xpath_error("This path is already linked.  You can't link the same path twice.");
 

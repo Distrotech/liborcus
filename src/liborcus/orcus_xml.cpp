@@ -77,13 +77,13 @@ class xml_data_sax_handler
     vector<scope> m_scopes;
 
     spreadsheet::iface::factory& m_factory;
-    xml_map_tree::ref_element_list_type& m_link_positions;
+    xml_map_tree::const_element_list_type& m_link_positions;
     xml_map_tree::walker m_map_tree_walker;
     const xml_map_tree::element* mp_current_elem;
 
 public:
     xml_data_sax_handler(
-       spreadsheet::iface::factory& factory, xml_map_tree::ref_element_list_type& link_positions, const xml_map_tree& map_tree) :
+       spreadsheet::iface::factory& factory, xml_map_tree::const_element_list_type& link_positions, const xml_map_tree& map_tree) :
         m_factory(factory),
         m_link_positions(link_positions),
         m_map_tree_walker(map_tree.get_tree_walker()), mp_current_elem(NULL) {}
@@ -200,7 +200,7 @@ struct orcus_xml_impl
      * as such, no linked elements should be nested; there should never be a
      * linked element inside the substructure of another linked element.
      */
-    xml_map_tree::ref_element_list_type m_link_positions;
+    xml_map_tree::const_element_list_type m_link_positions;
 
     xml_map_tree::cell_position m_cur_range_ref;
 };
@@ -265,7 +265,7 @@ void orcus_xml::read_file(const char* filepath)
         if (!sheet)
             continue;
 
-        xml_map_tree::ref_element_list_type::const_iterator it = range_ref.elements.begin(), it_end = range_ref.elements.end();
+        xml_map_tree::const_element_list_type::const_iterator it = range_ref.elements.begin(), it_end = range_ref.elements.end();
         spreadsheet::row_t row = ref.row;
         spreadsheet::col_t col = ref.col;
         for (; it != it_end; ++it)
@@ -285,8 +285,8 @@ void orcus_xml::write_file(const char* filepath)
 {
     cout << "writing to " << filepath << endl;
 
-    const xml_map_tree::ref_element_list_type& links = mp_impl->m_link_positions;
-    xml_map_tree::ref_element_list_type::const_iterator it = links.begin(), it_end = links.end();
+    const xml_map_tree::const_element_list_type& links = mp_impl->m_link_positions;
+    xml_map_tree::const_element_list_type::const_iterator it = links.begin(), it_end = links.end();
     for (; it != it_end; ++it)
     {
         const xml_map_tree::element& elem = **it;

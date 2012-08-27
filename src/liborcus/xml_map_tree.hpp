@@ -85,8 +85,9 @@ public:
     };
 
     struct element;
-    typedef boost::ptr_vector<element> element_list_type;
-    typedef std::vector<const element*> ref_element_list_type;
+    typedef boost::ptr_vector<element> element_store_type;
+    typedef std::vector<element*> element_list_type;
+    typedef std::vector<const element*> const_element_list_type;
 
     struct range_reference : boost::noncopyable
     {
@@ -94,7 +95,7 @@ public:
          * List of elements comprising the fields, in order of appearance from
          * left to right.
          */
-        ref_element_list_type elements;
+        const_element_list_type elements;
 
         /**
          * Total number of rows comprising data.  This does not include the
@@ -127,7 +128,7 @@ public:
         pstring name;
         element_type type;
         union {
-            element_list_type* child_elements;
+            element_store_type* child_elements;
             cell_reference* cell_ref;
             field_in_range* field_ref;
         };

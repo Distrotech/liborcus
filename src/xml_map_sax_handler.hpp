@@ -36,6 +36,11 @@ namespace orcus {
 
 class orcus_xml;
 
+/**
+ * Sax handler for parsing XML map definition file which defines linkage
+ * relationships between the XML source file and the resulting spreadsheet
+ * content.
+ */
 class xml_map_sax_handler
 {
     struct attr
