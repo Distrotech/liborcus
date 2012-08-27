@@ -111,7 +111,7 @@ xml_map_tree::range_reference::range_reference() :
     element_open_begin(NULL), element_open_end(NULL), element_close_begin(NULL), element_close_end(NULL) {}
 
 xml_map_tree::element::element(const pstring& _name, element_type _type) :
-    name(_name), type(_type)
+    name(_name), type(_type), range_parent(NULL)
 {
     switch (type)
     {
@@ -227,7 +227,7 @@ const xml_map_tree::element* xml_map_tree::walker::pop_element(const pstring& na
     return m_stack.empty() ? NULL : m_stack.back();
 }
 
-xml_map_tree::xml_map_tree() : m_root(NULL) {}
+xml_map_tree::xml_map_tree() : mp_cur_range_ref(NULL), m_root(NULL) {}
 xml_map_tree::~xml_map_tree()
 {
     std::for_each(m_field_refs.begin(), m_field_refs.end(), map_object_deleter<range_ref_map_type>());
@@ -251,6 +251,12 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
     p->cell_ref->pos.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
 }
 
+void xml_map_tree::start_range()
+{
+    m_cur_range_parent.clear();
+    mp_cur_range_ref = NULL;
+}
+
 void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_position& ref)
 {
     if (xpath.empty())
@@ -271,10 +277,15 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     range_ref = it->second;
     assert(range_ref);
 
+    if (!mp_cur_range_ref)
+        mp_cur_range_ref = range_ref;
+
     cout << "range field link: " << xpath << " (ref=" << ref_safe << ")" << endl;
     element_list_type elem_stack;
     get_element_stack(xpath, element_range_field_ref, elem_stack);
-    assert(!elem_stack.empty());
+    if (elem_stack.size() <= 3)
+        throw xpath_error("Path of a range field link must be at least 3 levels.");
+
     element* p = elem_stack.back();
     assert(p && p->field_ref);
     p->field_ref->ref = ref_safe;
@@ -282,6 +293,59 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     p->field_ref->column_pos = range_ref->elements.size();
 
     range_ref->elements.push_back(p);
+
+    // Determine the deepest common element for all field link elements in the
+    // current range reference.
+    if (m_cur_range_parent.empty())
+    {
+        // First field link in this range.
+        element_list_type::iterator it_end = elem_stack.end();
+        --it_end; // Skip the leaf node, which is used as a field in a range.
+        m_cur_range_parent.assign(elem_stack.begin(), it_end);
+    }
+    else
+    {
+        // Determine the deepest common element between the two.
+        element_list_type::iterator it = elem_stack.begin(), it_end = elem_stack.end();
+        element_list_type::iterator it_cur = m_cur_range_parent.begin(), it_cur_end = m_cur_range_parent.end();
+        if (*it != *it_cur)
+            throw xpath_error("Two field links in the same range reference start with different root elements.");
+
+        ++it;
+        ++it_cur;
+
+        for (; it != it_end && it_cur != it_cur_end; ++it, ++it_cur)
+        {
+            if (*it == *it_cur)
+                continue;
+
+            // The two elements differ.  Take their parent element as the new common element.
+            m_cur_range_parent.assign(elem_stack.begin(), it); // current elemnt excluded.
+            break;
+        }
+
+        if (m_cur_range_parent.size() <= 2)
+            throw xpath_error("Two field links in the same range reference must at least share the first two levels of their paths.");
+    }
+}
+
+void xml_map_tree::commit_range()
+{
+    if (!mp_cur_range_ref)
+        // Nothing to commit.
+        return;
+
+#if ORCUS_DEBUG_XML
+    cout << "parent element path for this range: ";
+    element_list_type::iterator it = m_cur_range_parent.begin(), it_end = m_cur_range_parent.end();
+    for (; it != it_end; ++it)
+        cout << "/" << (**it).name;
+    cout << endl;
+#endif
+
+    assert(m_cur_range_parent.size() >= 2);
+    // Mark the range parent element.
+    m_cur_range_parent.back()->range_parent = mp_cur_range_ref;
 }
 
 const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const

@@ -224,6 +224,7 @@ void orcus_xml::set_cell_link(const pstring& xpath, const pstring& sheet, spread
 void orcus_xml::start_range(const pstring& sheet, spreadsheet::row_t row, spreadsheet::col_t col)
 {
     mp_impl->m_cur_range_ref = xml_map_tree::cell_position(sheet, row, col);
+    mp_impl->m_map_tree.start_range();
 }
 
 void orcus_xml::append_field_link(const pstring& xpath)
@@ -234,6 +235,7 @@ void orcus_xml::append_field_link(const pstring& xpath)
 void orcus_xml::commit_range()
 {
     mp_impl->m_cur_range_ref = xml_map_tree::cell_position();
+    mp_impl->m_map_tree.commit_range();
 }
 
 void orcus_xml::append_sheet(const pstring& name)

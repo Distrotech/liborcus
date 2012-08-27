@@ -133,6 +133,13 @@ public:
             field_in_range* field_ref;
         };
 
+        /**
+         * Points to a range reference instance of which this element is a
+         * parent. NULL if this element is not a parent element of any range
+         * reference.
+         */
+        range_reference* range_parent;
+
         element(const pstring& _name, element_type _type);
         ~element();
 
@@ -163,7 +170,10 @@ public:
     ~xml_map_tree();
 
     void set_cell_link(const pstring& xpath, const cell_position& ref);
+
+    void start_range();
     void append_range_field_link(const pstring& xpath, const cell_position& ref);
+    void commit_range();
 
     const element* get_link(const pstring& xpath) const;
 
@@ -175,6 +185,19 @@ private:
     void get_element_stack(const pstring& xpath, element_type type, element_list_type& elem_stack);
 
 private:
+    /**
+     * Element stack of current range parent element. This is used to
+     * determine a common parent element for all field links of a current
+     * range reference.
+     */
+    element_list_type m_cur_range_parent;
+
+    range_reference* mp_cur_range_ref;
+
+    /**
+     * All range references present in the tree.  This container manages the
+     * life cycles of stored range references.
+     */
     range_ref_map_type m_field_refs;
 
     /** pool of element names. */
