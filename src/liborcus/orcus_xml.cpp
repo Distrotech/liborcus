@@ -314,21 +314,31 @@ void orcus_xml::write_file(const char* filepath)
         if (elem.type == xml_map_tree::element_cell_ref)
         {
             // Single cell link
-            const char* s = elem.cell_ref->element_open_begin;
-            const char* e = elem.cell_ref->element_close_end;
-            file << pstring(begin_pos, s-begin_pos);
-            file << pstring(s, e-s);
-            begin_pos = e;
+            const xml_map_tree::cell_position& pos = elem.cell_ref->pos;
+
+            const char* open_end = elem.cell_ref->element_open_end;
+            const char* close_begin = elem.cell_ref->element_close_begin;
+            const char* close_end = elem.cell_ref->element_close_end;
+
+            file << pstring(begin_pos, open_end-begin_pos);
+            file << pos;
+            file << pstring(close_begin, close_end-close_begin);
+            begin_pos = close_end;
         }
         else if (elem.range_parent)
         {
             // Range link
             const xml_map_tree::range_reference& ref = *elem.range_parent;
-            const char* s = ref.element_open_begin;
-            const char* e = ref.element_close_end;
-            file << pstring(begin_pos, s-begin_pos);
-            file << pstring(s, e-s);
-            begin_pos = e;
+            const xml_map_tree::cell_position& pos = ref.pos;
+
+            const char* open_end = ref.element_open_end;
+            const char* close_begin = ref.element_close_begin;
+            const char* close_end = ref.element_close_end;
+
+            file << pstring(begin_pos, open_end-begin_pos);
+            file << pos;
+            file << pstring(close_begin, close_end-close_begin);
+            begin_pos = close_end;
         }
         else
             throw general_error("Non-link element type encountered.");
