@@ -28,7 +28,7 @@
 #include "orcus/orcus_xml.hpp"
 #include "orcus/global.hpp"
 #include "orcus/sax_parser.hpp"
-#include "orcus/spreadsheet/interface.hpp"
+#include "orcus/spreadsheet/import_interface.hpp"
 
 #include "xml_map_tree.hpp"
 

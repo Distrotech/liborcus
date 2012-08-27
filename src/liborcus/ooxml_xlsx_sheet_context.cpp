@@ -31,7 +31,7 @@
 #include "orcus/ooxml/ooxml_token_constants.hpp"
 #include "orcus/exception.hpp"
 #include "orcus/global.hpp"
-#include "orcus/spreadsheet/interface.hpp"
+#include "orcus/spreadsheet/import_interface.hpp"
 
 #include <algorithm>
 #include <sstream>

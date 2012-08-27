@@ -28,7 +28,7 @@
 #ifndef __ORCUS_SPREADSHEET_FACTORY_HPP__
 #define __ORCUS_SPREADSHEET_FACTORY_HPP__
 
-#include "orcus/spreadsheet/interface.hpp"
+#include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/env.hpp"
 
 namespace orcus { namespace spreadsheet {

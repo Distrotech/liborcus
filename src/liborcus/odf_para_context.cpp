@@ -27,7 +27,7 @@
 
 #include "orcus/odf/para_context.hpp"
 #include "orcus/odf/odf_token_constants.hpp"
-#include "orcus/spreadsheet/interface.hpp"
+#include "orcus/spreadsheet/import_interface.hpp"
 
 #include <iostream>
 #include <cassert>

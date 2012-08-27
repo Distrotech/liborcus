@@ -28,7 +28,7 @@
 #ifndef __ORCUS_SPREADSHEET_ODSTABLE_HPP__
 #define __ORCUS_SPREADSHEET_ODSTABLE_HPP__
 
-#include "orcus/spreadsheet/interface.hpp"
+#include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/pstring.hpp"
 
 #include <mdds/flat_segment_tree.hpp>

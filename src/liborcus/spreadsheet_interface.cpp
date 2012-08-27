@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/spreadsheet/interface.hpp"
+#include "orcus/spreadsheet/import_interface.hpp"
 
 namespace orcus { namespace spreadsheet { namespace iface {
 
