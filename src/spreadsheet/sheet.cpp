@@ -52,30 +52,6 @@ using namespace std;
 
 namespace orcus { namespace spreadsheet {
 
-namespace {
-
-#if 0
-struct colsize_checker : public unary_function<pair<row_t, import_sheet::row_type*>, void>
-{
-    colsize_checker() : m_colsize(0) {}
-    colsize_checker(const colsize_checker& r) : m_colsize(r.m_colsize) {}
-
-    void operator() (const pair<row_t, import_sheet::row_type*>& r)
-    {
-        size_t colsize = r.second->size();
-        if (colsize > m_colsize)
-            m_colsize = colsize;
-    }
-
-    size_t get_colsize() const { return m_colsize; }
-
-private:
-    size_t m_colsize;
-};
-#endif
-
-}
-
 const row_t import_sheet::max_row_limit = 1048575;
 const col_t import_sheet::max_col_limit = 1023;
 
