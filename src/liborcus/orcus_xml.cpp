@@ -212,6 +212,15 @@ struct scope
 
 typedef boost::ptr_vector<scope> scopes_type;
 
+/**
+ * Write to the output stream a single range reference.
+ *
+ * @param os output stream.
+ * @param root root map tree element representing the root of a single range
+ *             reference.
+ * @param ref range reference data.
+ * @param factory export factory instance.
+ */
 void write_range_reference_group(
    ostream& os, const xml_map_tree::element& root, const xml_map_tree::range_reference& ref,
    const spreadsheet::iface::export_factory& factory)
@@ -229,11 +238,10 @@ void write_range_reference_group(
         {
             bool new_scope = false;
 
-            // Iterate through all elements in the current scope.
             scope& cur_scope = scopes.back();
             if (!cur_scope.opened)
             {
-                // Write opening element of this scope.
+                // Write opening element of this scope only on the 1st entrance.
                 os << "<" << cur_scope.element.name << ">";
                 cur_scope.opened = true;
             }
@@ -252,7 +260,7 @@ void write_range_reference_group(
                     break;
                 }
 
-                // This is a leaf element.  There should only be field link elements.
+                // This is a leaf element.  This must be a field link element.
                 assert(child_elem.type == xml_map_tree::element_range_field_ref);
                 os << "<" << child_elem.name << ">";
                 sheet->write_string(os, ref.pos.row + 1 + current_row, ref.pos.col + child_elem.field_ref->column_pos);
@@ -263,7 +271,7 @@ void write_range_reference_group(
                 // Re-start the loop with a new scope.
                 continue;
 
-            // Close this element for good.
+            // Close this element for good, and exit the current scope.
             os << "</" << scopes.back().element.name << ">";
             scopes.pop_back();
         }
