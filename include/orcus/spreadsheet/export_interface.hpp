@@ -25,21 +25,35 @@
  *
  ************************************************************************/
 
-#include "orcus/spreadsheet/import_interface.hpp"
-#include "orcus/spreadsheet/export_interface.hpp"
+#ifndef __ORCUS_SPREADSHEET_EXPORT_INTERFACE_HPP__
+#define __ORCUS_SPREADSHEET_EXPORT_INTERFACE_HPP__
+
+#include "types.hpp"
+#include "../env.hpp"
+
+#include <ostream>
 
 namespace orcus { namespace spreadsheet { namespace iface {
 
-import_shared_strings::~import_shared_strings() {}
+class export_sheet
+{
+public:
+    ORCUS_DLLPUBLIC virtual ~export_sheet() = 0;
 
-import_styles::~import_styles() {}
+    virtual void write_string(std::ostream& os, orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col) const = 0;
+};
 
-import_sheet::~import_sheet() {}
+class export_factory
+{
+public:
+    ORCUS_DLLPUBLIC virtual ~export_factory() = 0;
 
-import_factory::~import_factory() {}
-
-export_sheet::~export_sheet() {}
-
-export_factory::~export_factory() {}
+    virtual const export_sheet* get_sheet(const char* sheet_name, size_t sheet_name_length) const = 0;
+};
 
 }}}
+
+
+
+
+#endif

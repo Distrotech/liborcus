@@ -138,7 +138,7 @@ const ixion::model_context& document::get_model_context() const
     return m_context;
 }
 
-import_sheet* document::append_sheet(const pstring& sheet_name)
+sheet* document::append_sheet(const pstring& sheet_name)
 {
     sheet_t sheet = static_cast<sheet_t>(m_sheets.size());
     m_sheets.push_back(new sheet_item(*this, sheet_name.intern(), sheet));
@@ -146,7 +146,7 @@ import_sheet* document::append_sheet(const pstring& sheet_name)
     return &m_sheets.back().data;
 }
 
-import_sheet* document::get_sheet(const pstring& sheet_name)
+sheet* document::get_sheet(const pstring& sheet_name)
 {
     boost::ptr_vector<sheet_item>::iterator it =
         std::find_if(m_sheets.begin(), m_sheets.end(), find_sheet_by_name(sheet_name));

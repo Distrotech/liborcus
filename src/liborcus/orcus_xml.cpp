@@ -29,6 +29,7 @@
 #include "orcus/global.hpp"
 #include "orcus/sax_parser.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
+#include "orcus/spreadsheet/export_interface.hpp"
 
 #include "xml_map_tree.hpp"
 
@@ -193,7 +194,8 @@ public:
 
 struct orcus_xml_impl
 {
-    spreadsheet::iface::import_factory* mp_factory;
+    spreadsheet::iface::import_factory* mp_import_factory;
+    spreadsheet::iface::export_factory* mp_export_factory;
 
     /** original xml data stream. */
     string m_data_strm;
@@ -212,10 +214,11 @@ struct orcus_xml_impl
     xml_map_tree::cell_position m_cur_range_ref;
 };
 
-orcus_xml::orcus_xml(spreadsheet::iface::import_factory* factory) :
+orcus_xml::orcus_xml(spreadsheet::iface::import_factory* im_fact, spreadsheet::iface::export_factory* ex_fact) :
     mp_impl(new orcus_xml_impl)
 {
-    mp_impl->mp_factory = factory;
+    mp_impl->mp_import_factory = im_fact;
+    mp_impl->mp_export_factory = ex_fact;
 }
 
 orcus_xml::~orcus_xml()
@@ -250,7 +253,7 @@ void orcus_xml::append_sheet(const pstring& name)
     if (name.empty())
         return;
 
-    mp_impl->mp_factory->append_sheet(name.get(), name.size());
+    mp_impl->mp_import_factory->append_sheet(name.get(), name.size());
 }
 
 void orcus_xml::read_file(const char* filepath)
@@ -270,7 +273,9 @@ void orcus_xml::read_file(const char* filepath)
         xml_map_tree::range_reference& range_ref = *it_ref->second;
         range_ref.row_size = 0; // Reset the row offset.
 
-        spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->get_sheet(ref.sheet.get(), ref.sheet.size());
+        spreadsheet::iface::import_sheet* sheet =
+            mp_impl->mp_import_factory->get_sheet(ref.sheet.get(), ref.sheet.size());
+
         if (!sheet)
             continue;
 
@@ -285,7 +290,7 @@ void orcus_xml::read_file(const char* filepath)
     }
 
     // Parse the content xml.
-    xml_data_sax_handler handler(*mp_impl->mp_factory, mp_impl->m_link_positions, mp_impl->m_map_tree);
+    xml_data_sax_handler handler(*mp_impl->mp_import_factory, mp_impl->m_link_positions, mp_impl->m_map_tree);
     sax_parser<xml_data_sax_handler> parser(strm.c_str(), strm.size(), handler);
     parser.parse();
 }
@@ -316,12 +321,16 @@ void orcus_xml::write_file(const char* filepath)
             // Single cell link
             const xml_map_tree::cell_position& pos = elem.cell_ref->pos;
 
+            const spreadsheet::iface::export_sheet* sheet = mp_impl->mp_export_factory->get_sheet(pos.sheet.get(), pos.sheet.size());
+            if (!sheet)
+                continue;
+
             const char* open_end = elem.cell_ref->element_open_end;
             const char* close_begin = elem.cell_ref->element_close_begin;
             const char* close_end = elem.cell_ref->element_close_end;
 
             file << pstring(begin_pos, open_end-begin_pos);
-            file << pos;
+            sheet->write_string(file, pos.row, pos.col);
             file << pstring(close_begin, close_end-close_begin);
             begin_pos = close_end;
         }

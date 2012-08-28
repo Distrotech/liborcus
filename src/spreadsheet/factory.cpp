@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011 Kohei Yoshida
+ * Copyright (c) 2011-2012 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -34,14 +34,9 @@
 
 namespace orcus { namespace spreadsheet {
 
-import_factory::import_factory(document* doc) :
-    mp_document(doc)
-{
-}
+import_factory::import_factory(document* doc) : mp_document(doc) {}
 
-import_factory::~import_factory()
-{
-}
+import_factory::~import_factory() {}
 
 iface::import_shared_strings* import_factory::get_shared_strings()
 {
@@ -59,6 +54,15 @@ iface::import_sheet* import_factory::append_sheet(const char* sheet_name, size_t
 }
 
 iface::import_sheet* import_factory::get_sheet(const char* sheet_name, size_t sheet_name_length)
+{
+    return mp_document->get_sheet(pstring(sheet_name, sheet_name_length));
+}
+
+export_factory::export_factory(document* doc) : mp_document(doc) {}
+
+export_factory::~export_factory() {}
+
+const iface::export_sheet* export_factory::get_sheet(const char* sheet_name, size_t sheet_name_length) const
 {
     return mp_document->get_sheet(pstring(sheet_name, sheet_name_length));
 }

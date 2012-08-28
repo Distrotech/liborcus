@@ -56,9 +56,10 @@ int main(int argc, char** argv)
     }
 
     boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-    boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
+    boost::scoped_ptr<spreadsheet::import_factory> import_fact(new spreadsheet::import_factory(doc.get()));
+    boost::scoped_ptr<spreadsheet::export_factory> export_fact(new spreadsheet::export_factory(doc.get()));
 
-    orcus_xml app(fact.get());
+    orcus_xml app(import_fact.get(), export_fact.get());
     read_map_file(app, argv[1]);
     app.read_file(argv[2]);
     if (argc > 3)

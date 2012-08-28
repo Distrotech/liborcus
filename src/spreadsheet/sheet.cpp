@@ -52,21 +52,21 @@ using namespace std;
 
 namespace orcus { namespace spreadsheet {
 
-const row_t import_sheet::max_row_limit = 1048575;
-const col_t import_sheet::max_col_limit = 1023;
+const row_t sheet::max_row_limit = 1048575;
+const col_t sheet::max_col_limit = 1023;
 
-import_sheet::import_sheet(document& doc, sheet_t sheet) :
+sheet::sheet(document& doc, sheet_t sheet) :
     m_doc(doc), m_max_row(0), m_max_col(0), m_sheet(sheet)
 {
 }
 
-import_sheet::~import_sheet()
+sheet::~sheet()
 {
     for_each(m_cell_formats.begin(), m_cell_formats.end(),
              map_object_deleter<cell_format_type>());
 }
 
-void import_sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
+void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
 {
     if (!p || !n)
         return;
@@ -85,19 +85,19 @@ void import_sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
         cxt.set_string_cell(ixion::abs_address_t(m_sheet,row,col), p, n);
 }
 
-void import_sheet::set_string(row_t row, col_t col, size_t sindex)
+void sheet::set_string(row_t row, col_t col, size_t sindex)
 {
     ixion::model_context& cxt = m_doc.get_model_context();
     cxt.set_string_cell(ixion::abs_address_t(m_sheet,row,col), sindex);
 }
 
-void import_sheet::set_value(row_t row, col_t col, double value)
+void sheet::set_value(row_t row, col_t col, double value)
 {
     ixion::model_context& cxt = m_doc.get_model_context();
     cxt.set_numeric_cell(ixion::abs_address_t(m_sheet,row,col), value);
 }
 
-void import_sheet::set_format(row_t row, col_t col, size_t index)
+void sheet::set_format(row_t row, col_t col, size_t index)
 {
     cell_format_type::iterator itr = m_cell_formats.find(row);
     if (itr == m_cell_formats.end())
@@ -121,7 +121,7 @@ void import_sheet::set_format(row_t row, col_t col, size_t index)
     update_size(row, col);
 }
 
-void import_sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
+void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
                         const char* p, size_t n)
 {
     // Tokenize the formula string and store it.
@@ -132,7 +132,7 @@ void import_sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
     m_doc.insert_dirty_cell(pos);
 }
 
-void import_sheet::set_shared_formula(
+void sheet::set_shared_formula(
     row_t row, col_t col, formula_grammar_t grammar, size_t sindex,
     const char* p_formula, size_t n_formula, const char* p_range, size_t n_range)
 {
@@ -142,7 +142,7 @@ void import_sheet::set_shared_formula(
     set_shared_formula(row, col, sindex);
 }
 
-void import_sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
+void sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
 {
     ixion::model_context& cxt = m_doc.get_model_context();
     ixion::abs_address_t pos(m_sheet, row, col);
@@ -151,11 +151,33 @@ void import_sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
     m_doc.insert_dirty_cell(pos);
 }
 
-void import_sheet::set_formula_result(row_t row, col_t col, const char* p, size_t n)
+void sheet::set_formula_result(row_t row, col_t col, const char* p, size_t n)
 {
 }
 
-row_t import_sheet::row_size() const
+void sheet::write_string(ostream& os, row_t row, col_t col) const
+{
+    const ixion::model_context& cxt = m_doc.get_model_context();
+    ixion::abs_address_t pos(m_sheet, row, col);
+    switch (cxt.get_celltype(pos))
+    {
+        case ixion::celltype_string:
+        {
+            size_t str_id = cxt.get_string_identifier(pos);
+            const string* p = cxt.get_string(str_id);
+            if (p)
+                os << *p;
+        }
+        break;
+        case ixion::celltype_numeric:
+            os << cxt.get_numeric_value(pos);
+        break;
+        default:
+            ;
+    }
+}
+
+row_t sheet::row_size() const
 {
     return 0;
 #if 0
@@ -166,7 +188,7 @@ row_t import_sheet::row_size() const
 #endif
 }
 
-col_t import_sheet::col_size() const
+col_t sheet::col_size() const
 {
     return 0;
 #if 0
@@ -177,7 +199,7 @@ col_t import_sheet::col_size() const
 #endif
 }
 
-ixion::matrix import_sheet::get_range_value(row_t row1, col_t col1, row_t row2, col_t col2) const
+ixion::matrix sheet::get_range_value(row_t row1, col_t col1, row_t row2, col_t col2) const
 {
     const ixion::model_context& cxt = m_doc.get_model_context();
     ixion::abs_range_t range;
@@ -186,7 +208,7 @@ ixion::matrix import_sheet::get_range_value(row_t row1, col_t col1, row_t row2, 
     return cxt.get_range_value(range);
 }
 
-void import_sheet::dump() const
+void sheet::dump() const
 {
     const ixion::model_context& cxt = m_doc.get_model_context();
     ixion::abs_range_t range = cxt.get_data_range(m_sheet);
@@ -313,7 +335,7 @@ void import_sheet::dump() const
     }
 }
 
-void import_sheet::dump_check(ostream& os) const
+void sheet::dump_check(ostream& os) const
 {
     const ixion::model_context& cxt = m_doc.get_model_context();
     ixion::abs_range_t range = cxt.get_data_range(m_sheet);
@@ -496,7 +518,7 @@ void build_style_string(string& str, const import_styles& styles, const import_s
 
 }
 
-void import_sheet::dump_html(const string& filepath) const
+void sheet::dump_html(const string& filepath) const
 {
     typedef html_elem<ofstream> elem;
 
@@ -608,7 +630,7 @@ void import_sheet::dump_html(const string& filepath) const
     }
 }
 
-void import_sheet::update_size(row_t row, col_t col)
+void sheet::update_size(row_t row, col_t col)
 {
     if (m_max_row < row)
         m_max_row = row;
@@ -616,7 +638,7 @@ void import_sheet::update_size(row_t row, col_t col)
         m_max_col = col;
 }
 
-size_t import_sheet::get_cell_format(row_t row, col_t col) const
+size_t sheet::get_cell_format(row_t row, col_t col) const
 {
     cell_format_type::const_iterator itr = m_cell_formats.find(row);
     if (itr == m_cell_formats.end())

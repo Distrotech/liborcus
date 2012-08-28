@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011 Kohei Yoshida
+ * Copyright (c) 2011-2012 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -29,6 +29,7 @@
 #define __ORCUS_SPREADSHEET_IMPORT_FACTORY_HPP__
 
 #include "orcus/spreadsheet/import_interface.hpp"
+#include "orcus/spreadsheet/export_interface.hpp"
 #include "orcus/env.hpp"
 
 namespace orcus { namespace spreadsheet {
@@ -45,6 +46,18 @@ public:
     virtual iface::import_styles* get_styles();
     virtual iface::import_sheet* append_sheet(const char* sheet_name, size_t sheet_name_length);
     virtual iface::import_sheet* get_sheet(const char* sheet_name, size_t sheet_name_length);
+
+private:
+    document* mp_document;
+};
+
+class ORCUS_DLLPUBLIC export_factory : public iface::export_factory
+{
+public:
+    export_factory(document* doc);
+    virtual ~export_factory();
+
+    virtual const iface::export_sheet* get_sheet(const char* sheet_name, size_t sheet_name_length) const;
 
 private:
     document* mp_document;

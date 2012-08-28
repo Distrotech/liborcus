@@ -28,7 +28,6 @@
 #ifndef __ORCUS_SPREADSHEET_DOCUMENT_HPP__
 #define __ORCUS_SPREADSHEET_DOCUMENT_HPP__
 
-#include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/pstring.hpp"
 #include "orcus/env.hpp"
 
@@ -53,7 +52,7 @@ class import_styles;
  */
 class ORCUS_DLLPUBLIC document : private ::boost::noncopyable
 {
-    friend class import_sheet;
+    friend class sheet;
 
 public:
     /**
@@ -64,7 +63,7 @@ public:
     struct sheet_item : private ::boost::noncopyable
     {
         pstring name;
-        import_sheet   data;
+        sheet   data;
         sheet_item(document& doc, const pstring& _name, sheet_t sheet);
 
         struct printer : public ::std::unary_function<sheet_item, void>
@@ -103,8 +102,8 @@ public:
     ixion::model_context& get_model_context();
     const ixion::model_context& get_model_context() const;
 
-    import_sheet* append_sheet(const pstring& sheet_name);
-    import_sheet* get_sheet(const pstring& sheet_name);
+    sheet* append_sheet(const pstring& sheet_name);
+    sheet* get_sheet(const pstring& sheet_name);
 
     void calc_formulas();
 
