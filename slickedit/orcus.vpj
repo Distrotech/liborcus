@@ -246,8 +246,8 @@
 			<Folder Name="spreadsheet">
 				<F N="../src/spreadsheet/document.cpp"/>
 				<F N="../src/spreadsheet/document.hpp"/>
-				<F N="../src/spreadsheet/import_factory.cpp"/>
-				<F N="../src/spreadsheet/import_factory.hpp"/>
+				<F N="../src/spreadsheet/factory.cpp"/>
+				<F N="../src/spreadsheet/factory.hpp"/>
 				<F N="../src/spreadsheet/shared_strings.cpp"/>
 				<F N="../src/spreadsheet/shared_strings.hpp"/>
 				<F N="../src/spreadsheet/sheet.cpp"/>

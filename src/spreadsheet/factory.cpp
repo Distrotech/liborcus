@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "import_factory.hpp"
+#include "factory.hpp"
 
 #include "shared_strings.hpp"
 #include "styles.hpp"

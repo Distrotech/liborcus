@@ -27,7 +27,7 @@
 
 #include "orcus/orcus_csv.hpp"
 
-#include "spreadsheet/import_factory.hpp"
+#include "spreadsheet/factory.hpp"
 #include "spreadsheet/document.hpp"
 
 #include <boost/scoped_ptr.hpp>
