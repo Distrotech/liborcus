@@ -297,7 +297,12 @@ void orcus_xml::read_file(const char* filepath)
 
 void orcus_xml::write_file(const char* filepath)
 {
+    if (!mp_impl->mp_export_factory)
+        // We can't export data witout export factory.
+        return;
+
     if (mp_impl->m_data_strm.empty())
+        // Original xml stream is missing.  We need it.
         return;
 
     const xml_map_tree::const_element_list_type& links = mp_impl->m_link_positions;
@@ -311,6 +316,7 @@ void orcus_xml::write_file(const char* filepath)
     if (!file)
         throw general_error("Failed to create output file.");
 
+    spreadsheet::iface::export_factory& fact = *mp_impl->mp_export_factory;
     xml_map_tree::const_element_list_type::const_iterator it = links.begin(), it_end = links.end();
     const char* begin_pos = &mp_impl->m_data_strm[0];
     for (; it != it_end; ++it)
@@ -321,7 +327,7 @@ void orcus_xml::write_file(const char* filepath)
             // Single cell link
             const xml_map_tree::cell_position& pos = elem.cell_ref->pos;
 
-            const spreadsheet::iface::export_sheet* sheet = mp_impl->mp_export_factory->get_sheet(pos.sheet.get(), pos.sheet.size());
+            const spreadsheet::iface::export_sheet* sheet = fact.get_sheet(pos.sheet.get(), pos.sheet.size());
             if (!sheet)
                 continue;
 
