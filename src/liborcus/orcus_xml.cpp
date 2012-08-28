@@ -191,93 +191,84 @@ public:
     }
 };
 
-class write_range_reference_group : unary_function<const xml_map_tree::element, void>
+/**
+ * Used in write_range_reference_group().
+ */
+struct scope
 {
-    struct scope
+    const xml_map_tree::element& element;
+    xml_map_tree::element_store_type::const_iterator current_child_pos;
+    xml_map_tree::element_store_type::const_iterator end_child_pos;
+    bool opened:1;
+
+    scope(const xml_map_tree::element& _elem) :
+        element(_elem), opened(false)
     {
-        const xml_map_tree::element& element;
-        xml_map_tree::element_store_type::const_iterator current_child_pos;
-        xml_map_tree::element_store_type::const_iterator end_child_pos;
-        bool opened:1;
-
-        scope(const xml_map_tree::element& _elem) :
-            element(_elem), opened(false)
-        {
-            assert(element.type == xml_map_tree::element_non_leaf);
-            current_child_pos = element.child_elements->begin();
-            end_child_pos = element.child_elements->end();
-        }
-    };
-
-    typedef boost::ptr_vector<scope> scopes_type;
-
-    ostream& m_os;
-    const xml_map_tree::range_reference& m_ref;
-    const spreadsheet::iface::export_sheet* mp_sheet;
-
-public:
-    write_range_reference_group(
-       ostream& os, const xml_map_tree::range_reference& ref, const spreadsheet::iface::export_factory& fact) :
-        m_os(os), m_ref(ref), mp_sheet(NULL)
-    {
-        mp_sheet = fact.get_sheet(m_ref.pos.sheet.get(), m_ref.pos.sheet.size());
-    }
-
-    void operator() (const xml_map_tree::element& root)
-    {
-        if (!mp_sheet)
-            return;
-
-        scopes_type scopes;
-        for (spreadsheet::row_t current_row = 0; current_row < m_ref.row_size; ++current_row)
-        {
-            scopes.push_back(new scope(root)); // root element
-
-            while (!scopes.empty())
-            {
-                bool new_scope = false;
-
-                // Iterate through all elements in the current scope.
-                scope& cur_scope = scopes.back();
-                if (!cur_scope.opened)
-                {
-                    // Write opening element of this scope.
-                    m_os << "<" << cur_scope.element.name << ">";
-                    cur_scope.opened = true;
-                }
-
-                // Go though all child elements.
-                for (; cur_scope.current_child_pos != cur_scope.end_child_pos; ++cur_scope.current_child_pos)
-                {
-                    const xml_map_tree::element& child_elem = *cur_scope.current_child_pos;
-                    if (child_elem.type == xml_map_tree::element_non_leaf)
-                    {
-                        // This is a non-leaf element.  Push a new scope with this
-                        // element and re-start the loop.
-                        ++cur_scope.current_child_pos;
-                        scopes.push_back(new scope(child_elem));
-                        new_scope = true;
-                        break;
-                    }
-
-                    // This is a leaf element.  There should only be field link elements.
-                    assert(child_elem.type == xml_map_tree::element_range_field_ref);
-                    m_os << "<" << child_elem.name << ">";
-                    mp_sheet->write_string(m_os, m_ref.pos.row + 1 + current_row, m_ref.pos.col + child_elem.field_ref->column_pos);
-                    m_os << "</" << child_elem.name << ">";
-                }
-
-                if (new_scope)
-                    // Re-start the loop with a new scope.
-                    continue;
-
-                // Close this element for good.
-                m_os << "</" << scopes.back().element.name << ">";
-                scopes.pop_back();
-            }
-        }
+        assert(element.type == xml_map_tree::element_non_leaf);
+        current_child_pos = element.child_elements->begin();
+        end_child_pos = element.child_elements->end();
     }
 };
+
+typedef boost::ptr_vector<scope> scopes_type;
+
+void write_range_reference_group(
+   ostream& os, const xml_map_tree::element& root, const xml_map_tree::range_reference& ref,
+   const spreadsheet::iface::export_factory& factory)
+{
+    const spreadsheet::iface::export_sheet* sheet = factory.get_sheet(ref.pos.sheet.get(), ref.pos.sheet.size());
+    if (!sheet)
+        return;
+
+    scopes_type scopes;
+    for (spreadsheet::row_t current_row = 0; current_row < ref.row_size; ++current_row)
+    {
+        scopes.push_back(new scope(root)); // root element
+
+        while (!scopes.empty())
+        {
+            bool new_scope = false;
+
+            // Iterate through all elements in the current scope.
+            scope& cur_scope = scopes.back();
+            if (!cur_scope.opened)
+            {
+                // Write opening element of this scope.
+                os << "<" << cur_scope.element.name << ">";
+                cur_scope.opened = true;
+            }
+
+            // Go though all child elements.
+            for (; cur_scope.current_child_pos != cur_scope.end_child_pos; ++cur_scope.current_child_pos)
+            {
+                const xml_map_tree::element& child_elem = *cur_scope.current_child_pos;
+                if (child_elem.type == xml_map_tree::element_non_leaf)
+                {
+                    // This is a non-leaf element.  Push a new scope with this
+                    // element and re-start the loop.
+                    ++cur_scope.current_child_pos;
+                    scopes.push_back(new scope(child_elem));
+                    new_scope = true;
+                    break;
+                }
+
+                // This is a leaf element.  There should only be field link elements.
+                assert(child_elem.type == xml_map_tree::element_range_field_ref);
+                os << "<" << child_elem.name << ">";
+                sheet->write_string(os, ref.pos.row + 1 + current_row, ref.pos.col + child_elem.field_ref->column_pos);
+                os << "</" << child_elem.name << ">";
+            }
+
+            if (new_scope)
+                // Re-start the loop with a new scope.
+                continue;
+
+            // Close this element for good.
+            os << "</" << scopes.back().element.name << ">";
+            scopes.pop_back();
+        }
+    }
+}
 
 /**
  * Write to an output stream the sub-structure comprising one or more range
@@ -300,8 +291,8 @@ void write_range_reference(ostream& os, const xml_map_tree::element& elem_top, c
 
     // TODO: For now, we assume that there is only one child element under the
     // range ref parent.
-    write_range_reference_group func(os, *elem_top.range_parent, factory);
-    func(*elem_top.child_elements->begin());
+    write_range_reference_group(
+       os, *elem_top.child_elements->begin(), *elem_top.range_parent, factory);
 }
 
 }
