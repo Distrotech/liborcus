@@ -66,7 +66,7 @@ void test_mapped_xml_import()
         boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
 
         // Parse the map file to define map rules, and parse the data file.
-        orcus_xml app(fact.get());
+        orcus_xml app(fact.get(), NULL);
         read_map_file(app, map_file.c_str());
         app.read_file(data_file.c_str());
 

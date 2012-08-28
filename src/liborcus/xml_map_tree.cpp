@@ -175,11 +175,11 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(const pstring& n
 {
     if (m_stack.empty())
     {
-        if (!m_parent.m_root)
+        if (!m_parent.mp_root)
             // Tree is empty.
             return NULL;
 
-        const element* p = m_parent.m_root;
+        const element* p = m_parent.mp_root;
         if (p->name != name)
             // Names differ.
             return NULL;
@@ -227,11 +227,11 @@ const xml_map_tree::element* xml_map_tree::walker::pop_element(const pstring& na
     return m_stack.empty() ? NULL : m_stack.back();
 }
 
-xml_map_tree::xml_map_tree() : mp_cur_range_ref(NULL), m_root(NULL) {}
+xml_map_tree::xml_map_tree() : mp_cur_range_ref(NULL), mp_root(NULL) {}
 xml_map_tree::~xml_map_tree()
 {
     std::for_each(m_field_refs.begin(), m_field_refs.end(), map_object_deleter<range_ref_map_type>());
-    delete m_root;
+    delete mp_root;
 }
 
 void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
@@ -351,13 +351,13 @@ void xml_map_tree::commit_range()
 
 const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
 {
-    if (!m_root)
+    if (!mp_root)
         return NULL;
 
     if (xpath.empty())
         return NULL;
 
-    const element* cur_element = m_root;
+    const element* cur_element = mp_root;
 
     xpath_parser parser(xpath.get(), xpath.size());
 
@@ -410,19 +410,19 @@ void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, el
 
     // Get the root element first.
     pstring name = parser.next();
-    if (m_root)
+    if (mp_root)
     {
         // Make sure the root element's names are the same.
-        if (m_root->name != name)
+        if (mp_root->name != name)
             xpath_error("path begins with inconsistent root level name.");
     }
     else
     {
         // First time the root element is encountered.
-        m_root = new element(m_names.intern(name.get(), name.size()), element_non_leaf);
+        mp_root = new element(m_names.intern(name.get(), name.size()), element_non_leaf);
     }
 
-    elem_stack_new.push_back(m_root);
+    elem_stack_new.push_back(mp_root);
     element* cur_element = elem_stack_new.back();
     assert(cur_element);
     assert(cur_element->child_elements);
