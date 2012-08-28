@@ -104,7 +104,7 @@ public:
 
 }
 
-xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, spreadsheet::iface::shared_strings* strings) :
+xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, spreadsheet::iface::import_shared_strings* strings) :
     xml_context_base(tokens), mp_strings(strings), m_in_segments(false) {}
 
 xlsx_shared_strings_context::~xlsx_shared_strings_context() {}
@@ -262,9 +262,9 @@ public:
 class border_attr_parser : public unary_function<xml_attr_t, void>
 {
     spreadsheet::border_direction_t m_dir;
-    spreadsheet::iface::styles& m_styles;
+    spreadsheet::iface::import_styles& m_styles;
 public:
-    border_attr_parser(spreadsheet::border_direction_t dir, spreadsheet::iface::styles& styles) :
+    border_attr_parser(spreadsheet::border_direction_t dir, spreadsheet::iface::import_styles& styles) :
         m_dir(dir), m_styles(styles) {}
 
     void operator() (const xml_attr_t& attr)
@@ -280,9 +280,9 @@ public:
 
 class cell_style_attr_parser : public unary_function<xml_attr_t, void>
 {
-    spreadsheet::iface::styles& m_styles;
+    spreadsheet::iface::import_styles& m_styles;
 public:
-    cell_style_attr_parser(spreadsheet::iface::styles& styles) :
+    cell_style_attr_parser(spreadsheet::iface::import_styles& styles) :
         m_styles(styles) {}
 
     void operator() (const xml_attr_t& attr)
@@ -310,9 +310,9 @@ public:
 
 class xf_attr_parser : public unary_function<xml_attr_t, void>
 {
-    spreadsheet::iface::styles& m_styles;
+    spreadsheet::iface::import_styles& m_styles;
 public:
-    xf_attr_parser(spreadsheet::iface::styles& styles) :
+    xf_attr_parser(spreadsheet::iface::import_styles& styles) :
         m_styles(styles) {}
 
     void operator() (const xml_attr_t& attr)
@@ -363,11 +363,11 @@ public:
 
 class fill_color_attr_parser : public unary_function<xml_attr_t, void>
 {
-    spreadsheet::iface::styles& m_styles;
+    spreadsheet::iface::import_styles& m_styles;
     const tokens& m_tokens;
     bool m_foreground;
 public:
-    fill_color_attr_parser(spreadsheet::iface::styles& styles, const tokens& _tokens, bool fg) :
+    fill_color_attr_parser(spreadsheet::iface::import_styles& styles, const tokens& _tokens, bool fg) :
         m_styles(styles), m_tokens(_tokens), m_foreground(fg) {}
 
     void operator() (const xml_attr_t& attr)
@@ -418,7 +418,7 @@ private:
 
 }
 
-xlsx_styles_context::xlsx_styles_context(const tokens& tokens, spreadsheet::iface::styles* styles) :
+xlsx_styles_context::xlsx_styles_context(const tokens& tokens, spreadsheet::iface::import_styles* styles) :
     xml_context_base(tokens), mp_styles(styles), m_cell_style_xf(false) {}
 
 xlsx_styles_context::~xlsx_styles_context() {}

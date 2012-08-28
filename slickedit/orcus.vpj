@@ -177,6 +177,7 @@
 					<F N="../include/orcus/ooxml/xlsx_workbook_context.hpp"/>
 				</Folder>
 				<Folder Name="spreadsheet">
+					<F N="../include/orcus/spreadsheet/export_interface.hpp"/>
 					<F N="../include/orcus/spreadsheet/import_interface.hpp"/>
 					<F N="../include/orcus/spreadsheet/types.hpp"/>
 				</Folder>

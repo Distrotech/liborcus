@@ -87,9 +87,9 @@ void document::sheet_item::html_printer::operator() (const sheet_item& item) con
 
 document::document() :
     mp_strings(NULL),
-    mp_styles(new styles)
+    mp_styles(new import_styles)
 {
-    mp_strings = new shared_strings(m_context);
+    mp_strings = new import_shared_strings(m_context);
 }
 
 document::~document()
@@ -108,22 +108,22 @@ ixion::matrix document::get_range_value(const ixion::abs_range_t& range) const
         range.first.row, range.first.column, range.last.row, range.last.column);
 }
 
-shared_strings* document::get_shared_strings()
+import_shared_strings* document::get_shared_strings()
 {
     return mp_strings;
 }
 
-const shared_strings* document::get_shared_strings() const
+const import_shared_strings* document::get_shared_strings() const
 {
     return mp_strings;
 }
 
-styles* document::get_styles()
+import_styles* document::get_styles()
 {
     return mp_styles;
 }
 
-const styles* document::get_styles() const
+const import_styles* document::get_styles() const
 {
     return mp_styles;
 }
@@ -138,7 +138,7 @@ const ixion::model_context& document::get_model_context() const
     return m_context;
 }
 
-sheet* document::append_sheet(const pstring& sheet_name)
+import_sheet* document::append_sheet(const pstring& sheet_name)
 {
     sheet_t sheet = static_cast<sheet_t>(m_sheets.size());
     m_sheets.push_back(new sheet_item(*this, sheet_name.intern(), sheet));
@@ -146,7 +146,7 @@ sheet* document::append_sheet(const pstring& sheet_name)
     return &m_sheets.back().data;
 }
 
-sheet* document::get_sheet(const pstring& sheet_name)
+import_sheet* document::get_sheet(const pstring& sheet_name)
 {
     boost::ptr_vector<sheet_item>::iterator it =
         std::find_if(m_sheets.begin(), m_sheets.end(), find_sheet_by_name(sheet_name));

@@ -209,7 +209,7 @@ public:
 
 }
 
-xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, spreadsheet::iface::sheet* sheet) :
+xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, spreadsheet::iface::import_sheet* sheet) :
     xml_context_base(tokens),
     mp_sheet(sheet),
     m_cur_row(0),

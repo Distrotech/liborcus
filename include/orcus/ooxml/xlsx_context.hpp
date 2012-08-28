@@ -37,9 +37,9 @@
 namespace orcus {
 
 namespace spreadsheet { namespace iface {
-    class sheet;
-    class shared_strings;
-    class styles;
+    class import_sheet;
+    class import_shared_strings;
+    class import_styles;
 }}
 
 /**
@@ -48,7 +48,7 @@ namespace spreadsheet { namespace iface {
 class xlsx_shared_strings_context : public xml_context_base
 {
 public:
-    xlsx_shared_strings_context(const tokens& tokens, spreadsheet::iface::shared_strings* strings);
+    xlsx_shared_strings_context(const tokens& tokens, spreadsheet::iface::import_shared_strings* strings);
     virtual ~xlsx_shared_strings_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -60,7 +60,7 @@ public:
     virtual void characters(const pstring& str);
 
 private:
-    spreadsheet::iface::shared_strings* mp_strings;
+    spreadsheet::iface::import_shared_strings* mp_strings;
     pstring m_cur_str;
     bool m_in_segments;
 };
@@ -72,7 +72,7 @@ private:
 class xlsx_styles_context : public xml_context_base
 {
 public:
-    xlsx_styles_context(const tokens& tokens, spreadsheet::iface::styles* styles);
+    xlsx_styles_context(const tokens& tokens, spreadsheet::iface::import_styles* import_styles);
     virtual ~xlsx_styles_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -84,7 +84,7 @@ public:
     virtual void characters(const pstring& str);
 
 private:
-    spreadsheet::iface::styles* mp_styles;
+    spreadsheet::iface::import_styles* mp_styles;
     bool m_cell_style_xf;
 };
 

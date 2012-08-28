@@ -70,7 +70,7 @@ public:
 
 private:
     spreadsheet::iface::import_factory& m_factory;
-    spreadsheet::iface::sheet* mp_sheet;
+    spreadsheet::iface::import_sheet* mp_sheet;
     spreadsheet::row_t m_row;
     spreadsheet::col_t m_col;
 };

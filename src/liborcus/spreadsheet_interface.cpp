@@ -29,11 +29,11 @@
 
 namespace orcus { namespace spreadsheet { namespace iface {
 
-shared_strings::~shared_strings() {}
+import_shared_strings::~import_shared_strings() {}
 
-styles::~styles() {}
+import_styles::~import_styles() {}
 
-sheet::~sheet() {}
+import_sheet::~import_sheet() {}
 
 import_factory::~import_factory() {}
 

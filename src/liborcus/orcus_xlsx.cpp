@@ -156,7 +156,7 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, con
     if (strm.buffer_read > 0)
     {
         xml_stream_parser parser(ooxml_tokens, &strm.buffer[0], strm.buffer_read, file_name);
-        spreadsheet::iface::sheet* sheet = mp_factory->append_sheet(data->name.get(), data->name.size());
+        spreadsheet::iface::import_sheet* sheet = mp_factory->append_sheet(data->name.get(), data->name.size());
         ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler(ooxml_tokens, sheet));
         parser.set_handler(handler.get());
         parser.parse();

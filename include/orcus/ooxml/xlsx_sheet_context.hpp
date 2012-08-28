@@ -34,7 +34,7 @@
 namespace orcus {
 
 namespace spreadsheet { namespace iface {
-    class sheet;
+    class import_sheet;
 }}
 
 /**
@@ -52,7 +52,7 @@ public:
         cell_type_inline_string
     };
 
-    xlsx_sheet_context(const tokens& tokens, spreadsheet::iface::sheet* sheet);
+    xlsx_sheet_context(const tokens& tokens, spreadsheet::iface::import_sheet* import_sheet);
     virtual ~xlsx_sheet_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -67,7 +67,7 @@ private:
     void end_element_cell();
 
 private:
-    spreadsheet::iface::sheet* mp_sheet; /// sheet model instance for the loaded document.
+    spreadsheet::iface::import_sheet* mp_sheet; /// sheet model instance for the loaded document.
     spreadsheet::row_t m_cur_row;
     spreadsheet::col_t m_cur_col;
     cell_type    m_cur_cell_type;

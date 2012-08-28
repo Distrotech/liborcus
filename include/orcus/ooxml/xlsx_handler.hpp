@@ -38,14 +38,14 @@ namespace orcus {
 
 namespace spreadsheet { namespace iface {
 
-class sheet;
+class import_sheet;
 
 }}
 
 class xlsx_sheet_xml_handler : public xml_stream_handler
 {
 public:
-    xlsx_sheet_xml_handler(const tokens& tokens, spreadsheet::iface::sheet* sheet);
+    xlsx_sheet_xml_handler(const tokens& tokens, spreadsheet::iface::import_sheet* import_sheet);
     virtual ~xlsx_sheet_xml_handler();
 
     virtual void start_document();

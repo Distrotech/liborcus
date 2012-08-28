@@ -35,7 +35,7 @@
 
 namespace orcus { namespace spreadsheet {
 
-class styles : public iface::styles
+class import_styles : public iface::import_styles
 {
 public:
     struct font
@@ -122,8 +122,8 @@ public:
         void reset();
     };
 
-    styles();
-    virtual ~styles();
+    import_styles();
+    virtual ~import_styles();
 
     virtual void set_font_count(size_t n);
     virtual void set_font_bold(bool b);

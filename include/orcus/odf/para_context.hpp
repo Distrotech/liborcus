@@ -35,7 +35,7 @@
 
 namespace orcus {
 
-namespace spreadsheet { namespace iface { class shared_strings; }}
+namespace spreadsheet { namespace iface { class import_shared_strings; }}
 
 class tokens;
 
@@ -45,7 +45,7 @@ class tokens;
 class text_para_context : public xml_context_base
 {
 public:
-    text_para_context(const tokens& tokens, spreadsheet::iface::shared_strings* ssb);
+    text_para_context(const tokens& tokens, spreadsheet::iface::import_shared_strings* ssb);
     virtual ~text_para_context();
 
     virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
@@ -60,7 +60,7 @@ public:
     bool empty() const;
 
 private:
-    spreadsheet::iface::shared_strings* mp_sstrings;
+    spreadsheet::iface::import_shared_strings* mp_sstrings;
     ::std::vector<pstring> m_contents;
     size_t m_string_index;
     bool m_formatted;

@@ -44,11 +44,11 @@ namespace orcus { namespace spreadsheet {
 /**
  * This class handles global pool of string instances.
  */
-class shared_strings : public iface::shared_strings, private ::boost::noncopyable
+class import_shared_strings : public iface::import_shared_strings, private boost::noncopyable
 {
     typedef boost::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
 
-    shared_strings(); // disabled
+    import_shared_strings(); // disabled
 
 public:
     struct format_run
@@ -70,8 +70,8 @@ public:
     // format runs for all shared strings, mapped by string IDs.
     typedef boost::unordered_map<size_t, format_runs_type*> format_runs_map_type;
 
-    shared_strings(ixion::model_context& cxt);
-    virtual ~shared_strings();
+    import_shared_strings(ixion::model_context& cxt);
+    virtual ~import_shared_strings();
 
     virtual size_t append(const char* s, size_t n);
     virtual size_t add(const char* s, size_t n);

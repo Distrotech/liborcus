@@ -37,7 +37,7 @@ namespace orcus {
 namespace spreadsheet { namespace iface {
 
 class import_factory;
-class sheet;
+class import_sheet;
 
 }}
 
@@ -82,7 +82,7 @@ private:
 
 private:
     spreadsheet::iface::import_factory* mp_factory;
-    ::std::vector<spreadsheet::iface::sheet*> m_tables;
+    std::vector<spreadsheet::iface::import_sheet*> m_tables;
 
     row_attr    m_row_attr;
     cell_attr   m_cell_attr;

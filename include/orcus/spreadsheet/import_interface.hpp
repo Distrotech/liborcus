@@ -38,10 +38,10 @@ namespace orcus { namespace spreadsheet { namespace iface {
 /**
  * Interface class designed to be derived by the implementor.
  */
-class shared_strings
+class import_shared_strings
 {
 public:
-    ORCUS_DLLPUBLIC virtual ~shared_strings() = 0;
+    ORCUS_DLLPUBLIC virtual ~import_shared_strings() = 0;
 
     /**
      * Append new string to the string list.  Order of insertion is important
@@ -81,10 +81,10 @@ public:
 /**
  * Interface for styles.
  */
-class styles
+class import_styles
 {
 public:
-    ORCUS_DLLPUBLIC virtual ~styles() = 0;
+    ORCUS_DLLPUBLIC virtual ~import_styles() = 0;
 
     // font
 
@@ -139,10 +139,10 @@ public:
 /**
  * Interface for sheet.
  */
-class sheet
+class import_sheet
 {
 public:
-    ORCUS_DLLPUBLIC virtual ~sheet() = 0;
+    ORCUS_DLLPUBLIC virtual ~import_sheet() = 0;
 
     /**
      * Set raw string value to a cell and have the implementation
@@ -248,10 +248,10 @@ class import_factory
 public:
     ORCUS_DLLPUBLIC virtual ~import_factory() = 0;
 
-    virtual shared_strings* get_shared_strings() = 0;
-    virtual styles* get_styles() = 0;
-    virtual sheet* append_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
-    virtual sheet* get_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
+    virtual import_shared_strings* get_shared_strings() = 0;
+    virtual import_styles* get_styles() = 0;
+    virtual import_sheet* append_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
+    virtual import_sheet* get_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
 };
 
 }}}

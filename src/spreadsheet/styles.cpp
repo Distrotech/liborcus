@@ -29,59 +29,59 @@
 
 namespace orcus { namespace spreadsheet {
 
-styles::font::font() :
+import_styles::font::font() :
     size(0.0), bold(false), italic(false)
 {
 }
 
-void styles::font::reset()
+void import_styles::font::reset()
 {
     *this = font();
 }
 
-styles::color::color() :
+import_styles::color::color() :
     alpha(0), red(0), green(0), blue(0)
 {
 }
 
-styles::color::color(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue) :
+import_styles::color::color(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue) :
     alpha(_alpha), red(_red), green(_green), blue(_blue)
 {
 }
 
-void styles::color::reset()
+void import_styles::color::reset()
 {
     *this = color();
 }
 
-styles::fill::fill()
+import_styles::fill::fill()
 {
 }
 
-void styles::fill::reset()
+void import_styles::fill::reset()
 {
     *this = fill();
 }
 
-styles::border_attrs::border_attrs()
+import_styles::border_attrs::border_attrs()
 {
 }
 
-void styles::border_attrs::reset()
+void import_styles::border_attrs::reset()
 {
     *this = border_attrs();
 }
 
-styles::border::border()
+import_styles::border::border()
 {
 }
 
-void styles::border::reset()
+void import_styles::border::reset()
 {
     *this = border();
 }
 
-styles::xf::xf() :
+import_styles::xf::xf() :
     num_format(0),
     font(0),
     fill(0),
@@ -95,92 +95,92 @@ styles::xf::xf() :
 {
 }
 
-void styles::xf::reset()
+void import_styles::xf::reset()
 {
     *this = xf();
 }
 
-styles::cell_style::cell_style() :
+import_styles::cell_style::cell_style() :
     xf(0), builtin(0)
 {
 }
 
-void styles::cell_style::reset()
+void import_styles::cell_style::reset()
 {
     *this = cell_style();
 }
 
-styles::styles()
+import_styles::import_styles()
 {
 }
 
-styles::~styles()
+import_styles::~import_styles()
 {
 }
 
-void styles::set_font_count(size_t n)
+void import_styles::set_font_count(size_t n)
 {
     m_fonts.reserve(n);
 }
 
-void styles::set_font_bold(bool b)
+void import_styles::set_font_bold(bool b)
 {
     m_cur_font.bold = b;
 }
 
-void styles::set_font_italic(bool b)
+void import_styles::set_font_italic(bool b)
 {
     m_cur_font.italic = b;
 }
 
-void styles::set_font_name(const char* s, size_t n)
+void import_styles::set_font_name(const char* s, size_t n)
 {
     m_cur_font.name = pstring(s, n).intern();
 }
 
-void styles::set_font_size(double point)
+void import_styles::set_font_size(double point)
 {
     m_cur_font.size = point;
 }
 
-void styles::commit_font()
+void import_styles::commit_font()
 {
     m_fonts.push_back(m_cur_font);
     m_cur_font.reset();
 }
 
-void styles::set_fill_count(size_t n)
+void import_styles::set_fill_count(size_t n)
 {
     m_fills.reserve(n);
 }
 
-void styles::set_fill_pattern_type(const char* s, size_t n)
+void import_styles::set_fill_pattern_type(const char* s, size_t n)
 {
     m_cur_fill.pattern_type = pstring(s, n).intern();
 }
 
-void styles::set_fill_fg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
+void import_styles::set_fill_fg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
 {
     m_cur_fill.fg_color = color(alpha, red, green, blue);
 }
 
-void styles::set_fill_bg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
+void import_styles::set_fill_bg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
 {
     m_cur_fill.bg_color = color(alpha, red, green, blue);
 }
 
-void styles::commit_fill()
+void import_styles::commit_fill()
 {
     m_fills.push_back(m_cur_fill);
     m_cur_fill.reset();
 }
 
-void styles::set_border_count(size_t n)
+void import_styles::set_border_count(size_t n)
 {
     m_borders.reserve(n);
 }
 
-void styles::set_border_style(border_direction_t dir, const char* s, size_t n)
+void import_styles::set_border_style(border_direction_t dir, const char* s, size_t n)
 {
     border_attrs* p = NULL;
     switch (dir)
@@ -206,86 +206,86 @@ void styles::set_border_style(border_direction_t dir, const char* s, size_t n)
         p->style = pstring(s, n).intern();
 }
 
-void styles::commit_border()
+void import_styles::commit_border()
 {
     m_borders.push_back(m_cur_border);
     m_cur_border.reset();
 }
 
-void styles::set_cell_style_xf_count(size_t n)
+void import_styles::set_cell_style_xf_count(size_t n)
 {
     m_cell_style_formats.reserve(n);
 }
 
-void styles::commit_cell_style_xf()
+void import_styles::commit_cell_style_xf()
 {
     m_cell_style_formats.push_back(m_cur_cell_format);
     m_cur_cell_format.reset();
 }
 
-void styles::set_cell_xf_count(size_t n)
+void import_styles::set_cell_xf_count(size_t n)
 {
     m_cell_formats.reserve(n);
 }
 
-void styles::commit_cell_xf()
+void import_styles::commit_cell_xf()
 {
     m_cell_formats.push_back(m_cur_cell_format);
     m_cur_cell_format.reset();
 }
 
-void styles::set_xf_number_format(size_t index)
+void import_styles::set_xf_number_format(size_t index)
 {
     m_cur_cell_format.num_format = index;
 }
 
-void styles::set_xf_font(size_t index)
+void import_styles::set_xf_font(size_t index)
 {
     m_cur_cell_format.font = index;
 }
 
-void styles::set_xf_fill(size_t index)
+void import_styles::set_xf_fill(size_t index)
 {
     m_cur_cell_format.fill = index;
 }
 
-void styles::set_xf_border(size_t index)
+void import_styles::set_xf_border(size_t index)
 {
     m_cur_cell_format.border = index;
 }
 
-void styles::set_xf_style_xf(size_t index)
+void import_styles::set_xf_style_xf(size_t index)
 {
     m_cur_cell_format.style_xf = index;
 }
 
-void styles::set_cell_style_count(size_t n)
+void import_styles::set_cell_style_count(size_t n)
 {
     m_cell_styles.reserve(n);
 }
 
-void styles::set_cell_style_name(const char* s, size_t n)
+void import_styles::set_cell_style_name(const char* s, size_t n)
 {
     m_cur_cell_style.name = pstring(s, n).intern();
 }
 
-void styles::set_cell_style_xf(size_t index)
+void import_styles::set_cell_style_xf(size_t index)
 {
     m_cur_cell_style.xf = index;
 }
 
-void styles::set_cell_style_builtin(size_t index)
+void import_styles::set_cell_style_builtin(size_t index)
 {
     m_cur_cell_style.builtin = index;
 }
 
-void styles::commit_cell_style()
+void import_styles::commit_cell_style()
 {
     m_cell_styles.push_back(m_cur_cell_style);
     m_cur_cell_style.reset();
 }
 
-const styles::font* styles::get_font(size_t index) const
+const import_styles::font* import_styles::get_font(size_t index) const
 {
     if (index >= m_fonts.size())
         return NULL;
@@ -293,7 +293,7 @@ const styles::font* styles::get_font(size_t index) const
     return &m_fonts[index];
 }
 
-const styles::xf* styles::get_cell_xf(size_t index) const
+const import_styles::xf* import_styles::get_cell_xf(size_t index) const
 {
     if (index >= m_cell_formats.size())
         return NULL;
@@ -301,7 +301,7 @@ const styles::xf* styles::get_cell_xf(size_t index) const
     return &m_cell_formats[index];
 }
 
-const styles::fill* styles::get_fill(size_t index) const
+const import_styles::fill* import_styles::get_fill(size_t index) const
 {
     if (index >= m_fills.size())
         return NULL;

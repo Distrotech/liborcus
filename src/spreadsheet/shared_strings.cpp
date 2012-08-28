@@ -40,12 +40,12 @@ using namespace std;
 
 namespace orcus { namespace spreadsheet {
 
-shared_strings::format_run::format_run() :
+import_shared_strings::format_run::format_run() :
     pos(0), size(0),
     font_size(0),
     bold(false), italic(false) {}
 
-void shared_strings::format_run::reset()
+void import_shared_strings::format_run::reset()
 {
     pos = 0;
     size = 0;
@@ -55,7 +55,7 @@ void shared_strings::format_run::reset()
     italic = false;
 }
 
-bool shared_strings::format_run::formatted() const
+bool import_shared_strings::format_run::formatted() const
 {
     if (bold || italic)
         return true;
@@ -69,12 +69,12 @@ bool shared_strings::format_run::formatted() const
     return false;
 }
 
-shared_strings::shared_strings(ixion::model_context& cxt) :
+import_shared_strings::import_shared_strings(ixion::model_context& cxt) :
     m_cxt(cxt), mp_cur_format_runs(NULL)
 {
 }
 
-shared_strings::~shared_strings()
+import_shared_strings::~import_shared_strings()
 {
     for_each(m_formats.begin(), m_formats.end(),
              map_object_deleter<format_runs_map_type>());
@@ -84,17 +84,17 @@ shared_strings::~shared_strings()
     delete mp_cur_format_runs;
 }
 
-size_t shared_strings::append(const char* s, size_t n)
+size_t import_shared_strings::append(const char* s, size_t n)
 {
     return m_cxt.add_string(s, n);
 }
 
-size_t shared_strings::add(const char* s, size_t n)
+size_t import_shared_strings::add(const char* s, size_t n)
 {
     return m_cxt.add_string(s, n);
 }
 
-const shared_strings::format_runs_type* shared_strings::get_format_runs(size_t index) const
+const import_shared_strings::format_runs_type* import_shared_strings::get_format_runs(size_t index) const
 {
     format_runs_map_type::const_iterator itr = m_formats.find(index);
     if (itr != m_formats.end())
@@ -102,27 +102,27 @@ const shared_strings::format_runs_type* shared_strings::get_format_runs(size_t i
     return NULL;
 }
 
-void shared_strings::set_segment_bold(bool b)
+void import_shared_strings::set_segment_bold(bool b)
 {
     m_cur_format.bold = b;
 }
 
-void shared_strings::set_segment_italic(bool b)
+void import_shared_strings::set_segment_italic(bool b)
 {
     m_cur_format.italic = b;
 }
 
-void shared_strings::set_segment_font_name(const char* s, size_t n)
+void import_shared_strings::set_segment_font_name(const char* s, size_t n)
 {
     m_cur_format.font = pstring(s, n).intern();
 }
 
-void shared_strings::set_segment_font_size(double point)
+void import_shared_strings::set_segment_font_size(double point)
 {
     m_cur_format.font_size = point;
 }
 
-void shared_strings::append_segment(const char* s, size_t n)
+void import_shared_strings::append_segment(const char* s, size_t n)
 {
     if (!n)
         return;
@@ -145,7 +145,7 @@ void shared_strings::append_segment(const char* s, size_t n)
     }
 }
 
-size_t shared_strings::commit_segments()
+size_t import_shared_strings::commit_segments()
 {
     size_t sindex = m_cxt.add_string(m_cur_segment_string.data(), m_cur_segment_string.size());
     m_cur_segment_string.clear();
@@ -169,7 +169,7 @@ public:
 
 }
 
-void shared_strings::dump() const
+void import_shared_strings::dump() const
 {
     cout << "number of shared strings: " << m_cxt.get_string_count() << endl;
 }

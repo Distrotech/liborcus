@@ -154,7 +154,7 @@ public:
                 const xml_map_tree::cell_reference& ref = *mp_current_elem->cell_ref;
                 assert(!ref.pos.sheet.empty());
 
-                spreadsheet::iface::sheet* sheet = m_factory.get_sheet(ref.pos.sheet.get(), ref.pos.sheet.size());
+                spreadsheet::iface::import_sheet* sheet = m_factory.get_sheet(ref.pos.sheet.get(), ref.pos.sheet.size());
                 if (sheet)
                     sheet->set_auto(ref.pos.row, ref.pos.col, val_trimmed.get(), val_trimmed.size());
             }
@@ -169,7 +169,7 @@ public:
                     ++field.ref->row_size;
 
                 const xml_map_tree::cell_position& pos = field.ref->pos;
-                spreadsheet::iface::sheet* sheet = m_factory.get_sheet(pos.sheet.get(), pos.sheet.size());
+                spreadsheet::iface::import_sheet* sheet = m_factory.get_sheet(pos.sheet.get(), pos.sheet.size());
                 if (sheet)
                     sheet->set_auto(
                        pos.row + field.ref->row_size,
@@ -270,7 +270,7 @@ void orcus_xml::read_file(const char* filepath)
         xml_map_tree::range_reference& range_ref = *it_ref->second;
         range_ref.row_size = 0; // Reset the row offset.
 
-        spreadsheet::iface::sheet* sheet = mp_impl->mp_factory->get_sheet(ref.sheet.get(), ref.sheet.size());
+        spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->get_sheet(ref.sheet.get(), ref.sheet.size());
         if (!sheet)
             continue;
 

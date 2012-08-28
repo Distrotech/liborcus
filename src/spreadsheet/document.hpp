@@ -44,8 +44,8 @@
 
 namespace orcus { namespace spreadsheet {
 
-class shared_strings;
-class styles;
+class import_shared_strings;
+class import_styles;
 
 /**
  * Internal document representation used only for testing the filters.  It
@@ -53,7 +53,7 @@ class styles;
  */
 class ORCUS_DLLPUBLIC document : private ::boost::noncopyable
 {
-    friend class sheet;
+    friend class import_sheet;
 
 public:
     /**
@@ -64,7 +64,7 @@ public:
     struct sheet_item : private ::boost::noncopyable
     {
         pstring name;
-        sheet   data;
+        import_sheet   data;
         sheet_item(document& doc, const pstring& _name, sheet_t sheet);
 
         struct printer : public ::std::unary_function<sheet_item, void>
@@ -94,17 +94,17 @@ public:
 
     ixion::matrix get_range_value(const ixion::abs_range_t& range) const;
 
-    shared_strings* get_shared_strings();
-    const shared_strings* get_shared_strings() const;
+    import_shared_strings* get_shared_strings();
+    const import_shared_strings* get_shared_strings() const;
 
-    styles* get_styles();
-    const styles* get_styles() const;
+    import_styles* get_styles();
+    const import_styles* get_styles() const;
 
     ixion::model_context& get_model_context();
     const ixion::model_context& get_model_context() const;
 
-    sheet* append_sheet(const pstring& sheet_name);
-    sheet* get_sheet(const pstring& sheet_name);
+    import_sheet* append_sheet(const pstring& sheet_name);
+    import_sheet* get_sheet(const pstring& sheet_name);
 
     void calc_formulas();
 
@@ -136,8 +136,8 @@ private:
 private:
     ixion::model_context m_context;
     ::boost::ptr_vector<sheet_item> m_sheets;
-    shared_strings* mp_strings;
-    styles* mp_styles;
+    import_shared_strings* mp_strings;
+    import_styles* mp_styles;
     ixion::dirty_formula_cells_t m_dirty_cells;
 };
 

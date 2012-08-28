@@ -55,12 +55,12 @@ namespace orcus { namespace spreadsheet {
 namespace {
 
 #if 0
-struct colsize_checker : public unary_function<pair<row_t, sheet::row_type*>, void>
+struct colsize_checker : public unary_function<pair<row_t, import_sheet::row_type*>, void>
 {
     colsize_checker() : m_colsize(0) {}
     colsize_checker(const colsize_checker& r) : m_colsize(r.m_colsize) {}
 
-    void operator() (const pair<row_t, sheet::row_type*>& r)
+    void operator() (const pair<row_t, import_sheet::row_type*>& r)
     {
         size_t colsize = r.second->size();
         if (colsize > m_colsize)
@@ -76,21 +76,21 @@ private:
 
 }
 
-const row_t sheet::max_row_limit = 1048575;
-const col_t sheet::max_col_limit = 1023;
+const row_t import_sheet::max_row_limit = 1048575;
+const col_t import_sheet::max_col_limit = 1023;
 
-sheet::sheet(document& doc, sheet_t sheet) :
+import_sheet::import_sheet(document& doc, sheet_t sheet) :
     m_doc(doc), m_max_row(0), m_max_col(0), m_sheet(sheet)
 {
 }
 
-sheet::~sheet()
+import_sheet::~import_sheet()
 {
     for_each(m_cell_formats.begin(), m_cell_formats.end(),
              map_object_deleter<cell_format_type>());
 }
 
-void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
+void import_sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
 {
     if (!p || !n)
         return;
@@ -109,19 +109,19 @@ void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
         cxt.set_string_cell(ixion::abs_address_t(m_sheet,row,col), p, n);
 }
 
-void sheet::set_string(row_t row, col_t col, size_t sindex)
+void import_sheet::set_string(row_t row, col_t col, size_t sindex)
 {
     ixion::model_context& cxt = m_doc.get_model_context();
     cxt.set_string_cell(ixion::abs_address_t(m_sheet,row,col), sindex);
 }
 
-void sheet::set_value(row_t row, col_t col, double value)
+void import_sheet::set_value(row_t row, col_t col, double value)
 {
     ixion::model_context& cxt = m_doc.get_model_context();
     cxt.set_numeric_cell(ixion::abs_address_t(m_sheet,row,col), value);
 }
 
-void sheet::set_format(row_t row, col_t col, size_t index)
+void import_sheet::set_format(row_t row, col_t col, size_t index)
 {
     cell_format_type::iterator itr = m_cell_formats.find(row);
     if (itr == m_cell_formats.end())
@@ -145,7 +145,7 @@ void sheet::set_format(row_t row, col_t col, size_t index)
     update_size(row, col);
 }
 
-void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
+void import_sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
                         const char* p, size_t n)
 {
     // Tokenize the formula string and store it.
@@ -156,7 +156,7 @@ void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
     m_doc.insert_dirty_cell(pos);
 }
 
-void sheet::set_shared_formula(
+void import_sheet::set_shared_formula(
     row_t row, col_t col, formula_grammar_t grammar, size_t sindex,
     const char* p_formula, size_t n_formula, const char* p_range, size_t n_range)
 {
@@ -166,7 +166,7 @@ void sheet::set_shared_formula(
     set_shared_formula(row, col, sindex);
 }
 
-void sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
+void import_sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
 {
     ixion::model_context& cxt = m_doc.get_model_context();
     ixion::abs_address_t pos(m_sheet, row, col);
@@ -175,11 +175,11 @@ void sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
     m_doc.insert_dirty_cell(pos);
 }
 
-void sheet::set_formula_result(row_t row, col_t col, const char* p, size_t n)
+void import_sheet::set_formula_result(row_t row, col_t col, const char* p, size_t n)
 {
 }
 
-row_t sheet::row_size() const
+row_t import_sheet::row_size() const
 {
     return 0;
 #if 0
@@ -190,7 +190,7 @@ row_t sheet::row_size() const
 #endif
 }
 
-col_t sheet::col_size() const
+col_t import_sheet::col_size() const
 {
     return 0;
 #if 0
@@ -201,7 +201,7 @@ col_t sheet::col_size() const
 #endif
 }
 
-ixion::matrix sheet::get_range_value(row_t row1, col_t col1, row_t row2, col_t col2) const
+ixion::matrix import_sheet::get_range_value(row_t row1, col_t col1, row_t row2, col_t col2) const
 {
     const ixion::model_context& cxt = m_doc.get_model_context();
     ixion::abs_range_t range;
@@ -210,7 +210,7 @@ ixion::matrix sheet::get_range_value(row_t row1, col_t col1, row_t row2, col_t c
     return cxt.get_range_value(range);
 }
 
-void sheet::dump() const
+void import_sheet::dump() const
 {
     const ixion::model_context& cxt = m_doc.get_model_context();
     ixion::abs_range_t range = cxt.get_data_range(m_sheet);
@@ -337,7 +337,7 @@ void sheet::dump() const
     }
 }
 
-void sheet::dump_check(ostream& os) const
+void import_sheet::dump_check(ostream& os) const
 {
     const ixion::model_context& cxt = m_doc.get_model_context();
     ixion::abs_range_t range = cxt.get_data_range(m_sheet);
@@ -430,17 +430,17 @@ private:
 };
 
 template<typename _OSTREAM>
-void print_formatted_text(_OSTREAM& strm, const string& text, const shared_strings::format_runs_type& formats)
+void print_formatted_text(_OSTREAM& strm, const string& text, const import_shared_strings::format_runs_type& formats)
 {
     typedef html_elem<_OSTREAM> elem;
 
     const char* p_span = "span";
 
     size_t pos = 0;
-    shared_strings::format_runs_type::const_iterator itr = formats.begin(), itr_end = formats.end();
+    import_shared_strings::format_runs_type::const_iterator itr = formats.begin(), itr_end = formats.end();
     for (; itr != itr_end; ++itr)
     {
-        const shared_strings::format_run& run = *itr;
+        const import_shared_strings::format_run& run = *itr;
         if (pos < run.pos)
         {
             // flush unformatted text.
@@ -485,12 +485,12 @@ void print_formatted_text(_OSTREAM& strm, const string& text, const shared_strin
     }
 }
 
-void build_style_string(string& str, const styles& styles, const styles::xf& fmt)
+void build_style_string(string& str, const import_styles& styles, const import_styles::xf& fmt)
 {
     ostringstream os;
     if (fmt.font)
     {
-        const styles::font* p = styles.get_font(fmt.font);
+        const import_styles::font* p = styles.get_font(fmt.font);
         if (p)
         {
             if (!p->name.empty())
@@ -505,12 +505,12 @@ void build_style_string(string& str, const styles& styles, const styles::xf& fmt
     }
     if (fmt.fill)
     {
-        const styles::fill* p = styles.get_fill(fmt.fill);
+        const import_styles::fill* p = styles.get_fill(fmt.fill);
         if (p)
         {
             if (p->pattern_type == "solid")
             {
-                const styles::color& r = p->fg_color;
+                const import_styles::color& r = p->fg_color;
                 os << "background-color: rgb(" << r.red << "," << r.green << "," << r.blue << ");";
             }
         }
@@ -520,7 +520,7 @@ void build_style_string(string& str, const styles& styles, const styles::xf& fmt
 
 }
 
-void sheet::dump_html(const string& filepath) const
+void import_sheet::dump_html(const string& filepath) const
 {
     typedef html_elem<ofstream> elem;
 
@@ -548,7 +548,7 @@ void sheet::dump_html(const string& filepath) const
             // Sheet is empty.  Nothing to print.
             return;
 
-        const shared_strings* sstrings = m_doc.get_shared_strings();
+        const import_shared_strings* sstrings = m_doc.get_shared_strings();
 
         elem table(file, p_table, p_table_attrs);
 
@@ -566,8 +566,8 @@ void sheet::dump_html(const string& filepath) const
                 if (xf)
                 {
                     // Apply cell format.
-                    styles* p_styles = m_doc.get_styles();
-                    const styles::xf* fmt = p_styles->get_cell_xf(xf);
+                    import_styles* p_styles = m_doc.get_styles();
+                    const import_styles::xf* fmt = p_styles->get_cell_xf(xf);
                     if (fmt)
                         build_style_string(style, *p_styles, *fmt);
                 }
@@ -591,7 +591,7 @@ void sheet::dump_html(const string& filepath) const
                         size_t sindex = cxt.get_string_identifier(pos);
                         const string* p = cxt.get_string(sindex);
                         assert(p);
-                        const shared_strings::format_runs_type* pformat = sstrings->get_format_runs(sindex);
+                        const import_shared_strings::format_runs_type* pformat = sstrings->get_format_runs(sindex);
                         if (pformat)
                             print_formatted_text<ostringstream>(os, *p, *pformat);
                         else
@@ -632,7 +632,7 @@ void sheet::dump_html(const string& filepath) const
     }
 }
 
-void sheet::update_size(row_t row, col_t col)
+void import_sheet::update_size(row_t row, col_t col)
 {
     if (m_max_row < row)
         m_max_row = row;
@@ -640,7 +640,7 @@ void sheet::update_size(row_t row, col_t col)
         m_max_col = col;
 }
 
-size_t sheet::get_cell_format(row_t row, col_t col) const
+size_t import_sheet::get_cell_format(row_t row, col_t col) const
 {
     cell_format_type::const_iterator itr = m_cell_formats.find(row);
     if (itr == m_cell_formats.end())

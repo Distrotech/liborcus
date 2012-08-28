@@ -49,7 +49,7 @@ class document;
  * This class represents a single sheet instance in the internal document
  * model.
  */
-class sheet : public iface::sheet
+class import_sheet : public iface::import_sheet
 {
     static const row_t max_row_limit;
     static const col_t max_col_limit;
@@ -59,8 +59,8 @@ public:
     typedef ::mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
     typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
 
-    sheet(document& doc, sheet_t sheet);
-    virtual ~sheet();
+    import_sheet(document& doc, sheet_t sheet);
+    virtual ~import_sheet();
 
     virtual void set_auto(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, const char* p, size_t n);
     virtual void set_string(row_t row, col_t col, size_t sindex);
