@@ -335,9 +335,9 @@ void orcus_xml::write_file(const char* filepath)
             const char* close_begin = elem.cell_ref->element_close_begin;
             const char* close_end = elem.cell_ref->element_close_end;
 
-            file << pstring(begin_pos, open_end-begin_pos);
+            file << pstring(begin_pos, open_end-begin_pos); // opening element.
             sheet->write_string(file, pos.row, pos.col);
-            file << pstring(close_begin, close_end-close_begin);
+            file << pstring(close_begin, close_end-close_begin); // closing element.
             begin_pos = close_end;
         }
         else if (elem.range_parent)
@@ -346,13 +346,33 @@ void orcus_xml::write_file(const char* filepath)
             const xml_map_tree::range_reference& ref = *elem.range_parent;
             const xml_map_tree::cell_position& pos = ref.pos;
 
+            const spreadsheet::iface::export_sheet* sheet = fact.get_sheet(pos.sheet.get(), pos.sheet.size());
+            if (!sheet)
+                continue;
+
             const char* open_end = ref.element_open_end;
             const char* close_begin = ref.element_close_begin;
             const char* close_end = ref.element_close_end;
 
-            file << pstring(begin_pos, open_end-begin_pos);
-            file << pos;
-            file << pstring(close_begin, close_end-close_begin);
+            file << pstring(begin_pos, open_end-begin_pos); // opening element.
+
+            xml_map_tree::const_element_list_type::const_iterator it, it_beg = ref.elements.begin(), it_end = ref.elements.end();
+
+            for (spreadsheet::row_t i = 0; i < ref.row_size; ++i)
+            {
+                file << "<data>";
+                for (it = it_beg; it != it_end; ++it)
+                {
+                    const xml_map_tree::element& field_elem = **it;
+                    assert(field_elem.type == xml_map_tree::element_range_field_ref);
+                    file << "<" << field_elem.name << ">";
+                    sheet->write_string(file, pos.row + 1 + i, pos.col + field_elem.field_ref->column_pos);
+                    file << "</" << field_elem.name << ">";
+                }
+                file << "</data>";
+            }
+
+            file << pstring(close_begin, close_end-close_begin); // closing element.
             begin_pos = close_end;
         }
         else
