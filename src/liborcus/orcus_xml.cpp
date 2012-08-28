@@ -40,6 +40,7 @@
 #endif
 
 #include <vector>
+#include <boost/ptr_container/ptr_vector.hpp>
 #include <fstream>
 
 using namespace std;
@@ -189,6 +190,100 @@ public:
         m_attrs.push_back(attr(ns, name, val));
     }
 };
+
+class write_range_reference_group : unary_function<const xml_map_tree::element, void>
+{
+    struct scope
+    {
+        const xml_map_tree::element& element;
+        xml_map_tree::element_store_type::const_iterator current_child_pos;
+        xml_map_tree::element_store_type::const_iterator end_child_pos;
+        bool opened:1;
+
+        scope(const xml_map_tree::element& _elem) :
+            element(_elem), opened(false)
+        {
+            assert(element.type == xml_map_tree::element_non_leaf);
+            current_child_pos = element.child_elements->begin();
+            end_child_pos = element.child_elements->end();
+        }
+    };
+
+    typedef boost::ptr_vector<scope> scopes_type;
+
+    ostream& m_os;
+public:
+    write_range_reference_group(ostream& os) : m_os(os) {}
+
+    void operator() (const xml_map_tree::element& root)
+    {
+        scopes_type scopes;
+        scopes.push_back(new scope(root)); // root element
+
+        while (!scopes.empty())
+        {
+            bool new_scope = false;
+
+            // Iterate through all elements in the current scope.
+            scope& cur_scope = scopes.back();
+            if (!cur_scope.opened)
+            {
+                // Write opening element of this scope.
+                m_os << "<" << cur_scope.element.name << ">";
+                cur_scope.opened = true;
+            }
+
+            // Go though all child elements.
+            for (; cur_scope.current_child_pos != cur_scope.end_child_pos; ++cur_scope.current_child_pos)
+            {
+                const xml_map_tree::element& child_elem = *cur_scope.current_child_pos;
+                if (child_elem.type != xml_map_tree::element_non_leaf)
+                {
+                    // This is a leaf element.
+                    m_os << "<" << child_elem.name << ">" << "</" << child_elem.name << ">";
+                }
+                else
+                {
+                    // This is a non-leaf element.  Push a new scope with this
+                    // element and re-start the loop.
+                    ++cur_scope.current_child_pos;
+                    scopes.push_back(new scope(child_elem));
+                    new_scope = true;
+                    break;
+                }
+            }
+
+            if (new_scope)
+                // Re-start the loop with a new scope.
+                continue;
+
+            // Close this element for good.
+            m_os << "</" << scopes.back().element.name << ">";
+            scopes.pop_back();
+        }
+    }
+};
+
+/**
+ * Write to an output stream the sub-structure comprising the range
+ * reference.
+ *
+ * @param os output stream
+ * @param elem_top topmost element in the range reference sub-structure.
+ */
+void write_range_reference(ostream& os, const xml_map_tree::element& elem_top)
+{
+    // Top element is expected to have one or more child elements, and each
+    // child element represents a separate database range.
+    if (elem_top.type != xml_map_tree::element_non_leaf)
+        return;
+
+    assert(elem_top.child_elements);
+
+    for_each(
+       elem_top.child_elements->begin(), elem_top.child_elements->end(),
+       write_range_reference_group(os));
+}
 
 }
 
@@ -355,23 +450,7 @@ void orcus_xml::write_file(const char* filepath)
             const char* close_end = ref.element_close_end;
 
             file << pstring(begin_pos, open_end-begin_pos); // opening element.
-
-            xml_map_tree::const_element_list_type::const_iterator it, it_beg = ref.elements.begin(), it_end = ref.elements.end();
-
-            for (spreadsheet::row_t i = 0; i < ref.row_size; ++i)
-            {
-                file << "<data>";
-                for (it = it_beg; it != it_end; ++it)
-                {
-                    const xml_map_tree::element& field_elem = **it;
-                    assert(field_elem.type == xml_map_tree::element_range_field_ref);
-                    file << "<" << field_elem.name << ">";
-                    sheet->write_string(file, pos.row + 1 + i, pos.col + field_elem.field_ref->column_pos);
-                    file << "</" << field_elem.name << ">";
-                }
-                file << "</data>";
-            }
-
+            write_range_reference(file, elem);
             file << pstring(close_begin, close_end-close_begin); // closing element.
             begin_pos = close_end;
         }
