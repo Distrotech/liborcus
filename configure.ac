@@ -93,7 +93,9 @@ int main()
     return 0;
 }
 
-    ], [AC_MSG_RESULT(OK)], [AC_MSG_ERROR([mdds headers not usable.  Check your mdds path to make sure it's correct.])])
+    ], [AC_MSG_RESULT(OK)],
+	   [AC_MSG_ERROR([mdds headers not usable.  Check your mdds path to make sure it's correct.])],
+	   [AC_MSG_WARN([Cannot verify mdds headers when cross-compiling. Assuming that they are OK.])])
     AC_LANG_POP([C++])
 fi
 
@@ -119,7 +121,10 @@ int main()
     return 0;
 }
 
-        ], [AC_MSG_RESULT(OK)], [AC_MSG_ERROR([ixion headers not usable.  Check your ixion path to make sure it's correct.])])
+        ], [AC_MSG_RESULT(OK)],
+		   [AC_MSG_ERROR([ixion headers not usable.  Check your ixion path to make sure it's correct.])],
+		   [AC_MSG_WARN([Cannot verify ixion headers when cross-compiling. Assuming that they are OK.])]
+		   )
         AC_LANG_POP([C++])
     fi
 fi
