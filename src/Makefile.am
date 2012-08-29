@@ -4,6 +4,10 @@ INCLUDES = -I$(top_srcdir)/include
 
 bin_PROGRAMS = orcus-format-xml
 
+EXTRA_PROGRAMS = \
+	orcus-test-common \
+	orcus-test-xml
+
 # orcus-format-xml
 
 orcus_format_xml_SOURCES = orcus_format_xml.cpp
@@ -12,15 +16,33 @@ orcus_format_xml_LDADD = \
 
 orcus_format_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
+# orcus-test-common
+
+orcus_test_common_SOURCES = orcus_test_common.cpp
+orcus_test_common_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la
+
+orcus_test_common_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
+# orcus-test-xml
+
+orcus_test_xml_SOURCES = orcus_test_xml.cpp
+orcus_test_xml_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la
+
+orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
+TESTS = \
+	orcus-test-common \
+	orcus-test-xml
+
 if BUILD_SPREADSHEET_MODEL
 
 bin_PROGRAMS += \
 	orcus-csv orcus-ods orcus-xlsx orcus-xml
 
-EXTRA_PROGRAMS = \
-	orcus-test-common \
+EXTRA_PROGRAMS += \
 	orcus-test-csv \
-	orcus-test-xml \
 	orcus-test-xml-mapped
 
 # orcus-csv
@@ -68,15 +90,6 @@ orcus_xml_LDADD = \
 
 orcus_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
-# orcus-test-common
-
-orcus_test_common_SOURCES = orcus_test_common.cpp
-orcus_test_common_LDADD = \
-	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
-
-orcus_test_common_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
-
 # orcus-test-csv
 
 orcus_test_csv_SOURCES = orcus_test_csv.cpp
@@ -85,15 +98,6 @@ orcus_test_csv_LDADD = \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 
 orcus_test_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
-
-# orcus-test-xml
-
-orcus_test_xml_SOURCES = orcus_test_xml.cpp
-orcus_test_xml_LDADD = \
-	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
-
-orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
 # orcus-test-xml-mapped
 
@@ -107,10 +111,8 @@ orcus_test_xml_mapped_LDADD = \
 
 orcus_test_xml_mapped_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
-TESTS = \
-	orcus-test-common \
+TESTS += \
 	orcus-test-csv \
-	orcus-test-xml \
 	orcus-test-xml-mapped
 
 endif
