@@ -1,11 +1,21 @@
 SUBDIRS = liborcus spreadsheet .
 
-if BUILD_SPREADSHEET_MODEL
-
 INCLUDES = -I$(top_srcdir)/include
 
-bin_PROGRAMS = orcus-csv orcus-ods orcus-xlsx orcus-xml \
-	orcus-format-xml
+bin_PROGRAMS = orcus-format-xml
+
+# orcus-format-xml
+
+orcus_format_xml_SOURCES = orcus_format_xml.cpp
+orcus_format_xml_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la
+
+orcus_format_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
+if BUILD_SPREADSHEET_MODEL
+
+bin_PROGRAMS += \
+	orcus-csv orcus-ods orcus-xlsx orcus-xml
 
 EXTRA_PROGRAMS = \
 	orcus-test-common \
@@ -58,15 +68,6 @@ orcus_xml_LDADD = \
 
 orcus_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
-# orcus-format-xml
-
-orcus_format_xml_SOURCES = orcus_format_xml.cpp
-orcus_format_xml_LDADD = \
-	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
-
-orcus_format_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
-
 # orcus-test-common
 
 orcus_test_common_SOURCES = orcus_test_common.cpp
@@ -113,3 +114,4 @@ TESTS = \
 	orcus-test-xml-mapped
 
 endif
+
