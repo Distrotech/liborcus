@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus", "liborcus\liborcus.vcproj", "{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}.Debug|Win32.Build.0 = Debug|Win32
+		{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}.Release|Win32.ActiveCfg = Release|Win32
+		{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
