@@ -113,7 +113,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="C:\Users\Kohei\Workspace\orcus\include;C:\dev\boost_1_47_0;C:\dev\libzip\lib"
+				AdditionalIncludeDirectories="C:\Users\Kohei\Workspace\orcus\include;C:\dev\boost_1_47_0;C:\dev\installed\include"
 				PreprocessorDefinitions="__ORCUS_BUILDING_DLL"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -131,6 +131,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="zip.lib"
+				AdditionalLibraryDirectories="C:\dev\boost_1_47_0\stage\lib;C:\dev\installed\lib"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -334,11 +336,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\ooxml\global.hpp"
+				RelativePath="..\..\include\orcus\global.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\global.hpp"
+				RelativePath="..\..\include\orcus\ooxml\global.hpp"
 				>
 			</File>
 			<File
