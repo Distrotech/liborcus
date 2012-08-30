@@ -46,7 +46,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				WarningLevel="3"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -338,11 +338,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\ooxml\global.hpp"
+				RelativePath="..\..\include\orcus\global.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\global.hpp"
+				RelativePath="..\..\include\orcus\ooxml\global.hpp"
 				>
 			</File>
 			<File
