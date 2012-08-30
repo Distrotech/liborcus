@@ -31,15 +31,13 @@
 #include "env.hpp"
 #include "ooxml/opc_reader.hpp"
 
-#include <boost/noncopyable.hpp>
-
 namespace orcus {
 
 namespace spreadsheet { namespace iface { class import_factory; }}
 
 struct xlsx_rel_sheet_info;
 
-class ORCUS_DLLPUBLIC orcus_xlsx : public ::boost::noncopyable
+class ORCUS_DLLPUBLIC orcus_xlsx
 {
     class opc_handler : public opc_reader::part_handler
     {
@@ -50,6 +48,8 @@ class ORCUS_DLLPUBLIC orcus_xlsx : public ::boost::noncopyable
         virtual bool handle_part(
             schema_t type, const std::string& dir_path, const std::string& file_name, const opc_rel_extra* data);
     };
+
+    orcus_xlsx(const orcus_xlsx&); // disabled
 
 public:
     orcus_xlsx(spreadsheet::iface::import_factory* factory);

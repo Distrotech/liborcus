@@ -32,6 +32,7 @@
 #include "env.hpp"
 
 #include <string>
+#include <functional>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
 namespace orcus {

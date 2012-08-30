@@ -34,12 +34,12 @@
 #include <ostream>
 
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/noncopyable.hpp>
 
 namespace orcus {
 
-class ORCUS_DLLPUBLIC dom_tree : boost::noncopyable
+class ORCUS_DLLPUBLIC dom_tree
 {
+    dom_tree(const dom_tree&); // disabled
 public:
     struct attr
     {
