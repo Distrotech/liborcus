@@ -9,8 +9,6 @@ liborcus_HEADERS = \
 	exception.hpp \
 	global.hpp \
 	orcus_csv.hpp \
-	orcus_ods.hpp \
-	orcus_xlsx.hpp \
 	orcus_xml.hpp \
 	pstring.hpp \
 	sax_parser.hpp \
@@ -21,3 +19,11 @@ liborcus_HEADERS = \
 	xml_handler.hpp \
 	xml_parser.hpp \
 	xml_simple_handler.hpp
+
+if ENABLE_LIBZIP
+
+liborcus_HEADERS += \
+	orcus_ods.hpp \
+	orcus_xlsx.hpp
+
+endif # ENABLE_LIBZIP

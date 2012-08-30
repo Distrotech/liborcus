@@ -1,6 +1,11 @@
 
 liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus/ooxml
-liborcus_HEADERS = \
+
+liborcus_HEADERS =
+
+if ENABLE_LIBZIP
+
+liborcus_HEADERS += \
 	content_types.hpp \
 	global.hpp \
 	ooxml_token_constants.hpp \
@@ -17,3 +22,5 @@ liborcus_HEADERS = \
 	xlsx_sheet_context.hpp \
 	xlsx_types.hpp \
 	xlsx_workbook_context.hpp
+
+endif # ENABLE_LIBZIP
