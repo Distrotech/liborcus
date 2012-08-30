@@ -60,6 +60,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="zip.lib"
+				OutputFile="$(OutDir)\orcus.dll"
 				AdditionalLibraryDirectories="C:\dev\boost_1_47_0\stage\lib;C:\dev\installed\lib"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
@@ -132,6 +133,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="zip.lib"
+				OutputFile="$(OutDir)\orcus.dll"
 				AdditionalLibraryDirectories="C:\dev\boost_1_47_0\stage\lib;C:\dev\installed\lib"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
@@ -336,11 +338,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\global.hpp"
+				RelativePath="..\..\include\orcus\ooxml\global.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\ooxml\global.hpp"
+				RelativePath="..\..\include\orcus\global.hpp"
 				>
 			</File>
 			<File

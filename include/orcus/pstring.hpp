@@ -58,7 +58,7 @@ public:
 
     static pstring intern(const char* str, size_t n);
 
-    struct intern
+    struct ORCUS_DLLPUBLIC intern
     {
         /**
          * Destroy all interned string instances.  Call this before the
