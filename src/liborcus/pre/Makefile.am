@@ -1,4 +1,6 @@
 
+if ENABLE_LIBZIP
+
 INCDIR = $(top_srcdir)/include
 SRCDIR = $(top_srcdir)/src/liborcus
 BINDIR = $(top_srcdir)/bin
@@ -24,3 +26,5 @@ clean-generic:
 	rm -f $(SRCDIR)/odf_tokens.inl $(SRCDIR)/odf_tokens.txt
 	rm -f $(SRCDIR)/ooxml_tokens.inl $(SRCDIR)/ooxml_tokens.txt
 	rm -f $(SRCDIR)/ooxml_opc_tokens.inl $(SRCDIR)/ooxml_opc_tokens.txt
+
+endif

@@ -22,6 +22,11 @@ AC_ARG_WITH(ixion-path,
     AS_HELP_STRING([--with-ixion-path], [specify path to ixion library.])
 ,)
 
+AC_ARG_ENABLE(libzip,
+    AS_HELP_STRING([--disable-libzip],
+        [disable libzip. Support for all zip-storage based formats will be disabled if libzip is disabled.])
+)
+
 AC_ARG_ENABLE(spreadsheet-model,
     AS_HELP_STRING([--disable-spreadsheet-model],
         [
@@ -56,6 +61,11 @@ AC_PROG_LIBTOOL
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h sys/time.h unistd.h])
+
+if test "z$enable_libzip" != "zno"; then
+    # Make sure we have libzip headers available.
+    AC_CHECK_HEADERS([zip.h])
+fi
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -138,10 +148,15 @@ if test "z$enable_symbols" = "zyes"; then
 fi
 
 # for liborcus filters
-PKG_CONFIG_CPPFLAGS="pkg-config --cflags libzip"
-PKG_CONFIG_LDFLAGS="pkg-config --libs libzip"
+PKG_CONFIG_CPPFLAGS=
+PKG_CONFIG_LDFLAGS=
 
-# for liborcus spreadsheet implementation
+if test "z$enable_libzip" != "zno"; then
+    PKG_CONFIG_CPPFLAGS="$PKG_CONFIG_CPPFLAGS pkg-config --cflags libzip"
+    PKG_CONFIG_LDFLAGS="$PKG_CONFIG_LDFLAGS pkg-config --libs libzip"
+fi
+
+# for liborcus spreadsheet model
 PKG_CONFIG_CPPFLAGS_SPREADSHEET_MODEL="pkg-config --cflags libixion-0.4"
 PKG_CONFIG_LDFLAGS_SPREADSHEET_MODEL="pkg-config --libs libixion-0.4"
 
@@ -154,6 +169,7 @@ AC_SUBST(PKG_CONFIG_CPPFLAGS_SPREADSHEET_MODEL)
 AC_SUBST(PKG_CONFIG_LDFLAGS_SPREADSHEET_MODEL)
 
 # conditionals to pass to makefiles.
+AM_CONDITIONAL(ENABLE_LIBZIP, test "z$enable_libzip" != "zno")
 AM_CONDITIONAL(BUILD_SPREADSHEET_MODEL, test "z$enable_spreadsheet_model" != "zno")
 
 AC_CONFIG_FILES([Makefile

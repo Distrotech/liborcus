@@ -36,10 +36,14 @@ TESTS = \
 	orcus-test-common \
 	orcus-test-xml
 
+#----------------------------------------------------------------------------
+# spreadsheet model
+#----------------------------------------------------------------------------
+
 if BUILD_SPREADSHEET_MODEL
 
 bin_PROGRAMS += \
-	orcus-csv orcus-ods orcus-xlsx orcus-xml
+	orcus-csv orcus-xml
 
 EXTRA_PROGRAMS += \
 	orcus-test-csv \
@@ -55,28 +59,6 @@ orcus_csv_LDADD = \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 
 orcus_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
-
-# orcus-ods
-
-orcus_ods_SOURCES = \
-	orcus_ods_main.cpp
-
-orcus_ods_LDADD = \
-	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
-
-orcus_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
-
-# orcus-xlsx
-
-orcus_xlsx_SOURCES = \
-	orcus_xlsx_main.cpp
-
-orcus_xlsx_LDADD = \
-	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
-
-orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
 # orcus-xml
 
@@ -115,5 +97,34 @@ TESTS += \
 	orcus-test-csv \
 	orcus-test-xml-mapped
 
-endif
+if ENABLE_LIBZIP
+
+bin_PROGRAMS += \
+	orcus-ods orcus-xlsx
+
+# orcus-ods
+
+orcus_ods_SOURCES = \
+	orcus_ods_main.cpp
+
+orcus_ods_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+
+orcus_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
+# orcus-xlsx
+
+orcus_xlsx_SOURCES = \
+	orcus_xlsx_main.cpp
+
+orcus_xlsx_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+
+orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
+endif # ENABLE_LIBZIP
+
+endif # BUILD_SPREADSHEET_MODEL
 
