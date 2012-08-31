@@ -79,7 +79,7 @@ AC_CHECK_FUNCS([gettimeofday])
 
 DEFINES="-D_REENTRANT"
 
-if test "z$enable_debug" == "zno"; then
+if test "z$enable_debug" = "zno"; then
     DEFINES="$DEFINES -DNDEBUG"
 fi
 
@@ -141,10 +141,10 @@ int main()
     fi
 fi
 
-CPPFLAGS="$DEFINES -O2 -fvisibility=hidden -I./include -I$with_mdds_include_path -Wall"
+CXXFLAGS="$DEFINES -O2 -fvisibility=hidden -I./include -I$with_mdds_include_path -Wall"
 
 if test "z$enable_symbols" = "zyes"; then
-    CPPFLAGS="$CPPFLAGS -g"
+    CXXFLAGS="$CPPFLAGS -g"
 fi
 
 # for liborcus filters
@@ -162,7 +162,6 @@ PKG_CONFIG_LDFLAGS_SPREADSHEET_MODEL="pkg-config --libs libixion-0.4"
 
 AC_SUBST(PKG_CONFIG_PATH)
 AC_SUBST(LD_RUN_PATH)
-AC_SUBST(CPPFLAGS)
 AC_SUBST(PKG_CONFIG_CPPFLAGS)
 AC_SUBST(PKG_CONFIG_LDFLAGS)
 AC_SUBST(PKG_CONFIG_CPPFLAGS_SPREADSHEET_MODEL)
