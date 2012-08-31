@@ -55,7 +55,9 @@ done
 
 # Checks for programs.
 AC_PROG_CXX
+AC_PROG_INSTALL
 AC_PROG_LIBTOOL
+AC_LIBTOOL_WIN32_DLL
 
 # Checks for libraries.
 
