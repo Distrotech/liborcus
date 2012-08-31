@@ -144,7 +144,7 @@ fi
 CXXFLAGS="$DEFINES -O2 -fvisibility=hidden -I./include -I$with_mdds_include_path -Wall"
 
 if test "z$enable_symbols" = "zyes"; then
-    CXXFLAGS="$CPPFLAGS -g"
+    CXXFLAGS="$CXXFLAGS -g"
 fi
 
 # for liborcus filters
