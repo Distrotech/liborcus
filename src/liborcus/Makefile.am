@@ -8,7 +8,7 @@ INCLUDES = -I$(top_srcdir)/include
 
 EXTRA_PROGRAMS = liborcus-test-xml-map-tree
 
-AM_CXXFLAGS = -D__ORCUS_BUILDING_DLL=1 -fPIC
+AM_CXXFLAGS = -D__ORCUS_BUILDING_DLL=1
 
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
