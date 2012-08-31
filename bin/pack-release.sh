@@ -9,6 +9,9 @@ PACKAGE=$DIR.tar.bz2
 git clone file:///home/kyoshida/Documents/Workspace/orcus $DIR || exit 1
 pushd . > /dev/null
 cd $DIR
+
+./autogen.sh
+
 rm -rf .git
 rm -f .gitignore
 rm -rf autom4te.cache
@@ -16,7 +19,7 @@ rm -rf slickedit
 
 popd > /dev/null
 
-tar jcvf $PACKAGE $DIR
+tar jcvfh $PACKAGE $DIR
 
 if [ $1 == "md5" ]; then
     # prefix the package name with md5 sum.
