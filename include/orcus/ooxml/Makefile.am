@@ -1,11 +1,9 @@
 
-liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus/ooxml
-
-liborcus_HEADERS =
-
 if ENABLE_LIBZIP
 
-liborcus_HEADERS += \
+liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus/ooxml
+
+liborcus_HEADERS = \
 	content_types.hpp \
 	global.hpp \
 	ooxml_token_constants.hpp \

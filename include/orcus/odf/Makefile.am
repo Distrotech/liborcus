@@ -1,11 +1,9 @@
 
-liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus/odf
-
-liborcus_HEADERS =
-
 if ENABLE_LIBZIP
 
-liborcus_HEADERS += \
+liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus/odf
+
+liborcus_HEADERS = \
 	odf_token_constants.hpp \
 	odf_token_constants.inl \
 	odf_tokens.hpp \
