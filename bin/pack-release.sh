@@ -3,6 +3,7 @@
 PROGDIR=`dirname $0`
 VERSION=`cat $PROGDIR/../VERSION`
 DIR=liborcus_$VERSION
+PACKAGE=$DIR.tar.bz2
 
 #git clone git://gitorious.org/orcus/orcus.git $DIR || exit 1
 git clone file:///home/kyoshida/Documents/Workspace/orcus $DIR || exit 1
@@ -15,5 +16,10 @@ rm -rf slickedit
 
 popd > /dev/null
 
-tar jcvf $DIR.tar.bz2 $DIR
+tar jcvf $PACKAGE $DIR
 
+if [ $1 == "md5" ]; then
+    # prefix the package name with md5 sum.
+    MD5SUM=`md5sum $PACKAGE | sed -e 's/\ .*//g'`
+    mv $PACKAGE $MD5SUM-$PACKAGE
+fi
