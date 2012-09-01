@@ -59,6 +59,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\orcus.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -121,6 +122,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\orcus.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
