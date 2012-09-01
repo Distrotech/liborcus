@@ -32,6 +32,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orcus-xml", "orcus-xml\orcu
 		{7C6822F2-EFBA-4FA8-9BBD-B66434E622EB} = {7C6822F2-EFBA-4FA8-9BBD-B66434E622EB}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus-static-nozip", "liborcus-static-nozip\liborcus-static-nozip.vcproj", "{50DD1B15-9FEB-4037-9FBF-D52A711977E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -62,6 +64,10 @@ Global
 		{561E1A45-D5B8-4621-AFCC-CA8A07005379}.Debug|Win32.Build.0 = Debug|Win32
 		{561E1A45-D5B8-4621-AFCC-CA8A07005379}.Release|Win32.ActiveCfg = Release|Win32
 		{561E1A45-D5B8-4621-AFCC-CA8A07005379}.Release|Win32.Build.0 = Release|Win32
+		{50DD1B15-9FEB-4037-9FBF-D52A711977E7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{50DD1B15-9FEB-4037-9FBF-D52A711977E7}.Debug|Win32.Build.0 = Debug|Win32
+		{50DD1B15-9FEB-4037-9FBF-D52A711977E7}.Release|Win32.ActiveCfg = Release|Win32
+		{50DD1B15-9FEB-4037-9FBF-D52A711977E7}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
