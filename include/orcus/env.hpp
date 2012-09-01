@@ -35,6 +35,8 @@
     #else
       #define ORCUS_DLLPUBLIC __declspec(dllexport)
     #endif
+  #elif defined __ORCUS_STATIC_LIB
+      #define ORCUS_DLLPUBLIC
   #else
     #ifdef __GNUC__
       #define ORCUS_DLLPUBLIC __attribute__ ((dllimport))
