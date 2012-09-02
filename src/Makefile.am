@@ -1,4 +1,4 @@
-SUBDIRS = liborcus spreadsheet .
+SUBDIRS = liborcus spreadsheet
 
 INCLUDES = -I$(top_srcdir)/include
 
@@ -56,9 +56,10 @@ orcus_csv_SOURCES = \
 
 orcus_csv_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
-
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+	$(LIBIXION_LIBS)
 orcus_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+orcus_csv_CXXFLAGS = $(LIBIXION_CFLAGS)
 
 # orcus-xml
 
@@ -68,18 +69,22 @@ orcus_xml_SOURCES = \
 
 orcus_xml_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+	$(LIBIXION_LIBS)
 
 orcus_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+orcus_xml_CXXFLAGS = $(LIBIXION_CFLAGS)
 
 # orcus-test-csv
 
 orcus_test_csv_SOURCES = orcus_test_csv.cpp
 orcus_test_csv_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+	$(LIBIXION_LIBS)
 
 orcus_test_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+orcus_test_csv_CXXFLAGS = $(LIBIXION_CFLAGS)
 
 # orcus-test-xml-mapped
 
@@ -89,9 +94,11 @@ orcus_test_xml_mapped_SOURCES = \
 
 orcus_test_xml_mapped_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+	$(LIBIXION_LIBS)
 
 orcus_test_xml_mapped_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+orcus_test_xml_mapped_CXXFLAGS = $(LIBIXION_CFLAGS)
 
 TESTS += \
 	orcus-test-csv \
@@ -109,9 +116,14 @@ orcus_ods_SOURCES = \
 
 orcus_ods_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+	$(LIBZIP_LIBS) \
+	$(LIBIXION_LIBS)
 
 orcus_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+orcus_ods_CXXFLAGS = \
+	$(LIBZIP_CFLAGS) \
+	$(LIBIXION_CFLAGS)
 
 # orcus-xlsx
 
@@ -120,9 +132,14 @@ orcus_xlsx_SOURCES = \
 
 orcus_xlsx_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+	$(LIBZIP_LIBS) \
+	$(LIBIXION_LIBS)
 
 orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+orcus_xlsx_CXXFLAGS = \
+	$(LIBZIP_CFLAGS) \
+	$(LIBIXION_CFLAGS)
 
 endif # ENABLE_LIBZIP
 

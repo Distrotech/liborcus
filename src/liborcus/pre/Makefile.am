@@ -1,4 +1,3 @@
-
 if ENABLE_LIBZIP
 
 INCDIR = $(top_srcdir)/include
