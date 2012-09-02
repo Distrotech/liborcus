@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Users\Kohei\Workspace\orcus\include;C:\dev\boost_1_47_0;C:\dev\installed\include"
+				AdditionalIncludeDirectories="..\..\include;C:\dev\boost_1_47_0;C:\dev\installed\include"
 				PreprocessorDefinitions="__ORCUS_BUILDING_DLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -114,7 +114,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="C:\Users\Kohei\Workspace\orcus\include;C:\dev\boost_1_47_0;C:\dev\installed\include"
+				AdditionalIncludeDirectories="..\..\include;C:\dev\boost_1_47_0;C:\dev\installed\include"
 				PreprocessorDefinitions="__ORCUS_BUILDING_DLL"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
