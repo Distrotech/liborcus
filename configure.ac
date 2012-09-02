@@ -26,7 +26,7 @@ AM_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([1.11 foreign dist-xz])
 AM_SILENT_RULES([yes])
 AC_LANG([C++])
-CXXFLAGS="$CXXFLAGS -O2 -fvisibility=hidden -I./include -I$with_mdds_include_path -Wall"
+CXXFLAGS="$CXXFLAGS -O2 -fvisibility=hidden -Wall"
 
 # ===========================
 # Find required base packages
