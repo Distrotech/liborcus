@@ -58,3 +58,6 @@ autoconf || {
     echo "error: autoconf failed"
     exit 1
 }
+
+./configure "$@"
+
