@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="liborcus-static-nozip"
 	ProjectGUID="{50DD1B15-9FEB-4037-9FBF-D52A711977E7}"
 	RootNamespace="liborcusnozip"
@@ -20,6 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -40,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;$(BOOST_INCLUDE_DIR)"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="__ORCUS_STATIC_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -82,6 +83,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -104,7 +106,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\include;$(BOOST_INCLUDE_DIR)"
+				AdditionalIncludeDirectories="&quot;$(BOOST_INCLUDE_DIR)&quot;"
 				PreprocessorDefinitions="__ORCUS_STATIC_LIB"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"

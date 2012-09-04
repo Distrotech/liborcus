@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="orcus-csv-static"
 	ProjectGUID="{385C2855-67F5-40C3-8361-A490D0EBD25A}"
 	RootNamespace="orcuscsvstatic"
@@ -20,6 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\MddsAndIxion.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -87,6 +88,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\MddsAndIxion.vsprops"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -109,7 +111,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="C:\Users\Kohei\Workspace\ixion\include;..\..\include;C:\dev\boost_1_47_0;C:\Users\Kohei\Workspace\multidimalgorithm\include"
+				AdditionalIncludeDirectories=""
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
