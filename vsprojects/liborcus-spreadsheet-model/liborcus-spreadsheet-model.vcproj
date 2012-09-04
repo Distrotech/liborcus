@@ -62,7 +62,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="ixion.lib"
 				OutputFile="$(OutDir)\orcus-spreadsheet-model.dll"
-				AdditionalLibraryDirectories="C:\dev\boost_1_47_0\stage\lib;C:\dev\installed\lib"
+				AdditionalLibraryDirectories="C:\dev\installed\lib"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -136,7 +136,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="ixion.lib"
 				OutputFile="$(OutDir)\orcus-spreadsheet-model.dll"
-				AdditionalLibraryDirectories="C:\dev\boost_1_47_0\stage\lib;C:\dev\installed\lib"
+				AdditionalLibraryDirectories="C:\dev\installed\lib"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
