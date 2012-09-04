@@ -34,11 +34,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orcus-xml", "orcus-xml\orcu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus-static-nozip", "liborcus-static-nozip\liborcus-static-nozip.vcproj", "{50DD1B15-9FEB-4037-9FBF-D52A711977E7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orcus-csv-static", "orcus-csv-static\orcus-csv-static.vcproj", "{385C2855-67F5-40C3-8361-A490D0EBD25A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{50DD1B15-9FEB-4037-9FBF-D52A711977E7} = {50DD1B15-9FEB-4037-9FBF-D52A711977E7}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
