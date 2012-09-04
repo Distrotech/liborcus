@@ -113,9 +113,9 @@ AC_ARG_WITH(mdds-include-path,
 	[with_mdds_include_path="$withval"],
 	[with_mdds_include_path=default]
 ,)
-AS_IF([test "x$with_libzip" != "xdefault"], [
+AS_IF([test "x$with_mdds_include_path" != "xdefault"], [
 	# Check with other include path in mind
-	MDDS_CXXFLAGS="-I${with_libzip}"
+	MDDS_CXXFLAGS="-I${with_mdds_include_path}"
 ])
 # define for boost container
 MDDS_CPPFLAGS="-DMDDS_HASH_CONTAINER_BOOST"
