@@ -1,5 +1,5 @@
 
-liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus/model
+liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus/spreadsheet
 liborcus_HEADERS = \
 	types.hpp \
 	export_interface.hpp \
