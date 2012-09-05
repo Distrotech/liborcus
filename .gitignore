@@ -28,14 +28,3 @@ odf_tokens.txt
 ooxml_opc_tokens.txt
 ooxml_tokens.txt
 src/liborcus/pre/gen
-
-liborcus-test-xml-map-tree
-orcus-csv
-orcus-format-xml
-orcus-ods
-orcus-test-common
-orcus-test-csv
-orcus-test-xml
-orcus-test-xml-mapped
-orcus-xlsx
-orcus-xml
