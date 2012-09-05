@@ -16,6 +16,7 @@ rm -rf .git
 rm -f .gitignore
 rm -rf autom4te.cache
 rm -rf slickedit
+rm -rf test-manual # remove large files to keep the package size small.
 
 popd > /dev/null
 
