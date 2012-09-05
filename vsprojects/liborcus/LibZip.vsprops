@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="LibZip"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		AdditionalIncludeDirectories="$(LIBZIP_DIR)"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalDependencies="zip.lib"
+		AdditionalLibraryDirectories="$(LIBZIP_LIB)"
+	/>
+	<UserMacro
+		Name="LIBZIP_DIR"
+		Value="C:\dev\installed\include"
+	/>
+	<UserMacro
+		Name="LIBZIP_LIB"
+		Value="C:\dev\installed\lib"
+	/>
+</VisualStudioPropertySheet>

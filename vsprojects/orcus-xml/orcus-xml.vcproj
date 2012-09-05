@@ -130,7 +130,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalLibraryDirectories="..\Release;C:\dev\installed\lib"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

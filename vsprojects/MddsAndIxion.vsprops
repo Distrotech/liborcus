@@ -6,7 +6,19 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="C:\Users\Kohei\Workspace\ixion\include;C:\Users\Kohei\Workspace\multidimalgorithm\include"
+		AdditionalIncludeDirectories="$(IXION_DIR)\include;$(MDDS_DIR)\include"
 		PreprocessorDefinitions="MDDS_HASH_CONTAINER_BOOST"
+	/>
+	<UserMacro
+		Name="MDDS_DIR"
+		Value="C:\Users\Kohei\Workspace\multidimalgorithm\"
+	/>
+	<UserMacro
+		Name="IXION_DIR"
+		Value="C:\Users\Kohei\Workspace\ixion"
+	/>
+	<UserMacro
+		Name="IXION_LIB"
+		Value="C:\dev\installed\lib"
 	/>
 </VisualStudioPropertySheet>

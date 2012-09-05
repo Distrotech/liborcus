@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="liborcus-spreadsheet-model"
 	ProjectGUID="{7C6822F2-EFBA-4FA8-9BBD-B66434E622EB}"
 	RootNamespace="liborcusspreadsheetmodel"
@@ -62,7 +62,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="ixion.lib"
 				OutputFile="$(OutDir)\orcus-spreadsheet-model.dll"
-				AdditionalLibraryDirectories="C:\dev\installed\lib"
+				AdditionalLibraryDirectories="$(IXION_LIB)"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -136,7 +136,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="ixion.lib"
 				OutputFile="$(OutDir)\orcus-spreadsheet-model.dll"
-				AdditionalLibraryDirectories="C:\dev\installed\lib"
+				AdditionalLibraryDirectories="$(IXION_LIB)"
 				GenerateDebugInformation="false"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

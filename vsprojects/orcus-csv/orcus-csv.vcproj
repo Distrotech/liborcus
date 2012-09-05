@@ -59,7 +59,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="orcus.lib orcus-spreadsheet-model.lib"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				TargetMachine="1"
@@ -131,7 +130,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="orcus.lib orcus-spreadsheet-model.lib"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="false"
 				OptimizeReferences="2"

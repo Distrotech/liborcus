@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="liborcus"
 	ProjectGUID="{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}"
 	RootNamespace="orcus"
@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\DefaultConfig.vsprops"
+			InheritedPropertySheets=".\DefaultConfig.vsprops;.\LibZip.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\dev\installed\include"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="__ORCUS_BUILDING_DLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,9 +60,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="zip.lib"
 				OutputFile="$(OutDir)\orcus.dll"
-				AdditionalLibraryDirectories="C:\dev\installed\lib"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -93,7 +92,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\DefaultConfig.vsprops"
+			InheritedPropertySheets=".\DefaultConfig.vsprops;.\LibZip.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -116,7 +115,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="C:\dev\installed\include"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="__ORCUS_BUILDING_DLL"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -134,9 +133,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="zip.lib"
 				OutputFile="$(OutDir)\orcus.dll"
-				AdditionalLibraryDirectories="C:\dev\installed\lib"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="false"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -340,11 +338,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\ooxml\global.hpp"
+				RelativePath="..\..\include\orcus\global.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\global.hpp"
+				RelativePath="..\..\include\orcus\ooxml\global.hpp"
 				>
 			</File>
 			<File
