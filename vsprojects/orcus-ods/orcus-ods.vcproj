@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\MddsAndIxion.vsprops"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\MddsAndIxion.vsprops;..\orcus-csv\AdditionalLibs.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -60,8 +60,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				UseLibraryDependencyInputs="false"
-				AdditionalDependencies="orcus.lib orcus-spreadsheet-model.lib"
-				AdditionalLibraryDirectories="..\Debug;C:\dev\installed\lib"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -92,7 +91,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\MddsAndIxion.vsprops"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\MddsAndIxion.vsprops;..\orcus-csv\AdditionalLibs.vsprops"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -132,8 +131,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="orcus.lib orcus-spreadsheet-model.lib"
-				AdditionalLibraryDirectories="..\Release;C:\dev\installed\lib"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
