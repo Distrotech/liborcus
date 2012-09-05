@@ -1,5 +1,5 @@
 
-if ENABLE_LIBZIP
+if WITH_LIBZIP
 
 liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus/odf
 
@@ -11,4 +11,4 @@ liborcus_HEADERS = \
 	ods_handler.hpp \
 	para_context.hpp
 
-endif # ENABLE_LIBZIP
+endif # WITH_LIBZIP

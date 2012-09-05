@@ -104,7 +104,7 @@ TESTS += \
 	orcus-test-csv \
 	orcus-test-xml-mapped
 
-if ENABLE_LIBZIP
+if WITH_LIBZIP
 
 bin_PROGRAMS += \
 	orcus-ods orcus-xlsx
@@ -141,7 +141,7 @@ orcus_xlsx_CXXFLAGS = \
 	$(LIBZIP_CFLAGS) \
 	$(LIBIXION_CFLAGS)
 
-endif # ENABLE_LIBZIP
+endif # WITH_LIBZIP
 
 endif # BUILD_SPREADSHEET_MODEL
 

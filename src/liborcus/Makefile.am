@@ -28,7 +28,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	xml_parser.cpp \
 	xml_simple_handler.cpp
 
-if ENABLE_LIBZIP
+if WITH_LIBZIP
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	odf_ods_context.cpp \
@@ -48,7 +48,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	orcus_ods.cpp \
 	orcus_xlsx.cpp
 
-endif # ENABLE_LIBZIP
+endif # WITH_LIBZIP
 
 liborcus_test_xml_map_tree_SOURCES = \
 	string_pool.cpp \

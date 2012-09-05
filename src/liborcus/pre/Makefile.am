@@ -1,4 +1,4 @@
-if ENABLE_LIBZIP
+if WITH_LIBZIP
 
 INCDIR = $(top_srcdir)/include
 SRCDIR = $(top_srcdir)/src/liborcus

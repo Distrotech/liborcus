@@ -20,10 +20,10 @@ liborcus_HEADERS = \
 	xml_parser.hpp \
 	xml_simple_handler.hpp
 
-if ENABLE_LIBZIP
+if WITH_LIBZIP
 
 liborcus_HEADERS += \
 	orcus_ods.hpp \
 	orcus_xlsx.hpp
 
-endif # ENABLE_LIBZIP
+endif # WITH_LIBZIP

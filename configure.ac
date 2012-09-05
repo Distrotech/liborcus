@@ -103,7 +103,7 @@ AC_ARG_WITH(libzip,
 AS_IF([test "x$with_libzip" != "xno"], [
 	PKG_CHECK_MODULES([LIBZIP], [libzip])
 ])
-AM_CONDITIONAL([ENABLE_LIBZIP], [test "x$enable_libzip" != "xno"])
+AM_CONDITIONAL([WITH_LIBZIP], [test "x$with_libzip" != "xno"])
 
 # ============
 # mdds support
