@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="orcus-xml"
 	ProjectGUID="{561E1A45-D5B8-4621-AFCC-CA8A07005379}"
 	RootNamespace="orcusxml"
@@ -20,6 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\MddsAndIxion.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -40,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Users\Kohei\Workspace\ixion\include;C:\Users\Kohei\Workspace\orcus\include;C:\dev\boost_1_47_0;C:\Users\Kohei\Workspace\multidimalgorithm\include"
+				AdditionalIncludeDirectories=""
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -59,7 +60,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="orcus.lib orcus-spreadsheet-model.lib"
-				AdditionalLibraryDirectories="C:\Users\Kohei\Workspace\orcus\vsprojects\Debug;C:\dev\boost_1_47_0\stage\lib;C:\dev\installed\lib"
+				AdditionalLibraryDirectories="..\Debug;C:\dev\installed\lib"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -90,6 +91,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\MddsAndIxion.vsprops"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -112,7 +114,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="C:\Users\Kohei\Workspace\ixion\include;C:\Users\Kohei\Workspace\orcus\include;C:\dev\boost_1_47_0;C:\Users\Kohei\Workspace\multidimalgorithm\include"
+				AdditionalIncludeDirectories=""
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
@@ -130,7 +132,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="orcus.lib orcus-spreadsheet-model.lib"
-				AdditionalLibraryDirectories="C:\Users\Kohei\Workspace\orcus\vsprojects\Release;C:\dev\boost_1_47_0\stage\lib;C:\dev\installed\lib"
+				AdditionalLibraryDirectories="..\Release;C:\dev\installed\lib"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
