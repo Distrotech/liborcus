@@ -53,19 +53,18 @@ void xlsx_sheet_xml_handler::end_document()
 {
 }
 
-void xlsx_sheet_xml_handler::start_element(
-    xmlns_token_t ns, xml_token_t name, const vector<xml_attr_t>& attrs)
+void xlsx_sheet_xml_handler::start_element(const sax_token_parser_element& elem)
 {
     xml_context_base& cur = get_current_context();
-    if (!cur.can_handle_element(ns, name))
-        m_context_stack.push_back(cur.create_child_context(ns, name));
+    if (!cur.can_handle_element(elem.ns, elem.name))
+        m_context_stack.push_back(cur.create_child_context(elem.ns, elem.name));
 
-    get_current_context().start_element(ns, name, attrs);
+    get_current_context().start_element(elem.ns, elem.name, elem.attrs);
 }
 
-void xlsx_sheet_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
+void xlsx_sheet_xml_handler::end_element(const sax_token_parser_element& elem)
 {
-    bool ended = get_current_context().end_element(ns, name);
+    bool ended = get_current_context().end_element(elem.ns, elem.name);
 
     if (ended)
     {
@@ -75,7 +74,7 @@ void xlsx_sheet_xml_handler::end_element(xmlns_token_t ns, xml_token_t name)
             // the two adjacent contexts to communicate with each other.
             context_stack_type::reverse_iterator itr_cur = m_context_stack.rbegin();
             context_stack_type::reverse_iterator itr_par = itr_cur + 1;
-            itr_par->end_child_context(ns, name, &(*itr_cur));
+            itr_par->end_child_context(elem.ns, elem.name, &(*itr_cur));
         }
         m_context_stack.pop_back();
     }

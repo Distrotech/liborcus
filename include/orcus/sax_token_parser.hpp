@@ -31,6 +31,7 @@
 #include <vector>
 #include <algorithm>
 
+#include "types.hpp"
 #include "sax_parser.hpp"
 
 namespace orcus {
@@ -60,6 +61,17 @@ private:
 }
 
 /**
+ * Element properties passed to its handler via start_element() and
+ * end_element() calls.
+ */
+struct sax_token_parser_element
+{
+    xmlns_token_t ns;
+    xml_token_t name;
+    std::vector<xml_attr_t> attrs;
+};
+
+/**
  * XML parser that tokenizes element and attribute names while parsing.
  */
 template<typename _Handler, typename _Tokens>
@@ -68,9 +80,6 @@ class sax_token_parser
 public:
     typedef _Handler    handler_type;
     typedef _Tokens     tokens_map;
-    typedef typename tokens_map::token_type     token_type;
-    typedef typename tokens_map::nstoken_type   nstoken_type;
-    typedef typename tokens_map::attr_type      attr_type;
 
     sax_token_parser(const char* content, const size_t size, const tokens_map& tokens, handler_type& handler);
     ~sax_token_parser();
@@ -85,7 +94,7 @@ private:
      */
     class handler_wrapper
     {
-        std::vector<attr_type> m_attrs;
+        sax_token_parser_element m_elem;
         const tokens_map& m_tokens;
         handler_type& m_handler;
 
@@ -95,22 +104,22 @@ private:
 
         void declaration()
         {
-            m_attrs.clear();
+            m_elem.attrs.clear();
         }
 
         void start_element(const sax_parser_element& elem)
         {
-            token_type elem_token = tokenize(elem.name);
-            nstoken_type elem_nstoken = tokenize_ns(elem.ns);
-            m_handler.start_element(elem_nstoken, elem_token, m_attrs);
-            m_attrs.clear();
+            m_elem.ns = tokenize_ns(elem.ns);
+            m_elem.name = tokenize(elem.name);
+            m_handler.start_element(m_elem);
+            m_elem.attrs.clear();
         }
 
         void end_element(const sax_parser_element& elem)
         {
-            token_type elem_token = tokenize(elem.name);
-            nstoken_type elem_nstoken = tokenize_ns(elem.ns);
-            m_handler.end_element(elem_nstoken, elem_token);
+            m_elem.ns = tokenize_ns(elem.ns);
+            m_elem.name = tokenize(elem.name);
+            m_handler.end_element(m_elem);
         }
 
         void characters(const pstring& val)
@@ -120,23 +129,23 @@ private:
 
         void attribute(const pstring& ns, const pstring& name, const pstring& val)
         {
-            token_type elem_token = tokenize(name);
-            nstoken_type elem_nstoken = tokenize_ns(ns);
-            m_attrs.push_back(attr_type(elem_nstoken, elem_token, val));
+            xml_token_t elem_token = tokenize(name);
+            xmlns_token_t elem_nstoken = tokenize_ns(ns);
+            m_elem.attrs.push_back(xml_attr_t(elem_nstoken, elem_token, val));
         }
 
     private:
-        nstoken_type tokenize_ns(const pstring& ns) const
+        xmlns_token_t tokenize_ns(const pstring& ns) const
         {
-            nstoken_type token = tokens_map::XMLNS_UNKNOWN_TOKEN;
+            xmlns_token_t token = XMLNS_UNKNOWN_TOKEN;
             if (!ns.empty())
                 token = m_tokens.get_nstoken(ns);
             return token;
         }
 
-        token_type tokenize(const pstring& name) const
+        xml_token_t tokenize(const pstring& name) const
         {
-            token_type token = tokens_map::XML_UNKNOWN_TOKEN;
+            xml_token_t token = XML_UNKNOWN_TOKEN;
             if (!name.empty())
                 token = m_tokens.get_token(name);
             return token;

@@ -1,7 +1,7 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
- * 
+ * Copyright (c) 2010-2012 Kohei Yoshida
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,7 +28,7 @@
 #ifndef __ORCUS_XMLHANDLER_HPP__
 #define __ORCUS_XMLHANDLER_HPP__
 
-#include "orcus/types.hpp"
+#include "orcus/sax_token_parser.hpp"
 
 #include <cstdlib>
 #include <string>
@@ -44,8 +44,8 @@ public:
 
     virtual void start_document() = 0;
     virtual void end_document() = 0;
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs) = 0;
-    virtual void end_element(xmlns_token_t ns, xml_token_t name) = 0;
+    virtual void start_element(const sax_token_parser_element& elem) = 0;
+    virtual void end_element(const sax_token_parser_element& elem) = 0;
     virtual void characters(const pstring& str) = 0;
 };
 
