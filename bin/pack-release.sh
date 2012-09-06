@@ -22,7 +22,7 @@ popd > /dev/null
 
 tar jcvfh $PACKAGE $DIR
 
-if [ $1 == "md5" ]; then
+if [ "$1" == "md5" ]; then
     # prefix the package name with md5 sum.
     MD5SUM=`md5sum $PACKAGE | sed -e 's/\ .*//g'`
     mv $PACKAGE $MD5SUM-$PACKAGE
