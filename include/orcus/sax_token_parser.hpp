@@ -30,6 +30,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 #include "types.hpp"
 #include "sax_parser.hpp"

@@ -6,11 +6,11 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="$(BOOST_DIR);..\..\include"
+		AdditionalIncludeDirectories="$(BOOST_INCLUDE_DIR);..\..\include"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalLibraryDirectories="$(BOOST_DIR)\stage\lib"
+		AdditionalLibraryDirectories="$(BOOST_LIB_DIR)"
 	/>
 	<UserMacro
 		Name="BOOST_DIR"
