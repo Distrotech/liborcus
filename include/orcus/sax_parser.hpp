@@ -153,6 +153,7 @@ private:
     const size_t m_size;
     size_t m_pos;
     size_t m_nest_level;
+    bool m_root_elem_open:1;
     handler_type& m_handler;
 };
 
@@ -164,6 +165,7 @@ sax_parser<_Handler>::sax_parser(
     m_size(size),
     m_pos(0),
     m_nest_level(0),
+    m_root_elem_open(true),
     m_handler(handler)
 {
 }
@@ -229,7 +231,12 @@ void sax_parser<_Handler>::body()
     while (has_char())
     {
         if (cur_char() == '<')
+        {
             element();
+            if (!m_root_elem_open)
+                // Root element closed.  Stop parsing.
+                return;
+        }
         else
             characters();
     }
@@ -323,6 +330,8 @@ void sax_parser<_Handler>::element_close(const char* begin_pos)
     elem.end_pos = m_char;
 
     m_handler.end_element(elem);
+    if (!m_nest_level)
+        m_root_elem_open = false;
 }
 
 template<typename _Handler>
