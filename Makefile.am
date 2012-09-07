@@ -16,6 +16,6 @@ dist-hook:
 	then \
 		git log --date=short --pretty="format:@%cd  %an  <%ae>  [%H]%n%n%s%n%n%e%b" | sed -e "s|^\([^@]\)|\t\1|" -e "s|^@||" >$(distdir)/ChangeLog \
 	else \
-		echo A git clone is required to generate a ChangeLog >&2; \
+		echo "A git clone is required to generate a ChangeLog" >&2; \
 	fi
 

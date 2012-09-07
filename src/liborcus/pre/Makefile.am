@@ -19,6 +19,7 @@ gen:
 	touch $@
 
 check: all
+install: all
 
 clean-generic:
 	rm -f gen
