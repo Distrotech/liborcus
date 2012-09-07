@@ -12,8 +12,6 @@ cd $DIR
 
 ./autogen.sh
 
-rm -rf m4
-rm -f *.m4
 rm -rf .git
 rm -f .gitignore
 rm -rf autom4te.cache
