@@ -96,9 +96,6 @@ public:
     import_styles* get_styles();
     const import_styles* get_styles() const;
 
-    ixion::model_context& get_model_context();
-    const ixion::model_context& get_model_context() const;
-
     sheet* append_sheet(const pstring& sheet_name);
     sheet* get_sheet(const pstring& sheet_name);
 
@@ -127,6 +124,8 @@ public:
     pstring get_sheet_name(ixion::sheet_t) const;
 
 private:
+    ixion::model_context& get_model_context();
+    const ixion::model_context& get_model_context() const;
     void insert_dirty_cell(const ixion::abs_address_t& pos);
 
 private:
