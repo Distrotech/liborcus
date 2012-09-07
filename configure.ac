@@ -58,6 +58,7 @@ AC_TYPE_SIZE_T
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([gettimeofday])
 AC_DEFINE([_REENTRANT], [], [Enable reentrant.])
+AC_DEFINE([BOOST_ALL_NO_LIB], [], [Disable boost's evil autolink.])
 
 # =============
 # Set orcus api
