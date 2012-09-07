@@ -33,8 +33,6 @@
 #include "orcus/pstring.hpp"
 
 #include <mdds/flat_segment_tree.hpp>
-#include <ixion/formula_tokens.hpp>
-#include <ixion/cell.hpp>
 
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/unordered_map.hpp>

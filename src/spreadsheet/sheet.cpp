@@ -43,10 +43,12 @@
 #include <cstdlib>
 
 #include <mdds/mixed_type_matrix.hpp>
+#include <ixion/cell.hpp>
 #include <ixion/formula.hpp>
-#include <ixion/formula_result.hpp>
-#include <ixion/matrix.hpp>
 #include <ixion/formula_name_resolver.hpp>
+#include <ixion/formula_result.hpp>
+#include <ixion/formula_tokens.hpp>
+#include <ixion/matrix.hpp>
 
 using namespace std;
 
