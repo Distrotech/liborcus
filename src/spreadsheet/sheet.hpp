@@ -30,19 +30,17 @@
 
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/spreadsheet/export_interface.hpp"
-#include "orcus/pstring.hpp"
 
-#include <mdds/flat_segment_tree.hpp>
-
-#include <boost/ptr_container/ptr_map.hpp>
-#include <boost/unordered_map.hpp>
-#include <map>
-#include <deque>
 #include <ostream>
 
-namespace orcus { namespace spreadsheet {
+namespace orcus {
+
+class pstring;
+
+namespace spreadsheet {
 
 class document;
+struct sheet_impl;
 
 /**
  * This class represents a single sheet instance in the internal document
@@ -54,10 +52,6 @@ class sheet : public iface::import_sheet, public iface::export_sheet
     static const col_t max_col_limit;
 
 public:
-
-    typedef ::mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
-    typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
-
     sheet(document& doc, sheet_t sheet);
     virtual ~sheet();
 
@@ -90,11 +84,7 @@ private:
     size_t get_cell_format(row_t row, col_t col) const;
 
 private:
-    document& m_doc;
-    mutable cell_format_type m_cell_formats;
-    row_t m_max_row;
-    col_t m_max_col;
-    const sheet_t m_sheet; /// sheet ID
+    sheet_impl* mp_impl;
 };
 
 }}

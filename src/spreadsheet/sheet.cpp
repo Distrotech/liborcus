@@ -42,7 +42,9 @@
 #include <memory>
 #include <cstdlib>
 
+#include <mdds/flat_segment_tree.hpp>
 #include <mdds/mixed_type_matrix.hpp>
+
 #include <ixion/cell.hpp>
 #include <ixion/formula.hpp>
 #include <ixion/formula_name_resolver.hpp>
@@ -51,22 +53,42 @@
 #include <ixion/matrix.hpp>
 #include <ixion/model_context.hpp>
 
+#include <boost/unordered_map.hpp>
+
 using namespace std;
 
 namespace orcus { namespace spreadsheet {
 
+typedef ::mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
+typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
+
+struct sheet_impl
+{
+
+    document& m_doc;
+    mutable cell_format_type m_cell_formats;
+    row_t m_max_row;
+    col_t m_max_col;
+    const sheet_t m_sheet; /// sheet ID
+
+    sheet_impl(document& doc, sheet_t sheet) :
+        m_doc(doc), m_max_row(0), m_max_col(0), m_sheet(sheet) {}
+
+    ~sheet_impl()
+    {
+        for_each(m_cell_formats.begin(), m_cell_formats.end(),
+                 map_object_deleter<cell_format_type>());
+    }
+};
+
 const row_t sheet::max_row_limit = 1048575;
 const col_t sheet::max_col_limit = 1023;
 
-sheet::sheet(document& doc, sheet_t sheet) :
-    m_doc(doc), m_max_row(0), m_max_col(0), m_sheet(sheet)
-{
-}
+sheet::sheet(document& doc, sheet_t sheet) : mp_impl(new sheet_impl(doc, sheet)) {}
 
 sheet::~sheet()
 {
-    for_each(m_cell_formats.begin(), m_cell_formats.end(),
-             map_object_deleter<cell_format_type>());
+    delete mp_impl;
 }
 
 void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
@@ -74,7 +96,7 @@ void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
     if (!p || !n)
         return;
 
-    ixion::model_context& cxt = m_doc.get_model_context();
+    ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
 
     // First, see if this can be parsed as a number.
     char* endptr = NULL;
@@ -82,31 +104,31 @@ void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
     const char* endptr_check = p + n;
     if (endptr == endptr_check)
         // Treat this as a numeric value.
-        cxt.set_numeric_cell(ixion::abs_address_t(m_sheet,row,col), val);
+        cxt.set_numeric_cell(ixion::abs_address_t(mp_impl->m_sheet,row,col), val);
     else
         // Treat this as a string value.
-        cxt.set_string_cell(ixion::abs_address_t(m_sheet,row,col), p, n);
+        cxt.set_string_cell(ixion::abs_address_t(mp_impl->m_sheet,row,col), p, n);
 }
 
 void sheet::set_string(row_t row, col_t col, size_t sindex)
 {
-    ixion::model_context& cxt = m_doc.get_model_context();
-    cxt.set_string_cell(ixion::abs_address_t(m_sheet,row,col), sindex);
+    ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    cxt.set_string_cell(ixion::abs_address_t(mp_impl->m_sheet,row,col), sindex);
 }
 
 void sheet::set_value(row_t row, col_t col, double value)
 {
-    ixion::model_context& cxt = m_doc.get_model_context();
-    cxt.set_numeric_cell(ixion::abs_address_t(m_sheet,row,col), value);
+    ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    cxt.set_numeric_cell(ixion::abs_address_t(mp_impl->m_sheet,row,col), value);
 }
 
 void sheet::set_format(row_t row, col_t col, size_t index)
 {
-    cell_format_type::iterator itr = m_cell_formats.find(row);
-    if (itr == m_cell_formats.end())
+    cell_format_type::iterator itr = mp_impl->m_cell_formats.find(row);
+    if (itr == mp_impl->m_cell_formats.end())
     {
         pair<cell_format_type::iterator, bool> r =
-            m_cell_formats.insert(
+            mp_impl->m_cell_formats.insert(
                 cell_format_type::value_type(
                     row, new segment_col_index_type(0, max_col_limit, 0)));
 
@@ -128,30 +150,30 @@ void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
                         const char* p, size_t n)
 {
     // Tokenize the formula string and store it.
-    ixion::model_context& cxt = m_doc.get_model_context();
-    ixion::abs_address_t pos(m_sheet, row, col);
+    ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
     cxt.set_formula_cell(pos, p, n);
     ixion::register_formula_cell(cxt, pos);
-    m_doc.insert_dirty_cell(pos);
+    mp_impl->m_doc.insert_dirty_cell(pos);
 }
 
 void sheet::set_shared_formula(
     row_t row, col_t col, formula_grammar_t grammar, size_t sindex,
     const char* p_formula, size_t n_formula, const char* p_range, size_t n_range)
 {
-    ixion::model_context& cxt = m_doc.get_model_context();
-    ixion::abs_address_t pos(m_sheet, row, col);
+    ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
     cxt.set_shared_formula(pos, sindex, p_formula, n_formula, p_range, n_range);
     set_shared_formula(row, col, sindex);
 }
 
 void sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
 {
-    ixion::model_context& cxt = m_doc.get_model_context();
-    ixion::abs_address_t pos(m_sheet, row, col);
+    ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
     cxt.set_formula_cell(pos, sindex, true);
     ixion::register_formula_cell(cxt, pos);
-    m_doc.insert_dirty_cell(pos);
+    mp_impl->m_doc.insert_dirty_cell(pos);
 }
 
 void sheet::set_formula_result(row_t row, col_t col, const char* p, size_t n)
@@ -160,8 +182,8 @@ void sheet::set_formula_result(row_t row, col_t col, const char* p, size_t n)
 
 void sheet::write_string(ostream& os, row_t row, col_t col) const
 {
-    const ixion::model_context& cxt = m_doc.get_model_context();
-    ixion::abs_address_t pos(m_sheet, row, col);
+    const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
     switch (cxt.get_celltype(pos))
     {
         case ixion::celltype_string:
@@ -187,7 +209,7 @@ row_t sheet::row_size() const
     if (m_rows.empty())
         return 0;
 
-    return m_max_row + 1;
+    return mp_impl->m_max_row + 1;
 #endif
 }
 
@@ -198,14 +220,14 @@ col_t sheet::col_size() const
     if (m_rows.empty())
         return 0;
 
-    return m_max_col + 1;
+    return mp_impl->m_max_col + 1;
 #endif
 }
 
 void sheet::dump() const
 {
-    const ixion::model_context& cxt = m_doc.get_model_context();
-    ixion::abs_range_t range = cxt.get_data_range(m_sheet);
+    const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    ixion::abs_range_t range = cxt.get_data_range(mp_impl->m_sheet);
     if (!range.valid())
         // Sheet is empty.  Nothing to print.
         return;
@@ -222,7 +244,7 @@ void sheet::dump() const
     {
         for (size_t col = 0; col < col_count; ++col)
         {
-            ixion::abs_address_t pos(m_sheet,row,col);
+            ixion::abs_address_t pos(mp_impl->m_sheet,row,col);
             switch (cxt.get_celltype(pos))
             {
                 case ixion::celltype_string:
@@ -246,18 +268,18 @@ void sheet::dump() const
                     const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
                     assert(cell);
                     size_t index = cell->get_identifier();
-                    const ixion::formula_tokens_t* t = cxt.get_formula_tokens(m_sheet, index);
+                    const ixion::formula_tokens_t* t = cxt.get_formula_tokens(mp_impl->m_sheet, index);
                     if (t)
                     {
                         ostringstream os;
                         string formula;
                         ixion::print_formula_tokens(
-                            m_doc.get_model_context(), pos, *t, formula);
+                            mp_impl->m_doc.get_model_context(), pos, *t, formula);
                         os << formula;
 
                         const ixion::formula_result* res = cell->get_result_cache();
                         if (res)
-                            os << " (" << res->str(m_doc.get_model_context()) << ")";
+                            os << " (" << res->str(mp_impl->m_doc.get_model_context()) << ")";
 
                         mx.set_string(row, col, new string(os.str()));
                     }
@@ -331,8 +353,8 @@ void sheet::dump() const
 
 void sheet::dump_check(ostream& os) const
 {
-    const ixion::model_context& cxt = m_doc.get_model_context();
-    ixion::abs_range_t range = cxt.get_data_range(m_sheet);
+    const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    ixion::abs_range_t range = cxt.get_data_range(mp_impl->m_sheet);
     if (!range.valid())
         // Sheet is empty.  Nothing to print.
         return;
@@ -344,7 +366,7 @@ void sheet::dump_check(ostream& os) const
     {
         for (size_t col = 0; col < col_count; ++col)
         {
-            ixion::abs_address_t pos(m_sheet, row, col);
+            ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
             switch (cxt.get_celltype(pos))
             {
                 case ixion::celltype_string:
@@ -374,17 +396,17 @@ void sheet::dump_check(ostream& os) const
                     const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
                     assert(cell);
                     size_t index = cell->get_identifier();
-                    const ixion::formula_tokens_t* t = cxt.get_formula_tokens(m_sheet, index);
+                    const ixion::formula_tokens_t* t = cxt.get_formula_tokens(mp_impl->m_sheet, index);
                     if (t)
                     {
                         string formula;
                         ixion::print_formula_tokens(
-                            m_doc.get_model_context(), pos, *t, formula);
+                            mp_impl->m_doc.get_model_context(), pos, *t, formula);
                         os << "expression: " << formula << endl;
 
                         const ixion::formula_result* res = cell->get_result_cache();
                         if (res)
-                            os << "result: " << res->str(m_doc.get_model_context()) << endl;
+                            os << "result: " << res->str(mp_impl->m_doc.get_model_context()) << endl;
                     }
                     os << endl;
                 }
@@ -530,8 +552,8 @@ void sheet::dump_html(const string& filepath) const
     const char* p_table_attrs      = "border:1px solid rgb(220,220,220); border-collapse:collapse; ";
     const char* p_empty_cell_attrs = "border:1px solid rgb(220,220,220); color:white; ";
 
-    const ixion::model_context& cxt = m_doc.get_model_context();
-    ixion::abs_range_t range = cxt.get_data_range(m_sheet);
+    const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    ixion::abs_range_t range = cxt.get_data_range(mp_impl->m_sheet);
 
     {
         elem root(file, p_html);
@@ -540,7 +562,7 @@ void sheet::dump_html(const string& filepath) const
             // Sheet is empty.  Nothing to print.
             return;
 
-        const import_shared_strings* sstrings = m_doc.get_shared_strings();
+        const import_shared_strings* sstrings = mp_impl->m_doc.get_shared_strings();
 
         elem table(file, p_table, p_table_attrs);
 
@@ -551,14 +573,14 @@ void sheet::dump_html(const string& filepath) const
             elem tr(file, p_tr, p_table_attrs);
             for (col_t col = 0; col < col_count; ++col)
             {
-                ixion::abs_address_t pos(m_sheet,row,col);
+                ixion::abs_address_t pos(mp_impl->m_sheet,row,col);
 
                 size_t xf = get_cell_format(row, col);
                 string style = p_table_attrs;
                 if (xf)
                 {
                     // Apply cell format.
-                    import_styles* p_styles = m_doc.get_styles();
+                    import_styles* p_styles = mp_impl->m_doc.get_styles();
                     const import_styles::xf* fmt = p_styles->get_cell_xf(xf);
                     if (fmt)
                         build_style_string(style, *p_styles, *fmt);
@@ -599,18 +621,18 @@ void sheet::dump_html(const string& filepath) const
                         const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
                         assert(cell);
                         size_t index = cell->get_identifier();
-                        const ixion::formula_tokens_t* t = cxt.get_formula_tokens(m_sheet, index);
+                        const ixion::formula_tokens_t* t = cxt.get_formula_tokens(mp_impl->m_sheet, index);
                         if (t)
                         {
                             ostringstream os;
                             string formula;
                             ixion::print_formula_tokens(
-                                m_doc.get_model_context(), pos, *t, formula);
+                                mp_impl->m_doc.get_model_context(), pos, *t, formula);
                             os << formula;
 
                             const ixion::formula_result* res = cell->get_result_cache();
                             if (res)
-                                os << " (" << res->str(m_doc.get_model_context()) << ")";
+                                os << " (" << res->str(mp_impl->m_doc.get_model_context()) << ")";
                         }
                     }
                     break;
@@ -626,16 +648,16 @@ void sheet::dump_html(const string& filepath) const
 
 void sheet::update_size(row_t row, col_t col)
 {
-    if (m_max_row < row)
-        m_max_row = row;
-    if (m_max_col < col)
-        m_max_col = col;
+    if (mp_impl->m_max_row < row)
+        mp_impl->m_max_row = row;
+    if (mp_impl->m_max_col < col)
+        mp_impl->m_max_col = col;
 }
 
 size_t sheet::get_cell_format(row_t row, col_t col) const
 {
-    cell_format_type::const_iterator itr = m_cell_formats.find(row);
-    if (itr == m_cell_formats.end())
+    cell_format_type::const_iterator itr = mp_impl->m_cell_formats.find(row);
+    if (itr == mp_impl->m_cell_formats.end())
         return 0;
 
     segment_col_index_type& con = *itr->second;
