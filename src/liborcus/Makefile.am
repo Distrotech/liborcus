@@ -59,11 +59,9 @@ liborcus_test_xml_map_tree_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la
 
 liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS = \
-	$(LIBZIP_CFLAGS) \
-	$(LIBIXION_CFLAGS)
+	$(LIBZIP_CFLAGS)
 liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 liborcus_@ORCUS_API_VERSION@_la_LIBADD = \
-	$(LIBZIP_LIBS) \
-	$(LIBIXION_LIBS)
+	$(LIBZIP_LIBS)
 
 TESTS = liborcus-test-xml-map-tree
