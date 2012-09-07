@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2010-2012 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -41,8 +41,6 @@ class pstring;
 class tokens
 {
 public:
-    static xml_token_t      XML_UNKNOWN_TOKEN;
-    static xmlns_token_t    XMLNS_UNKNOWN_TOKEN;
 
     tokens(const char** token_names, size_t token_name_count, const char** nstoken_names, size_t nstoken_name_count);
 

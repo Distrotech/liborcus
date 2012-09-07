@@ -32,9 +32,6 @@ using namespace std;
 
 namespace orcus {
 
-xml_token_t tokens::XML_UNKNOWN_TOKEN     = XML_UNKNOWN_TOKEN;
-xmlns_token_t tokens::XMLNS_UNKNOWN_TOKEN = XMLNS_UNKNOWN_TOKEN;
-
 tokens::tokens(const char** token_names, size_t token_name_count, const char** nstoken_names, size_t nstoken_name_count) :
     m_token_names(token_names), 
     m_nstoken_names(nstoken_names), 
