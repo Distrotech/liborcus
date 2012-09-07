@@ -127,7 +127,7 @@ MDDS_CPPFLAGS="-DMDDS_HASH_CONTAINER_BOOST"
 CPPFLAGS="$CPPFLAGS $MDDS_CPPFLAGS"
 CXXFLAGS="$CXXFLAGS $MDDS_CXXFLAGS"
 AC_CHECK_HEADERS([mdds/flat_segment_tree.hpp])
-# We do not restore here as we use mdds with this settings during the buld.
+# We do not restore here as we use mdds with this settings during the build.
 # Keeping the command here so none gets fancy ideas like adding it.
 #CPPFLAGS="$save_CPPFLAGS"
 #CXXFLAGS="$save_CXXFLAGS"
