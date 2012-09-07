@@ -98,16 +98,6 @@ document::~document()
     delete mp_styles;
 }
 
-ixion::matrix document::get_range_value(const ixion::abs_range_t& range) const
-{
-    if (range.first.sheet < 0 || static_cast<size_t>(range.first.sheet) >= m_sheets.size())
-        return ixion::matrix(0, 0);
-
-    size_t sheet_id = static_cast<size_t>(range.first.sheet);
-    return m_sheets[sheet_id].data.get_range_value(
-        range.first.row, range.first.column, range.last.row, range.last.column);
-}
-
 import_shared_strings* document::get_shared_strings()
 {
     return mp_strings;

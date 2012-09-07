@@ -199,15 +199,6 @@ col_t sheet::col_size() const
 #endif
 }
 
-ixion::matrix sheet::get_range_value(row_t row1, col_t col1, row_t row2, col_t col2) const
-{
-    const ixion::model_context& cxt = m_doc.get_model_context();
-    ixion::abs_range_t range;
-    range.first = ixion::abs_address_t(m_sheet,row1,col1);
-    range.last  = ixion::abs_address_t(m_sheet,row2,col2);
-    return cxt.get_range_value(range);
-}
-
 void sheet::dump() const
 {
     const ixion::model_context& cxt = m_doc.get_model_context();

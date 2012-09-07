@@ -83,8 +83,6 @@ public:
     row_t row_size() const;
     col_t col_size() const;
 
-    ixion::matrix get_range_value(row_t row1, col_t col1, row_t row2, col_t col2) const;
-
     void dump() const;
     void dump_check(std::ostream& os) const;
     void dump_html(const ::std::string& filepath) const;

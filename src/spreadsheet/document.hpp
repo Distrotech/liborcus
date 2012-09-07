@@ -35,7 +35,6 @@
 
 #include <ostream>
 
-#include <ixion/types.hpp>
 #include <ixion/model_context.hpp>
 
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -90,8 +89,6 @@ public:
 
     document();
     ~document();
-
-    ixion::matrix get_range_value(const ixion::abs_range_t& range) const;
 
     import_shared_strings* get_shared_strings();
     const import_shared_strings* get_shared_strings() const;
