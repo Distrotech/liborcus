@@ -57,25 +57,25 @@ pstring pstring::intern(const char* str)
 
 pstring pstring::intern(const char* str, size_t n)
 {
-    ::boost::mutex::scoped_lock(interned_strings.mtx);
+    ::boost::mutex::scoped_lock lock(interned_strings.mtx);
     return interned_strings.store.intern(str, n);
 }
 
 void pstring::intern::dispose()
 {
-    ::boost::mutex::scoped_lock(interned_strings.mtx);
+    ::boost::mutex::scoped_lock lock(interned_strings.mtx);
     interned_strings.store.clear();
 }
 
 size_t pstring::intern::size()
 {
-    ::boost::mutex::scoped_lock(interned_strings.mtx);
+    ::boost::mutex::scoped_lock lock(interned_strings.mtx);
     return interned_strings.store.size();
 }
 
 void pstring::intern::dump()
 {
-    ::boost::mutex::scoped_lock(interned_strings.mtx);
+    ::boost::mutex::scoped_lock lock(interned_strings.mtx);
     interned_strings.store.dump();
 }
 

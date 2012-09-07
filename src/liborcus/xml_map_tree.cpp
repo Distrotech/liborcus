@@ -55,15 +55,14 @@ class xpath_parser
 {
     const char* mp_char;
     const char* mp_end;
-    size_t m_size;
 public:
-    xpath_parser(const char* p, size_t n) : mp_char(p), mp_end(p+n), m_size(n)
+    xpath_parser(const char* p, size_t n) : mp_char(p), mp_end(p+n)
     {
         if (!n)
-            xml_map_tree::xpath_error("empty path");
+            throw xml_map_tree::xpath_error("empty path");
 
         if (*p != '/')
-            xml_map_tree::xpath_error("first character must be '/'.");
+            throw xml_map_tree::xpath_error("first character must be '/'.");
 
         ++mp_char;
     }
@@ -414,7 +413,7 @@ void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, el
     {
         // Make sure the root element's names are the same.
         if (mp_root->name != name)
-            xpath_error("path begins with inconsistent root level name.");
+            throw xpath_error("path begins with inconsistent root level name.");
     }
     else
     {
