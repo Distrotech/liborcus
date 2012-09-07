@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "orcus/orcus_ods.hpp"
+#include "orcus/pstring.hpp"
 #include "spreadsheet/document.hpp"
 #include "spreadsheet/factory.hpp"
 

@@ -49,6 +49,7 @@
 #include <ixion/formula_result.hpp>
 #include <ixion/formula_tokens.hpp>
 #include <ixion/matrix.hpp>
+#include <ixion/model_context.hpp>
 
 using namespace std;
 

@@ -28,65 +28,40 @@
 #ifndef __ORCUS_SPREADSHEET_DOCUMENT_HPP__
 #define __ORCUS_SPREADSHEET_DOCUMENT_HPP__
 
-#include "orcus/pstring.hpp"
 #include "orcus/env.hpp"
-
-#include "sheet.hpp"
+#include "orcus/spreadsheet/types.hpp"
 
 #include <ostream>
 
-#include <ixion/model_context.hpp>
+namespace ixion {
+    class model_context;
+    class abs_address_t;
+}
 
-#include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/noncopyable.hpp>
+namespace orcus {
 
-namespace orcus { namespace spreadsheet {
+class pstring;
+
+namespace spreadsheet {
 
 class import_shared_strings;
 class import_styles;
+class sheet;
+
+struct document_impl;
 
 /**
  * Internal document representation used only for testing the filters.  It
  * uses ixion's model_context implementation to store raw cell values.
  */
-class ORCUS_DLLPUBLIC document : private ::boost::noncopyable
+class ORCUS_DLLPUBLIC document
 {
     friend class sheet;
 
+    document(const document&); // disabled
+    document& operator= (const document&); // disabled
+
 public:
-    /**
-     * Single sheet entry which consists of a sheet name and a sheet data.
-     * Use the printer function object to print sheet content with for_each
-     * function.
-     */
-    struct sheet_item : private ::boost::noncopyable
-    {
-        pstring name;
-        sheet   data;
-        sheet_item(document& doc, const pstring& _name, sheet_t sheet);
-
-        struct printer : public ::std::unary_function<sheet_item, void>
-        {
-            void operator() (const sheet_item& item) const;
-        };
-
-        class check_printer : public std::unary_function<sheet_item, void>
-        {
-            std::ostream& m_os;
-        public:
-            check_printer(std::ostream& os);
-            void operator() (const sheet_item& item) const;
-        };
-
-        struct html_printer : public ::std::unary_function<sheet_item, void>
-        {
-            html_printer(const ::std::string& filepath);
-            void operator() (const sheet_item& item) const;
-        private:
-            const ::std::string& m_filepath;
-        };
-    };
-
     document();
     ~document();
 
@@ -120,8 +95,8 @@ public:
      */
     void dump_html(const ::std::string& filename) const;
 
-    ixion::sheet_t get_sheet_index(const pstring& name) const;
-    pstring get_sheet_name(ixion::sheet_t) const;
+    sheet_t get_sheet_index(const pstring& name) const;
+    pstring get_sheet_name(sheet_t) const;
 
 private:
     ixion::model_context& get_model_context();
@@ -129,11 +104,7 @@ private:
     void insert_dirty_cell(const ixion::abs_address_t& pos);
 
 private:
-    ixion::model_context m_context;
-    ::boost::ptr_vector<sheet_item> m_sheets;
-    import_shared_strings* mp_strings;
-    import_styles* mp_styles;
-    ixion::dirty_formula_cells_t m_dirty_cells;
+    document_impl* mp_impl;
 };
 
 }}
