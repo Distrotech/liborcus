@@ -11,6 +11,7 @@ pushd . > /dev/null
 cd $DIR
 
 ./autogen.sh
+make dist
 
 rm -rf .git
 rm -f .gitignore
