@@ -45,6 +45,7 @@ struct orcus_xml_impl;
 class ORCUS_DLLPUBLIC orcus_xml
 {
     orcus_xml(const orcus_xml&); // disabled
+    orcus_xml& operator= (const orcus_xml&); // disabled
 
 public:
     orcus_xml(spreadsheet::iface::import_factory* im_fact, spreadsheet::iface::export_factory* ex_fact);

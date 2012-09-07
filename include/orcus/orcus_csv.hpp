@@ -40,6 +40,9 @@ namespace spreadsheet { namespace iface {
 
 class ORCUS_DLLPUBLIC orcus_csv
 {
+    orcus_csv(const orcus_csv&); // disabled
+    orcus_csv& operator=(const orcus_csv&); // disabled
+
 public:
     orcus_csv(spreadsheet::iface::import_factory* factory);
     void read_file(const char* filepath);

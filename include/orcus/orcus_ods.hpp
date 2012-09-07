@@ -42,6 +42,8 @@ namespace spreadsheet { namespace iface { class import_factory; }}
 class ORCUS_DLLPUBLIC orcus_ods
 {
     orcus_ods(const orcus_ods&); // disabled
+    orcus_ods& operator= (const orcus_ods&); // disabled
+
 public:
     orcus_ods(spreadsheet::iface::import_factory* factory);
     ~orcus_ods();

@@ -50,6 +50,7 @@ class ORCUS_DLLPUBLIC orcus_xlsx
     };
 
     orcus_xlsx(const orcus_xlsx&); // disabled
+    orcus_xlsx& operator= (const orcus_xlsx&); // disabled
 
 public:
     orcus_xlsx(spreadsheet::iface::import_factory* factory);
