@@ -483,8 +483,12 @@ bool sax_parser<_Handler>::is_alpha(char c)
 template<typename _Handler>
 bool sax_parser<_Handler>::is_name_char(char c)
 {
-    if (c == '-')
-        return true;
+    switch (c)
+    {
+        case '-':
+        case '_':
+            return true;
+    }
 
     return false;
 }
