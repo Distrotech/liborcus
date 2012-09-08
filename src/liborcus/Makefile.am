@@ -28,7 +28,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	xml_map_tree.cpp \
 	xml_map_tree.hpp \
 	xml_parser.cpp \
-	xml_simple_handler.cpp
+	xml_simple_handler.cpp \
+	xml_structure_tree.cpp
 
 if WITH_LIBZIP
 

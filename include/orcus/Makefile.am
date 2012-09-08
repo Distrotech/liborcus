@@ -18,7 +18,8 @@ liborcus_HEADERS = \
 	xml_context.hpp \
 	xml_handler.hpp \
 	xml_parser.hpp \
-	xml_simple_handler.hpp
+	xml_simple_handler.hpp \
+	xml_structure_tree.hpp
 
 if WITH_LIBZIP
 

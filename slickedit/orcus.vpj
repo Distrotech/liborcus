@@ -200,6 +200,7 @@
 				<F N="../include/orcus/xml_handler.hpp"/>
 				<F N="../include/orcus/xml_parser.hpp"/>
 				<F N="../include/orcus/xml_simple_handler.hpp"/>
+				<F N="../include/orcus/xml_structure_tree.hpp"/>
 			</Folder>
 		</Folder>
 		<Folder Name="../misc">
@@ -242,6 +243,7 @@
 				<F N="../src/liborcus/xml_map_tree_test.cpp"/>
 				<F N="../src/liborcus/xml_parser.cpp"/>
 				<F N="../src/liborcus/xml_simple_handler.cpp"/>
+				<F N="../src/liborcus/xml_structure_tree.cpp"/>
 			</Folder>
 			<Folder Name="spreadsheet">
 				<F N="../src/spreadsheet/document.cpp"/>
@@ -255,7 +257,6 @@
 				<F N="../src/spreadsheet/styles.cpp"/>
 				<F N="../src/spreadsheet/styles.hpp"/>
 			</Folder>
-			<F N="../src/orcus_xml_dump.cpp"/>
 			<F N="../src/orcus_csv_main.cpp"/>
 			<F N="../src/orcus_ods_main.cpp"/>
 			<F N="../src/orcus_test_common.cpp"/>
@@ -263,6 +264,7 @@
 			<F N="../src/orcus_test_xml.cpp"/>
 			<F N="../src/orcus_test_xml_mapped.cpp"/>
 			<F N="../src/orcus_xlsx_main.cpp"/>
+			<F N="../src/orcus_xml_dump.cpp"/>
 			<F N="../src/orcus_xml_main.cpp"/>
 			<F N="../src/xml_map_sax_handler.cpp"/>
 			<F N="../src/xml_map_sax_handler.hpp"/>
