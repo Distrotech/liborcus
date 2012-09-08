@@ -84,6 +84,7 @@ orcus_test_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
 orcus_test_xml_mapped_SOURCES = \
 	xml_map_sax_handler.cpp \
+	xml_map_sax_handler.hpp \
 	orcus_test_xml_mapped.cpp
 
 orcus_test_xml_mapped_LDADD = \
