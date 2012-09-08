@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: liborcus
 Description: To be worked on...
 Version: @VERSION@
-Libs: -L${libdir} -lorcus-@ORCUS_API_VERSION@
-Cflags: -I${includedir}/liborcus-@ORCUS_API_VERSION@
+Libs: -L${libdir} -lorcus-@ORCUS_API_VERSION@ @LIBZIP_LIBS@
+Cflags: -I${includedir}/liborcus-@ORCUS_API_VERSION@ @LIBZIP_CFLAGS@
 

@@ -2,7 +2,14 @@ SUBDIRS = src include
 ACLOCAL_AMFLAGS = -I m4
 
 pcfiles = liborcus-@ORCUS_API_VERSION@.pc
+if BUILD_SPREADSHEET_MODEL
+pcfiles += liborcus-spreadsheet-model-@ORCUS_API_VERSION@.pc
+endif
+
 liborcus-@ORCUS_API_VERSION@.pc: liborcus.pc
+	@cp -f $< $@
+
+liborcus-spreadsheet-model-@ORCUS_API_VERSION@.pc: liborcus-spreadsheet-model.pc
 	@cp -f $< $@
 
 pkgconfig_DATA = $(pcfiles)
