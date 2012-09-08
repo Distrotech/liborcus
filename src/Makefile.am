@@ -2,19 +2,19 @@ SUBDIRS = liborcus spreadsheet
 
 INCLUDES = -I$(top_srcdir)/include
 
-bin_PROGRAMS = orcus-format-xml
+bin_PROGRAMS = orcus-xml-dump
 
 EXTRA_PROGRAMS = \
 	orcus-test-common \
 	orcus-test-xml
 
-# orcus-format-xml
+# orcus-xml-dump
 
-orcus_format_xml_SOURCES = orcus_format_xml.cpp
-orcus_format_xml_LDADD = \
+orcus_xml_dump_SOURCES = orcus_xml_dump.cpp
+orcus_xml_dump_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la
 
-orcus_format_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+orcus_xml_dump_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
 # orcus-test-common
 
