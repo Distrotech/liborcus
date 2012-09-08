@@ -37,6 +37,9 @@
 
 namespace orcus {
 
+/**
+ * Ordinary DOM tree representing the structure of a XML content in full.
+ */
 class ORCUS_DLLPUBLIC dom_tree
 {
     dom_tree(const dom_tree&); // disabled
