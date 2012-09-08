@@ -86,7 +86,7 @@ AC_ARG_ENABLE(debug,
 	[enable_debug="$enableval"],
 	[enable_debug=no]
 )
-AS_IF([test "x$enable_debug" != no], [
+AS_IF([test "x$enable_debug" != "xno"], [
 	CXXFLAGS="$CXXFLAGS -g"
 ], [
 	AC_DEFINE([NDEBUG], [], [Disable debugging information])
