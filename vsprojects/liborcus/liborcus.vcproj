@@ -250,6 +250,10 @@
 				>
 			</File>
 			<File
+                               RelativePath="..\..\src\liborcus\orcus_gnumeric.cpp"
+                               >
+                       </File>
+                       <File
 				RelativePath="..\..\src\liborcus\orcus_ods.cpp"
 				>
 			</File>
@@ -305,6 +309,38 @@
 				RelativePath="..\..\src\liborcus\xml_simple_handler.cpp"
 				>
 			</File>
+                       <Filter
+                               Name="gnumeric"
+                               >
+                               <File
+                                       RelativePath="..\..\src\liborcus\gnumeric_cell_context.cpp"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\src\liborcus\gnumeric_context.cpp"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\src\liborcus\gnumeric_handler.cpp"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\src\liborcus\gnumeric_sheet_context.cpp"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\src\liborcus\gnumeric_tokens.cpp"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\src\liborcus\gnumeric_tokens.inl"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\src\liborcus\gnumeric_tokens.txt"
+                                       >
+                               </File>
+                       </Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -396,6 +432,10 @@
 				>
 			</File>
 			<File
+                               RelativePath="..\..\include\orcus\orcus_gnumeric.hpp"
+                               >
+                       </File>
+                       <File
 				RelativePath="..\..\include\orcus\orcus_ods.hpp"
 				>
 			</File>
@@ -475,6 +515,38 @@
 				RelativePath="..\..\include\orcus\xml_simple_handler.hpp"
 				>
 			</File>
+                       <Filter
+                               Name="gnumeric"
+                               >
+                               <File
+                                       RelativePath="..\..\include\orcus\gnumeric\gnumeric_cell_context.hpp"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\include\orcus\gnumeric\gnumeric_context.hpp"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\include\orcus\gnumeric\gnumeric_handler.hpp"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\include\orcus\gnumeric\gnumeric_sheet_context.hpp"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\include\orcus\gnumeric\gnumeric_token_constants.hpp"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\include\orcus\gnumeric\gnumeric_token_constants.inl"
+                                       >
+                               </File>
+                               <File
+                                       RelativePath="..\..\include\orcus\gnumeric\gnumeric_tokens.hpp"
+                                       >
+                               </File>
+                       </Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
