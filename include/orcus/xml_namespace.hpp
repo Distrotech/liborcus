@@ -45,11 +45,12 @@ class xmlns_context;
  */
 class xmlns_repository : boost::noncopyable
 {
+    friend class xmlns_context;
+    xmlns_id_t intern(const pstring& uri);
+
 public:
     xmlns_repository();
     ~xmlns_repository();
-
-    xmlns_id_t intern(const pstring& uri);
 
     xmlns_context create_context();
 
