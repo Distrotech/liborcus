@@ -16,7 +16,6 @@ gen:
 		$(INCDIR)/orcus/ooxml/ooxml_token_constants.inl $(SRCDIR)/ooxml_tokens.inl $(SRCDIR)/ooxml_tokens.txt
 	$(BINDIR)/gen-ooxml-tokens.py -t opc $(OPC_SCHEMAPATH) \
 		$(INCDIR)/orcus/ooxml/opc_token_constants.inl $(SRCDIR)/ooxml_opc_tokens.inl $(SRCDIR)/ooxml_opc_tokens.txt
-	touch $@
 
 check: all
 install: all
@@ -26,6 +25,6 @@ clean-generic:
 	rm -f $(SRCDIR)/ooxml_tokens.inl $(SRCDIR)/ooxml_tokens.txt
 	rm -f $(SRCDIR)/ooxml_opc_tokens.inl $(SRCDIR)/ooxml_opc_tokens.txt
 
-.PHONY: gen clean-generic
+.PHONY: gen
 
 endif
