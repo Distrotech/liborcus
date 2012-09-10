@@ -30,6 +30,7 @@
 #include "orcus/sax_parser.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/spreadsheet/export_interface.hpp"
+#include "orcus/xml_namespace.hpp"
 
 #include "xml_map_tree.hpp"
 
@@ -53,24 +54,24 @@ class xml_data_sax_handler
 {
     struct attr
     {
-        pstring ns; // TODO: we need to manage namespace externally.
+        xmlns_id_t ns;
         pstring name;
         pstring val;
 
-        attr(const pstring& _ns, const pstring& _name, const pstring& _val) :
+        attr(xmlns_id_t _ns, const pstring& _name, const pstring& _val) :
             ns(_ns), name(_name), val(_val) {}
     };
 
     struct scope
     {
-        pstring ns;  // TODO: we need to manage namespace externally.
+        xmlns_id_t ns;
         pstring name;
         const char* element_open_begin;
         const char* element_open_end;
 
         xml_map_tree::element_type type;
 
-        scope(const pstring& _ns, const pstring& _name) :
+        scope(xmlns_id_t _ns, const pstring& _name) :
             ns(_ns), name(_name),
             element_open_begin(NULL), element_open_end(NULL),
             type(xml_map_tree::element_unknown) {}
@@ -82,14 +83,21 @@ class xml_data_sax_handler
     spreadsheet::iface::import_factory& m_factory;
     xml_map_tree::const_element_list_type& m_link_positions;
     xml_map_tree::walker m_map_tree_walker;
+    xmlns_context& m_ns_cxt;
+
     const xml_map_tree::element* mp_current_elem;
 
 public:
     xml_data_sax_handler(
-       spreadsheet::iface::import_factory& factory, xml_map_tree::const_element_list_type& link_positions, const xml_map_tree& map_tree) :
+       spreadsheet::iface::import_factory& factory,
+       xml_map_tree::const_element_list_type& link_positions,
+       xmlns_context& ns_cxt,
+       const xml_map_tree& map_tree) :
         m_factory(factory),
         m_link_positions(link_positions),
-        m_map_tree_walker(map_tree.get_tree_walker()), mp_current_elem(NULL) {}
+        m_map_tree_walker(map_tree.get_tree_walker()),
+        m_ns_cxt(ns_cxt),
+        mp_current_elem(NULL) {}
 
     void declaration()
     {
@@ -98,7 +106,8 @@ public:
 
     void start_element(const sax_parser_element& elem)
     {
-        m_scopes.push_back(scope(elem.ns, elem.name));
+        xmlns_id_t ns_id = m_ns_cxt.get(elem.ns);
+        m_scopes.push_back(scope(ns_id, elem.name));
         scope& cur = m_scopes.back();
         cur.element_open_begin = elem.begin_pos;
         cur.element_open_end = elem.end_pos;
@@ -187,7 +196,8 @@ public:
 
     void attribute(const pstring& ns, const pstring& name, const pstring& val)
     {
-        m_attrs.push_back(attr(ns, name, val));
+        xmlns_id_t ns_id = m_ns_cxt.get(ns);
+        m_attrs.push_back(attr(ns_id, name, val));
     }
 };
 
@@ -316,6 +326,9 @@ struct orcus_xml_impl
     /** xml element tree that represents all mapped paths. */
     xml_map_tree m_map_tree;
 
+    /** xml namespace repository for the whole session. */
+    xmlns_repository m_xmlns_repo;
+
     /**
      * Positions of all linked elements, single and range reference alike.
      * Stored link elements must be sorted in order of stream positions, and
@@ -403,7 +416,10 @@ void orcus_xml::read_file(const char* filepath)
     }
 
     // Parse the content xml.
-    xml_data_sax_handler handler(*mp_impl->mp_import_factory, mp_impl->m_link_positions, mp_impl->m_map_tree);
+    xmlns_context ns_cxt = mp_impl->m_xmlns_repo.create_context();
+    xml_data_sax_handler handler(
+       *mp_impl->mp_import_factory, mp_impl->m_link_positions, ns_cxt, mp_impl->m_map_tree);
+
     sax_parser<xml_data_sax_handler> parser(strm.c_str(), strm.size(), handler);
     parser.parse();
 }

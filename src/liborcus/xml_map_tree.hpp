@@ -31,6 +31,7 @@
 #include "orcus/pstring.hpp"
 #include "orcus/spreadsheet/types.hpp"
 #include "orcus/exception.hpp"
+#include "orcus/types.hpp"
 #include "string_pool.hpp"
 
 #include <ostream>
@@ -125,7 +126,7 @@ public:
 
     struct element : boost::noncopyable
     {
-        pstring ns;  // TODO: we need to manage namespace externally.
+        xmlns_id_t ns;
         pstring name;
         element_type type;
         union {
