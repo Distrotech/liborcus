@@ -29,11 +29,14 @@
 #define __ORCUS_XML_STRUCTURE_TREE_HPP__
 
 #include "env.hpp"
+#include "types.hpp"
 
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
+
+struct xml_structure_tree_impl;
 
 /**
  * Tree representing the structure of elements in XML content.  Recurring
@@ -43,18 +46,31 @@ namespace orcus {
  */
 class ORCUS_DLLPUBLIC xml_structure_tree
 {
-public:
+    xml_structure_tree(const xml_structure_tree&); // disabled;
+    xml_structure_tree& operator= (const xml_structure_tree&); // disabled
 
+public:
     struct element;
     typedef boost::ptr_vector<element> element_store_type;
 
     struct element : boost::noncopyable
     {
+        xmlns_id_t ns;
+        pstring name;
         element_store_type child_elements;
+
+        bool repeat:1;
+
+        element();
     };
 
     xml_structure_tree();
     ~xml_structure_tree();
+
+    void read_file(const char* filepath);
+
+private:
+    xml_structure_tree_impl* mp_impl;
 };
 
 }

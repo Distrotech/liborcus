@@ -26,10 +26,45 @@
  ************************************************************************/
 
 #include "orcus/xml_structure_tree.hpp"
+#include "orcus/sax_parser.hpp"
 
 namespace orcus {
 
-xml_structure_tree::xml_structure_tree() {}
-xml_structure_tree::~xml_structure_tree() {}
+namespace {
+
+class xml_sax_handler
+{
+public:
+    xml_sax_handler() {}
+
+    void declaration() {}
+
+    void start_element(const sax_parser_element& elem) {}
+
+    void end_element(const sax_parser_element& elem) {}
+
+    void characters(const pstring& val) {}
+
+    void attribute(const pstring& ns, const pstring& name, const pstring& val) {}
+};
+
+}
+
+struct xml_structure_tree_impl
+{
+    xml_structure_tree::element m_root;
+};
+
+xml_structure_tree::element::element() : repeat(false) {}
+
+xml_structure_tree::xml_structure_tree() : mp_impl(new xml_structure_tree_impl) {}
+xml_structure_tree::~xml_structure_tree()
+{
+    delete mp_impl;
+}
+
+void xml_structure_tree::read_file(const char* filepath)
+{
+}
 
 }
