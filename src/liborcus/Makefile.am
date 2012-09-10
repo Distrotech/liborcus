@@ -2,7 +2,9 @@ SUBDIRS = pre
 
 INCLUDES = -I$(top_srcdir)/include
 
-EXTRA_PROGRAMS = liborcus-test-xml-map-tree
+EXTRA_PROGRAMS = \
+	liborcus-test-xml-map-tree \
+	liborcus-test-xml-namespace
 
 if HAVE_STATIC_LIB
 AM_CPPFLAGS = -D__ORCUS_STATIC_LIB=1
@@ -54,6 +56,14 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 
 endif # WITH_LIBZIP
 
+liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS = \
+	$(LIBZIP_CFLAGS)
+liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
+liborcus_@ORCUS_API_VERSION@_la_LIBADD = \
+	$(LIBZIP_LIBS)
+
+# liborcus-test-xml-map-tree
+
 liborcus_test_xml_map_tree_SOURCES = \
 	string_pool.cpp \
 	string_pool.hpp \
@@ -64,10 +74,18 @@ liborcus_test_xml_map_tree_SOURCES = \
 liborcus_test_xml_map_tree_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la
 
-liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS = \
-	$(LIBZIP_CFLAGS)
-liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
-liborcus_@ORCUS_API_VERSION@_la_LIBADD = \
-	$(LIBZIP_LIBS)
+# liborcus-test-xml-namespace
 
-TESTS = liborcus-test-xml-map-tree
+liborcus_test_xml_namespace_SOURCES = \
+	string_pool.cpp \
+	string_pool.hpp \
+	xml_namespace.cpp \
+	xml_namespace.hpp \
+	xml_namespace_test.cpp
+
+liborcus_test_xml_namespace_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la
+
+TESTS = \
+	liborcus-test-xml-map-tree \
+	liborcus-test-xml-namespace
