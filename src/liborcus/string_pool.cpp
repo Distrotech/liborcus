@@ -115,6 +115,11 @@ pstring string_pool::intern(const char* str, size_t n)
     return pstring(&(*stored_str)[0], n);
 }
 
+pstring string_pool::intern(const pstring& str)
+{
+    return intern(str.get(), str.size());
+}
+
 void string_pool::dump() const
 {
     cout << "interned string count: " << m_store.size() << endl;

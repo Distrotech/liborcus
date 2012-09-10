@@ -198,6 +198,7 @@
 				<F N="../include/orcus/types.hpp"/>
 				<F N="../include/orcus/xml_context.hpp"/>
 				<F N="../include/orcus/xml_handler.hpp"/>
+				<F N="../include/orcus/xml_namespace.hpp"/>
 				<F N="../include/orcus/xml_parser.hpp"/>
 				<F N="../include/orcus/xml_simple_handler.hpp"/>
 				<F N="../include/orcus/xml_structure_tree.hpp"/>
@@ -241,6 +242,7 @@
 				<F N="../src/liborcus/xml_map_tree.cpp"/>
 				<F N="../src/liborcus/xml_map_tree.hpp"/>
 				<F N="../src/liborcus/xml_map_tree_test.cpp"/>
+				<F N="../src/liborcus/xml_namespace.cpp"/>
 				<F N="../src/liborcus/xml_parser.cpp"/>
 				<F N="../src/liborcus/xml_simple_handler.cpp"/>
 				<F N="../src/liborcus/xml_structure_tree.cpp"/>

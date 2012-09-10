@@ -25,52 +25,64 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_STRING_POOL_HPP__
-#define __ORCUS_STRING_POOL_HPP__
+#ifndef __ORCUS_XML_NAMESPACE_MANAGER_HPP__
+#define __ORCUS_XML_NAMESPACE_MANAGER_HPP__
 
-#include <string>
-#include <boost/unordered_set.hpp>
-#include <boost/functional/hash.hpp>
+#include "types.hpp"
+#include "string_pool.hpp"
+#include "pstring.hpp"
+
+#include <boost/noncopyable.hpp>
+#include <boost/unordered_map.hpp>
 
 namespace orcus {
 
-class pstring;
+class xmlns_context;
 
 /**
- * Implements string hash map.
+ * Central XML namespace repository that stores all namespaces that are used
+ * in the current session.
  */
-class string_pool
+class xmlns_repository : boost::noncopyable
 {
-    struct string_hash
-    {
-        size_t operator() (const std::string* p) const;
-    private:
-        boost::hash<std::string> m_hash;
-    };
-
-    struct string_equal_to
-    {
-        bool operator() (const std::string* p1, const std::string* p2) const;
-    private:
-        std::equal_to<std::string> m_equal_to;
-    };
-
-    typedef boost::unordered_set<std::string*, string_hash, string_equal_to> string_store_type;
-
 public:
-    string_pool();
-    ~string_pool();
+    xmlns_repository();
+    ~xmlns_repository();
 
-    pstring intern(const char* str);
-    pstring intern(const char* str, size_t n);
-    pstring intern(const pstring& str);
+    xmlns_id_t intern(const pstring& uri);
 
-    void dump() const;
-    void clear();
-    size_t size() const;
+    xmlns_context create_context();
 
 private:
-    string_store_type m_store;
+    string_pool m_pool;
+};
+
+/**
+ * XML namespace context.  A new context should be used for each xml stream
+ * since the namespace keys themselves are not interned.  Don't hold an
+ * instance of this class any longer than the life cycle of the xml stream
+ * it is used in.
+ *
+ * An empty key value is associated with a default namespace.
+ */
+class xmlns_context
+{
+    friend class xmlns_repository;
+
+    typedef boost::unordered_map<pstring, pstring, pstring::hash> map_type;
+
+    xmlns_context(); // disabled
+    xmlns_context(xmlns_repository& repo);
+public:
+    xmlns_context(const xmlns_context& r);
+
+    xmlns_id_t set(const pstring& key, const pstring& uri);
+    xmlns_id_t get(const pstring& key) const;
+
+private:
+    xmlns_repository& m_repo;
+    xmlns_id_t m_default;
+    map_type m_map;
 };
 
 }
