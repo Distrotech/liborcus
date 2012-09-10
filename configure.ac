@@ -78,6 +78,12 @@ AS_IF([test x"$enable_werror" != "xno"], [
 	CXXFLAGS="$CXXFLAGS -Werror"
 ])
 
+# =========================================================
+# Determine if we are going to build static lib (for MinGW)
+# =========================================================
+AM_CONDITIONAL([HAVE_STATIC_LIB],
+               [test "$enable_shared" = no -a "$enable_static" = yes])
+
 # =====
 # Debug
 # =====

@@ -4,7 +4,11 @@ INCLUDES = -I$(top_srcdir)/include
 
 EXTRA_PROGRAMS = liborcus-test-xml-map-tree
 
-AM_CXXFLAGS = -D__ORCUS_BUILDING_DLL=1
+if HAVE_STATIC_LIB
+AM_CPPFLAGS = -D__ORCUS_STATIC_LIB=1
+else
+AM_CPPFLAGS = -D__ORCUS_BUILDING_DLL=1
+endif
 
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \

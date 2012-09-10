@@ -32,6 +32,12 @@ orcus_test_xml_LDADD = \
 
 orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
+if HAVE_STATIC_LIB
+orcus_xml_dump_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+orcus_test_common_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+orcus_test_xml_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+endif
+
 TESTS = \
 	orcus-test-common \
 	orcus-test-xml
@@ -93,6 +99,13 @@ orcus_test_xml_mapped_LDADD = \
 
 orcus_test_xml_mapped_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
+if HAVE_STATIC_LIB
+orcus_csv_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+orcus_xml_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+orcus_test_csv_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+orcus_test_xml_mapped_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+endif
+
 TESTS += \
 	orcus-test-csv \
 	orcus-test-xml-mapped
@@ -124,6 +137,11 @@ orcus_xlsx_LDADD = \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 
 orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
+if HAVE_STATIC_LIB
+orcus_ods_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+orcus_xlsx_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+endif
 
 endif # WITH_LIBZIP
 
