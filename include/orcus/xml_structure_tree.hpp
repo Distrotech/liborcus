@@ -34,6 +34,8 @@
 #include <boost/noncopyable.hpp>
 #include <boost/unordered_map.hpp>
 
+#include <ostream>
+
 namespace orcus {
 
 class xmlns_repository;

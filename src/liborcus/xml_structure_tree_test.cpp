@@ -32,6 +32,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 using namespace orcus;
@@ -45,6 +46,9 @@ void test_basic()
     xmlns_repository xmlns_repo;
     xml_structure_tree tree(xmlns_repo);
     tree.parse(&strm[0], strm.size());
+    ostringstream os;
+    tree.dump_compact(os);
+    cout << os.str() << endl;
 }
 
 int main()

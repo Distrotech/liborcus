@@ -31,8 +31,12 @@
 #include "orcus/global.hpp"
 #include "orcus/exception.hpp"
 
+#include "string_pool.hpp"
+
 #include <iostream>
 #include <vector>
+
+#include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
 
@@ -46,26 +50,27 @@ struct root
     xml_structure_tree::elem_prop prop;
 };
 
+struct element_ref
+{
+    xml_structure_tree::elem_name name;
+    xml_structure_tree::elem_prop* prop;
+
+    element_ref(xml_structure_tree::elem_name _name, xml_structure_tree::elem_prop* _prop) :
+        name(_name), prop(_prop) {}
+};
+
+typedef std::vector<element_ref> elements_type;
+
 class xml_sax_handler
 {
-    struct element_ref
-    {
-        xml_structure_tree::elem_name name;
-        xml_structure_tree::elem_prop* prop;
-
-        element_ref(xml_structure_tree::elem_name _name, xml_structure_tree::elem_prop* _prop) :
-            name(_name), prop(_prop) {}
-    };
-
-    typedef std::vector<element_ref> stack_type;
-
     xmlns_context& m_ns_cxt;
+    string_pool& m_pool;
     unique_ptr<root> mp_root;
-    stack_type m_stack;
+    elements_type m_stack;
 
 public:
-    xml_sax_handler(xmlns_context& ns_cxt) :
-        m_ns_cxt(ns_cxt), mp_root(NULL) {}
+    xml_sax_handler(xmlns_context& ns_cxt, string_pool& pool) :
+        m_ns_cxt(ns_cxt), m_pool(pool), mp_root(NULL) {}
 
     void declaration() {}
 
@@ -77,7 +82,7 @@ public:
             // This is a root element.
             mp_root.reset(new root);
             mp_root->name.ns = ns_id;
-            mp_root->name.name = elem.name;
+            mp_root->name.name = m_pool.intern(elem.name);
             element_ref ref(mp_root->name, &mp_root->prop);
             m_stack.push_back(ref);
             return;
@@ -98,6 +103,7 @@ public:
         }
 
         // New element.
+        key.name = m_pool.intern(key.name);
         pair<xml_structure_tree::element_store_type::iterator,bool> r =
             current.prop->child_elements.insert(
                xml_structure_tree::element_store_type::value_type(key, new xml_structure_tree::elem_prop));
@@ -136,6 +142,7 @@ public:
 
 struct xml_structure_tree_impl
 {
+    string_pool m_pool;
     xmlns_repository& m_xmlns_repo;
     root* mp_root;
 
@@ -187,14 +194,110 @@ xml_structure_tree::~xml_structure_tree()
 void xml_structure_tree::parse(const char* p, size_t n)
 {
     xmlns_context ns_cxt = mp_impl->m_xmlns_repo.create_context();
-    xml_sax_handler hdl(ns_cxt);
+    xml_sax_handler hdl(ns_cxt, mp_impl->m_pool);
     sax_parser<xml_sax_handler> parser(p, n, hdl);
     parser.parse();
     mp_impl->mp_root = hdl.release_root_element();
 }
 
+namespace {
+
+struct scope : boost::noncopyable
+{
+    xmlns_id_t ns;
+    pstring name;
+    elements_type elements;
+    elements_type::const_iterator current_pos;
+    bool repeat:1;
+
+    scope(xmlns_id_t _ns, const pstring& _name, bool _repeat, const element_ref& _elem) :
+        ns(_ns), name(_name), repeat(_repeat)
+    {
+        elements.push_back(_elem);
+        current_pos = elements.begin();
+    }
+
+    scope(xmlns_id_t _ns, const pstring& _name, bool _repeat) :
+        ns(_ns), name(_name), repeat(_repeat) {}
+};
+
+typedef boost::ptr_vector<scope> scopes_type;
+
+void print_scope(ostream& os, const scopes_type& scopes)
+{
+    if (scopes.empty())
+        throw general_error("scope stack shouldn't be empty while dumping tree.");
+
+    // Skip the first scope which is root.
+    scopes_type::const_iterator it = scopes.begin(), it_end = scopes.end();
+    for (++it; it != it_end; ++it)
+    {
+        os << "/" << it->name;
+        if (it->repeat)
+            os << "*";
+    }
+}
+
+}
+
 void xml_structure_tree::dump_compact(ostream& os) const
 {
+    if (!mp_impl->mp_root)
+        return;
+
+    scopes_type scopes;
+
+    element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
+    scopes.push_back(new scope(XMLNS_UNKNOWN_ID, pstring(), false, ref));
+    while (!scopes.empty())
+    {
+        bool new_scope = false;
+
+        // Iterate through all elements in the current scope.
+        scope& cur_scope = scopes.back();
+        for (; cur_scope.current_pos != cur_scope.elements.end(); ++cur_scope.current_pos)
+        {
+            const element_ref& this_elem = *cur_scope.current_pos;
+            print_scope(os, scopes);
+
+            os << "/" << this_elem.name.name;
+            if (this_elem.prop->repeat)
+                os << "*";
+            os << endl;
+
+            const xml_structure_tree::element_store_type& child_elements = this_elem.prop->child_elements;
+            if (child_elements.empty())
+                continue;
+
+            // This element has child elements.  Push a new scope and populate
+            // it with all child elements.
+            xml_structure_tree::element_store_type::const_iterator it = child_elements.begin(), it_end = child_elements.end();
+            elements_type elems;
+            for (; it != it_end; ++it)
+            {
+                ref.name = it->first;
+                ref.prop = it->second;
+                elems.push_back(ref);
+            }
+
+            assert(!elems.empty());
+
+            // Push a new scope, and restart the loop with the new scope.
+            ++cur_scope.current_pos;
+            scopes.push_back(new scope(this_elem.name.ns, this_elem.name.name, this_elem.prop->repeat));
+            scope& child_scope = scopes.back();
+            child_scope.elements.swap(elems);
+            child_scope.current_pos = child_scope.elements.begin();
+
+            new_scope = true;
+            break;
+        }
+
+        if (new_scope)
+            continue;
+
+        scopes.pop_back();
+    }
 }
 
 }
