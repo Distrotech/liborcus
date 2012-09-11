@@ -52,6 +52,7 @@ class ORCUS_DLLPUBLIC xml_structure_tree
 
 public:
 
+    /** Element name. */
     struct elem_name
     {
         xmlns_id_t ns;
@@ -72,6 +73,7 @@ public:
     struct elem_prop;
     typedef boost::unordered_map<elem_name, elem_prop*, elem_name::hash> element_store_type;
 
+    /** Element properties. */
     struct elem_prop : boost::noncopyable
     {
         element_store_type child_elements;
@@ -80,16 +82,12 @@ public:
         ~elem_prop();
     };
 
-    struct element
-    {
-        elem_name name;
-        elem_prop prop;
-    };
-
     xml_structure_tree(xmlns_repository& xmlns_repo);
     ~xml_structure_tree();
 
     void parse(const char* p, size_t n);
+
+    void dump_compact(std::ostream& os) const;
 
 private:
     xml_structure_tree_impl* mp_impl;

@@ -40,6 +40,12 @@ namespace orcus {
 
 namespace {
 
+struct root
+{
+    xml_structure_tree::elem_name name;
+    xml_structure_tree::elem_prop prop;
+};
+
 class xml_sax_handler
 {
     struct element_ref
@@ -54,7 +60,7 @@ class xml_sax_handler
     typedef std::vector<element_ref> stack_type;
 
     xmlns_context& m_ns_cxt;
-    unique_ptr<xml_structure_tree::element> mp_root;
+    unique_ptr<root> mp_root;
     stack_type m_stack;
 
 public:
@@ -69,7 +75,7 @@ public:
         if (!mp_root)
         {
             // This is a root element.
-            mp_root.reset(new xml_structure_tree::element);
+            mp_root.reset(new root);
             mp_root->name.ns = ns_id;
             mp_root->name.name = elem.name;
             element_ref ref(mp_root->name, &mp_root->prop);
@@ -120,7 +126,7 @@ public:
     void characters(const pstring&) {}
     void attribute(const pstring&, const pstring&, const pstring&) {}
 
-    xml_structure_tree::element* release_root_element()
+    root* release_root_element()
     {
         return mp_root.release();
     }
@@ -131,7 +137,7 @@ public:
 struct xml_structure_tree_impl
 {
     xmlns_repository& m_xmlns_repo;
-    xml_structure_tree::element* mp_root;
+    root* mp_root;
 
     xml_structure_tree_impl(xmlns_repository& xmlns_repo) :
         m_xmlns_repo(xmlns_repo), mp_root(NULL) {}
@@ -185,6 +191,10 @@ void xml_structure_tree::parse(const char* p, size_t n)
     sax_parser<xml_sax_handler> parser(p, n, hdl);
     parser.parse();
     mp_impl->mp_root = hdl.release_root_element();
+}
+
+void xml_structure_tree::dump_compact(ostream& os) const
+{
 }
 
 }
