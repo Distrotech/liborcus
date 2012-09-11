@@ -238,7 +238,7 @@ void print_scope(ostream& os, const scopes_type& scopes)
     {
         os << "/" << it->name;
         if (it->repeat)
-            os << "*";
+            os << "[*]";
     }
 }
 
@@ -266,7 +266,7 @@ void xml_structure_tree::dump_compact(ostream& os) const
 
             os << "/" << this_elem.name.name;
             if (this_elem.prop->repeat)
-                os << "*";
+                os << "[*]";
             os << endl;
 
             const xml_structure_tree::element_store_type& child_elements = this_elem.prop->child_elements;
