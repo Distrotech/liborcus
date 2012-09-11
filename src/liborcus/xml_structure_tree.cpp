@@ -142,6 +142,17 @@ public:
     }
 };
 
+struct sort_by_name : std::binary_function<element_ref, element_ref, bool>
+{
+    bool operator() (const element_ref& left, const element_ref& right) const
+    {
+        if (left.name.ns != right.name.ns)
+            return left.name.ns < right.name.ns;
+
+        return left.name.name < right.name.name;
+    }
+};
+
 }
 
 struct xml_structure_tree_impl
@@ -283,6 +294,9 @@ void xml_structure_tree::dump_compact(ostream& os) const
                 ref.prop = it->second;
                 elems.push_back(ref);
             }
+
+            // Sort the elements by name to make their order tractable.
+            std::sort(elems.begin(), elems.end(), sort_by_name());
 
             assert(!elems.empty());
 

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!--This one has no recurring sub-structure at all.-->
+<root>
+    <name>Thomas Anderson</name>
+    <age>unknown</age>
+    <nickname>Neo</nickname>
+</root>

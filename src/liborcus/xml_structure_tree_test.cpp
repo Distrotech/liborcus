@@ -38,7 +38,8 @@ using namespace std;
 using namespace orcus;
 
 const char* basic_files[] = {
-    "../../test/xml-structure/basic-1"
+    "../../test/xml-structure/basic-1",
+    "../../test/xml-structure/basic-2"
 };
 
 void test_basic()
