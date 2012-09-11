@@ -53,44 +53,6 @@ class ORCUS_DLLPUBLIC xml_structure_tree
     xml_structure_tree& operator= (const xml_structure_tree&); // disabled
 
 public:
-
-    /** Element name. */
-    struct elem_name
-    {
-        xmlns_id_t ns;
-        pstring name;
-
-        struct hash
-        {
-            size_t operator() (const elem_name& val) const;
-        };
-
-        elem_name();
-        elem_name(xmlns_id_t _ns, const pstring& _name);
-        elem_name(const elem_name& r);
-
-        bool operator== (const elem_name& r) const;
-    };
-
-    struct elem_prop;
-    typedef boost::unordered_map<elem_name, elem_prop*, elem_name::hash> element_store_type;
-
-    /** Element properties. */
-    struct elem_prop : boost::noncopyable
-    {
-        element_store_type child_elements;
-
-        /**
-         * When true, this element is the base element of repeated structures.
-         * This flag is set only with the base element; none of the child
-         * elements below the base element have this flag set.
-         */
-        bool repeat:1;
-
-        elem_prop();
-        ~elem_prop();
-    };
-
     xml_structure_tree(xmlns_repository& xmlns_repo);
     ~xml_structure_tree();
 

@@ -44,19 +44,68 @@ namespace orcus {
 
 namespace {
 
+/** Element name. */
+struct elem_name
+{
+    xmlns_id_t ns;
+    pstring name;
+
+    struct hash
+    {
+        size_t operator ()(const elem_name& val) const
+        {
+            static pstring::hash hasher;
+            size_t n = reinterpret_cast<size_t>(val.ns);
+            n += hasher(val.name);
+            return n;
+        }
+    };
+
+    elem_name() : ns(XMLNS_UNKNOWN_ID) {}
+    elem_name(xmlns_id_t _ns, const pstring& _name) : ns(_ns), name(_name) {}
+    elem_name(const elem_name& r) : ns(r.ns), name(r.name) {}
+
+    bool operator== (const elem_name& r) const
+    {
+        return ns == r.ns && name == r.name;
+    }
+};
+
+struct elem_prop;
+typedef boost::unordered_map<elem_name, elem_prop*, elem_name::hash> element_store_type;
+
+/** Element properties. */
+struct elem_prop : boost::noncopyable
+{
+    element_store_type child_elements;
+
+    /**
+     * When true, this element is the base element of repeated structures.
+     * This flag is set only with the base element; none of the child
+     * elements below the base element have this flag set.
+     */
+    bool repeat:1;
+
+    elem_prop() : repeat(false) {}
+    ~elem_prop()
+    {
+        for_each(child_elements.begin(), child_elements.end(), map_object_deleter<element_store_type>());
+    };
+};
+
 struct root
 {
-    xml_structure_tree::elem_name name;
-    xml_structure_tree::elem_prop prop;
+    elem_name name;
+    elem_prop prop;
 };
 
 struct element_ref
 {
-    xml_structure_tree::elem_name name;
-    xml_structure_tree::elem_prop* prop;
+    elem_name name;
+    elem_prop* prop;
     bool in_repeated_element:1;
 
-    element_ref(xml_structure_tree::elem_name _name, xml_structure_tree::elem_prop* _prop) :
+    element_ref(elem_name _name, elem_prop* _prop) :
         name(_name), prop(_prop), in_repeated_element(false) {}
 };
 
@@ -92,8 +141,8 @@ public:
         // See if the current element already has a child element of the same name.
         assert(!m_stack.empty());
         const element_ref& current = m_stack.back();
-        xml_structure_tree::elem_name key(ns_id, elem.name);
-        xml_structure_tree::element_store_type::iterator it = current.prop->child_elements.find(key);
+        elem_name key(ns_id, elem.name);
+        element_store_type::iterator it = current.prop->child_elements.find(key);
         if (it != current.prop->child_elements.end())
         {
             // Recurring element.
@@ -108,9 +157,9 @@ public:
 
         // New element.
         key.name = m_pool.intern(key.name);
-        pair<xml_structure_tree::element_store_type::iterator,bool> r =
+        pair<element_store_type::iterator,bool> r =
             current.prop->child_elements.insert(
-               xml_structure_tree::element_store_type::value_type(key, new xml_structure_tree::elem_prop));
+               element_store_type::value_type(key, new elem_prop));
 
         if (!r.second)
             throw general_error("Insertion failed");
@@ -169,34 +218,6 @@ struct xml_structure_tree_impl
         delete mp_root;
     }
 };
-
-xml_structure_tree::elem_name::elem_name() : ns(XMLNS_UNKNOWN_ID) {}
-
-xml_structure_tree::elem_name::elem_name(xmlns_id_t _ns, const pstring& _name) :
-    ns(_ns), name(_name) {}
-
-xml_structure_tree::elem_name::elem_name(const elem_name& r) :
-    ns(r.ns), name(r.name) {}
-
-bool xml_structure_tree::elem_name::operator== (const elem_name& r) const
-{
-    return ns == r.ns && name == r.name;
-}
-
-size_t xml_structure_tree::elem_name::hash::operator ()(const xml_structure_tree::elem_name& val) const
-{
-    static pstring::hash hasher;
-    size_t n = reinterpret_cast<size_t>(val.ns);
-    n += hasher(val.name);
-    return n;
-}
-
-xml_structure_tree::elem_prop::elem_prop() : repeat(false) {}
-
-xml_structure_tree::elem_prop::~elem_prop()
-{
-    for_each(child_elements.begin(), child_elements.end(), map_object_deleter<element_store_type>());
-}
 
 xml_structure_tree::xml_structure_tree(xmlns_repository& xmlns_repo) :
     mp_impl(new xml_structure_tree_impl(xmlns_repo)) {}
@@ -280,13 +301,13 @@ void xml_structure_tree::dump_compact(ostream& os) const
                 os << "[*]";
             os << endl;
 
-            const xml_structure_tree::element_store_type& child_elements = this_elem.prop->child_elements;
+            const element_store_type& child_elements = this_elem.prop->child_elements;
             if (child_elements.empty())
                 continue;
 
             // This element has child elements.  Push a new scope and populate
             // it with all child elements.
-            xml_structure_tree::element_store_type::const_iterator it = child_elements.begin(), it_end = child_elements.end();
+            element_store_type::const_iterator it = child_elements.begin(), it_end = child_elements.end();
             elements_type elems;
             for (; it != it_end; ++it)
             {
