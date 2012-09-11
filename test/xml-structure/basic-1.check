@@ -1,0 +1,5 @@
+/root
+/root/entry[*]
+/root/entry[*]/id
+/root/entry[*]/name
+

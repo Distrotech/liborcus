@@ -37,18 +37,40 @@
 using namespace std;
 using namespace orcus;
 
+const char* basic_files[] = {
+    "../../test/xml-structure/basic-1"
+};
+
 void test_basic()
 {
-    const char* filepath = "../../test/xml-mapped/basic.xml";
-    string strm;
-    load_file_content(filepath, strm);
-    assert(!strm.empty());
-    xmlns_repository xmlns_repo;
-    xml_structure_tree tree(xmlns_repo);
-    tree.parse(&strm[0], strm.size());
-    ostringstream os;
-    tree.dump_compact(os);
-    cout << os.str() << endl;
+    size_t n = sizeof(basic_files)/sizeof(basic_files[0]);
+    for (size_t i = 0; i < n; ++i)
+    {
+        string filepath(basic_files[i]);
+        filepath.append(".xml");
+        string strm;
+        load_file_content(filepath.c_str(), strm);
+        assert(!strm.empty());
+        xmlns_repository xmlns_repo;
+        xml_structure_tree tree(xmlns_repo);
+        tree.parse(&strm[0], strm.size());
+        ostringstream os;
+        tree.dump_compact(os);
+        string data_content = os.str();
+        cout << data_content;
+
+        // Check the dump content against known datum.
+        filepath = basic_files[i];
+        filepath.append(".check");
+        string strm_check;
+        load_file_content(filepath.c_str(), strm_check);
+        assert(!strm_check.empty());
+
+        // They should be identical, plus or minus leading/trailing whitespaces.
+        pstring s1(&data_content[0], data_content.size());
+        pstring s2(&strm_check[0], strm_check.size());
+        assert(s1.trim() == s2.trim());
+    }
 }
 
 int main()
