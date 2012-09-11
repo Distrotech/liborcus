@@ -162,7 +162,6 @@ AC_CONFIG_FILES([Makefile
 	include/orcus/odf/Makefile
 	include/orcus/ooxml/Makefile
 	src/Makefile
-	src/liborcus/pre/Makefile
 	src/liborcus/Makefile
 	src/spreadsheet/Makefile
 ])

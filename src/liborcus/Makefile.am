@@ -1,4 +1,3 @@
-SUBDIRS = pre
 
 INCLUDES = -I$(top_srcdir)/include
 
