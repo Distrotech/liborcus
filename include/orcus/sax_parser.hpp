@@ -385,6 +385,8 @@ void sax_parser<_Handler>::comment()
                 // second hyphen.
                 break;
         }
+        else
+            hyphen = false;
     }
 
     if (len - i < 2 || next_char() != '>')
