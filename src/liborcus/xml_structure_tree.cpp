@@ -54,9 +54,10 @@ struct element_ref
 {
     xml_structure_tree::elem_name name;
     xml_structure_tree::elem_prop* prop;
+    bool in_repeated_element:1;
 
     element_ref(xml_structure_tree::elem_name _name, xml_structure_tree::elem_prop* _prop) :
-        name(_name), prop(_prop) {}
+        name(_name), prop(_prop), in_repeated_element(false) {}
 };
 
 typedef std::vector<element_ref> elements_type;
@@ -96,8 +97,11 @@ public:
         if (it != current.prop->child_elements.end())
         {
             // Recurring element.
-            it->second->repeat = true;
+            if (!current.in_repeated_element)
+                // Set this flag only with the base element of repeated structures.
+                it->second->repeat = true;
             element_ref ref(it->first, it->second);
+            ref.in_repeated_element = true;
             m_stack.push_back(ref);
             return;
         }

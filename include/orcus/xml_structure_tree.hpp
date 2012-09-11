@@ -79,7 +79,14 @@ public:
     struct elem_prop : boost::noncopyable
     {
         element_store_type child_elements;
+
+        /**
+         * When true, this element is the base element of repeated structures.
+         * This flag is set only with the base element; none of the child
+         * elements below the base element have this flag set.
+         */
         bool repeat:1;
+
         elem_prop();
         ~elem_prop();
     };
