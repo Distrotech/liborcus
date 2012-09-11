@@ -4,7 +4,8 @@ INCLUDES = -I$(top_srcdir)/include
 
 EXTRA_PROGRAMS = \
 	liborcus-test-xml-map-tree \
-	liborcus-test-xml-namespace
+	liborcus-test-xml-namespace \
+	liborcus-test-xml-structure-tree
 
 if HAVE_STATIC_LIB
 AM_CPPFLAGS = -D__ORCUS_STATIC_LIB=1
@@ -86,6 +87,19 @@ liborcus_test_xml_namespace_SOURCES = \
 liborcus_test_xml_namespace_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la
 
+# liborcus-test-xml-structure-tree
+
+liborcus_test_xml_structure_tree_SOURCES = \
+	string_pool.cpp \
+	string_pool.hpp \
+	xml_structure_tree.cpp \
+	xml_namespace.cpp \
+	xml_structure_tree_test.cpp
+
+liborcus_test_xml_structure_tree_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la
+
 TESTS = \
 	liborcus-test-xml-map-tree \
-	liborcus-test-xml-namespace
+	liborcus-test-xml-namespace \
+	liborcus-test-xml-structure-tree

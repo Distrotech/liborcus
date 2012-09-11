@@ -32,10 +32,11 @@
 #include "types.hpp"
 
 #include <boost/noncopyable.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/unordered_map.hpp>
 
 namespace orcus {
 
+class xmlns_repository;
 struct xml_structure_tree_impl;
 
 /**
@@ -50,24 +51,45 @@ class ORCUS_DLLPUBLIC xml_structure_tree
     xml_structure_tree& operator= (const xml_structure_tree&); // disabled
 
 public:
-    struct element;
-    typedef boost::ptr_vector<element> element_store_type;
 
-    struct element : boost::noncopyable
+    struct elem_name
     {
         xmlns_id_t ns;
         pstring name;
-        element_store_type child_elements;
 
-        bool repeat:1;
+        struct hash
+        {
+            size_t operator() (const elem_name& val) const;
+        };
 
-        element();
+        elem_name();
+        elem_name(xmlns_id_t _ns, const pstring& _name);
+        elem_name(const elem_name& r);
+
+        bool operator== (const elem_name& r) const;
     };
 
-    xml_structure_tree();
+    struct elem_prop;
+    typedef boost::unordered_map<elem_name, elem_prop*, elem_name::hash> element_store_type;
+
+    struct elem_prop : boost::noncopyable
+    {
+        element_store_type child_elements;
+        bool repeat:1;
+        elem_prop();
+        ~elem_prop();
+    };
+
+    struct element
+    {
+        elem_name name;
+        elem_prop prop;
+    };
+
+    xml_structure_tree(xmlns_repository& xmlns_repo);
     ~xml_structure_tree();
 
-    void read_file(const char* filepath);
+    void parse(const char* p, size_t n);
 
 private:
     xml_structure_tree_impl* mp_impl;

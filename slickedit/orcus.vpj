@@ -247,6 +247,7 @@
 				<F N="../src/liborcus/xml_parser.cpp"/>
 				<F N="../src/liborcus/xml_simple_handler.cpp"/>
 				<F N="../src/liborcus/xml_structure_tree.cpp"/>
+				<F N="../src/liborcus/xml_structure_tree_test.cpp"/>
 			</Folder>
 			<Folder Name="spreadsheet">
 				<F N="../src/spreadsheet/document.cpp"/>
