@@ -8,5 +8,6 @@
     </child>
     before comment|<!-- another comment -->|after comment
     <child attr3="value3"/>
+    <!-- another comment - with a single hyphen. -->
 </root>
 
