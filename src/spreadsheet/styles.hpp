@@ -130,23 +130,23 @@ public:
     virtual void set_font_italic(bool b);
     virtual void set_font_name(const char* s, size_t n);
     virtual void set_font_size(double point);
-    virtual void commit_font();
+    virtual size_t commit_font();
 
     virtual void set_fill_count(size_t n);
     virtual void set_fill_pattern_type(const char* s, size_t n);
     virtual void set_fill_fg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
     virtual void set_fill_bg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
-    virtual void commit_fill();
+    virtual size_t commit_fill();
 
     virtual void set_border_count(size_t n);
     virtual void set_border_style(border_direction_t dir, const char* s, size_t n);
-    virtual void commit_border();
+    virtual size_t commit_border();
 
     virtual void set_cell_style_xf_count(size_t n);
-    virtual void commit_cell_style_xf();
+    virtual size_t commit_cell_style_xf();
 
     virtual void set_cell_xf_count(size_t n);
-    virtual void commit_cell_xf();
+    virtual size_t commit_cell_xf();
 
     virtual void set_xf_number_format(size_t index);
     virtual void set_xf_font(size_t index);
@@ -158,7 +158,7 @@ public:
     virtual void set_cell_style_name(const char* s, size_t n);
     virtual void set_cell_style_xf(size_t index);
     virtual void set_cell_style_builtin(size_t index);
-    virtual void commit_cell_style();
+    virtual size_t commit_cell_style();
 
     const font* get_font(size_t index) const;
     const xf* get_cell_xf(size_t index) const;

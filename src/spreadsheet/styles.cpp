@@ -143,10 +143,11 @@ void import_styles::set_font_size(double point)
     m_cur_font.size = point;
 }
 
-void import_styles::commit_font()
+size_t import_styles::commit_font()
 {
     m_fonts.push_back(m_cur_font);
     m_cur_font.reset();
+    return m_fonts.size() - 1;
 }
 
 void import_styles::set_fill_count(size_t n)
@@ -169,10 +170,11 @@ void import_styles::set_fill_bg_color(color_elem_t alpha, color_elem_t red, colo
     m_cur_fill.bg_color = color(alpha, red, green, blue);
 }
 
-void import_styles::commit_fill()
+size_t import_styles::commit_fill()
 {
     m_fills.push_back(m_cur_fill);
     m_cur_fill.reset();
+    return m_fills.size() - 1;
 }
 
 void import_styles::set_border_count(size_t n)
@@ -206,10 +208,11 @@ void import_styles::set_border_style(border_direction_t dir, const char* s, size
         p->style = pstring(s, n).intern();
 }
 
-void import_styles::commit_border()
+size_t import_styles::commit_border()
 {
     m_borders.push_back(m_cur_border);
     m_cur_border.reset();
+    return m_borders.size() - 1;
 }
 
 void import_styles::set_cell_style_xf_count(size_t n)
@@ -217,10 +220,11 @@ void import_styles::set_cell_style_xf_count(size_t n)
     m_cell_style_formats.reserve(n);
 }
 
-void import_styles::commit_cell_style_xf()
+size_t import_styles::commit_cell_style_xf()
 {
     m_cell_style_formats.push_back(m_cur_cell_format);
     m_cur_cell_format.reset();
+    return m_cell_style_formats.size() - 1;
 }
 
 void import_styles::set_cell_xf_count(size_t n)
@@ -228,10 +232,11 @@ void import_styles::set_cell_xf_count(size_t n)
     m_cell_formats.reserve(n);
 }
 
-void import_styles::commit_cell_xf()
+size_t import_styles::commit_cell_xf()
 {
     m_cell_formats.push_back(m_cur_cell_format);
     m_cur_cell_format.reset();
+    return m_cell_formats.size() - 1;
 }
 
 void import_styles::set_xf_number_format(size_t index)
@@ -279,10 +284,11 @@ void import_styles::set_cell_style_builtin(size_t index)
     m_cur_cell_style.builtin = index;
 }
 
-void import_styles::commit_cell_style()
+size_t import_styles::commit_cell_style()
 {
     m_cell_styles.push_back(m_cur_cell_style);
     m_cur_cell_style.reset();
+    return m_cell_styles.size() - 1;
 }
 
 const import_styles::font* import_styles::get_font(size_t index) const

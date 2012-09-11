@@ -93,7 +93,7 @@ public:
     virtual void set_font_italic(bool b) = 0;
     virtual void set_font_name(const char* s, size_t n) = 0;
     virtual void set_font_size(double point) = 0;
-    virtual void commit_font() = 0;
+    virtual size_t commit_font() = 0;
 
     // fill
 
@@ -101,23 +101,23 @@ public:
     virtual void set_fill_pattern_type(const char* s, size_t n) = 0;
     virtual void set_fill_fg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue) = 0;
     virtual void set_fill_bg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue) = 0;
-    virtual void commit_fill() = 0;
+    virtual size_t commit_fill() = 0;
 
     // border
 
     virtual void set_border_count(size_t n) = 0;
     virtual void set_border_style(orcus::spreadsheet::border_direction_t dir, const char* s, size_t n) = 0;
-    virtual void commit_border() = 0;
+    virtual size_t commit_border() = 0;
 
     // cell style xf
 
     virtual void set_cell_style_xf_count(size_t n) = 0;
-    virtual void commit_cell_style_xf() = 0;
+    virtual size_t commit_cell_style_xf() = 0;
 
     // cell xf
 
     virtual void set_cell_xf_count(size_t n) = 0;
-    virtual void commit_cell_xf() = 0;
+    virtual size_t commit_cell_xf() = 0;
 
     // xf (cell format) - used both by cell xf and cell style xf.
 
@@ -133,7 +133,7 @@ public:
     virtual void set_cell_style_name(const char* s, size_t n) = 0;
     virtual void set_cell_style_xf(size_t index) = 0;
     virtual void set_cell_style_builtin(size_t index) = 0;
-    virtual void commit_cell_style() = 0;
+    virtual size_t commit_cell_style() = 0;
 };
 
 /**
