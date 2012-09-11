@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<data>
+    <entries>
+        <entry>
+            <id>0</id>
+            <name><first>Thomas</first><last>Anderson</last></name>
+            <nickname>Neo</nickname>
+            <gender>male</gender>
+        </entry>
+        <entry>
+            <id>1</id>
+            <nickname>Trinity</nickname>
+            <gender>female</gender>
+        </entry>

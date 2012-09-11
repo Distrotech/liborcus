@@ -1,0 +1,9 @@
+/data
+/data/entries
+/data/entries/entry[*]
+/data/entries/entry[*]/gender
+/data/entries/entry[*]/id
+/data/entries/entry[*]/name
+/data/entries/entry[*]/name/first
+/data/entries/entry[*]/name/last
+/data/entries/entry[*]/nickname

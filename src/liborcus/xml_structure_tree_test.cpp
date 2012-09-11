@@ -39,7 +39,8 @@ using namespace orcus;
 
 const char* basic_files[] = {
     "../../test/xml-structure/basic-1",
-    "../../test/xml-structure/basic-2"
+    "../../test/xml-structure/basic-2",
+    "../../test/xml-structure/basic-3"
 };
 
 void test_basic()
@@ -58,6 +59,7 @@ void test_basic()
         ostringstream os;
         tree.dump_compact(os);
         string data_content = os.str();
+        cout << "--" << endl;
         cout << data_content;
 
         // Check the dump content against known datum.
