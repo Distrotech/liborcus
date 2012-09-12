@@ -107,18 +107,18 @@ const xml_token_pair_t& xml_context_base::get_current_element() const
 
 xml_token_pair_t& xml_context_base::get_parent_element()
 {
-	if(m_stack.size() < 2)
-		throw general_error("element stack has no parent element");
+    if(m_stack.size() < 2)
+        throw general_error("element stack has no parent element");
 
-	return m_stack[m_stack.size() - 2];
+    return m_stack[m_stack.size() - 2];
 }
 
 const xml_token_pair_t& xml_context_base::get_parent_element() const
 {
-	if(m_stack.size() < 2)
-		throw general_error("element stack has no parent element");
+    if(m_stack.size() < 2)
+        throw general_error("element stack has no parent element");
 
-	return m_stack[m_stack.size() - 2];
+    return m_stack[m_stack.size() - 2];
 }
 
 void xml_context_base::warn_unhandled() const
