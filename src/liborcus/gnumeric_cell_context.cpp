@@ -209,6 +209,13 @@ void gnumeric_cell_context::end_cell()
     case CellTypeString:
         mp_sheet->set_auto(row, col, chars.get(), chars.size());
         break;
+    case CellTypeFormula:
+        mp_sheet->set_formula(row, col, spreadsheet::gnumeric, chars.get(), chars.size());
+        break;
+    case CellTypeSharedFormula:
+        if(chars.empty())
+            mp_sheet->set_shared_formula(row, col, mp_cell_data->shared_formula_id);
+        break;
     }
 
     mp_cell_data.reset();

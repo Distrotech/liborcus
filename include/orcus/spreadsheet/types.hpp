@@ -48,7 +48,8 @@ enum formula_grammar_t
 {
     xlsx_2007,
     xlsx_2010,
-    ods
+    ods,
+    gnumeric
 };
 
 }}
