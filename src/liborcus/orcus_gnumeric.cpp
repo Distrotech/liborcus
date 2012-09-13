@@ -70,39 +70,39 @@ void orcus_gnumeric::read_file(const char* fpath)
 {
     cout << "reading " << fpath << endl;
 
-       gzFile file = gzopen(fpath, "rb");
+    gzFile file = gzopen(fpath, "rb");
 
-       if(!file)
-               return;
+    if(!file)
+       return;
 
-       std::string file_content;
+    std::string file_content;
 
-       while(1)
+    while(1)
+    {
+       char buffer[BUFFER_LENGTH];
+       int read_characters = gzread(file, buffer, BUFFER_LENGTH);
+       if(read_characters < 0)
        {
-               char buffer[BUFFER_LENGTH];
-               int read_characters = gzread(file, buffer, BUFFER_LENGTH);
-               if(read_characters < 0)
-               {
-                       std::cout << "Read error" << std::endl;
-                       break;
-               }
-
-               file_content.append(buffer, read_characters);
-               if(read_characters < BUFFER_LENGTH)
-               {
-                       if(gzeof(file))
-                               break;
-                       else
-                       {
-                               const char * error;
-                               int err;
-                               error = gzerror (file, &err);
-                               std::cout << "error: " << error << std::endl;
-                       }
-               }
+               std::cout << "Read error" << std::endl;
+               break;
        }
 
-       read_content_xml(file_content.c_str(), file_content.length());
+       file_content.append(buffer, read_characters);
+       if(read_characters < BUFFER_LENGTH)
+       {
+               if(gzeof(file))
+                       break;
+               else
+               {
+                       const char * error;
+                       int err;
+                       error = gzerror (file, &err);
+                       std::cout << "error: " << error << std::endl;
+               }
+       }
+    }
+
+    read_content_xml(file_content.c_str(), file_content.length());
 }
 
 }
