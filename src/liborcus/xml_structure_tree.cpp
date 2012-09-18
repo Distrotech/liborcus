@@ -204,21 +204,20 @@ struct sort_by_name : std::binary_function<element_ref, element_ref, bool>
 
 struct scope : boost::noncopyable
 {
-    xmlns_id_t ns;
-    pstring name;
+    elem_name name;
     elements_type elements;
     elements_type::const_iterator current_pos;
     bool repeat:1;
 
     scope(xmlns_id_t _ns, const pstring& _name, bool _repeat, const element_ref& _elem) :
-        ns(_ns), name(_name), repeat(_repeat)
+        name(_ns, _name), repeat(_repeat)
     {
         elements.push_back(_elem);
         current_pos = elements.begin();
     }
 
     scope(xmlns_id_t _ns, const pstring& _name, bool _repeat) :
-        ns(_ns), name(_name), repeat(_repeat) {}
+        name(_ns, _name), repeat(_repeat) {}
 };
 
 typedef boost::ptr_vector<scope> scopes_type;
@@ -232,7 +231,7 @@ void print_scope(ostream& os, const scopes_type& scopes)
     scopes_type::const_iterator it = scopes.begin(), it_end = scopes.end();
     for (++it; it != it_end; ++it)
     {
-        os << "/" << it->name;
+        os << "/" << it->name.name;
         if (it->repeat)
             os << "[*]";
     }
