@@ -202,42 +202,6 @@ struct sort_by_name : std::binary_function<element_ref, element_ref, bool>
     }
 };
 
-}
-
-struct xml_structure_tree_impl
-{
-    string_pool m_pool;
-    xmlns_repository& m_xmlns_repo;
-    root* mp_root;
-
-    xml_structure_tree_impl(xmlns_repository& xmlns_repo) :
-        m_xmlns_repo(xmlns_repo), mp_root(NULL) {}
-
-    ~xml_structure_tree_impl()
-    {
-        delete mp_root;
-    }
-};
-
-xml_structure_tree::xml_structure_tree(xmlns_repository& xmlns_repo) :
-    mp_impl(new xml_structure_tree_impl(xmlns_repo)) {}
-
-xml_structure_tree::~xml_structure_tree()
-{
-    delete mp_impl;
-}
-
-void xml_structure_tree::parse(const char* p, size_t n)
-{
-    xmlns_context ns_cxt = mp_impl->m_xmlns_repo.create_context();
-    xml_sax_handler hdl(ns_cxt, mp_impl->m_pool);
-    sax_parser<xml_sax_handler> parser(p, n, hdl);
-    parser.parse();
-    mp_impl->mp_root = hdl.release_root_element();
-}
-
-namespace {
-
 struct scope : boost::noncopyable
 {
     xmlns_id_t ns;
@@ -274,6 +238,84 @@ void print_scope(ostream& os, const scopes_type& scopes)
     }
 }
 
+}
+
+struct xml_structure_tree_impl
+{
+    string_pool m_pool;
+    xmlns_repository& m_xmlns_repo;
+    root* mp_root;
+
+    xml_structure_tree_impl(xmlns_repository& xmlns_repo) :
+        m_xmlns_repo(xmlns_repo), mp_root(NULL) {}
+
+    ~xml_structure_tree_impl()
+    {
+        delete mp_root;
+    }
+};
+
+struct xml_structure_tree::walker_impl
+{
+    const root* mp_root; /// Root element of the authoritative tree.
+};
+
+xml_structure_tree::walker::walker(const xml_structure_tree_impl& parent_impl) :
+    mp_impl(new walker_impl)
+{
+    mp_impl->mp_root = parent_impl.mp_root;
+}
+
+xml_structure_tree::walker::walker(const walker& r) :
+    mp_impl(new walker_impl)
+{
+    mp_impl->mp_root = r.mp_impl->mp_root;
+}
+
+xml_structure_tree::walker::~walker()
+{
+    delete mp_impl;
+}
+
+xml_structure_tree::walker& xml_structure_tree::walker::operator= (const walker& r)
+{
+    mp_impl->mp_root = r.mp_impl->mp_root;
+    return *this;
+}
+
+const xml_structure_tree::element* xml_structure_tree::walker::root()
+{
+    return NULL;
+}
+
+const xml_structure_tree::element* xml_structure_tree::walker::descend(xmlns_id_t ns, const pstring& name)
+{
+    return NULL;
+}
+
+void xml_structure_tree::walker::ascend()
+{
+}
+
+void xml_structure_tree::walker::get_children(element_names_type& names)
+{
+}
+
+xml_structure_tree::xml_structure_tree(xmlns_repository& xmlns_repo) :
+    mp_impl(new xml_structure_tree_impl(xmlns_repo)) {}
+
+xml_structure_tree::~xml_structure_tree()
+{
+    delete mp_impl;
+}
+
+void xml_structure_tree::parse(const char* p, size_t n)
+{
+    xmlns_context ns_cxt = mp_impl->m_xmlns_repo.create_context();
+    xml_sax_handler hdl(ns_cxt, mp_impl->m_pool);
+    sax_parser<xml_sax_handler> parser(p, n, hdl);
+    parser.parse();
+    mp_impl->mp_root = hdl.release_root_element();
 }
 
 void xml_structure_tree::dump_compact(ostream& os) const
@@ -337,6 +379,11 @@ void xml_structure_tree::dump_compact(ostream& os) const
 
         scopes.pop_back();
     }
+}
+
+xml_structure_tree::walker xml_structure_tree::get_walker() const
+{
+    return walker(*mp_impl);
 }
 
 }

@@ -76,8 +76,26 @@ void test_basic()
     }
 }
 
+void test_walker()
+{
+    {
+        string filepath(basic_files[0]);
+        filepath.append(".xml");
+        string strm;
+        load_file_content(filepath.c_str(), strm);
+        assert(!strm.empty());
+        xmlns_repository xmlns_repo;
+        xml_structure_tree tree(xmlns_repo);
+        tree.parse(&strm[0], strm.size());
+
+        xml_structure_tree::walker wkr = tree.get_walker();
+        const xml_structure_tree::element* root = wkr.root();
+    }
+}
+
 int main()
 {
     test_basic();
+    test_walker();
     return EXIT_SUCCESS;
 }

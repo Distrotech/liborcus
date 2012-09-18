@@ -53,12 +53,79 @@ class ORCUS_DLLPUBLIC xml_structure_tree
     xml_structure_tree& operator= (const xml_structure_tree&); // disabled
 
 public:
+
+    struct element_name
+    {
+        xmlns_id_t ns;
+        pstring name;
+    };
+
+    typedef std::vector<element_name> element_names_type;
+
+    struct element
+    {
+        element_name name;
+        bool repeat;
+    };
+
+    struct walker_impl;
+
+    /**
+     * This class allows client to traverse the tree.
+     */
+    class walker
+    {
+        friend class xml_structure_tree;
+        xml_structure_tree_impl* mp_parent_impl;
+        walker_impl* mp_impl;
+
+        walker(); // disabled
+        walker(const xml_structure_tree_impl& parent_impl);
+    public:
+        walker(const walker& r);
+        ~walker();
+        walker& operator= (const walker& r);
+
+        /**
+         * Set current position to the root element, and return the root
+         * element.
+         *
+         * @return root element.
+         */
+        const element* root();
+
+        /**
+         * Descend into specified child element.
+         *
+         * @param ns namespace of child element
+         * @param name name of child element
+         *
+         * @return pointer to the child element.
+         */
+        const element* descend(xmlns_id_t ns, const pstring& name);
+
+        /**
+         * Move up to the parent element.
+         */
+        void ascend();
+
+        /**
+         * Get a list of names of all child elements at current element
+         * position.  The list of names is sorted.
+         *
+         * @param names sorted list of child element names.
+         */
+        void get_children(element_names_type& names);
+    };
+
     xml_structure_tree(xmlns_repository& xmlns_repo);
     ~xml_structure_tree();
 
     void parse(const char* p, size_t n);
 
     void dump_compact(std::ostream& os) const;
+
+    walker get_walker() const;
 
 private:
     xml_structure_tree_impl* mp_impl;
