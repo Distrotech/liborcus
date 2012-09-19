@@ -192,6 +192,17 @@ public:
     }
 };
 
+class match_by_name : std::unary_function<element_ref, bool>
+{
+    elem_name m_name;
+public:
+    match_by_name(const elem_name& name) : m_name(name) {}
+    bool operator() (const element_ref& elem) const
+    {
+        return elem.name == m_name;
+    }
+};
+
 struct sort_by_name : std::binary_function<element_ref, element_ref, bool>
 {
     bool operator() (const element_ref& left, const element_ref& right) const
@@ -321,7 +332,19 @@ xml_structure_tree::element xml_structure_tree::walker::root()
 
 xml_structure_tree::element xml_structure_tree::walker::descend(xmlns_id_t ns, const pstring& name)
 {
-    return element();
+    if (mp_impl->m_scopes.empty())
+        throw general_error("Scope is empty.");
+
+    const scope& cur = mp_impl->m_scopes.back();
+    // TODO: Use hash map.
+    elements_type::const_iterator it =
+        find_if(cur.elements.begin(), cur.elements.end(), match_by_name(elem_name(ns, name)));
+
+    if (it == cur.elements.end())
+        throw general_error("Specified child element does not exist.");
+
+    element_name elem_name(it->name.ns, it->name.name);
+    return element(elem_name, it->prop->repeat);
 }
 
 void xml_structure_tree::walker::ascend()
