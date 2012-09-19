@@ -89,7 +89,7 @@ void test_walker()
         tree.parse(&strm[0], strm.size());
 
         xml_structure_tree::walker wkr = tree.get_walker();
-        const xml_structure_tree::element* root = wkr.root();
+        xml_structure_tree::element root = wkr.root();
     }
 }
 

@@ -58,6 +58,11 @@ public:
     {
         xmlns_id_t ns;
         pstring name;
+
+        element_name();
+        element_name(xmlns_id_t _ns, const pstring& _name);
+
+        bool operator< (const element_name& r) const;
     };
 
     typedef std::vector<element_name> element_names_type;
@@ -66,6 +71,9 @@ public:
     {
         element_name name;
         bool repeat;
+
+        element();
+        element(const element_name& _name, bool _repeat);
     };
 
     struct walker_impl;
@@ -92,7 +100,7 @@ public:
          *
          * @return root element.
          */
-        const element* root();
+        element root();
 
         /**
          * Descend into specified child element.
@@ -100,9 +108,9 @@ public:
          * @param ns namespace of child element
          * @param name name of child element
          *
-         * @return pointer to the child element.
+         * @return child element
          */
-        const element* descend(xmlns_id_t ns, const pstring& name);
+        element descend(xmlns_id_t ns, const pstring& name);
 
         /**
          * Move up to the parent element.

@@ -36,6 +36,7 @@
 #include <iostream>
 #include <vector>
 
+#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
@@ -102,10 +103,10 @@ struct root
 struct element_ref
 {
     elem_name name;
-    elem_prop* prop;
+    const elem_prop* prop;
     bool in_repeated_element:1;
 
-    element_ref(elem_name _name, elem_prop* _prop) :
+    element_ref(elem_name _name, const elem_prop* _prop) :
         name(_name), prop(_prop), in_repeated_element(false) {}
 };
 
@@ -142,7 +143,7 @@ public:
         assert(!m_stack.empty());
         const element_ref& current = m_stack.back();
         elem_name key(ns_id, elem.name);
-        element_store_type::iterator it = current.prop->child_elements.find(key);
+        element_store_type::const_iterator it = current.prop->child_elements.find(key);
         if (it != current.prop->child_elements.end())
         {
             // Recurring element.
@@ -157,8 +158,8 @@ public:
 
         // New element.
         key.name = m_pool.intern(key.name);
-        pair<element_store_type::iterator,bool> r =
-            current.prop->child_elements.insert(
+        pair<element_store_type::const_iterator,bool> r =
+            const_cast<elem_prop*>(current.prop)->child_elements.insert(
                element_store_type::value_type(key, new elem_prop));
 
         if (!r.second)
@@ -209,15 +210,15 @@ struct scope : boost::noncopyable
     elements_type::const_iterator current_pos;
     bool repeat:1;
 
-    scope(xmlns_id_t _ns, const pstring& _name, bool _repeat, const element_ref& _elem) :
-        name(_ns, _name), repeat(_repeat)
+    scope(const elem_name& _name, bool _repeat, const element_ref& _elem) :
+        name(_name), repeat(_repeat)
     {
         elements.push_back(_elem);
         current_pos = elements.begin();
     }
 
-    scope(xmlns_id_t _ns, const pstring& _name, bool _repeat) :
-        name(_ns, _name), repeat(_repeat) {}
+    scope(const elem_name& _name, bool _repeat) :
+        name(_name), repeat(_repeat) {}
 };
 
 typedef boost::ptr_vector<scope> scopes_type;
@@ -239,7 +240,7 @@ void print_scope(ostream& os, const scopes_type& scopes)
 
 }
 
-struct xml_structure_tree_impl
+struct xml_structure_tree_impl : boost::noncopyable
 {
     string_pool m_pool;
     xmlns_repository& m_xmlns_repo;
@@ -254,10 +255,32 @@ struct xml_structure_tree_impl
     }
 };
 
-struct xml_structure_tree::walker_impl
+struct xml_structure_tree::walker_impl : boost::noncopyable
 {
     const root* mp_root; /// Root element of the authoritative tree.
+
+    scopes_type m_scopes;
 };
+
+xml_structure_tree::element_name::element_name() :
+    ns(XMLNS_UNKNOWN_ID) {}
+
+xml_structure_tree::element_name::element_name(xmlns_id_t _ns, const pstring& _name) :
+    ns(_ns), name(_name) {}
+
+bool xml_structure_tree::element_name::operator< (const element_name& r) const
+{
+    if (ns != r.ns)
+        return ns < r.ns;
+
+    return name < r.name;
+}
+
+xml_structure_tree::element::element() :
+    repeat(false) {}
+
+xml_structure_tree::element::element(const element_name& _name, bool _repeat) :
+    name(_name), repeat(_repeat) {}
 
 xml_structure_tree::walker::walker(const xml_structure_tree_impl& parent_impl) :
     mp_impl(new walker_impl)
@@ -282,22 +305,51 @@ xml_structure_tree::walker& xml_structure_tree::walker::operator= (const walker&
     return *this;
 }
 
-const xml_structure_tree::element* xml_structure_tree::walker::root()
+xml_structure_tree::element xml_structure_tree::walker::root()
 {
-    return NULL;
+    if (!mp_impl->mp_root)
+        throw general_error("Tree is empty.");
+
+    // Reset the scope and push root element scope.
+    mp_impl->m_scopes.clear();
+    element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
+    mp_impl->m_scopes.push_back(new scope(elem_name(), false, ref));
+
+    xml_structure_tree::element_name name(ref.name.ns, ref.name.name);
+    return xml_structure_tree::element(name, false);
 }
 
-const xml_structure_tree::element* xml_structure_tree::walker::descend(xmlns_id_t ns, const pstring& name)
+xml_structure_tree::element xml_structure_tree::walker::descend(xmlns_id_t ns, const pstring& name)
 {
-    return NULL;
+    return element();
 }
 
 void xml_structure_tree::walker::ascend()
 {
+    if (mp_impl->m_scopes.empty())
+        throw general_error("Scope is empty.");
+
+    mp_impl->m_scopes.pop_back();
 }
 
 void xml_structure_tree::walker::get_children(element_names_type& names)
 {
+    if (mp_impl->m_scopes.empty())
+        throw general_error("Scope is empty.");
+
+    element_names_type _names;
+    const scope& cur = mp_impl->m_scopes.back();
+    elements_type::const_iterator it = cur.elements.begin(), it_end = cur.elements.end();
+    for (; it != it_end; ++it)
+    {
+        const element_ref& ref = *it;
+        _names.push_back(element_name(ref.name.ns, ref.name.name));
+    }
+
+    // Sort the names.
+    sort(_names.begin(), _names.end());
+
+    names.swap(_names);
 }
 
 xml_structure_tree::xml_structure_tree(xmlns_repository& xmlns_repo) :
@@ -325,7 +377,7 @@ void xml_structure_tree::dump_compact(ostream& os) const
     scopes_type scopes;
 
     element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
-    scopes.push_back(new scope(XMLNS_UNKNOWN_ID, pstring(), false, ref));
+    scopes.push_back(new scope(elem_name(), false, ref));
     while (!scopes.empty())
     {
         bool new_scope = false;
@@ -364,7 +416,7 @@ void xml_structure_tree::dump_compact(ostream& os) const
 
             // Push a new scope, and restart the loop with the new scope.
             ++cur_scope.current_pos;
-            scopes.push_back(new scope(this_elem.name.ns, this_elem.name.name, this_elem.prop->repeat));
+            scopes.push_back(new scope(this_elem.name, this_elem.prop->repeat));
             scope& child_scope = scopes.back();
             child_scope.elements.swap(elems);
             child_scope.current_pos = child_scope.elements.begin();
