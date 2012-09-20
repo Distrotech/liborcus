@@ -110,12 +110,12 @@ public:
          *
          * @return child element
          */
-        element descend(xmlns_id_t ns, const pstring& name);
+        element descend(const element_name& name);
 
         /**
          * Move up to the parent element.
          */
-        void ascend();
+        element ascend();
 
         /**
          * Get a list of names of all child elements at current element

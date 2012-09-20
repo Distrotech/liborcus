@@ -88,8 +88,62 @@ void test_walker()
         xml_structure_tree tree(xmlns_repo);
         tree.parse(&strm[0], strm.size());
 
+        // Get walker from the tree.
+        xml_structure_tree::element_names_type elem_names;
         xml_structure_tree::walker wkr = tree.get_walker();
-        xml_structure_tree::element root = wkr.root();
+
+        // Root element.
+        xml_structure_tree::element elem = wkr.root();
+        assert(elem.name.name == "root");
+        assert(!elem.repeat);
+
+        // Get names of child elements. There should only one one and it should be 'entry'.
+        wkr.get_children(elem_names);
+        assert(elem_names.size() == 1);
+        xml_structure_tree::element_name elem_name = elem_names.front();
+        assert(elem_name.name == "entry");
+
+        // Descend into 'entry'.
+        elem = wkr.descend(elem_name);
+        assert(elem.name.name == "entry");
+        assert(elem.repeat);
+
+        // Element 'entry' should have 2 child elements 'id' and 'name', and they must be sorted.
+        wkr.get_children(elem_names);
+        assert(elem_names.size() == 2);
+        assert(elem_names[0].name == "id");
+        assert(elem_names[1].name == "name");
+
+        // Descend into 'id'.
+        elem_name = elem_names[0];
+        elem = wkr.descend(elem_name);
+        assert(elem.name.name == "id");
+        assert(!elem.repeat);
+
+        // This is a leaf element. It should have no child elements.
+        xml_structure_tree::element_names_type test_names;
+        wkr.get_children(test_names);
+        assert(test_names.empty());
+
+        // Move up to 'entry'.
+        elem = wkr.ascend();
+        assert(elem.name.name == "entry");
+        assert(elem.repeat);
+
+        // Move down to 'name'.
+        elem = wkr.descend(elem_names[1]);
+        assert(elem.name.name == "name");
+        assert(!elem.repeat);
+
+        // Move up to 'entry' again.
+        elem = wkr.ascend();
+        assert(elem.name.name == "entry");
+        assert(elem.repeat);
+
+        // Move up to 'root'.
+        elem = wkr.ascend();
+        assert(elem.name.name == "root");
+        assert(!elem.repeat);
     }
 }
 

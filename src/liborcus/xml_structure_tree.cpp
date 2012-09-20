@@ -106,6 +106,7 @@ struct element_ref
     const elem_prop* prop;
     bool in_repeated_element:1;
 
+    element_ref() : prop(NULL) {}
     element_ref(elem_name _name, const elem_prop* _prop) :
         name(_name), prop(_prop), in_repeated_element(false) {}
 };
@@ -192,17 +193,6 @@ public:
     }
 };
 
-class match_by_name : std::unary_function<element_ref, bool>
-{
-    elem_name m_name;
-public:
-    match_by_name(const elem_name& name) : m_name(name) {}
-    bool operator() (const element_ref& elem) const
-    {
-        return elem.name == m_name;
-    }
-};
-
 struct sort_by_name : std::binary_function<element_ref, element_ref, bool>
 {
     bool operator() (const element_ref& left, const element_ref& right) const
@@ -270,7 +260,10 @@ struct xml_structure_tree::walker_impl : boost::noncopyable
 {
     const root* mp_root; /// Root element of the authoritative tree.
 
-    scopes_type m_scopes;
+    element_ref m_cur_elem;
+    std::vector<element_ref> m_scopes;
+
+    walker_impl() : mp_root(NULL) {}
 };
 
 xml_structure_tree::element_name::element_name() :
@@ -321,38 +314,46 @@ xml_structure_tree::element xml_structure_tree::walker::root()
     if (!mp_impl->mp_root)
         throw general_error("Tree is empty.");
 
-    // Reset the scope and push root element scope.
     mp_impl->m_scopes.clear();
-    element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
-    mp_impl->m_scopes.push_back(new scope(elem_name(), false, ref));
 
+    // Set the current element to root.
+    element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
+    mp_impl->m_cur_elem = ref;
+    mp_impl->m_scopes.push_back(ref);
     xml_structure_tree::element_name name(ref.name.ns, ref.name.name);
     return xml_structure_tree::element(name, false);
 }
 
-xml_structure_tree::element xml_structure_tree::walker::descend(xmlns_id_t ns, const pstring& name)
+xml_structure_tree::element xml_structure_tree::walker::descend(const element_name& name)
 {
     if (mp_impl->m_scopes.empty())
         throw general_error("Scope is empty.");
 
-    const scope& cur = mp_impl->m_scopes.back();
-    // TODO: Use hash map.
-    elements_type::const_iterator it =
-        find_if(cur.elements.begin(), cur.elements.end(), match_by_name(elem_name(ns, name)));
+    assert(mp_impl->m_scopes.back().prop);
+    const element_store_type& child_elems = mp_impl->m_scopes.back().prop->child_elements;
+    element_store_type::const_iterator it = child_elems.find(elem_name(name.ns, name.name));
 
-    if (it == cur.elements.end())
+    if (it == child_elems.end())
         throw general_error("Specified child element does not exist.");
 
-    element_name elem_name(it->name.ns, it->name.name);
-    return element(elem_name, it->prop->repeat);
+    // Push this new child element onto the stack.
+    element_ref ref(elem_name(name.ns, name.name), it->second);
+    mp_impl->m_scopes.push_back(ref);
+
+    return element(name, it->second->repeat);
 }
 
-void xml_structure_tree::walker::ascend()
+xml_structure_tree::element xml_structure_tree::walker::ascend()
 {
     if (mp_impl->m_scopes.empty())
         throw general_error("Scope is empty.");
 
+    if (mp_impl->m_scopes.size() == 1)
+        throw general_error("You can't ascend from the root element.");
+
     mp_impl->m_scopes.pop_back();
+    const element_ref& ref = mp_impl->m_scopes.back();
+    return element(element_name(ref.name.ns, ref.name.name), ref.prop->repeat);
 }
 
 void xml_structure_tree::walker::get_children(element_names_type& names)
@@ -360,13 +361,14 @@ void xml_structure_tree::walker::get_children(element_names_type& names)
     if (mp_impl->m_scopes.empty())
         throw general_error("Scope is empty.");
 
+    assert(mp_impl->m_scopes.back().prop);
+    const elem_prop& prop = *mp_impl->m_scopes.back().prop;
     element_names_type _names;
-    const scope& cur = mp_impl->m_scopes.back();
-    elements_type::const_iterator it = cur.elements.begin(), it_end = cur.elements.end();
+    element_store_type::const_iterator it = prop.child_elements.begin(), it_end = prop.child_elements.end();
     for (; it != it_end; ++it)
     {
-        const element_ref& ref = *it;
-        _names.push_back(element_name(ref.name.ns, ref.name.name));
+        const elem_name& name = it->first;
+        _names.push_back(element_name(name.ns, name.name));
     }
 
     // Sort the names.
