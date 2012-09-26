@@ -38,3 +38,4 @@ namespace {
 tokens gnumeric_tokens =
     tokens(token_names, token_name_count, nstoken_names, nstoken_name_count);
 
+}
