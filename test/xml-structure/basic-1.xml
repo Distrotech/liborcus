@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--When recurring elements contain inconsistent set of child elements, we assume that such element structurally contain union of all encountered child elements. -->
+<root>
+    <entry>
+        <name>Foo</name>
+    </entry>
+    <entry>
+        <id>12</id>
+    </entry>
+    <entry>
+        <name>Bah</name>
+    </entry>
+</root>

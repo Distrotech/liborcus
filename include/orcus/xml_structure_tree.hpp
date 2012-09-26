@@ -54,41 +54,76 @@ class ORCUS_DLLPUBLIC xml_structure_tree
 
 public:
 
-    /** Element name. */
-    struct elem_name
+    struct element_name
     {
         xmlns_id_t ns;
         pstring name;
 
-        struct hash
-        {
-            size_t operator() (const elem_name& val) const;
-        };
+        element_name();
+        element_name(xmlns_id_t _ns, const pstring& _name);
 
-        elem_name();
-        elem_name(xmlns_id_t _ns, const pstring& _name);
-        elem_name(const elem_name& r);
-
-        bool operator== (const elem_name& r) const;
+        bool operator< (const element_name& r) const;
     };
 
-    struct elem_prop;
-    typedef boost::unordered_map<elem_name, elem_prop*, elem_name::hash> element_store_type;
+    typedef std::vector<element_name> element_names_type;
 
-    /** Element properties. */
-    struct elem_prop : boost::noncopyable
+    struct element
     {
-        element_store_type child_elements;
+        element_name name;
+        bool repeat;
+
+        element();
+        element(const element_name& _name, bool _repeat);
+    };
+
+    struct walker_impl;
+
+    /**
+     * This class allows client to traverse the tree.
+     */
+    class walker
+    {
+        friend class xml_structure_tree;
+        xml_structure_tree_impl* mp_parent_impl;
+        walker_impl* mp_impl;
+
+        walker(); // disabled
+        walker(const xml_structure_tree_impl& parent_impl);
+    public:
+        walker(const walker& r);
+        ~walker();
+        walker& operator= (const walker& r);
 
         /**
-         * When true, this element is the base element of repeated structures.
-         * This flag is set only with the base element; none of the child
-         * elements below the base element have this flag set.
+         * Set current position to the root element, and return the root
+         * element.
+         *
+         * @return root element.
          */
-        bool repeat:1;
+        element root();
 
-        elem_prop();
-        ~elem_prop();
+        /**
+         * Descend into specified child element.
+         *
+         * @param ns namespace of child element
+         * @param name name of child element
+         *
+         * @return child element
+         */
+        element descend(const element_name& name);
+
+        /**
+         * Move up to the parent element.
+         */
+        element ascend();
+
+        /**
+         * Get a list of names of all child elements at current element
+         * position.  The list of names is sorted.
+         *
+         * @param names sorted list of child element names.
+         */
+        void get_children(element_names_type& names);
     };
 
     xml_structure_tree(xmlns_repository& xmlns_repo);
@@ -97,6 +132,8 @@ public:
     void parse(const char* p, size_t n);
 
     void dump_compact(std::ostream& os) const;
+
+    walker get_walker() const;
 
 private:
     xml_structure_tree_impl* mp_impl;
