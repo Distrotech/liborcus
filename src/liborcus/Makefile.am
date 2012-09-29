@@ -56,6 +56,18 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 
 endif # WITH_LIBZIP
 
+if WITH_GNUMERIC_FILTER
+
+liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
+    	gnumeric_cell_context.cpp \
+	gnumeric_context.cpp \
+	gnumeric_handler.cpp \
+	gnumeric_sheet_context.cpp \
+	gnumeric_tokens.cpp \
+	orcus_gnumeric.cpp
+
+endif # WITH_GNUMERIC_FILTER
+
 liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS = \
 	$(LIBZIP_CFLAGS)
 liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined

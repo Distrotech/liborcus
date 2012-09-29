@@ -115,6 +115,13 @@ if WITH_LIBZIP
 bin_PROGRAMS += \
 	orcus-ods orcus-xlsx
 
+if WITH_GNUMERIC_FILTER
+
+bin_PROGRAMS += \
+	orcus_gnumeric
+
+endif #WITH_GNUMERIC_FILTER
+
 # orcus-ods
 
 orcus_ods_SOURCES = \
@@ -138,9 +145,21 @@ orcus_xlsx_LDADD = \
 
 orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
+# orcus_gnumeric
+
+orcus_gnumeric_SOURCES = \
+	orcus_gnumeric_main.cpp
+
+orcus_gnumeric_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+
+orcus_gnumeric_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
 if HAVE_STATIC_LIB
 orcus_ods_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 orcus_xlsx_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+orcus_gnumeric_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 endif
 
 endif # WITH_LIBZIP

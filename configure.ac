@@ -112,6 +112,20 @@ AS_IF([test "x$with_libzip" != "xno"], [
 ])
 AM_CONDITIONAL([WITH_LIBZIP], [test "x$with_libzip" != "xno"])
 
+# ==============
+# gnumeric filter support
+# ==============
+AC_ARG_WITH(gnumeric-filter,
+            AS_HELP_STRING([--without-gnumeric-filter],
+                           [Disables the gnumeric import filter.])],
+	[with_gnumeric_filter="$withval"],
+	[with_gnumeric_filter=yes]
+)
+AS_IF([test "x$with_gnumeric_filter" != "xno"], [
+	PKG_CHECK_MODULES([ZLIB], [zlib])
+])
+AM_CONDITIONAL([WITH_GNUMERIC_FILTER], [test "x$with_gnumeric_filter" != "xno"])
+
 # ============
 # mdds support
 # ============
@@ -178,6 +192,7 @@ Build configuration:
 	mdds-include-dir:    $with_mdds_include_path
 	libzip:              $with_libzip
 	spreadsheet-model:   $enable_spreadsheet_model
+        gnumeric-filter:     $with_gnumeric_filter
 ==============================================================================
 ])
 
