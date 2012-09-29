@@ -167,6 +167,16 @@ void sheet::set_shared_formula(
     set_shared_formula(row, col, sindex);
 }
 
+void sheet::set_shared_formula(
+    row_t row, col_t col, formula_grammar_t grammar, size_t sindex,
+    const char* p_formula, size_t n_formula)
+{
+    ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
+    cxt.set_shared_formula(pos, sindex, p_formula, n_formula);
+    set_shared_formula(row, col, sindex);
+}
+
 void sheet::set_shared_formula(row_t row, col_t col, size_t sindex)
 {
     ixion::model_context& cxt = mp_impl->m_doc.get_model_context();

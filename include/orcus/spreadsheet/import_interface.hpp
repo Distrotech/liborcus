@@ -209,10 +209,29 @@ public:
      * @param p_formula pointer to the first character of the raw formula
      *          expression string.
      * @param n_formula size of the raw formula expression string.
+     * @param p_range pointer to the first character of the range string
+     * @param n_range size of the raw range string
      */
     virtual void set_shared_formula(
         orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, orcus::spreadsheet::formula_grammar_t grammar,
         size_t sindex, const char* p_formula, size_t n_formula, const char* p_range, size_t n_range) = 0;
+
+    /**
+     * Set shared formula expression to specified cell.  This call also
+     * registers the formula expression to a common formula expression pool to
+     * allow it to be looked up by the specified index later.
+     *
+     * @param row row ID
+     * @param col column ID
+     * @param grammar grammar used in the formula expression
+     * @param sindex shared formula index (0-based)
+     * @param p_formula pointer to the first character of the raw formula
+     *          expression string.
+     * @param n_formula size of the raw formula expression string.
+     */
+    virtual void set_shared_formula(
+        orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, orcus::spreadsheet::formula_grammar_t grammar,
+        size_t sindex, const char* p_formula, size_t n_formula) = 0;
 
     /**
      * Set shared formula to specified cell by shared formula index.  The
