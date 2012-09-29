@@ -215,6 +215,8 @@ void gnumeric_cell_context::end_cell()
     case CellTypeSharedFormula:
         if(chars.empty())
             mp_sheet->set_shared_formula(row, col, mp_cell_data->shared_formula_id);
+        else
+            mp_sheet->set_shared_formula(row, col, spreadsheet::gnumeric, mp_cell_data->shared_formula_id, chars.get(), chars.size());
         break;
     default:
         ;
