@@ -216,6 +216,8 @@ void gnumeric_cell_context::end_cell()
         if(chars.empty())
             mp_sheet->set_shared_formula(row, col, mp_cell_data->shared_formula_id);
         break;
+    default:
+        break;
     }
 
     mp_cell_data.reset();

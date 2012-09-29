@@ -64,7 +64,7 @@ namespace orcus {
 
     void gnumeric_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
     {
-        xml_token_pair_t parent = push_stack(ns, name);
+        push_stack(ns, name);
     }
 
     bool gnumeric_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
