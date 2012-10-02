@@ -118,7 +118,7 @@ bin_PROGRAMS += \
 if WITH_GNUMERIC_FILTER
 
 bin_PROGRAMS += \
-	orcus_gnumeric
+	orcus-gnumeric
 
 endif #WITH_GNUMERIC_FILTER
 
