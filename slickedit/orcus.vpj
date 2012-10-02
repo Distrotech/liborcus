@@ -150,6 +150,15 @@
 	<Files AutoFolders="DirectoryView">
 		<Folder Name="../include">
 			<Folder Name="orcus">
+				<Folder Name="gnumeric">
+					<F N="../include/orcus/gnumeric/gnumeric_cell_context.hpp"/>
+					<F N="../include/orcus/gnumeric/gnumeric_context.hpp"/>
+					<F N="../include/orcus/gnumeric/gnumeric_handler.hpp"/>
+					<F N="../include/orcus/gnumeric/gnumeric_sheet_context.hpp"/>
+					<F N="../include/orcus/gnumeric/gnumeric_token_constants.hpp"/>
+					<F N="../include/orcus/gnumeric/gnumeric_token_constants.inl"/>
+					<F N="../include/orcus/gnumeric/gnumeric_tokens.hpp"/>
+				</Folder>
 				<Folder Name="odf">
 					<F N="../include/orcus/odf/odf_token_constants.hpp"/>
 					<F N="../include/orcus/odf/odf_token_constants.inl"/>
@@ -188,6 +197,7 @@
 				<F N="../include/orcus/exception.hpp"/>
 				<F N="../include/orcus/global.hpp"/>
 				<F N="../include/orcus/orcus_csv.hpp"/>
+				<F N="../include/orcus/orcus_gnumeric.hpp"/>
 				<F N="../include/orcus/orcus_ods.hpp"/>
 				<F N="../include/orcus/orcus_xlsx.hpp"/>
 				<F N="../include/orcus/orcus_xml.hpp"/>
@@ -204,23 +214,29 @@
 				<F N="../include/orcus/xml_structure_tree.hpp"/>
 			</Folder>
 		</Folder>
-		<Folder Name="../misc">
-			<F N="../misc/libzip_test.cpp"/>
-		</Folder>
 		<Folder Name="../src">
 			<Folder Name="liborcus">
 				<F N="../src/liborcus/dom_tree.cpp"/>
 				<F N="../src/liborcus/exception.cpp"/>
 				<F N="../src/liborcus/global.cpp"/>
+				<F N="../src/liborcus/gnumeric_cell_context.cpp"/>
+				<F N="../src/liborcus/gnumeric_context.cpp"/>
+				<F N="../src/liborcus/gnumeric_handler.cpp"/>
+				<F N="../src/liborcus/gnumeric_sheet_context.cpp"/>
+				<F N="../src/liborcus/gnumeric_tokens.cpp"/>
+				<F N="../src/liborcus/gnumeric_tokens.inl"/>
 				<F N="../src/liborcus/odf_ods_context.cpp"/>
 				<F N="../src/liborcus/odf_ods_handler.cpp"/>
 				<F N="../src/liborcus/odf_para_context.cpp"/>
 				<F N="../src/liborcus/odf_tokens.cpp"/>
+				<F N="../src/liborcus/odf_tokens.inl"/>
 				<F N="../src/liborcus/ooxml_content_types.cpp"/>
 				<F N="../src/liborcus/ooxml_global.cpp"/>
 				<F N="../src/liborcus/ooxml_opc_context.cpp"/>
+				<F N="../src/liborcus/ooxml_opc_tokens.inl"/>
 				<F N="../src/liborcus/ooxml_schemas.cpp"/>
 				<F N="../src/liborcus/ooxml_tokens.cpp"/>
+				<F N="../src/liborcus/ooxml_tokens.inl"/>
 				<F N="../src/liborcus/ooxml_xlsx_context.cpp"/>
 				<F N="../src/liborcus/ooxml_xlsx_handler.cpp"/>
 				<F N="../src/liborcus/ooxml_xlsx_sheet_context.cpp"/>
@@ -228,6 +244,7 @@
 				<F N="../src/liborcus/opc_reader.cpp"/>
 				<F N="../src/liborcus/orcus_css.cpp"/>
 				<F N="../src/liborcus/orcus_csv.cpp"/>
+				<F N="../src/liborcus/orcus_gnumeric.cpp"/>
 				<F N="../src/liborcus/orcus_ods.cpp"/>
 				<F N="../src/liborcus/orcus_xlsx.cpp"/>
 				<F N="../src/liborcus/orcus_xml.cpp"/>
@@ -262,6 +279,7 @@
 				<F N="../src/spreadsheet/styles.hpp"/>
 			</Folder>
 			<F N="../src/orcus_csv_main.cpp"/>
+			<F N="../src/orcus_gnumeric_main.cpp"/>
 			<F N="../src/orcus_ods_main.cpp"/>
 			<F N="../src/orcus_test_common.cpp"/>
 			<F N="../src/orcus_test_csv.cpp"/>
