@@ -29,14 +29,13 @@
 #define __ORCUS_XML_NAMESPACE_MANAGER_HPP__
 
 #include "types.hpp"
-#include "string_pool.hpp"
-
-#include <boost/unordered_map.hpp>
 
 namespace orcus {
 
 class xmlns_context;
 class pstring;
+struct xmlns_repository_impl;
+struct xmlns_context_impl;
 
 /**
  * Central XML namespace repository that stores all namespaces that are used
@@ -51,13 +50,13 @@ class xmlns_repository
     xmlns_repository& operator= (const xmlns_repository&); // disabled
 
 public:
-    xmlns_repository();
-    ~xmlns_repository();
+    ORCUS_DLLPUBLIC xmlns_repository();
+    ORCUS_DLLPUBLIC ~xmlns_repository();
 
-    xmlns_context create_context();
+    ORCUS_DLLPUBLIC xmlns_context create_context();
 
 private:
-    string_pool m_pool;
+    xmlns_repository_impl* mp_impl;
 };
 
 /**
@@ -72,20 +71,17 @@ class xmlns_context
 {
     friend class xmlns_repository;
 
-    typedef boost::unordered_map<pstring, pstring, pstring::hash> map_type;
-
     xmlns_context(); // disabled
     xmlns_context(xmlns_repository& repo);
 public:
-    xmlns_context(const xmlns_context& r);
+    ORCUS_DLLPUBLIC xmlns_context(const xmlns_context& r);
+    ORCUS_DLLPUBLIC ~xmlns_context();
 
-    xmlns_id_t set(const pstring& key, const pstring& uri);
-    xmlns_id_t get(const pstring& key) const;
+    ORCUS_DLLPUBLIC xmlns_id_t set(const pstring& key, const pstring& uri);
+    ORCUS_DLLPUBLIC xmlns_id_t get(const pstring& key) const;
 
 private:
-    xmlns_repository& m_repo;
-    xmlns_id_t m_default;
-    map_type m_map;
+    xmlns_context_impl* mp_impl;
 };
 
 }

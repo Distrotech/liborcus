@@ -27,11 +27,23 @@
 
 #include "orcus/xml_namespace.hpp"
 #include "orcus/exception.hpp"
+#include "string_pool.hpp"
+
+#include <boost/unordered_map.hpp>
 
 namespace orcus {
 
-xmlns_repository::xmlns_repository() {}
-xmlns_repository::~xmlns_repository() {}
+struct xmlns_repository_impl
+{
+    string_pool m_pool;
+};
+
+xmlns_repository::xmlns_repository() : mp_impl(new xmlns_repository_impl) {}
+
+xmlns_repository::~xmlns_repository()
+{
+    delete mp_impl;
+}
 
 xmlns_id_t xmlns_repository::intern(const pstring& uri)
 {
@@ -40,7 +52,7 @@ xmlns_id_t xmlns_repository::intern(const pstring& uri)
 
     try
     {
-        pstring uri_interned = m_pool.intern(uri);
+        pstring uri_interned = mp_impl->m_pool.intern(uri);
         if (!uri_interned.empty())
             return uri_interned.get();
     }
@@ -56,25 +68,44 @@ xmlns_context xmlns_repository::create_context()
     return xmlns_context(*this);
 }
 
-xmlns_context::xmlns_context(xmlns_repository& repo) : m_repo(repo), m_default(XMLNS_UNKNOWN_ID) {}
-xmlns_context::xmlns_context(const xmlns_context& r) : m_repo(r.m_repo), m_default(r.m_default), m_map(r.m_map) {}
+typedef boost::unordered_map<pstring, pstring, pstring::hash> alias_map_type;
+
+struct xmlns_context_impl
+{
+    xmlns_repository& m_repo;
+    xmlns_id_t m_default;
+    alias_map_type m_map;
+
+    xmlns_context_impl(xmlns_repository& repo) : m_repo(repo), m_default(XMLNS_UNKNOWN_ID) {}
+    xmlns_context_impl(const xmlns_context_impl& r) : m_repo(r.m_repo), m_default(r.m_default), m_map(r.m_map) {}
+};
+
+xmlns_context::xmlns_context(xmlns_repository& repo) : mp_impl(new xmlns_context_impl(repo)) {}
+xmlns_context::xmlns_context(const xmlns_context& r) : mp_impl(new xmlns_context_impl(*r.mp_impl)) {}
+
+xmlns_context::~xmlns_context()
+{
+    delete mp_impl;
+}
 
 xmlns_id_t xmlns_context::set(const pstring& key, const pstring& uri)
 {
     if (uri.empty())
         return XMLNS_UNKNOWN_ID;
 
-    pstring uri_interned = m_repo.intern(uri);
+    pstring uri_interned = mp_impl->m_repo.intern(uri);
 
     if (key.empty())
     {
         // empty key value is associated with default namespace.
-        m_default = uri_interned.get();
-        return m_default;
+        mp_impl->m_default = uri_interned.get();
+        return mp_impl->m_default;
     }
 
     // Overwrite an existing value if one exists.
-    std::pair<map_type::iterator,bool> r = m_map.insert(map_type::value_type(key, uri_interned));
+    std::pair<alias_map_type::iterator,bool> r =
+        mp_impl->m_map.insert(alias_map_type::value_type(key, uri_interned));
+
     if (!r.second)
         // insertion failed.
         throw general_error("Failed to insert new namespace.");
@@ -85,10 +116,10 @@ xmlns_id_t xmlns_context::set(const pstring& key, const pstring& uri)
 xmlns_id_t xmlns_context::get(const pstring& key) const
 {
     if (key.empty())
-        return m_default;
+        return mp_impl->m_default;
 
-    map_type::const_iterator it = m_map.find(key);
-    if (it == m_map.end())
+    alias_map_type::const_iterator it = mp_impl->m_map.find(key);
+    if (it == mp_impl->m_map.end())
         return XMLNS_UNKNOWN_ID;
 
     return it->second.get();
