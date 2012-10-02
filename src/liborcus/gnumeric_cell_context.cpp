@@ -177,7 +177,7 @@ bool gnumeric_cell_context::end_element(xmlns_token_t ns, xml_token_t name)
             end_cell();
             break;
         default:
-            break;
+            ;
         }
     }
     return pop_stack(ns, name);
@@ -217,7 +217,7 @@ void gnumeric_cell_context::end_cell()
             mp_sheet->set_shared_formula(row, col, mp_cell_data->shared_formula_id);
         break;
     default:
-        break;
+        ;
     }
 
     mp_cell_data.reset();
