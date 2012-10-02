@@ -82,7 +82,7 @@ void gnumeric_content_xml_handler::end_element(const sax_token_parser_element& e
 
 void gnumeric_content_xml_handler::characters(const pstring& str)
 {
-    if(m_context_stack.empty())
+    if (m_context_stack.empty())
         return;
 
     get_current_context().characters(str);

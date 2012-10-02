@@ -57,7 +57,7 @@ gnumeric_content_xml_context::~gnumeric_content_xml_context()
 
 bool gnumeric_content_xml_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
 {
-    if(ns == XMLNS_gnm && name == XML_Sheet)
+    if (ns == XMLNS_gnm && name == XML_Sheet)
         return false;
 
     return true;
@@ -65,7 +65,7 @@ bool gnumeric_content_xml_context::can_handle_element(xmlns_token_t ns, xml_toke
 
 xml_context_base* gnumeric_content_xml_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
 {
-    if(ns == XMLNS_gnm && name == XML_Sheet)
+    if (ns == XMLNS_gnm && name == XML_Sheet)
         return new gnumeric_sheet_context(get_tokens(), mp_factory);
 
     return NULL;

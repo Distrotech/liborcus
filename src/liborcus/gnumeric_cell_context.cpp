@@ -41,83 +41,81 @@ namespace orcus {
 
 using namespace spreadsheet;
 
-enum gnumeric_cell_type
-    {
-        CellTypeBool,
-        CellTypeValue,
-        CellTypeString,
-        CellTypeFormula,
-        CellTypeSharedFormula,
-        CellTypeUnknown
-    };
+enum gnumeric_celltype
+{
+    celltype_bool,
+    celltype_value,
+    celltype_string,
+    celltype_formula,
+    celltype_shared_formula,
+    celltype_unknown
+};
 
 
 struct gnumeric_cell_data
 {
     row_t row;
     col_t col;
-    gnumeric_cell_type cell_type;
+    gnumeric_celltype cell_type;
     size_t shared_formula_id;
 };
 
 namespace {
 
-    class cell_attr_parser : public unary_function<xml_attr_t, void>
+class cell_attr_parser : public unary_function<xml_attr_t, void>
+{
+public:
+    cell_attr_parser()
     {
-    public:
-        cell_attr_parser()
+        cell_data.cell_type = celltype_formula;
+        cell_data.shared_formula_id = -1;
+    }
+
+    cell_attr_parser(const cell_attr_parser& r):
+        cell_data(r.cell_data) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        switch (attr.name)
         {
-            cell_data.cell_type = CellTypeFormula;
-            cell_data.shared_formula_id = -1;
-        }
-
-        cell_attr_parser(const cell_attr_parser& r):
-            cell_data(r.cell_data) {}
-
-        void operator() (const xml_attr_t& attr)
-        {
-
-                switch(attr.name)
+            case XML_Row:
+                cell_data.row = atoi(attr.value.get());
+                break;
+            case XML_Col:
+                cell_data.col = atoi(attr.value.get());
+                break;
+            case XML_ValueType:
+            {
+                int value_type = atoi(attr.value.get());
+                switch (value_type)
                 {
-                case XML_Row:
-                    cell_data.row = atoi(attr.value.get());
-                    break;
-                case XML_Col:
-                    cell_data.col = atoi(attr.value.get());
-                    break;
-                case XML_ValueType:
-                    {
-                        int value_type = atoi(attr.value.get());
-                        switch(value_type)
-                        {
-                        case 20:
-                            cell_data.cell_type = CellTypeBool;
-                            break;
-                        case 30:
-                        case 40:
-                            cell_data.cell_type = CellTypeValue;
-                            break;
-                        case 60:
-                            cell_data.cell_type = CellTypeString;
-                        }
-                    }
-                    break;
-                case XML_ExprID:
-                    cell_data.shared_formula_id = atoi(attr.value.get());
-                    cell_data.cell_type = CellTypeSharedFormula;
-                    break;
+                    case 20:
+                        cell_data.cell_type = celltype_bool;
+                        break;
+                    case 30:
+                    case 40:
+                        cell_data.cell_type = celltype_value;
+                        break;
+                    case 60:
+                        cell_data.cell_type = celltype_string;
                 }
-
+            }
+            break;
+            case XML_ExprID:
+                cell_data.shared_formula_id = atoi(attr.value.get());
+                cell_data.cell_type = celltype_shared_formula;
+                break;
         }
+    }
 
-        gnumeric_cell_data get_cell_data() const
-        {
-            return cell_data;
-        }
+    gnumeric_cell_data get_cell_data() const
+    {
+        return cell_data;
+    }
 
-    private:
-        gnumeric_cell_data cell_data;
-    };
+private:
+    gnumeric_cell_data cell_data;
+};
 
 }
 
@@ -169,15 +167,15 @@ void gnumeric_cell_context::start_element(xmlns_token_t ns, xml_token_t name, co
 
 bool gnumeric_cell_context::end_element(xmlns_token_t ns, xml_token_t name)
 {
-    if(ns == XMLNS_gnm)
+    if (ns == XMLNS_gnm)
     {
-        switch(name)
+        switch (name)
         {
-        case XML_Cell:
-            end_cell();
-            break;
-        default:
-            ;
+            case XML_Cell:
+                end_cell();
+                break;
+            default:
+                ;
         }
     }
     return pop_stack(ns, name);
@@ -197,29 +195,29 @@ void gnumeric_cell_context::start_cell(const xml_attrs_t& attrs)
 
 void gnumeric_cell_context::end_cell()
 {
-    if(!mp_cell_data)
+    if (!mp_cell_data)
         return;
 
     col_t col = mp_cell_data->col;
     row_t row = mp_cell_data->row;
-    gnumeric_cell_type cell_type = mp_cell_data->cell_type;
-    switch(cell_type)
+    gnumeric_celltype cell_type = mp_cell_data->cell_type;
+    switch (cell_type)
     {
-    case CellTypeValue:
-    case CellTypeString:
-        mp_sheet->set_auto(row, col, chars.get(), chars.size());
-        break;
-    case CellTypeFormula:
-        mp_sheet->set_formula(row, col, spreadsheet::gnumeric, chars.get(), chars.size());
-        break;
-    case CellTypeSharedFormula:
-        if(chars.empty())
-            mp_sheet->set_shared_formula(row, col, mp_cell_data->shared_formula_id);
-        else
-            mp_sheet->set_shared_formula(row, col, spreadsheet::gnumeric, mp_cell_data->shared_formula_id, chars.get(), chars.size());
-        break;
-    default:
-        ;
+        case celltype_value:
+        case celltype_string:
+            mp_sheet->set_auto(row, col, chars.get(), chars.size());
+            break;
+        case celltype_formula:
+            mp_sheet->set_formula(row, col, spreadsheet::gnumeric, chars.get(), chars.size());
+            break;
+        case celltype_shared_formula:
+            if (chars.empty())
+                mp_sheet->set_shared_formula(row, col, mp_cell_data->shared_formula_id);
+            else
+                mp_sheet->set_shared_formula(row, col, spreadsheet::gnumeric, mp_cell_data->shared_formula_id, chars.get(), chars.size());
+            break;
+        default:
+            ;
     }
 
     mp_cell_data.reset();

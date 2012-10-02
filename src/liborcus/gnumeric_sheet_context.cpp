@@ -33,71 +33,73 @@
 
 namespace orcus {
 
-    gnumeric_sheet_context::gnumeric_sheet_context(const tokens& tokens, spreadsheet::iface::import_factory* factory):
-                xml_context_base(tokens),
-                mp_factory(factory)
-    {
-    }
+gnumeric_sheet_context::gnumeric_sheet_context(
+    const tokens& tokens, spreadsheet::iface::import_factory* factory) :
+    xml_context_base(tokens),
+    mp_factory(factory)
+{
+}
 
-    gnumeric_sheet_context::~gnumeric_sheet_context()
-    {
-    }
+gnumeric_sheet_context::~gnumeric_sheet_context()
+{
+}
 
-    bool gnumeric_sheet_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
-    {
-        if(ns == XMLNS_gnm && name == XML_Cells)
-            return false;
+bool gnumeric_sheet_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+{
+    if (ns == XMLNS_gnm && name == XML_Cells)
+        return false;
 
-        return true;
-    }
+    return true;
+}
 
-    xml_context_base* gnumeric_sheet_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
-    {
-        if(ns == XMLNS_gnm && name == XML_Cells)
-            return new gnumeric_cell_context(get_tokens(), mp_factory, mp_sheet);
+xml_context_base* gnumeric_sheet_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+{
+    if (ns == XMLNS_gnm && name == XML_Cells)
+        return new gnumeric_cell_context(get_tokens(), mp_factory, mp_sheet);
 
-        return NULL;
-    }
-    void gnumeric_sheet_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
-    {
-    }
+    return NULL;
+}
 
-    void gnumeric_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
-    {
-        push_stack(ns, name);
-    }
+void gnumeric_sheet_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
+{
+}
 
-    bool gnumeric_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
+void gnumeric_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
+{
+    push_stack(ns, name);
+}
+
+bool gnumeric_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
+{
+    if (ns == XMLNS_gnm)
     {
-        if(ns == XMLNS_gnm)
+        switch(name)
         {
-            switch(name)
-            {
             case XML_Name:
-                {
-                    xml_token_pair_t parent = get_parent_element();
-                    if(parent.first == XMLNS_gnm && parent.second == XML_Sheet)
-                        end_table();
-                    else
-                        warn_unhandled();
-                }
-                break;
-            default:
-                break;
+            {
+                xml_token_pair_t parent = get_parent_element();
+                if(parent.first == XMLNS_gnm && parent.second == XML_Sheet)
+                    end_table();
+                else
+                    warn_unhandled();
             }
+            break;
+            default:
+                ;
         }
-
-        return pop_stack(ns, name);
     }
 
-    void gnumeric_sheet_context::characters(const pstring& str)
-    {
-        chars = str;
-    }
+    return pop_stack(ns, name);
+}
 
-    void gnumeric_sheet_context::end_table()
-    {
-        mp_sheet = mp_factory->append_sheet(chars.get(), chars.size());
-    }
+void gnumeric_sheet_context::characters(const pstring& str)
+{
+    chars = str;
+}
+
+void gnumeric_sheet_context::end_table()
+{
+    mp_sheet = mp_factory->append_sheet(chars.get(), chars.size());
+}
 
 }
