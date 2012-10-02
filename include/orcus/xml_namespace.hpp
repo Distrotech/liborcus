@@ -30,23 +30,25 @@
 
 #include "types.hpp"
 #include "string_pool.hpp"
-#include "pstring.hpp"
 
-#include <boost/noncopyable.hpp>
 #include <boost/unordered_map.hpp>
 
 namespace orcus {
 
 class xmlns_context;
+class pstring;
 
 /**
  * Central XML namespace repository that stores all namespaces that are used
  * in the current session.
  */
-class xmlns_repository : boost::noncopyable
+class xmlns_repository
 {
     friend class xmlns_context;
     xmlns_id_t intern(const pstring& uri);
+
+    xmlns_repository(const xmlns_repository&); // disabled
+    xmlns_repository& operator= (const xmlns_repository&); // disabled
 
 public:
     xmlns_repository();
