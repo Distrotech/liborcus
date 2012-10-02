@@ -37,7 +37,6 @@
 namespace orcus {
 
 class tokens;
-class gnumeric_content_xml_context;
 
 namespace spreadsheet { namespace iface { class import_factory; }}
 
