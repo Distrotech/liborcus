@@ -122,18 +122,42 @@ public:
 
     typedef std::map<cell_position, range_reference*> range_ref_map_type;
 
-    enum element_type { element_non_leaf, element_cell_ref, element_range_field_ref, element_unknown };
+    enum element_type { element_unknown, element_non_leaf, element_cell_ref, element_range_field_ref };
+    enum attribute_type { attribute_unknown, attribute_cell_ref, attribute_range_field_ref };
 
-    struct element : boost::noncopyable
+    struct linkable : boost::noncopyable
     {
         xmlns_id_t ns;
         pstring name;
+        bool attribute;
+
+        linkable(xmlns_id_t _ns, const pstring& _name, bool _attribute);
+    };
+
+    struct attribute : public linkable
+    {
+        attribute_type type;
+        union {
+            cell_reference* cell_ref;
+            field_in_range* field_ref;
+        };
+
+        attribute(xmlns_id_t _ns, const pstring& _name, attribute_type _type);
+        ~attribute();
+    };
+
+    typedef boost::ptr_vector<attribute> attribute_store_type;
+
+    struct element : public linkable
+    {
         element_type type;
         union {
             element_store_type* child_elements;
             cell_reference* cell_ref;
             field_in_range* field_ref;
         };
+
+        attribute_store_type attributes;
 
         /**
          * Points to a range reference instance of which this element is a
@@ -142,10 +166,10 @@ public:
          */
         range_reference* range_parent;
 
-        element(const pstring& _name, element_type _type);
+        element(xmlns_id_t _ns, const pstring& _name, element_type _type);
         ~element();
 
-        const element* get_child(const pstring& _name) const;
+        const element* get_child(xmlns_id_t _ns, const pstring& _name) const;
     };
 
 public:
@@ -164,8 +188,8 @@ public:
         walker(const walker& r);
 
         void reset();
-        const element* push_element(const pstring& name);
-        const element* pop_element(const pstring& name);
+        const element* push_element(xmlns_id_t ns, const pstring& name);
+        const element* pop_element(xmlns_id_t ns, const pstring& name);
     };
 
     xml_map_tree();

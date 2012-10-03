@@ -42,12 +42,13 @@ namespace {
 
 class find_by_name : std::unary_function<xml_map_tree::element, bool>
 {
+    xmlns_id_t m_ns;
     pstring m_name;
 public:
-    find_by_name(const pstring& name) : m_name(name) {}
+    find_by_name(xmlns_id_t ns, const pstring& name) : m_ns(ns), m_name(name) {}
     bool operator() (const xml_map_tree::element& e) const
     {
-        return m_name == e.name;
+        return m_ns == e.ns && m_name == e.name;
     }
 };
 
@@ -109,8 +110,42 @@ xml_map_tree::range_reference::range_reference(const cell_position& _pos) :
     pos(_pos), row_size(0),
     element_open_begin(NULL), element_open_end(NULL), element_close_begin(NULL), element_close_end(NULL) {}
 
-xml_map_tree::element::element(const pstring& _name, element_type _type) :
-    name(_name), type(_type), range_parent(NULL)
+xml_map_tree::linkable::linkable(xmlns_id_t _ns, const pstring& _name, bool _attribute) :
+    ns(_ns), name(_name), attribute(_attribute) {}
+
+xml_map_tree::attribute::attribute(xmlns_id_t _ns, const pstring& _name, attribute_type _type) :
+    linkable(_ns, _name, true), type(_type)
+{
+    switch (type)
+    {
+        case attribute_cell_ref:
+            cell_ref = new cell_reference;
+        break;
+        case attribute_range_field_ref:
+            field_ref = new field_in_range;
+        break;
+        default:
+            throw general_error("unexpected attribute type in the constructor");
+    }
+}
+
+xml_map_tree::attribute::~attribute()
+{
+    switch (type)
+    {
+        case attribute_cell_ref:
+            delete cell_ref;
+        break;
+        case attribute_range_field_ref:
+            delete field_ref;
+        break;
+        default:
+            throw general_error("unexpected attribute type in the destructor.");
+    }
+}
+
+xml_map_tree::element::element(xmlns_id_t _ns, const pstring& _name, element_type _type) :
+    linkable(_ns, _name, false), type(_type), range_parent(NULL)
 {
     switch (type)
     {
@@ -146,7 +181,7 @@ xml_map_tree::element::~element()
     }
 }
 
-const xml_map_tree::element* xml_map_tree::element::get_child(const pstring& _name) const
+const xml_map_tree::element* xml_map_tree::element::get_child(xmlns_id_t _ns, const pstring& _name) const
 {
     if (type != element_non_leaf)
         return NULL;
@@ -154,7 +189,7 @@ const xml_map_tree::element* xml_map_tree::element::get_child(const pstring& _na
     assert(child_elements);
 
     element_store_type::const_iterator it =
-        std::find_if(child_elements->begin(), child_elements->end(), find_by_name(_name));
+        std::find_if(child_elements->begin(), child_elements->end(), find_by_name(_ns, _name));
 
     return it == child_elements->end() ? NULL : &(*it);
 }
@@ -170,7 +205,7 @@ void xml_map_tree::walker::reset()
     m_content_depth = 0;
 }
 
-const xml_map_tree::element* xml_map_tree::walker::push_element(const pstring& name)
+const xml_map_tree::element* xml_map_tree::walker::push_element(xmlns_id_t ns, const pstring& name)
 {
     if (m_stack.empty())
     {
@@ -179,7 +214,7 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(const pstring& n
             return NULL;
 
         const element* p = m_parent.mp_root;
-        if (p->name != name)
+        if (p->ns != ns || p->name != name)
             // Names differ.
             return NULL;
 
@@ -190,7 +225,7 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(const pstring& n
     if (m_stack.back()->type == element_non_leaf)
     {
         // Check if the current element has a child of the same name.
-        const element* p = m_stack.back()->get_child(name);
+        const element* p = m_stack.back()->get_child(ns, name);
         if (p)
         {
             m_stack.push_back(p);
@@ -208,7 +243,7 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(const pstring& n
     return m_stack.back();
 }
 
-const xml_map_tree::element* xml_map_tree::walker::pop_element(const pstring& name)
+const xml_map_tree::element* xml_map_tree::walker::pop_element(xmlns_id_t ns, const pstring& name)
 {
     if (m_content_depth)
     {
@@ -219,7 +254,7 @@ const xml_map_tree::element* xml_map_tree::walker::pop_element(const pstring& na
     if (m_stack.empty())
         throw general_error("Element was popped while the stack was empty.");
 
-    if (m_stack.back()->name != name)
+    if (m_stack.back()->ns != ns || m_stack.back()->name != name)
         throw general_error("Closing element has a different name than the opening element.");
 
     m_stack.pop_back();
@@ -375,7 +410,7 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
             return NULL;
 
         element_store_type::const_iterator it =
-            std::find_if(cur_element->child_elements->begin(), cur_element->child_elements->end(), find_by_name(name));
+            std::find_if(cur_element->child_elements->begin(), cur_element->child_elements->end(), find_by_name(XMLNS_UNKNOWN_ID, name));
         if (it == cur_element->child_elements->end())
             // No such child element exists.
             return NULL;
@@ -418,7 +453,7 @@ void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, el
     else
     {
         // First time the root element is encountered.
-        mp_root = new element(m_names.intern(name.get(), name.size()), element_non_leaf);
+        mp_root = new element(XMLNS_UNKNOWN_ID, m_names.intern(name.get(), name.size()), element_non_leaf);
     }
 
     elem_stack_new.push_back(mp_root);
@@ -431,11 +466,11 @@ void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, el
     {
         // Check if the current element contains a chile element of the same name.
         element_store_type& children = *cur_element->child_elements;
-        element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(name));
+        element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(XMLNS_UNKNOWN_ID, name));
         if (it == children.end())
         {
             // Insert a new element of this name.
-            children.push_back(new element(m_names.intern(name.get(), name.size()), element_non_leaf));
+            children.push_back(new element(XMLNS_UNKNOWN_ID, m_names.intern(name.get(), name.size()), element_non_leaf));
             cur_element = &children.back();
         }
         else
@@ -451,11 +486,11 @@ void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, el
 
     // Check if an element of the same name already exists.
     element_store_type& children = *cur_element->child_elements;
-    element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(name));
+    element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(XMLNS_UNKNOWN_ID, name));
     if (it != children.end())
         throw xpath_error("This path is already linked.  You can't link the same path twice.");
 
-    children.push_back(new element(m_names.intern(name.get(), name.size()), type));
+    children.push_back(new element(XMLNS_UNKNOWN_ID, m_names.intern(name.get(), name.size()), type));
     elem_stack_new.push_back(&children.back());
 
     elem_stack.swap(elem_stack_new);

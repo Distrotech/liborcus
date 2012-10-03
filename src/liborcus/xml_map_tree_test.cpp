@@ -117,32 +117,32 @@ void test_tree_walk()
     walker.reset();
 
     // Root element.
-    const xml_map_tree::element* elem = walker.push_element("data");
+    const xml_map_tree::element* elem = walker.push_element(XMLNS_UNKNOWN_ID, "data");
     assert(elem);
     assert(elem->name == "data");
     assert(elem->type == xml_map_tree::element_non_leaf);
 
-    elem = walker.push_element("header");
+    elem = walker.push_element(XMLNS_UNKNOWN_ID, "header");
     assert(elem);
     assert(elem->name == "header");
     assert(elem->type == xml_map_tree::element_non_leaf);
 
-    elem = walker.push_element("title");
+    elem = walker.push_element(XMLNS_UNKNOWN_ID, "title");
     assert(elem);
     assert(elem->name == "title");
     assert(elem->type == xml_map_tree::element_cell_ref);
 
-    elem = walker.pop_element("title");
+    elem = walker.pop_element(XMLNS_UNKNOWN_ID, "title");
     assert(elem);
     assert(elem->name == "header");
     assert(elem->type == xml_map_tree::element_non_leaf);
 
-    elem = walker.pop_element("header");
+    elem = walker.pop_element(XMLNS_UNKNOWN_ID, "header");
     assert(elem);
     assert(elem->name == "data");
     assert(elem->type == xml_map_tree::element_non_leaf);
 
-    elem = walker.pop_element("data");
+    elem = walker.pop_element(XMLNS_UNKNOWN_ID, "data");
     assert(!elem);
 }
 

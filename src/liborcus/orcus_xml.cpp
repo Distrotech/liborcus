@@ -113,7 +113,7 @@ public:
         cur.element_open_end = elem.end_pos;
 
         m_attrs.clear();
-        mp_current_elem = m_map_tree_walker.push_element(elem.name);
+        mp_current_elem = m_map_tree_walker.push_element(ns_id, elem.name);
     }
 
     void end_element(const sax_parser_element& elem)
@@ -146,7 +146,8 @@ public:
         }
 
         m_scopes.pop_back();
-        mp_current_elem = m_map_tree_walker.pop_element(elem.name);
+        xmlns_id_t ns_id = m_ns_cxt.get(elem.ns);
+        mp_current_elem = m_map_tree_walker.pop_element(ns_id, elem.name);
     }
 
     void characters(const pstring& val)
@@ -464,7 +465,7 @@ void orcus_xml::write_file(const char* filepath)
             const char* close_begin = elem.cell_ref->element_close_begin;
             const char* close_end = elem.cell_ref->element_close_end;
 
-            file << pstring(begin_pos, open_end-begin_pos); // opening element.
+            file << pstring(begin_pos, open_end-begin_pos); // stream since last linked element + opening element.
             sheet->write_string(file, pos.row, pos.col);
             file << pstring(close_begin, close_end-close_begin); // closing element.
             begin_pos = close_end;
@@ -483,7 +484,7 @@ void orcus_xml::write_file(const char* filepath)
             const char* close_begin = ref.element_close_begin;
             const char* close_end = ref.element_close_end;
 
-            file << pstring(begin_pos, open_end-begin_pos); // opening element.
+            file << pstring(begin_pos, open_end-begin_pos); // stream since last linked element + opening element.
             write_range_reference(file, elem, fact);
             file << pstring(close_begin, close_end-close_begin); // closing element.
             begin_pos = close_end;
