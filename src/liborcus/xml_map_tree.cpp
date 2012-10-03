@@ -54,10 +54,11 @@ public:
 
 class xpath_parser
 {
+    const xmlns_context& m_cxt;
     const char* mp_char;
     const char* mp_end;
 public:
-    xpath_parser(const char* p, size_t n) : mp_char(p), mp_end(p+n)
+    xpath_parser(const xmlns_context& cxt, const char* p, size_t n) : m_cxt(cxt), mp_char(p), mp_end(p+n)
     {
         if (!n)
             throw xml_map_tree::xpath_error("empty path");
@@ -400,7 +401,7 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
 
     const element* cur_element = mp_root;
 
-    xpath_parser parser(xpath.get(), xpath.size());
+    xpath_parser parser(m_xmlns_cxt, xpath.get(), xpath.size());
 
     // Check the root element first.
     pstring name = parser.next();
@@ -445,7 +446,7 @@ xml_map_tree::range_ref_map_type& xml_map_tree::get_range_references()
 void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, element_list_type& elem_stack)
 {
     assert(!xpath.empty());
-    xpath_parser parser(xpath.get(), xpath.size());
+    xpath_parser parser(m_xmlns_cxt,xpath.get(), xpath.size());
 
     element_list_type elem_stack_new;
 
