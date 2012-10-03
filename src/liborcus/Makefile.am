@@ -36,11 +36,9 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 
 if WITH_LIBZIP
 
+if WITH_XLSX_FILTER
+
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
-	odf_ods_context.cpp \
-	odf_ods_handler.cpp \
-	odf_para_context.cpp \
-	odf_tokens.cpp \
 	ooxml_content_types.cpp \
 	ooxml_global.cpp \
 	ooxml_opc_context.cpp \
@@ -51,8 +49,20 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	ooxml_xlsx_sheet_context.cpp \
 	ooxml_xlsx_workbook_context.cpp \
 	opc_reader.cpp \
-	orcus_ods.cpp \
 	orcus_xlsx.cpp
+
+endif # WITH_XLSX_FILTER
+
+if WITH_ODS_FILTER
+
+liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
+	odf_ods_context.cpp \
+	odf_ods_handler.cpp \
+	odf_para_context.cpp \
+	odf_tokens.cpp \
+	orcus_ods.cpp
+
+endif # WITH_ODFS_FILTER
 
 endif # WITH_LIBZIP
 

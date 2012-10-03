@@ -112,8 +112,19 @@ TESTS += \
 
 if WITH_LIBZIP
 
+if WITH_ODS_FILTER
+
 bin_PROGRAMS += \
-	orcus-ods orcus-xlsx
+	orcus-ods
+
+endif #WITH_ODS_FILTER
+
+if WITH_XLSX_FILTER
+
+bin_PROGRAMS += \
+	orcus-xlsx
+
+endif #WITH_XLSX_FILTER
 
 if WITH_GNUMERIC_FILTER
 

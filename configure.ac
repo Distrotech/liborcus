@@ -113,6 +113,28 @@ AS_IF([test "x$with_libzip" != "xno"], [
 AM_CONDITIONAL([WITH_LIBZIP], [test "x$with_libzip" != "xno"])
 
 # ==============
+# ods filter support
+# ==============
+AC_ARG_WITH(ods-filter,
+            AS_HELP_STRING([--without-ods-filter],
+                           [Disables the OpenDocument Format spreadsheet import filter.])],
+	[with_ods_filter="$withval"],
+	[with_ods_filter=yes]
+)
+AM_CONDITIONAL([WITH_ODS_FILTER], [test "x$with_ods_filter" != "xno"])
+
+# ==============
+# xlsx filter support
+# ==============
+AC_ARG_WITH(xlsx-filter,
+            AS_HELP_STRING([--without-xlsx-filter],
+                           [Disables the Microsoft Excel OOXML import filter.])],
+	[with_xlsx_filter="$withval"],
+	[with_xlsx_filter=yes]
+)
+AM_CONDITIONAL([WITH_XLSX_FILTER], [test "x$with_xlsx_filter" != "xno"])
+
+# ==============
 # gnumeric filter support
 # ==============
 AC_ARG_WITH(gnumeric-filter,
@@ -193,6 +215,8 @@ Build configuration:
 	libzip:              $with_libzip
 	spreadsheet-model:   $enable_spreadsheet_model
         gnumeric-filter:     $with_gnumeric_filter
+        ods-filter:          $with_ods_filter
+        xlsx-filter:         $with_xlsx_filter
 ==============================================================================
 ])
 
