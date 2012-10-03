@@ -110,6 +110,13 @@ TESTS += \
 	orcus-test-csv \
 	orcus-test-xml-mapped
 
+if WITH_GNUMERIC_FILTER
+
+bin_PROGRAMS += \
+	orcus-gnumeric
+
+endif #WITH_GNUMERIC_FILTER
+
 if WITH_LIBZIP
 
 if WITH_ODS_FILTER
@@ -125,13 +132,6 @@ bin_PROGRAMS += \
 	orcus-xlsx
 
 endif #WITH_XLSX_FILTER
-
-if WITH_GNUMERIC_FILTER
-
-bin_PROGRAMS += \
-	orcus-gnumeric
-
-endif #WITH_GNUMERIC_FILTER
 
 # orcus-ods
 

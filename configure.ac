@@ -139,7 +139,7 @@ AM_CONDITIONAL([WITH_XLSX_FILTER], [test "x$with_xlsx_filter" != "xno"])
 # ==============
 AC_ARG_WITH(gnumeric-filter,
             AS_HELP_STRING([--without-gnumeric-filter],
-                           [Disables the gnumeric import filter.])],
+                           [Disables the gnumeric import filter. The gnumeric import filter depends on zLib.])],
 	[with_gnumeric_filter="$withval"],
 	[with_gnumeric_filter=yes]
 )
