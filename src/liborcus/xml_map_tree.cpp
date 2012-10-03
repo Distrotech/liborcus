@@ -58,6 +58,20 @@ class xpath_parser
     const char* mp_char;
     const char* mp_end;
 public:
+
+    struct token
+    {
+        xmlns_id_t ns;
+        pstring name;
+        bool attribute;
+
+        token(xmlns_id_t _ns, const pstring& _name, bool _attribute) :
+            ns(_ns), name(_name), attribute(_attribute) {}
+
+        token() : ns(XMLNS_UNKNOWN_ID), attribute(false) {}
+        token(const token& r) : ns(r.ns), name(r.name), attribute(r.attribute) {}
+    };
+
     xpath_parser(const xmlns_context& cxt, const char* p, size_t n) : m_cxt(cxt), mp_char(p), mp_end(p+n)
     {
         if (!n)
@@ -69,25 +83,32 @@ public:
         ++mp_char;
     }
 
-    pstring next()
+    token next()
     {
         if (mp_char == mp_end)
-            return pstring();
+            return token();
 
         const char* p0 = mp_char;
         size_t len = 0;
         for (;mp_char != mp_end; ++mp_char, ++len)
         {
-            if (*mp_char != '/')
-                continue;
-
-            // '/' encountered.
-            ++mp_char; // skip the '/'.
-            return pstring(p0, len);
+            switch (*mp_char)
+            {
+                case '/':
+                {
+                    // '/' encountered.
+                    ++mp_char; // skip the '/'.
+                    return token(XMLNS_UNKNOWN_ID, pstring(p0, len), false);
+                }
+                case ':':
+                    throw xml_map_tree::xpath_error("namespace in xpath not supported yet.");
+                default:
+                    ;
+            }
         }
 
         // '/' has never been encountered.  It must be the last name in the path.
-        return pstring(p0, len);
+        return token(XMLNS_UNKNOWN_ID, pstring(p0, len), false);
     }
 };
 
@@ -404,11 +425,11 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
     xpath_parser parser(m_xmlns_cxt, xpath.get(), xpath.size());
 
     // Check the root element first.
-    pstring name = parser.next();
-    if (cur_element->name != name)
+    xpath_parser::token token = parser.next();
+    if (cur_element->ns != token.ns || cur_element->name != token.name)
         return NULL;
 
-    for (name = parser.next(); !name.empty(); name = parser.next())
+    for (token = parser.next(); !token.name.empty(); token = parser.next())
     {
         // See if an element of this name exists below the current element.
         if (cur_element->type != element_non_leaf)
@@ -418,7 +439,7 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
             return NULL;
 
         element_store_type::const_iterator it =
-            std::find_if(cur_element->child_elements->begin(), cur_element->child_elements->end(), find_by_name(XMLNS_UNKNOWN_ID, name));
+            std::find_if(cur_element->child_elements->begin(), cur_element->child_elements->end(), find_by_name(token.ns, token.name));
         if (it == cur_element->child_elements->end())
             // No such child element exists.
             return NULL;
@@ -451,17 +472,17 @@ void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, el
     element_list_type elem_stack_new;
 
     // Get the root element first.
-    pstring name = parser.next();
+    xpath_parser::token token = parser.next();
     if (mp_root)
     {
         // Make sure the root element's names are the same.
-        if (mp_root->name != name)
+        if (mp_root->ns != token.ns || mp_root->name != token.name)
             throw xpath_error("path begins with inconsistent root level name.");
     }
     else
     {
         // First time the root element is encountered.
-        mp_root = new element(XMLNS_UNKNOWN_ID, m_names.intern(name.get(), name.size()), element_non_leaf);
+        mp_root = new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf);
     }
 
     elem_stack_new.push_back(mp_root);
@@ -469,23 +490,23 @@ void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, el
     assert(cur_element);
     assert(cur_element->child_elements);
 
-    name = parser.next();
-    for (pstring name_next = parser.next();!name_next.empty(); name_next = parser.next())
+    token = parser.next();
+    for (xpath_parser::token token_next = parser.next(); !token_next.name.empty(); token_next = parser.next())
     {
         // Check if the current element contains a chile element of the same name.
         element_store_type& children = *cur_element->child_elements;
-        element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(XMLNS_UNKNOWN_ID, name));
+        element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(token.ns, token.name));
         if (it == children.end())
         {
             // Insert a new element of this name.
-            children.push_back(new element(XMLNS_UNKNOWN_ID, m_names.intern(name.get(), name.size()), element_non_leaf));
+            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf));
             cur_element = &children.back();
         }
         else
             cur_element = &(*it);
 
         elem_stack_new.push_back(cur_element);
-        name = name_next;
+        token = token_next;
     }
 
     assert(cur_element);
@@ -494,11 +515,11 @@ void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, el
 
     // Check if an element of the same name already exists.
     element_store_type& children = *cur_element->child_elements;
-    element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(XMLNS_UNKNOWN_ID, name));
+    element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(token.ns, token.name));
     if (it != children.end())
         throw xpath_error("This path is already linked.  You can't link the same path twice.");
 
-    children.push_back(new element(XMLNS_UNKNOWN_ID, m_names.intern(name.get(), name.size()), type));
+    children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), type));
     elem_stack_new.push_back(&children.back());
 
     elem_stack.swap(elem_stack_new);
