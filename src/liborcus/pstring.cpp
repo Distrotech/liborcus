@@ -125,9 +125,9 @@ bool pstring::operator< (const pstring& r) const
     return m_size < r.m_size;
 }
 
-bool pstring::operator== (const char* str) const
+bool pstring::operator== (const char* _str) const
 {
-    size_t n = ::std::strlen(str);
+    size_t n = std::strlen(_str);
     if (n != m_size)
         // lengths differ.
         return false;
@@ -136,7 +136,7 @@ bool pstring::operator== (const char* str) const
         // both are empty strings.
         return true;
 
-    return ::std::strncmp(str, m_pos, n) == 0;
+    return std::strncmp(_str, m_pos, n) == 0;
 }
 
 pstring pstring::trim() const

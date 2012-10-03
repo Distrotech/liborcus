@@ -82,8 +82,8 @@ public:
     };
 
     pstring() : m_pos(NULL), m_size(0) {}
-    pstring(const char* pos) : m_pos(pos) { m_size = ::std::strlen(pos); }
-    pstring(const char* pos, size_t size) : m_pos(pos), m_size(size) {}
+    pstring(const char* _pos) : m_pos(_pos) { m_size = std::strlen(_pos); }
+    pstring(const char* _pos, size_t _size) : m_pos(_pos), m_size(_size) {}
 
     ::std::string str() const { return ::std::string(m_pos, m_size); }
 
@@ -108,11 +108,11 @@ public:
 
     bool operator< (const pstring& r) const;
 
-    bool operator== (const char* str) const;
+    bool operator== (const char* _str) const;
 
-    bool operator!= (const char* str) const
+    bool operator!= (const char* _str) const
     {
-        return !operator==(str);
+        return !operator==(_str);
     }
 
     pstring trim() const;
