@@ -324,11 +324,11 @@ struct orcus_xml_impl
     /** original xml data stream. */
     string m_data_strm;
 
-    /** xml element tree that represents all mapped paths. */
-    xml_map_tree m_map_tree;
-
     /** xml namespace repository for the whole session. */
     xmlns_repository m_xmlns_repo;
+
+    /** xml element tree that represents all mapped paths. */
+    xml_map_tree m_map_tree;
 
     /**
      * Positions of all linked elements, single and range reference alike.
@@ -339,6 +339,8 @@ struct orcus_xml_impl
     xml_map_tree::const_element_list_type m_link_positions;
 
     xml_map_tree::cell_position m_cur_range_ref;
+
+    orcus_xml_impl() : m_map_tree(m_xmlns_repo.create_context()) {}
 };
 
 orcus_xml::orcus_xml(spreadsheet::iface::import_factory* im_fact, spreadsheet::iface::export_factory* ex_fact) :

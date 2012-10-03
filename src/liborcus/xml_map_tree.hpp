@@ -32,6 +32,7 @@
 #include "orcus/spreadsheet/types.hpp"
 #include "orcus/exception.hpp"
 #include "orcus/types.hpp"
+#include "orcus/xml_namespace.hpp"
 #include "string_pool.hpp"
 
 #include <ostream>
@@ -42,11 +43,15 @@
 
 namespace orcus {
 
+class xmlns_context;
+
 /**
  * Tree representing XML-to-sheet mapping for mapped XML import.
  */
 class xml_map_tree : boost::noncopyable
 {
+    xml_map_tree(); // disabled
+
 public:
     /**
      * Error indicating improper xpath syntax.
@@ -192,8 +197,10 @@ public:
         const element* pop_element(xmlns_id_t ns, const pstring& name);
     };
 
-    xml_map_tree();
+    xml_map_tree(const xmlns_context& xmlns_cxt);
     ~xml_map_tree();
+
+    void set_namespace_alias(const pstring& alias, const pstring& uri);
 
     void set_cell_link(const pstring& xpath, const cell_position& ref);
 
@@ -211,6 +218,8 @@ private:
     void get_element_stack(const pstring& xpath, element_type type, element_list_type& elem_stack);
 
 private:
+    xmlns_context m_xmlns_cxt;
+
     /**
      * Element stack of current range parent element. This is used to
      * determine a common parent element for all field links of a current

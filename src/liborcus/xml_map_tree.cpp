@@ -261,11 +261,18 @@ const xml_map_tree::element* xml_map_tree::walker::pop_element(xmlns_id_t ns, co
     return m_stack.empty() ? NULL : m_stack.back();
 }
 
-xml_map_tree::xml_map_tree() : mp_cur_range_ref(NULL), mp_root(NULL) {}
+xml_map_tree::xml_map_tree(const xmlns_context& xmlns_cxt) :
+    m_xmlns_cxt(xmlns_cxt), mp_cur_range_ref(NULL), mp_root(NULL) {}
+
 xml_map_tree::~xml_map_tree()
 {
     std::for_each(m_field_refs.begin(), m_field_refs.end(), map_object_deleter<range_ref_map_type>());
     delete mp_root;
+}
+
+void xml_map_tree::set_namespace_alias(const pstring& alias, const pstring& uri)
+{
+    m_xmlns_cxt.set(alias, uri);
 }
 
 void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)

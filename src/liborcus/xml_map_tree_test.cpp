@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "xml_map_tree.hpp"
+#include "orcus/xml_namespace.hpp"
 
 #include <cstdlib>
 #include <cassert>
@@ -36,7 +37,8 @@ using namespace std;
 
 void test_path_insertion()
 {
-    xml_map_tree tree;
+    xmlns_repository repo;
+    xml_map_tree tree(repo.create_context());
     xml_map_tree::cell_position ref;
     ref.sheet = pstring("test");
     ref.row = 2;
@@ -106,7 +108,8 @@ void test_path_insertion()
 
 void test_tree_walk()
 {
-    xml_map_tree tree;
+    xmlns_repository repo;
+    xml_map_tree tree(repo.create_context());
     xml_map_tree::cell_position ref;
     ref.sheet = pstring("test");
     ref.row = 2;
