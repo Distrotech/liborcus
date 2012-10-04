@@ -46,8 +46,10 @@ void test_path_insertion()
 
     // Single cell links
     tree.set_cell_link("/data/elem1", ref);
-    const xml_map_tree::element* p = tree.get_link("/data/elem1");
-    assert(p && p->ref_type == xml_map_tree::reference_cell);
+    const xml_map_tree::linkable* p0 = tree.get_link("/data/elem1");
+    assert(p0 && p0->node_type == xml_map_tree::node_element);
+    const xml_map_tree::element* p = static_cast<const xml_map_tree::element*>(p0);
+    assert(p->ref_type == xml_map_tree::reference_cell);
     assert(p->cell_ref->pos.sheet == "test");
     assert(p->cell_ref->pos.row == 2);
     assert(p->cell_ref->pos.col == 1);
@@ -57,21 +59,25 @@ void test_path_insertion()
     ref.row = 3;
     ref.col = 2;
     tree.set_cell_link("/data/elem2", ref);
-    p = tree.get_link("/data/elem2");
+    p0 = tree.get_link("/data/elem2");
+    assert(p0 && p0->node_type == xml_map_tree::node_element);
+    p = static_cast<const xml_map_tree::element*>(p0);
     assert(p && p->ref_type == xml_map_tree::reference_cell);
     assert(p->cell_ref->pos.sheet == "test");
     assert(p->cell_ref->pos.row == 3);
     assert(p->cell_ref->pos.col == 2);
 
     // The link in elem1 should be unchanged.
-    p = tree.get_link("/data/elem1");
-    assert(p == elem1);
+    p0 = tree.get_link("/data/elem1");
+    assert(p0 == elem1);
 
     ref.sheet = pstring("test2");
     ref.row = 10;
     ref.col = 5;
     tree.set_cell_link("/data/meta/title", ref);
-    p = tree.get_link("/data/meta/title");
+    p0 = tree.get_link("/data/meta/title");
+    assert(p0 && p0->node_type == xml_map_tree::node_element);
+    p = static_cast<const xml_map_tree::element*>(p0);
     assert(p && p->ref_type == xml_map_tree::reference_cell);
     assert(p->cell_ref->pos.sheet == "test2");
     assert(p->cell_ref->pos.row == 10);
@@ -84,21 +90,27 @@ void test_path_insertion()
     tree.append_range_field_link("/data/entries/entry/id", ref);
     tree.append_range_field_link("/data/entries/entry/name", ref);
     tree.append_range_field_link("/data/entries/entry/score", ref);
-    p = tree.get_link("/data/entries/entry/id");
+    p0 = tree.get_link("/data/entries/entry/id");
+    assert(p0 && p0->node_type == xml_map_tree::node_element);
+    p = static_cast<const xml_map_tree::element*>(p0);
     assert(p && p->ref_type == xml_map_tree::reference_range_field);
     assert(p->field_ref->ref->pos.sheet == "test3");
     assert(p->field_ref->ref->pos.row == 5);
     assert(p->field_ref->ref->pos.col == 0);
     assert(p->field_ref->column_pos == 0);
 
-    p = tree.get_link("/data/entries/entry/name");
+    p0 = tree.get_link("/data/entries/entry/name");
+    assert(p0 && p0->node_type == xml_map_tree::node_element);
+    p = static_cast<const xml_map_tree::element*>(p0);
     assert(p && p->ref_type == xml_map_tree::reference_range_field);
     assert(p->field_ref->ref->pos.sheet == "test3");
     assert(p->field_ref->ref->pos.row == 5);
     assert(p->field_ref->ref->pos.col == 0);
     assert(p->field_ref->column_pos == 1);
 
-    p = tree.get_link("/data/entries/entry/score");
+    p0 = tree.get_link("/data/entries/entry/score");
+    assert(p0 && p0->node_type == xml_map_tree::node_element);
+    p = static_cast<const xml_map_tree::element*>(p0);
     assert(p && p->ref_type == xml_map_tree::reference_range_field);
     assert(p->field_ref->ref->pos.sheet == "test3");
     assert(p->field_ref->ref->pos.row == 5);
@@ -117,8 +129,13 @@ void test_attr_path_insertion()
 
     // 'attr1' is an attribute of 'elem'.
     tree.set_cell_link("/root/elem@attr1", ref);
-    const xml_map_tree::element* p = tree.get_link("/root/elem@attr1");
-    assert(p);
+    const xml_map_tree::linkable* p = tree.get_link("/root/elem@attr1");
+    assert(p && p->node_type == xml_map_tree::node_attribute);
+    const xml_map_tree::attribute* attr = static_cast<const xml_map_tree::attribute*>(p);
+    assert(attr->ref_type == xml_map_tree::reference_cell);
+    assert(attr->cell_ref->pos.sheet == "test");
+    assert(attr->cell_ref->pos.row == 2);
+    assert(attr->cell_ref->pos.col == 3);
 }
 
 void test_tree_walk()

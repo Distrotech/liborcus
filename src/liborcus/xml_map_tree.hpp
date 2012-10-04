@@ -211,14 +211,14 @@ public:
     void append_range_field_link(const pstring& xpath, const cell_position& pos);
     void commit_range();
 
-    const element* get_link(const pstring& xpath) const;
+    const linkable* get_link(const pstring& xpath) const;
 
     walker get_tree_walker() const;
 
     range_ref_map_type& get_range_references();
 
 private:
-    void get_element_stack(const pstring& xpath, reference_type type, element_list_type& elem_stack);
+    linkable* get_element_stack(const pstring& xpath, reference_type type, element_list_type& elem_stack);
 
 private:
     xmlns_context m_xmlns_cxt;

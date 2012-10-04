@@ -334,14 +334,28 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
 
     cout << "cell link: " << xpath << " (ref=" << ref << ")" << endl;
     element_list_type elem_stack;
-    get_element_stack(xpath, reference_cell, elem_stack);
+    linkable* node = get_element_stack(xpath, reference_cell, elem_stack);
+    assert(node);
     assert(!elem_stack.empty());
-    element* p = elem_stack.back();
-    assert(p && p->cell_ref);
-    p->cell_ref->pos = ref;
+    cell_reference* cell_ref = NULL;
+    switch (node->node_type)
+    {
+        case node_element:
+            assert(static_cast<element*>(node)->cell_ref);
+            cell_ref = static_cast<element*>(node)->cell_ref;
+        break;
+        case node_attribute:
+            assert(static_cast<attribute*>(node)->cell_ref);
+            cell_ref = static_cast<attribute*>(node)->cell_ref;
+        break;
+        default:
+            throw general_error("unknown node type returned from get_element_stack call in xml_map_tree::set_cell_link().");
+    }
+
+    cell_ref->pos = ref;
 
     // Make sure the sheet name string is persistent.
-    p->cell_ref->pos.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
+    cell_ref->pos.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
 }
 
 void xml_map_tree::start_range()
@@ -442,7 +456,7 @@ void xml_map_tree::commit_range()
     m_cur_range_parent.back()->range_parent = mp_cur_range_ref;
 }
 
-const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
+const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
 {
     if (!mp_root)
         return NULL;
@@ -450,38 +464,65 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
     if (xpath.empty())
         return NULL;
 
-    const element* cur_element = mp_root;
+    const linkable* cur_node = mp_root;
 
     xpath_parser parser(m_xmlns_cxt, xpath.get(), xpath.size());
 
     // Check the root element first.
     xpath_parser::token token = parser.next();
-    if (cur_element->ns != token.ns || cur_element->name != token.name)
+    if (cur_node->ns != token.ns || cur_node->name != token.name)
+        // Root element name doesn't match.
         return NULL;
 
     for (token = parser.next(); !token.name.empty(); token = parser.next())
     {
+        if (token.attribute)
+        {
+            // The current node should be an element and should have an attribute of the same name.
+            if (cur_node->node_type != node_element)
+                return NULL;
+
+            const element* elem = static_cast<const element*>(cur_node);
+            const attribute_store_type& attrs = elem->attributes;
+            attribute_store_type::const_iterator it =
+                std::find_if(attrs.begin(), attrs.end(), find_by_name(token.ns, token.name));
+
+            if (it == attrs.end())
+                // No such attribute exists.
+                return NULL;
+
+            return &(*it);
+        }
+
         // See if an element of this name exists below the current element.
-        if (cur_element->elem_type != element_non_leaf)
+
+        if (cur_node->node_type != node_element)
             return NULL;
 
-        if (!cur_element->child_elements)
+        const element* elem = static_cast<const element*>(cur_node);
+        if (elem->elem_type != element_non_leaf)
+            return NULL;
+
+        if (!elem->child_elements)
             return NULL;
 
         element_store_type::const_iterator it =
-            std::find_if(cur_element->child_elements->begin(), cur_element->child_elements->end(), find_by_name(token.ns, token.name));
-        if (it == cur_element->child_elements->end())
+            std::find_if(
+                elem->child_elements->begin(), elem->child_elements->end(),
+                find_by_name(token.ns, token.name));
+
+        if (it == elem->child_elements->end())
             // No such child element exists.
             return NULL;
 
-        cur_element = &(*it);
+        cur_node = &(*it);
     }
 
-    if (cur_element->elem_type == element_non_leaf)
+    if (cur_node->node_type != node_element || static_cast<const element*>(cur_node)->elem_type == element_non_leaf)
         // Non-leaf elements are not links.
         return NULL;
 
-    return cur_element;
+    return cur_node;
 }
 
 xml_map_tree::walker xml_map_tree::get_tree_walker() const
@@ -494,7 +535,8 @@ xml_map_tree::range_ref_map_type& xml_map_tree::get_range_references()
     return m_field_refs;
 }
 
-void xml_map_tree::get_element_stack(const pstring& xpath, reference_type ref_type, element_list_type& elem_stack)
+xml_map_tree::linkable* xml_map_tree::get_element_stack(
+    const pstring& xpath, reference_type ref_type, element_list_type& elem_stack)
 {
     assert(!xpath.empty());
     xpath_parser parser(m_xmlns_cxt,xpath.get(), xpath.size());
@@ -526,7 +568,7 @@ void xml_map_tree::get_element_stack(const pstring& xpath, reference_type ref_ty
     token = parser.next();
     for (xpath_parser::token token_next = parser.next(); !token_next.name.empty(); token_next = parser.next())
     {
-        // Check if the current element contains a chile element of the same name.
+        // Check if the current element contains a child element of the same name.
         if (token.attribute)
             throw xpath_error("attribute must always be at the end of the path.");
 
@@ -549,6 +591,7 @@ void xml_map_tree::get_element_stack(const pstring& xpath, reference_type ref_ty
 
     // Insert a leaf node.
 
+    linkable* ret = NULL;
     if (token.attribute)
     {
         // This is an attribute.  Insert it into the current element.
@@ -560,6 +603,7 @@ void xml_map_tree::get_element_stack(const pstring& xpath, reference_type ref_ty
             throw xpath_error("This path is already linked.  You can't link the same path twice.");
 
         attrs.push_back(new attribute(token.ns, m_names.intern(token.name.get(), token.name.size()), ref_type));
+        ret = &attrs.back();
     }
     else
     {
@@ -571,9 +615,12 @@ void xml_map_tree::get_element_stack(const pstring& xpath, reference_type ref_ty
 
         children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_leaf, ref_type));
         elem_stack_new.push_back(&children.back());
+        ret = &children.back();
     }
 
     elem_stack.swap(elem_stack_new);
+
+    return ret;
 }
 
 std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_position& ref)
