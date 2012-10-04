@@ -44,7 +44,7 @@ using namespace std;
 using namespace orcus;
 
 const char* files[] = {
-    "../test/xml-mapped/content"
+    "../test/xml-mapped/content-basic"
 };
 
 void test_mapped_xml_import()
@@ -53,10 +53,10 @@ void test_mapped_xml_import()
     size_t n = sizeof(files)/sizeof(files[0]);
     for (size_t i = 0; i < n; ++i)
     {
-        string base_name(files[i]);
-        string data_file = base_name + ".xml";
-        string map_file = base_name + "-map.xml";
-        string check_file = base_name + ".check";
+        string base_dir(files[i]);
+        string data_file = base_dir + "/input.xml";
+        string map_file = base_dir + "/map.xml";
+        string check_file = base_dir + "/check.txt";
 
         // Load the data file content.
         cout << "reading " << data_file << endl;
