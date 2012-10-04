@@ -390,8 +390,9 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
 
     cout << "range field link: " << xpath << " (ref=" << pos << ")" << endl;
     element_list_type elem_stack;
-    get_element_stack(xpath, reference_range_field, elem_stack);
-    if (elem_stack.size() <= 3)
+    linkable* node = get_element_stack(xpath, reference_range_field, elem_stack);
+    if ((node->node_type == node_element && elem_stack.size() <= 3) ||
+        (node->node_type == node_attribute && elem_stack.size() <= 2))
         throw xpath_error("Path of a range field link must be at least 3 levels.");
 
     element* p = elem_stack.back();
@@ -407,7 +408,9 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     {
         // First field link in this range.
         element_list_type::iterator it_end = elem_stack.end();
-        --it_end; // Skip the leaf element, which is used as a field in a range.
+        if (node->node_type == node_element)
+            --it_end; // Skip the linked element, which is used as a field in a range.
+
         --it_end; // Skip the next-up element, which is used to group a single record entry.
         m_cur_range_parent.assign(elem_stack.begin(), it_end);
     }
@@ -640,6 +643,7 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
                     throw general_error("Unknown reference type in xml_map_tree::get_element_stack.");
             }
 
+            elem_stack_new.push_back(&elem);
             ret = &elem;
         }
     }
