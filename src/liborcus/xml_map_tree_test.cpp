@@ -47,7 +47,7 @@ void test_path_insertion()
     // Single cell links
     tree.set_cell_link("/data/elem1", ref);
     const xml_map_tree::element* p = tree.get_link("/data/elem1");
-    assert(p && p->type == xml_map_tree::element_cell_ref);
+    assert(p && p->ref_type == xml_map_tree::ref_cell);
     assert(p->cell_ref->pos.sheet == "test");
     assert(p->cell_ref->pos.row == 2);
     assert(p->cell_ref->pos.col == 1);
@@ -58,7 +58,7 @@ void test_path_insertion()
     ref.col = 2;
     tree.set_cell_link("/data/elem2", ref);
     p = tree.get_link("/data/elem2");
-    assert(p && p->type == xml_map_tree::element_cell_ref);
+    assert(p && p->ref_type == xml_map_tree::ref_cell);
     assert(p->cell_ref->pos.sheet == "test");
     assert(p->cell_ref->pos.row == 3);
     assert(p->cell_ref->pos.col == 2);
@@ -72,7 +72,7 @@ void test_path_insertion()
     ref.col = 5;
     tree.set_cell_link("/data/meta/title", ref);
     p = tree.get_link("/data/meta/title");
-    assert(p && p->type == xml_map_tree::element_cell_ref);
+    assert(p && p->ref_type == xml_map_tree::ref_cell);
     assert(p->cell_ref->pos.sheet == "test2");
     assert(p->cell_ref->pos.row == 10);
     assert(p->cell_ref->pos.col == 5);
@@ -85,25 +85,40 @@ void test_path_insertion()
     tree.append_range_field_link("/data/entries/entry/name", ref);
     tree.append_range_field_link("/data/entries/entry/score", ref);
     p = tree.get_link("/data/entries/entry/id");
-    assert(p && p->type == xml_map_tree::element_range_field_ref);
+    assert(p && p->ref_type == xml_map_tree::ref_range_field);
     assert(p->field_ref->ref->pos.sheet == "test3");
     assert(p->field_ref->ref->pos.row == 5);
     assert(p->field_ref->ref->pos.col == 0);
     assert(p->field_ref->column_pos == 0);
 
     p = tree.get_link("/data/entries/entry/name");
-    assert(p && p->type == xml_map_tree::element_range_field_ref);
+    assert(p && p->ref_type == xml_map_tree::ref_range_field);
     assert(p->field_ref->ref->pos.sheet == "test3");
     assert(p->field_ref->ref->pos.row == 5);
     assert(p->field_ref->ref->pos.col == 0);
     assert(p->field_ref->column_pos == 1);
 
     p = tree.get_link("/data/entries/entry/score");
-    assert(p && p->type == xml_map_tree::element_range_field_ref);
+    assert(p && p->ref_type == xml_map_tree::ref_range_field);
     assert(p->field_ref->ref->pos.sheet == "test3");
     assert(p->field_ref->ref->pos.row == 5);
     assert(p->field_ref->ref->pos.col == 0);
     assert(p->field_ref->column_pos == 2);
+}
+
+void test_attr_path_insertion()
+{
+    xmlns_repository repo;
+    xml_map_tree tree(repo.create_context());
+    xml_map_tree::cell_position ref;
+    ref.sheet = pstring("test");
+    ref.row = 2;
+    ref.col = 3;
+
+    // 'attr1' is an attribute of 'elem'.
+    tree.set_cell_link("/root/elem@attr1", ref);
+    const xml_map_tree::element* p = tree.get_link("/root/elem@attr1");
+    assert(p);
 }
 
 void test_tree_walk()
@@ -123,27 +138,27 @@ void test_tree_walk()
     const xml_map_tree::element* elem = walker.push_element(XMLNS_UNKNOWN_ID, "data");
     assert(elem);
     assert(elem->name == "data");
-    assert(elem->type == xml_map_tree::element_non_leaf);
+    assert(elem->elem_type == xml_map_tree::element_non_leaf);
 
     elem = walker.push_element(XMLNS_UNKNOWN_ID, "header");
     assert(elem);
     assert(elem->name == "header");
-    assert(elem->type == xml_map_tree::element_non_leaf);
+    assert(elem->elem_type == xml_map_tree::element_non_leaf);
 
     elem = walker.push_element(XMLNS_UNKNOWN_ID, "title");
     assert(elem);
     assert(elem->name == "title");
-    assert(elem->type == xml_map_tree::element_cell_ref);
+    assert(elem->ref_type == xml_map_tree::ref_cell);
 
     elem = walker.pop_element(XMLNS_UNKNOWN_ID, "title");
     assert(elem);
     assert(elem->name == "header");
-    assert(elem->type == xml_map_tree::element_non_leaf);
+    assert(elem->elem_type == xml_map_tree::element_non_leaf);
 
     elem = walker.pop_element(XMLNS_UNKNOWN_ID, "header");
     assert(elem);
     assert(elem->name == "data");
-    assert(elem->type == xml_map_tree::element_non_leaf);
+    assert(elem->elem_type == xml_map_tree::element_non_leaf);
 
     elem = walker.pop_element(XMLNS_UNKNOWN_ID, "data");
     assert(!elem);
@@ -152,6 +167,7 @@ void test_tree_walk()
 int main()
 {
     test_path_insertion();
+    test_attr_path_insertion();
     test_tree_walk();
     return EXIT_SUCCESS;
 }

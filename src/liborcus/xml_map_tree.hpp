@@ -127,27 +127,28 @@ public:
 
     typedef std::map<cell_position, range_reference*> range_ref_map_type;
 
-    enum element_type { element_unknown, element_non_leaf, element_cell_ref, element_range_field_ref };
-    enum attribute_type { attribute_unknown, attribute_cell_ref, attribute_range_field_ref };
+    enum linkable_node_type { node_unknown, node_element, node_attribute };
+    enum reference_type { ref_unknown, ref_cell, ref_range_field };
+    enum element_type { element_unknown, element_leaf, element_non_leaf };
 
     struct linkable : boost::noncopyable
     {
         xmlns_id_t ns;
         pstring name;
-        bool attribute;
+        linkable_node_type node_type;
 
-        linkable(xmlns_id_t _ns, const pstring& _name, bool _attribute);
+        linkable(xmlns_id_t _ns, const pstring& _name, linkable_node_type _node_type);
     };
 
     struct attribute : public linkable
     {
-        attribute_type type;
+        reference_type ref_type;
         union {
             cell_reference* cell_ref;
             field_in_range* field_ref;
         };
 
-        attribute(xmlns_id_t _ns, const pstring& _name, attribute_type _type);
+        attribute(xmlns_id_t _ns, const pstring& _name, reference_type _ref_type);
         ~attribute();
     };
 
@@ -155,7 +156,9 @@ public:
 
     struct element : public linkable
     {
-        element_type type;
+        element_type elem_type;
+        reference_type ref_type;
+
         union {
             element_store_type* child_elements;
             cell_reference* cell_ref;
@@ -171,7 +174,7 @@ public:
          */
         range_reference* range_parent;
 
-        element(xmlns_id_t _ns, const pstring& _name, element_type _type);
+        element(xmlns_id_t _ns, const pstring& _name, element_type _elem_type, reference_type _ref_type);
         ~element();
 
         const element* get_child(xmlns_id_t _ns, const pstring& _name) const;
@@ -215,7 +218,7 @@ public:
     range_ref_map_type& get_range_references();
 
 private:
-    void get_element_stack(const pstring& xpath, element_type type, element_list_type& elem_stack);
+    void get_element_stack(const pstring& xpath, reference_type type, element_list_type& elem_stack);
 
 private:
     xmlns_context m_xmlns_cxt;

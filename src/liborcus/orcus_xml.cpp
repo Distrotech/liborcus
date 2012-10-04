@@ -124,7 +124,7 @@ public:
         {
             // Store the end element position in stream for linked elements.
             const scope& cur = m_scopes.back();
-            if (mp_current_elem->type == xml_map_tree::element_cell_ref)
+            if (mp_current_elem->ref_type == xml_map_tree::ref_cell)
             {
                 // single link element.
                 mp_current_elem->cell_ref->element_open_begin = cur.element_open_begin;
@@ -159,9 +159,9 @@ public:
         if (val_trimmed.empty())
             return;
 
-        switch (mp_current_elem->type)
+        switch (mp_current_elem->ref_type)
         {
-            case xml_map_tree::element_cell_ref:
+            case xml_map_tree::ref_cell:
             {
                 const xml_map_tree::cell_reference& ref = *mp_current_elem->cell_ref;
                 assert(!ref.pos.sheet.empty());
@@ -171,7 +171,7 @@ public:
                     sheet->set_auto(ref.pos.row, ref.pos.col, val_trimmed.get(), val_trimmed.size());
             }
             break;
-            case xml_map_tree::element_range_field_ref:
+            case xml_map_tree::ref_range_field:
             {
                 const xml_map_tree::field_in_range& field = *mp_current_elem->field_ref;
                 assert(field.ref);
@@ -189,7 +189,6 @@ public:
                        val_trimmed.get(), val_trimmed.size());
             }
             break;
-            case xml_map_tree::element_non_leaf:
             default:
                 ;
         }
@@ -215,7 +214,7 @@ struct scope
     scope(const xml_map_tree::element& _elem) :
         element(_elem), opened(false)
     {
-        assert(element.type == xml_map_tree::element_non_leaf);
+        assert(element.elem_type == xml_map_tree::element_non_leaf);
         current_child_pos = element.child_elements->begin();
         end_child_pos = element.child_elements->end();
     }
@@ -261,7 +260,7 @@ void write_range_reference_group(
             for (; cur_scope.current_child_pos != cur_scope.end_child_pos; ++cur_scope.current_child_pos)
             {
                 const xml_map_tree::element& child_elem = *cur_scope.current_child_pos;
-                if (child_elem.type == xml_map_tree::element_non_leaf)
+                if (child_elem.elem_type == xml_map_tree::element_non_leaf)
                 {
                     // This is a non-leaf element.  Push a new scope with this
                     // element and re-start the loop.
@@ -272,7 +271,7 @@ void write_range_reference_group(
                 }
 
                 // This is a leaf element.  This must be a field link element.
-                assert(child_elem.type == xml_map_tree::element_range_field_ref);
+                assert(child_elem.ref_type == xml_map_tree::ref_range_field);
                 os << "<" << child_elem.name << ">";
                 sheet->write_string(os, ref.pos.row + 1 + current_row, ref.pos.col + child_elem.field_ref->column_pos);
                 os << "</" << child_elem.name << ">";
@@ -300,7 +299,7 @@ void write_range_reference(ostream& os, const xml_map_tree::element& elem_top, c
 {
     // Top element is expected to have one or more child elements, and each
     // child element represents a separate database range.
-    if (elem_top.type != xml_map_tree::element_non_leaf)
+    if (elem_top.elem_type != xml_map_tree::element_non_leaf)
         return;
 
     assert(elem_top.child_elements);
@@ -454,7 +453,7 @@ void orcus_xml::write_file(const char* filepath)
     for (; it != it_end; ++it)
     {
         const xml_map_tree::element& elem = **it;
-        if (elem.type == xml_map_tree::element_cell_ref)
+        if (elem.ref_type == xml_map_tree::ref_cell)
         {
             // Single cell link
             const xml_map_tree::cell_position& pos = elem.cell_ref->pos;

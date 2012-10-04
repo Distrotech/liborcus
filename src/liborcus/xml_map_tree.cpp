@@ -40,13 +40,13 @@ namespace orcus {
 
 namespace {
 
-class find_by_name : std::unary_function<xml_map_tree::element, bool>
+class find_by_name : std::unary_function<xml_map_tree::linkable, bool>
 {
     xmlns_id_t m_ns;
     pstring m_name;
 public:
     find_by_name(xmlns_id_t ns, const pstring& name) : m_ns(ns), m_name(name) {}
-    bool operator() (const xml_map_tree::element& e) const
+    bool operator() (const xml_map_tree::linkable& e) const
     {
         return m_ns == e.ns && m_name == e.name;
     }
@@ -57,6 +57,10 @@ class xpath_parser
     const xmlns_context& m_cxt;
     const char* mp_char;
     const char* mp_end;
+
+    enum token_type { element, attribute };
+    token_type m_next_token_type;
+
 public:
 
     struct token
@@ -72,7 +76,8 @@ public:
         token(const token& r) : ns(r.ns), name(r.name), attribute(r.attribute) {}
     };
 
-    xpath_parser(const xmlns_context& cxt, const char* p, size_t n) : m_cxt(cxt), mp_char(p), mp_end(p+n)
+    xpath_parser(const xmlns_context& cxt, const char* p, size_t n) :
+        m_cxt(cxt), mp_char(p), mp_end(p+n), m_next_token_type(element)
     {
         if (!n)
             throw xml_map_tree::xpath_error("empty path");
@@ -96,8 +101,19 @@ public:
             {
                 case '/':
                 {
-                    // '/' encountered.
+                    // '/' encountered.  Next token is an element name.
+                    if (m_next_token_type == attribute)
+                        throw xml_map_tree::xpath_error("attribute name should not contain '/'.");
+
+                    m_next_token_type = element;
                     ++mp_char; // skip the '/'.
+                    return token(XMLNS_UNKNOWN_ID, pstring(p0, len), false);
+                }
+                case '@':
+                {
+                    // '@' encountered.  Next token is an attribute name.
+                    m_next_token_type = attribute;
+                    ++mp_char; // skip the '@'.
                     return token(XMLNS_UNKNOWN_ID, pstring(p0, len), false);
                 }
                 case ':':
@@ -108,7 +124,7 @@ public:
         }
 
         // '/' has never been encountered.  It must be the last name in the path.
-        return token(XMLNS_UNKNOWN_ID, pstring(p0, len), false);
+        return token(XMLNS_UNKNOWN_ID, pstring(p0, len), m_next_token_type == attribute);
     }
 };
 
@@ -132,80 +148,94 @@ xml_map_tree::range_reference::range_reference(const cell_position& _pos) :
     pos(_pos), row_size(0),
     element_open_begin(NULL), element_open_end(NULL), element_close_begin(NULL), element_close_end(NULL) {}
 
-xml_map_tree::linkable::linkable(xmlns_id_t _ns, const pstring& _name, bool _attribute) :
-    ns(_ns), name(_name), attribute(_attribute) {}
+xml_map_tree::linkable::linkable(xmlns_id_t _ns, const pstring& _name, linkable_node_type _node_type) :
+    ns(_ns), name(_name), node_type(_node_type) {}
 
-xml_map_tree::attribute::attribute(xmlns_id_t _ns, const pstring& _name, attribute_type _type) :
-    linkable(_ns, _name, true), type(_type)
+xml_map_tree::attribute::attribute(xmlns_id_t _ns, const pstring& _name, reference_type _ref_type) :
+    linkable(_ns, _name, node_attribute), ref_type(_ref_type)
 {
-    switch (type)
+    switch (ref_type)
     {
-        case attribute_cell_ref:
+        case ref_cell:
             cell_ref = new cell_reference;
         break;
-        case attribute_range_field_ref:
+        case ref_range_field:
             field_ref = new field_in_range;
         break;
         default:
-            throw general_error("unexpected attribute type in the constructor");
+            throw general_error("unexpected reference type in the constructor of attribute.");
     }
 }
 
 xml_map_tree::attribute::~attribute()
 {
-    switch (type)
+    switch (ref_type)
     {
-        case attribute_cell_ref:
+        case ref_cell:
             delete cell_ref;
         break;
-        case attribute_range_field_ref:
+        case ref_range_field:
             delete field_ref;
         break;
         default:
-            throw general_error("unexpected attribute type in the destructor.");
+            throw general_error("unexpected reference type in the destructor of attribute.");
     }
 }
 
-xml_map_tree::element::element(xmlns_id_t _ns, const pstring& _name, element_type _type) :
-    linkable(_ns, _name, false), type(_type), range_parent(NULL)
+xml_map_tree::element::element(
+    xmlns_id_t _ns, const pstring& _name, element_type _elem_type, reference_type _ref_type) :
+    linkable(_ns, _name, node_element),
+    elem_type(_elem_type),
+    ref_type(_ref_type),
+    range_parent(NULL)
 {
-    switch (type)
+    if (elem_type == element_non_leaf)
     {
-        case element_cell_ref:
+        child_elements = new element_store_type;
+        return;
+    }
+
+    assert(elem_type == element_leaf);
+
+    switch (ref_type)
+    {
+        case ref_cell:
             cell_ref = new cell_reference;
         break;
-        case element_non_leaf:
-            child_elements = new element_store_type;
-        break;
-        case element_range_field_ref:
+        case ref_range_field:
             field_ref = new field_in_range;
         break;
         default:
-            throw general_error("unexpected element type in the constructor.");
+            throw general_error("unexpected reference type in the constructor of element.");
     }
 }
 
 xml_map_tree::element::~element()
 {
-    switch (type)
+    if (elem_type == element_non_leaf)
     {
-        case element_cell_ref:
+        delete child_elements;
+        return;
+    }
+
+    assert(elem_type == element_leaf);
+
+    switch (ref_type)
+    {
+        case ref_cell:
             delete cell_ref;
         break;
-        case element_non_leaf:
-            delete child_elements;
-        break;
-        case element_range_field_ref:
+        case ref_range_field:
             delete field_ref;
         break;
         default:
-            throw general_error("unexpected element type in the destructor.");
+            throw general_error("unexpected reference type in the destructor of element.");
     }
 }
 
 const xml_map_tree::element* xml_map_tree::element::get_child(xmlns_id_t _ns, const pstring& _name) const
 {
-    if (type != element_non_leaf)
+    if (elem_type != element_non_leaf)
         return NULL;
 
     assert(child_elements);
@@ -244,7 +274,7 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(xmlns_id_t ns, c
         return p;
     }
 
-    if (m_stack.back()->type == element_non_leaf)
+    if (m_stack.back()->elem_type == element_non_leaf)
     {
         // Check if the current element has a child of the same name.
         const element* p = m_stack.back()->get_child(ns, name);
@@ -260,7 +290,7 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(xmlns_id_t ns, c
     }
 
     // Current element is linked.
-    assert(m_stack.back()->type != element_non_leaf);
+    assert(m_stack.back()->elem_type != element_non_leaf);
     ++m_content_depth;
     return m_stack.back();
 }
@@ -304,7 +334,7 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
 
     cout << "cell link: " << xpath << " (ref=" << ref << ")" << endl;
     element_list_type elem_stack;
-    get_element_stack(xpath, element_cell_ref, elem_stack);
+    get_element_stack(xpath, ref_cell, elem_stack);
     assert(!elem_stack.empty());
     element* p = elem_stack.back();
     assert(p && p->cell_ref);
@@ -346,7 +376,7 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
 
     cout << "range field link: " << xpath << " (ref=" << pos << ")" << endl;
     element_list_type elem_stack;
-    get_element_stack(xpath, element_range_field_ref, elem_stack);
+    get_element_stack(xpath, ref_range_field, elem_stack);
     if (elem_stack.size() <= 3)
         throw xpath_error("Path of a range field link must be at least 3 levels.");
 
@@ -432,7 +462,7 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
     for (token = parser.next(); !token.name.empty(); token = parser.next())
     {
         // See if an element of this name exists below the current element.
-        if (cur_element->type != element_non_leaf)
+        if (cur_element->elem_type != element_non_leaf)
             return NULL;
 
         if (!cur_element->child_elements)
@@ -447,7 +477,7 @@ const xml_map_tree::element* xml_map_tree::get_link(const pstring& xpath) const
         cur_element = &(*it);
     }
 
-    if (cur_element->type == element_non_leaf)
+    if (cur_element->elem_type == element_non_leaf)
         // Non-leaf elements are not links.
         return NULL;
 
@@ -464,7 +494,7 @@ xml_map_tree::range_ref_map_type& xml_map_tree::get_range_references()
     return m_field_refs;
 }
 
-void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, element_list_type& elem_stack)
+void xml_map_tree::get_element_stack(const pstring& xpath, reference_type ref_type, element_list_type& elem_stack)
 {
     assert(!xpath.empty());
     xpath_parser parser(m_xmlns_cxt,xpath.get(), xpath.size());
@@ -482,7 +512,10 @@ void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, el
     else
     {
         // First time the root element is encountered.
-        mp_root = new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf);
+        if (token.attribute)
+            throw xpath_error("root element cannot be an attribute.");
+
+        mp_root = new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf, ref_unknown);
     }
 
     elem_stack_new.push_back(mp_root);
@@ -494,12 +527,15 @@ void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, el
     for (xpath_parser::token token_next = parser.next(); !token_next.name.empty(); token_next = parser.next())
     {
         // Check if the current element contains a chile element of the same name.
+        if (token.attribute)
+            throw xpath_error("attribute must always be at the end of the path.");
+
         element_store_type& children = *cur_element->child_elements;
         element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(token.ns, token.name));
         if (it == children.end())
         {
             // Insert a new element of this name.
-            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf));
+            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf, ref_unknown));
             cur_element = &children.back();
         }
         else
@@ -513,14 +549,29 @@ void xml_map_tree::get_element_stack(const pstring& xpath, element_type type, el
 
     // Insert a leaf node.
 
-    // Check if an element of the same name already exists.
-    element_store_type& children = *cur_element->child_elements;
-    element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(token.ns, token.name));
-    if (it != children.end())
-        throw xpath_error("This path is already linked.  You can't link the same path twice.");
+    if (token.attribute)
+    {
+        // This is an attribute.  Insert it into the current element.
+        attribute_store_type& attrs = cur_element->attributes;
 
-    children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), type));
-    elem_stack_new.push_back(&children.back());
+        // Check if an attribute of the same name already exists.
+        attribute_store_type::iterator it = std::find_if(attrs.begin(), attrs.end(), find_by_name(token.ns, token.name));
+        if (it != attrs.end())
+            throw xpath_error("This path is already linked.  You can't link the same path twice.");
+
+        attrs.push_back(new attribute(token.ns, m_names.intern(token.name.get(), token.name.size()), ref_type));
+    }
+    else
+    {
+        // Check if an element of the same name already exists.
+        element_store_type& children = *cur_element->child_elements;
+        element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(token.ns, token.name));
+        if (it != children.end())
+            throw xpath_error("This path is already linked.  You can't link the same path twice.");
+
+        children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_leaf, ref_type));
+        elem_stack_new.push_back(&children.back());
+    }
 
     elem_stack.swap(elem_stack_new);
 }
