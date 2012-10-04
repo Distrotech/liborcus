@@ -244,7 +244,7 @@ public:
 /**
  * Used in write_range_reference_group().
  */
-struct scope
+struct scope : boost::noncopyable
 {
     const xml_map_tree::element& element;
     xml_map_tree::element_store_type::const_iterator current_child_pos;
@@ -254,9 +254,13 @@ struct scope
     scope(const xml_map_tree::element& _elem) :
         element(_elem), opened(false)
     {
-        assert(element.elem_type == xml_map_tree::element_unlinked);
-        current_child_pos = element.child_elements->begin();
-        end_child_pos = element.child_elements->end();
+        current_child_pos = end_child_pos;
+
+        if (element.elem_type == xml_map_tree::element_unlinked)
+        {
+            current_child_pos = element.child_elements->begin();
+            end_child_pos = element.child_elements->end();
+        }
     }
 };
 
