@@ -2,11 +2,11 @@
 <data version="1.1">
     <header label="TOP SECRET">Simple Data File</header>
     <entries>
-        <entry id="1" first-name="Bill" last-name="Clinton" score="456"/>
-        <entry id="2" first-name="David" last-name="Cameron" score="323"/>
-        <entry id="3" first-name="Barak" last-name="Obama" score="234"/>
-        <entry id="4" first-name="Yoshihiko" last-name="Noda" score="192"/>
-        <entry id="5" first-name="Angela" last-name="Merkel" score="210"/>
+        <entry id="1" first-name="Bill" last-name="Clinton" score="456">in</entry>
+        <entry id="2" first-name="David" last-name="Cameron" score="323">out</entry>
+        <entry id="3" first-name="Barak" last-name="Obama" score="234">unknown</entry>
+        <entry id="4" first-name="Yoshihiko" last-name="Noda" score="192">in</entry>
+        <entry id="5" first-name="Angela" last-name="Merkel" score="210">ask later</entry>
     </entries>
     <footer date="2012-08-12">
         <extra>Not for distribution</extra>

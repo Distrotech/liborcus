@@ -391,8 +391,7 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     cout << "range field link: " << xpath << " (ref=" << pos << ")" << endl;
     element_list_type elem_stack;
     linkable* node = get_element_stack(xpath, reference_range_field, elem_stack);
-    if ((node->node_type == node_element && elem_stack.size() <= 3) ||
-        (node->node_type == node_attribute && elem_stack.size() <= 2))
+    if (elem_stack.size() < 3)
         throw xpath_error("Path of a range field link must be at least 3 levels.");
 
     switch (node->node_type)
