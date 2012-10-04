@@ -78,15 +78,22 @@ public:
         cell_position(const cell_position& r);
     };
 
+    /**
+     * Positions of opening and closing elements in xml stream.
+     */
+    struct element_position
+    {
+        const char* open_begin;
+        const char* open_end;
+        const char* close_begin;
+        const char* close_end;
+
+        element_position();
+    };
+
     struct cell_reference : boost::noncopyable
     {
         cell_position pos;
-
-        const char* element_open_begin;
-        const char* element_open_end;
-        const char* element_close_begin;
-        const char* element_close_end;
-
         cell_reference();
     };
 
@@ -112,11 +119,6 @@ public:
          * label row at the top.
          */
         spreadsheet::row_t row_size;
-
-        const char* element_open_begin;
-        const char* element_open_end;
-        const char* element_close_begin;
-        const char* element_close_end;
 
         range_reference(const cell_position& _pos);
     };
@@ -167,6 +169,8 @@ public:
             field_in_range* field_ref;
         };
 
+        mutable element_position stream_pos;
+
         attribute_store_type attributes;
 
         /**
@@ -180,6 +184,15 @@ public:
         ~element();
 
         const element* get_child(xmlns_id_t _ns, const pstring& _name) const;
+
+        /**
+         * Unlinked attribute anchor is an element that's not linked but has
+         * one or more attributes that are linked.
+         *
+         * @return true if the element is an unlinked attribute anchor, false
+         *         otherwise.
+         */
+        bool unlinked_attribute_anchor() const;
     };
 
 public:

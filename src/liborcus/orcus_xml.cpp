@@ -186,23 +186,15 @@ public:
         {
             // Store the end element position in stream for linked elements.
             const scope& cur = m_scopes.back();
-            if (mp_current_elem->ref_type == xml_map_tree::reference_cell)
+            if (mp_current_elem->ref_type == xml_map_tree::reference_cell ||
+                mp_current_elem->range_parent ||
+                mp_current_elem->unlinked_attribute_anchor())
             {
-                // single link element.
-                mp_current_elem->cell_ref->element_open_begin = cur.element_open_begin;
-                mp_current_elem->cell_ref->element_open_end = cur.element_open_end;
-                mp_current_elem->cell_ref->element_close_begin = elem.begin_pos;
-                mp_current_elem->cell_ref->element_close_end = elem.end_pos;
-                m_link_positions.push_back(mp_current_elem);
-            }
-            else if (mp_current_elem->range_parent)
-            {
-                // parent of range link elements.
-                xml_map_tree::range_reference& ref = *mp_current_elem->range_parent;
-                ref.element_open_begin = cur.element_open_begin;
-                ref.element_open_end = cur.element_open_end;
-                ref.element_close_begin = elem.begin_pos;
-                ref.element_close_end = elem.end_pos;
+                // either single link element, parent of range link elements, or an unlinked attribute anchor.
+                mp_current_elem->stream_pos.open_begin = cur.element_open_begin;
+                mp_current_elem->stream_pos.open_end = cur.element_open_end;
+                mp_current_elem->stream_pos.close_begin = elem.begin_pos;
+                mp_current_elem->stream_pos.close_end = elem.end_pos;
                 m_link_positions.push_back(mp_current_elem);
             }
         }
@@ -395,6 +387,14 @@ void write_range_reference(ostream& os, const xml_map_tree::element& elem_top, c
        os, *elem_top.child_elements->begin(), *elem_top.range_parent, factory);
 }
 
+struct less_by_opening_elem_pos : std::binary_function<xml_map_tree::element*, xml_map_tree::element*, bool>
+{
+    bool operator() (const xml_map_tree::element* left, const xml_map_tree::element* right) const
+    {
+        return left->stream_pos.open_begin < right->stream_pos.open_begin;
+    }
+};
+
 }
 
 struct orcus_xml_impl
@@ -518,10 +518,13 @@ void orcus_xml::write_file(const char* filepath)
         // Original xml stream is missing.  We need it.
         return;
 
-    const xml_map_tree::const_element_list_type& links = mp_impl->m_link_positions;
+    xml_map_tree::const_element_list_type& links = mp_impl->m_link_positions;
     if (links.empty())
         // nothing to write.
         return;
+
+    // Sort all link position by opening element positions.
+    std::sort(links.begin(), links.end(), less_by_opening_elem_pos());
 
     cout << "writing to " << filepath << endl;
     ofstream file(filepath);
@@ -544,9 +547,9 @@ void orcus_xml::write_file(const char* filepath)
             if (!sheet)
                 continue;
 
-            const char* open_end = elem.cell_ref->element_open_end;
-            const char* close_begin = elem.cell_ref->element_close_begin;
-            const char* close_end = elem.cell_ref->element_close_end;
+            const char* open_end = elem.stream_pos.open_end;
+            const char* close_begin = elem.stream_pos.close_begin;
+            const char* close_end = elem.stream_pos.close_end;
 
             file << pstring(begin_pos, open_end-begin_pos); // stream since last linked element + opening element.
             sheet->write_string(file, pos.row, pos.col);
@@ -563,14 +566,17 @@ void orcus_xml::write_file(const char* filepath)
             if (!sheet)
                 continue;
 
-            const char* open_end = ref.element_open_end;
-            const char* close_begin = ref.element_close_begin;
-            const char* close_end = ref.element_close_end;
+            const char* open_end = elem.stream_pos.open_end;
+            const char* close_begin = elem.stream_pos.close_begin;
+            const char* close_end = elem.stream_pos.close_end;
 
             file << pstring(begin_pos, open_end-begin_pos); // stream since last linked element + opening element.
             write_range_reference(file, elem, fact);
             file << pstring(close_begin, close_end-close_begin); // closing element.
             begin_pos = close_end;
+        }
+        else if (elem.unlinked_attribute_anchor())
+        {
         }
         else
             throw general_error("Non-link element type encountered.");

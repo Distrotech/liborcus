@@ -141,12 +141,13 @@ xml_map_tree::cell_position::cell_position(const pstring& _sheet, spreadsheet::r
 xml_map_tree::cell_position::cell_position(const cell_position& r) :
     sheet(r.sheet), row(r.row), col(r.col) {}
 
-xml_map_tree::cell_reference::cell_reference() :
-    element_open_begin(NULL), element_open_end(NULL), element_close_begin(NULL), element_close_end(NULL) {}
+xml_map_tree::element_position::element_position() :
+    open_begin(NULL), open_end(NULL), close_begin(NULL), close_end(NULL) {}
+
+xml_map_tree::cell_reference::cell_reference() {}
 
 xml_map_tree::range_reference::range_reference(const cell_position& _pos) :
-    pos(_pos), row_size(0),
-    element_open_begin(NULL), element_open_end(NULL), element_close_begin(NULL), element_close_end(NULL) {}
+    pos(_pos), row_size(0) {}
 
 xml_map_tree::linkable::linkable(xmlns_id_t _ns, const pstring& _name, linkable_node_type _node_type) :
     ns(_ns), name(_name), node_type(_node_type) {}
@@ -244,6 +245,11 @@ const xml_map_tree::element* xml_map_tree::element::get_child(xmlns_id_t _ns, co
         std::find_if(child_elements->begin(), child_elements->end(), find_by_name(_ns, _name));
 
     return it == child_elements->end() ? NULL : &(*it);
+}
+
+bool xml_map_tree::element::unlinked_attribute_anchor() const
+{
+    return elem_type == element_unlinked && ref_type == reference_unknown && !attributes.empty();
 }
 
 xml_map_tree::walker::walker(const xml_map_tree& parent) :
