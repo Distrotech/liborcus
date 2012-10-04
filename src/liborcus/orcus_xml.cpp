@@ -214,7 +214,7 @@ struct scope
     scope(const xml_map_tree::element& _elem) :
         element(_elem), opened(false)
     {
-        assert(element.elem_type == xml_map_tree::element_non_leaf);
+        assert(element.elem_type == xml_map_tree::element_unlinked);
         current_child_pos = element.child_elements->begin();
         end_child_pos = element.child_elements->end();
     }
@@ -260,7 +260,7 @@ void write_range_reference_group(
             for (; cur_scope.current_child_pos != cur_scope.end_child_pos; ++cur_scope.current_child_pos)
             {
                 const xml_map_tree::element& child_elem = *cur_scope.current_child_pos;
-                if (child_elem.elem_type == xml_map_tree::element_non_leaf)
+                if (child_elem.elem_type == xml_map_tree::element_unlinked)
                 {
                     // This is a non-leaf element.  Push a new scope with this
                     // element and re-start the loop.
@@ -299,7 +299,7 @@ void write_range_reference(ostream& os, const xml_map_tree::element& elem_top, c
 {
     // Top element is expected to have one or more child elements, and each
     // child element represents a separate database range.
-    if (elem_top.elem_type != xml_map_tree::element_non_leaf)
+    if (elem_top.elem_type != xml_map_tree::element_unlinked)
         return;
 
     assert(elem_top.child_elements);

@@ -129,7 +129,7 @@ public:
 
     enum linkable_node_type { node_unknown, node_element, node_attribute };
     enum reference_type { reference_unknown, reference_cell, reference_range_field };
-    enum element_type { element_unknown, element_leaf, element_non_leaf };
+    enum element_type { element_unknown, element_linked, element_unlinked };
 
     struct linkable : boost::noncopyable
     {

@@ -189,13 +189,13 @@ xml_map_tree::element::element(
     ref_type(_ref_type),
     range_parent(NULL)
 {
-    if (elem_type == element_non_leaf)
+    if (elem_type == element_unlinked)
     {
         child_elements = new element_store_type;
         return;
     }
 
-    assert(elem_type == element_leaf);
+    assert(elem_type == element_linked);
 
     switch (ref_type)
     {
@@ -212,13 +212,13 @@ xml_map_tree::element::element(
 
 xml_map_tree::element::~element()
 {
-    if (elem_type == element_non_leaf)
+    if (elem_type == element_unlinked)
     {
         delete child_elements;
         return;
     }
 
-    assert(elem_type == element_leaf);
+    assert(elem_type == element_linked);
 
     switch (ref_type)
     {
@@ -235,7 +235,7 @@ xml_map_tree::element::~element()
 
 const xml_map_tree::element* xml_map_tree::element::get_child(xmlns_id_t _ns, const pstring& _name) const
 {
-    if (elem_type != element_non_leaf)
+    if (elem_type != element_unlinked)
         return NULL;
 
     assert(child_elements);
@@ -274,7 +274,7 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(xmlns_id_t ns, c
         return p;
     }
 
-    if (m_stack.back()->elem_type == element_non_leaf)
+    if (m_stack.back()->elem_type == element_unlinked)
     {
         // Check if the current element has a child of the same name.
         const element* p = m_stack.back()->get_child(ns, name);
@@ -290,7 +290,7 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(xmlns_id_t ns, c
     }
 
     // Current element is linked.
-    assert(m_stack.back()->elem_type != element_non_leaf);
+    assert(m_stack.back()->elem_type != element_unlinked);
     ++m_content_depth;
     return m_stack.back();
 }
@@ -500,7 +500,7 @@ const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
             return NULL;
 
         const element* elem = static_cast<const element*>(cur_node);
-        if (elem->elem_type != element_non_leaf)
+        if (elem->elem_type != element_unlinked)
             return NULL;
 
         if (!elem->child_elements)
@@ -518,7 +518,7 @@ const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
         cur_node = &(*it);
     }
 
-    if (cur_node->node_type != node_element || static_cast<const element*>(cur_node)->elem_type == element_non_leaf)
+    if (cur_node->node_type != node_element || static_cast<const element*>(cur_node)->elem_type == element_unlinked)
         // Non-leaf elements are not links.
         return NULL;
 
@@ -557,7 +557,7 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         if (token.attribute)
             throw xpath_error("root element cannot be an attribute.");
 
-        mp_root = new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf, reference_unknown);
+        mp_root = new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_unlinked, reference_unknown);
     }
 
     elem_stack_new.push_back(mp_root);
@@ -577,7 +577,7 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         if (it == children.end())
         {
             // Insert a new element of this name.
-            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf, reference_unknown));
+            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_unlinked, reference_unknown));
             cur_element = &children.back();
         }
         else
@@ -613,7 +613,7 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         if (it == children.end())
         {
             // No element of that name exists.
-            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_leaf, ref_type));
+            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_linked, ref_type));
             elem_stack_new.push_back(&children.back());
             ret = &children.back();
         }
@@ -621,12 +621,12 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         {
             // This element already exists.  Check if this is already linked.
             element& elem = *it;
-            if (elem.ref_type != reference_unknown || elem.elem_type != element_non_leaf)
+            if (elem.ref_type != reference_unknown || elem.elem_type != element_unlinked)
                 throw xpath_error("This element is already linked.  You can't link the same element twice.");
 
             // Turn this existing non-linked element into a linked one.
             delete elem.child_elements;
-            elem.elem_type = element_leaf;
+            elem.elem_type = element_linked;
             elem.ref_type = ref_type;
             switch (ref_type)
             {

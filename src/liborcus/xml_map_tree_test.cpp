@@ -162,7 +162,7 @@ void test_attr_path_insertion()
     p = tree.get_link("/root/elem");
     assert(p && p->node_type == xml_map_tree::node_element);
     const xml_map_tree::element* elem = static_cast<const xml_map_tree::element*>(p);
-    assert(elem->elem_type == xml_map_tree::element_leaf);
+    assert(elem->elem_type == xml_map_tree::element_linked);
     assert(elem->ref_type == xml_map_tree::reference_cell);
     assert(elem->cell_ref->pos.sheet == "test3");
     assert(elem->cell_ref->pos.row == 4);
@@ -186,12 +186,12 @@ void test_tree_walk()
     const xml_map_tree::element* elem = walker.push_element(XMLNS_UNKNOWN_ID, "data");
     assert(elem);
     assert(elem->name == "data");
-    assert(elem->elem_type == xml_map_tree::element_non_leaf);
+    assert(elem->elem_type == xml_map_tree::element_unlinked);
 
     elem = walker.push_element(XMLNS_UNKNOWN_ID, "header");
     assert(elem);
     assert(elem->name == "header");
-    assert(elem->elem_type == xml_map_tree::element_non_leaf);
+    assert(elem->elem_type == xml_map_tree::element_unlinked);
 
     elem = walker.push_element(XMLNS_UNKNOWN_ID, "title");
     assert(elem);
@@ -201,12 +201,12 @@ void test_tree_walk()
     elem = walker.pop_element(XMLNS_UNKNOWN_ID, "title");
     assert(elem);
     assert(elem->name == "header");
-    assert(elem->elem_type == xml_map_tree::element_non_leaf);
+    assert(elem->elem_type == xml_map_tree::element_unlinked);
 
     elem = walker.pop_element(XMLNS_UNKNOWN_ID, "header");
     assert(elem);
     assert(elem->name == "data");
-    assert(elem->elem_type == xml_map_tree::element_non_leaf);
+    assert(elem->elem_type == xml_map_tree::element_unlinked);
 
     elem = walker.pop_element(XMLNS_UNKNOWN_ID, "data");
     assert(!elem);
