@@ -543,7 +543,8 @@ void orcus_xml::write_file(const char* filepath)
             // Single cell link
             const xml_map_tree::cell_position& pos = elem.cell_ref->pos;
 
-            const spreadsheet::iface::export_sheet* sheet = fact.get_sheet(pos.sheet.get(), pos.sheet.size());
+            const spreadsheet::iface::export_sheet* sheet =
+                fact.get_sheet(pos.sheet.get(), pos.sheet.size());
             if (!sheet)
                 continue;
 
@@ -562,7 +563,8 @@ void orcus_xml::write_file(const char* filepath)
             const xml_map_tree::range_reference& ref = *elem.range_parent;
             const xml_map_tree::cell_position& pos = ref.pos;
 
-            const spreadsheet::iface::export_sheet* sheet = fact.get_sheet(pos.sheet.get(), pos.sheet.size());
+            const spreadsheet::iface::export_sheet* sheet =
+                fact.get_sheet(pos.sheet.get(), pos.sheet.size());
             if (!sheet)
                 continue;
 
@@ -577,6 +579,35 @@ void orcus_xml::write_file(const char* filepath)
         }
         else if (elem.unlinked_attribute_anchor())
         {
+            // Element is not linked but has one or more attributes that are linked.
+
+            const char* open_begin = elem.stream_pos.open_begin;
+            const char* open_end = elem.stream_pos.open_end;
+
+            file << pstring(begin_pos, open_begin-begin_pos); // stream since last linked element.
+            file << '<' << elem.name;
+            xml_map_tree::attribute_store_type::const_iterator it = elem.attributes.begin(), it_end = elem.attributes.end();
+            for (; it != it_end; ++it)
+            {
+                const xml_map_tree::attribute& attr = *it;
+                if (attr.ref_type != xml_map_tree::reference_cell)
+                    // We should only see single linked cell here, as all
+                    // field links are handled by the range parent above.
+                    continue;
+
+                const xml_map_tree::cell_position& pos = attr.cell_ref->pos;
+
+                const spreadsheet::iface::export_sheet* sheet =
+                    fact.get_sheet(pos.sheet.get(), pos.sheet.size());
+                if (!sheet)
+                    continue;
+
+                file << ' ' << attr.name << "=\"";
+                sheet->write_string(file, pos.row, pos.col);
+                file << "\"";
+            }
+            file << '>';
+            begin_pos = open_end;
         }
         else
             throw general_error("Non-link element type encountered.");
