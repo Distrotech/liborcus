@@ -600,7 +600,7 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         // Check if an attribute of the same name already exists.
         attribute_store_type::iterator it = std::find_if(attrs.begin(), attrs.end(), find_by_name(token.ns, token.name));
         if (it != attrs.end())
-            throw xpath_error("This path is already linked.  You can't link the same path twice.");
+            throw xpath_error("This attribute is already linked.  You can't link the same attribute twice.");
 
         attrs.push_back(new attribute(token.ns, m_names.intern(token.name.get(), token.name.size()), ref_type));
         ret = &attrs.back();
@@ -610,12 +610,38 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         // Check if an element of the same name already exists.
         element_store_type& children = *cur_element->child_elements;
         element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(token.ns, token.name));
-        if (it != children.end())
-            throw xpath_error("This path is already linked.  You can't link the same path twice.");
+        if (it == children.end())
+        {
+            // No element of that name exists.
+            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_leaf, ref_type));
+            elem_stack_new.push_back(&children.back());
+            ret = &children.back();
+        }
+        else
+        {
+            // This element already exists.  Check if this is already linked.
+            element& elem = *it;
+            if (elem.ref_type != reference_unknown || elem.elem_type != element_non_leaf)
+                throw xpath_error("This element is already linked.  You can't link the same element twice.");
 
-        children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_leaf, ref_type));
-        elem_stack_new.push_back(&children.back());
-        ret = &children.back();
+            // Turn this existing non-linked element into a linked one.
+            delete elem.child_elements;
+            elem.elem_type = element_leaf;
+            elem.ref_type = ref_type;
+            switch (ref_type)
+            {
+                case reference_cell:
+                    elem.cell_ref = new cell_reference;
+                break;
+                case reference_range_field:
+                    elem.field_ref = new field_in_range;
+                break;
+                default:
+                    throw general_error("Unknown reference type in xml_map_tree::get_element_stack.");
+            }
+
+            ret = &elem;
+        }
     }
 
     elem_stack.swap(elem_stack_new);

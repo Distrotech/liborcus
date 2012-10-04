@@ -136,6 +136,37 @@ void test_attr_path_insertion()
     assert(attr->cell_ref->pos.sheet == "test");
     assert(attr->cell_ref->pos.row == 2);
     assert(attr->cell_ref->pos.col == 3);
+
+    // Insert another attribute in the same element.
+    ref.sheet = pstring("test2");
+    ref.row = 11;
+    ref.col = 4;
+    tree.set_cell_link("/root/elem@attr2", ref);
+    p = tree.get_link("/root/elem@attr2");
+    assert(p && p->node_type == xml_map_tree::node_attribute);
+    attr = static_cast<const xml_map_tree::attribute*>(p);
+    assert(attr->ref_type == xml_map_tree::reference_cell);
+    assert(attr->cell_ref->pos.sheet == "test2");
+    assert(attr->cell_ref->pos.row == 11);
+    assert(attr->cell_ref->pos.col == 4);
+
+    // At this point, /root/elem is not linked.
+    p = tree.get_link("/root/elem");
+    assert(!p);
+
+    // Now, link /root/elem.
+    ref.sheet = pstring("test3");
+    ref.row = 4;
+    ref.col = 6;
+    tree.set_cell_link("/root/elem", ref);
+    p = tree.get_link("/root/elem");
+    assert(p && p->node_type == xml_map_tree::node_element);
+    const xml_map_tree::element* elem = static_cast<const xml_map_tree::element*>(p);
+    assert(elem->elem_type == xml_map_tree::element_leaf);
+    assert(elem->ref_type == xml_map_tree::reference_cell);
+    assert(elem->cell_ref->pos.sheet == "test3");
+    assert(elem->cell_ref->pos.row == 4);
+    assert(elem->cell_ref->pos.col == 6);
 }
 
 void test_tree_walk()
