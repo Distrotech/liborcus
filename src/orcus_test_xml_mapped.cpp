@@ -44,7 +44,8 @@ using namespace std;
 using namespace orcus;
 
 const char* files[] = {
-    "../test/xml-mapped/content-basic"
+    "../test/xml-mapped/content-basic",
+    "../test/xml-mapped/attribute-basic"
 };
 
 void test_mapped_xml_import()
