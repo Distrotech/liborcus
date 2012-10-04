@@ -87,6 +87,43 @@ class xml_data_sax_handler
 
     const xml_map_tree::element* mp_current_elem;
 
+private:
+
+    const attr* find_attr_by_name(xmlns_id_t ns, const pstring& name)
+    {
+        vector<attr>::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
+        for (; it != it_end; ++it)
+        {
+            if (it->ns == ns && it->name == name)
+                return &(*it);
+        }
+        return NULL;
+    }
+
+    void set_single_link_cell(const xml_map_tree::cell_reference& ref, const pstring& val)
+    {
+        spreadsheet::iface::import_sheet* sheet = m_factory.get_sheet(ref.pos.sheet.get(), ref.pos.sheet.size());
+        if (sheet)
+            sheet->set_auto(ref.pos.row, ref.pos.col, val.get(), val.size());
+    }
+
+    void set_field_link_cell(const xml_map_tree::field_in_range& field, const pstring& val)
+    {
+        assert(field.ref);
+        assert(!field.ref->pos.sheet.empty());
+
+        if (field.column_pos == 0)
+            ++field.ref->row_size;
+
+        const xml_map_tree::cell_position& pos = field.ref->pos;
+        spreadsheet::iface::import_sheet* sheet = m_factory.get_sheet(pos.sheet.get(), pos.sheet.size());
+        if (sheet)
+            sheet->set_auto(
+               pos.row + field.ref->row_size,
+               pos.col + field.column_pos,
+               val.get(), val.size());
+    }
+
 public:
     xml_data_sax_handler(
        spreadsheet::iface::import_factory& factory,
@@ -112,8 +149,33 @@ public:
         cur.element_open_begin = elem.begin_pos;
         cur.element_open_end = elem.end_pos;
 
-        m_attrs.clear();
         mp_current_elem = m_map_tree_walker.push_element(ns_id, elem.name);
+        if (mp_current_elem)
+        {
+            const xml_map_tree::attribute_store_type& linked_attrs = mp_current_elem->attributes;
+            xml_map_tree::attribute_store_type::const_iterator it = linked_attrs.begin(), it_end = linked_attrs.end();
+            for (; it != it_end; ++it)
+            {
+                const xml_map_tree::attribute& linked_attr = *it;
+                const attr* p = find_attr_by_name(linked_attr.ns, linked_attr.name);
+                if (!p)
+                    continue;
+
+                pstring val_trimmed = p->val.trim();
+                switch (linked_attr.ref_type)
+                {
+                    case xml_map_tree::reference_cell:
+                        set_single_link_cell(*linked_attr.cell_ref, val_trimmed);
+                    break;
+                    case xml_map_tree::reference_range_field:
+                        set_field_link_cell(*linked_attr.field_ref, val_trimmed);
+                    break;
+                    default:
+                        ;
+                }
+            }
+        }
+        m_attrs.clear();
     }
 
     void end_element(const sax_parser_element& elem)
@@ -162,32 +224,10 @@ public:
         switch (mp_current_elem->ref_type)
         {
             case xml_map_tree::reference_cell:
-            {
-                const xml_map_tree::cell_reference& ref = *mp_current_elem->cell_ref;
-                assert(!ref.pos.sheet.empty());
-
-                spreadsheet::iface::import_sheet* sheet = m_factory.get_sheet(ref.pos.sheet.get(), ref.pos.sheet.size());
-                if (sheet)
-                    sheet->set_auto(ref.pos.row, ref.pos.col, val_trimmed.get(), val_trimmed.size());
-            }
+                set_single_link_cell(*mp_current_elem->cell_ref, val_trimmed);
             break;
             case xml_map_tree::reference_range_field:
-            {
-                const xml_map_tree::field_in_range& field = *mp_current_elem->field_ref;
-                assert(field.ref);
-                assert(!field.ref->pos.sheet.empty());
-
-                if (field.column_pos == 0)
-                    ++field.ref->row_size;
-
-                const xml_map_tree::cell_position& pos = field.ref->pos;
-                spreadsheet::iface::import_sheet* sheet = m_factory.get_sheet(pos.sheet.get(), pos.sheet.size());
-                if (sheet)
-                    sheet->set_auto(
-                       pos.row + field.ref->row_size,
-                       pos.col + field.column_pos,
-                       val_trimmed.get(), val_trimmed.size());
-            }
+                set_field_link_cell(*mp_current_elem->field_ref, val_trimmed);
             break;
             default:
                 ;
