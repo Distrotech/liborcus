@@ -91,9 +91,11 @@ public:
     };
 
     struct element;
+    struct linkable;
     typedef boost::ptr_vector<element> element_store_type;
     typedef std::vector<element*> element_list_type;
     typedef std::vector<const element*> const_element_list_type;
+    typedef std::vector<const linkable*> const_linkable_list_type;
 
     struct range_reference : boost::noncopyable
     {
@@ -103,7 +105,7 @@ public:
          * List of elements comprising the fields, in order of appearance from
          * left to right.
          */
-        const_element_list_type elements;
+        const_linkable_list_type field_nodes;
 
         /**
          * Total number of rows comprising data.  This does not include the

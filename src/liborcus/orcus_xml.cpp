@@ -407,12 +407,12 @@ void orcus_xml::read_file(const char* filepath)
         if (!sheet)
             continue;
 
-        xml_map_tree::const_element_list_type::const_iterator it = range_ref.elements.begin(), it_end = range_ref.elements.end();
+        xml_map_tree::const_linkable_list_type::const_iterator it = range_ref.field_nodes.begin(), it_end = range_ref.field_nodes.end();
         spreadsheet::row_t row = ref.row;
         spreadsheet::col_t col = ref.col;
         for (; it != it_end; ++it)
         {
-            const xml_map_tree::element& e = **it;
+            const xml_map_tree::linkable& e = **it;
             sheet->set_auto(row, col++, e.name.get(), e.name.size());
         }
     }

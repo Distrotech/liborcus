@@ -395,12 +395,31 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
         (node->node_type == node_attribute && elem_stack.size() <= 2))
         throw xpath_error("Path of a range field link must be at least 3 levels.");
 
-    element* p = elem_stack.back();
-    assert(p && p->field_ref);
-    p->field_ref->ref = range_ref;
-    p->field_ref->column_pos = range_ref->elements.size();
+    switch (node->node_type)
+    {
+        case node_element:
+        {
+            element* p = static_cast<element*>(node);
+            assert(p && p->ref_type == reference_range_field && p->field_ref);
+            p->field_ref->ref = range_ref;
+            p->field_ref->column_pos = range_ref->field_nodes.size();
 
-    range_ref->elements.push_back(p);
+            range_ref->field_nodes.push_back(p);
+        }
+        break;
+        case node_attribute:
+        {
+            attribute* p = static_cast<attribute*>(node);
+            assert(p && p->ref_type == reference_range_field && p->field_ref);
+            p->field_ref->ref = range_ref;
+            p->field_ref->column_pos = range_ref->field_nodes.size();
+
+            range_ref->field_nodes.push_back(p);
+        }
+        break;
+        default:
+            ;
+    }
 
     // Determine the deepest common element for all field link elements in the
     // current range reference.
