@@ -266,6 +266,37 @@ struct scope : boost::noncopyable
 
 typedef boost::ptr_vector<scope> scopes_type;
 
+void write_opening_element(
+    ostream& os, const xml_map_tree::element& elem, const xml_map_tree::range_reference& ref,
+    const spreadsheet::iface::export_sheet& sheet, spreadsheet::row_t current_row)
+{
+    if (elem.attributes.empty())
+    {
+        // This element has no linked attributes. Just write the element name and be done with it.
+        os << "<" << elem.name << ">";
+        return;
+    }
+
+    // Element has one or more linked attributes.
+
+    os << "<" << elem.name;
+
+    xml_map_tree::attribute_store_type::const_iterator it = elem.attributes.begin(), it_end = elem.attributes.end();
+    for (; it != it_end; ++it)
+    {
+        const xml_map_tree::attribute& attr = *it;
+        if (attr.ref_type != xml_map_tree::reference_range_field)
+            // In theory this should never happen but it won't hurt to check.
+            continue;
+
+        os << " " << attr.name << "=\"";
+        sheet.write_string(os, ref.pos.row + 1 + current_row, ref.pos.col + attr.field_ref->column_pos);
+        os << "\"";
+    }
+
+    os << ">";
+}
+
 /**
  * Write to the output stream a single range reference.
  *
@@ -296,7 +327,7 @@ void write_range_reference_group(
             if (!cur_scope.opened)
             {
                 // Write opening element of this scope only on the 1st entrance.
-                os << "<" << cur_scope.element.name << ">";
+                write_opening_element(os, cur_scope.element, ref, *sheet, current_row);
                 cur_scope.opened = true;
             }
 
@@ -315,15 +346,22 @@ void write_range_reference_group(
                 }
 
                 // This is a leaf element.  This must be a field link element.
-                assert(child_elem.ref_type == xml_map_tree::reference_range_field);
-                os << "<" << child_elem.name << ">";
-                sheet->write_string(os, ref.pos.row + 1 + current_row, ref.pos.col + child_elem.field_ref->column_pos);
-                os << "</" << child_elem.name << ">";
+                if (child_elem.ref_type == xml_map_tree::reference_range_field)
+                {
+                    write_opening_element(os, child_elem, ref, *sheet, current_row);
+                    sheet->write_string(os, ref.pos.row + 1 + current_row, ref.pos.col + child_elem.field_ref->column_pos);
+                    os << "</" << child_elem.name << ">";
+                }
             }
 
             if (new_scope)
                 // Re-start the loop with a new scope.
                 continue;
+
+            // Write content of this element before closing it (if it's linked).
+            if (scopes.back().element.ref_type == xml_map_tree::reference_range_field)
+                sheet->write_string(
+                    os, ref.pos.row + 1 + current_row, ref.pos.col + scopes.back().element.field_ref->column_pos);
 
             // Close this element for good, and exit the current scope.
             os << "</" << scopes.back().element.name << ">";
