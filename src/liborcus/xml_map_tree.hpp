@@ -128,7 +128,7 @@ public:
     typedef std::map<cell_position, range_reference*> range_ref_map_type;
 
     enum linkable_node_type { node_unknown, node_element, node_attribute };
-    enum reference_type { ref_unknown, ref_cell, ref_range_field };
+    enum reference_type { reference_unknown, reference_cell, reference_range_field };
     enum element_type { element_unknown, element_leaf, element_non_leaf };
 
     struct linkable : boost::noncopyable

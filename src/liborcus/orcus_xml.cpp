@@ -124,7 +124,7 @@ public:
         {
             // Store the end element position in stream for linked elements.
             const scope& cur = m_scopes.back();
-            if (mp_current_elem->ref_type == xml_map_tree::ref_cell)
+            if (mp_current_elem->ref_type == xml_map_tree::reference_cell)
             {
                 // single link element.
                 mp_current_elem->cell_ref->element_open_begin = cur.element_open_begin;
@@ -161,7 +161,7 @@ public:
 
         switch (mp_current_elem->ref_type)
         {
-            case xml_map_tree::ref_cell:
+            case xml_map_tree::reference_cell:
             {
                 const xml_map_tree::cell_reference& ref = *mp_current_elem->cell_ref;
                 assert(!ref.pos.sheet.empty());
@@ -171,7 +171,7 @@ public:
                     sheet->set_auto(ref.pos.row, ref.pos.col, val_trimmed.get(), val_trimmed.size());
             }
             break;
-            case xml_map_tree::ref_range_field:
+            case xml_map_tree::reference_range_field:
             {
                 const xml_map_tree::field_in_range& field = *mp_current_elem->field_ref;
                 assert(field.ref);
@@ -271,7 +271,7 @@ void write_range_reference_group(
                 }
 
                 // This is a leaf element.  This must be a field link element.
-                assert(child_elem.ref_type == xml_map_tree::ref_range_field);
+                assert(child_elem.ref_type == xml_map_tree::reference_range_field);
                 os << "<" << child_elem.name << ">";
                 sheet->write_string(os, ref.pos.row + 1 + current_row, ref.pos.col + child_elem.field_ref->column_pos);
                 os << "</" << child_elem.name << ">";
@@ -453,7 +453,7 @@ void orcus_xml::write_file(const char* filepath)
     for (; it != it_end; ++it)
     {
         const xml_map_tree::element& elem = **it;
-        if (elem.ref_type == xml_map_tree::ref_cell)
+        if (elem.ref_type == xml_map_tree::reference_cell)
         {
             // Single cell link
             const xml_map_tree::cell_position& pos = elem.cell_ref->pos;

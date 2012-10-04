@@ -156,10 +156,10 @@ xml_map_tree::attribute::attribute(xmlns_id_t _ns, const pstring& _name, referen
 {
     switch (ref_type)
     {
-        case ref_cell:
+        case reference_cell:
             cell_ref = new cell_reference;
         break;
-        case ref_range_field:
+        case reference_range_field:
             field_ref = new field_in_range;
         break;
         default:
@@ -171,10 +171,10 @@ xml_map_tree::attribute::~attribute()
 {
     switch (ref_type)
     {
-        case ref_cell:
+        case reference_cell:
             delete cell_ref;
         break;
-        case ref_range_field:
+        case reference_range_field:
             delete field_ref;
         break;
         default:
@@ -199,10 +199,10 @@ xml_map_tree::element::element(
 
     switch (ref_type)
     {
-        case ref_cell:
+        case reference_cell:
             cell_ref = new cell_reference;
         break;
-        case ref_range_field:
+        case reference_range_field:
             field_ref = new field_in_range;
         break;
         default:
@@ -222,10 +222,10 @@ xml_map_tree::element::~element()
 
     switch (ref_type)
     {
-        case ref_cell:
+        case reference_cell:
             delete cell_ref;
         break;
-        case ref_range_field:
+        case reference_range_field:
             delete field_ref;
         break;
         default:
@@ -334,7 +334,7 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
 
     cout << "cell link: " << xpath << " (ref=" << ref << ")" << endl;
     element_list_type elem_stack;
-    get_element_stack(xpath, ref_cell, elem_stack);
+    get_element_stack(xpath, reference_cell, elem_stack);
     assert(!elem_stack.empty());
     element* p = elem_stack.back();
     assert(p && p->cell_ref);
@@ -376,7 +376,7 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
 
     cout << "range field link: " << xpath << " (ref=" << pos << ")" << endl;
     element_list_type elem_stack;
-    get_element_stack(xpath, ref_range_field, elem_stack);
+    get_element_stack(xpath, reference_range_field, elem_stack);
     if (elem_stack.size() <= 3)
         throw xpath_error("Path of a range field link must be at least 3 levels.");
 
@@ -515,7 +515,7 @@ void xml_map_tree::get_element_stack(const pstring& xpath, reference_type ref_ty
         if (token.attribute)
             throw xpath_error("root element cannot be an attribute.");
 
-        mp_root = new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf, ref_unknown);
+        mp_root = new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf, reference_unknown);
     }
 
     elem_stack_new.push_back(mp_root);
@@ -535,7 +535,7 @@ void xml_map_tree::get_element_stack(const pstring& xpath, reference_type ref_ty
         if (it == children.end())
         {
             // Insert a new element of this name.
-            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf, ref_unknown));
+            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_non_leaf, reference_unknown));
             cur_element = &children.back();
         }
         else
