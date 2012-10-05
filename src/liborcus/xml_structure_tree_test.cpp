@@ -146,6 +146,49 @@ void test_walker()
         assert(elem.name.name == "root");
         assert(!elem.repeat);
     }
+
+    {
+        string filepath(base_dirs[3]); // attribute-1
+        filepath.append("input.xml");
+
+        string strm;
+        load_file_content(filepath.c_str(), strm);
+        assert(!strm.empty());
+        xmlns_repository xmlns_repo;
+        xml_structure_tree tree(xmlns_repo);
+        tree.parse(&strm[0], strm.size());
+
+        // Get walker from the tree.
+        xml_structure_tree::entity_names_type elem_names;
+        xml_structure_tree::walker wkr = tree.get_walker();
+
+        // Root element.
+        xml_structure_tree::element elem = wkr.root();
+        assert(elem.name.name == "root");
+        assert(!elem.repeat);
+
+        // Check attributes of root, which should have 'type' and 'version'.
+        xml_structure_tree::entity_names_type names;
+        wkr.get_attributes(names);
+        assert(names.size() == 2);
+        assert(names[0].name == "type");
+        assert(names[1].name == "version");
+
+        // Root element should have only one child element 'entry'.
+        wkr.get_children(names);
+        assert(names.size() == 1);
+        assert(names[0].name == "entry");
+        elem = wkr.descend(names[0]);
+        assert(elem.name.name == "entry");
+        assert(elem.repeat);
+
+        // The 'entry' element should have 3 attributes 'attr1', 'attr2', and 'attr3'.
+        wkr.get_attributes(names);
+        assert(names.size() == 3);
+        assert(names[0].name == "attr1");
+        assert(names[1].name == "attr2");
+        assert(names[2].name == "attr3");
+    }
 }
 
 int main()
