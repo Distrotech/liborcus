@@ -31,9 +31,6 @@
 #include "env.hpp"
 #include "types.hpp"
 
-#include <boost/noncopyable.hpp>
-#include <boost/unordered_map.hpp>
-
 #include <ostream>
 
 namespace orcus {
@@ -71,15 +68,7 @@ public:
         };
     };
 
-    typedef std::vector<entity_name> element_names_type;
-
-    struct attribute
-    {
-        entity_name name;
-
-        attribute();
-        attribute(const entity_name& _name);
-    };
+    typedef std::vector<entity_name> entity_names_type;
 
     struct element
     {
@@ -137,7 +126,15 @@ public:
          *
          * @param names sorted list of child element names.
          */
-        void get_children(element_names_type& names);
+        void get_children(entity_names_type& names);
+
+        /**
+         * Get a list of names of all attributes that belong to current
+         * element.  The list of names is sorted.
+         *
+         * @param names sorted list of attribute names.
+         */
+        void get_attributes(entity_names_type& names);
     };
 
     xml_structure_tree(xmlns_repository& xmlns_repo);

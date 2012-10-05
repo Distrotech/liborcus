@@ -89,7 +89,7 @@ void test_walker()
         tree.parse(&strm[0], strm.size());
 
         // Get walker from the tree.
-        xml_structure_tree::element_names_type elem_names;
+        xml_structure_tree::entity_names_type elem_names;
         xml_structure_tree::walker wkr = tree.get_walker();
 
         // Root element.
@@ -121,7 +121,7 @@ void test_walker()
         assert(!elem.repeat);
 
         // This is a leaf element. It should have no child elements.
-        xml_structure_tree::element_names_type test_names;
+        xml_structure_tree::entity_names_type test_names;
         wkr.get_children(test_names);
         assert(test_names.empty());
 

@@ -37,6 +37,8 @@
 #include <vector>
 
 #include <boost/noncopyable.hpp>
+#include <boost/unordered_map.hpp>
+#include <boost/unordered_set.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
@@ -47,11 +49,13 @@ namespace {
 
 struct elem_prop;
 typedef boost::unordered_map<xml_structure_tree::entity_name, elem_prop*, xml_structure_tree::entity_name::hash> element_store_type;
+typedef boost::unordered_set<xml_structure_tree::entity_name, xml_structure_tree::entity_name::hash> attribute_names_type;
 
 /** Element properties. */
 struct elem_prop : boost::noncopyable
 {
     element_store_type child_elements;
+    attribute_names_type attributes;
 
     /**
      * When true, this element is the base element of repeated structures.
@@ -85,6 +89,7 @@ struct element_ref
 };
 
 typedef std::vector<element_ref> elements_type;
+typedef std::vector<xml_structure_tree::entity_name> names_type;
 
 class xml_sax_handler
 {
@@ -92,12 +97,26 @@ class xml_sax_handler
     string_pool& m_pool;
     unique_ptr<root> mp_root;
     elements_type m_stack;
+    names_type m_attrs;
+
+private:
+    void merge_attributes(elem_prop& prop)
+    {
+        names_type::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
+        for (; it != it_end; ++it)
+            prop.attributes.insert(*it);
+
+        m_attrs.clear();
+    }
 
 public:
     xml_sax_handler(xmlns_context& ns_cxt, string_pool& pool) :
         m_ns_cxt(ns_cxt), m_pool(pool), mp_root(NULL) {}
 
-    void declaration() {}
+    void declaration()
+    {
+        m_attrs.clear();
+    }
 
     void start_element(const sax_parser_element& elem)
     {
@@ -109,6 +128,7 @@ public:
             mp_root->name.ns = ns_id;
             mp_root->name.name = m_pool.intern(elem.name);
             element_ref ref(mp_root->name, &mp_root->prop);
+            merge_attributes(mp_root->prop);
             m_stack.push_back(ref);
             return;
         }
@@ -125,6 +145,7 @@ public:
                 // Set this flag only with the base element of repeated structures.
                 it->second->repeat = true;
             element_ref ref(it->first, it->second);
+            merge_attributes(*it->second);
             ref.in_repeated_element = true;
             m_stack.push_back(ref);
             return;
@@ -141,6 +162,7 @@ public:
 
         it = r.first;
         element_ref ref(it->first, it->second);
+        merge_attributes(*it->second);
         m_stack.push_back(ref);
     }
 
@@ -159,9 +181,10 @@ public:
 
     void characters(const pstring&) {}
 
-    void attribute(const pstring& ns, const pstring& name, const pstring& value)
+    void attribute(const pstring& ns, const pstring& name, const pstring& /*value*/)
     {
-
+        xmlns_id_t ns_id = m_ns_cxt.get(ns);
+        m_attrs.push_back(xml_structure_tree::entity_name(ns_id, name));
     }
 
     root* release_root_element()
@@ -270,9 +293,6 @@ size_t xml_structure_tree::entity_name::hash::operator() (const entity_name& val
     return n;
 }
 
-xml_structure_tree::attribute::attribute() {}
-xml_structure_tree::attribute::attribute(const entity_name& _name) : name(_name) {}
-
 xml_structure_tree::element::element() :
     repeat(false) {}
 
@@ -329,7 +349,7 @@ xml_structure_tree::element xml_structure_tree::walker::descend(const entity_nam
         throw general_error("Specified child element does not exist.");
 
     // Push this new child element onto the stack.
-    element_ref ref(entity_name(name.ns, name.name), it->second);
+    element_ref ref(name, it->second);
     mp_impl->m_scopes.push_back(ref);
 
     return element(name, it->second->repeat);
@@ -348,20 +368,38 @@ xml_structure_tree::element xml_structure_tree::walker::ascend()
     return element(ref.name, ref.prop->repeat);
 }
 
-void xml_structure_tree::walker::get_children(element_names_type& names)
+void xml_structure_tree::walker::get_children(entity_names_type& names)
 {
     if (mp_impl->m_scopes.empty())
         throw general_error("Scope is empty.");
 
     assert(mp_impl->m_scopes.back().prop);
     const elem_prop& prop = *mp_impl->m_scopes.back().prop;
-    element_names_type _names;
+    entity_names_type _names;
     element_store_type::const_iterator it = prop.child_elements.begin(), it_end = prop.child_elements.end();
     for (; it != it_end; ++it)
     {
         const entity_name& name = it->first;
         _names.push_back(name);
     }
+
+    // Sort the names.
+    sort(_names.begin(), _names.end());
+
+    names.swap(_names);
+}
+
+void xml_structure_tree::walker::get_attributes(entity_names_type& names)
+{
+    if (mp_impl->m_scopes.empty())
+        throw general_error("Scope is empty.");
+
+    assert(mp_impl->m_scopes.back().prop);
+    const elem_prop& prop = *mp_impl->m_scopes.back().prop;
+    entity_names_type _names;
+    attribute_names_type::const_iterator it = prop.attributes.begin(), it_end = prop.attributes.end();
+    for (; it != it_end; ++it)
+        _names.push_back(*it);
 
     // Sort the names.
     sort(_names.begin(), _names.end());
