@@ -266,13 +266,13 @@ struct xml_structure_tree::walker_impl : boost::noncopyable
     walker_impl() : mp_root(NULL) {}
 };
 
-xml_structure_tree::element_name::element_name() :
+xml_structure_tree::entity_name::entity_name() :
     ns(XMLNS_UNKNOWN_ID) {}
 
-xml_structure_tree::element_name::element_name(xmlns_id_t _ns, const pstring& _name) :
+xml_structure_tree::entity_name::entity_name(xmlns_id_t _ns, const pstring& _name) :
     ns(_ns), name(_name) {}
 
-bool xml_structure_tree::element_name::operator< (const element_name& r) const
+bool xml_structure_tree::entity_name::operator< (const entity_name& r) const
 {
     if (ns != r.ns)
         return ns < r.ns;
@@ -283,7 +283,7 @@ bool xml_structure_tree::element_name::operator< (const element_name& r) const
 xml_structure_tree::element::element() :
     repeat(false) {}
 
-xml_structure_tree::element::element(const element_name& _name, bool _repeat) :
+xml_structure_tree::element::element(const entity_name& _name, bool _repeat) :
     name(_name), repeat(_repeat) {}
 
 xml_structure_tree::walker::walker(const xml_structure_tree_impl& parent_impl) :
@@ -320,11 +320,11 @@ xml_structure_tree::element xml_structure_tree::walker::root()
     element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
     mp_impl->m_cur_elem = ref;
     mp_impl->m_scopes.push_back(ref);
-    xml_structure_tree::element_name name(ref.name.ns, ref.name.name);
+    xml_structure_tree::entity_name name(ref.name.ns, ref.name.name);
     return xml_structure_tree::element(name, false);
 }
 
-xml_structure_tree::element xml_structure_tree::walker::descend(const element_name& name)
+xml_structure_tree::element xml_structure_tree::walker::descend(const entity_name& name)
 {
     if (mp_impl->m_scopes.empty())
         throw general_error("Scope is empty.");
@@ -353,7 +353,7 @@ xml_structure_tree::element xml_structure_tree::walker::ascend()
 
     mp_impl->m_scopes.pop_back();
     const element_ref& ref = mp_impl->m_scopes.back();
-    return element(element_name(ref.name.ns, ref.name.name), ref.prop->repeat);
+    return element(entity_name(ref.name.ns, ref.name.name), ref.prop->repeat);
 }
 
 void xml_structure_tree::walker::get_children(element_names_type& names)
@@ -368,7 +368,7 @@ void xml_structure_tree::walker::get_children(element_names_type& names)
     for (; it != it_end; ++it)
     {
         const elem_name& name = it->first;
-        _names.push_back(element_name(name.ns, name.name));
+        _names.push_back(entity_name(name.ns, name.name));
     }
 
     // Sort the names.

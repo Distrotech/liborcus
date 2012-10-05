@@ -54,26 +54,26 @@ class ORCUS_DLLPUBLIC xml_structure_tree
 
 public:
 
-    struct element_name
+    struct entity_name
     {
         xmlns_id_t ns;
         pstring name;
 
-        element_name();
-        element_name(xmlns_id_t _ns, const pstring& _name);
+        entity_name();
+        entity_name(xmlns_id_t _ns, const pstring& _name);
 
-        bool operator< (const element_name& r) const;
+        bool operator< (const entity_name& r) const;
     };
 
-    typedef std::vector<element_name> element_names_type;
+    typedef std::vector<entity_name> element_names_type;
 
     struct element
     {
-        element_name name;
+        entity_name name;
         bool repeat;
 
         element();
-        element(const element_name& _name, bool _repeat);
+        element(const entity_name& _name, bool _repeat);
     };
 
     struct walker_impl;
@@ -110,7 +110,7 @@ public:
          *
          * @return child element
          */
-        element descend(const element_name& name);
+        element descend(const entity_name& name);
 
         /**
          * Move up to the parent element.

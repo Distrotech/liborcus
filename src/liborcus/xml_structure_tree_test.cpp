@@ -100,7 +100,7 @@ void test_walker()
         // Get names of child elements. There should only one one and it should be 'entry'.
         wkr.get_children(elem_names);
         assert(elem_names.size() == 1);
-        xml_structure_tree::element_name elem_name = elem_names.front();
+        xml_structure_tree::entity_name elem_name = elem_names.front();
         assert(elem_name.name == "entry");
 
         // Descend into 'entry'.
