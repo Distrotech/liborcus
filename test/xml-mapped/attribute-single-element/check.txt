@@ -1,0 +1,10 @@
+sheet: data
+
+row: 2; column: 3
+type: numeric
+value: 1.1
+
+row: 2; column: 4
+type: string
+value: '2012-09-30'
+

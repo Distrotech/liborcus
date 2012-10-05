@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<map xmlns="http://gitorious.org/orcus/xml-map">
+    <sheet name="data"/>
+    <cell xpath="/root-only@version" row="2" column="3" sheet="data"/>
+    <cell xpath="/root-only@date" row="2" column="4" sheet="data"/>
+</map>

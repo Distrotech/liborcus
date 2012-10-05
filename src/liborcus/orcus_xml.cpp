@@ -289,7 +289,8 @@ void write_opening_element(
     os << ">";
 }
 
-void write_opening_element(ostream& os, const xml_map_tree::element& elem, const spreadsheet::iface::export_factory& fact)
+void write_opening_element(
+    ostream& os, const xml_map_tree::element& elem, const spreadsheet::iface::export_factory& fact, bool self_close)
 {
     os << '<' << elem.name;
     xml_map_tree::attribute_store_type::const_iterator it = elem.attributes.begin(), it_end = elem.attributes.end();
@@ -312,6 +313,10 @@ void write_opening_element(ostream& os, const xml_map_tree::element& elem, const
         sheet->write_string(os, pos.row, pos.col);
         os << "\"";
     }
+
+    if (self_close)
+        os << '/';
+
     os << '>';
 }
 
@@ -579,7 +584,7 @@ void orcus_xml::write_file(const char* filepath)
             const char* close_end = elem.stream_pos.close_end;
 
             file << pstring(begin_pos, open_begin-begin_pos); // stream since last linked element.
-            write_opening_element(file, elem, fact);
+            write_opening_element(file, elem, fact, false);
             sheet->write_string(file, pos.row, pos.col);
             file << pstring(close_begin, close_end-close_begin); // closing element.
             begin_pos = close_end;
@@ -600,7 +605,7 @@ void orcus_xml::write_file(const char* filepath)
             const char* close_end = elem.stream_pos.close_end;
 
             file << pstring(begin_pos, open_begin-begin_pos); // stream since last linked element.
-            write_opening_element(file, elem, fact);
+            write_opening_element(file, elem, fact, false);
             write_range_reference(file, elem, fact);
             file << pstring(close_begin, close_end-close_begin); // closing element.
             begin_pos = close_end;
@@ -613,8 +618,10 @@ void orcus_xml::write_file(const char* filepath)
             const char* open_begin = elem.stream_pos.open_begin;
             const char* open_end = elem.stream_pos.open_end;
 
+            bool self_close = open_begin == elem.stream_pos.close_begin;
+
             file << pstring(begin_pos, open_begin-begin_pos); // stream since last linked element.
-            write_opening_element(file, elem, fact);
+            write_opening_element(file, elem, fact, self_close);
             begin_pos = open_end;
         }
         else
