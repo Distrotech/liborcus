@@ -45,35 +45,8 @@ namespace orcus {
 
 namespace {
 
-/** Element name. */
-struct elem_name
-{
-    xmlns_id_t ns;
-    pstring name;
-
-    struct hash
-    {
-        size_t operator ()(const elem_name& val) const
-        {
-            static pstring::hash hasher;
-            size_t n = reinterpret_cast<size_t>(val.ns);
-            n += hasher(val.name);
-            return n;
-        }
-    };
-
-    elem_name() : ns(XMLNS_UNKNOWN_ID) {}
-    elem_name(xmlns_id_t _ns, const pstring& _name) : ns(_ns), name(_name) {}
-    elem_name(const elem_name& r) : ns(r.ns), name(r.name) {}
-
-    bool operator== (const elem_name& r) const
-    {
-        return ns == r.ns && name == r.name;
-    }
-};
-
 struct elem_prop;
-typedef boost::unordered_map<elem_name, elem_prop*, elem_name::hash> element_store_type;
+typedef boost::unordered_map<xml_structure_tree::entity_name, elem_prop*, xml_structure_tree::entity_name::hash> element_store_type;
 
 /** Element properties. */
 struct elem_prop : boost::noncopyable
@@ -96,18 +69,18 @@ struct elem_prop : boost::noncopyable
 
 struct root
 {
-    elem_name name;
+    xml_structure_tree::entity_name name;
     elem_prop prop;
 };
 
 struct element_ref
 {
-    elem_name name;
+    xml_structure_tree::entity_name name;
     const elem_prop* prop;
     bool in_repeated_element:1;
 
     element_ref() : prop(NULL) {}
-    element_ref(elem_name _name, const elem_prop* _prop) :
+    element_ref(xml_structure_tree::entity_name _name, const elem_prop* _prop) :
         name(_name), prop(_prop), in_repeated_element(false) {}
 };
 
@@ -143,7 +116,7 @@ public:
         // See if the current element already has a child element of the same name.
         assert(!m_stack.empty());
         const element_ref& current = m_stack.back();
-        elem_name key(ns_id, elem.name);
+        xml_structure_tree::entity_name key(ns_id, elem.name);
         element_store_type::const_iterator it = current.prop->child_elements.find(key);
         if (it != current.prop->child_elements.end())
         {
@@ -185,7 +158,11 @@ public:
     }
 
     void characters(const pstring&) {}
-    void attribute(const pstring&, const pstring&, const pstring&) {}
+
+    void attribute(const pstring& ns, const pstring& name, const pstring& value)
+    {
+
+    }
 
     root* release_root_element()
     {
@@ -206,19 +183,19 @@ struct sort_by_name : std::binary_function<element_ref, element_ref, bool>
 
 struct scope : boost::noncopyable
 {
-    elem_name name;
+    xml_structure_tree::entity_name name;
     elements_type elements;
     elements_type::const_iterator current_pos;
     bool repeat:1;
 
-    scope(const elem_name& _name, bool _repeat, const element_ref& _elem) :
+    scope(const xml_structure_tree::entity_name& _name, bool _repeat, const element_ref& _elem) :
         name(_name), repeat(_repeat)
     {
         elements.push_back(_elem);
         current_pos = elements.begin();
     }
 
-    scope(const elem_name& _name, bool _repeat) :
+    scope(const xml_structure_tree::entity_name& _name, bool _repeat) :
         name(_name), repeat(_repeat) {}
 };
 
@@ -280,6 +257,19 @@ bool xml_structure_tree::entity_name::operator< (const entity_name& r) const
     return name < r.name;
 }
 
+bool xml_structure_tree::entity_name::operator== (const entity_name& r) const
+{
+    return ns == r.ns && name == r.name;
+}
+
+size_t xml_structure_tree::entity_name::hash::operator() (const entity_name& val) const
+{
+    static pstring::hash hasher;
+    size_t n = reinterpret_cast<size_t>(val.ns);
+    n += hasher(val.name);
+    return n;
+}
+
 xml_structure_tree::attribute::attribute() {}
 xml_structure_tree::attribute::attribute(const entity_name& _name) : name(_name) {}
 
@@ -334,13 +324,13 @@ xml_structure_tree::element xml_structure_tree::walker::descend(const entity_nam
 
     assert(mp_impl->m_scopes.back().prop);
     const element_store_type& child_elems = mp_impl->m_scopes.back().prop->child_elements;
-    element_store_type::const_iterator it = child_elems.find(elem_name(name.ns, name.name));
+    element_store_type::const_iterator it = child_elems.find(entity_name(name.ns, name.name));
 
     if (it == child_elems.end())
         throw general_error("Specified child element does not exist.");
 
     // Push this new child element onto the stack.
-    element_ref ref(elem_name(name.ns, name.name), it->second);
+    element_ref ref(entity_name(name.ns, name.name), it->second);
     mp_impl->m_scopes.push_back(ref);
 
     return element(name, it->second->repeat);
@@ -370,7 +360,7 @@ void xml_structure_tree::walker::get_children(element_names_type& names)
     element_store_type::const_iterator it = prop.child_elements.begin(), it_end = prop.child_elements.end();
     for (; it != it_end; ++it)
     {
-        const elem_name& name = it->first;
+        const entity_name& name = it->first;
         _names.push_back(entity_name(name.ns, name.name));
     }
 
@@ -405,7 +395,7 @@ void xml_structure_tree::dump_compact(ostream& os) const
     scopes_type scopes;
 
     element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
-    scopes.push_back(new scope(elem_name(), false, ref));
+    scopes.push_back(new scope(entity_name(), false, ref));
     while (!scopes.empty())
     {
         bool new_scope = false;

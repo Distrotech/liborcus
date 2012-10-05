@@ -63,6 +63,12 @@ public:
         entity_name(xmlns_id_t _ns, const pstring& _name);
 
         bool operator< (const entity_name& r) const;
+        bool operator== (const entity_name& r) const;
+
+        struct hash
+        {
+            size_t operator ()(const entity_name& val) const;
+        };
     };
 
     typedef std::vector<entity_name> element_names_type;
