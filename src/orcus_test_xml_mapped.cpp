@@ -51,7 +51,8 @@ using namespace orcus;
 const char* files[] = {
     "../test/xml-mapped/content-basic",
     "../test/xml-mapped/attribute-basic",
-    "../test/xml-mapped/attribute-single-element"
+    "../test/xml-mapped/attribute-single-element",
+    "../test/xml-mapped/attribute-single-element-2"
 };
 
 const char* temp_output_xml = "out.xml";
