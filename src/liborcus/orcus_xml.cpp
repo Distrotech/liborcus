@@ -270,18 +270,18 @@ typedef boost::ptr_vector<scope> scopes_type;
 
 void write_opening_element(
     ostream& os, const xml_map_tree::element& elem, const xml_map_tree::range_reference& ref,
-    const spreadsheet::iface::export_sheet& sheet, spreadsheet::row_t current_row)
+    const spreadsheet::iface::export_sheet& sheet, spreadsheet::row_t current_row, bool self_close)
 {
     if (elem.attributes.empty())
     {
         // This element has no linked attributes. Just write the element name and be done with it.
-        os << "<" << elem.name << ">";
+        os << '<' << elem.name << '>';
         return;
     }
 
     // Element has one or more linked attributes.
 
-    os << "<" << elem.name;
+    os << '<' << elem.name;
 
     xml_map_tree::attribute_store_type::const_iterator it = elem.attributes.begin(), it_end = elem.attributes.end();
     for (; it != it_end; ++it)
@@ -291,12 +291,15 @@ void write_opening_element(
             // In theory this should never happen but it won't hurt to check.
             continue;
 
-        os << " " << attr.name << "=\"";
+        os << ' ' << attr.name << "=\"";
         sheet.write_string(os, ref.pos.row + 1 + current_row, ref.pos.col + attr.field_ref->column_pos);
         os << "\"";
     }
 
-    os << ">";
+    if (self_close)
+        os << '/';
+
+    os << '>';
 }
 
 void write_opening_element(
@@ -357,11 +360,23 @@ void write_range_reference_group(
             bool new_scope = false;
 
             scope& cur_scope = scopes.back();
+
+            // Self-closing element has no child elements nor content.
+            bool self_close =
+                (cur_scope.current_child_pos == cur_scope.end_child_pos) &&
+                (cur_scope.element.ref_type != xml_map_tree::reference_range_field);
+
             if (!cur_scope.opened)
             {
                 // Write opening element of this scope only on the 1st entrance.
-                write_opening_element(os, cur_scope.element, ref, *sheet, current_row);
+                write_opening_element(os, cur_scope.element, ref, *sheet, current_row, self_close);
                 cur_scope.opened = true;
+            }
+
+            if (self_close)
+            {
+                scopes.pop_back();
+                continue;
             }
 
             // Go though all child elements.
@@ -381,7 +396,7 @@ void write_range_reference_group(
                 // This is a leaf element.  This must be a field link element.
                 if (child_elem.ref_type == xml_map_tree::reference_range_field)
                 {
-                    write_opening_element(os, child_elem, ref, *sheet, current_row);
+                    write_opening_element(os, child_elem, ref, *sheet, current_row, false);
                     sheet->write_string(os, ref.pos.row + 1 + current_row, ref.pos.col + child_elem.field_ref->column_pos);
                     os << "</" << child_elem.name << ">";
                 }
