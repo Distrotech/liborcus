@@ -110,13 +110,6 @@ TESTS += \
 	orcus-test-csv \
 	orcus-test-xml-mapped
 
-if WITH_GNUMERIC_FILTER
-
-bin_PROGRAMS += \
-	orcus-gnumeric
-
-endif #WITH_GNUMERIC_FILTER
-
 if WITH_LIBZIP
 
 if WITH_ODS_FILTER
@@ -124,14 +117,14 @@ if WITH_ODS_FILTER
 bin_PROGRAMS += \
 	orcus-ods
 
-endif #WITH_ODS_FILTER
+endif # WITH_ODS_FILTER
 
 if WITH_XLSX_FILTER
 
 bin_PROGRAMS += \
 	orcus-xlsx
 
-endif #WITH_XLSX_FILTER
+endif # WITH_XLSX_FILTER
 
 # orcus-ods
 
@@ -156,6 +149,18 @@ orcus_xlsx_LDADD = \
 
 orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
+if HAVE_STATIC_LIB
+orcus_ods_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+orcus_xlsx_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+endif
+
+endif # WITH_LIBZIP
+
+if WITH_GNUMERIC_FILTER
+
+bin_PROGRAMS += \
+	orcus-gnumeric
+
 # orcus_gnumeric
 
 orcus_gnumeric_SOURCES = \
@@ -168,12 +173,10 @@ orcus_gnumeric_LDADD = \
 orcus_gnumeric_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
 if HAVE_STATIC_LIB
-orcus_ods_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
-orcus_xlsx_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 orcus_gnumeric_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 endif
 
-endif # WITH_LIBZIP
+endif # WITH_GNUMERIC_FILTER
 
 endif # BUILD_SPREADSHEET_MODEL
 

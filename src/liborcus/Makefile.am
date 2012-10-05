@@ -79,10 +79,10 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 endif # WITH_GNUMERIC_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS = \
-	$(LIBZIP_CFLAGS)
+	$(LIBZIP_CFLAGS) $(ZLIB_CFLAGS)
 liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 liborcus_@ORCUS_API_VERSION@_la_LIBADD = \
-	$(LIBZIP_LIBS)
+	$(LIBZIP_LIBS) $(ZLIB_LIBS)
 
 # liborcus-test-xml-map-tree
 

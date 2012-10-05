@@ -110,7 +110,6 @@ AC_ARG_WITH(libzip,
 AS_IF([test "x$with_libzip" != "xno"], [
 	PKG_CHECK_MODULES([LIBZIP], [libzip])
 ])
-AM_CONDITIONAL([WITH_LIBZIP], [test "x$with_libzip" != "xno"])
 
 # ==============
 # ods filter support
@@ -121,7 +120,6 @@ AC_ARG_WITH(ods-filter,
 	[with_ods_filter="$withval"],
 	[with_ods_filter=yes]
 )
-AM_CONDITIONAL([WITH_ODS_FILTER], [test "x$with_ods_filter" != "xno"])
 
 # ==============
 # xlsx filter support
@@ -132,7 +130,6 @@ AC_ARG_WITH(xlsx-filter,
 	[with_xlsx_filter="$withval"],
 	[with_xlsx_filter=yes]
 )
-AM_CONDITIONAL([WITH_XLSX_FILTER], [test "x$with_xlsx_filter" != "xno"])
 
 # ==============
 # gnumeric filter support
@@ -146,6 +143,15 @@ AC_ARG_WITH(gnumeric-filter,
 AS_IF([test "x$with_gnumeric_filter" != "xno"], [
 	PKG_CHECK_MODULES([ZLIB], [zlib])
 ])
+
+AM_CONDITIONAL([WITH_LIBZIP], [test "x$with_libzip" != "xno"])
+AS_IF([test "x$with_libzip" == "xno"], [
+        with_ods_filter=no
+        with_xlsx_filter=no
+])
+
+AM_CONDITIONAL([WITH_ODS_FILTER], [test "x$with_ods_filter" != "xno"])
+AM_CONDITIONAL([WITH_XLSX_FILTER], [test "x$with_xlsx_filter" != "xno"])
 AM_CONDITIONAL([WITH_GNUMERIC_FILTER], [test "x$with_gnumeric_filter" != "xno"])
 
 # ============
