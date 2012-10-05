@@ -25,37 +25,33 @@
  *
  ************************************************************************/
 
-#include <cstdlib>
+#ifndef __ORCUS_DOM_TREE_SAX_HANDLER_HPP__
+#define __ORCUS_DOM_TREE_SAX_HANDLER_HPP__
 
-#include "orcus/sax_parser.hpp"
-#include "orcus/global.hpp"
+#include "orcus/dom_tree.hpp"
 
-#include "dom_tree_sax_handler.hpp"
+#include <ostream>
 
-#include <cstdlib>
-#include <cassert>
-#include <iostream>
-#include <sstream>
+namespace orcus {
 
-using namespace orcus;
-using namespace std;
+struct sax_parser_element;
+class pstring;
 
-int main(int argc, char** argv)
+/**
+ * Sax handler just to wrap a dom tree instance.
+ */
+class dom_tree_sax_handler
 {
-    if (argc < 2)
-        return EXIT_FAILURE;
+    dom_tree m_tree;
+public:
+    void declaration();
+    void start_element(const sax_parser_element& elem);
+    void end_element(const sax_parser_element& elem);
+    void characters(const pstring& val);
+    void attribute(const pstring& ns, const pstring& name, const pstring& val);
+    void dump_compact(std::ostream& os);
+};
 
-    string strm;
-    load_file_content(argv[1], strm);
-    if (strm.empty())
-        return EXIT_FAILURE;
-
-    dom_tree_sax_handler hdl;
-    sax_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), hdl);
-    parser.parse();
-    ostringstream os;
-    hdl.dump_compact(os);
-    cout << os.str();
-
-    return EXIT_SUCCESS;
 }
+
+#endif

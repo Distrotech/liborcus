@@ -25,37 +25,39 @@
  *
  ************************************************************************/
 
-#include <cstdlib>
-
-#include "orcus/sax_parser.hpp"
-#include "orcus/global.hpp"
-
 #include "dom_tree_sax_handler.hpp"
+#include "orcus/sax_parser.hpp"
 
-#include <cstdlib>
-#include <cassert>
-#include <iostream>
-#include <sstream>
+namespace orcus {
 
-using namespace orcus;
-using namespace std;
-
-int main(int argc, char** argv)
+void dom_tree_sax_handler::declaration()
 {
-    if (argc < 2)
-        return EXIT_FAILURE;
+    m_tree.end_declaration();
+}
 
-    string strm;
-    load_file_content(argv[1], strm);
-    if (strm.empty())
-        return EXIT_FAILURE;
+void dom_tree_sax_handler::start_element(const sax_parser_element& elem)
+{
+    m_tree.start_element(elem.ns, elem.name);
+}
 
-    dom_tree_sax_handler hdl;
-    sax_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), hdl);
-    parser.parse();
-    ostringstream os;
-    hdl.dump_compact(os);
-    cout << os.str();
+void dom_tree_sax_handler::end_element(const sax_parser_element& elem)
+{
+    m_tree.end_element(elem.ns, elem.name);
+}
 
-    return EXIT_SUCCESS;
+void dom_tree_sax_handler::characters(const pstring& val)
+{
+    m_tree.set_characters(val);
+}
+
+void dom_tree_sax_handler::attribute(const pstring& ns, const pstring& name, const pstring& val)
+{
+    m_tree.set_attribute(ns, name, val);
+}
+
+void dom_tree_sax_handler::dump_compact(std::ostream& os)
+{
+    m_tree.dump_compact(os);
+}
+
 }

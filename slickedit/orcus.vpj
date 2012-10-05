@@ -278,6 +278,8 @@
 				<F N="../src/spreadsheet/styles.cpp"/>
 				<F N="../src/spreadsheet/styles.hpp"/>
 			</Folder>
+			<F N="../src/dom_tree_sax_handler.cpp"/>
+			<F N="../src/dom_tree_sax_handler.hpp"/>
 			<F N="../src/orcus_csv_main.cpp"/>
 			<F N="../src/orcus_gnumeric_main.cpp"/>
 			<F N="../src/orcus_ods_main.cpp"/>

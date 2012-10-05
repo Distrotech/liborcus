@@ -16,7 +16,10 @@ endif
 
 # orcus-xml-dump
 
-orcus_xml_dump_SOURCES = orcus_xml_dump.cpp
+orcus_xml_dump_SOURCES = \
+	orcus_xml_dump.cpp \
+	dom_tree_sax_handler.cpp
+
 orcus_xml_dump_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la
 
