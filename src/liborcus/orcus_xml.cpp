@@ -289,6 +289,32 @@ void write_opening_element(
     os << ">";
 }
 
+void write_opening_element(ostream& os, const xml_map_tree::element& elem, const spreadsheet::iface::export_factory& fact)
+{
+    os << '<' << elem.name;
+    xml_map_tree::attribute_store_type::const_iterator it = elem.attributes.begin(), it_end = elem.attributes.end();
+    for (; it != it_end; ++it)
+    {
+        const xml_map_tree::attribute& attr = *it;
+        if (attr.ref_type != xml_map_tree::reference_cell)
+            // We should only see single linked cell here, as all
+            // field links are handled by the range parent above.
+            continue;
+
+        const xml_map_tree::cell_position& pos = attr.cell_ref->pos;
+
+        const spreadsheet::iface::export_sheet* sheet =
+            fact.get_sheet(pos.sheet.get(), pos.sheet.size());
+        if (!sheet)
+            continue;
+
+        os << ' ' << attr.name << "=\"";
+        sheet->write_string(os, pos.row, pos.col);
+        os << "\"";
+    }
+    os << '>';
+}
+
 /**
  * Write to the output stream a single range reference.
  *
@@ -548,11 +574,12 @@ void orcus_xml::write_file(const char* filepath)
             if (!sheet)
                 continue;
 
-            const char* open_end = elem.stream_pos.open_end;
+            const char* open_begin = elem.stream_pos.open_begin;
             const char* close_begin = elem.stream_pos.close_begin;
             const char* close_end = elem.stream_pos.close_end;
 
-            file << pstring(begin_pos, open_end-begin_pos); // stream since last linked element + opening element.
+            file << pstring(begin_pos, open_begin-begin_pos); // stream since last linked element.
+            write_opening_element(file, elem, fact);
             sheet->write_string(file, pos.row, pos.col);
             file << pstring(close_begin, close_end-close_begin); // closing element.
             begin_pos = close_end;
@@ -568,45 +595,26 @@ void orcus_xml::write_file(const char* filepath)
             if (!sheet)
                 continue;
 
-            const char* open_end = elem.stream_pos.open_end;
+            const char* open_begin = elem.stream_pos.open_begin;
             const char* close_begin = elem.stream_pos.close_begin;
             const char* close_end = elem.stream_pos.close_end;
 
-            file << pstring(begin_pos, open_end-begin_pos); // stream since last linked element + opening element.
+            file << pstring(begin_pos, open_begin-begin_pos); // stream since last linked element.
+            write_opening_element(file, elem, fact);
             write_range_reference(file, elem, fact);
             file << pstring(close_begin, close_end-close_begin); // closing element.
             begin_pos = close_end;
         }
         else if (elem.unlinked_attribute_anchor())
         {
-            // Element is not linked but has one or more attributes that are linked.
+            // Element is not linked but has one or more attributes that are
+            // linked.  Here, only write the opening element with attributes.
 
             const char* open_begin = elem.stream_pos.open_begin;
             const char* open_end = elem.stream_pos.open_end;
 
             file << pstring(begin_pos, open_begin-begin_pos); // stream since last linked element.
-            file << '<' << elem.name;
-            xml_map_tree::attribute_store_type::const_iterator it = elem.attributes.begin(), it_end = elem.attributes.end();
-            for (; it != it_end; ++it)
-            {
-                const xml_map_tree::attribute& attr = *it;
-                if (attr.ref_type != xml_map_tree::reference_cell)
-                    // We should only see single linked cell here, as all
-                    // field links are handled by the range parent above.
-                    continue;
-
-                const xml_map_tree::cell_position& pos = attr.cell_ref->pos;
-
-                const spreadsheet::iface::export_sheet* sheet =
-                    fact.get_sheet(pos.sheet.get(), pos.sheet.size());
-                if (!sheet)
-                    continue;
-
-                file << ' ' << attr.name << "=\"";
-                sheet->write_string(file, pos.row, pos.col);
-                file << "\"";
-            }
-            file << '>';
+            write_opening_element(file, elem, fact);
             begin_pos = open_end;
         }
         else
