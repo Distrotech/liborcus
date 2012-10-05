@@ -37,19 +37,19 @@
 using namespace std;
 using namespace orcus;
 
-const char* basic_files[] = {
-    "../../test/xml-structure/basic-1",
-    "../../test/xml-structure/basic-2",
-    "../../test/xml-structure/basic-3"
+const char* base_dirs[] = {
+    "../../test/xml-structure/basic-1/",
+    "../../test/xml-structure/basic-2/",
+    "../../test/xml-structure/basic-3/"
 };
 
 void test_basic()
 {
-    size_t n = sizeof(basic_files)/sizeof(basic_files[0]);
+    size_t n = sizeof(base_dirs)/sizeof(base_dirs[0]);
     for (size_t i = 0; i < n; ++i)
     {
-        string filepath(basic_files[i]);
-        filepath.append(".xml");
+        string filepath(base_dirs[i]);
+        filepath.append("input.xml");
         string strm;
         load_file_content(filepath.c_str(), strm);
         assert(!strm.empty());
@@ -63,8 +63,8 @@ void test_basic()
         cout << data_content;
 
         // Check the dump content against known datum.
-        filepath = basic_files[i];
-        filepath.append(".check");
+        filepath = base_dirs[i];
+        filepath.append("check.txt");
         string strm_check;
         load_file_content(filepath.c_str(), strm_check);
         assert(!strm_check.empty());
@@ -79,8 +79,8 @@ void test_basic()
 void test_walker()
 {
     {
-        string filepath(basic_files[0]);
-        filepath.append(".xml");
+        string filepath(base_dirs[0]);
+        filepath.append("input.xml");
         string strm;
         load_file_content(filepath.c_str(), strm);
         assert(!strm.empty());
