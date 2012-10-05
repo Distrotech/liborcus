@@ -51,6 +51,7 @@ using namespace orcus;
 const char* files[] = {
     "../test/xml-mapped/content-basic",
     "../test/xml-mapped/attribute-basic",
+    "../test/xml-mapped/attribute-range-self-close",
     "../test/xml-mapped/attribute-single-element",
     "../test/xml-mapped/attribute-single-element-2"
 };

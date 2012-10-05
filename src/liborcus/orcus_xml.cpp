@@ -87,6 +87,8 @@ class xml_data_sax_handler
 
     const xml_map_tree::element* mp_current_elem;
 
+    bool m_in_range_ref:1;
+
 private:
 
     const attr* find_attr_by_name(xmlns_id_t ns, const pstring& name)
@@ -134,7 +136,8 @@ public:
         m_link_positions(link_positions),
         m_map_tree_walker(map_tree.get_tree_walker()),
         m_ns_cxt(ns_cxt),
-        mp_current_elem(NULL) {}
+        mp_current_elem(NULL),
+        m_in_range_ref(false) {}
 
     void declaration()
     {
@@ -174,6 +177,9 @@ public:
                         ;
                 }
             }
+
+            if (mp_current_elem->range_parent)
+                m_in_range_ref = true;
         }
         m_attrs.clear();
     }
@@ -188,15 +194,19 @@ public:
             const scope& cur = m_scopes.back();
             if (mp_current_elem->ref_type == xml_map_tree::reference_cell ||
                 mp_current_elem->range_parent ||
-                mp_current_elem->unlinked_attribute_anchor())
+                (!m_in_range_ref && mp_current_elem->unlinked_attribute_anchor()))
             {
-                // either single link element, parent of range link elements, or an unlinked attribute anchor.
+                // either single link element, parent of range link elements,
+                // or an unlinked attribute anchor outside linked ranges.
                 mp_current_elem->stream_pos.open_begin = cur.element_open_begin;
                 mp_current_elem->stream_pos.open_end = cur.element_open_end;
                 mp_current_elem->stream_pos.close_begin = elem.begin_pos;
                 mp_current_elem->stream_pos.close_end = elem.end_pos;
                 m_link_positions.push_back(mp_current_elem);
             }
+
+            if (mp_current_elem->range_parent)
+                m_in_range_ref = false;
         }
 
         m_scopes.pop_back();

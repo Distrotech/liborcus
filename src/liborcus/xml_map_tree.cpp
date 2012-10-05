@@ -128,6 +128,17 @@ public:
     }
 };
 
+template<typename T>
+void print_element_stack(ostream& os, const T& elem_stack)
+{
+    typename T::const_iterator it = elem_stack.begin(), it_end = elem_stack.end();
+    for (; it != it_end; ++it)
+    {
+        const xml_map_tree::element& elem = **it;
+        os << '/' << elem.name;
+    }
+}
+
 }
 
 xml_map_tree::xpath_error::xpath_error(const string& msg) : general_error(msg) {}
@@ -397,8 +408,8 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     cout << "range field link: " << xpath << " (ref=" << pos << ")" << endl;
     element_list_type elem_stack;
     linkable* node = get_element_stack(xpath, reference_range_field, elem_stack);
-    if (elem_stack.size() < 3)
-        throw xpath_error("Path of a range field link must be at least 3 levels.");
+    if (elem_stack.size() < 2)
+        throw xpath_error("Path of a range field link must be at least 2 levels.");
 
     switch (node->node_type)
     {
@@ -437,6 +448,10 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
 
         --it_end; // Skip the next-up element, which is used to group a single record entry.
         m_cur_range_parent.assign(elem_stack.begin(), it_end);
+#if ORCUS_DEBUG_XML
+        print_element_stack(cout, m_cur_range_parent);
+        cout << endl;
+#endif
     }
     else
     {
@@ -459,7 +474,7 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
             break;
         }
 
-        if (m_cur_range_parent.size() <= 1)
+        if (m_cur_range_parent.empty())
             throw xpath_error("Two field links in the same range reference must at least share the first level of their paths.");
     }
 }
@@ -478,7 +493,7 @@ void xml_map_tree::commit_range()
     cout << endl;
 #endif
 
-    assert(m_cur_range_parent.size() >= 2);
+    assert(!m_cur_range_parent.empty());
     // Mark the range parent element.
     m_cur_range_parent.back()->range_parent = mp_cur_range_ref;
 }
