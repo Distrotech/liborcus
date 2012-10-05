@@ -34,6 +34,7 @@
 #include "string_pool.hpp"
 
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 #include <boost/noncopyable.hpp>
@@ -442,12 +443,25 @@ void xml_structure_tree::dump_compact(ostream& os) const
         for (; cur_scope.current_pos != cur_scope.elements.end(); ++cur_scope.current_pos)
         {
             const element_ref& this_elem = *cur_scope.current_pos;
-            print_scope(os, scopes);
+            ostringstream ss;
+            print_scope(ss, scopes);
 
-            os << "/" << this_elem.name.name;
+            ss << "/" << this_elem.name.name;
             if (this_elem.prop->repeat)
-                os << "[*]";
-            os << endl;
+                ss << "[*]";
+
+            string elem_name = ss.str();
+            os << elem_name << endl;
+
+            // Print all attributes that belong to this element.
+            {
+                const attribute_names_type& attrs = this_elem.prop->attributes;
+                entity_names_type attrs_sorted(attrs.begin(), attrs.end());
+                std::sort(attrs_sorted.begin(), attrs_sorted.end());
+                entity_names_type::const_iterator it = attrs_sorted.begin(), it_end = attrs_sorted.end();
+                for (; it != it_end; ++it)
+                    os << elem_name << '@' << it->name << endl;
+            }
 
             const element_store_type& child_elements = this_elem.prop->child_elements;
             if (child_elements.empty())
