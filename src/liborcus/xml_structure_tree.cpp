@@ -313,8 +313,7 @@ xml_structure_tree::element xml_structure_tree::walker::root()
     element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
     mp_impl->m_cur_elem = ref;
     mp_impl->m_scopes.push_back(ref);
-    xml_structure_tree::entity_name name(ref.name.ns, ref.name.name);
-    return xml_structure_tree::element(name, false);
+    return xml_structure_tree::element(ref.name, false);
 }
 
 xml_structure_tree::element xml_structure_tree::walker::descend(const entity_name& name)
@@ -324,7 +323,7 @@ xml_structure_tree::element xml_structure_tree::walker::descend(const entity_nam
 
     assert(mp_impl->m_scopes.back().prop);
     const element_store_type& child_elems = mp_impl->m_scopes.back().prop->child_elements;
-    element_store_type::const_iterator it = child_elems.find(entity_name(name.ns, name.name));
+    element_store_type::const_iterator it = child_elems.find(name);
 
     if (it == child_elems.end())
         throw general_error("Specified child element does not exist.");
@@ -346,7 +345,7 @@ xml_structure_tree::element xml_structure_tree::walker::ascend()
 
     mp_impl->m_scopes.pop_back();
     const element_ref& ref = mp_impl->m_scopes.back();
-    return element(entity_name(ref.name.ns, ref.name.name), ref.prop->repeat);
+    return element(ref.name, ref.prop->repeat);
 }
 
 void xml_structure_tree::walker::get_children(element_names_type& names)
@@ -361,7 +360,7 @@ void xml_structure_tree::walker::get_children(element_names_type& names)
     for (; it != it_end; ++it)
     {
         const entity_name& name = it->first;
-        _names.push_back(entity_name(name.ns, name.name));
+        _names.push_back(name);
     }
 
     // Sort the names.
