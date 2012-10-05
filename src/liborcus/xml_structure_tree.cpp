@@ -90,7 +90,6 @@ struct element_ref
 };
 
 typedef std::vector<element_ref> elements_type;
-typedef std::vector<xml_structure_tree::entity_name> names_type;
 
 class xml_sax_handler
 {
@@ -98,12 +97,12 @@ class xml_sax_handler
     string_pool& m_pool;
     unique_ptr<root> mp_root;
     elements_type m_stack;
-    names_type m_attrs;
+    xml_structure_tree::entity_names_type m_attrs;
 
 private:
     void merge_attributes(elem_prop& prop)
     {
-        names_type::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
+        xml_structure_tree::entity_names_type::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
         for (; it != it_end; ++it)
             prop.attributes.insert(*it);
 
