@@ -62,7 +62,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	odf_tokens.cpp \
 	orcus_ods.cpp
 
-endif # WITH_ODFS_FILTER
+endif # WITH_ODS_FILTER
 
 endif # WITH_LIBZIP
 

@@ -117,15 +117,6 @@ if WITH_ODS_FILTER
 bin_PROGRAMS += \
 	orcus-ods
 
-endif # WITH_ODS_FILTER
-
-if WITH_XLSX_FILTER
-
-bin_PROGRAMS += \
-	orcus-xlsx
-
-endif # WITH_XLSX_FILTER
-
 # orcus-ods
 
 orcus_ods_SOURCES = \
@@ -137,6 +128,17 @@ orcus_ods_LDADD = \
 	$(LIBZIP_LIBS)
 
 orcus_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
+if HAVE_STATIC_LIB
+orcus_ods_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+endif
+
+endif # WITH_ODS_FILTER
+
+if WITH_XLSX_FILTER
+
+bin_PROGRAMS += \
+	orcus-xlsx
 
 # orcus-xlsx
 
@@ -150,9 +152,10 @@ orcus_xlsx_LDADD = \
 orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
 if HAVE_STATIC_LIB
-orcus_ods_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 orcus_xlsx_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 endif
+
+endif # WITH_XLSX_FILTER
 
 endif # WITH_LIBZIP
 
