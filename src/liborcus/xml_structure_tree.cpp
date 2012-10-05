@@ -280,6 +280,9 @@ bool xml_structure_tree::entity_name::operator< (const entity_name& r) const
     return name < r.name;
 }
 
+xml_structure_tree::attribute::attribute() {}
+xml_structure_tree::attribute::attribute(const entity_name& _name) : name(_name) {}
+
 xml_structure_tree::element::element() :
     repeat(false) {}
 

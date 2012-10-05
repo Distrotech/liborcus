@@ -67,6 +67,14 @@ public:
 
     typedef std::vector<entity_name> element_names_type;
 
+    struct attribute
+    {
+        entity_name name;
+
+        attribute();
+        attribute(const entity_name& _name);
+    };
+
     struct element
     {
         entity_name name;
