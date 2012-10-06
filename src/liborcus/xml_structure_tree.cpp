@@ -58,6 +58,14 @@ struct elem_prop : boost::noncopyable
     element_store_type child_elements;
     attribute_names_type attributes;
 
+    /** Store child element names in order of appearance. */
+    xml_structure_tree::entity_names_type child_element_names;
+
+    /** Store attribute names in order of appearance. */
+    xml_structure_tree::entity_names_type attribute_names;
+
+    size_t appearance_order;
+
     /**
      * When true, this element is the base element of repeated structures.
      * This flag is set only with the base element; none of the child
@@ -65,7 +73,8 @@ struct elem_prop : boost::noncopyable
      */
     bool repeat:1;
 
-    elem_prop() : repeat(false) {}
+    elem_prop() : appearance_order(0), repeat(false) {}
+    elem_prop(size_t _appearance_order) : appearance_order(_appearance_order), repeat(false) {}
     ~elem_prop()
     {
         for_each(child_elements.begin(), child_elements.end(), map_object_deleter<element_store_type>());
@@ -81,11 +90,11 @@ struct root
 struct element_ref
 {
     xml_structure_tree::entity_name name;
-    const elem_prop* prop;
+    elem_prop* prop;
     bool in_repeated_element:1;
 
     element_ref() : prop(NULL) {}
-    element_ref(xml_structure_tree::entity_name _name, const elem_prop* _prop) :
+    element_ref(xml_structure_tree::entity_name _name, elem_prop* _prop) :
         name(_name), prop(_prop), in_repeated_element(false) {}
 };
 
@@ -104,7 +113,14 @@ private:
     {
         xml_structure_tree::entity_names_type::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
         for (; it != it_end; ++it)
-            prop.attributes.insert(*it);
+        {
+            if (prop.attributes.find(*it) == prop.attributes.end())
+            {
+                // New attribute.  Insert it.
+                prop.attributes.insert(*it);
+                prop.attribute_names.push_back(*it);
+            }
+        }
 
         m_attrs.clear();
     }
@@ -135,7 +151,7 @@ public:
 
         // See if the current element already has a child element of the same name.
         assert(!m_stack.empty());
-        const element_ref& current = m_stack.back();
+        element_ref& current = m_stack.back();
         xml_structure_tree::entity_name key(ns_id, elem.name);
         element_store_type::const_iterator it = current.prop->child_elements.find(key);
         if (it != current.prop->child_elements.end())
@@ -152,13 +168,16 @@ public:
         }
 
         // New element.
+        size_t order = current.prop->child_elements.size();
         key.name = m_pool.intern(key.name);
         pair<element_store_type::const_iterator,bool> r =
-            const_cast<elem_prop*>(current.prop)->child_elements.insert(
-               element_store_type::value_type(key, new elem_prop));
+            current.prop->child_elements.insert(
+                element_store_type::value_type(key, new elem_prop(order)));
 
         if (!r.second)
             throw general_error("Insertion failed");
+
+        current.prop->child_element_names.push_back(key);
 
         it = r.first;
         element_ref ref(it->first, it->second);
@@ -181,8 +200,23 @@ public:
 
     void characters(const pstring&) {}
 
-    void attribute(const pstring& ns, const pstring& name, const pstring& /*value*/)
+    void attribute(const pstring& ns, const pstring& name, const pstring& value)
     {
+        if (ns.empty() && name == "xmlns")
+        {
+            // Default namespace
+            m_ns_cxt.set(pstring(), value);
+            return;
+        }
+
+        if (ns == "xmlns")
+        {
+            // Namespace alias
+            if (!name.empty())
+                m_ns_cxt.set(name, value);
+            return;
+        }
+
         xmlns_id_t ns_id = m_ns_cxt.get(ns);
         m_attrs.push_back(xml_structure_tree::entity_name(ns_id, name));
     }
@@ -193,14 +227,11 @@ public:
     }
 };
 
-struct sort_by_name : std::binary_function<element_ref, element_ref, bool>
+struct sort_by_appearance : std::binary_function<element_ref, element_ref, bool>
 {
     bool operator() (const element_ref& left, const element_ref& right) const
     {
-        if (left.name.ns != right.name.ns)
-            return left.name.ns < right.name.ns;
-
-        return left.name.name < right.name.name;
+        return left.prop->appearance_order < right.prop->appearance_order;
     }
 };
 
@@ -258,7 +289,7 @@ struct xml_structure_tree_impl : boost::noncopyable
 
 struct xml_structure_tree::walker_impl : boost::noncopyable
 {
-    const root* mp_root; /// Root element of the authoritative tree.
+    root* mp_root; /// Root element of the authoritative tree.
 
     element_ref m_cur_elem;
     std::vector<element_ref> m_scopes;
@@ -375,18 +406,7 @@ void xml_structure_tree::walker::get_children(entity_names_type& names)
 
     assert(mp_impl->m_scopes.back().prop);
     const elem_prop& prop = *mp_impl->m_scopes.back().prop;
-    entity_names_type _names;
-    element_store_type::const_iterator it = prop.child_elements.begin(), it_end = prop.child_elements.end();
-    for (; it != it_end; ++it)
-    {
-        const entity_name& name = it->first;
-        _names.push_back(name);
-    }
-
-    // Sort the names.
-    sort(_names.begin(), _names.end());
-
-    names.swap(_names);
+    names.assign(prop.child_element_names.begin(), prop.child_element_names.end());
 }
 
 void xml_structure_tree::walker::get_attributes(entity_names_type& names)
@@ -396,15 +416,7 @@ void xml_structure_tree::walker::get_attributes(entity_names_type& names)
 
     assert(mp_impl->m_scopes.back().prop);
     const elem_prop& prop = *mp_impl->m_scopes.back().prop;
-    entity_names_type _names;
-    attribute_names_type::const_iterator it = prop.attributes.begin(), it_end = prop.attributes.end();
-    for (; it != it_end; ++it)
-        _names.push_back(*it);
-
-    // Sort the names.
-    sort(_names.begin(), _names.end());
-
-    names.swap(_names);
+    names.assign(prop.attribute_names.begin(), prop.attribute_names.end());
 }
 
 xml_structure_tree::xml_structure_tree(xmlns_repository& xmlns_repo) :
@@ -454,10 +466,8 @@ void xml_structure_tree::dump_compact(ostream& os) const
 
             // Print all attributes that belong to this element.
             {
-                const attribute_names_type& attrs = this_elem.prop->attributes;
-                entity_names_type attrs_sorted(attrs.begin(), attrs.end());
-                std::sort(attrs_sorted.begin(), attrs_sorted.end());
-                entity_names_type::const_iterator it = attrs_sorted.begin(), it_end = attrs_sorted.end();
+                const entity_names_type& attrs = this_elem.prop->attribute_names;
+                entity_names_type::const_iterator it = attrs.begin(), it_end = attrs.end();
                 for (; it != it_end; ++it)
                     os << elem_name << '@' << it->name << endl;
             }
@@ -477,8 +487,8 @@ void xml_structure_tree::dump_compact(ostream& os) const
                 elems.push_back(ref);
             }
 
-            // Sort the elements by name to make their order tractable.
-            std::sort(elems.begin(), elems.end(), sort_by_name());
+            // Sort the elements by order of appearance.
+            std::sort(elems.begin(), elems.end(), sort_by_appearance());
 
             assert(!elems.empty());
 

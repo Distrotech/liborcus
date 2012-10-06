@@ -122,17 +122,17 @@ public:
 
         /**
          * Get a list of names of all child elements at current element
-         * position.  The list of names is sorted.
+         * position.  The list of names is in order of appearance.
          *
-         * @param names sorted list of child element names.
+         * @param names list of child element names in order of appearance.
          */
         void get_children(entity_names_type& names);
 
         /**
          * Get a list of names of all attributes that belong to current
-         * element.  The list of names is sorted.
+         * element.  The list of names is in order of appearance.
          *
-         * @param names sorted list of attribute names.
+         * @param names list of attribute names in order of appearance.
          */
         void get_attributes(entity_names_type& names);
     };

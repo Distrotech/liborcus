@@ -1,6 +1,6 @@
 /root
-/root@type
 /root@version
+/root@type
 /root/entry[*]
 /root/entry[*]@attr1
 /root/entry[*]@attr2

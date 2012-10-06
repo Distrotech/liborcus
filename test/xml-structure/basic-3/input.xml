@@ -3,7 +3,10 @@
     <entries>
         <entry>
             <id>0</id>
-            <name><first>Thomas</first><last>Anderson</last></name>
+            <name>
+                <first>Thomas</first>
+                <last>Anderson</last>
+            </name>
             <nickname>Neo</nickname>
             <gender>male</gender>
         </entry>
@@ -12,3 +15,5 @@
             <nickname>Trinity</nickname>
             <gender>female</gender>
         </entry>
+    </entries>
+</data>

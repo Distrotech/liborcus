@@ -1,5 +1,5 @@
 /root
-/root/age
 /root/name
+/root/age
 /root/nickname
 
