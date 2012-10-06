@@ -66,6 +66,8 @@ struct elem_prop : boost::noncopyable
 
     size_t appearance_order;
 
+    size_t in_scope_count;
+
     /**
      * When true, this element is the base element of repeated structures.
      * This flag is set only with the base element; none of the child
@@ -73,8 +75,8 @@ struct elem_prop : boost::noncopyable
      */
     bool repeat:1;
 
-    elem_prop() : appearance_order(0), repeat(false) {}
-    elem_prop(size_t _appearance_order) : appearance_order(_appearance_order), repeat(false) {}
+    elem_prop() : appearance_order(0), in_scope_count(1), repeat(false) {}
+    elem_prop(size_t _appearance_order) : appearance_order(_appearance_order), in_scope_count(1), repeat(false) {}
     ~elem_prop()
     {
         for_each(child_elements.begin(), child_elements.end(), map_object_deleter<element_store_type>());
@@ -91,11 +93,10 @@ struct element_ref
 {
     xml_structure_tree::entity_name name;
     elem_prop* prop;
-    bool in_repeated_element:1;
 
     element_ref() : prop(NULL) {}
     element_ref(xml_structure_tree::entity_name _name, elem_prop* _prop) :
-        name(_name), prop(_prop), in_repeated_element(false) {}
+        name(_name), prop(_prop) {}
 };
 
 typedef std::vector<element_ref> elements_type;
@@ -156,13 +157,14 @@ public:
         element_store_type::const_iterator it = current.prop->child_elements.find(key);
         if (it != current.prop->child_elements.end())
         {
-            // Recurring element.
-            if (!current.in_repeated_element)
-                // Set this flag only with the base element of repeated structures.
+            // Recurring element. Set its repeat flag only when it occurs
+            // multiple times in the same scope.
+            ++it->second->in_scope_count;
+            if (it->second->in_scope_count > 1)
                 it->second->repeat = true;
+
             element_ref ref(it->first, it->second);
             merge_attributes(*it->second);
-            ref.in_repeated_element = true;
             m_stack.push_back(ref);
             return;
         }
@@ -194,6 +196,12 @@ public:
         xmlns_id_t ns_id = m_ns_cxt.get(elem.ns);
         if (current.name.ns != ns_id || current.name.name != elem.name)
             throw general_error("Non-matching end element");
+
+        // Reset the in-scope count of all child elements to 0 before ending
+        // the current scope.
+        element_store_type::iterator it = current.prop->child_elements.begin(), it_end = current.prop->child_elements.end();
+        for (; it != it_end; ++it)
+            it->second->in_scope_count = 0;
 
         m_stack.pop_back();
     }
