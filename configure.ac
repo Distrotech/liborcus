@@ -103,7 +103,7 @@ AS_IF([test "x$enable_debug" != "xno"], [
 # ==============
 AC_ARG_WITH(libzip,
 	AS_HELP_STRING([--without-libzip],
-		[Disable libzip. Support for all zip-storage based formats will be disabled if libzip is disabled.])],
+		[Disable libzip. Support for all zip-storage based formats will be disabled if libzip is disabled.]),
 	[with_libzip="$withval"],
 	[with_libzip=yes]
 )
@@ -116,7 +116,7 @@ AS_IF([test "x$with_libzip" != "xno"], [
 # ==============
 AC_ARG_WITH(ods-filter,
             AS_HELP_STRING([--without-ods-filter],
-                           [Disables the OpenDocument Format spreadsheet import filter.])],
+                           [Disables the OpenDocument Format spreadsheet import filter.]),
 	[with_ods_filter="$withval"],
 	[with_ods_filter=yes]
 )
@@ -126,7 +126,7 @@ AC_ARG_WITH(ods-filter,
 # ==============
 AC_ARG_WITH(xlsx-filter,
             AS_HELP_STRING([--without-xlsx-filter],
-                           [Disables the Microsoft Excel OOXML import filter.])],
+                           [Disables the Microsoft Excel OOXML import filter.]),
 	[with_xlsx_filter="$withval"],
 	[with_xlsx_filter=yes]
 )
@@ -136,7 +136,7 @@ AC_ARG_WITH(xlsx-filter,
 # ==============
 AC_ARG_WITH(gnumeric-filter,
             AS_HELP_STRING([--without-gnumeric-filter],
-                           [Disables the gnumeric import filter. The gnumeric import filter depends on zLib.])],
+                           [Disables the gnumeric import filter. The gnumeric import filter depends on zLib.]),
 	[with_gnumeric_filter="$withval"],
 	[with_gnumeric_filter=yes]
 )
@@ -158,7 +158,7 @@ AM_CONDITIONAL([WITH_GNUMERIC_FILTER], [test "x$with_gnumeric_filter" != "xno"])
 # mdds support
 # ============
 AC_ARG_WITH(mdds-include-path,
-	AS_HELP_STRING([--with-mdds-include-path], [Path for mdds, if different default [/usr/include].])],
+	AS_HELP_STRING([--with-mdds-include-path], [Path for mdds, if different default [/usr/include].]),
 	[with_mdds_include_path="$withval"],
 	[with_mdds_include_path=default]
 ,)
