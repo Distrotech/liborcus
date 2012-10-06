@@ -460,7 +460,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         case XML_fonts:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
-            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t font_count = strtoul(ps.str().c_str(), NULL, 10);
             mp_styles->set_font_count(font_count);
         }
@@ -479,7 +479,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         case XML_sz:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_font);
-            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
             double font_size = strtod(ps.str().c_str(), NULL);
             mp_styles->set_font_size(font_size);
         }
@@ -499,7 +499,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         case XML_name:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_font);
-            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
             mp_styles->set_font_name(ps.get(), ps.size());
         }
         break;
@@ -512,7 +512,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         case XML_fills:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
-            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t fill_count = strtoul(ps.str().c_str(), NULL, 10);
             mp_styles->set_fill_count(fill_count);
         }
@@ -523,7 +523,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         case XML_patternFill:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_fill);
-            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_patternType)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_patternType)).get_value();
             mp_styles->set_fill_pattern_type(ps.get(), ps.size());
         }
         break;
@@ -542,7 +542,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         case XML_borders:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
-            const pstring& ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t border_count = strtoul(ps.str().c_str(), NULL, 10);
             mp_styles->set_border_count(border_count);
         }
@@ -588,7 +588,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         case XML_cellStyleXfs:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
-            const pstring& ps = for_each(
+            pstring ps = for_each(
                 attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t n = strtoul(ps.str().c_str(), NULL, 10);
             mp_styles->set_cell_style_xf_count(n);
@@ -599,7 +599,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         {
             // Collection of un-named cell formats used in the document.
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
-            const pstring& ps = for_each(
+            pstring ps = for_each(
                 attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t n = strtoul(ps.str().c_str(), NULL, 10);
             mp_styles->set_cell_xf_count(n);
@@ -609,7 +609,7 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
         case XML_cellStyles:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_styleSheet);
-            const pstring& ps = for_each(
+            pstring ps = for_each(
                 attrs.begin(), attrs.end(), single_attr_getter(XML_count)).get_value();
             size_t n = strtoul(ps.str().c_str(), NULL, 10);
             mp_styles->set_cell_style_count(n);
