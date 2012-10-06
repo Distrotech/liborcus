@@ -1,6 +1,8 @@
 
 if WITH_LIBZIP
 
+if WITH_ODS_FILTER
+
 liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus/odf
 
 liborcus_HEADERS = \
@@ -10,5 +12,7 @@ liborcus_HEADERS = \
 	ods_context.hpp \
 	ods_handler.hpp \
 	para_context.hpp
+
+endif # WITH_ODS_FILTER
 
 endif # WITH_LIBZIP

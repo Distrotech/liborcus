@@ -24,8 +24,25 @@ liborcus_HEADERS = \
 
 if WITH_LIBZIP
 
+if WITH_ODS_FILTER
+
 liborcus_HEADERS += \
-	orcus_ods.hpp \
+	orcus_ods.hpp
+
+endif # WITH_ODS_FILTER
+
+if WITH_XLSX_FILTER
+
+liborcus_HEADERS += \
 	orcus_xlsx.hpp
 
+endif # WITH_XLSX_FILTER
+
 endif # WITH_LIBZIP
+
+if WITH_GNUMERIC_FILTER
+
+liborcus_HEADERS += \
+	orcus_gnumeric.hpp
+
+endif # WITH_GNUMERIC_FILTER

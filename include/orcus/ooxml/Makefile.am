@@ -14,11 +14,17 @@ liborcus_HEADERS = \
 	opc_reader.hpp \
 	opc_token_constants.hpp \
 	opc_token_constants.inl \
-	schemas.hpp \
+	schemas.hpp
+
+if WITH_XLSX_FILTER
+
+liborcus_HEADERS += \
 	xlsx_context.hpp \
 	xlsx_handler.hpp \
 	xlsx_sheet_context.hpp \
 	xlsx_types.hpp \
 	xlsx_workbook_context.hpp
+
+endif # WITH_XLSX_FILTER
 
 endif # WITH_LIBZIP
