@@ -7,7 +7,7 @@ Makefile
 Makefile.in
 .deps
 .libs
-*.m4
+aclocal.m4
 autom4te.cache
 libtool
 configure
@@ -20,6 +20,8 @@ config.log
 depcomp
 install-sh
 ltmain.sh
+m4/libtool.m4
+m4/lt*.m4
 missing
 VERSION
 stamp-h1
