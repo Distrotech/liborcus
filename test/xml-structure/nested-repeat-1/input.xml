@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<root>
+    <mode>
+        <insert>
+            <command name="foo"/>
+        </insert>
+        <remove>
+            <command name="foo"/>
+        </remove>
+        <insert>
+            <command name="baa"/>
+        </insert>
+        <remove>
+            <command name="baa"/>
+        </remove>
+        <edit>
+            <command name="non-repeat"/>
+        </edit>
+    </mode>
+</root>

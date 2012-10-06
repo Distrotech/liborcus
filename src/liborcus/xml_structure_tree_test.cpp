@@ -41,7 +41,8 @@ const char* base_dirs[] = {
     "../../test/xml-structure/basic-1/",
     "../../test/xml-structure/basic-2/",
     "../../test/xml-structure/basic-3/",
-    "../../test/xml-structure/attribute-1/"
+    "../../test/xml-structure/attribute-1/",
+    "../../test/xml-structure/nested-repeat-1/"
 };
 
 void test_basic()

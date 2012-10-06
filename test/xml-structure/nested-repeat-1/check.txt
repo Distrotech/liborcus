@@ -1,0 +1,12 @@
+/root
+/root/mode
+/root/mode/insert[*]
+/root/mode/insert[*]/command
+/root/mode/insert[*]/command@name
+/root/mode/remove[*]
+/root/mode/remove[*]/command
+/root/mode/remove[*]/command@name
+/root/mode/edit
+/root/mode/edit/command
+/root/mode/edit/command@name
+
