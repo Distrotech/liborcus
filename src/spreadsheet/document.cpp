@@ -80,29 +80,27 @@ struct sheet_item : private boost::noncopyable
     };
 };
 
-sheet_item ::sheet_item(document& doc, const pstring& _name, sheet_t sheet) :
+sheet_item::sheet_item(document& doc, const pstring& _name, sheet_t sheet) :
     name(_name), data(doc, sheet) {}
 
-void sheet_item ::printer::operator() (const sheet_item& item) const
+void sheet_item::printer::operator() (const sheet_item& item) const
 {
     cout << "---" << endl;
     cout << "Sheet name: " << item.name << endl;
     item.data.dump();
 }
 
-sheet_item ::check_printer::check_printer(std::ostream& os) : m_os(os) {}
+sheet_item::check_printer::check_printer(std::ostream& os) : m_os(os) {}
 
-void sheet_item ::check_printer::operator() (const sheet_item& item) const
+void sheet_item::check_printer::operator() (const sheet_item& item) const
 {
-    m_os << "sheet: " << item.name << endl;
-    m_os << endl;
-    item.data.dump_check(m_os);
+    item.data.dump_check(m_os, item.name);
 }
 
-sheet_item ::html_printer::html_printer(const string& filepath) :
+sheet_item::html_printer::html_printer(const string& filepath) :
     m_filepath(filepath) {}
 
-void sheet_item ::html_printer::operator() (const sheet_item& item) const
+void sheet_item::html_printer::operator() (const sheet_item& item) const
 {
     // file path is expected to be a directory.
     string this_file = m_filepath + '/' + item.name.str() + ".html";

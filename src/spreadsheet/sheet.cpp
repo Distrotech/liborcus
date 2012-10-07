@@ -366,7 +366,16 @@ void sheet::dump() const
     }
 }
 
-void sheet::dump_check(ostream& os) const
+namespace {
+
+void write_cell_position(ostream& os, const pstring& sheet_name, row_t row, col_t col)
+{
+    os << sheet_name << '/' << row << '/' << col << ':';
+}
+
+}
+
+void sheet::dump_check(ostream& os, const pstring& sheet_name) const
 {
     const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     ixion::abs_range_t range = cxt.get_data_range(mp_impl->m_sheet);
@@ -386,27 +395,24 @@ void sheet::dump_check(ostream& os) const
             {
                 case ixion::celltype_string:
                 {
-                    os << "row: " << row << "; column: " << col << endl;
-                    os << "type: string" << endl;
+                    write_cell_position(os, sheet_name, row, col);
                     size_t sindex = cxt.get_string_identifier(pos);
                     const string* p = cxt.get_string(sindex);
                     assert(p);
-                    os << "value: '" << *p << "'" << endl;
-                    os << endl;
+                    os << "string:" << *p << endl;
                 }
                 break;
                 case ixion::celltype_numeric:
                 {
-                    os << "row: " << row << "; column: " << col << endl;
-                    os << "type: numeric" << endl;
-                    os << "value: " << cxt.get_numeric_value(pos) << endl;
-                    os << endl;
+                    write_cell_position(os, sheet_name, row, col);
+                    os << "numeric:" << cxt.get_numeric_value(pos) << endl;
                 }
                 break;
                 case ixion::celltype_formula:
                 {
-                    os << "row: " << row << "; column: " << col << endl;
-                    os << "type: formula" << endl;
+                    write_cell_position(os, sheet_name, row, col);
+                    os << "formula";
+
                     // print the formula and the formula result.
                     const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
                     assert(cell);
@@ -417,11 +423,11 @@ void sheet::dump_check(ostream& os) const
                         string formula;
                         ixion::print_formula_tokens(
                             mp_impl->m_doc.get_model_context(), pos, *t, formula);
-                        os << "expression: " << formula << endl;
+                        os << ':' << formula;
 
                         const ixion::formula_result* res = cell->get_result_cache();
                         if (res)
-                            os << "result: " << res->str(mp_impl->m_doc.get_model_context()) << endl;
+                            os << ':' << res->str(mp_impl->m_doc.get_model_context());
                     }
                     os << endl;
                 }

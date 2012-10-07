@@ -1,98 +1,24 @@
-sheet: data
-
-row: 3; column: 0
-type: string
-value: 'id'
-
-row: 3; column: 1
-type: string
-value: 'first-name'
-
-row: 3; column: 2
-type: string
-value: 'last-name'
-
-row: 3; column: 3
-type: string
-value: 'score'
-
-row: 4; column: 0
-type: numeric
-value: 1
-
-row: 4; column: 1
-type: string
-value: 'Bill'
-
-row: 4; column: 2
-type: string
-value: 'Clinton'
-
-row: 4; column: 3
-type: numeric
-value: 456
-
-row: 5; column: 0
-type: numeric
-value: 2
-
-row: 5; column: 1
-type: string
-value: 'David'
-
-row: 5; column: 2
-type: string
-value: 'Cameron'
-
-row: 5; column: 3
-type: numeric
-value: 323
-
-row: 6; column: 0
-type: numeric
-value: 3
-
-row: 6; column: 1
-type: string
-value: 'Barak'
-
-row: 6; column: 2
-type: string
-value: 'Obama'
-
-row: 6; column: 3
-type: numeric
-value: 234
-
-row: 7; column: 0
-type: numeric
-value: 4
-
-row: 7; column: 1
-type: string
-value: 'Yoshihiko'
-
-row: 7; column: 2
-type: string
-value: 'Noda'
-
-row: 7; column: 3
-type: numeric
-value: 192
-
-row: 8; column: 0
-type: numeric
-value: 5
-
-row: 8; column: 1
-type: string
-value: 'Angela'
-
-row: 8; column: 2
-type: string
-value: 'Merkel'
-
-row: 8; column: 3
-type: numeric
-value: 210
-
+data/3/0:string:id
+data/3/1:string:first-name
+data/3/2:string:last-name
+data/3/3:string:score
+data/4/0:numeric:1
+data/4/1:string:Bill
+data/4/2:string:Clinton
+data/4/3:numeric:456
+data/5/0:numeric:2
+data/5/1:string:David
+data/5/2:string:Cameron
+data/5/3:numeric:323
+data/6/0:numeric:3
+data/6/1:string:Barak
+data/6/2:string:Obama
+data/6/3:numeric:234
+data/7/0:numeric:4
+data/7/1:string:Yoshihiko
+data/7/2:string:Noda
+data/7/3:numeric:192
+data/8/0:numeric:5
+data/8/1:string:Angela
+data/8/2:string:Merkel
+data/8/3:numeric:210

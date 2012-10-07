@@ -1,138 +1,34 @@
-sheet: data
-
-row: 0; column: 0
-type: string
-value: 'TOP SECRET'
-
-row: 0; column: 2
-type: numeric
-value: 1.1
-
-row: 1; column: 0
-type: string
-value: 'Simple Data File'
-
-row: 1; column: 2
-type: string
-value: '2012-08-12'
-
-row: 3; column: 0
-type: string
-value: 'id'
-
-row: 3; column: 1
-type: string
-value: 'first-name'
-
-row: 3; column: 2
-type: string
-value: 'last-name'
-
-row: 3; column: 3
-type: string
-value: 'score'
-
-row: 3; column: 4
-type: string
-value: 'entry'
-
-row: 4; column: 0
-type: numeric
-value: 1
-
-row: 4; column: 1
-type: string
-value: 'Bill'
-
-row: 4; column: 2
-type: string
-value: 'Clinton'
-
-row: 4; column: 3
-type: numeric
-value: 456
-
-row: 4; column: 4
-type: string
-value: 'in'
-
-row: 5; column: 0
-type: numeric
-value: 2
-
-row: 5; column: 1
-type: string
-value: 'David'
-
-row: 5; column: 2
-type: string
-value: 'Cameron'
-
-row: 5; column: 3
-type: numeric
-value: 323
-
-row: 5; column: 4
-type: string
-value: 'out'
-
-row: 6; column: 0
-type: numeric
-value: 3
-
-row: 6; column: 1
-type: string
-value: 'Barak'
-
-row: 6; column: 2
-type: string
-value: 'Obama'
-
-row: 6; column: 3
-type: numeric
-value: 234
-
-row: 6; column: 4
-type: string
-value: 'unknown'
-
-row: 7; column: 0
-type: numeric
-value: 4
-
-row: 7; column: 1
-type: string
-value: 'Yoshihiko'
-
-row: 7; column: 2
-type: string
-value: 'Noda'
-
-row: 7; column: 3
-type: numeric
-value: 192
-
-row: 7; column: 4
-type: string
-value: 'in'
-
-row: 8; column: 0
-type: numeric
-value: 5
-
-row: 8; column: 1
-type: string
-value: 'Angela'
-
-row: 8; column: 2
-type: string
-value: 'Merkel'
-
-row: 8; column: 3
-type: numeric
-value: 210
-
-row: 8; column: 4
-type: string
-value: 'ask later'
-
+data/0/0:string:TOP SECRET
+data/0/2:numeric:1.1
+data/1/0:string:Simple Data File
+data/1/2:string:2012-08-12
+data/3/0:string:id
+data/3/1:string:first-name
+data/3/2:string:last-name
+data/3/3:string:score
+data/3/4:string:entry
+data/4/0:numeric:1
+data/4/1:string:Bill
+data/4/2:string:Clinton
+data/4/3:numeric:456
+data/4/4:string:in
+data/5/0:numeric:2
+data/5/1:string:David
+data/5/2:string:Cameron
+data/5/3:numeric:323
+data/5/4:string:out
+data/6/0:numeric:3
+data/6/1:string:Barak
+data/6/2:string:Obama
+data/6/3:numeric:234
+data/6/4:string:unknown
+data/7/0:numeric:4
+data/7/1:string:Yoshihiko
+data/7/2:string:Noda
+data/7/3:numeric:192
+data/7/4:string:in
+data/8/0:numeric:5
+data/8/1:string:Angela
+data/8/2:string:Merkel
+data/8/3:numeric:210
+data/8/4:string:ask later
