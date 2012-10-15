@@ -476,6 +476,19 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
             xml_element_expected(parent, XMLNS_xlsx, XML_font);
             mp_styles->set_font_italic(true);
         break;
+        case XML_u:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_font);
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
+            if (ps == "double")
+                mp_styles->set_font_underline(spreadsheet::underline_double);
+            else if (ps == "single")
+                mp_styles->set_font_underline(spreadsheet::underline_single);
+            else if (ps == "singleAccounting")
+                mp_styles->set_font_underline(spreadsheet::underline_single_accounting);
+            else if (ps == "doubleAccounting")
+                mp_styles->set_font_underline(spreadsheet::underline_double_accounting);
+        }
         case XML_sz:
         {
             xml_element_expected(parent, XMLNS_xlsx, XML_font);
