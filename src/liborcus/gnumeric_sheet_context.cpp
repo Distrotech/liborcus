@@ -106,6 +106,25 @@ public:
                 m_styles.set_font_italic(b);
             }
             break;
+            case XML_Underline:
+            {
+                int n = atoi(attr.value.get());
+                switch (n)
+                {
+                    case 0:
+                        m_styles.set_font_underline(spreadsheet::underline_none);
+                    break;
+                    case 1:
+                        m_styles.set_font_underline(spreadsheet::underline_single);
+                    break;
+                    case 2:
+                        m_styles.set_font_underline(spreadsheet::underline_double);
+                    break;
+                    default:
+                        ;
+                }
+            }
+            break;
         }
     }
 
