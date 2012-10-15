@@ -30,7 +30,8 @@
 namespace orcus { namespace spreadsheet {
 
 import_styles::font::font() :
-    size(0.0), bold(false), italic(false)
+    size(0.0), bold(false),
+    italic(false), underline(underline_none)
 {
 }
 
@@ -141,6 +142,11 @@ void import_styles::set_font_name(const char* s, size_t n)
 void import_styles::set_font_size(double point)
 {
     m_cur_font.size = point;
+}
+
+void import_styles::set_font_underline(underline_t e)
+{
+    m_cur_font.underline = e;
 }
 
 size_t import_styles::commit_font()

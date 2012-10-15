@@ -44,6 +44,7 @@ public:
         double size;
         bool bold:1;
         bool italic:1;
+        underline_t underline;
 
         font();
         void reset();
@@ -130,6 +131,7 @@ public:
     virtual void set_font_italic(bool b);
     virtual void set_font_name(const char* s, size_t n);
     virtual void set_font_size(double point);
+    virtual void set_font_underline(underline_t e);
     virtual size_t commit_font();
 
     virtual void set_fill_count(size_t n);

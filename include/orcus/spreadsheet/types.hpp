@@ -52,6 +52,15 @@ enum formula_grammar_t
     gnumeric
 };
 
+enum underline_t
+{
+    underline_none,
+    underline_single,
+    underline_single_accounting, // unique to xlsx
+    underline_double,
+    underline_double_accounting // unique to xlsx
+};
+
 }}
 
 #endif

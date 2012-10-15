@@ -93,6 +93,7 @@ public:
     virtual void set_font_italic(bool b) = 0;
     virtual void set_font_name(const char* s, size_t n) = 0;
     virtual void set_font_size(double point) = 0;
+    virtual void set_font_underline(orcus::spreadsheet::underline_t e) = 0;
     virtual size_t commit_font() = 0;
 
     // fill
