@@ -29,6 +29,9 @@
 #define __ORCUS_GNUMERIC_SHEET_CONTEXT_HPP__
 
 #include "orcus/xml_context.hpp"
+#include "orcus/spreadsheet/types.hpp"
+
+#include <boost/scoped_ptr.hpp>
 
 namespace orcus {
 
@@ -38,6 +41,16 @@ class import_factory;
 class import_sheet;
 
 }}
+
+struct gnumeric_style_region
+{
+    spreadsheet::row_t start_row;
+    spreadsheet::row_t end_row;
+    spreadsheet::col_t start_col;
+    spreadsheet::col_t end_col;
+
+    size_t xf_id;
+};
 
 class gnumeric_sheet_context : public xml_context_base
 {
@@ -54,11 +67,21 @@ public:
     virtual void characters(const pstring& str);
 
 private:
+    void start_style_region(const xml_attrs_t& attrs);
+    void start_style(const xml_attrs_t& attrs);
+    void start_font(const xml_attrs_t& attrs);
+
     void end_table();
+    void end_style();
+    void end_font();
+    void end_style_region();
+
 private:
     spreadsheet::iface::import_factory* mp_factory;
 
     spreadsheet::iface::import_sheet* mp_sheet;
+
+    boost::scoped_ptr<gnumeric_style_region> mp_region_data;
 
     /**
     * Used for temporary storage of characters

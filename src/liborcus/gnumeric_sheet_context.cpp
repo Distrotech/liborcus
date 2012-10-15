@@ -33,6 +33,110 @@
 
 namespace orcus {
 
+namespace {
+
+class gnumeric_style_region_attr_parser : public std::unary_function<xml_attr_t, void>
+{
+public:
+    gnumeric_style_region_attr_parser(gnumeric_style_region& style_region_data):
+        m_style_region_data(style_region_data) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        switch(attr.name)
+        {
+            case XML_startCol:
+            {
+                size_t n = atoi(attr.value.get());
+                m_style_region_data.start_col = n;
+            }
+            break;
+            case XML_startRow:
+            {
+                size_t n = atoi(attr.value.get());
+                m_style_region_data.start_row = n;
+            }
+            break;
+            case XML_endCol:
+            {
+                size_t n = atoi(attr.value.get());
+                m_style_region_data.end_col = n;
+            }
+            break;
+            case XML_endRow:
+            {
+                size_t n = atoi(attr.value.get());
+                m_style_region_data.end_row = n;
+            }
+            break;
+            default:
+                ;
+        }
+    }
+
+private:
+    gnumeric_style_region& m_style_region_data;
+};
+
+class gnumeric_font_attr_parser : public std::unary_function<xml_attr_t, void>
+{
+public:
+    gnumeric_font_attr_parser(spreadsheet::iface::import_styles& styles) :
+        m_styles(styles) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        switch(attr.name)
+        {
+            case XML_Unit:
+            {
+                double n = atoi(attr.value.get());
+                m_styles.set_font_size(n);
+            }
+            break;
+            case XML_Bold:
+            {
+                bool b = atoi(attr.value.get());
+                m_styles.set_font_bold(b);
+            }
+            break;
+            case XML_Italic:
+            {
+                bool b = atoi(attr.value.get());
+                m_styles.set_font_italic(b);
+            }
+            break;
+        }
+    }
+
+private:
+    spreadsheet::iface::import_styles& m_styles;
+};
+
+class gnumeric_style_attr_parser : public std::unary_function<xml_attr_t, void>
+{
+public:
+    gnumeric_style_attr_parser(spreadsheet::iface::import_styles& styles) :
+        m_styles(styles) {}
+
+    void operator() (const xml_attr_t& attr)
+    {
+        switch(attr.name)
+        {
+            case XML_Fore:
+                break;
+            case XML_Back:
+                break;
+        }
+    }
+
+private:
+    spreadsheet::iface::import_styles& m_styles;
+};
+
+}
+
+
 gnumeric_sheet_context::gnumeric_sheet_context(
     const tokens& tokens, spreadsheet::iface::import_factory* factory) :
     xml_context_base(tokens),
@@ -67,6 +171,23 @@ void gnumeric_sheet_context::end_child_context(xmlns_token_t ns, xml_token_t nam
 void gnumeric_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     push_stack(ns, name);
+    if (ns == XMLNS_gnm)
+    {
+        switch (name)
+        {
+            case XML_Font:
+                start_font(attrs);
+            break;
+            case XML_Style:
+                start_style(attrs);
+            break;
+            case XML_StyleRegion:
+                start_style_region(attrs);
+            break;
+            default:
+                ;
+        }
+    }
 }
 
 bool gnumeric_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
@@ -84,6 +205,12 @@ bool gnumeric_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
                     warn_unhandled();
             }
             break;
+            case XML_Font:
+                end_font();
+            break;
+            case XML_Style:
+                end_style();
+            break;
             default:
                 ;
         }
@@ -97,9 +224,53 @@ void gnumeric_sheet_context::characters(const pstring& str)
     chars = str;
 }
 
+void gnumeric_sheet_context::start_font(const xml_attrs_t& attrs)
+{
+    for_each(attrs.begin(), attrs.end(), gnumeric_font_attr_parser(*mp_factory->get_styles()));
+}
+
+void gnumeric_sheet_context::start_style(const xml_attrs_t& attrs)
+{
+    for_each(attrs.begin(), attrs.end(), gnumeric_style_attr_parser(*mp_factory->get_styles()));
+}
+
+void gnumeric_sheet_context::start_style_region(const xml_attrs_t& attrs)
+{
+    mp_region_data.reset(new gnumeric_style_region());
+    for_each(attrs.begin(), attrs.end(), gnumeric_style_region_attr_parser(*mp_region_data));
+}
+
 void gnumeric_sheet_context::end_table()
 {
     mp_sheet = mp_factory->append_sheet(chars.get(), chars.size());
+}
+
+void gnumeric_sheet_context::end_font()
+{
+    spreadsheet::iface::import_styles& styles = *mp_factory->get_styles();
+    styles.set_font_name(chars.get(), chars.size());
+    styles.commit_font();
+}
+
+void gnumeric_sheet_context::end_style()
+{
+    spreadsheet::iface::import_styles& styles = *mp_factory->get_styles();
+    size_t id = styles.commit_cell_xf();
+    mp_region_data->xf_id = id;
+}
+
+void gnumeric_sheet_context::end_style_region()
+{
+    for (spreadsheet::col_t col = mp_region_data->start_col;
+            col <= mp_region_data->end_col; ++col)
+    {
+        for (spreadsheet::row_t row = mp_region_data->start_row;
+                row <= mp_region_data->end_row; ++row)
+        {
+            mp_sheet->set_format(row, col, mp_region_data->xf_id);
+        }
+    }
+    mp_region_data.reset();
 }
 
 }
