@@ -267,9 +267,29 @@ class import_factory
 public:
     ORCUS_DLLPUBLIC virtual ~import_factory() = 0;
 
+    /**
+     * @return pointer to the shared strings instance. It may return NULL if
+     *         the client app doesn't support shared strings.
+     */
     virtual import_shared_strings* get_shared_strings() = 0;
+
+    /**
+     * @return pointer to the styles instance. It may return NULL if the
+     *         client app doesn't support styles.
+     */
     virtual import_styles* get_styles() = 0;
+
+    /**
+     * @return pointer to the sheet instance. It may return NULL if the client
+     *         app fails to append new sheet.
+     */
     virtual import_sheet* append_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
+
+    /**
+     * @return pointer to the sheet instance whose name matches the name
+     *         passed to this method. It returns NULL if no sheet instance
+     *         exists by the specified name.
+     */
     virtual import_sheet* get_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
 };
 
