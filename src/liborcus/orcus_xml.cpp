@@ -494,12 +494,14 @@ orcus_xml::~orcus_xml()
 
 void orcus_xml::set_cell_link(const pstring& xpath, const pstring& sheet, spreadsheet::row_t row, spreadsheet::col_t col)
 {
-    mp_impl->m_map_tree.set_cell_link(xpath, xml_map_tree::cell_position(sheet, row, col));
+    pstring sheet_safe = mp_impl->m_map_tree.intern_string(sheet);
+    mp_impl->m_map_tree.set_cell_link(xpath, xml_map_tree::cell_position(sheet_safe, row, col));
 }
 
 void orcus_xml::start_range(const pstring& sheet, spreadsheet::row_t row, spreadsheet::col_t col)
 {
-    mp_impl->m_cur_range_ref = xml_map_tree::cell_position(sheet, row, col);
+    pstring sheet_safe = mp_impl->m_map_tree.intern_string(sheet);
+    mp_impl->m_cur_range_ref = xml_map_tree::cell_position(sheet_safe, row, col);
     mp_impl->m_map_tree.start_range();
 }
 

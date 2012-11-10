@@ -232,6 +232,8 @@ public:
 
     range_ref_map_type& get_range_references();
 
+    pstring intern_string(const pstring& str);
+
 private:
     linkable* get_element_stack(const pstring& xpath, reference_type type, element_list_type& elem_stack);
 

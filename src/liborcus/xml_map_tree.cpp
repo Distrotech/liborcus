@@ -370,9 +370,6 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
     }
 
     cell_ref->pos = ref;
-
-    // Make sure the sheet name string is persistent.
-    cell_ref->pos.sheet = m_names.intern(ref.sheet.get(), ref.sheet.size());
 }
 
 void xml_map_tree::start_range()
@@ -575,6 +572,11 @@ xml_map_tree::walker xml_map_tree::get_tree_walker() const
 xml_map_tree::range_ref_map_type& xml_map_tree::get_range_references()
 {
     return m_field_refs;
+}
+
+pstring xml_map_tree::intern_string(const pstring& str)
+{
+    return m_names.intern(str);
 }
 
 xml_map_tree::linkable* xml_map_tree::get_element_stack(
