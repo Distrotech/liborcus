@@ -486,7 +486,12 @@ void sax_parser<_Handler>::attribute()
 
     char c = cur_char();
     if (c != '=')
-        throw malformed_xml_error("attribute must begin with 'name=..");
+    {
+        std::ostringstream os;
+        os << "Attribute must begin with 'name=..'. (ns='" << attr_ns_name << "', name='" << attr_name << "')";
+        throw malformed_xml_error(os.str());
+    }
+
     next();
     value(attr_value);
 
