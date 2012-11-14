@@ -30,12 +30,18 @@
 
 #include <exception>
 #include <cassert>
-#include <iostream>
 #include <sstream>
 
 #include "pstring.hpp"
+#include "cell_buffer.hpp"
 
 #define ORCUS_DEBUG_SAX_PARSER 1
+
+#if ORCUS_DEBUG_SAX_PARSER
+#include <iostream>
+using std::cout;
+using std::endl;
+#endif
 
 namespace orcus {
 
@@ -137,7 +143,10 @@ private:
     void comment();
     void content();
     void characters();
+    void characters_with_encoded_char();
     void attribute();
+
+    void parse_encoded_char();
 
     void name(pstring& str);
     void value(pstring& str);
@@ -148,6 +157,7 @@ private:
     static bool is_numeric(char c);
 
 private:
+    cell_buffer m_cell_buf;
     const char* m_content;
     const char* m_char;
     const size_t m_size;
@@ -399,15 +409,59 @@ template<typename _Handler>
 void sax_parser<_Handler>::characters()
 {
     size_t first = m_pos;
-    while (has_char() && cur_char() != '<')
-        next();
+    const char* p0 = m_char;
+    for (; has_char(); next())
+    {
+        if (cur_char() == '<')
+            break;
+
+        if (cur_char() == '&')
+        {
+            // Text span with one or more encoded characters. Parse using cell buffer.
+            m_cell_buf.reset();
+            m_cell_buf.append(p0, m_pos-first);
+            characters_with_encoded_char();
+            return;
+        }
+    }
 
     if (m_pos > first)
     {
         size_t size = m_pos - first;
-        pstring val(reinterpret_cast<const char*>(m_content) + first, size);
+        pstring val(m_content + first, size);
         m_handler.characters(val);
     }
+}
+
+template<typename _Handler>
+void sax_parser<_Handler>::characters_with_encoded_char()
+{
+    assert(cur_char() == '&');
+    parse_encoded_char();
+    assert(cur_char() != ';');
+
+    size_t first = m_pos;
+
+    for (; has_char(); next())
+    {
+        if (cur_char() == '<')
+            break;
+
+        if (cur_char() == '&')
+        {
+            if (m_pos > first)
+                m_cell_buf.append(m_content+first, m_pos-first);
+
+            parse_encoded_char();
+            assert(cur_char() != ';');
+            first = m_pos;
+        }
+    }
+
+    if (m_pos > first)
+        m_cell_buf.append(m_content+first, m_pos-first);
+
+    m_handler.characters(pstring(m_cell_buf.get(), m_cell_buf.size()));
 }
 
 template<typename _Handler>
@@ -430,6 +484,63 @@ void sax_parser<_Handler>::attribute()
     value(attr_value);
 
     m_handler.attribute(attr_ns_name, attr_name, attr_value);
+}
+
+template<typename _Handler>
+void sax_parser<_Handler>::parse_encoded_char()
+{
+    assert(cur_char() == '&');
+    next();
+    const char* p0 = m_char;
+    for (; has_char(); next())
+    {
+        if (cur_char() == ';')
+        {
+            size_t n = m_char - p0;
+            if (!n)
+                throw malformed_xml_error("empty encoded character.");
+
+            bool found = true;
+            if (n == 2)
+            {
+                if (!std::strncmp(p0, "lt", 2))
+                    m_cell_buf.append("<", 1);
+                else if (!std::strncmp(p0, "gt", 2))
+                    m_cell_buf.append(">", 1);
+                else
+                    found = false;
+            }
+            else if (n == 3)
+            {
+                if (!std::strncmp(p0, "amp", 3))
+                    m_cell_buf.append("&", 1);
+                else
+                    found = false;
+            }
+            else if (n == 4)
+            {
+                if (!std::strncmp(p0, "apos", 4))
+                    m_cell_buf.append("'", 1);
+                else if (!std::strncmp(p0, "quot", 4))
+                    m_cell_buf.append("\"", 1);
+                else
+                    found = false;
+            }
+
+            // Move to the character past ';' before returning to the parent call.
+            next();
+
+            if (!found)
+            {
+                // Unexpected encoding name. Use the original text.
+                m_cell_buf.append(p0, m_char-p0);
+            }
+
+            return;
+        }
+    }
+
+    throw malformed_xml_error("error parsing encoded character: terminating character is not found.");
 }
 
 template<typename _Handler>

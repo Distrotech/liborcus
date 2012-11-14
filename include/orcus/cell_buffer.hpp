@@ -41,9 +41,13 @@ class cell_buffer
     std::string m_buffer;
     size_t m_buf_size; /// Logical buffer size. May differ from the actual buffer size.
 public:
+    cell_buffer() : m_buf_size(0) {}
 
     void append(const char* p, size_t len)
     {
+        if (!len)
+            return;
+
         size_t size_needed = m_buf_size + len;
         if (m_buffer.size() < size_needed)
             m_buffer.resize(size_needed);
