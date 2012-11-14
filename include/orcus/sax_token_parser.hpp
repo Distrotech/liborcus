@@ -39,6 +39,7 @@ namespace orcus {
 
 namespace sax {
 
+#if ORCUS_DEBUG_SAX_PARSER
 template<typename _Attr, typename _Tokens>
 class attr_printer : public ::std::unary_function<_Attr, void>
 {
@@ -58,6 +59,7 @@ private:
     const _Tokens& m_tokens;
     ::std::string m_indent;
 };
+#endif
 
 }
 

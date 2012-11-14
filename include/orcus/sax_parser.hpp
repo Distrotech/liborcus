@@ -35,7 +35,7 @@
 #include "pstring.hpp"
 #include "cell_buffer.hpp"
 
-#define ORCUS_DEBUG_SAX_PARSER 1
+#define ORCUS_DEBUG_SAX_PARSER 0
 
 #if ORCUS_DEBUG_SAX_PARSER
 #include <iostream>
