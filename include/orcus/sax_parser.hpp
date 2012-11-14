@@ -559,7 +559,7 @@ void sax_parser<_Handler>::name(pstring& str)
         c = next_char();
 
     size_t size = m_pos - first;
-    str = pstring(reinterpret_cast<const char*>(m_content) + first, size);
+    str = pstring(m_content+first, size);
 }
 
 template<typename _Handler>
@@ -575,7 +575,7 @@ void sax_parser<_Handler>::value(pstring& str)
         c = next_char();
 
     size_t size = m_pos - first;
-    str = pstring(reinterpret_cast<const char*>(m_content) + first, size);
+    str = pstring(m_content+first, size);
 
     // Skip the closing quote.
     next();
