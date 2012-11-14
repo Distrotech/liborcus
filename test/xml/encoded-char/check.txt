@@ -7,4 +7,5 @@
 /root/data@attr2="'quoted'"
 /root/data"This is 'single-quoted', and this is \"double-quoted\"."
 /root/data
+/root/data@attr="<>'\"&"
 /root/data"Less than (<) and greater than (>) are also encoded."

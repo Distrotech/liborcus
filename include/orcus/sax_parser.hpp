@@ -449,11 +449,8 @@ void sax_parser<_Handler>::characters_with_encoded_char()
 
     size_t first = m_pos;
 
-    for (; has_char(); next())
+    while (has_char())
     {
-        if (cur_char() == '<')
-            break;
-
         if (cur_char() == '&')
         {
             if (m_pos > first)
@@ -463,6 +460,12 @@ void sax_parser<_Handler>::characters_with_encoded_char()
             assert(cur_char() != ';');
             first = m_pos;
         }
+
+        if (cur_char() == '<')
+            break;
+
+        if (cur_char() != '&')
+            next();
     }
 
     if (m_pos > first)
@@ -517,6 +520,10 @@ void sax_parser<_Handler>::parse_encoded_char()
         if (!n)
             throw malformed_xml_error("empty encoded character.");
 
+#if ORCUS_DEBUG_SAX_PARSER
+        cout << "sax_parser::parse_encoded_char: raw='" << std::string(p0, n) << "'" << endl;
+#endif
+
         bool found = true;
         if (n == 2)
         {
@@ -543,12 +550,17 @@ void sax_parser<_Handler>::parse_encoded_char()
             else
                 found = false;
         }
+        else
+            found = false;
 
         // Move to the character past ';' before returning to the parent call.
         next();
 
         if (!found)
         {
+#if ORCUS_DEBUG_SAX_PARSER
+            cout << "sax_parser::parse_encoded_char: not a known encoding name. Use the original." << endl;
+#endif
             // Unexpected encoding name. Use the original text.
             m_cell_buf.append(p0, m_char-p0);
         }
@@ -631,7 +643,8 @@ void sax_parser<_Handler>::value_with_encoded_char(pstring& str)
         if (cur_char() == '"')
             break;
 
-        next();
+        if (cur_char() != '&')
+            next();
     }
 
     if (m_pos > first)

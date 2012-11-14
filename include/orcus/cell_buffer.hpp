@@ -30,6 +30,14 @@
 
 #include <string>
 
+#define ORCUS_DEBUG_CELL_BUFFER 0
+
+#if ORCUS_DEBUG_CELL_BUFFER
+#include <iostream>
+using std::cout;
+using std::endl;
+#endif
+
 namespace orcus {
 
 /**
@@ -47,6 +55,10 @@ public:
     {
         if (!len)
             return;
+
+#if ORCUS_DEBUG_CELL_BUFFER
+        cout << "cell_buffer::append: '" << std::string(p, len) << "'" << endl;
+#endif
 
         size_t size_needed = m_buf_size + len;
         if (m_buffer.size() < size_needed)
