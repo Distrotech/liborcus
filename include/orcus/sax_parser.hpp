@@ -149,7 +149,14 @@ private:
     void parse_encoded_char();
 
     void name(pstring& str);
+
+    /**
+     * Parse attribute value.  Note that the retreived string may be stored in
+     * the temporary cell buffer. Use the string immediately after this call
+     * before the buffer becomes invalid.
+     */
     void value(pstring& str);
+    void value_with_encoded_char(pstring& str);
 
     static bool is_blank(char c);
     static bool is_alpha(char c);
@@ -571,11 +578,55 @@ void sax_parser<_Handler>::value(pstring& str)
 
     c = next_char();
     size_t first = m_pos;
-    while (c != '"')
-        c = next_char();
+    const char* p0 = m_char;
 
-    size_t size = m_pos - first;
-    str = pstring(m_content+first, size);
+    for (; c != '"'; c = next_char())
+    {
+        if (c == '&')
+        {
+            // This value contains one or more encoded characters.
+            m_cell_buf.reset();
+            m_cell_buf.append(p0, m_pos-first);
+            value_with_encoded_char(str);
+            return;
+        }
+    }
+
+    str = pstring(p0, m_pos-first);
+
+    // Skip the closing quote.
+    next();
+}
+
+template<typename _Handler>
+void sax_parser<_Handler>::value_with_encoded_char(pstring& str)
+{
+    assert(cur_char() == '&');
+    parse_encoded_char();
+    assert(cur_char() != ';');
+
+    size_t first = m_pos;
+
+    for (; has_char(); next())
+    {
+        if (cur_char() == '"')
+            break;
+
+        if (cur_char() == '&')
+        {
+            if (m_pos > first)
+                m_cell_buf.append(m_content+first, m_pos-first);
+
+            parse_encoded_char();
+            assert(cur_char() != ';');
+            first = m_pos;
+        }
+    }
+
+    if (m_pos > first)
+        m_cell_buf.append(m_content+first, m_pos-first);
+
+    str = pstring(m_cell_buf.get(), m_cell_buf.size());
 
     // Skip the closing quote.
     next();
