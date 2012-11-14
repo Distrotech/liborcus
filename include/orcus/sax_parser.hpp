@@ -484,6 +484,10 @@ void sax_parser<_Handler>::attribute()
         name(attr_name);
     }
 
+#if ORCUS_DEBUG_SAX_PARSER
+    cout << "attribute: ns='" << attr_ns_name << "', name='" << attr_name << "'" << endl;
+#endif
+
     char c = cur_char();
     if (c != '=')
     {
@@ -612,11 +616,8 @@ void sax_parser<_Handler>::value_with_encoded_char(pstring& str)
 
     size_t first = m_pos;
 
-    for (; has_char(); next())
+    while (has_char())
     {
-        if (cur_char() == '"')
-            break;
-
         if (cur_char() == '&')
         {
             if (m_pos > first)
@@ -626,6 +627,11 @@ void sax_parser<_Handler>::value_with_encoded_char(pstring& str)
             assert(cur_char() != ';');
             first = m_pos;
         }
+
+        if (cur_char() == '"')
+            break;
+
+        next();
     }
 
     if (m_pos > first)

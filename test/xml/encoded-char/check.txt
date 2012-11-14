@@ -4,6 +4,7 @@
 /root/data"Tom & Jerry"
 /root/data
 /root/data@attr="Black & Whilte"
+/root/data@attr2="'quoted'"
 /root/data"This is 'single-quoted', and this is \"double-quoted\"."
 /root/data
 /root/data"Less than (<) and greater than (>) are also encoded."
