@@ -37,6 +37,8 @@
 #include <cassert>
 #include <sstream>
 
+#include "cell_buffer.hpp"
+
 #if ORCUS_DEBUG_CSV
 #include <iostream>
 using std::cout;
@@ -91,9 +93,6 @@ private:
     void parse_cell_with_quote(const char* p0, size_t len0);
     void skip_blanks();
 
-    void init_cell_buf();
-    void append_to_cell_buf(const char* p, size_t len);
-
     /**
      * Push cell value to the handler.
      */
@@ -107,11 +106,10 @@ private:
 private:
     handler_type& m_handler;
     const csv_parser_config& m_config;
-    std::string m_cell_buf;
+    cell_buffer m_cell_buf;
     const char* mp_char;
     size_t m_pos;
     size_t m_length;
-    size_t m_cell_buf_size;
 };
 
 template<typename _Handler>
@@ -279,8 +277,8 @@ void csv_parser<_Handler>::parse_cell_with_quote(const char* p0, size_t len0)
     assert(is_text_qualifier(cur_char()));
 
     // Push the preceding chars to the temp buffer.
-    init_cell_buf();
-    append_to_cell_buf(p0, len0);
+    m_cell_buf.reset();
+    m_cell_buf.append(p0, len0);
 
     // Parse the rest, until the closing quote.
     next();
@@ -298,7 +296,7 @@ void csv_parser<_Handler>::parse_cell_with_quote(const char* p0, size_t len0)
         if (has_next() && is_text_qualifier(next_char()))
         {
             // double quotation.  Copy the current segment to the cell buffer.
-            append_to_cell_buf(p_cur, cur_len);
+            m_cell_buf.append(p_cur, cur_len);
 
             next(); // to the 2nd quote.
             p_cur = mp_char;
@@ -308,9 +306,9 @@ void csv_parser<_Handler>::parse_cell_with_quote(const char* p0, size_t len0)
 
         // closing quote.  Flush the current segment to the cell
         // buffer, push the value to the handler, and exit normally.
-        append_to_cell_buf(p_cur, cur_len);
+        m_cell_buf.append(p_cur, cur_len);
 
-        m_handler.cell(&m_cell_buf[0], m_cell_buf_size);
+        m_handler.cell(m_cell_buf.get(), m_cell_buf.size());
         next();
         skip_blanks();
         return;
@@ -328,24 +326,6 @@ void csv_parser<_Handler>::skip_blanks()
         if (!is_blank(*mp_char))
             break;
     }
-}
-
-template<typename _Handler>
-void csv_parser<_Handler>::init_cell_buf()
-{
-    m_cell_buf_size = 0;
-}
-
-template<typename _Handler>
-void csv_parser<_Handler>::append_to_cell_buf(const char* p, size_t len)
-{
-    size_t size_needed = m_cell_buf_size + len;
-    if (m_cell_buf.size() < size_needed)
-        m_cell_buf.resize(size_needed);
-
-    char* p_dest = &m_cell_buf[m_cell_buf_size];
-    std::strncpy(p_dest, p, len);
-    m_cell_buf_size += len;
 }
 
 template<typename _Handler>

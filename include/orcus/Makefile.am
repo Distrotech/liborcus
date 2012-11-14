@@ -2,6 +2,7 @@ SUBDIRS = spreadsheet odf ooxml
 
 liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus
 liborcus_HEADERS = \
+	cell_buffer.hpp	\
 	css_parser.hpp \
 	csv_parser.hpp \
 	dom_tree.hpp \

@@ -74,7 +74,8 @@ public:
 };
 
 const char* dirs[] = {
-    "../test/xml/simple/"
+    "../test/xml/simple/",
+    "../test/xml/encoded-char/"
 };
 
 void test_xml_sax_parser()
@@ -85,7 +86,7 @@ void test_xml_sax_parser()
         const char* dir = dirs[i];
         string dir_path(dir);
         string file = dir_path;
-        file.append("/input.xml");
+        file.append("input.xml");
         string strm;
         cout << "testing " << file << endl;
         load_file_content(file.c_str(), strm);
@@ -103,7 +104,7 @@ void test_xml_sax_parser()
         // Load the check form.
         string check;
         file = dir_path;
-        file.append("/check.txt");
+        file.append("check.txt");
         load_file_content(file.c_str(), check);
         pstring psource(strm.c_str(), strm.size());
         pstring pcheck(check.c_str(), check.size());

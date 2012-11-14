@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Test for correctly converting encoded characters. -->
+<root xmlns="http://gitorious.org/orcus">
+    <data>Tom &amp; Jerry</data>
+    <data attr="Black &amp; Whilte">This is &apos;single-quoted&apos;, and this is &quot;double-quoted&quot;.</data>
+    <data>Less than (&lt;) and greater than (&gt;) are also encoded.</data>
+</root>
