@@ -494,50 +494,50 @@ void sax_parser<_Handler>::parse_encoded_char()
     const char* p0 = m_char;
     for (; has_char(); next())
     {
-        if (cur_char() == ';')
+        if (cur_char() != ';')
+            continue;
+
+        size_t n = m_char - p0;
+        if (!n)
+            throw malformed_xml_error("empty encoded character.");
+
+        bool found = true;
+        if (n == 2)
         {
-            size_t n = m_char - p0;
-            if (!n)
-                throw malformed_xml_error("empty encoded character.");
-
-            bool found = true;
-            if (n == 2)
-            {
-                if (!std::strncmp(p0, "lt", 2))
-                    m_cell_buf.append("<", 1);
-                else if (!std::strncmp(p0, "gt", 2))
-                    m_cell_buf.append(">", 1);
-                else
-                    found = false;
-            }
-            else if (n == 3)
-            {
-                if (!std::strncmp(p0, "amp", 3))
-                    m_cell_buf.append("&", 1);
-                else
-                    found = false;
-            }
-            else if (n == 4)
-            {
-                if (!std::strncmp(p0, "apos", 4))
-                    m_cell_buf.append("'", 1);
-                else if (!std::strncmp(p0, "quot", 4))
-                    m_cell_buf.append("\"", 1);
-                else
-                    found = false;
-            }
-
-            // Move to the character past ';' before returning to the parent call.
-            next();
-
-            if (!found)
-            {
-                // Unexpected encoding name. Use the original text.
-                m_cell_buf.append(p0, m_char-p0);
-            }
-
-            return;
+            if (!std::strncmp(p0, "lt", 2))
+                m_cell_buf.append("<", 1);
+            else if (!std::strncmp(p0, "gt", 2))
+                m_cell_buf.append(">", 1);
+            else
+                found = false;
         }
+        else if (n == 3)
+        {
+            if (!std::strncmp(p0, "amp", 3))
+                m_cell_buf.append("&", 1);
+            else
+                found = false;
+        }
+        else if (n == 4)
+        {
+            if (!std::strncmp(p0, "apos", 4))
+                m_cell_buf.append("'", 1);
+            else if (!std::strncmp(p0, "quot", 4))
+                m_cell_buf.append("\"", 1);
+            else
+                found = false;
+        }
+
+        // Move to the character past ';' before returning to the parent call.
+        next();
+
+        if (!found)
+        {
+            // Unexpected encoding name. Use the original text.
+            m_cell_buf.append(p0, m_char-p0);
+        }
+
+        return;
     }
 
     throw malformed_xml_error("error parsing encoded character: terminating character is not found.");
