@@ -85,11 +85,15 @@ void dom_tree::end_declaration()
 
 void dom_tree::start_element(const pstring& ns, const pstring& name)
 {
+    // These strings must be persistent.
+    pstring ns_safe = mp_impl->m_pool.intern(ns);
+    pstring name_safe = mp_impl->m_pool.intern(name);
+
     element* p = NULL;
     if (!mp_impl->m_root)
     {
         // This must be the root element!
-        mp_impl->m_root = new element(ns, name);
+        mp_impl->m_root = new element(ns_safe, name_safe);
         mp_impl->m_elem_stack.push_back(mp_impl->m_root);
         p = mp_impl->m_elem_stack.back();
         p->attrs.swap(mp_impl->m_cur_attrs);
@@ -98,7 +102,7 @@ void dom_tree::start_element(const pstring& ns, const pstring& name)
 
     // Append new element as a child element of the current element.
     p = mp_impl->m_elem_stack.back();
-    p->child_nodes.push_back(new element(ns, name));
+    p->child_nodes.push_back(new element(ns_safe, name_safe));
     p = static_cast<element*>(&p->child_nodes.back());
     p->attrs.swap(mp_impl->m_cur_attrs);
     mp_impl->m_elem_stack.push_back(p);
@@ -124,12 +128,18 @@ void dom_tree::set_characters(const pstring& val)
         return;
 
     element* p = mp_impl->m_elem_stack.back();
+    val2 = mp_impl->m_pool.intern(val2); // Make sure the string is persistent.
     p->child_nodes.push_back(new content(val2));
 }
 
 void dom_tree::set_attribute(const pstring& ns, const pstring& name, const pstring& val)
 {
-    mp_impl->m_cur_attrs.push_back(attr(ns, name, val));
+    // These strings must be persistent.
+    pstring ns2 = mp_impl->m_pool.intern(ns);
+    pstring name2 = mp_impl->m_pool.intern(name);
+    pstring val2 = mp_impl->m_pool.intern(val);
+
+    mp_impl->m_cur_attrs.push_back(attr(ns2, name2, val2));
 }
 
 namespace {
