@@ -4,4 +4,5 @@
     <data>Tom &amp; Jerry</data>
     <data attr="Black &amp; Whilte" attr2="&apos;quoted&apos;">This is &apos;single-quoted&apos;, and this is &quot;double-quoted&quot;.</data>
     <data attr="&lt;&gt;&apos;&quot;&amp;">Less than (&lt;) and greater than (&gt;) are also encoded.</data>
+    <data>&lt;&gt;&apos;&quot;&amp;</data>
 </root>
