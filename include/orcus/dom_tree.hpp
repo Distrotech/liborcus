@@ -37,12 +37,16 @@
 
 namespace orcus {
 
+struct dom_tree_impl;
+
 /**
  * Ordinary DOM tree representing the structure of a XML content in full.
  */
 class ORCUS_DLLPUBLIC dom_tree
 {
     dom_tree(const dom_tree&); // disabled
+    dom_tree& operator= (const dom_tree&); // disabled
+
 public:
     struct attr
     {
@@ -104,10 +108,7 @@ public:
     void dump_compact(std::ostream& os) const;
 
 private:
-    attrs_type m_doc_attrs;
-    attrs_type m_cur_attrs;
-    element_stack_type m_elem_stack;
-    element* m_root;
+    dom_tree_impl* mp_impl;
 };
 
 std::ostream& operator<< (std::ostream& os, const dom_tree::attr& at);

@@ -31,9 +31,23 @@
 #include <iostream>
 #include <sstream>
 
+#include "string_pool.hpp"
+
 using namespace std;
 
 namespace orcus {
+
+struct dom_tree_impl
+{
+    string_pool m_pool;
+
+    dom_tree::attrs_type m_doc_attrs;
+    dom_tree::attrs_type m_cur_attrs;
+    dom_tree::element_stack_type m_elem_stack;
+    dom_tree::element* m_root;
+
+    dom_tree_impl() : m_root(NULL) {}
+};
 
 dom_tree::attr::attr(const pstring& _ns, const pstring& _name, const pstring& _value) :
     ns(_ns), name(_name), value(_value) {}
@@ -60,54 +74,48 @@ void dom_tree::content::print(ostream& os) const
 
 dom_tree::content::~content() {}
 
-dom_tree::dom_tree() :
-    m_root(NULL)
-{
-}
+dom_tree::dom_tree() : mp_impl(new dom_tree_impl) {}
 
-dom_tree::~dom_tree()
-{
-    delete m_root;
-}
+dom_tree::~dom_tree() { delete mp_impl; }
 
 void dom_tree::end_declaration()
 {
-    m_doc_attrs.swap(m_cur_attrs);
+    mp_impl->m_doc_attrs.swap(mp_impl->m_cur_attrs);
 }
 
 void dom_tree::start_element(const pstring& ns, const pstring& name)
 {
     element* p = NULL;
-    if (!m_root)
+    if (!mp_impl->m_root)
     {
         // This must be the root element!
-        m_root = new element(ns, name);
-        m_elem_stack.push_back(m_root);
-        p = m_elem_stack.back();
-        p->attrs.swap(m_cur_attrs);
+        mp_impl->m_root = new element(ns, name);
+        mp_impl->m_elem_stack.push_back(mp_impl->m_root);
+        p = mp_impl->m_elem_stack.back();
+        p->attrs.swap(mp_impl->m_cur_attrs);
         return;
     }
 
     // Append new element as a child element of the current element.
-    p = m_elem_stack.back();
+    p = mp_impl->m_elem_stack.back();
     p->child_nodes.push_back(new element(ns, name));
     p = static_cast<element*>(&p->child_nodes.back());
-    p->attrs.swap(m_cur_attrs);
-    m_elem_stack.push_back(p);
+    p->attrs.swap(mp_impl->m_cur_attrs);
+    mp_impl->m_elem_stack.push_back(p);
 }
 
 void dom_tree::end_element(const pstring& ns, const pstring& name)
 {
-    const element* p = m_elem_stack.back();
+    const element* p = mp_impl->m_elem_stack.back();
     if (p->ns != ns || p->name != name)
         throw general_error("non-matching end element.");
 
-    m_elem_stack.pop_back();
+    mp_impl->m_elem_stack.pop_back();
 }
 
 void dom_tree::set_characters(const pstring& val)
 {
-    if (m_elem_stack.empty())
+    if (mp_impl->m_elem_stack.empty())
         // No root element has been encountered.  Ignore this.
         return;
 
@@ -115,13 +123,13 @@ void dom_tree::set_characters(const pstring& val)
     if (val2.empty())
         return;
 
-    element* p = m_elem_stack.back();
+    element* p = mp_impl->m_elem_stack.back();
     p->child_nodes.push_back(new content(val2));
 }
 
 void dom_tree::set_attribute(const pstring& ns, const pstring& name, const pstring& val)
 {
-    m_cur_attrs.push_back(attr(ns, name, val));
+    mp_impl->m_cur_attrs.push_back(attr(ns, name, val));
 }
 
 namespace {
@@ -168,12 +176,12 @@ struct sort_by_name : std::binary_function<dom_tree::attr, dom_tree::attr, bool>
 
 void dom_tree::dump_compact(ostream& os) const
 {
-    if (!m_root)
+    if (!mp_impl->m_root)
         return;
 
     scopes_type scopes;
 
-    scopes.push_back(new scope(string(), m_root));
+    scopes.push_back(new scope(string(), mp_impl->m_root));
     while (!scopes.empty())
     {
         bool new_scope = false;
