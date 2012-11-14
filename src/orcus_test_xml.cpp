@@ -73,19 +73,22 @@ public:
     }
 };
 
-const char* files[] = {
-    "../test/xml/simple.xml"
+const char* dirs[] = {
+    "../test/xml/simple/"
 };
 
 void test_xml_sax_parser()
 {
-    size_t n = sizeof(files)/sizeof(files[0]);
+    size_t n = sizeof(dirs)/sizeof(dirs[0]);
     for (size_t i = 0; i < n; ++i)
     {
-        const char* file = files[i];
+        const char* dir = dirs[i];
+        string dir_path(dir);
+        string file = dir_path;
+        file.append("/input.xml");
         string strm;
         cout << "testing " << file << endl;
-        load_file_content(file, strm);
+        load_file_content(file.c_str(), strm);
         assert(!strm.empty());
 
         sax_handler hdl;
@@ -99,9 +102,9 @@ void test_xml_sax_parser()
 
         // Load the check form.
         string check;
-        string path(file);
-        path += ".check";
-        load_file_content(path.c_str(), check);
+        file = dir_path;
+        file.append("/check.txt");
+        load_file_content(file.c_str(), check);
         pstring psource(strm.c_str(), strm.size());
         pstring pcheck(check.c_str(), check.size());
 
