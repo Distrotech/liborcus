@@ -37,6 +37,31 @@ using namespace std;
 
 namespace orcus {
 
+namespace {
+
+/**
+ * Escape certain characters with backslash (\).
+ */
+void escape(ostream& os, const pstring& val)
+{
+    if (val.empty())
+        return;
+
+    const char* p = &val[0];
+    const char* p_end = p + val.size();
+    for (; p != p_end; ++p)
+    {
+        if (*p == '"')
+            os << "\\\"";
+        else if (*p == '\\')
+            os << "\\\\";
+        else
+            os << *p;
+    }
+}
+
+}
+
 struct dom_tree_impl
 {
     string_pool m_pool;
@@ -69,7 +94,9 @@ dom_tree::content::content(const pstring& _value) : node(node_content), value(_v
 
 void dom_tree::content::print(ostream& os) const
 {
-    os << '"' << value << '"';
+    os << '"';
+    escape(os, value);
+    os << '"';
 }
 
 dom_tree::content::~content() {}
@@ -262,7 +289,9 @@ ostream& operator<< (ostream& os, const dom_tree::attr& at)
 {
     if (!at.ns.empty())
         os << at.ns << ":";
-    os << at.name << "=\"" << at.value << '"';
+    os << at.name << "=\"";
+    escape(os, at.value);
+    os << '"';
     return os;
 }
 
