@@ -72,6 +72,11 @@ struct dom_tree_impl
     dom_tree::element* m_root;
 
     dom_tree_impl() : m_root(NULL) {}
+
+    ~dom_tree_impl()
+    {
+        delete m_root;
+    }
 };
 
 dom_tree::attr::attr(const pstring& _ns, const pstring& _name, const pstring& _value) :
