@@ -471,7 +471,10 @@ void sax_parser<_Handler>::characters_with_encoded_char()
     if (m_pos > first)
         m_cell_buf.append(m_content+first, m_pos-first);
 
-    m_handler.characters(pstring(m_cell_buf.get(), m_cell_buf.size()));
+    if (m_cell_buf.empty())
+        m_handler.characters(pstring());
+    else
+        m_handler.characters(pstring(m_cell_buf.get(), m_cell_buf.size()));
 }
 
 template<typename _Handler>
@@ -650,9 +653,11 @@ void sax_parser<_Handler>::value_with_encoded_char(pstring& str)
     if (m_pos > first)
         m_cell_buf.append(m_content+first, m_pos-first);
 
-    str = pstring(m_cell_buf.get(), m_cell_buf.size());
+    if (!m_cell_buf.empty())
+        str = pstring(m_cell_buf.get(), m_cell_buf.size());
 
     // Skip the closing quote.
+    assert(cur_char() == '"');
     next();
 }
 

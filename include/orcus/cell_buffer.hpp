@@ -72,6 +72,7 @@ public:
     void reset() { m_buf_size = 0; }
     const char* get() const { return &m_buffer[0]; }
     size_t size() const { return m_buf_size; }
+    bool empty() const { return m_buf_size == 0; }
 };
 
 }
