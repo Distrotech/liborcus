@@ -11,3 +11,6 @@
 /root/data"Less than (<) and greater than (>) are also encoded."
 /root/data
 /root/data"<>'\"&"
+/root/data
+/root/data@single-char="&"
+/root/data">"
