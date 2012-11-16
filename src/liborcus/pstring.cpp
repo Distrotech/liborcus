@@ -58,7 +58,7 @@ pstring pstring::intern(const char* str)
 pstring pstring::intern(const char* str, size_t n)
 {
     ::boost::mutex::scoped_lock lock(interned_strings.mtx);
-    return interned_strings.store.intern(str, n);
+    return interned_strings.store.intern(str, n).first;
 }
 
 void pstring::intern::dispose()

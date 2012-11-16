@@ -143,7 +143,7 @@ public:
             // This is a root element.
             mp_root.reset(new root);
             mp_root->name.ns = ns_id;
-            mp_root->name.name = m_pool.intern(elem.name);
+            mp_root->name.name = m_pool.intern(elem.name).first;
             element_ref ref(mp_root->name, &mp_root->prop);
             merge_attributes(mp_root->prop);
             m_stack.push_back(ref);
@@ -171,7 +171,7 @@ public:
 
         // New element.
         size_t order = current.prop->child_elements.size();
-        key.name = m_pool.intern(key.name);
+        key.name = m_pool.intern(key.name).first;
         pair<element_store_type::const_iterator,bool> r =
             current.prop->child_elements.insert(
                 element_store_type::value_type(key, new elem_prop(order)));

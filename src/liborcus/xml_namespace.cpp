@@ -52,7 +52,7 @@ xmlns_id_t xmlns_repository::intern(const pstring& uri)
 
     try
     {
-        pstring uri_interned = mp_impl->m_pool.intern(uri);
+        pstring uri_interned = mp_impl->m_pool.intern(uri).first;
         if (!uri_interned.empty())
             return uri_interned.get();
     }

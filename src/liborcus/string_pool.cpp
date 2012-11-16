@@ -85,15 +85,15 @@ string_pool::~string_pool()
     clear();
 }
 
-pstring string_pool::intern(const char* str)
+pair<pstring, bool> string_pool::intern(const char* str)
 {
     return intern(str, strlen(str));
 }
 
-pstring string_pool::intern(const char* str, size_t n)
+pair<pstring, bool> string_pool::intern(const char* str, size_t n)
 {
     if (!n)
-        return pstring();
+        return pair<pstring, bool>(pstring(), false);
 
     unique_ptr<string> new_str(new string(str, n));
     string_store_type::const_iterator itr = m_store.find(new_str.get());
@@ -105,17 +105,18 @@ pstring string_pool::intern(const char* str, size_t n)
             throw general_error("failed to intern a new string instance.");
         const string* p = *r.first;
         assert(p->size() == n);
-        return pstring(&(*p)[0], n);
+
+        return pair<pstring, bool>(pstring(&(*p)[0], n), true);
     }
 
     // This string has already been interned.
 
     const string* stored_str = *itr;
     assert(stored_str->size() == n);
-    return pstring(&(*stored_str)[0], n);
+    return pair<pstring, bool>(pstring(&(*stored_str)[0], n), false);
 }
 
-pstring string_pool::intern(const pstring& str)
+pair<pstring, bool> string_pool::intern(const pstring& str)
 {
     return intern(str.get(), str.size());
 }

@@ -391,7 +391,7 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
 
         // Make sure the sheet name string is persistent.
         cell_position pos_safe = pos;
-        pos_safe.sheet = m_names.intern(pos.sheet.get(), pos.sheet.size());
+        pos_safe.sheet = m_names.intern(pos.sheet.get(), pos.sheet.size()).first;
 
         it = m_field_refs.insert(it, range_ref_map_type::value_type(pos_safe, new range_reference(pos_safe)));
     }
@@ -576,7 +576,7 @@ xml_map_tree::range_ref_map_type& xml_map_tree::get_range_references()
 
 pstring xml_map_tree::intern_string(const pstring& str)
 {
-    return m_names.intern(str);
+    return m_names.intern(str).first;
 }
 
 xml_map_tree::linkable* xml_map_tree::get_element_stack(
@@ -601,7 +601,9 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         if (token.attribute)
             throw xpath_error("root element cannot be an attribute.");
 
-        mp_root = new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_unlinked, reference_unknown);
+        mp_root = new element(
+            token.ns, m_names.intern(token.name.get(), token.name.size()).first,
+            element_unlinked, reference_unknown);
     }
 
     elem_stack_new.push_back(mp_root);
@@ -621,7 +623,10 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         if (it == children.end())
         {
             // Insert a new element of this name.
-            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_unlinked, reference_unknown));
+            children.push_back(
+                new element(
+                    token.ns, m_names.intern(token.name.get(), token.name.size()).first,
+                    element_unlinked, reference_unknown));
             cur_element = &children.back();
         }
         else
@@ -646,7 +651,10 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         if (it != attrs.end())
             throw xpath_error("This attribute is already linked.  You can't link the same attribute twice.");
 
-        attrs.push_back(new attribute(token.ns, m_names.intern(token.name.get(), token.name.size()), ref_type));
+        attrs.push_back(
+            new attribute(
+                token.ns, m_names.intern(token.name.get(), token.name.size()).first, ref_type));
+
         ret = &attrs.back();
     }
     else
@@ -657,7 +665,11 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         if (it == children.end())
         {
             // No element of that name exists.
-            children.push_back(new element(token.ns, m_names.intern(token.name.get(), token.name.size()), element_linked, ref_type));
+            children.push_back(
+                new element(
+                    token.ns, m_names.intern(token.name.get(), token.name.size()).first,
+                    element_linked, ref_type));
+
             elem_stack_new.push_back(&children.back());
             ret = &children.back();
         }

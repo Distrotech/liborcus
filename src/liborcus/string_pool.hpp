@@ -61,9 +61,9 @@ public:
     string_pool();
     ~string_pool();
 
-    pstring intern(const char* str);
-    pstring intern(const char* str, size_t n);
-    pstring intern(const pstring& str);
+    std::pair<pstring, bool> intern(const char* str);
+    std::pair<pstring, bool> intern(const char* str, size_t n);
+    std::pair<pstring, bool> intern(const pstring& str);
 
     void dump() const;
     void clear();
