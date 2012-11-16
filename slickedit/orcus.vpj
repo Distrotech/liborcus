@@ -254,6 +254,7 @@
 				<F N="../src/liborcus/spreadsheet_interface.cpp"/>
 				<F N="../src/liborcus/string_pool.cpp"/>
 				<F N="../src/liborcus/string_pool.hpp"/>
+				<F N="../src/liborcus/string_pool_test.cpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>
 				<F N="../src/liborcus/xml_context.cpp"/>
 				<F N="../src/liborcus/xml_handler.cpp"/>

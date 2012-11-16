@@ -61,8 +61,35 @@ public:
     string_pool();
     ~string_pool();
 
+    /**
+     * Intern a string.
+     *
+     * @param str string to intern.  It must be null-terminated.
+     *
+     * @return pair whose first value is the interned string, and the second
+     *         value specifies whether it is a newly created instance (true)
+     *         or a reuse of an existing instance (false).
+     */
     std::pair<pstring, bool> intern(const char* str);
+
+    /**
+     * Intern a string.
+     *
+     *
+     * @param str string to intern.  It doesn't need to be null-terminated.
+     * @param n length of the string.
+     *
+     * @return see above.
+     */
     std::pair<pstring, bool> intern(const char* str, size_t n);
+
+    /**
+     * Intern a string.
+     *
+     * @param str string to intern.
+     *
+     * @return see above.
+     */
     std::pair<pstring, bool> intern(const pstring& str);
 
     void dump() const;

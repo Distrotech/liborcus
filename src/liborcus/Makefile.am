@@ -2,6 +2,7 @@
 INCLUDES = -I$(top_srcdir)/include
 
 EXTRA_PROGRAMS = \
+	liborcus-test-string-pool \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-namespace \
 	liborcus-test-xml-structure-tree
@@ -84,6 +85,16 @@ liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 liborcus_@ORCUS_API_VERSION@_la_LIBADD = \
 	 $(BOOST_SYSTEM_LIBS) $(BOOST_SYSTEM_LIB) $(LIBZIP_LIBS) $(ZLIB_LIBS)
 
+# liborcus-test-string-pool
+
+liborcus_test_string_pool_SOURCES = \
+	string_pool.cpp \
+	string_pool.hpp \
+	string_pool_test.cpp
+
+liborcus_test_string_pool_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la
+
 # liborcus-test-xml-map-tree
 
 liborcus_test_xml_map_tree_SOURCES = \
@@ -121,6 +132,7 @@ liborcus_test_xml_structure_tree_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la
 
 TESTS = \
+	liborcus-test-string-pool \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-namespace \
 	liborcus-test-xml-structure-tree
