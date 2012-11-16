@@ -49,6 +49,8 @@ class xmlns_repository
     xmlns_repository(const xmlns_repository&); // disabled
     xmlns_repository& operator= (const xmlns_repository&); // disabled
 
+    size_t get_index(xmlns_id_t ns_id) const;
+
 public:
     ORCUS_DLLPUBLIC xmlns_repository();
     ORCUS_DLLPUBLIC ~xmlns_repository();
@@ -74,11 +76,15 @@ class xmlns_context
     xmlns_context(); // disabled
     xmlns_context(xmlns_repository& repo);
 public:
+    static size_t index_not_found;
+
     ORCUS_DLLPUBLIC xmlns_context(const xmlns_context& r);
     ORCUS_DLLPUBLIC ~xmlns_context();
 
     ORCUS_DLLPUBLIC xmlns_id_t set(const pstring& key, const pstring& uri);
     ORCUS_DLLPUBLIC xmlns_id_t get(const pstring& key) const;
+    ORCUS_DLLPUBLIC size_t get_index(xmlns_id_t ns_id) const;
+    ORCUS_DLLPUBLIC void get_keys(std::vector<pstring>& keys) const;
 
 private:
     xmlns_context_impl* mp_impl;
