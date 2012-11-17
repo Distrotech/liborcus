@@ -30,6 +30,8 @@
 
 #include <cstdlib>
 #include <cassert>
+#include <vector>
+#include <iostream>
 
 using namespace std;
 using namespace orcus;
@@ -67,8 +69,34 @@ void test_basic()
     assert(cxt1.get(myns) == cxt2.get(empty));
 }
 
+void test_all_namespaces()
+{
+    pstring key1("a"), key2("b"), key3("c");
+    pstring ns1("foo"), ns2("baa"), ns3("hmm");
+
+    xmlns_repository repo;
+    xmlns_context cxt = repo.create_context();
+    xmlns_id_t ns;
+
+    ns = cxt.push(key1, ns1);
+    ns = cxt.push(key2, ns2);
+    ns = cxt.push(key3, ns3);
+
+    vector<xmlns_id_t> all_ns;
+    cxt.get_all_namespaces(all_ns);
+    assert(all_ns.size() == 3);
+
+    vector<xmlns_id_t>::const_iterator it = all_ns.begin(), it_end = all_ns.end();
+    for (; it != it_end; ++it)
+    {
+        size_t i = cxt.get_index(*it);
+        cout << i << ":" << *it << endl;
+    }
+}
+
 int main()
 {
     test_basic();
+    test_all_namespaces();
     return EXIT_SUCCESS;
 }

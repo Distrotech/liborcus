@@ -444,8 +444,10 @@ void xml_structure_tree::dump_compact(ostream& os) const
         for (; it != it_end; ++it)
         {
             xmlns_id_t ns_id = cxt.get(*it);
-            cout << "ns_id=" << ns_id << endl;
             size_t num_id = cxt.get_index(ns_id);
+            if (num_id == xmlns_context::index_not_found)
+                continue;
+
             os << "ns" << num_id << "=" << ns_id << endl;
         }
     }

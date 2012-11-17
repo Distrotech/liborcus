@@ -101,7 +101,9 @@ xmlns_context xmlns_repository::create_context()
 
 size_t xmlns_repository::get_index(xmlns_id_t ns_id) const
 {
-    cout << "ns_id='" << ns_id << "'" << endl;
+    if (!ns_id)
+        return xmlns_context::index_not_found;
+
     strid_map_type::const_iterator it = mp_impl->m_strid_map.find(pstring(ns_id));
     if (it == mp_impl->m_strid_map.end())
         return xmlns_context::index_not_found;
