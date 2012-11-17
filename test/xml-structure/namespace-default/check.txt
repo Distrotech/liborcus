@@ -1,0 +1,4 @@
+/root
+/root/entry
+/root/entry/name
+
