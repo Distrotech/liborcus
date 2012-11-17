@@ -438,18 +438,13 @@ void xml_structure_tree::dump_compact(ostream& os) const
     // Dump all namespaces first.
     {
         // Defalut namespace
-        xmlns_id_t dns = cxt.get(pstring());
-        if (dns)
-        {
-            size_t num_id = cxt.get_index(dns);
-            os << "ns" << num_id << "=" << dns << endl;
-        }
-        vector<pstring> keys;
-        cxt.get_keys(keys);
-        vector<pstring>::const_iterator it = keys.begin(), it_end = keys.end();
+        vector<xmlns_id_t> nslist;
+        cxt.get_all_namespaces(nslist);
+        vector<xmlns_id_t>::const_iterator it = nslist.begin(), it_end = nslist.end();
         for (; it != it_end; ++it)
         {
             xmlns_id_t ns_id = cxt.get(*it);
+            cout << "ns_id=" << ns_id << endl;
             size_t num_id = cxt.get_index(ns_id);
             os << "ns" << num_id << "=" << ns_id << endl;
         }

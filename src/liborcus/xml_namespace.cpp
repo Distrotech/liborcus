@@ -33,7 +33,7 @@
 #include <vector>
 #include <limits>
 
-#define ORCUS_DEBUG_NAMESPACE_REPO 0
+#define ORCUS_DEBUG_NAMESPACE_REPO 1
 
 #if ORCUS_DEBUG_NAMESPACE_REPO
 #include <iostream>
@@ -76,6 +76,9 @@ xmlns_id_t xmlns_repository::intern(const pstring& uri)
                 // This is a new instance. Assign a numerical identifier.
                 mp_impl->m_strid_map.insert(
                     strid_map_type::value_type(r.first, mp_impl->m_identifiers.size()));
+#if ORCUS_DEBUG_NAMESPACE_REPO
+                cout << "xmlns_repository::intern: uri='" << uri_interned << "' (" << mp_impl->m_identifiers.size() << ")" << endl;
+#endif
                 mp_impl->m_identifiers.push_back(r.first);
 
                 assert(mp_impl->m_pool.size() == mp_impl->m_identifiers.size());
@@ -98,7 +101,8 @@ xmlns_context xmlns_repository::create_context()
 
 size_t xmlns_repository::get_index(xmlns_id_t ns_id) const
 {
-    strid_map_type::const_iterator it = mp_impl->m_strid_map.find(ns_id);
+    cout << "ns_id='" << ns_id << "'" << endl;
+    strid_map_type::const_iterator it = mp_impl->m_strid_map.find(pstring(ns_id));
     if (it == mp_impl->m_strid_map.end())
         return xmlns_context::index_not_found;
 
@@ -115,8 +119,11 @@ struct xmlns_context_impl
     xmlns_list_type m_default;
     alias_map_type m_map;
 
-    xmlns_context_impl(xmlns_repository& repo) : m_repo(repo) {}
-    xmlns_context_impl(const xmlns_context_impl& r) : m_repo(r.m_repo), m_all_ns(r.m_all_ns), m_default(r.m_default), m_map(r.m_map) {}
+    bool m_in_parse;
+
+    xmlns_context_impl(xmlns_repository& repo) : m_repo(repo), m_in_parse(true) {}
+    xmlns_context_impl(const xmlns_context_impl& r) :
+        m_repo(r.m_repo), m_all_ns(r.m_all_ns), m_default(r.m_default), m_map(r.m_map), m_in_parse(r.m_in_parse) {}
 };
 
 size_t xmlns_context::index_not_found = std::numeric_limits<size_t>::max();
@@ -131,6 +138,9 @@ xmlns_context::~xmlns_context()
 
 xmlns_id_t xmlns_context::push(const pstring& key, const pstring& uri)
 {
+    if (!mp_impl->m_in_parse)
+        throw general_error("You can only push or pop during parsing.");
+
 #if ORCUS_DEBUG_NAMESPACE_REPO
     cout << "xmlns_context::push: key='" << key << "', uri='" << uri << "'" << endl;
 #endif
@@ -138,7 +148,7 @@ xmlns_id_t xmlns_context::push(const pstring& key, const pstring& uri)
         return XMLNS_UNKNOWN_ID;
 
     pstring uri_interned = mp_impl->m_repo.intern(uri);
-
+    cout << "interned: '" << uri_interned.get() << "'" << endl;
     if (key.empty())
     {
         // empty key value is associated with default namespace.
@@ -174,6 +184,9 @@ xmlns_id_t xmlns_context::push(const pstring& key, const pstring& uri)
 
 void xmlns_context::pop(const pstring& key)
 {
+    if (!mp_impl->m_in_parse)
+        throw general_error("You can only push or pop during parsing.");
+
     if (key.empty())
     {
         // empty key value is associated with default namespace.
@@ -214,14 +227,19 @@ size_t xmlns_context::get_index(xmlns_id_t ns_id) const
     return mp_impl->m_repo.get_index(ns_id);
 }
 
-void xmlns_context::get_keys(std::vector<pstring>& keys) const
+void xmlns_context::get_all_namespaces(std::vector<xmlns_id_t>& nslist) const
 {
-    std::vector<pstring> _keys;
-    alias_map_type::const_iterator it = mp_impl->m_map.begin(), it_end = mp_impl->m_map.end();
-    for (; it != it_end; ++it)
-        _keys.push_back(it->first);
+    if (mp_impl->m_in_parse)
+    {
+        mp_impl->m_in_parse = false;
 
-    keys.swap(_keys);
+        // Sort it and remove duplicate.
+        std::sort(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());
+        xmlns_list_type::iterator it_unique_end =
+            std::unique(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());
+        mp_impl->m_all_ns.erase(it_unique_end, mp_impl->m_all_ns.end());
+    }
+    nslist.assign(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());
 }
 
 }

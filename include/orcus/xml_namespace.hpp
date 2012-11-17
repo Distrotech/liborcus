@@ -85,7 +85,7 @@ public:
     ORCUS_DLLPUBLIC void pop(const pstring& key);
     ORCUS_DLLPUBLIC xmlns_id_t get(const pstring& key) const;
     ORCUS_DLLPUBLIC size_t get_index(xmlns_id_t ns_id) const;
-    ORCUS_DLLPUBLIC void get_keys(std::vector<pstring>& keys) const;
+    ORCUS_DLLPUBLIC void get_all_namespaces(std::vector<xmlns_id_t>& nslist) const;
 
 private:
     xmlns_context_impl* mp_impl;
