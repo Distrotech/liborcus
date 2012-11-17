@@ -35,7 +35,7 @@
 
 namespace orcus {
 
-class xmlns_repository;
+class xmlns_context;
 struct xml_structure_tree_impl;
 
 /**
@@ -137,7 +137,7 @@ public:
         void get_attributes(entity_names_type& names);
     };
 
-    xml_structure_tree(xmlns_repository& xmlns_repo);
+    xml_structure_tree(xmlns_context& xmlns_cxt);
     ~xml_structure_tree();
 
     void parse(const char* p, size_t n);

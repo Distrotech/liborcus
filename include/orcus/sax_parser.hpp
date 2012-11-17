@@ -45,6 +45,19 @@ using std::endl;
 
 namespace orcus {
 
+class malformed_xml_error : public std::exception
+{
+public:
+    malformed_xml_error(const std::string& msg) : m_msg(msg) {}
+    virtual ~malformed_xml_error() throw() {}
+    virtual const char* what() const throw()
+    {
+        return m_msg.c_str();
+    }
+private:
+    std::string m_msg;
+};
+
 /**
  * Element properties passed by sax_parser to its handler's open_element()
  * and close_element() calls.
@@ -66,19 +79,6 @@ class sax_parser
 {
 public:
     typedef _Handler handler_type;
-
-    class malformed_xml_error : public std::exception
-    {
-    public:
-        malformed_xml_error(const std::string& msg) : m_msg(msg) {}
-        virtual ~malformed_xml_error() throw() {}
-        virtual const char* what() const throw()
-        {
-            return m_msg.c_str();
-        }
-    private:
-        ::std::string m_msg;
-    };
 
     sax_parser(const char* content, const size_t size, handler_type& handler);
     ~sax_parser();

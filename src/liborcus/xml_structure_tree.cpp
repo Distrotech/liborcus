@@ -26,7 +26,7 @@
  ************************************************************************/
 
 #include "orcus/xml_structure_tree.hpp"
-#include "orcus/sax_parser.hpp"
+#include "orcus/sax_ns_parser.hpp"
 #include "orcus/xml_namespace.hpp"
 #include "orcus/global.hpp"
 #include "orcus/exception.hpp"
@@ -103,7 +103,6 @@ typedef std::vector<element_ref> elements_type;
 
 class xml_sax_handler
 {
-    xmlns_context& m_ns_cxt;
     string_pool& m_pool;
     unique_ptr<root> mp_root;
     elements_type m_stack;
@@ -127,22 +126,21 @@ private:
     }
 
 public:
-    xml_sax_handler(xmlns_context& ns_cxt, string_pool& pool) :
-        m_ns_cxt(ns_cxt), m_pool(pool), mp_root(NULL) {}
+    xml_sax_handler(string_pool& pool) :
+        m_pool(pool), mp_root(NULL) {}
 
     void declaration()
     {
         m_attrs.clear();
     }
 
-    void start_element(const sax_parser_element& elem)
+    void start_element(const sax_ns_parser_element& elem)
     {
-        xmlns_id_t ns_id = m_ns_cxt.get(elem.ns);
         if (!mp_root)
         {
             // This is a root element.
             mp_root.reset(new root);
-            mp_root->name.ns = ns_id;
+            mp_root->name.ns = elem.ns;
             mp_root->name.name = m_pool.intern(elem.name).first;
             element_ref ref(mp_root->name, &mp_root->prop);
             merge_attributes(mp_root->prop);
@@ -153,7 +151,7 @@ public:
         // See if the current element already has a child element of the same name.
         assert(!m_stack.empty());
         element_ref& current = m_stack.back();
-        xml_structure_tree::entity_name key(ns_id, elem.name);
+        xml_structure_tree::entity_name key(elem.ns, elem.name);
         element_store_type::const_iterator it = current.prop->child_elements.find(key);
         if (it != current.prop->child_elements.end())
         {
@@ -187,15 +185,12 @@ public:
         m_stack.push_back(ref);
     }
 
-    void end_element(const sax_parser_element& elem)
+    void end_element(const sax_ns_parser_element& elem)
     {
         if (m_stack.empty())
             throw general_error("Element stack is empty.");
 
         const element_ref& current = m_stack.back();
-        xmlns_id_t ns_id = m_ns_cxt.get(elem.ns);
-        if (current.name.ns != ns_id || current.name.name != elem.name)
-            throw general_error("Non-matching end element");
 
         // Reset the in-scope count of all child elements to 0 before ending
         // the current scope.
@@ -208,25 +203,14 @@ public:
 
     void characters(const pstring&) {}
 
-    void attribute(const pstring& ns, const pstring& name, const pstring& value)
+    void attribute(const pstring&, const pstring&)
     {
-        if (ns.empty() && name == "xmlns")
-        {
-            // Default namespace
-            m_ns_cxt.set(pstring(), value);
-            return;
-        }
+        // Attribute for declaration. We don't handle this.
+    }
 
-        if (ns == "xmlns")
-        {
-            // Namespace alias
-            if (!name.empty())
-                m_ns_cxt.set(name, value);
-            return;
-        }
-
-        xmlns_id_t ns_id = m_ns_cxt.get(ns);
-        m_attrs.push_back(xml_structure_tree::entity_name(ns_id, name));
+    void attribute(const sax_ns_parser_attribute& attr)
+    {
+        m_attrs.push_back(xml_structure_tree::entity_name(attr.ns, attr.name));
     }
 
     root* release_root_element()
@@ -283,11 +267,11 @@ void print_scope(ostream& os, const scopes_type& scopes)
 struct xml_structure_tree_impl : boost::noncopyable
 {
     string_pool m_pool;
-    xmlns_repository& m_xmlns_repo;
+    xmlns_context& m_xmlns_cxt;
     root* mp_root;
 
-    xml_structure_tree_impl(xmlns_repository& xmlns_repo) :
-        m_xmlns_repo(xmlns_repo), mp_root(NULL) {}
+    xml_structure_tree_impl(xmlns_context& xmlns_cxt) :
+        m_xmlns_cxt(xmlns_cxt), mp_root(NULL) {}
 
     ~xml_structure_tree_impl()
     {
@@ -427,8 +411,8 @@ void xml_structure_tree::walker::get_attributes(entity_names_type& names)
     names.assign(prop.attribute_names.begin(), prop.attribute_names.end());
 }
 
-xml_structure_tree::xml_structure_tree(xmlns_repository& xmlns_repo) :
-    mp_impl(new xml_structure_tree_impl(xmlns_repo)) {}
+xml_structure_tree::xml_structure_tree(xmlns_context& xmlns_cxt) :
+    mp_impl(new xml_structure_tree_impl(xmlns_cxt)) {}
 
 xml_structure_tree::~xml_structure_tree()
 {
@@ -437,9 +421,8 @@ xml_structure_tree::~xml_structure_tree()
 
 void xml_structure_tree::parse(const char* p, size_t n)
 {
-    xmlns_context ns_cxt = mp_impl->m_xmlns_repo.create_context();
-    xml_sax_handler hdl(ns_cxt, mp_impl->m_pool);
-    sax_parser<xml_sax_handler> parser(p, n, hdl);
+    xml_sax_handler hdl(mp_impl->m_pool);
+    sax_ns_parser<xml_sax_handler> parser(p, n, mp_impl->m_xmlns_cxt, hdl);
     parser.parse();
     mp_impl->mp_root = hdl.release_root_element();
 }
@@ -450,6 +433,27 @@ void xml_structure_tree::dump_compact(ostream& os) const
         return;
 
     scopes_type scopes;
+    const xmlns_context& cxt = mp_impl->m_xmlns_cxt;
+
+    // Dump all namespaces first.
+    {
+        // Defalut namespace
+        xmlns_id_t dns = cxt.get(pstring());
+        if (dns)
+        {
+            size_t num_id = cxt.get_index(dns);
+            os << "ns" << num_id << "=" << dns << endl;
+        }
+        vector<pstring> keys;
+        cxt.get_keys(keys);
+        vector<pstring>::const_iterator it = keys.begin(), it_end = keys.end();
+        for (; it != it_end; ++it)
+        {
+            xmlns_id_t ns_id = cxt.get(*it);
+            size_t num_id = cxt.get_index(ns_id);
+            os << "ns" << num_id << "=" << ns_id << endl;
+        }
+    }
 
     element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
     scopes.push_back(new scope(entity_name(), false, ref));

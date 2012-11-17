@@ -341,7 +341,7 @@ xml_map_tree::~xml_map_tree()
 
 void xml_map_tree::set_namespace_alias(const pstring& alias, const pstring& uri)
 {
-    m_xmlns_cxt.set(alias, uri);
+    m_xmlns_cxt.push(alias, uri);
 }
 
 void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)

@@ -203,6 +203,7 @@
 				<F N="../include/orcus/orcus_xlsx.hpp"/>
 				<F N="../include/orcus/orcus_xml.hpp"/>
 				<F N="../include/orcus/pstring.hpp"/>
+				<F N="../include/orcus/sax_ns_parser.hpp"/>
 				<F N="../include/orcus/sax_parser.hpp"/>
 				<F N="../include/orcus/sax_token_parser.hpp"/>
 				<F N="../include/orcus/tokens.hpp"/>

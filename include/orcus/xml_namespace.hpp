@@ -81,7 +81,8 @@ public:
     ORCUS_DLLPUBLIC xmlns_context(const xmlns_context& r);
     ORCUS_DLLPUBLIC ~xmlns_context();
 
-    ORCUS_DLLPUBLIC xmlns_id_t set(const pstring& key, const pstring& uri);
+    ORCUS_DLLPUBLIC xmlns_id_t push(const pstring& key, const pstring& uri);
+    ORCUS_DLLPUBLIC void pop(const pstring& key);
     ORCUS_DLLPUBLIC xmlns_id_t get(const pstring& key) const;
     ORCUS_DLLPUBLIC size_t get_index(xmlns_id_t ns_id) const;
     ORCUS_DLLPUBLIC void get_keys(std::vector<pstring>& keys) const;

@@ -42,7 +42,8 @@ const char* base_dirs[] = {
     "../../test/xml-structure/basic-2/",
     "../../test/xml-structure/basic-3/",
     "../../test/xml-structure/attribute-1/",
-    "../../test/xml-structure/nested-repeat-1/"
+    "../../test/xml-structure/nested-repeat-1/",
+    "../../test/xml-structure/namespace-default/"
 };
 
 void test_basic()
@@ -56,7 +57,8 @@ void test_basic()
         load_file_content(filepath.c_str(), strm);
         assert(!strm.empty());
         xmlns_repository xmlns_repo;
-        xml_structure_tree tree(xmlns_repo);
+        xmlns_context cxt = xmlns_repo.create_context();
+        xml_structure_tree tree(cxt);
         tree.parse(&strm[0], strm.size());
         ostringstream os;
         tree.dump_compact(os);
@@ -87,7 +89,8 @@ void test_walker()
         load_file_content(filepath.c_str(), strm);
         assert(!strm.empty());
         xmlns_repository xmlns_repo;
-        xml_structure_tree tree(xmlns_repo);
+        xmlns_context cxt = xmlns_repo.create_context();
+        xml_structure_tree tree(cxt);
         tree.parse(&strm[0], strm.size());
 
         // Get walker from the tree.
@@ -156,7 +159,8 @@ void test_walker()
         load_file_content(filepath.c_str(), strm);
         assert(!strm.empty());
         xmlns_repository xmlns_repo;
-        xml_structure_tree tree(xmlns_repo);
+        xmlns_context cxt = xmlns_repo.create_context();
+        xml_structure_tree tree(cxt);
         tree.parse(&strm[0], strm.size());
 
         // Get walker from the tree.

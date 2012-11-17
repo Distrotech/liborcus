@@ -33,6 +33,14 @@
 #include <vector>
 #include <limits>
 
+#define ORCUS_DEBUG_NAMESPACE_REPO 0
+
+#if ORCUS_DEBUG_NAMESPACE_REPO
+#include <iostream>
+using std::cout;
+using std::endl;
+#endif
+
 namespace orcus {
 
 typedef boost::unordered_map<pstring, size_t, pstring::hash> strid_map_type;
@@ -97,16 +105,18 @@ size_t xmlns_repository::get_index(xmlns_id_t ns_id) const
     return it->second;
 }
 
-typedef boost::unordered_map<pstring, pstring, pstring::hash> alias_map_type;
+typedef std::vector<xmlns_id_t> xmlns_list_type;
+typedef boost::unordered_map<pstring, xmlns_list_type, pstring::hash> alias_map_type;
 
 struct xmlns_context_impl
 {
     xmlns_repository& m_repo;
-    xmlns_id_t m_default;
+    xmlns_list_type m_all_ns; /// all namespaces ever used in this context.
+    xmlns_list_type m_default;
     alias_map_type m_map;
 
-    xmlns_context_impl(xmlns_repository& repo) : m_repo(repo), m_default(XMLNS_UNKNOWN_ID) {}
-    xmlns_context_impl(const xmlns_context_impl& r) : m_repo(r.m_repo), m_default(r.m_default), m_map(r.m_map) {}
+    xmlns_context_impl(xmlns_repository& repo) : m_repo(repo) {}
+    xmlns_context_impl(const xmlns_context_impl& r) : m_repo(r.m_repo), m_all_ns(r.m_all_ns), m_default(r.m_default), m_map(r.m_map) {}
 };
 
 size_t xmlns_context::index_not_found = std::numeric_limits<size_t>::max();
@@ -119,8 +129,11 @@ xmlns_context::~xmlns_context()
     delete mp_impl;
 }
 
-xmlns_id_t xmlns_context::set(const pstring& key, const pstring& uri)
+xmlns_id_t xmlns_context::push(const pstring& key, const pstring& uri)
 {
+#if ORCUS_DEBUG_NAMESPACE_REPO
+    cout << "xmlns_context::push: key='" << key << "', uri='" << uri << "'" << endl;
+#endif
     if (uri.empty())
         return XMLNS_UNKNOWN_ID;
 
@@ -129,31 +142,71 @@ xmlns_id_t xmlns_context::set(const pstring& key, const pstring& uri)
     if (key.empty())
     {
         // empty key value is associated with default namespace.
-        mp_impl->m_default = uri_interned.get();
-        return mp_impl->m_default;
+        mp_impl->m_default.push_back(uri_interned.get());
+        mp_impl->m_all_ns.push_back(uri_interned.get());
+        return mp_impl->m_default.back();
     }
 
-    // Overwrite an existing value if one exists.
-    std::pair<alias_map_type::iterator,bool> r =
-        mp_impl->m_map.insert(alias_map_type::value_type(key, uri_interned));
+    // See if this key already exists.
+    alias_map_type::iterator it = mp_impl->m_map.find(key);
+    if (it == mp_impl->m_map.end())
+    {
+        // This is the first time this key is used.
+        xmlns_list_type nslist;
+        nslist.push_back(uri_interned.get());
+        mp_impl->m_all_ns.push_back(uri_interned.get());
+        std::pair<alias_map_type::iterator,bool> r =
+            mp_impl->m_map.insert(alias_map_type::value_type(key, nslist));
 
-    if (!r.second)
-        // insertion failed.
-        throw general_error("Failed to insert new namespace.");
+        if (!r.second)
+            // insertion failed.
+            throw general_error("Failed to insert new namespace.");
 
-    return r.first->second.get();
+        return nslist.back();
+    }
+
+    // The key already exists.
+    xmlns_list_type& nslist = it->second;
+    nslist.push_back(uri_interned.get());
+    mp_impl->m_all_ns.push_back(uri_interned.get());
+    return nslist.back();
+}
+
+void xmlns_context::pop(const pstring& key)
+{
+    if (key.empty())
+    {
+        // empty key value is associated with default namespace.
+        if (mp_impl->m_default.empty())
+            throw general_error("default namespace stack is empty.");
+
+        mp_impl->m_default.pop_back();
+        return;
+    }
+
+    // See if this key really exists.
+    alias_map_type::iterator it = mp_impl->m_map.find(key);
+    if (it == mp_impl->m_map.end())
+        throw general_error("failed to find the key.");
+
+    xmlns_list_type& nslist = it->second;
+    if (nslist.empty())
+        throw general_error("namespace stack for this key is empty.");
+
+    nslist.pop_back();
 }
 
 xmlns_id_t xmlns_context::get(const pstring& key) const
 {
     if (key.empty())
-        return mp_impl->m_default;
+        return mp_impl->m_default.empty() ? XMLNS_UNKNOWN_ID : mp_impl->m_default.back();
 
     alias_map_type::const_iterator it = mp_impl->m_map.find(key);
     if (it == mp_impl->m_map.end())
+        // Key not found.
         return XMLNS_UNKNOWN_ID;
 
-    return it->second.get();
+    return it->second.empty() ? XMLNS_UNKNOWN_ID : it->second.back();
 }
 
 size_t xmlns_context::get_index(xmlns_id_t ns_id) const

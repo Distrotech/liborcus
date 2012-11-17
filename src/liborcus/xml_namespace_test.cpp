@@ -46,18 +46,18 @@ void test_basic()
     pstring empty, myns("myns");
     {
         // context 1
-        xmlns_id_t test1 = cxt1.set(empty, xmlns1); // register default namespace.
+        xmlns_id_t test1 = cxt1.push(empty, xmlns1); // register default namespace.
         assert(cxt1.get(empty) == test1);
-        xmlns_id_t test2 = cxt1.set(myns, xmlns2);
+        xmlns_id_t test2 = cxt1.push(myns, xmlns2);
         assert(cxt1.get(myns) == test2);
         assert(test1 != test2);
     }
 
     {
         // context 2
-        xmlns_id_t test1 = cxt2.set(empty, xmlns2); // register default namespace.
+        xmlns_id_t test1 = cxt2.push(empty, xmlns2); // register default namespace.
         assert(cxt2.get(empty) == test1);
-        xmlns_id_t test2 = cxt2.set(myns, xmlns1);
+        xmlns_id_t test2 = cxt2.push(myns, xmlns1);
         assert(cxt2.get(myns) == test2);
         assert(test1 != test2);
     }
