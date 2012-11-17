@@ -33,12 +33,13 @@
 #include <vector>
 #include <limits>
 
-#define ORCUS_DEBUG_NAMESPACE_REPO 1
+#define ORCUS_DEBUG_NAMESPACE_REPO 0
+
+using namespace std;
 
 #if ORCUS_DEBUG_NAMESPACE_REPO
+#include <cstdio>
 #include <iostream>
-using std::cout;
-using std::endl;
 #endif
 
 namespace orcus {
@@ -150,7 +151,7 @@ xmlns_id_t xmlns_context::push(const pstring& key, const pstring& uri)
         return XMLNS_UNKNOWN_ID;
 
     pstring uri_interned = mp_impl->m_repo.intern(uri);
-    cout << "interned: '" << uri_interned.get() << "'" << endl;
+
     if (key.empty())
     {
         // empty key value is associated with default namespace.
@@ -229,8 +230,27 @@ size_t xmlns_context::get_index(xmlns_id_t ns_id) const
     return mp_impl->m_repo.get_index(ns_id);
 }
 
+namespace {
+
+#if ORCUS_DEBUG_NAMESPACE_REPO
+struct print_ns : std::unary_function<xmlns_id_t, void>
+{
+    void operator() (xmlns_id_t ns_id) const
+    {
+        const char* p = ns_id;
+        printf("%p: %s\n", p, p);
+    }
+};
+#endif
+
+}
+
 void xmlns_context::get_all_namespaces(std::vector<xmlns_id_t>& nslist) const
 {
+#if ORCUS_DEBUG_NAMESPACE_REPO
+    cout << "xmlns_context::get_all_namespaces: count=" << mp_impl->m_all_ns.size() << endl;
+    std::for_each(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end(), print_ns());
+#endif
     if (mp_impl->m_in_parse)
     {
         mp_impl->m_in_parse = false;
@@ -241,6 +261,7 @@ void xmlns_context::get_all_namespaces(std::vector<xmlns_id_t>& nslist) const
             std::unique(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());
         mp_impl->m_all_ns.erase(it_unique_end, mp_impl->m_all_ns.end());
     }
+
     nslist.assign(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());
 }
 

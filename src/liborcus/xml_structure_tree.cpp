@@ -36,6 +36,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <cstdio>
 
 #include <boost/noncopyable.hpp>
 #include <boost/unordered_map.hpp>
@@ -247,7 +248,7 @@ struct scope : boost::noncopyable
 
 typedef boost::ptr_vector<scope> scopes_type;
 
-void print_scope(ostream& os, const scopes_type& scopes)
+void print_scope(ostream& os, const scopes_type& scopes, const xmlns_context& cxt)
 {
     if (scopes.empty())
         throw general_error("scope stack shouldn't be empty while dumping tree.");
@@ -256,7 +257,11 @@ void print_scope(ostream& os, const scopes_type& scopes)
     scopes_type::const_iterator it = scopes.begin(), it_end = scopes.end();
     for (++it; it != it_end; ++it)
     {
-        os << "/" << it->name.name;
+        os << "/";
+        size_t num_id = cxt.get_index(it->name.ns);
+        if (num_id != xmlns_context::index_not_found)
+            os << "ns" << num_id << ":";
+        os << it->name.name;
         if (it->repeat)
             os << "[*]";
     }
@@ -443,12 +448,12 @@ void xml_structure_tree::dump_compact(ostream& os) const
         vector<xmlns_id_t>::const_iterator it = nslist.begin(), it_end = nslist.end();
         for (; it != it_end; ++it)
         {
-            xmlns_id_t ns_id = cxt.get(*it);
+            xmlns_id_t ns_id = *it;
             size_t num_id = cxt.get_index(ns_id);
             if (num_id == xmlns_context::index_not_found)
                 continue;
 
-            os << "ns" << num_id << "=" << ns_id << endl;
+            os << "ns" << num_id << "=\"" << ns_id << '"' << endl;
         }
     }
 
@@ -464,9 +469,13 @@ void xml_structure_tree::dump_compact(ostream& os) const
         {
             const element_ref& this_elem = *cur_scope.current_pos;
             ostringstream ss;
-            print_scope(ss, scopes);
+            print_scope(ss, scopes, cxt);
 
-            ss << "/" << this_elem.name.name;
+            ss << "/";
+            size_t num_id = cxt.get_index(this_elem.name.ns);
+            if (num_id != xmlns_context::index_not_found)
+                ss << "ns" << num_id << ":";
+            ss << this_elem.name.name;
             if (this_elem.prop->repeat)
                 ss << "[*]";
 
