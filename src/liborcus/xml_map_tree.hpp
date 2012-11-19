@@ -218,8 +218,6 @@ public:
     xml_map_tree(xmlns_context& xmlns_cxt);
     ~xml_map_tree();
 
-    void set_namespace_alias(const pstring& alias, const pstring& uri);
-
     void set_cell_link(const pstring& xpath, const cell_position& ref);
 
     void start_range();

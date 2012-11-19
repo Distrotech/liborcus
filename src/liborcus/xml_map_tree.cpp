@@ -339,11 +339,6 @@ xml_map_tree::~xml_map_tree()
     delete mp_root;
 }
 
-void xml_map_tree::set_namespace_alias(const pstring& alias, const pstring& uri)
-{
-    m_xmlns_cxt.push(alias, uri);
-}
-
 void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
 {
     if (xpath.empty())
