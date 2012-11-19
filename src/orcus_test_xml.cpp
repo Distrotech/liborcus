@@ -84,7 +84,8 @@ public:
 const char* dirs[] = {
     "../test/xml/simple/",
     "../test/xml/encoded-char/",
-    "../test/xml/default-ns/"
+    "../test/xml/default-ns/",
+    "../test/xml/ns-alias-1/"
 };
 
 void test_xml_sax_parser()

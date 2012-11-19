@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<a:data xmlns="http://default-namespace" xmlns:a="http://namespace-1" xmlns:b="http://namespace-2">
+    <entry>Default</entry>
+    <a:entry>Inside 1</a:entry>
+    <b:entry>Inside 2</b:entry>
+</a:data>

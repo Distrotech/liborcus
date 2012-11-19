@@ -1,0 +1,10 @@
+ns0="http://default-namespace"
+ns1="http://namespace-1"
+ns2="http://namespace-2"
+/ns1:data
+/ns1:data/ns0:entry
+/ns1:data/ns0:entry"Default"
+/ns1:data/ns1:entry
+/ns1:data/ns1:entry"Inside 1"
+/ns1:data/ns2:entry
+/ns1:data/ns2:entry"Inside 2"
