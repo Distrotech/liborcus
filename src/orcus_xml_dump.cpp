@@ -27,7 +27,7 @@
 
 #include <cstdlib>
 
-#include "orcus/sax_parser.hpp"
+#include "orcus/sax_ns_parser.hpp"
 #include "orcus/global.hpp"
 #include "orcus/xml_namespace.hpp"
 
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
     xmlns_repository repo;
     xmlns_context cxt = repo.create_context();
     dom_tree_sax_handler hdl(cxt);
-    sax_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), hdl);
+    sax_ns_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
     parser.parse();
     ostringstream os;
     hdl.dump_compact(os);

@@ -27,7 +27,7 @@
 
 #include "orcus/orcus_xml.hpp"
 #include "orcus/global.hpp"
-#include "orcus/sax_parser.hpp"
+#include "orcus/sax_ns_parser.hpp"
 #include "orcus/xml_namespace.hpp"
 
 #include "spreadsheet/factory.hpp"
@@ -64,7 +64,7 @@ void dump_xml_structure(string& dump_content, const char* filepath, xmlns_contex
     string strm;
     load_file_content(filepath, strm);
     dom_tree_sax_handler hdl(cxt);
-    sax_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), hdl);
+    sax_ns_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
     ostringstream os;
     hdl.dump_compact(os);
     dump_content = os.str();

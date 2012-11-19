@@ -26,28 +26,25 @@
  ************************************************************************/
 
 #include "dom_tree_sax_handler.hpp"
-#include "orcus/sax_parser.hpp"
-#include "orcus/xml_namespace.hpp"
+#include "orcus/sax_ns_parser.hpp"
 
 namespace orcus {
 
-dom_tree_sax_handler::dom_tree_sax_handler(xmlns_context& cxt) : m_tree(cxt), m_ns_cxt(cxt) {}
+dom_tree_sax_handler::dom_tree_sax_handler(xmlns_context& cxt) : m_tree(cxt) {}
 
 void dom_tree_sax_handler::declaration()
 {
     m_tree.end_declaration();
 }
 
-void dom_tree_sax_handler::start_element(const sax_parser_element& elem)
+void dom_tree_sax_handler::start_element(const sax_ns_parser_element& elem)
 {
-    xmlns_id_t ns = m_ns_cxt.get(elem.ns);
-    m_tree.start_element(ns, elem.name);
+    m_tree.start_element(elem.ns, elem.name);
 }
 
-void dom_tree_sax_handler::end_element(const sax_parser_element& elem)
+void dom_tree_sax_handler::end_element(const sax_ns_parser_element& elem)
 {
-    xmlns_id_t ns = m_ns_cxt.get(elem.ns);
-    m_tree.end_element(ns, elem.name);
+    m_tree.end_element(elem.ns, elem.name);
 }
 
 void dom_tree_sax_handler::characters(const pstring& val)
@@ -55,10 +52,14 @@ void dom_tree_sax_handler::characters(const pstring& val)
     m_tree.set_characters(val);
 }
 
-void dom_tree_sax_handler::attribute(const pstring& ns, const pstring& name, const pstring& val)
+void dom_tree_sax_handler::attribute(const sax_ns_parser_attribute& attr)
 {
-    xmlns_id_t ns_id = m_ns_cxt.get(ns);
-    m_tree.set_attribute(ns_id, name, val);
+    m_tree.set_attribute(attr.ns, attr.name, attr.value);
+}
+
+void dom_tree_sax_handler::attribute(const pstring& /*name*/, const pstring& /*val*/)
+{
+    // We ignore XML declaration attributes for now.
 }
 
 void dom_tree_sax_handler::dump_compact(std::ostream& os)
