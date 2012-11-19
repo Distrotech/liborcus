@@ -441,21 +441,7 @@ void xml_structure_tree::dump_compact(ostream& os) const
     const xmlns_context& cxt = mp_impl->m_xmlns_cxt;
 
     // Dump all namespaces first.
-    {
-        // Defalut namespace
-        vector<xmlns_id_t> nslist;
-        cxt.get_all_namespaces(nslist);
-        vector<xmlns_id_t>::const_iterator it = nslist.begin(), it_end = nslist.end();
-        for (; it != it_end; ++it)
-        {
-            xmlns_id_t ns_id = *it;
-            size_t num_id = cxt.get_index(ns_id);
-            if (num_id == xmlns_context::index_not_found)
-                continue;
-
-            os << "ns" << num_id << "=\"" << ns_id << '"' << endl;
-        }
-    }
+    cxt.dump(os);
 
     element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
     scopes.push_back(new scope(entity_name(), false, ref));

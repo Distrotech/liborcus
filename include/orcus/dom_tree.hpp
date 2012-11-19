@@ -58,6 +58,8 @@ public:
 
         entity_name();
         entity_name(xmlns_id_t _ns, const pstring& _name);
+
+        void print(std::ostream& os, const xmlns_context& cxt) const;
     };
 
     struct attr
@@ -66,6 +68,8 @@ public:
         pstring value;
 
         attr(xmlns_id_t _ns, const pstring& _name, const pstring& _value);
+
+        void print(std::ostream& os, const xmlns_context& cxt) const;
     };
 
     typedef std::vector<attr> attrs_type;
@@ -79,7 +83,7 @@ public:
         node(node_type _type) : type(_type) {}
 
         virtual ~node() = 0;
-        virtual void print(std::ostream& os) const = 0;
+        virtual void print(std::ostream& os, const xmlns_context& cxt) const = 0;
     };
 
     typedef boost::ptr_vector<node> nodes_type;
@@ -91,7 +95,7 @@ public:
         nodes_type child_nodes;
 
         element(xmlns_id_t _ns, const pstring& _name);
-        virtual void print(std::ostream& os) const;
+        virtual void print(std::ostream& os, const xmlns_context& cxt) const;
         virtual ~element();
     };
 
@@ -102,7 +106,7 @@ public:
         pstring value;
 
         content(const pstring& _value);
-        virtual void print(std::ostream& os) const;
+        virtual void print(std::ostream& os, const xmlns_context& cxt) const;
         virtual ~content();
     };
 
@@ -120,9 +124,6 @@ public:
 private:
     dom_tree_impl* mp_impl;
 };
-
-std::ostream& operator<< (std::ostream& os, const dom_tree::attr& at);
-std::ostream& operator<< (std::ostream& os, const dom_tree::node& nd);
 
 }
 

@@ -27,11 +27,12 @@
 
 #include "orcus/dom_tree.hpp"
 #include "orcus/exception.hpp"
+#include "orcus/xml_namespace.hpp"
+
+#include "string_pool.hpp"
 
 #include <iostream>
 #include <sstream>
-
-#include "string_pool.hpp"
 
 using namespace std;
 
@@ -64,6 +65,7 @@ void escape(ostream& os, const pstring& val)
 
 struct dom_tree_impl
 {
+    xmlns_context& m_ns_cxt;
     string_pool m_pool;
 
     dom_tree::attrs_type m_doc_attrs;
@@ -71,7 +73,7 @@ struct dom_tree_impl
     dom_tree::element_stack_type m_elem_stack;
     dom_tree::element* m_root;
 
-    dom_tree_impl() : m_root(NULL) {}
+    dom_tree_impl(xmlns_context& cxt) : m_ns_cxt(cxt), m_root(NULL) {}
 
     ~dom_tree_impl()
     {
@@ -84,25 +86,42 @@ dom_tree::entity_name::entity_name() : ns(XMLNS_UNKNOWN_ID) {}
 dom_tree::entity_name::entity_name(xmlns_id_t _ns, const pstring& _name) :
     ns(_ns), name(_name) {}
 
+void dom_tree::entity_name::print(std::ostream& os, const xmlns_context& cxt) const
+{
+    if (ns)
+    {
+        size_t index = cxt.get_index(ns);
+        if (index != xmlns_context::index_not_found)
+            os << "ns" << index << ':';
+    }
+    os << name;
+}
+
 dom_tree::attr::attr(xmlns_id_t _ns, const pstring& _name, const pstring& _value) :
     name(_ns, _name), value(_value) {}
+
+void dom_tree::attr::print(std::ostream& os, const xmlns_context& cxt) const
+{
+    name.print(os, cxt);
+    os << "=\"";
+    escape(os, value);
+    os << '"';
+}
 
 dom_tree::node::~node() {}
 
 dom_tree::element::element(xmlns_id_t _ns, const pstring& _name) : node(node_element), name(_ns, _name) {}
 
-void dom_tree::element::print(ostream& os) const
+void dom_tree::element::print(ostream& os, const xmlns_context& cxt) const
 {
-    if (name.ns)
-        os << name.ns << ':';
-    os << name.name;
+    name.print(os, cxt);
 }
 
 dom_tree::element::~element() {}
 
 dom_tree::content::content(const pstring& _value) : node(node_content), value(_value) {}
 
-void dom_tree::content::print(ostream& os) const
+void dom_tree::content::print(ostream& os, const xmlns_context& /*cxt*/) const
 {
     os << '"';
     escape(os, value);
@@ -111,7 +130,7 @@ void dom_tree::content::print(ostream& os) const
 
 dom_tree::content::~content() {}
 
-dom_tree::dom_tree(xmlns_context& cxt) : mp_impl(new dom_tree_impl) {}
+dom_tree::dom_tree(xmlns_context& cxt) : mp_impl(new dom_tree_impl(cxt)) {}
 
 dom_tree::~dom_tree() { delete mp_impl; }
 
@@ -224,6 +243,9 @@ void dom_tree::dump_compact(ostream& os) const
     if (!mp_impl->m_root)
         return;
 
+    // Dump namespaces first.
+    mp_impl->m_ns_cxt.dump(os);
+
     scopes_type scopes;
 
     scopes.push_back(new scope(string(), mp_impl->m_root));
@@ -241,13 +263,16 @@ void dom_tree::dump_compact(ostream& os) const
             if (this_node->type == node_content)
             {
                 // This is a text content.
-                os << *this_node << endl;
+                this_node->print(os, mp_impl->m_ns_cxt);
+                os << endl;
                 continue;
             }
 
             assert(this_node->type == node_element);
             const element* elem = static_cast<const element*>(this_node);
-            os << "/" << *elem << endl;
+            os << "/";
+            elem->print(os, mp_impl->m_ns_cxt);
+            os << endl;
 
             {
                 // Dump attributes.
@@ -257,7 +282,11 @@ void dom_tree::dump_compact(ostream& os) const
                 for (; it != it_end; ++it)
                 {
                     print_scope(os, scopes);
-                    os << "/" << *elem << "@" << *it << endl;
+                    os << "/";
+                    elem->print(os, mp_impl->m_ns_cxt);
+                    os << "@";
+                    it->print(os, mp_impl->m_ns_cxt);
+                    os << endl;
                 }
             }
 
@@ -276,7 +305,7 @@ void dom_tree::dump_compact(ostream& os) const
             // Push a new scope, and restart the loop with the new scope.
             ++cur_scope.current_pos;
             ostringstream elem_name;
-            elem_name << *elem;
+            elem->print(elem_name, mp_impl->m_ns_cxt);
             scopes.push_back(new scope(elem_name.str()));
             scope& child_scope = scopes.back();
             child_scope.nodes.swap(nodes);
@@ -291,22 +320,6 @@ void dom_tree::dump_compact(ostream& os) const
 
         scopes.pop_back();
     }
-}
-
-ostream& operator<< (ostream& os, const dom_tree::attr& at)
-{
-    if (at.name.ns)
-        os << at.name.ns << ":";
-    os << at.name.name << "=\"";
-    escape(os, at.value);
-    os << '"';
-    return os;
-}
-
-ostream& operator<< (ostream& os, const dom_tree::node& nd)
-{
-    nd.print(os);
-    return os;
 }
 
 }

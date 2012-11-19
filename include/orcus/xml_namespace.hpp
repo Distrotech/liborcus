@@ -30,6 +30,8 @@
 
 #include "types.hpp"
 
+#include <ostream>
+
 namespace orcus {
 
 class xmlns_context;
@@ -69,7 +71,7 @@ private:
  *
  * An empty key value is associated with a default namespace.
  */
-class xmlns_context
+class ORCUS_DLLPUBLIC xmlns_context
 {
     friend class xmlns_repository;
 
@@ -78,14 +80,16 @@ class xmlns_context
 public:
     static size_t index_not_found;
 
-    ORCUS_DLLPUBLIC xmlns_context(const xmlns_context& r);
-    ORCUS_DLLPUBLIC ~xmlns_context();
+    xmlns_context(const xmlns_context& r);
+    ~xmlns_context();
 
-    ORCUS_DLLPUBLIC xmlns_id_t push(const pstring& key, const pstring& uri);
-    ORCUS_DLLPUBLIC void pop(const pstring& key);
-    ORCUS_DLLPUBLIC xmlns_id_t get(const pstring& key) const;
-    ORCUS_DLLPUBLIC size_t get_index(xmlns_id_t ns_id) const;
-    ORCUS_DLLPUBLIC void get_all_namespaces(std::vector<xmlns_id_t>& nslist) const;
+    xmlns_id_t push(const pstring& key, const pstring& uri);
+    void pop(const pstring& key);
+    xmlns_id_t get(const pstring& key) const;
+    size_t get_index(xmlns_id_t ns_id) const;
+    void get_all_namespaces(std::vector<xmlns_id_t>& nslist) const;
+
+    void dump(std::ostream& os) const;
 
 private:
     xmlns_context_impl* mp_impl;
