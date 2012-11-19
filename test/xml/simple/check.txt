@@ -1,5 +1,4 @@
 /root
-/root@xmlns="http://gitorious.org/orcus"
 /root/child
 /root/child
 /root/child@attr1="value1"

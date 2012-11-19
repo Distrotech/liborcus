@@ -1,0 +1,9 @@
+ns0="http://some.xmlns.org/1.0"
+/ns0:data
+/ns0:data/ns0:entries
+/ns0:data/ns0:entries@ns0:count="2"
+/ns0:data/ns0:entries/ns0:entry
+/ns0:data/ns0:entries/ns0:entry"Foo"
+/ns0:data/ns0:entries/ns0:entry
+/ns0:data/ns0:entries/ns0:entry"Baa"
+

@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/sax_parser.hpp"
+#include "orcus/sax_ns_parser.hpp"
 #include "orcus/global.hpp"
 #include "orcus/dom_tree.hpp"
 #include "orcus/xml_namespace.hpp"
@@ -41,26 +41,23 @@ using namespace std;
 class sax_handler
 {
     dom_tree m_tree;
-    xmlns_context& m_ns_cxt;
 
 public:
-    sax_handler(xmlns_context& cxt) : m_tree(cxt), m_ns_cxt(cxt) {}
+    sax_handler(xmlns_context& cxt) : m_tree(cxt) {}
 
     void declaration()
     {
         m_tree.end_declaration();
     }
 
-    void start_element(const sax_parser_element& elem)
+    void start_element(const sax_ns_parser_element& elem)
     {
-        xmlns_id_t ns = m_ns_cxt.get(elem.ns);
-        m_tree.start_element(ns, elem.name);
+        m_tree.start_element(elem.ns, elem.name);
     }
 
-    void end_element(const sax_parser_element& elem)
+    void end_element(const sax_ns_parser_element& elem)
     {
-        xmlns_id_t ns = m_ns_cxt.get(elem.ns);
-        m_tree.end_element(ns, elem.name);
+        m_tree.end_element(elem.ns, elem.name);
     }
 
     void characters(const pstring& val)
@@ -68,10 +65,14 @@ public:
         m_tree.set_characters(val);
     }
 
-    void attribute(const pstring& ns, const pstring& name, const pstring& val)
+    void attribute(const pstring& /*name*/, const pstring& /*val*/)
     {
-        xmlns_id_t ns_id = m_ns_cxt.get(ns);
-        m_tree.set_attribute(ns_id, name, val);
+        // We ignore attributes in XML declaration for now.
+    }
+
+    void attribute(const sax_ns_parser_attribute& attr)
+    {
+        m_tree.set_attribute(attr.ns, attr.name, attr.value);
     }
 
     void dump(ostream& os)
@@ -82,7 +83,8 @@ public:
 
 const char* dirs[] = {
     "../test/xml/simple/",
-    "../test/xml/encoded-char/"
+    "../test/xml/encoded-char/",
+    "../test/xml/default-ns/"
 };
 
 void test_xml_sax_parser()
@@ -102,7 +104,7 @@ void test_xml_sax_parser()
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();
         sax_handler hdl(cxt);
-        sax_parser<sax_handler> parser(strm.c_str(), strm.size(), hdl);
+        sax_ns_parser<sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
         parser.parse();
 
         // Get the compact form of the content.

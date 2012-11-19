@@ -1,5 +1,4 @@
 /root
-/root@xmlns="http://gitorious.org/orcus"
 /root/data
 /root/data"Tom & Jerry"
 /root/data

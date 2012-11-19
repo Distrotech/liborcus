@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- this is a comment -->
-<root xmlns="http://gitorious.org/orcus">
+<root>
     <child/>
     <child attr2="value2" attr1="value1"/>
     <child>
