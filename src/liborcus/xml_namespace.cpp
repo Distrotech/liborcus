@@ -243,6 +243,47 @@ struct print_ns : std::unary_function<xmlns_id_t, void>
 };
 #endif
 
+struct ns_item
+{
+    size_t index;
+    xmlns_id_t ns;
+
+    ns_item(size_t _index, xmlns_id_t _ns) : index(_index), ns(_ns) {}
+};
+
+struct less_ns_by_index : binary_function<ns_item, ns_item, bool>
+{
+    bool operator() (const ns_item& left, const ns_item& right) const
+    {
+        return left.index < right.index;
+    }
+};
+
+class push_back_ns_to_item : unary_function<xmlns_id_t, void>
+{
+    vector<ns_item>& m_store;
+    const xmlns_context& m_cxt;
+public:
+    push_back_ns_to_item(vector<ns_item>& store, const xmlns_context& cxt) : m_store(store), m_cxt(cxt) {}
+    void operator() (xmlns_id_t ns)
+    {
+        size_t num_id = m_cxt.get_index(ns);
+        if (num_id != xmlns_context::index_not_found)
+            m_store.push_back(ns_item(num_id, ns));
+    }
+};
+
+class push_back_item_to_ns : unary_function<ns_item, void>
+{
+    xmlns_list_type& m_store;
+public:
+    push_back_item_to_ns(xmlns_list_type& store) : m_store(store) {}
+    void operator() (const ns_item& item)
+    {
+        m_store.push_back(item.ns);
+    }
+};
+
 }
 
 void xmlns_context::get_all_namespaces(std::vector<xmlns_id_t>& nslist) const
@@ -260,6 +301,16 @@ void xmlns_context::get_all_namespaces(std::vector<xmlns_id_t>& nslist) const
         xmlns_list_type::iterator it_unique_end =
             std::unique(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());
         mp_impl->m_all_ns.erase(it_unique_end, mp_impl->m_all_ns.end());
+
+        // Now, sort by indices.
+        vector<ns_item> items;
+        std::for_each(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end(), push_back_ns_to_item(items, *this));
+        std::sort(items.begin(), items.end(), less_ns_by_index());
+
+        xmlns_list_type all_ns;
+        std::for_each(items.begin(), items.end(), push_back_item_to_ns(all_ns));
+
+        mp_impl->m_all_ns.swap(all_ns);
     }
 
     nslist.assign(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());

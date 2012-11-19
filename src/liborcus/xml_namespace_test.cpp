@@ -39,22 +39,6 @@ using namespace orcus;
 
 namespace {
 
-struct ns_item
-{
-    size_t index;
-    xmlns_id_t ns;
-
-    ns_item(size_t _index, xmlns_id_t _ns) : index(_index), ns(_ns) {}
-};
-
-struct less_ns_by_index : binary_function<ns_item, ns_item, bool>
-{
-    bool operator() (const ns_item& left, const ns_item& right) const
-    {
-        return left.index < right.index;
-    }
-};
-
 void test_basic()
 {
     pstring xmlns1("http://some.xmlns/");
@@ -107,22 +91,9 @@ void test_all_namespaces()
     vector<xmlns_id_t> all_ns;
     cxt.get_all_namespaces(all_ns);
     assert(all_ns.size() == 3);
-
-    vector<ns_item> items;
-    vector<xmlns_id_t>::const_iterator it = all_ns.begin(), it_end = all_ns.end();
-    for (; it != it_end; ++it)
-    {
-        size_t i = cxt.get_index(*it);
-        cout << i << ":" << *it << endl;
-        items.push_back(ns_item(i, *it));
-    }
-
-    // numerical indices should correspond with their order of occurrence.
-    sort(items.begin(), items.end(), less_ns_by_index());
-    assert(items.size() == 3);
-    assert(ns1 == items[0].ns);
-    assert(ns2 == items[1].ns);
-    assert(ns3 == items[2].ns);
+    assert(ns1 == all_ns[0]);
+    assert(ns2 == all_ns[1]);
+    assert(ns3 == all_ns[2]);
 }
 
 } // anonymous namespace
