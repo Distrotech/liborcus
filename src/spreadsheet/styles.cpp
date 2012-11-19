@@ -82,11 +82,23 @@ void import_styles::border::reset()
     *this = border();
 }
 
+import_styles::protection::protection() :
+    locked(false), hidden(false)
+{
+}
+
+void import_styles::protection::reset()
+{
+    *this = protection();
+}
+
+
 import_styles::xf::xf() :
     num_format(0),
     font(0),
     fill(0),
     border(0),
+    protection(0),
     style_xf(0),
     apply_num_format(false),
     apply_font(false),
@@ -221,6 +233,23 @@ size_t import_styles::commit_border()
     return m_borders.size() - 1;
 }
 
+void import_styles::set_cell_hidden(bool b)
+{
+    m_cur_protection.hidden = b;
+}
+
+void import_styles::set_cell_locked(bool b)
+{
+    m_cur_protection.locked = b;
+}
+
+size_t import_styles::commit_cell_protection()
+{
+    m_protections.push_back(m_cur_protection);
+    m_cur_protection.reset();
+    return m_protections.size() - 1;
+}
+
 void import_styles::set_cell_style_xf_count(size_t n)
 {
     m_cell_style_formats.reserve(n);
@@ -263,6 +292,11 @@ void import_styles::set_xf_fill(size_t index)
 void import_styles::set_xf_border(size_t index)
 {
     m_cur_cell_format.border = index;
+}
+
+void import_styles::set_xf_protection(size_t index)
+{
+    m_cur_cell_format.protection = index;
 }
 
 void import_styles::set_xf_style_xf(size_t index)

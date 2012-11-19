@@ -93,6 +93,15 @@ public:
         void reset();
     };
 
+    struct protection
+    {
+        bool locked;
+        bool hidden;
+
+        protection();
+        void reset();
+    };
+
     /**
      * Cell format attributes
      */
@@ -102,6 +111,7 @@ public:
         size_t font;            /// font ID
         size_t fill;            /// fill ID
         size_t border;          /// border ID
+        size_t protection;      /// protection ID
         size_t style_xf;        /// style XF ID (used only for cell format)
         bool apply_num_format;
         bool apply_font;
@@ -144,6 +154,10 @@ public:
     virtual void set_border_style(border_direction_t dir, const char* s, size_t n);
     virtual size_t commit_border();
 
+    virtual void set_cell_hidden(bool b);
+    virtual void set_cell_locked(bool b);
+    virtual size_t commit_cell_protection();
+
     virtual void set_cell_style_xf_count(size_t n);
     virtual size_t commit_cell_style_xf();
 
@@ -154,6 +168,7 @@ public:
     virtual void set_xf_font(size_t index);
     virtual void set_xf_fill(size_t index);
     virtual void set_xf_border(size_t index);
+    virtual void set_xf_protection(size_t index);
     virtual void set_xf_style_xf(size_t index);
 
     virtual void set_cell_style_count(size_t n);
@@ -170,12 +185,14 @@ private:
     font m_cur_font;
     fill m_cur_fill;
     border m_cur_border;
+    protection m_cur_protection;
     xf m_cur_cell_format;
     cell_style m_cur_cell_style;
 
     ::std::vector<font> m_fonts;
     ::std::vector<fill> m_fills;
     ::std::vector<border> m_borders;
+    ::std::vector<protection> m_protections;
     ::std::vector<xf> m_cell_style_formats;
     ::std::vector<xf> m_cell_formats;
     ::std::vector<cell_style> m_cell_styles;
