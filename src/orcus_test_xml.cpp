@@ -28,6 +28,7 @@
 #include "orcus/sax_parser.hpp"
 #include "orcus/global.hpp"
 #include "orcus/dom_tree.hpp"
+#include "orcus/xml_namespace.hpp"
 
 #include <cstdlib>
 #include <cassert>
@@ -40,8 +41,11 @@ using namespace std;
 class sax_handler
 {
     dom_tree m_tree;
+    xmlns_context& m_ns_cxt;
 
 public:
+    sax_handler(xmlns_context& cxt) : m_tree(cxt), m_ns_cxt(cxt) {}
+
     void declaration()
     {
         m_tree.end_declaration();
@@ -49,12 +53,14 @@ public:
 
     void start_element(const sax_parser_element& elem)
     {
-        m_tree.start_element(elem.ns, elem.name);
+        xmlns_id_t ns = m_ns_cxt.get(elem.ns);
+        m_tree.start_element(ns, elem.name);
     }
 
     void end_element(const sax_parser_element& elem)
     {
-        m_tree.end_element(elem.ns, elem.name);
+        xmlns_id_t ns = m_ns_cxt.get(elem.ns);
+        m_tree.end_element(ns, elem.name);
     }
 
     void characters(const pstring& val)
@@ -64,7 +70,8 @@ public:
 
     void attribute(const pstring& ns, const pstring& name, const pstring& val)
     {
-        m_tree.set_attribute(ns, name, val);
+        xmlns_id_t ns_id = m_ns_cxt.get(ns);
+        m_tree.set_attribute(ns_id, name, val);
     }
 
     void dump(ostream& os)
@@ -92,7 +99,9 @@ void test_xml_sax_parser()
         load_file_content(file.c_str(), strm);
         assert(!strm.empty());
 
-        sax_handler hdl;
+        xmlns_repository repo;
+        xmlns_context cxt = repo.create_context();
+        sax_handler hdl(cxt);
         sax_parser<sax_handler> parser(strm.c_str(), strm.size(), hdl);
         parser.parse();
 

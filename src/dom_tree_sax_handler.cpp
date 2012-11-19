@@ -27,8 +27,11 @@
 
 #include "dom_tree_sax_handler.hpp"
 #include "orcus/sax_parser.hpp"
+#include "orcus/xml_namespace.hpp"
 
 namespace orcus {
+
+dom_tree_sax_handler::dom_tree_sax_handler(xmlns_context& cxt) : m_tree(cxt), m_ns_cxt(cxt) {}
 
 void dom_tree_sax_handler::declaration()
 {
@@ -37,12 +40,14 @@ void dom_tree_sax_handler::declaration()
 
 void dom_tree_sax_handler::start_element(const sax_parser_element& elem)
 {
-    m_tree.start_element(elem.ns, elem.name);
+    xmlns_id_t ns = m_ns_cxt.get(elem.ns);
+    m_tree.start_element(ns, elem.name);
 }
 
 void dom_tree_sax_handler::end_element(const sax_parser_element& elem)
 {
-    m_tree.end_element(elem.ns, elem.name);
+    xmlns_id_t ns = m_ns_cxt.get(elem.ns);
+    m_tree.end_element(ns, elem.name);
 }
 
 void dom_tree_sax_handler::characters(const pstring& val)
@@ -52,7 +57,8 @@ void dom_tree_sax_handler::characters(const pstring& val)
 
 void dom_tree_sax_handler::attribute(const pstring& ns, const pstring& name, const pstring& val)
 {
-    m_tree.set_attribute(ns, name, val);
+    xmlns_id_t ns_id = m_ns_cxt.get(ns);
+    m_tree.set_attribute(ns_id, name, val);
 }
 
 void dom_tree_sax_handler::dump_compact(std::ostream& os)

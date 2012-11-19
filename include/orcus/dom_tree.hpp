@@ -29,6 +29,7 @@
 #define __ORCUS_DOM_TREE_HPP__
 
 #include "pstring.hpp"
+#include "types.hpp"
 
 #include <vector>
 #include <ostream>
@@ -37,6 +38,7 @@
 
 namespace orcus {
 
+class xmlns_context;
 struct dom_tree_impl;
 
 /**
@@ -48,13 +50,22 @@ class ORCUS_DLLPUBLIC dom_tree
     dom_tree& operator= (const dom_tree&); // disabled
 
 public:
+
+    struct entity_name
+    {
+        xmlns_id_t ns;
+        pstring name;
+
+        entity_name();
+        entity_name(xmlns_id_t _ns, const pstring& _name);
+    };
+
     struct attr
     {
-        pstring ns;
-        pstring name;
+        entity_name name;
         pstring value;
 
-        attr(const pstring& _ns, const pstring& _name, const pstring& _value);
+        attr(xmlns_id_t _ns, const pstring& _name, const pstring& _value);
     };
 
     typedef std::vector<attr> attrs_type;
@@ -75,12 +86,11 @@ public:
 
     struct element : public node
     {
-        pstring    ns;
-        pstring    name;
+        entity_name name;
         attrs_type attrs;
         nodes_type child_nodes;
 
-        element(const pstring& _ns, const pstring& _name);
+        element(xmlns_id_t _ns, const pstring& _name);
         virtual void print(std::ostream& os) const;
         virtual ~element();
     };
@@ -96,14 +106,14 @@ public:
         virtual ~content();
     };
 
-    dom_tree();
+    dom_tree(xmlns_context& cxt);
     ~dom_tree();
 
     void end_declaration();
-    void start_element(const pstring& ns, const pstring& name);
-    void end_element(const pstring& ns, const pstring& name);
+    void start_element(xmlns_id_t ns, const pstring& name);
+    void end_element(xmlns_id_t ns, const pstring& name);
     void set_characters(const pstring& val);
-    void set_attribute(const pstring& ns, const pstring& name, const pstring& val);
+    void set_attribute(xmlns_id_t ns, const pstring& name, const pstring& val);
 
     void dump_compact(std::ostream& os) const;
 

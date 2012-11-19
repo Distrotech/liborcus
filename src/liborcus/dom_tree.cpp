@@ -79,18 +79,23 @@ struct dom_tree_impl
     }
 };
 
-dom_tree::attr::attr(const pstring& _ns, const pstring& _name, const pstring& _value) :
-    ns(_ns), name(_name), value(_value) {}
+dom_tree::entity_name::entity_name() : ns(XMLNS_UNKNOWN_ID) {}
+
+dom_tree::entity_name::entity_name(xmlns_id_t _ns, const pstring& _name) :
+    ns(_ns), name(_name) {}
+
+dom_tree::attr::attr(xmlns_id_t _ns, const pstring& _name, const pstring& _value) :
+    name(_ns, _name), value(_value) {}
 
 dom_tree::node::~node() {}
 
-dom_tree::element::element(const pstring& _ns, const pstring& _name) : node(node_element), ns(_ns), name(_name) {}
+dom_tree::element::element(xmlns_id_t _ns, const pstring& _name) : node(node_element), name(_ns, _name) {}
 
 void dom_tree::element::print(ostream& os) const
 {
-    if (!ns.empty())
-        os << ns << ':';
-    os << name;
+    if (name.ns)
+        os << name.ns << ':';
+    os << name.name;
 }
 
 dom_tree::element::~element() {}
@@ -106,7 +111,7 @@ void dom_tree::content::print(ostream& os) const
 
 dom_tree::content::~content() {}
 
-dom_tree::dom_tree() : mp_impl(new dom_tree_impl) {}
+dom_tree::dom_tree(xmlns_context& cxt) : mp_impl(new dom_tree_impl) {}
 
 dom_tree::~dom_tree() { delete mp_impl; }
 
@@ -115,17 +120,16 @@ void dom_tree::end_declaration()
     mp_impl->m_doc_attrs.swap(mp_impl->m_cur_attrs);
 }
 
-void dom_tree::start_element(const pstring& ns, const pstring& name)
+void dom_tree::start_element(xmlns_id_t ns, const pstring& name)
 {
     // These strings must be persistent.
-    pstring ns_safe = mp_impl->m_pool.intern(ns).first;
     pstring name_safe = mp_impl->m_pool.intern(name).first;
 
     element* p = NULL;
     if (!mp_impl->m_root)
     {
         // This must be the root element!
-        mp_impl->m_root = new element(ns_safe, name_safe);
+        mp_impl->m_root = new element(ns, name_safe);
         mp_impl->m_elem_stack.push_back(mp_impl->m_root);
         p = mp_impl->m_elem_stack.back();
         p->attrs.swap(mp_impl->m_cur_attrs);
@@ -134,16 +138,16 @@ void dom_tree::start_element(const pstring& ns, const pstring& name)
 
     // Append new element as a child element of the current element.
     p = mp_impl->m_elem_stack.back();
-    p->child_nodes.push_back(new element(ns_safe, name_safe));
+    p->child_nodes.push_back(new element(ns, name_safe));
     p = static_cast<element*>(&p->child_nodes.back());
     p->attrs.swap(mp_impl->m_cur_attrs);
     mp_impl->m_elem_stack.push_back(p);
 }
 
-void dom_tree::end_element(const pstring& ns, const pstring& name)
+void dom_tree::end_element(xmlns_id_t ns, const pstring& name)
 {
     const element* p = mp_impl->m_elem_stack.back();
-    if (p->ns != ns || p->name != name)
+    if (p->name.ns != ns || p->name.name != name)
         throw general_error("non-matching end element.");
 
     mp_impl->m_elem_stack.pop_back();
@@ -164,14 +168,13 @@ void dom_tree::set_characters(const pstring& val)
     p->child_nodes.push_back(new content(val2));
 }
 
-void dom_tree::set_attribute(const pstring& ns, const pstring& name, const pstring& val)
+void dom_tree::set_attribute(xmlns_id_t ns, const pstring& name, const pstring& val)
 {
     // These strings must be persistent.
-    pstring ns2 = mp_impl->m_pool.intern(ns).first;
     pstring name2 = mp_impl->m_pool.intern(name).first;
     pstring val2 = mp_impl->m_pool.intern(val).first;
 
-    mp_impl->m_cur_attrs.push_back(attr(ns2, name2, val2));
+    mp_impl->m_cur_attrs.push_back(attr(ns, name2, val2));
 }
 
 namespace {
@@ -210,7 +213,7 @@ struct sort_by_name : std::binary_function<dom_tree::attr, dom_tree::attr, bool>
 {
     bool operator() (const dom_tree::attr& left, const dom_tree::attr& right) const
     {
-        return left.name < right.name;
+        return left.name.name < right.name.name;
     }
 };
 
@@ -292,9 +295,9 @@ void dom_tree::dump_compact(ostream& os) const
 
 ostream& operator<< (ostream& os, const dom_tree::attr& at)
 {
-    if (!at.ns.empty())
-        os << at.ns << ":";
-    os << at.name << "=\"";
+    if (at.name.ns)
+        os << at.name.ns << ":";
+    os << at.name.name << "=\"";
     escape(os, at.value);
     os << '"';
     return os;

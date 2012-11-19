@@ -28,6 +28,7 @@
 #include "orcus/orcus_xml.hpp"
 #include "orcus/global.hpp"
 #include "orcus/sax_parser.hpp"
+#include "orcus/xml_namespace.hpp"
 
 #include "spreadsheet/factory.hpp"
 #include "spreadsheet/document.hpp"
@@ -58,11 +59,11 @@ const char* files[] = {
 
 const char* temp_output_xml = "out.xml";
 
-void dump_xml_structure(string& dump_content, const char* filepath)
+void dump_xml_structure(string& dump_content, const char* filepath, xmlns_context& cxt)
 {
     string strm;
     load_file_content(filepath, strm);
-    dom_tree_sax_handler hdl;
+    dom_tree_sax_handler hdl(cxt);
     sax_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), hdl);
     ostringstream os;
     hdl.dump_compact(os);
@@ -116,9 +117,11 @@ void test_mapped_xml_import()
         // Compare the logical xml content of the output xml with the input
         // one. They should be identical.
 
+        xmlns_repository repo;
+        xmlns_context cxt = repo.create_context();
         string dump_input, dump_output;
-        dump_xml_structure(dump_input, data_file.c_str());
-        dump_xml_structure(dump_output, out_file.c_str());
+        dump_xml_structure(dump_input, data_file.c_str(), cxt);
+        dump_xml_structure(dump_output, out_file.c_str(), cxt);
         assert(dump_input == dump_output);
 
         // Delete the temporary xml output.

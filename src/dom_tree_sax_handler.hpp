@@ -34,6 +34,7 @@
 
 namespace orcus {
 
+class xmlns_context;
 struct sax_parser_element;
 class pstring;
 
@@ -43,7 +44,10 @@ class pstring;
 class dom_tree_sax_handler
 {
     dom_tree m_tree;
+    xmlns_context& m_ns_cxt;
 public:
+    dom_tree_sax_handler(xmlns_context& cxt);
+
     void declaration();
     void start_element(const sax_parser_element& elem);
     void end_element(const sax_parser_element& elem);

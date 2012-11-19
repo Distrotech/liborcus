@@ -29,6 +29,7 @@
 
 #include "orcus/sax_parser.hpp"
 #include "orcus/global.hpp"
+#include "orcus/xml_namespace.hpp"
 
 #include "dom_tree_sax_handler.hpp"
 
@@ -50,7 +51,9 @@ int main(int argc, char** argv)
     if (strm.empty())
         return EXIT_FAILURE;
 
-    dom_tree_sax_handler hdl;
+    xmlns_repository repo;
+    xmlns_context cxt = repo.create_context();
+    dom_tree_sax_handler hdl(cxt);
     sax_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), hdl);
     parser.parse();
     ostringstream os;
