@@ -1,4 +1,5 @@
 ns0="http://some.xmlns.org/1.0"
+ns1="http://some.xmlns.org/2.0"
 /ns0:data
 /ns0:data/ns0:entries
 /ns0:data/ns0:entries@ns0:count="2"
@@ -6,4 +7,11 @@ ns0="http://some.xmlns.org/1.0"
 /ns0:data/ns0:entries/ns0:entry"Foo"
 /ns0:data/ns0:entries/ns0:entry
 /ns0:data/ns0:entries/ns0:entry"Baa"
-
+/ns0:data/ns1:entries
+/ns0:data/ns1:entries@ns1:count="3"
+/ns0:data/ns1:entries/ns1:entry
+/ns0:data/ns1:entries/ns1:entry@ns1:value="One"
+/ns0:data/ns1:entries/ns1:entry
+/ns0:data/ns1:entries/ns1:entry@ns1:value="Two"
+/ns0:data/ns1:entries/ns1:entry
+/ns0:data/ns1:entries/ns1:entry@ns1:value="Three"

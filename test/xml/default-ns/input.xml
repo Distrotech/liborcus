@@ -4,4 +4,9 @@
         <entry>Foo</entry>
         <entry>Baa</entry>
     </entries>
+    <entries xmlns="http://some.xmlns.org/2.0" count="3">
+        <entry value="One"/>
+        <entry value="Two"/>
+        <entry value="Three"/>
+    </entries>
 </data>
