@@ -89,8 +89,11 @@ void test_mapped_xml_import()
         boost::scoped_ptr<spreadsheet::import_factory> import_fact(new spreadsheet::import_factory(doc.get()));
         boost::scoped_ptr<spreadsheet::export_factory> export_fact(new spreadsheet::export_factory(doc.get()));
 
+        xmlns_repository repo;
+        xmlns_context cxt = repo.create_context();
+
         // Parse the map file to define map rules, and parse the data file.
-        orcus_xml app(import_fact.get(), export_fact.get());
+        orcus_xml app(cxt, import_fact.get(), export_fact.get());
         read_map_file(app, map_file.c_str());
         app.read_file(data_file.c_str());
 
@@ -117,8 +120,6 @@ void test_mapped_xml_import()
         // Compare the logical xml content of the output xml with the input
         // one. They should be identical.
 
-        xmlns_repository repo;
-        xmlns_context cxt = repo.create_context();
         string dump_input, dump_output;
         dump_xml_structure(dump_input, data_file.c_str(), cxt);
         dump_xml_structure(dump_output, out_file.c_str(), cxt);

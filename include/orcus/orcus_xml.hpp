@@ -34,13 +34,13 @@
 namespace orcus {
 
 class pstring;
+class xmlns_context;
+struct orcus_xml_impl;
 
 namespace spreadsheet { namespace iface {
     class import_factory;
     class export_factory;
 }}
-
-struct orcus_xml_impl;
 
 class ORCUS_DLLPUBLIC orcus_xml
 {
@@ -48,7 +48,7 @@ class ORCUS_DLLPUBLIC orcus_xml
     orcus_xml& operator= (const orcus_xml&); // disabled
 
 public:
-    orcus_xml(spreadsheet::iface::import_factory* im_fact, spreadsheet::iface::export_factory* ex_fact);
+    orcus_xml(xmlns_context& ns_cxt, spreadsheet::iface::import_factory* im_fact, spreadsheet::iface::export_factory* ex_fact);
     ~orcus_xml();
 
     void set_cell_link(const pstring& xpath, const pstring& sheet, spreadsheet::row_t row, spreadsheet::col_t col);

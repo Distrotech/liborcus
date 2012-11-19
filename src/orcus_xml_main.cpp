@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "orcus/orcus_xml.hpp"
+#include "orcus/xml_namespace.hpp"
 #include "spreadsheet/factory.hpp"
 #include "spreadsheet/document.hpp"
 
@@ -110,7 +111,9 @@ int main(int argc, char** argv)
     boost::scoped_ptr<spreadsheet::import_factory> import_fact(new spreadsheet::import_factory(doc.get()));
     boost::scoped_ptr<spreadsheet::export_factory> export_fact(new spreadsheet::export_factory(doc.get()));
 
-    orcus_xml app(import_fact.get(), export_fact.get());
+    xmlns_repository repo;
+    xmlns_context cxt = repo.create_context();
+    orcus_xml app(cxt, import_fact.get(), export_fact.get());
     read_map_file(app, argv[2]);
     app.read_file(argv[3]);
 

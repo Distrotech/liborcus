@@ -215,7 +215,7 @@ public:
         const element* pop_element(xmlns_id_t ns, const pstring& name);
     };
 
-    xml_map_tree(const xmlns_context& xmlns_cxt);
+    xml_map_tree(xmlns_context& xmlns_cxt);
     ~xml_map_tree();
 
     void set_namespace_alias(const pstring& alias, const pstring& uri);
@@ -238,7 +238,7 @@ private:
     linkable* get_element_stack(const pstring& xpath, reference_type type, element_list_type& elem_stack);
 
 private:
-    xmlns_context m_xmlns_cxt;
+    xmlns_context& m_xmlns_cxt;
 
     /**
      * Element stack of current range parent element. This is used to

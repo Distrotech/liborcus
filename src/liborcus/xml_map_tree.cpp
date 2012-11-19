@@ -330,7 +330,7 @@ const xml_map_tree::element* xml_map_tree::walker::pop_element(xmlns_id_t ns, co
     return m_stack.empty() ? NULL : m_stack.back();
 }
 
-xml_map_tree::xml_map_tree(const xmlns_context& xmlns_cxt) :
+xml_map_tree::xml_map_tree(xmlns_context& xmlns_cxt) :
     m_xmlns_cxt(xmlns_cxt), mp_cur_range_ref(NULL), mp_root(NULL) {}
 
 xml_map_tree::~xml_map_tree()

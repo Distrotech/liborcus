@@ -38,7 +38,8 @@ using namespace std;
 void test_path_insertion()
 {
     xmlns_repository repo;
-    xml_map_tree tree(repo.create_context());
+    xmlns_context cxt = repo.create_context();
+    xml_map_tree tree(cxt);
     xml_map_tree::cell_position ref;
     ref.sheet = pstring("test");
     ref.row = 2;
@@ -121,7 +122,8 @@ void test_path_insertion()
 void test_attr_path_insertion()
 {
     xmlns_repository repo;
-    xml_map_tree tree(repo.create_context());
+    xmlns_context cxt = repo.create_context();
+    xml_map_tree tree(cxt);
     xml_map_tree::cell_position ref;
     ref.sheet = pstring("test");
     ref.row = 2;
@@ -172,7 +174,8 @@ void test_attr_path_insertion()
 void test_tree_walk()
 {
     xmlns_repository repo;
-    xml_map_tree tree(repo.create_context());
+    xmlns_context cxt = repo.create_context();
+    xml_map_tree tree(cxt);
     xml_map_tree::cell_position ref;
     ref.sheet = pstring("test");
     ref.row = 2;
