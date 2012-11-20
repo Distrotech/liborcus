@@ -66,6 +66,7 @@ void dump_xml_structure(string& dump_content, const char* filepath, xmlns_contex
     load_file_content(filepath, strm);
     dom_tree_sax_handler hdl(cxt);
     sax_ns_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
+    parser.parse();
     ostringstream os;
     hdl.dump_compact(os);
     dump_content = os.str();
@@ -124,6 +125,7 @@ void test_mapped_xml_import()
         string dump_input, dump_output;
         dump_xml_structure(dump_input, data_file.c_str(), cxt);
         dump_xml_structure(dump_output, out_file.c_str(), cxt);
+        assert(!dump_input.empty() && !dump_output.empty());
         assert(dump_input == dump_output);
 
         // Delete the temporary xml output.
