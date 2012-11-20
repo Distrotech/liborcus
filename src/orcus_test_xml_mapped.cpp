@@ -93,7 +93,7 @@ void test_mapped_xml_import()
         xmlns_context cxt = repo.create_context();
 
         // Parse the map file to define map rules, and parse the data file.
-        orcus_xml app(cxt, import_fact.get(), export_fact.get());
+        orcus_xml app(repo, import_fact.get(), export_fact.get());
         read_map_file(app, map_file.c_str());
         app.read_file(data_file.c_str());
 

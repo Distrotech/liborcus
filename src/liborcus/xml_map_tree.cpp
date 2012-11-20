@@ -28,9 +28,9 @@
 #include "xml_map_tree.hpp"
 #include "orcus/global.hpp"
 
-#define ORCUS_DEBUG_XML 1
+#define ORCUS_DEBUG_XML_MAP_TREE 0
 
-#if ORCUS_DEBUG_XML
+#if ORCUS_DEBUG_XML_MAP_TREE
 #include <iostream>
 #endif
 
@@ -70,7 +70,12 @@ public:
         bool attribute;
 
         token(xmlns_id_t _ns, const pstring& _name, bool _attribute) :
-            ns(_ns), name(_name), attribute(_attribute) {}
+            ns(_ns), name(_name), attribute(_attribute)
+        {
+#if ORCUS_DEBUG_XML_MAP_TREE
+            cout << "xpath_parser::token: (ns='" << (ns ? ns : "none") << "', name='" << name << "', attribute=" << attribute << ")" << endl;
+#endif
+        }
 
         token() : ns(XMLNS_UNKNOWN_ID), attribute(false) {}
         token(const token& r) : ns(r.ns), name(r.name), attribute(r.attribute) {}
@@ -93,12 +98,18 @@ public:
         if (mp_char == mp_end)
             return token();
 
-        const char* p0 = mp_char;
+        const char* p0 = NULL;
         size_t len = 0;
         xmlns_id_t ns = XMLNS_UNKNOWN_ID;
 
         for (; mp_char != mp_end; ++mp_char, ++len)
         {
+            if (!p0)
+            {
+                p0 = mp_char;
+                len = 0;
+            }
+
             switch (*mp_char)
             {
                 case '/':
@@ -109,14 +120,14 @@ public:
 
                     m_next_token_type = element;
                     ++mp_char; // skip the '/'.
-                    return token(XMLNS_UNKNOWN_ID, pstring(p0, len), false);
+                    return token(ns, pstring(p0, len), false);
                 }
                 case '@':
                 {
                     // '@' encountered.  Next token is an attribute name.
                     m_next_token_type = attribute;
                     ++mp_char; // skip the '@'.
-                    return token(XMLNS_UNKNOWN_ID, pstring(p0, len), false);
+                    return token(ns, pstring(p0, len), false);
                 }
                 case ':':
                 {
@@ -124,10 +135,7 @@ public:
                     // convert the namespace to a proper ID.
                     pstring ns_name(p0, len);
                     ns = m_cxt.get(ns_name);
-
-                    ++mp_char; // skip the ':'.
-                    p0 = mp_char;
-                    len = 0;
+                    p0 = NULL; // reset the name.
                 }
                 break;
                 default:
@@ -351,12 +359,20 @@ xml_map_tree::~xml_map_tree()
     delete mp_root;
 }
 
+void xml_map_tree::set_namespace_alias(const pstring& alias, const pstring& uri)
+{
+    m_xmlns_cxt.push(alias, uri);
+}
+
 void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
 {
     if (xpath.empty())
         return;
 
-    cout << "cell link: " << xpath << " (ref=" << ref << ")" << endl;
+#if ORCUS_DEBUG_XML_MAP_TREE
+    cout << "xml_map_tree::set_cell_link: xpath='" << xpath << "' (ref=" << ref << ")" << endl;
+#endif
+
     element_list_type elem_stack;
     linkable* node = get_element_stack(xpath, reference_cell, elem_stack);
     assert(node);
@@ -409,7 +425,9 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     if (!mp_cur_range_ref)
         mp_cur_range_ref = range_ref;
 
-    cout << "range field link: " << xpath << " (ref=" << pos << ")" << endl;
+#if ORCUS_DEBUG_XML_MAP_TREE
+    cout << "xml_map_tree::append_range_field_link: " << xpath << " (ref=" << pos << ")" << endl;
+#endif
     element_list_type elem_stack;
     linkable* node = get_element_stack(xpath, reference_range_field, elem_stack);
     if (elem_stack.size() < 2)
@@ -452,7 +470,7 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
 
         --it_end; // Skip the next-up element, which is used to group a single record entry.
         m_cur_range_parent.assign(elem_stack.begin(), it_end);
-#if ORCUS_DEBUG_XML
+#if ORCUS_DEBUG_XML_MAP_TREE
         print_element_stack(cout, m_cur_range_parent);
         cout << endl;
 #endif
@@ -489,7 +507,7 @@ void xml_map_tree::commit_range()
         // Nothing to commit.
         return;
 
-#if ORCUS_DEBUG_XML
+#if ORCUS_DEBUG_XML_MAP_TREE
     cout << "parent element path for this range: ";
     element_list_type::iterator it = m_cur_range_parent.begin(), it_end = m_cur_range_parent.end();
     for (; it != it_end; ++it)
@@ -510,6 +528,9 @@ const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
     if (xpath.empty())
         return NULL;
 
+#if ORCUS_DEBUG_XML_MAP_TREE
+    cout << "xml_map_tree::get_link: xpath = '" << xpath << "'" << endl;
+#endif
     const linkable* cur_node = mp_root;
 
     xpath_parser parser(m_xmlns_cxt, xpath.get(), xpath.size());
@@ -520,6 +541,9 @@ const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
         // Root element name doesn't match.
         return NULL;
 
+#if ORCUS_DEBUG_XML_MAP_TREE
+    cout << "xml_map_tree::get_link: root = (ns=" << token.ns << ", name=" << token.name << ")" << endl;
+#endif
     for (token = parser.next(); !token.name.empty(); token = parser.next())
     {
         if (token.attribute)

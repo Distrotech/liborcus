@@ -462,7 +462,10 @@ struct orcus_xml_impl
     string m_data_strm;
 
     /** xml namespace repository for the whole session. */
-    xmlns_context& m_ns_cxt;
+    xmlns_repository& m_ns_repo;
+
+    /** xml namespace context  */
+    xmlns_context m_ns_cxt_map;
 
     /** xml element tree that represents all mapped paths. */
     xml_map_tree m_map_tree;
@@ -477,11 +480,11 @@ struct orcus_xml_impl
 
     xml_map_tree::cell_position m_cur_range_ref;
 
-    orcus_xml_impl(xmlns_context& ns_cxt) : m_ns_cxt(ns_cxt), m_map_tree(m_ns_cxt) {}
+    orcus_xml_impl(xmlns_repository& ns_repo) : m_ns_repo(ns_repo), m_ns_cxt_map(ns_repo.create_context()), m_map_tree(m_ns_cxt_map) {}
 };
 
-orcus_xml::orcus_xml(xmlns_context& ns_cxt, spreadsheet::iface::import_factory* im_fact, spreadsheet::iface::export_factory* ex_fact) :
-    mp_impl(new orcus_xml_impl(ns_cxt))
+orcus_xml::orcus_xml(xmlns_repository& ns_repo, spreadsheet::iface::import_factory* im_fact, spreadsheet::iface::export_factory* ex_fact) :
+    mp_impl(new orcus_xml_impl(ns_repo))
 {
     mp_impl->mp_import_factory = im_fact;
     mp_impl->mp_export_factory = ex_fact;
@@ -490,6 +493,11 @@ orcus_xml::orcus_xml(xmlns_context& ns_cxt, spreadsheet::iface::import_factory* 
 orcus_xml::~orcus_xml()
 {
     delete mp_impl;
+}
+
+void orcus_xml::set_namespace_alias(const pstring& alias, const pstring& uri)
+{
+    mp_impl->m_map_tree.set_namespace_alias(alias, uri);
 }
 
 void orcus_xml::set_cell_link(const pstring& xpath, const pstring& sheet, spreadsheet::row_t row, spreadsheet::col_t col)
@@ -558,8 +566,9 @@ void orcus_xml::read_file(const char* filepath)
     }
 
     // Parse the content xml.
+    xmlns_context ns_cxt = mp_impl->m_ns_repo.create_context(); // new ns context for the content xml stream.
     xml_data_sax_handler handler(
-       *mp_impl->mp_import_factory, mp_impl->m_link_positions, mp_impl->m_ns_cxt, mp_impl->m_map_tree);
+       *mp_impl->mp_import_factory, mp_impl->m_link_positions, ns_cxt, mp_impl->m_map_tree);
 
     sax_parser<xml_data_sax_handler> parser(strm.c_str(), strm.size(), handler);
     parser.parse();

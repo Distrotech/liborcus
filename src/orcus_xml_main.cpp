@@ -112,8 +112,7 @@ int main(int argc, char** argv)
     boost::scoped_ptr<spreadsheet::export_factory> export_fact(new spreadsheet::export_factory(doc.get()));
 
     xmlns_repository repo;
-    xmlns_context cxt = repo.create_context();
-    orcus_xml app(cxt, import_fact.get(), export_fact.get());
+    orcus_xml app(repo, import_fact.get(), export_fact.get());
     read_map_file(app, argv[2]);
     app.read_file(argv[3]);
 

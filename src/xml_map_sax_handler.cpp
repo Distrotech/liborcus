@@ -56,7 +56,22 @@ void xml_map_sax_handler::start_element(const sax_parser_element& elem)
     spreadsheet::col_t col = -1;
     vector<attr>::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
 
-    if (elem.name == "cell")
+    if (elem.name == "ns")
+    {
+        // empty alias is associated with default namespace.
+        pstring alias, uri;
+        for (; it != it_end; ++it)
+        {
+            if (it->name == "alias")
+                alias = it->val;
+            else if (it->name == "uri")
+                uri = it->val;
+        }
+
+        if (!uri.empty())
+            m_app.set_namespace_alias(alias, uri);
+    }
+    else if (elem.name == "cell")
     {
         for (; it != it_end; ++it)
         {
