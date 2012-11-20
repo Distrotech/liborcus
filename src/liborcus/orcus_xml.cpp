@@ -34,7 +34,7 @@
 
 #include "xml_map_tree.hpp"
 
-#define ORCUS_DEBUG_XML 1
+#define ORCUS_DEBUG_XML 0
 
 #if ORCUS_DEBUG_XML
 #include <iostream>
@@ -533,7 +533,9 @@ void orcus_xml::append_sheet(const pstring& name)
 
 void orcus_xml::read_file(const char* filepath)
 {
+#if ORCUS_DEBUG_XML
     cout << "reading file " << filepath << endl;
+#endif
     string& strm = mp_impl->m_data_strm;
     load_file_content(filepath, strm);
     if (strm.empty())
@@ -591,7 +593,9 @@ void orcus_xml::write_file(const char* filepath)
     // Sort all link position by opening element positions.
     std::sort(links.begin(), links.end(), less_by_opening_elem_pos());
 
+#if ORCUS_DEBUG_XML
     cout << "writing to " << filepath << endl;
+#endif
     ofstream file(filepath);
 
     if (!file)
