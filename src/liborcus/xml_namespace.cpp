@@ -122,11 +122,9 @@ struct xmlns_context_impl
     xmlns_list_type m_default;
     alias_map_type m_map;
 
-    bool m_in_parse;
-
-    xmlns_context_impl(xmlns_repository& repo) : m_repo(repo), m_in_parse(true) {}
+    xmlns_context_impl(xmlns_repository& repo) : m_repo(repo) {}
     xmlns_context_impl(const xmlns_context_impl& r) :
-        m_repo(r.m_repo), m_all_ns(r.m_all_ns), m_default(r.m_default), m_map(r.m_map), m_in_parse(r.m_in_parse) {}
+        m_repo(r.m_repo), m_all_ns(r.m_all_ns), m_default(r.m_default), m_map(r.m_map) {}
 };
 
 size_t xmlns_context::index_not_found = std::numeric_limits<size_t>::max();
@@ -141,9 +139,6 @@ xmlns_context::~xmlns_context()
 
 xmlns_id_t xmlns_context::push(const pstring& key, const pstring& uri)
 {
-    if (!mp_impl->m_in_parse)
-        throw general_error("You can only push or pop during parsing.");
-
 #if ORCUS_DEBUG_NAMESPACE_REPO
     cout << "xmlns_context::push: key='" << key << "', uri='" << uri << "'" << endl;
 #endif
@@ -187,9 +182,6 @@ xmlns_id_t xmlns_context::push(const pstring& key, const pstring& uri)
 
 void xmlns_context::pop(const pstring& key)
 {
-    if (!mp_impl->m_in_parse)
-        throw general_error("You can only push or pop during parsing.");
-
     if (key.empty())
     {
         // empty key value is associated with default namespace.
@@ -275,9 +267,9 @@ public:
 
 class push_back_item_to_ns : unary_function<ns_item, void>
 {
-    xmlns_list_type& m_store;
+    std::vector<xmlns_id_t>& m_store;
 public:
-    push_back_item_to_ns(xmlns_list_type& store) : m_store(store) {}
+    push_back_item_to_ns(std::vector<xmlns_id_t>& store) : m_store(store) {}
     void operator() (const ns_item& item)
     {
         m_store.push_back(item.ns);
@@ -292,28 +284,22 @@ void xmlns_context::get_all_namespaces(std::vector<xmlns_id_t>& nslist) const
     cout << "xmlns_context::get_all_namespaces: count=" << mp_impl->m_all_ns.size() << endl;
     std::for_each(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end(), print_ns());
 #endif
-    if (mp_impl->m_in_parse)
-    {
-        mp_impl->m_in_parse = false;
-
-        // Sort it and remove duplicate.
-        std::sort(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());
-        xmlns_list_type::iterator it_unique_end =
-            std::unique(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());
-        mp_impl->m_all_ns.erase(it_unique_end, mp_impl->m_all_ns.end());
-
-        // Now, sort by indices.
-        vector<ns_item> items;
-        std::for_each(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end(), push_back_ns_to_item(items, *this));
-        std::sort(items.begin(), items.end(), less_ns_by_index());
-
-        xmlns_list_type all_ns;
-        std::for_each(items.begin(), items.end(), push_back_item_to_ns(all_ns));
-
-        mp_impl->m_all_ns.swap(all_ns);
-    }
 
     nslist.assign(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());
+
+    // Sort it and remove duplicate.
+    std::sort(nslist.begin(), nslist.end());
+    xmlns_list_type::iterator it_unique_end =
+        std::unique(nslist.begin(), nslist.end());
+    nslist.erase(it_unique_end, nslist.end());
+
+    // Now, sort by indices.
+    vector<ns_item> items;
+    std::for_each(nslist.begin(), nslist.end(), push_back_ns_to_item(items, *this));
+    std::sort(items.begin(), items.end(), less_ns_by_index());
+
+    nslist.clear();
+    std::for_each(items.begin(), items.end(), push_back_item_to_ns(nslist));
 }
 
 void xmlns_context::dump(std::ostream& os) const
