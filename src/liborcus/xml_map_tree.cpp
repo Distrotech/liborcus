@@ -284,28 +284,41 @@ bool xml_map_tree::element::unlinked_attribute_anchor() const
 }
 
 xml_map_tree::walker::walker(const xml_map_tree& parent) :
-    m_parent(parent), m_content_depth(0) {}
+    m_parent(parent) {}
 xml_map_tree::walker::walker(const xml_map_tree::walker& r) :
-    m_parent(r.m_parent), m_stack(r.m_stack), m_content_depth(r.m_content_depth) {}
+    m_parent(r.m_parent), m_stack(r.m_stack), m_unlinked_stack(r.m_unlinked_stack) {}
 
 void xml_map_tree::walker::reset()
 {
     m_stack.clear();
-    m_content_depth = 0;
+    m_unlinked_stack.clear();
 }
 
 const xml_map_tree::element* xml_map_tree::walker::push_element(xmlns_id_t ns, const pstring& name)
 {
+    if (!m_unlinked_stack.empty())
+    {
+        // We're still in the unlinked region.
+        m_unlinked_stack.push_back(xml_name_t(ns, name));
+        return NULL;
+    }
+
     if (m_stack.empty())
     {
         if (!m_parent.mp_root)
+        {
             // Tree is empty.
+            m_unlinked_stack.push_back(xml_name_t(ns, name));
             return NULL;
+        }
 
         const element* p = m_parent.mp_root;
         if (p->ns != ns || p->name != name)
+        {
             // Names differ.
+            m_unlinked_stack.push_back(xml_name_t(ns, name));
             return NULL;
+        }
 
         m_stack.push_back(p);
         return p;
@@ -320,31 +333,34 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(xmlns_id_t ns, c
             m_stack.push_back(p);
             return p;
         }
-
-        // The path matched up to this point, but no more.
-        ++m_content_depth;
-        return NULL;
     }
 
-    // Current element is linked.
-    assert(m_stack.back()->elem_type != element_unlinked);
-    ++m_content_depth;
-    return m_stack.back();
+    m_unlinked_stack.push_back(xml_name_t(ns, name));
+    return NULL;
 }
 
 const xml_map_tree::element* xml_map_tree::walker::pop_element(xmlns_id_t ns, const pstring& name)
 {
-    if (m_content_depth)
+    if (!m_unlinked_stack.empty())
     {
-        --m_content_depth;
-        return m_stack.back();
+        // We're in the unlinked region.  Pop element from the unlinked stack.
+        if (m_unlinked_stack.back().ns != ns || m_unlinked_stack.back().name != name)
+            throw general_error("Closing element has a different name than the opening element. (unlinked stack)");
+
+        m_unlinked_stack.pop_back();
+
+        if (!m_unlinked_stack.empty())
+            // We are still in the unlinked region.
+            return NULL;
+
+        return m_stack.empty() ? NULL : m_stack.back();
     }
 
     if (m_stack.empty())
         throw general_error("Element was popped while the stack was empty.");
 
     if (m_stack.back()->ns != ns || m_stack.back()->name != name)
-        throw general_error("Closing element has a different name than the opening element.");
+        throw general_error("Closing element has a different name than the opening element. (linked stack)");
 
     m_stack.pop_back();
     return m_stack.empty() ? NULL : m_stack.back();

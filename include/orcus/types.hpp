@@ -45,6 +45,16 @@ const xmlns_token_t XMLNS_UNKNOWN_TOKEN = 0;
 
 const xmlns_id_t XMLNS_UNKNOWN_ID = NULL;
 
+struct xml_name_t
+{
+    xmlns_id_t ns;
+    pstring name;
+
+    xml_name_t() : ns(XMLNS_UNKNOWN_ID), name() {}
+    xml_name_t(xmlns_id_t _ns, const pstring& _name) : ns(_ns), name(_name) {}
+    xml_name_t(const xml_name_t& r) : ns(r.ns), name(r.name) {}
+};
+
 struct xml_token_attr_t
 {
     xmlns_token_t ns;

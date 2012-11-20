@@ -202,10 +202,11 @@ public:
      */
     class walker
     {
-        typedef std::vector<const element*> element_stack_type;
+        typedef std::vector<const element*> ref_element_stack_type;
+        typedef std::vector<xml_name_t> name_stack_type;
         const xml_map_tree& m_parent;
-        element_stack_type m_stack;
-        int m_content_depth;
+        ref_element_stack_type m_stack;
+        name_stack_type m_unlinked_stack;
     public:
         walker(const xml_map_tree& parent);
         walker(const walker& r);
