@@ -95,7 +95,9 @@ public:
 
         const char* p0 = mp_char;
         size_t len = 0;
-        for (;mp_char != mp_end; ++mp_char, ++len)
+        xmlns_id_t ns = XMLNS_UNKNOWN_ID;
+
+        for (; mp_char != mp_end; ++mp_char, ++len)
         {
             switch (*mp_char)
             {
@@ -117,14 +119,24 @@ public:
                     return token(XMLNS_UNKNOWN_ID, pstring(p0, len), false);
                 }
                 case ':':
-                    throw xml_map_tree::xpath_error("namespace in xpath not supported yet.");
+                {
+                    // What comes ':' is a namespace. Reset the name and
+                    // convert the namespace to a proper ID.
+                    pstring ns_name(p0, len);
+                    ns = m_cxt.get(ns_name);
+
+                    ++mp_char; // skip the ':'.
+                    p0 = mp_char;
+                    len = 0;
+                }
+                break;
                 default:
                     ;
             }
         }
 
         // '/' has never been encountered.  It must be the last name in the path.
-        return token(XMLNS_UNKNOWN_ID, pstring(p0, len), m_next_token_type == attribute);
+        return token(ns, pstring(p0, len), m_next_token_type == attribute);
     }
 };
 
