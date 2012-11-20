@@ -27,7 +27,7 @@
 
 #include "orcus/orcus_xml.hpp"
 #include "orcus/global.hpp"
-#include "orcus/sax_parser.hpp"
+#include "orcus/sax_ns_parser.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/spreadsheet/export_interface.hpp"
 #include "orcus/xml_namespace.hpp"
@@ -83,7 +83,6 @@ class xml_data_sax_handler
     spreadsheet::iface::import_factory& m_factory;
     xml_map_tree::const_element_list_type& m_link_positions;
     xml_map_tree::walker m_map_tree_walker;
-    xmlns_context& m_ns_cxt;
 
     const xml_map_tree::element* mp_current_elem;
 
@@ -130,12 +129,10 @@ public:
     xml_data_sax_handler(
        spreadsheet::iface::import_factory& factory,
        xml_map_tree::const_element_list_type& link_positions,
-       xmlns_context& ns_cxt,
        const xml_map_tree& map_tree) :
         m_factory(factory),
         m_link_positions(link_positions),
         m_map_tree_walker(map_tree.get_tree_walker()),
-        m_ns_cxt(ns_cxt),
         mp_current_elem(NULL),
         m_in_range_ref(false) {}
 
@@ -144,15 +141,14 @@ public:
         m_attrs.clear();
     }
 
-    void start_element(const sax_parser_element& elem)
+    void start_element(const sax_ns_parser_element& elem)
     {
-        xmlns_id_t ns_id = m_ns_cxt.get(elem.ns);
-        m_scopes.push_back(scope(ns_id, elem.name));
+        m_scopes.push_back(scope(elem.ns, elem.name));
         scope& cur = m_scopes.back();
         cur.element_open_begin = elem.begin_pos;
         cur.element_open_end = elem.end_pos;
 
-        mp_current_elem = m_map_tree_walker.push_element(ns_id, elem.name);
+        mp_current_elem = m_map_tree_walker.push_element(elem.ns, elem.name);
         if (mp_current_elem)
         {
             const xml_map_tree::attribute_store_type& linked_attrs = mp_current_elem->attributes;
@@ -184,7 +180,7 @@ public:
         m_attrs.clear();
     }
 
-    void end_element(const sax_parser_element& elem)
+    void end_element(const sax_ns_parser_element& elem)
     {
         assert(!m_scopes.empty());
 
@@ -210,8 +206,7 @@ public:
         }
 
         m_scopes.pop_back();
-        xmlns_id_t ns_id = m_ns_cxt.get(elem.ns);
-        mp_current_elem = m_map_tree_walker.pop_element(ns_id, elem.name);
+        mp_current_elem = m_map_tree_walker.pop_element(elem.ns, elem.name);
     }
 
     void characters(const pstring& val)
@@ -236,10 +231,14 @@ public:
         }
     }
 
-    void attribute(const pstring& ns, const pstring& name, const pstring& val)
+    void attribute(const pstring& /*name*/, const pstring& /*val*/)
     {
-        xmlns_id_t ns_id = m_ns_cxt.get(ns);
-        m_attrs.push_back(attr(ns_id, name, val));
+        // Ignore attributes in XML declaration.
+    }
+
+    void attribute(const sax_ns_parser_attribute& at)
+    {
+        m_attrs.push_back(attr(at.ns, at.name, at.value));
     }
 };
 
@@ -568,9 +567,9 @@ void orcus_xml::read_file(const char* filepath)
     // Parse the content xml.
     xmlns_context ns_cxt = mp_impl->m_ns_repo.create_context(); // new ns context for the content xml stream.
     xml_data_sax_handler handler(
-       *mp_impl->mp_import_factory, mp_impl->m_link_positions, ns_cxt, mp_impl->m_map_tree);
+       *mp_impl->mp_import_factory, mp_impl->m_link_positions, mp_impl->m_map_tree);
 
-    sax_parser<xml_data_sax_handler> parser(strm.c_str(), strm.size(), handler);
+    sax_ns_parser<xml_data_sax_handler> parser(strm.c_str(), strm.size(), ns_cxt, handler);
     parser.parse();
 }
 
