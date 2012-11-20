@@ -122,9 +122,11 @@ struct xmlns_context_impl
     xmlns_list_type m_default;
     alias_map_type m_map;
 
-    xmlns_context_impl(xmlns_repository& repo) : m_repo(repo) {}
+    bool m_trim_all_ns;
+
+    xmlns_context_impl(xmlns_repository& repo) : m_repo(repo), m_trim_all_ns(true) {}
     xmlns_context_impl(const xmlns_context_impl& r) :
-        m_repo(r.m_repo), m_all_ns(r.m_all_ns), m_default(r.m_default), m_map(r.m_map) {}
+        m_repo(r.m_repo), m_all_ns(r.m_all_ns), m_default(r.m_default), m_map(r.m_map), m_trim_all_ns(r.m_trim_all_ns) {}
 };
 
 size_t xmlns_context::index_not_found = std::numeric_limits<size_t>::max();
@@ -144,6 +146,8 @@ xmlns_id_t xmlns_context::push(const pstring& key, const pstring& uri)
 #endif
     if (uri.empty())
         return XMLNS_UNKNOWN_ID;
+
+    mp_impl->m_trim_all_ns = true;
 
     pstring uri_interned = mp_impl->m_repo.intern(uri);
 
@@ -285,21 +289,30 @@ void xmlns_context::get_all_namespaces(std::vector<xmlns_id_t>& nslist) const
     std::for_each(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end(), print_ns());
 #endif
 
+    if (mp_impl->m_trim_all_ns)
+    {
+        xmlns_list_type& all_ns = mp_impl->m_all_ns;
+
+        nslist.assign(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());
+
+        // Sort it and remove duplicate.
+        std::sort(all_ns.begin(), all_ns.end());
+        xmlns_list_type::iterator it_unique_end =
+            std::unique(all_ns.begin(), all_ns.end());
+        all_ns.erase(it_unique_end, all_ns.end());
+
+        // Now, sort by indices.
+        vector<ns_item> items;
+        std::for_each(all_ns.begin(), all_ns.end(), push_back_ns_to_item(items, *this));
+        std::sort(items.begin(), items.end(), less_ns_by_index());
+
+        all_ns.clear();
+        std::for_each(items.begin(), items.end(), push_back_item_to_ns(all_ns));
+
+        mp_impl->m_trim_all_ns = false;
+    }
+
     nslist.assign(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end());
-
-    // Sort it and remove duplicate.
-    std::sort(nslist.begin(), nslist.end());
-    xmlns_list_type::iterator it_unique_end =
-        std::unique(nslist.begin(), nslist.end());
-    nslist.erase(it_unique_end, nslist.end());
-
-    // Now, sort by indices.
-    vector<ns_item> items;
-    std::for_each(nslist.begin(), nslist.end(), push_back_ns_to_item(items, *this));
-    std::sort(items.begin(), items.end(), less_ns_by_index());
-
-    nslist.clear();
-    std::for_each(items.begin(), items.end(), push_back_item_to_ns(nslist));
 }
 
 void xmlns_context::dump(std::ostream& os) const
