@@ -47,7 +47,7 @@ public:
     virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const = 0;
     virtual void end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child) = 0;
 
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const ::std::vector<xml_attr_t>& attrs) = 0;
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const ::std::vector<xml_token_attr_t>& attrs) = 0;
     virtual bool end_element(xmlns_token_t ns, xml_token_t name) = 0;
     virtual void characters(const pstring& str) = 0;
 

@@ -40,13 +40,13 @@ namespace orcus {
 
 namespace {
 
-struct attr_printer : unary_function<void, xml_attr_t>
+struct attr_printer : unary_function<void, xml_token_attr_t>
 {
 public:
     attr_printer(const tokens& tokens) :
         m_tokens(tokens) {}
 
-    void operator()(const xml_attr_t& attr) const
+    void operator()(const xml_token_attr_t& attr) const
     {
         cout << "  ";
         if (attr.ns != XMLNS_UNKNOWN_TOKEN)

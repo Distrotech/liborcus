@@ -43,13 +43,13 @@ public:
     workbook_attr_parser() :
         root_element_attr_parser(SCH_xlsx_main, XMLNS_xlsx) {}
     virtual ~workbook_attr_parser() {}
-    virtual void handle_other_attrs(const xml_attr_t &attr) {}
+    virtual void handle_other_attrs(const xml_token_attr_t &attr) {}
 };
 
-class workbook_sheet_attr_parser : public unary_function<xml_attr_t, void>
+class workbook_sheet_attr_parser : public unary_function<xml_token_attr_t, void>
 {
 public:
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_name)
             m_sheet.name = attr.value.intern();

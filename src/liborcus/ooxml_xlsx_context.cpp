@@ -55,7 +55,7 @@ public:
         m_count(0), m_unique_count(0) {}
     virtual ~shared_strings_root_attr_parser() {}
 
-    virtual void handle_other_attrs(const xml_attr_t &attr)
+    virtual void handle_other_attrs(const xml_token_attr_t &attr)
     {
         switch (attr.name)
         {
@@ -86,14 +86,14 @@ private:
 /**
  * Use this when we need to just get the value of a single attribute.
  */
-class single_attr_getter : public unary_function<xml_attr_t, void>
+class single_attr_getter : public unary_function<xml_token_attr_t, void>
 {
     pstring m_value;
     xml_token_t m_name;
 public:
     single_attr_getter(xml_token_t name) : m_name(name) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         if (attr.name == m_name)
             m_value = attr.value;
@@ -259,7 +259,7 @@ public:
         root_element_attr_parser(SCH_xlsx_main, XMLNS_xlsx) {}
 };
 
-class border_attr_parser : public unary_function<xml_attr_t, void>
+class border_attr_parser : public unary_function<xml_token_attr_t, void>
 {
     spreadsheet::border_direction_t m_dir;
     spreadsheet::iface::import_styles& m_styles;
@@ -267,7 +267,7 @@ public:
     border_attr_parser(spreadsheet::border_direction_t dir, spreadsheet::iface::import_styles& styles) :
         m_dir(dir), m_styles(styles) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         switch (attr.name)
         {
@@ -278,14 +278,14 @@ public:
     }
 };
 
-class cell_style_attr_parser : public unary_function<xml_attr_t, void>
+class cell_style_attr_parser : public unary_function<xml_token_attr_t, void>
 {
     spreadsheet::iface::import_styles& m_styles;
 public:
     cell_style_attr_parser(spreadsheet::iface::import_styles& styles) :
         m_styles(styles) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         switch (attr.name)
         {
@@ -308,14 +308,14 @@ public:
     }
 };
 
-class xf_attr_parser : public unary_function<xml_attr_t, void>
+class xf_attr_parser : public unary_function<xml_token_attr_t, void>
 {
     spreadsheet::iface::import_styles& m_styles;
 public:
     xf_attr_parser(spreadsheet::iface::import_styles& styles) :
         m_styles(styles) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         switch (attr.name)
         {
@@ -361,7 +361,7 @@ public:
     }
 };
 
-class fill_color_attr_parser : public unary_function<xml_attr_t, void>
+class fill_color_attr_parser : public unary_function<xml_token_attr_t, void>
 {
     spreadsheet::iface::import_styles& m_styles;
     const tokens& m_tokens;
@@ -370,7 +370,7 @@ public:
     fill_color_attr_parser(spreadsheet::iface::import_styles& styles, const tokens& _tokens, bool fg) :
         m_styles(styles), m_tokens(_tokens), m_foreground(fg) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         switch (attr.name)
         {

@@ -1,7 +1,7 @@
 /*************************************************************************
  *
  * Copyright (c) 2010 Kohei Yoshida
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -51,7 +51,7 @@ root_element_attr_parser::root_element_attr_parser(
 
 root_element_attr_parser::~root_element_attr_parser() {}
 
-void root_element_attr_parser::handle_other_attrs(const xml_attr_t&) {}
+void root_element_attr_parser::handle_other_attrs(const xml_token_attr_t&) {}
 
 root_element_attr_parser& root_element_attr_parser::operator= (const root_element_attr_parser& r)
 {
@@ -61,7 +61,7 @@ root_element_attr_parser& root_element_attr_parser::operator= (const root_elemen
     return *this;
 }
 
-void root_element_attr_parser::operator() (const xml_attr_t& attr)
+void root_element_attr_parser::operator() (const xml_token_attr_t& attr)
 {
     if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_xmlns)
     {

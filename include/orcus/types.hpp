@@ -45,18 +45,18 @@ const xmlns_token_t XMLNS_UNKNOWN_TOKEN = 0;
 
 const xmlns_id_t XMLNS_UNKNOWN_ID = NULL;
 
-struct xml_attr_t
+struct xml_token_attr_t
 {
     xmlns_token_t ns;
     xml_token_t   name;
     pstring       value;
 
-    xml_attr_t() : ns(XML_UNKNOWN_TOKEN), name(XML_UNKNOWN_TOKEN) {}
-    xml_attr_t(xmlns_token_t _ns, xml_token_t _name, const pstring& _value) :
+    xml_token_attr_t() : ns(XML_UNKNOWN_TOKEN), name(XML_UNKNOWN_TOKEN) {}
+    xml_token_attr_t(xmlns_token_t _ns, xml_token_t _name, const pstring& _value) :
         ns(_ns), name(_name), value(_value) {}
 };
 
-typedef ::std::vector<xml_attr_t> xml_attrs_t;
+typedef ::std::vector<xml_token_attr_t> xml_attrs_t;
 
 }
 

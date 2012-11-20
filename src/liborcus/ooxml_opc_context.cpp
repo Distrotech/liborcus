@@ -42,7 +42,7 @@ namespace orcus {
 
 namespace {
 
-class types_attr_parser : public unary_function<void, xml_attr_t>
+class types_attr_parser : public unary_function<void, xml_token_attr_t>
 {
 public:
     explicit types_attr_parser() :
@@ -51,7 +51,7 @@ public:
     types_attr_parser(const types_attr_parser& r) :
         m_default_ns(r.m_default_ns) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_xmlns)
         {
@@ -69,7 +69,7 @@ private:
     xmlns_token_t m_default_ns;
 };
 
-class part_ext_attr_parser : public unary_function<void, xml_attr_t>
+class part_ext_attr_parser : public unary_function<void, xml_token_attr_t>
 {
 public:
     part_ext_attr_parser(
@@ -84,7 +84,7 @@ public:
         m_name(r.m_name),
         m_content_type(r.m_content_type) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         if (attr.name == m_attr_name)
             m_name = attr.value;
@@ -144,7 +144,7 @@ void opc_content_types_context::end_child_context(xmlns_token_t ns, xml_token_t 
 {
 }
 
-void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name, const::std::vector<xml_attr_t> &attrs)
+void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name, const::std::vector<xml_token_attr_t> &attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
     switch (name)
@@ -219,7 +219,7 @@ namespace {
 /**
  * Attribute parser for Relationships element.
  */
-class rels_attr_parser : public unary_function<void, xml_attr_t>
+class rels_attr_parser : public unary_function<void, xml_token_attr_t>
 {
 public:
     explicit rels_attr_parser() :
@@ -228,7 +228,7 @@ public:
     rels_attr_parser(const rels_attr_parser& r) :
         m_default_ns(r.m_default_ns) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_xmlns)
         {
@@ -246,13 +246,13 @@ private:
     xmlns_token_t m_default_ns;
 };
 
-class rel_attr_parser : public unary_function<void, xml_attr_t>
+class rel_attr_parser : public unary_function<void, xml_token_attr_t>
 {
 public:
     rel_attr_parser(const opc_relations_context::schema_cache_type* cache) :
         mp_schema_cache(cache) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         // Target and rId strings must be interned as they must survive after
         // the rels part gets destroyed.
@@ -342,7 +342,7 @@ void opc_relations_context::end_child_context(xmlns_token_t ns, xml_token_t name
 {
 }
 
-void opc_relations_context::start_element(xmlns_token_t ns, xml_token_t name, const vector<xml_attr_t> &attrs)
+void opc_relations_context::start_element(xmlns_token_t ns, xml_token_t name, const vector<xml_token_attr_t> &attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
     switch (name)

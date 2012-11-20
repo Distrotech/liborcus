@@ -62,7 +62,7 @@ struct gnumeric_cell_data
 
 namespace {
 
-class cell_attr_parser : public unary_function<xml_attr_t, void>
+class cell_attr_parser : public unary_function<xml_token_attr_t, void>
 {
 public:
     cell_attr_parser()
@@ -74,7 +74,7 @@ public:
     cell_attr_parser(const cell_attr_parser& r):
         cell_data(r.cell_data) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         switch (attr.name)
         {

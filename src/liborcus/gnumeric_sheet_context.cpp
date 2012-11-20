@@ -35,13 +35,13 @@ namespace orcus {
 
 namespace {
 
-class gnumeric_style_region_attr_parser : public std::unary_function<xml_attr_t, void>
+class gnumeric_style_region_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
 public:
     gnumeric_style_region_attr_parser(gnumeric_style_region& style_region_data):
         m_style_region_data(style_region_data) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         switch(attr.name)
         {
@@ -78,13 +78,13 @@ private:
     gnumeric_style_region& m_style_region_data;
 };
 
-class gnumeric_font_attr_parser : public std::unary_function<xml_attr_t, void>
+class gnumeric_font_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
 public:
     gnumeric_font_attr_parser(spreadsheet::iface::import_styles& styles) :
         m_styles(styles) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         switch(attr.name)
         {
@@ -132,13 +132,13 @@ private:
     spreadsheet::iface::import_styles& m_styles;
 };
 
-class gnumeric_style_attr_parser : public std::unary_function<xml_attr_t, void>
+class gnumeric_style_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
 public:
     gnumeric_style_attr_parser(spreadsheet::iface::import_styles& styles) :
         m_styles(styles) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         switch(attr.name)
         {

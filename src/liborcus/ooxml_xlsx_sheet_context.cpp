@@ -48,14 +48,14 @@ public:
     worksheet_attr_parser() :
         root_element_attr_parser(SCH_xlsx_main, XMLNS_xlsx) {}
     virtual ~worksheet_attr_parser() {}
-    virtual void handle_other_attrs(const xml_attr_t &attr) {}
+    virtual void handle_other_attrs(const xml_token_attr_t &attr) {}
 };
 
-class row_attr_parser : public std::unary_function<void, xml_attr_t>
+class row_attr_parser : public std::unary_function<void, xml_token_attr_t>
 {
 public:
     row_attr_parser() : m_row(0) {}
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         if (attr.name == XML_r)
         {
@@ -75,7 +75,7 @@ private:
     spreadsheet::row_t m_row;
 };
 
-class cell_attr_parser : public std::unary_function<xml_attr_t, void>
+class cell_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
     struct address
     {
@@ -94,7 +94,7 @@ public:
         m_address(0,0),
         m_xf(0) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         switch (attr.name)
         {
@@ -178,7 +178,7 @@ private:
     }
 };
 
-class formula_attr_parser : public std::unary_function<xml_attr_t, void>
+class formula_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
     pstring m_type;
     pstring m_ref;
@@ -186,7 +186,7 @@ class formula_attr_parser : public std::unary_function<xml_attr_t, void>
 public:
     formula_attr_parser() : m_shared_index(-1) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         switch (attr.name)
         {

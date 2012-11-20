@@ -41,7 +41,7 @@ namespace orcus {
 
 namespace {
 
-class table_attr_parser : public unary_function<xml_attr_t, void>
+class table_attr_parser : public unary_function<xml_token_attr_t, void>
 {
 public:
     table_attr_parser() {}
@@ -50,7 +50,7 @@ public:
     {
     }
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         if (attr.ns == XMLNS_table && attr.name == XML_name)
             m_name = attr.value;
@@ -61,7 +61,7 @@ private:
     pstring m_name;
 };
 
-class row_attr_parser : public unary_function<xml_attr_t, void>
+class row_attr_parser : public unary_function<xml_token_attr_t, void>
 {
 public:
     row_attr_parser(ods_content_xml_context::row_attr& attr) :
@@ -69,7 +69,7 @@ public:
     row_attr_parser(const row_attr_parser& r) :
         m_attr(r.m_attr) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         if (attr.ns == XMLNS_table && attr.name == XML_number_rows_repeated)
         {
@@ -83,7 +83,7 @@ private:
     ods_content_xml_context::row_attr& m_attr;
 };
 
-class cell_attr_parser : public unary_function<xml_attr_t, void>
+class cell_attr_parser : public unary_function<xml_token_attr_t, void>
 {
 public:
     cell_attr_parser(ods_content_xml_context::cell_attr& attr) :
@@ -91,7 +91,7 @@ public:
     cell_attr_parser(const cell_attr_parser& r) :
         m_attr(r.m_attr) {}
 
-    void operator() (const xml_attr_t& attr)
+    void operator() (const xml_token_attr_t& attr)
     {
         if (attr.ns == XMLNS_table && attr.name == XML_number_columns_repeated)
         {
