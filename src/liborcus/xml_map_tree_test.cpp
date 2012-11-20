@@ -215,10 +215,68 @@ void test_tree_walk()
     assert(!elem);
 }
 
+void test_tree_walk_namespace()
+{
+    xmlns_repository repo;
+    xmlns_context cxt = repo.create_context();
+    xml_map_tree tree(cxt);
+    xml_map_tree::cell_position ref;
+    ref.sheet = pstring("data");
+    ref.row = 1;
+    ref.col = 2;
+
+    tree.set_namespace_alias("a", "http://some-namespace");
+    tree.set_namespace_alias("skip", "http://namespace-to-skip");
+    tree.set_cell_link("/a:table/a:title", ref);
+    tree.start_range();
+    ref.row = 2;
+    ref.col = 0;
+    tree.append_range_field_link("/a:table/a:rows/a:row/a:city", ref);
+    ++ref.col;
+    tree.append_range_field_link("/a:table/a:rows/a:row/a:population", ref);
+    ++ref.col;
+    tree.append_range_field_link("/a:table/a:rows/a:row/a:year", ref);
+    tree.commit_range();
+
+    xmlns_id_t ns_a = cxt.get("a");
+    assert(ns_a != XMLNS_UNKNOWN_ID);
+    xmlns_id_t ns_skip = cxt.get("skip");
+    assert(ns_skip != XMLNS_UNKNOWN_ID);
+
+    xml_map_tree::walker walker = tree.get_tree_walker();
+    walker.reset();
+
+    // Root element.  This is not linked.
+    const xml_map_tree::element* elem = walker.push_element(ns_a, "table");
+    assert(elem && elem->ns == ns_a && elem->name == "table" && elem->node_type == xml_map_tree::node_element);
+    assert(elem->elem_type == xml_map_tree::element_unlinked);
+    assert(elem->ref_type == xml_map_tree::reference_unknown);
+
+    // Intentionally push a foreign element.
+    const xml_map_tree::element* elem_old = elem;
+    elem = walker.push_element(ns_skip, "foo");
+    assert(!elem);
+    elem = walker.pop_element(ns_skip, "foo");
+    assert(elem == elem_old);
+
+    // Push a foreign element and a valid element under it.  A valid element
+    // placed under a foreign element should be invalid.
+    elem_old = elem;
+    elem = walker.push_element(ns_skip, "foo");
+    assert(!elem);
+    elem = walker.push_element(ns_a, "title");
+    assert(!elem);
+    elem = walker.pop_element(ns_a, "title");
+    assert(!elem);
+    elem = walker.pop_element(ns_skip, "foo");
+    assert(elem == elem_old);
+}
+
 int main()
 {
     test_path_insertion();
     test_attr_path_insertion();
     test_tree_walk();
+    test_tree_walk_namespace();
     return EXIT_SUCCESS;
 }
