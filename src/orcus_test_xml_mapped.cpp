@@ -54,7 +54,8 @@ const char* files[] = {
     "../test/xml-mapped/attribute-basic",
     "../test/xml-mapped/attribute-range-self-close",
     "../test/xml-mapped/attribute-single-element",
-    "../test/xml-mapped/attribute-single-element-2"
+    "../test/xml-mapped/attribute-single-element-2",
+//  "../test/xml-mapped/content-namespace", TODO: export not working yet.
 };
 
 const char* temp_output_xml = "out.xml";

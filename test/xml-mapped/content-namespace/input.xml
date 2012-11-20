@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<b:table xmlns:b="http://some-namespace" xmlns:skip="http://namespace-to-skip">
+    <b:title>Sample data</b:title>
+    <b:rows>
+        <b:row>
+            <b:city>Tokyo</b:city>
+            <b:population>13189000</b:population>
+            <b:year>2011</b:year>
+        </b:row>
+        <b:row>
+            <b:city>New York City</b:city>
+            <b:population>8244910</b:population>
+            <b:year>2011</b:year>
+        </b:row>
+        <b:row>
+            <b:city>London</b:city>
+            <b:population>8174100</b:population>
+            <b:year>2011</b:year>
+        </b:row>
+        <skip:row>
+            <b:city>Beijing</b:city>
+            <b:population>20180000</b:population>
+            <b:year>2011</b:year>
+        </skip:row>
+    </b:rows>
+</b:table>

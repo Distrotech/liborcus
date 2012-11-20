@@ -1,0 +1,13 @@
+data/0/0:string:Sample data
+data/2/0:string:city
+data/2/1:string:population
+data/2/2:string:year
+data/3/0:string:Tokyo
+data/3/1:numeric:1.3189e+07
+data/3/2:numeric:2011
+data/4/0:string:New York City
+data/4/1:numeric:8.24491e+06
+data/4/2:numeric:2011
+data/5/0:string:London
+data/5/1:numeric:8.1741e+06
+data/5/2:numeric:2011
