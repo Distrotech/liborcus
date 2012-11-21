@@ -44,6 +44,27 @@ using namespace std;
 
 namespace orcus {
 
+namespace {
+
+template<typename _MapType>
+void print_map_keys(const _MapType& map_store)
+{
+    cout << "keys: (";
+    bool first = true;
+    typename _MapType::const_iterator it = map_store.begin(), it_end = map_store.end();
+    for (; it != it_end; ++it)
+    {
+        if (first)
+            first = false;
+        else
+            cout << " ";
+        cout << "'" << it->first << "'";
+    }
+    cout << ")";
+};
+
+}
+
 typedef boost::unordered_map<pstring, size_t, pstring::hash> strid_map_type;
 
 struct xmlns_repository_impl
@@ -221,7 +242,10 @@ xmlns_id_t xmlns_context::get(const pstring& key) const
 {
 #if ORCUS_DEBUG_XML_NAMESPACE
     cout << "xmlns_context::get: alias='" << key << "', default ns stack size="
-        << mp_impl->m_default.size() << ", non-default alias count=" << mp_impl->m_map.size() << endl;
+        << mp_impl->m_default.size() << ", non-default alias count=" << mp_impl->m_map.size();
+    cout << ", ";
+    print_map_keys(mp_impl->m_map);
+    cout << endl;
 #endif
     if (key.empty())
         return mp_impl->m_default.empty() ? XMLNS_UNKNOWN_ID : mp_impl->m_default.back();
