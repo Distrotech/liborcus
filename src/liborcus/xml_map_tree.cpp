@@ -377,6 +377,9 @@ xml_map_tree::~xml_map_tree()
 
 void xml_map_tree::set_namespace_alias(const pstring& alias, const pstring& uri)
 {
+#if ORCUS_DEBUG_XML_MAP_TREE
+    cout << "xml_map_tree::set_namespace_alias: alias='" << alias << "', uri='" << uri << "'" << endl;
+#endif
     m_xmlns_cxt.push(alias, uri);
 }
 
