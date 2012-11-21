@@ -43,7 +43,7 @@
 
 namespace orcus {
 
-class xmlns_context;
+class xmlns_repository;
 
 /**
  * Tree representing XML-to-sheet mapping for mapped XML import.
@@ -218,10 +218,11 @@ public:
         const element* pop_element(xmlns_id_t ns, const pstring& name);
     };
 
-    xml_map_tree(xmlns_context& xmlns_cxt);
+    xml_map_tree(xmlns_repository& xmlns_repo);
     ~xml_map_tree();
 
     void set_namespace_alias(const pstring& alias, const pstring& uri);
+    xmlns_id_t get_namespace(const pstring& alias) const;
 
     void set_cell_link(const pstring& xpath, const cell_position& ref);
 
@@ -241,7 +242,7 @@ private:
     linkable* get_element_stack(const pstring& xpath, reference_type type, element_list_type& elem_stack);
 
 private:
-    xmlns_context& m_xmlns_cxt;
+    xmlns_context m_xmlns_cxt;
 
     /**
      * Element stack of current range parent element. This is used to

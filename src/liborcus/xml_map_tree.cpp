@@ -366,8 +366,8 @@ const xml_map_tree::element* xml_map_tree::walker::pop_element(xmlns_id_t ns, co
     return m_stack.empty() ? NULL : m_stack.back();
 }
 
-xml_map_tree::xml_map_tree(xmlns_context& xmlns_cxt) :
-    m_xmlns_cxt(xmlns_cxt), mp_cur_range_ref(NULL), mp_root(NULL) {}
+xml_map_tree::xml_map_tree(xmlns_repository& xmlns_repo) :
+    m_xmlns_cxt(xmlns_repo.create_context()), mp_cur_range_ref(NULL), mp_root(NULL) {}
 
 xml_map_tree::~xml_map_tree()
 {
@@ -381,6 +381,11 @@ void xml_map_tree::set_namespace_alias(const pstring& alias, const pstring& uri)
     cout << "xml_map_tree::set_namespace_alias: alias='" << alias << "', uri='" << uri << "'" << endl;
 #endif
     m_xmlns_cxt.push(alias, uri);
+}
+
+xmlns_id_t xml_map_tree::get_namespace(const pstring& alias) const
+{
+    return m_xmlns_cxt.get(alias);
 }
 
 void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)

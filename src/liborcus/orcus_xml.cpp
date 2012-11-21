@@ -481,7 +481,7 @@ struct orcus_xml_impl
 
     xml_map_tree::cell_position m_cur_range_ref;
 
-    orcus_xml_impl(xmlns_repository& ns_repo) : m_ns_repo(ns_repo), m_ns_cxt_map(ns_repo.create_context()), m_map_tree(m_ns_cxt_map) {}
+    orcus_xml_impl(xmlns_repository& ns_repo) : m_ns_repo(ns_repo), m_ns_cxt_map(ns_repo.create_context()), m_map_tree(m_ns_repo) {}
 };
 
 orcus_xml::orcus_xml(xmlns_repository& ns_repo, spreadsheet::iface::import_factory* im_fact, spreadsheet::iface::export_factory* ex_fact) :

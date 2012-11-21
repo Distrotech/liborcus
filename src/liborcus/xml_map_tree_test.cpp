@@ -38,8 +38,7 @@ using namespace std;
 void test_path_insertion()
 {
     xmlns_repository repo;
-    xmlns_context cxt = repo.create_context();
-    xml_map_tree tree(cxt);
+    xml_map_tree tree(repo);
     xml_map_tree::cell_position ref;
     ref.sheet = pstring("test");
     ref.row = 2;
@@ -122,8 +121,7 @@ void test_path_insertion()
 void test_attr_path_insertion()
 {
     xmlns_repository repo;
-    xmlns_context cxt = repo.create_context();
-    xml_map_tree tree(cxt);
+    xml_map_tree tree(repo);
     xml_map_tree::cell_position ref;
     ref.sheet = pstring("test");
     ref.row = 2;
@@ -174,8 +172,7 @@ void test_attr_path_insertion()
 void test_tree_walk()
 {
     xmlns_repository repo;
-    xmlns_context cxt = repo.create_context();
-    xml_map_tree tree(cxt);
+    xml_map_tree tree(repo);
     xml_map_tree::cell_position ref;
     ref.sheet = pstring("test");
     ref.row = 2;
@@ -218,8 +215,7 @@ void test_tree_walk()
 void test_tree_walk_namespace()
 {
     xmlns_repository repo;
-    xmlns_context cxt = repo.create_context();
-    xml_map_tree tree(cxt);
+    xml_map_tree tree(repo);
     xml_map_tree::cell_position ref;
     ref.sheet = pstring("data");
     ref.row = 1;
@@ -238,9 +234,9 @@ void test_tree_walk_namespace()
     tree.append_range_field_link("/a:table/a:rows/a:row/a:year", ref);
     tree.commit_range();
 
-    xmlns_id_t ns_a = cxt.get("a");
+    xmlns_id_t ns_a = tree.get_namespace("a");
     assert(ns_a != XMLNS_UNKNOWN_ID);
-    xmlns_id_t ns_skip = cxt.get("skip");
+    xmlns_id_t ns_skip = tree.get_namespace("skip");
     assert(ns_skip != XMLNS_UNKNOWN_ID);
 
     xml_map_tree::walker walker = tree.get_tree_walker();
