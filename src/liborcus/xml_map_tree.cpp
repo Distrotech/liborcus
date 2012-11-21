@@ -380,7 +380,10 @@ void xml_map_tree::set_namespace_alias(const pstring& alias, const pstring& uri)
 #if ORCUS_DEBUG_XML_MAP_TREE
     cout << "xml_map_tree::set_namespace_alias: alias='" << alias << "', uri='" << uri << "'" << endl;
 #endif
-    m_xmlns_cxt.push(alias, uri);
+    // We need to turn the alias string persistent because the xmlns context
+    // doesn't intern the alias strings.
+    pstring alias_safe = m_names.intern(alias).first;
+    m_xmlns_cxt.push(alias_safe, uri);
 }
 
 xmlns_id_t xml_map_tree::get_namespace(const pstring& alias) const
