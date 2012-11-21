@@ -59,6 +59,15 @@ public:
 
     ORCUS_DLLPUBLIC xmlns_context create_context();
 
+    /**
+     * Get XML namespace identifier from its numerical index.
+     *
+     * @param index numeric index of namespace.
+     *
+     * @return valid namespace identifier, or XMLNS_UNKNOWN_ID if not found.
+     */
+    ORCUS_DLLPUBLIC xmlns_id_t get_identifier(size_t index) const;
+
 private:
     xmlns_repository_impl* mp_impl;
 };

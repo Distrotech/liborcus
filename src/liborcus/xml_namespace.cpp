@@ -100,6 +100,15 @@ xmlns_context xmlns_repository::create_context()
     return xmlns_context(*this);
 }
 
+xmlns_id_t xmlns_repository::get_identifier(size_t index) const
+{
+    if (index >= mp_impl->m_identifiers.size())
+        return XMLNS_UNKNOWN_ID;
+
+    // All identifier strings are interned which means they are all null-terminated.
+    return mp_impl->m_identifiers[index].get();
+}
+
 size_t xmlns_repository::get_index(xmlns_id_t ns_id) const
 {
     if (!ns_id)
