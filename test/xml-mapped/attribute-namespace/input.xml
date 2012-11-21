@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<a:data xmlns:a="http://ns-1" xmlns:b="http://ns-2">
+    <b:entries>
+        <b:entry b:date-received="2011-01-01" b:date-processed="2011-01-03" b:received-by="JKB"/>
+        <b:entry b:date-received="2011-01-01" b:date-processed="2011-01-04" b:received-by="CJ"/>
+        <b:entry b:date-received="2011-12-23" b:date-processed="2012-01-01" b:received-by="KY"/>
+    </b:entries>
+</a:data>
