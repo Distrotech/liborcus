@@ -87,12 +87,14 @@ public:
     class walker
     {
         friend class xml_structure_tree;
-        xml_structure_tree_impl* mp_parent_impl;
         walker_impl* mp_impl;
 
         walker(); // disabled
         walker(const xml_structure_tree_impl& parent_impl);
     public:
+
+        static size_t index_not_found;
+
         walker(const walker& r);
         ~walker();
         walker& operator= (const walker& r);
@@ -135,6 +137,17 @@ public:
          * @param names list of attribute names in order of appearance.
          */
         void get_attributes(entity_names_type& names);
+
+        /**
+         * Get a numerical, 0-based index of given XML namespace.
+         *
+         * @param ns XML namespace ID.
+         *
+         * @return numeric, 0-based index of XML namespace if found, or
+         *         <code>xml_structure_tree::walker::index_not_found</code> if
+         *         the namespace is not found in this structure.
+         */
+        size_t get_xmlns_index(xmlns_id_t ns) const;
     };
 
     xml_structure_tree(xmlns_context& xmlns_cxt);

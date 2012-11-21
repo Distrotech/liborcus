@@ -286,12 +286,16 @@ struct xml_structure_tree_impl : boost::noncopyable
 
 struct xml_structure_tree::walker_impl : boost::noncopyable
 {
+    const xml_structure_tree_impl& m_parent_impl;
     root* mp_root; /// Root element of the authoritative tree.
-
     element_ref m_cur_elem;
     std::vector<element_ref> m_scopes;
 
-    walker_impl() : mp_root(NULL) {}
+    walker_impl(const xml_structure_tree_impl& parent_impl) :
+        m_parent_impl(parent_impl), mp_root(parent_impl.mp_root) {}
+
+    walker_impl(const walker_impl& r) :
+        m_parent_impl(r.m_parent_impl), mp_root(r.mp_root), m_cur_elem(r.m_cur_elem), m_scopes(r.m_scopes) {}
 };
 
 xml_structure_tree::entity_name::entity_name() :
@@ -327,16 +331,16 @@ xml_structure_tree::element::element() :
 xml_structure_tree::element::element(const entity_name& _name, bool _repeat) :
     name(_name), repeat(_repeat) {}
 
+size_t xml_structure_tree::walker::index_not_found = xmlns_context::index_not_found;
+
 xml_structure_tree::walker::walker(const xml_structure_tree_impl& parent_impl) :
-    mp_impl(new walker_impl)
+    mp_impl(new walker_impl(parent_impl))
 {
-    mp_impl->mp_root = parent_impl.mp_root;
 }
 
 xml_structure_tree::walker::walker(const walker& r) :
-    mp_impl(new walker_impl)
+    mp_impl(new walker_impl(*r.mp_impl))
 {
-    mp_impl->mp_root = r.mp_impl->mp_root;
 }
 
 xml_structure_tree::walker::~walker()
@@ -414,6 +418,11 @@ void xml_structure_tree::walker::get_attributes(entity_names_type& names)
     assert(mp_impl->m_scopes.back().prop);
     const elem_prop& prop = *mp_impl->m_scopes.back().prop;
     names.assign(prop.attribute_names.begin(), prop.attribute_names.end());
+}
+
+size_t xml_structure_tree::walker::get_xmlns_index(xmlns_id_t ns) const
+{
+    return mp_impl->m_parent_impl.m_xmlns_cxt.get_index(ns);
 }
 
 xml_structure_tree::xml_structure_tree(xmlns_context& xmlns_cxt) :
