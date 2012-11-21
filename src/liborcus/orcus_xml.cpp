@@ -151,6 +151,8 @@ public:
         mp_current_elem = m_map_tree_walker.push_element(elem.ns, elem.name);
         if (mp_current_elem)
         {
+            // Go through all linked attributes that belong to this element,
+            // and see if they exist in this content xml.
             const xml_map_tree::attribute_store_type& linked_attrs = mp_current_elem->attributes;
             xml_map_tree::attribute_store_type::const_iterator it = linked_attrs.begin(), it_end = linked_attrs.end();
             for (; it != it_end; ++it)
@@ -159,6 +161,8 @@ public:
                 const attr* p = find_attr_by_name(linked_attr.ns, linked_attr.name);
                 if (!p)
                     continue;
+
+                // This attribute is linked. Import its value.
 
                 pstring val_trimmed = p->val.trim();
                 switch (linked_attr.ref_type)
@@ -172,6 +176,9 @@ public:
                     default:
                         ;
                 }
+
+                // Record the namespace alias used in the content stream.
+                linked_attr.ns_alias = elem.ns_alias;
             }
 
             if (mp_current_elem->range_parent)
@@ -198,6 +205,7 @@ public:
                 mp_current_elem->stream_pos.open_end = cur.element_open_end;
                 mp_current_elem->stream_pos.close_begin = elem.begin_pos;
                 mp_current_elem->stream_pos.close_end = elem.end_pos;
+                mp_current_elem->ns_alias = elem.ns_alias;
                 m_link_positions.push_back(mp_current_elem);
             }
 

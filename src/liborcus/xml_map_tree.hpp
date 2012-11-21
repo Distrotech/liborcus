@@ -141,6 +141,8 @@ public:
         pstring name;
         linkable_node_type node_type;
 
+        mutable pstring ns_alias; // namespace alias used in the content stream.
+
         linkable(xmlns_id_t _ns, const pstring& _name, linkable_node_type _node_type);
     };
 
@@ -169,7 +171,7 @@ public:
             field_in_range* field_ref;
         };
 
-        mutable element_position stream_pos;
+        mutable element_position stream_pos; // position of this element in the content stream
 
         attribute_store_type attributes;
 

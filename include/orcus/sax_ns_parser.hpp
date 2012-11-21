@@ -39,6 +39,7 @@ namespace orcus {
 struct sax_ns_parser_element
 {
     xmlns_id_t ns;         // element namespace
+    pstring ns_alias;      // element namespace alias
     pstring name;          // element name
     const char* begin_pos; // position of the opening brace '<'.
     const char* end_pos;   // position of the char after the closing brace '>'.
@@ -46,9 +47,10 @@ struct sax_ns_parser_element
 
 struct sax_ns_parser_attribute
 {
-    xmlns_id_t ns; // attribute namespace
-    pstring name;  // attribute name
-    pstring value; // attribute value
+    xmlns_id_t ns;    // attribute namespace
+    pstring ns_alias; // attribute namespace alias
+    pstring name;     // attribute name
+    pstring value;    // attribute value
 };
 
 namespace __sax {
@@ -152,6 +154,7 @@ private:
             scope.ns_keys.swap(m_ns_keys);
 
             m_elem.ns = scope.ns;
+            m_elem.ns_alias = elem.ns;
             m_elem.name = scope.name;
             m_elem.begin_pos = elem.begin_pos;
             m_elem.end_pos = elem.end_pos;
@@ -167,6 +170,7 @@ private:
                 throw malformed_xml_error("mis-matching closing element.");
 
             m_elem.ns = scope.ns;
+            m_elem.ns_alias = elem.ns;
             m_elem.name = scope.name;
             m_elem.begin_pos = elem.begin_pos;
             m_elem.end_pos = elem.end_pos;
@@ -217,6 +221,7 @@ private:
             }
 
             m_attr.ns = m_ns_cxt.get(ns);
+            m_attr.ns_alias = ns;
             m_attr.name = name;
             m_attr.value = val;
             m_handler.attribute(m_attr);
