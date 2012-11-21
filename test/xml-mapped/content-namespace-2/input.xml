@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<a:data xmlns:a="http://namespace-1">
+    <b:monthly xmlns:b="http://namespace-2" xmlns:c="http://namespace-3">
+        <b:entries>
+            <b:entry>
+                <c:date>2011-01-02</c:date>
+                <c:category>Lunch</c:category>
+                <c:amount>6.32</c:amount>
+            </b:entry>
+            <b:entry>
+                <c:date>2011-01-03</c:date>
+                <c:category>Lunch</c:category>
+                <c:amount>7.45</c:amount>
+            </b:entry>
+            <b:entry>
+                <c:date>2011-01-04</c:date>
+                <c:category>Gas</c:category>
+                <c:amount>44.35</c:amount>
+            </b:entry>
+        </b:entries>
+    </b:monthly>
+</a:data>

@@ -65,6 +65,7 @@ const test_case tests[] =
     { "../test/xml-mapped/attribute-single-element", true },
     { "../test/xml-mapped/attribute-single-element-2", true },
     { "../test/xml-mapped/content-namespace", false },
+    { "../test/xml-mapped/content-namespace-2", true },
 };
 
 const char* temp_output_xml = "out.xml";
