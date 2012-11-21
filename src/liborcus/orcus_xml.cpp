@@ -82,6 +82,7 @@ class xml_data_sax_handler
 
     spreadsheet::iface::import_factory& m_factory;
     xml_map_tree::const_element_list_type& m_link_positions;
+    const xml_map_tree& m_map_tree;
     xml_map_tree::walker m_map_tree_walker;
 
     const xml_map_tree::element* mp_current_elem;
@@ -132,6 +133,7 @@ public:
        const xml_map_tree& map_tree) :
         m_factory(factory),
         m_link_positions(link_positions),
+        m_map_tree(map_tree),
         m_map_tree_walker(map_tree.get_tree_walker()),
         mp_current_elem(NULL),
         m_in_range_ref(false) {}
@@ -178,7 +180,7 @@ public:
                 }
 
                 // Record the namespace alias used in the content stream.
-                linked_attr.ns_alias = elem.ns_alias;
+                linked_attr.ns_alias = m_map_tree.intern_string(elem.ns_alias);
             }
 
             if (mp_current_elem->range_parent)
@@ -205,7 +207,7 @@ public:
                 mp_current_elem->stream_pos.open_end = cur.element_open_end;
                 mp_current_elem->stream_pos.close_begin = elem.begin_pos;
                 mp_current_elem->stream_pos.close_end = elem.end_pos;
-                mp_current_elem->ns_alias = elem.ns_alias;
+                mp_current_elem->ns_alias = m_map_tree.intern_string(elem.ns_alias);
                 m_link_positions.push_back(mp_current_elem);
             }
 

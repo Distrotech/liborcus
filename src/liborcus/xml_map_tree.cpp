@@ -621,7 +621,7 @@ xml_map_tree::range_ref_map_type& xml_map_tree::get_range_references()
     return m_field_refs;
 }
 
-pstring xml_map_tree::intern_string(const pstring& str)
+pstring xml_map_tree::intern_string(const pstring& str) const
 {
     return m_names.intern(str).first;
 }

@@ -235,7 +235,7 @@ public:
 
     range_ref_map_type& get_range_references();
 
-    pstring intern_string(const pstring& str);
+    pstring intern_string(const pstring& str) const;
 
 private:
     linkable* get_element_stack(const pstring& xpath, reference_type type, element_list_type& elem_stack);
@@ -259,7 +259,7 @@ private:
     range_ref_map_type m_field_refs;
 
     /** pool of element names. */
-    string_pool m_names;
+    mutable string_pool m_names;
 
     element* mp_root;
 };
