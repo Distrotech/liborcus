@@ -33,11 +33,11 @@
 #include <vector>
 #include <limits>
 
-#define ORCUS_DEBUG_NAMESPACE_REPO 0
+#define ORCUS_DEBUG_XML_NAMESPACE 0
 
 using namespace std;
 
-#if ORCUS_DEBUG_NAMESPACE_REPO
+#if ORCUS_DEBUG_XML_NAMESPACE
 #include <cstdio>
 #include <iostream>
 #endif
@@ -77,7 +77,7 @@ xmlns_id_t xmlns_repository::intern(const pstring& uri)
                 // This is a new instance. Assign a numerical identifier.
                 mp_impl->m_strid_map.insert(
                     strid_map_type::value_type(r.first, mp_impl->m_identifiers.size()));
-#if ORCUS_DEBUG_NAMESPACE_REPO
+#if ORCUS_DEBUG_XML_NAMESPACE
                 cout << "xmlns_repository::intern: uri='" << uri_interned << "' (" << mp_impl->m_identifiers.size() << ")" << endl;
 #endif
                 mp_impl->m_identifiers.push_back(r.first);
@@ -150,7 +150,7 @@ xmlns_context::~xmlns_context()
 
 xmlns_id_t xmlns_context::push(const pstring& key, const pstring& uri)
 {
-#if ORCUS_DEBUG_NAMESPACE_REPO
+#if ORCUS_DEBUG_XML_NAMESPACE
     cout << "xmlns_context::push: key='" << key << "', uri='" << uri << "'" << endl;
 #endif
     if (uri.empty())
@@ -219,14 +219,25 @@ void xmlns_context::pop(const pstring& key)
 
 xmlns_id_t xmlns_context::get(const pstring& key) const
 {
+#if ORCUS_DEBUG_XML_NAMESPACE
+    cout << "xmlns_context::get: alias='" << key << "', default ns stack size="
+        << mp_impl->m_default.size() << ", non-default alias count=" << mp_impl->m_map.size() << endl;
+#endif
     if (key.empty())
         return mp_impl->m_default.empty() ? XMLNS_UNKNOWN_ID : mp_impl->m_default.back();
 
     alias_map_type::const_iterator it = mp_impl->m_map.find(key);
     if (it == mp_impl->m_map.end())
-        // Key not found.
+    {
+#if ORCUS_DEBUG_XML_NAMESPACE
+        cout << "xmlns_context::get: alias not in this context" << endl;
+#endif
         return XMLNS_UNKNOWN_ID;
+    }
 
+#if ORCUS_DEBUG_XML_NAMESPACE
+    cout << "xmlns_context::get: alias stack size=" << it->second.size() << endl;
+#endif
     return it->second.empty() ? XMLNS_UNKNOWN_ID : it->second.back();
 }
 
@@ -237,7 +248,7 @@ size_t xmlns_context::get_index(xmlns_id_t ns_id) const
 
 namespace {
 
-#if ORCUS_DEBUG_NAMESPACE_REPO
+#if ORCUS_DEBUG_XML_NAMESPACE
 struct print_ns : std::unary_function<xmlns_id_t, void>
 {
     void operator() (xmlns_id_t ns_id) const
@@ -293,7 +304,7 @@ public:
 
 void xmlns_context::get_all_namespaces(std::vector<xmlns_id_t>& nslist) const
 {
-#if ORCUS_DEBUG_NAMESPACE_REPO
+#if ORCUS_DEBUG_XML_NAMESPACE
     cout << "xmlns_context::get_all_namespaces: count=" << mp_impl->m_all_ns.size() << endl;
     std::for_each(mp_impl->m_all_ns.begin(), mp_impl->m_all_ns.end(), print_ns());
 #endif
