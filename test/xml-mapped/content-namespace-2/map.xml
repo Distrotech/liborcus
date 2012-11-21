@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <map xmlns="http://gitorious.org/orcus/xml-map">
-    <ns alias="a" uri="http://namespace-1"/>
-    <ns alias="b" uri="http://namespace-2"/>
-    <ns alias="c" uri="http://namespace-3"/>
+    <ns alias="x" uri="http://namespace-1"/>
+    <ns alias="y" uri="http://namespace-2"/>
+    <ns alias="z" uri="http://namespace-3"/>
     <sheet name="data"/>
     <range row="2" column="0" sheet="data">
-        <field xpath="/a:data/b:monthly/b:entries/b:entry/c:date"/>
-        <field xpath="/a:data/b:monthly/b:entries/b:entry/c:category"/>
-        <field xpath="/a:data/b:monthly/b:entries/b:entry/c:amount"/>
+        <field xpath="/x:data/y:monthly/y:entries/y:entry/z:date"/>
+        <field xpath="/x:data/y:monthly/y:entries/y:entry/z:category"/>
+        <field xpath="/x:data/y:monthly/y:entries/y:entry/z:amount"/>
     </range>
 </map>
