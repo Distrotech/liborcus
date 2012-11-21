@@ -759,6 +759,14 @@ std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_position& r
     return os;
 }
 
+std::ostream& operator<< (std::ostream& os, const xml_map_tree::linkable& link)
+{
+    if (!link.ns_alias.empty())
+        os << link.ns_alias << ':';
+    os << link.name;
+    return os;
+}
+
 bool operator< (const xml_map_tree::cell_position& left, const xml_map_tree::cell_position& right)
 {
     if (left.sheet != right.sheet)

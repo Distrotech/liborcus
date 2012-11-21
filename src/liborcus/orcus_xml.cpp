@@ -52,16 +52,6 @@ namespace {
 
 class xml_data_sax_handler
 {
-    struct attr
-    {
-        xmlns_id_t ns;
-        pstring name;
-        pstring val;
-
-        attr(xmlns_id_t _ns, const pstring& _name, const pstring& _val) :
-            ns(_ns), name(_name), val(_val) {}
-    };
-
     struct scope
     {
         xmlns_id_t ns;
@@ -77,7 +67,7 @@ class xml_data_sax_handler
             type(xml_map_tree::element_unknown) {}
     };
 
-    vector<attr> m_attrs;
+    vector<sax_ns_parser_attribute> m_attrs;
     vector<scope> m_scopes;
 
     spreadsheet::iface::import_factory& m_factory;
@@ -91,9 +81,9 @@ class xml_data_sax_handler
 
 private:
 
-    const attr* find_attr_by_name(xmlns_id_t ns, const pstring& name)
+    const sax_ns_parser_attribute* find_attr_by_name(xmlns_id_t ns, const pstring& name)
     {
-        vector<attr>::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
+        vector<sax_ns_parser_attribute>::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
         for (; it != it_end; ++it)
         {
             if (it->ns == ns && it->name == name)
@@ -160,13 +150,13 @@ public:
             for (; it != it_end; ++it)
             {
                 const xml_map_tree::attribute& linked_attr = *it;
-                const attr* p = find_attr_by_name(linked_attr.ns, linked_attr.name);
+                const sax_ns_parser_attribute* p = find_attr_by_name(linked_attr.ns, linked_attr.name);
                 if (!p)
                     continue;
 
                 // This attribute is linked. Import its value.
 
-                pstring val_trimmed = p->val.trim();
+                pstring val_trimmed = p->value.trim();
                 switch (linked_attr.ref_type)
                 {
                     case xml_map_tree::reference_cell:
@@ -180,7 +170,7 @@ public:
                 }
 
                 // Record the namespace alias used in the content stream.
-                linked_attr.ns_alias = m_map_tree.intern_string(elem.ns_alias);
+                linked_attr.ns_alias = m_map_tree.intern_string(p->ns_alias);
             }
 
             if (mp_current_elem->range_parent)
@@ -207,12 +197,14 @@ public:
                 mp_current_elem->stream_pos.open_end = cur.element_open_end;
                 mp_current_elem->stream_pos.close_begin = elem.begin_pos;
                 mp_current_elem->stream_pos.close_end = elem.end_pos;
-                mp_current_elem->ns_alias = m_map_tree.intern_string(elem.ns_alias);
                 m_link_positions.push_back(mp_current_elem);
             }
 
             if (mp_current_elem->range_parent)
                 m_in_range_ref = false;
+
+            // Record the namespace alias used in the content stream.
+            mp_current_elem->ns_alias = m_map_tree.intern_string(elem.ns_alias);
         }
 
         m_scopes.pop_back();
@@ -248,7 +240,7 @@ public:
 
     void attribute(const sax_ns_parser_attribute& at)
     {
-        m_attrs.push_back(attr(at.ns, at.name, at.value));
+        m_attrs.push_back(at);
     }
 };
 
@@ -284,13 +276,13 @@ void write_opening_element(
     if (elem.attributes.empty())
     {
         // This element has no linked attributes. Just write the element name and be done with it.
-        os << '<' << elem.name << '>';
+        os << '<' << elem << '>';
         return;
     }
 
     // Element has one or more linked attributes.
 
-    os << '<' << elem.name;
+    os << '<' << elem;
 
     xml_map_tree::attribute_store_type::const_iterator it = elem.attributes.begin(), it_end = elem.attributes.end();
     for (; it != it_end; ++it)
@@ -300,7 +292,7 @@ void write_opening_element(
             // In theory this should never happen but it won't hurt to check.
             continue;
 
-        os << ' ' << attr.name << "=\"";
+        os << ' ' << attr << "=\"";
         sheet.write_string(os, ref.pos.row + 1 + current_row, ref.pos.col + attr.field_ref->column_pos);
         os << "\"";
     }
@@ -314,7 +306,7 @@ void write_opening_element(
 void write_opening_element(
     ostream& os, const xml_map_tree::element& elem, const spreadsheet::iface::export_factory& fact, bool self_close)
 {
-    os << '<' << elem.name;
+    os << '<' << elem;
     xml_map_tree::attribute_store_type::const_iterator it = elem.attributes.begin(), it_end = elem.attributes.end();
     for (; it != it_end; ++it)
     {
@@ -331,7 +323,7 @@ void write_opening_element(
         if (!sheet)
             continue;
 
-        os << ' ' << attr.name << "=\"";
+        os << ' ' << attr << "=\"";
         sheet->write_string(os, pos.row, pos.col);
         os << "\"";
     }
@@ -407,7 +399,7 @@ void write_range_reference_group(
                 {
                     write_opening_element(os, child_elem, ref, *sheet, current_row, false);
                     sheet->write_string(os, ref.pos.row + 1 + current_row, ref.pos.col + child_elem.field_ref->column_pos);
-                    os << "</" << child_elem.name << ">";
+                    os << "</" << child_elem << ">";
                 }
             }
 
@@ -421,7 +413,7 @@ void write_range_reference_group(
                     os, ref.pos.row + 1 + current_row, ref.pos.col + scopes.back().element.field_ref->column_pos);
 
             // Close this element for good, and exit the current scope.
-            os << "</" << scopes.back().element.name << ">";
+            os << "</" << scopes.back().element << ">";
             scopes.pop_back();
         }
     }

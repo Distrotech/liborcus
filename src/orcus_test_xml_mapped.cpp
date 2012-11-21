@@ -49,13 +49,22 @@
 using namespace std;
 using namespace orcus;
 
-const char* files[] = {
-    "../test/xml-mapped/content-basic",
-    "../test/xml-mapped/attribute-basic",
-    "../test/xml-mapped/attribute-range-self-close",
-    "../test/xml-mapped/attribute-single-element",
-    "../test/xml-mapped/attribute-single-element-2",
-//  "../test/xml-mapped/content-namespace", TODO: export not working yet.
+namespace {
+
+struct test_case
+{
+    const char* base_dir;
+    bool output_equals_input;
+};
+
+const test_case tests[] =
+{
+    { "../test/xml-mapped/content-basic", true },
+    { "../test/xml-mapped/attribute-basic", true },
+    { "../test/xml-mapped/attribute-range-self-close", true },
+    { "../test/xml-mapped/attribute-single-element", true },
+    { "../test/xml-mapped/attribute-single-element-2", true },
+    { "../test/xml-mapped/content-namespace", false },
 };
 
 const char* temp_output_xml = "out.xml";
@@ -75,10 +84,10 @@ void dump_xml_structure(string& dump_content, const char* filepath, xmlns_contex
 void test_mapped_xml_import()
 {
     string strm;
-    size_t n = sizeof(files)/sizeof(files[0]);
+    size_t n = sizeof(tests)/sizeof(tests[0]);
     for (size_t i = 0; i < n; ++i)
     {
-        string base_dir(files[i]);
+        string base_dir(tests[i].base_dir);
         string data_file = base_dir + "/input.xml";
         string map_file = base_dir + "/map.xml";
         string check_file = base_dir + "/check.txt";
@@ -119,19 +128,24 @@ void test_mapped_xml_import()
         cout << "writing to " << out_file << endl;
         app.write_file(out_file.c_str());
 
-        // Compare the logical xml content of the output xml with the input
-        // one. They should be identical.
+        if (tests[i].output_equals_input)
+        {
+            // Compare the logical xml content of the output xml with the
+            // input one. They should be identical.
 
-        string dump_input, dump_output;
-        dump_xml_structure(dump_input, data_file.c_str(), cxt);
-        dump_xml_structure(dump_output, out_file.c_str(), cxt);
-        assert(!dump_input.empty() && !dump_output.empty());
-        assert(dump_input == dump_output);
+            string dump_input, dump_output;
+            dump_xml_structure(dump_input, data_file.c_str(), cxt);
+            dump_xml_structure(dump_output, out_file.c_str(), cxt);
+            assert(!dump_input.empty() && !dump_output.empty());
+            assert(dump_input == dump_output);
+        }
 
         // Delete the temporary xml output.
         unlink(out_file.c_str());
     }
 }
+
+} // anonymous namespace
 
 int main()
 {

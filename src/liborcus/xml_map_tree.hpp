@@ -265,6 +265,7 @@ private:
 };
 
 std::ostream& operator<< (std::ostream& os, const xml_map_tree::cell_position& ref);
+std::ostream& operator<< (std::ostream& os, const xml_map_tree::linkable& link);
 
 bool operator< (const xml_map_tree::cell_position& left, const xml_map_tree::cell_position& right);
 
