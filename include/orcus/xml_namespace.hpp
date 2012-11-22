@@ -68,6 +68,9 @@ public:
      */
     ORCUS_DLLPUBLIC xmlns_id_t get_identifier(size_t index) const;
 
+    ORCUS_DLLPUBLIC std::string get_short_name(xmlns_id_t ns_id) const;
+    ORCUS_DLLPUBLIC std::string get_short_name(size_t index) const;
+
 private:
     xmlns_repository_impl* mp_impl;
 };

@@ -130,6 +130,22 @@ xmlns_id_t xmlns_repository::get_identifier(size_t index) const
     return mp_impl->m_identifiers[index].get();
 }
 
+string xmlns_repository::get_short_name(xmlns_id_t ns_id) const
+{
+    size_t index = get_index(ns_id);
+    return get_short_name(index);
+}
+
+string xmlns_repository::get_short_name(size_t index) const
+{
+    if (index == xmlns_context::index_not_found)
+        return string("???");
+
+    ostringstream os;
+    os << "ns" << index;
+    return os.str();
+}
+
 size_t xmlns_repository::get_index(xmlns_id_t ns_id) const
 {
     if (!ns_id)

@@ -564,7 +564,13 @@ void orcus_xml::read_file(const char* filepath)
         for (; it != it_end; ++it)
         {
             const xml_map_tree::linkable& e = **it;
-            sheet->set_auto(row, col++, e.name.get(), e.name.size());
+            ostringstream os;
+            if (e.ns)
+                os << mp_impl->m_ns_repo.get_short_name(e.ns) << ':';
+            os << e.name;
+            string s = os.str();
+            if (!s.empty())
+                sheet->set_auto(row, col++, &s[0], s.size());
         }
     }
 
