@@ -286,6 +286,11 @@ size_t xmlns_context::get_index(xmlns_id_t ns_id) const
     return mp_impl->m_repo.get_index(ns_id);
 }
 
+string xmlns_context::get_short_name(xmlns_id_t ns_id) const
+{
+    return mp_impl->m_repo.get_short_name(ns_id);
+}
+
 namespace {
 
 #if ORCUS_DEBUG_XML_NAMESPACE

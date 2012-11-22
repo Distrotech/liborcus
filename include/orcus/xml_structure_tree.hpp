@@ -148,6 +148,8 @@ public:
          *         the namespace is not found in this structure.
          */
         size_t get_xmlns_index(xmlns_id_t ns) const;
+
+        std::string get_xmlns_short_name(xmlns_id_t ns) const;
     };
 
     xml_structure_tree(xmlns_context& xmlns_cxt);

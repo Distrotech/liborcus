@@ -99,6 +99,7 @@ public:
     void pop(const pstring& key);
     xmlns_id_t get(const pstring& key) const;
     size_t get_index(xmlns_id_t ns_id) const;
+    std::string get_short_name(xmlns_id_t ns_id) const;
     void get_all_namespaces(std::vector<xmlns_id_t>& nslist) const;
 
     void dump(std::ostream& os) const;

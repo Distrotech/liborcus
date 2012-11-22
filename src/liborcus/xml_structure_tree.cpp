@@ -425,6 +425,11 @@ size_t xml_structure_tree::walker::get_xmlns_index(xmlns_id_t ns) const
     return mp_impl->m_parent_impl.m_xmlns_cxt.get_index(ns);
 }
 
+string xml_structure_tree::walker::get_xmlns_short_name(xmlns_id_t ns) const
+{
+    return mp_impl->m_parent_impl.m_xmlns_cxt.get_short_name(ns);
+}
+
 xml_structure_tree::xml_structure_tree(xmlns_context& xmlns_cxt) :
     mp_impl(new xml_structure_tree_impl(xmlns_cxt)) {}
 
