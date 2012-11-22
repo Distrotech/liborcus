@@ -399,7 +399,7 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
                     size_t sindex = cxt.get_string_identifier(pos);
                     const string* p = cxt.get_string(sindex);
                     assert(p);
-                    os << "string:" << *p << endl;
+                    os << "string:\"" << *p << '"' << endl;
                 }
                 break;
                 case ixion::celltype_numeric:
