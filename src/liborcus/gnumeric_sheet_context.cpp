@@ -24,13 +24,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  ************************************************************************/
- 
+
 #include "orcus/gnumeric/gnumeric_sheet_context.hpp"
 #include "orcus/gnumeric/gnumeric_cell_context.hpp"
 #include "orcus/gnumeric/gnumeric_token_constants.hpp"
+#include "orcus/gnumeric/gnumeric_helper.hpp"
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
-
+#include "orcus/gnumeric/gnumeric_helper.hpp"
 
 namespace orcus {
 
@@ -144,9 +145,19 @@ public:
         switch(attr.name)
         {
             case XML_Fore:
-                break;
+            {
+                spreadsheet::color_elem_t red, green, blue;
+                gnumeric_helper::parse_RGB_color_attribute(red, green, blue, attr.value);
+                m_styles.set_fill_fg_color(0, red, green, blue);
+            }
+            break;
             case XML_Back:
-                break;
+            {
+                spreadsheet::color_elem_t red, green, blue;
+                gnumeric_helper::parse_RGB_color_attribute(red, green, blue, attr.value);
+                m_styles.set_fill_bg_color(0, red, green, blue);
+            }
+            break;
         }
     }
 

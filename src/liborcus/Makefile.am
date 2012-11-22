@@ -73,6 +73,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
     	gnumeric_cell_context.cpp \
 	gnumeric_context.cpp \
 	gnumeric_handler.cpp \
+	gnumeric_helper.cpp \
 	gnumeric_sheet_context.cpp \
 	gnumeric_tokens.cpp \
 	orcus_gnumeric.cpp
