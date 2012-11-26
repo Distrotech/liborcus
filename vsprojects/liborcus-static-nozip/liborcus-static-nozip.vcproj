@@ -208,11 +208,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\liborcus\xml_namespace.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\liborcus\xml_parser.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\liborcus\xml_simple_handler.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\liborcus\xml_structure_tree.cpp"
 				>
 			</File>
 		</Filter>
@@ -221,6 +229,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\include\orcus\cell_buffer.hpp"
+				>
+			</File>
 			<File
 				RelativePath="..\..\include\orcus\css_parser.hpp"
 				>
@@ -266,6 +278,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\orcus\sax_ns_parser.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\orcus\sax_parser.hpp"
 				>
 			</File>
@@ -282,11 +298,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\types.hpp"
+				RelativePath="..\..\include\orcus\spreadsheet\types.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\spreadsheet\types.hpp"
+				RelativePath="..\..\include\orcus\types.hpp"
 				>
 			</File>
 			<File
@@ -298,11 +314,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\orcus\xml_namespace.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\orcus\xml_parser.hpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\include\orcus\xml_simple_handler.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\orcus\xml_structure_tree.hpp"
 				>
 			</File>
 		</Filter>

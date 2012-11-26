@@ -32,6 +32,7 @@
 #include <boost/unordered_map.hpp>
 #include <vector>
 #include <limits>
+#include <sstream>
 
 #define ORCUS_DEBUG_XML_NAMESPACE 0
 
