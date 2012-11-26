@@ -47,6 +47,7 @@ namespace orcus {
 
 namespace {
 
+#if ORCUS_DEBUG_XML_NAMESPACE
 template<typename _MapType>
 void print_map_keys(const _MapType& map_store)
 {
@@ -63,6 +64,7 @@ void print_map_keys(const _MapType& map_store)
     }
     cout << ")";
 };
+#endif
 
 }
 
