@@ -113,7 +113,6 @@ liborcus_test_xml_namespace_SOURCES = \
 	string_pool.cpp \
 	string_pool.hpp \
 	xml_namespace.cpp \
-	xml_namespace.hpp \
 	xml_namespace_test.cpp
 
 liborcus_test_xml_namespace_LDADD = \

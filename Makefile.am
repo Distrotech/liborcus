@@ -35,7 +35,6 @@ bin_data = \
 
 misc_data = \
 	misc/OpenDocument-schema-v1.2-cd04.rng \
-	misc/libzip_test.cpp \
 	misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip \
 	misc/ooxml-ecma-376/OpenPackagingConventions-XMLSchema.zip \
 	misc/generate-tokens.sh
@@ -46,25 +45,66 @@ slickedit_data = \
 	slickedit/orcus.vpj
 
 test_data = \
+	test/xml/simple/check.txt \
+	test/xml/simple/input.xml \
+	test/xml/encoded-char/check.txt \
+	test/xml/encoded-char/input.xml \
+	test/xml/default-ns/check.txt \
+	test/xml/default-ns/input.xml \
+	test/xml/ns-alias-1/check.txt \
+	test/xml/ns-alias-1/input.xml \
+	test/test-nocolor.xlsx \
+	test/gnumeric/test.gnumeric \
 	test/css/test-complex.css \
 	test/css/test.css \
+	test/ods/formula.ods \
+	test/ods/test.ods \
+	test/ods/japanese.ods \
+	test/xml-mapped/content-namespace/map.xml \
+	test/xml-mapped/content-namespace/check.txt \
+	test/xml-mapped/content-namespace/input.xml \
+	test/xml-mapped/content-namespace-2/map.xml \
+	test/xml-mapped/content-namespace-2/check.txt \
+	test/xml-mapped/content-namespace-2/input.xml \
+	test/xml-mapped/content-basic/map.xml \
+	test/xml-mapped/content-basic/check.txt \
+	test/xml-mapped/content-basic/input.xml \
+	test/xml-mapped/attribute-single-element-2/map.xml \
+	test/xml-mapped/attribute-single-element-2/check.txt \
+	test/xml-mapped/attribute-single-element-2/input.xml \
+	test/xml-mapped/attribute-single-element/map.xml \
+	test/xml-mapped/attribute-single-element/check.txt \
+	test/xml-mapped/attribute-single-element/input.xml \
+	test/xml-mapped/attribute-namespace/map.xml \
+	test/xml-mapped/attribute-namespace/check.txt \
+	test/xml-mapped/attribute-namespace/input.xml \
+	test/xml-mapped/attribute-range-self-close/map.xml \
+	test/xml-mapped/attribute-range-self-close/check.txt \
+	test/xml-mapped/attribute-range-self-close/input.xml \
+	test/xml-mapped/attribute-basic/map.xml \
+	test/xml-mapped/attribute-basic/check.txt \
+	test/xml-mapped/attribute-basic/input.xml \
+	test/csv/quoted-with-space.csv \
 	test/csv/double-quotes.csv \
-	test/csv/normal-quotes.csv \
 	test/csv/simple-numbers.csv \
 	test/csv/single-quoted-cell.csv \
-	test/ods/formula.ods \
-	test/ods/japanese.ods \
-	test/ods/test.ods \
-	test/xlsx/formula-shared.xlsx \
+	test/csv/normal-quotes.csv \
+	test/xml-structure/basic-1/check.txt \
+	test/xml-structure/basic-1/input.xml \
+	test/xml-structure/basic-2/check.txt \
+	test/xml-structure/basic-2/input.xml \
+	test/xml-structure/attribute-1/check.txt \
+	test/xml-structure/attribute-1/input.xml \
+	test/xml-structure/basic-3/check.txt \
+	test/xml-structure/basic-3/input.xml \
+	test/xml-structure/nested-repeat-1/check.txt \
+	test/xml-structure/nested-repeat-1/input.xml \
+	test/xml-structure/namespace-default/check.txt \
+	test/xml-structure/namespace-default/input.xml \
 	test/xlsx/formula-simple.xlsx \
 	test/xlsx/test.xlsx \
-	test/xml-mapped/basic-map.xml \
-	test/xml-mapped/basic.check \
-	test/xml-mapped/basic.xml \
-	test/xml/simple.xml \
-	test/xml/simple.xml.check \
-	test-manual/ods/cell-styles-ru.ods \
-	test-manual/ods/george-ou-perf.ods
+	test/xlsx/formula-on-sheet3.xlsx \
+	test/xlsx/formula-shared.xlsx
 
 vsprojects_data = \
 	vsprojects/liborcus-static-nozip/liborcus-static-nozip.vcproj \
