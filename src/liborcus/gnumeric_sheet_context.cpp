@@ -292,12 +292,15 @@ void gnumeric_sheet_context::end_font()
 {
     spreadsheet::iface::import_styles& styles = *mp_factory->get_styles();
     styles.set_font_name(chars.get(), chars.size());
-    styles.commit_font();
+    size_t font_id = styles.commit_font();
+    styles.set_xf_font(font_id);
 }
 
 void gnumeric_sheet_context::end_style()
 {
     spreadsheet::iface::import_styles& styles = *mp_factory->get_styles();
+    size_t fill_id = styles.commit_fill();
+    styles.set_xf_fill(fill_id);
     size_t id = styles.commit_cell_xf();
     mp_region_data->xf_id = id;
 }
