@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
-			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\liborcus\zLib.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -83,7 +83,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
-			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\liborcus\zLib.vsprops"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -164,35 +164,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\gnumeric_cell_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\gnumeric_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\gnumeric_handler.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\gnumeric_sheet_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\gnumeric_tokens.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\gnumeric_tokens.inl"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\liborcus\orcus_css.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\liborcus\orcus_csv.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\liborcus\orcus_gnumeric.cpp"
 				>
 			</File>
 			<File
@@ -247,6 +227,34 @@
 				RelativePath="..\..\src\liborcus\xml_structure_tree.cpp"
 				>
 			</File>
+			<Filter
+				Name="gnumeric"
+				>
+				<File
+					RelativePath="..\..\src\liborcus\gnumeric_cell_context.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\gnumeric_context.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\gnumeric_handler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\gnumeric_sheet_context.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\gnumeric_tokens.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\gnumeric_tokens.inl"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -283,34 +291,6 @@
 			</File>
 			<File
 				RelativePath="..\..\include\orcus\global.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\gnumeric\gnumeric_cell_context.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\gnumeric\gnumeric_context.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\gnumeric\gnumeric_handler.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\gnumeric\gnumeric_sheet_context.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\gnumeric\gnumeric_token_constants.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\gnumeric\gnumeric_token_constants.inl"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\gnumeric\gnumeric_tokens.hpp"
 				>
 			</File>
 			<File
@@ -385,6 +365,38 @@
 				RelativePath="..\..\include\orcus\xml_structure_tree.hpp"
 				>
 			</File>
+			<Filter
+				Name="gnumeric"
+				>
+				<File
+					RelativePath="..\..\include\orcus\gnumeric\gnumeric_cell_context.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\orcus\gnumeric\gnumeric_context.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\orcus\gnumeric\gnumeric_handler.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\orcus\gnumeric\gnumeric_sheet_context.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\orcus\gnumeric\gnumeric_token_constants.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\orcus\gnumeric\gnumeric_token_constants.inl"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\orcus\gnumeric\gnumeric_tokens.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"

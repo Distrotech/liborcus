@@ -6,18 +6,10 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="$(ZLIB_DIR)"
+		AdditionalIncludeDirectories="$(ZLIB_INCLUDE_DIR)"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalLibraryDirectories="$(ZLIB_LIB)"
-	/>
-	<UserMacro
-		Name="ZLIB_DIR"
-		Value=""
-	/>
-	<UserMacro
-		Name="ZLIB_LIB"
-		Value=""
+		AdditionalLibraryDirectories="$(ZLIB_LIB_DIR)"
 	/>
 </VisualStudioPropertySheet>
