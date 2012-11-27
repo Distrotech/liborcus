@@ -158,6 +158,18 @@ public:
                 m_styles.set_fill_bg_color(0, red, green, blue);
             }
             break;
+            case XML_Hidden:
+            {
+                bool b = atoi(attr.value.get());
+                m_styles.set_cell_hidden(b);
+            }
+            break;
+            case XML_Locked:
+            {
+                bool b = atoi(attr.value.get());
+                m_styles.set_cell_locked(b);
+            }
+            break;
         }
     }
 
