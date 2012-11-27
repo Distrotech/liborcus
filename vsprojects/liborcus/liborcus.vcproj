@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="liborcus"
 	ProjectGUID="{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}"
 	RootNamespace="orcus"
@@ -333,6 +333,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\liborcus\gnumeric_helper.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\liborcus\gnumeric_sheet_context.cpp"
 					>
 				</File>
@@ -380,11 +384,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\global.hpp"
+				RelativePath="..\..\include\orcus\ooxml\global.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\ooxml\global.hpp"
+				RelativePath="..\..\include\orcus\global.hpp"
 				>
 			</File>
 			<File
@@ -480,11 +484,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\types.hpp"
+				RelativePath="..\..\include\orcus\spreadsheet\types.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\spreadsheet\types.hpp"
+				RelativePath="..\..\include\orcus\types.hpp"
 				>
 			</File>
 			<File
@@ -544,6 +548,10 @@
 				</File>
 				<File
 					RelativePath="..\..\include\orcus\gnumeric\gnumeric_handler.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\orcus\gnumeric\gnumeric_helper.hpp"
 					>
 				</File>
 				<File
