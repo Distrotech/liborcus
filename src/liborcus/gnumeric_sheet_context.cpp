@@ -24,6 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  ************************************************************************/
+ 
 #include "orcus/gnumeric/gnumeric_sheet_context.hpp"
 #include "orcus/gnumeric/gnumeric_cell_context.hpp"
 #include "orcus/gnumeric/gnumeric_token_constants.hpp"
@@ -96,13 +97,13 @@ public:
             break;
             case XML_Bold:
             {
-                bool b = atoi(attr.value.get());
+                bool b = atoi(attr.value.get()) != 0;
                 m_styles.set_font_bold(b);
             }
             break;
             case XML_Italic:
             {
-                bool b = atoi(attr.value.get());
+                bool b = atoi(attr.value.get()) != 0;
                 m_styles.set_font_italic(b);
             }
             break;
