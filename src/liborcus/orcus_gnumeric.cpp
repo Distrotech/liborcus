@@ -47,7 +47,6 @@ using namespace std;
 
 namespace orcus {
 
-
 orcus_gnumeric::orcus_gnumeric(spreadsheet::iface::import_factory* factory) :
     mp_factory(factory)
 {
@@ -66,40 +65,40 @@ void orcus_gnumeric::read_content_xml(const char* p, size_t size)
     parser.parse();
 }
 
-void orcus_gnumeric::read_file(const char* fpath)
+void orcus_gnumeric::read_file(const char *fpath)
 {
     cout << "reading " << fpath << endl;
 
     gzFile file = gzopen(fpath, "rb");
 
-    if(!file)
-       return;
+    if (!file)
+        return;
 
     std::string file_content;
 
-    while(1)
+    while (true)
     {
-       char buffer[BUFFER_LENGTH];
-       int read_characters = gzread(file, buffer, BUFFER_LENGTH);
-       if(read_characters < 0)
-       {
-               std::cout << "Read error" << std::endl;
-               break;
-       }
+        char buffer[BUFFER_LENGTH];
+        int read_characters = gzread(file, buffer, BUFFER_LENGTH);
+        if (read_characters < 0)
+        {
+            std::cout << "Read error" << std::endl;
+            break;
+        }
 
-       file_content.append(buffer, read_characters);
-       if(read_characters < BUFFER_LENGTH)
-       {
-               if(gzeof(file))
-                       break;
-               else
-               {
-                       const char * error;
-                       int err;
-                       error = gzerror (file, &err);
-                       std::cout << "error: " << error << std::endl;
-               }
-       }
+        file_content.append(buffer, read_characters);
+        if (read_characters < BUFFER_LENGTH)
+        {
+            if (gzeof(file))
+                break;
+            else
+            {
+                const char *error;
+                int err;
+                error = gzerror(file, &err);
+                std::cout << "error: " << error << std::endl;
+            }
+        }
     }
 
     read_content_xml(file_content.c_str(), file_content.length());
