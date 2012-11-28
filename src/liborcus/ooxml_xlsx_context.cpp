@@ -416,6 +416,34 @@ private:
     }
 };
 
+class cell_protection_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+    spreadsheet::iface::import_styles& m_styles;
+public:
+
+    cell_protection_attr_parser(spreadsheet::iface::import_styles& styles) :
+        m_styles(styles) {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_hidden:
+            {
+                bool b = strtoul(attr.value.get(), NULL, 10) != 0;
+                m_styles.set_cell_hidden(b);
+            }
+            break;
+            case XML_locked:
+            {
+                bool b = strtoul(attr.value.get(), NULL, 10) != 0;
+                m_styles.set_cell_locked(b);
+            }
+            break;
+        }
+    }
+};
+
 }
 
 xlsx_styles_context::xlsx_styles_context(const tokens& tokens, spreadsheet::iface::import_styles* styles) :
@@ -647,6 +675,12 @@ void xlsx_styles_context::start_element(xmlns_token_t ns, xml_token_t name, cons
             for_each(attrs.begin(), attrs.end(), xf_attr_parser(*mp_styles));
         }
         break;
+        case XML_protection:
+        {
+            xml_element_expected(parent, XMLNS_xlsx, XML_xf);
+            for_each(attrs.begin(), attrs.end(), cell_protection_attr_parser(*mp_styles));
+        }
+        break;
         default:
             warn_unhandled();
     }
@@ -673,6 +707,12 @@ bool xlsx_styles_context::end_element(xmlns_token_t ns, xml_token_t name)
                 mp_styles->commit_cell_style_xf();
             else
                 mp_styles->commit_cell_xf();
+        break;
+        case XML_protection:
+        {
+            size_t id = mp_styles->commit_cell_protection();
+            mp_styles->set_xf_protection(id);
+        }
         break;
     }
     return pop_stack(ns, name);
