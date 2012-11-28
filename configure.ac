@@ -23,7 +23,7 @@ m4_define([orcus_api_version], [orcus_major_version.orcus_minor_api_version])
 AC_INIT([orcus],[orcus_version])
 AC_CONFIG_MACRO_DIR([m4])
 AM_CONFIG_HEADER([config.h])
-AM_INIT_AUTOMAKE([1.11 foreign dist-xz])
+AM_INIT_AUTOMAKE([1.11 foreign dist-bzip2 dist-xz])
 AM_SILENT_RULES([yes])
 AC_LANG([C++])
 CXXFLAGS="$CXXFLAGS -O2 -fvisibility=hidden -Wall"
