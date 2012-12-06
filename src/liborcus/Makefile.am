@@ -94,6 +94,7 @@ liborcus_test_string_pool_SOURCES = \
 	string_pool_test.cpp
 
 liborcus_test_string_pool_LDADD = \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus-@ORCUS_API_VERSION@.la
 
 # liborcus-test-xml-map-tree
@@ -106,6 +107,7 @@ liborcus_test_xml_map_tree_SOURCES = \
 	xml_map_tree_test.cpp
 
 liborcus_test_xml_map_tree_LDADD = \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus-@ORCUS_API_VERSION@.la
 
 # liborcus-test-xml-namespace
@@ -117,6 +119,7 @@ liborcus_test_xml_namespace_SOURCES = \
 	xml_namespace_test.cpp
 
 liborcus_test_xml_namespace_LDADD = \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus-@ORCUS_API_VERSION@.la
 
 # liborcus-test-xml-structure-tree
@@ -129,6 +132,7 @@ liborcus_test_xml_structure_tree_SOURCES = \
 	xml_structure_tree_test.cpp
 
 liborcus_test_xml_structure_tree_LDADD = \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus-@ORCUS_API_VERSION@.la
 
 TESTS = \

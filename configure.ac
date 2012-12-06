@@ -228,6 +228,7 @@ AC_CONFIG_FILES([Makefile
 	include/orcus/ooxml/Makefile
 	src/Makefile
 	src/liborcus/Makefile
+	src/parser/Makefile
 	src/spreadsheet/Makefile
 ])
 AC_OUTPUT

@@ -25,33 +25,59 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_CELL_BUFFER_HPP__
-#define __ORCUS_CELL_BUFFER_HPP__
+#include "orcus/cell_buffer.hpp"
 
-#include "env.hpp"
+#include <cstring>
 
-#include <string>
+#define ORCUS_DEBUG_CELL_BUFFER 0
+
+#if ORCUS_DEBUG_CELL_BUFFER
+#include <iostream>
+using std::cout;
+using std::endl;
+#endif
 
 namespace orcus {
 
-/**
- * Temporary cell buffer used to convert cell values when needed.  This is
- * used in the sax and csv parsers.
- */
-class ORCUS_DLLPUBLIC cell_buffer
-{
-    std::string m_buffer;
-    size_t m_buf_size; /// Logical buffer size. May differ from the actual buffer size.
-public:
-    cell_buffer();
+cell_buffer::cell_buffer() : m_buf_size(0) {}
 
-    void append(const char* p, size_t len);
-    void reset();
-    const char* get() const;
-    size_t size() const;
-    bool empty() const;
-};
+void cell_buffer::append(const char* p, size_t len)
+{
+    if (!len)
+        return;
+
+#if ORCUS_DEBUG_CELL_BUFFER
+    cout << "cell_buffer::append: '" << std::string(p, len) << "'" << endl;
+#endif
+
+    size_t size_needed = m_buf_size + len;
+    if (m_buffer.size() < size_needed)
+        m_buffer.resize(size_needed);
+
+    char* p_dest = &m_buffer[m_buf_size];
+    std::strncpy(p_dest, p, len);
+    m_buf_size += len;
+}
+
+void cell_buffer::reset()
+{
+    m_buf_size = 0;
+}
+
+const char* cell_buffer::get() const
+{
+    return &m_buffer[0];
+}
+
+size_t cell_buffer::size() const
+{
+    return m_buf_size;
+}
+
+bool cell_buffer::empty() const
+{
+    return m_buf_size == 0;
+}
 
 }
 
-#endif
