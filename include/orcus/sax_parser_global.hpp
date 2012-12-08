@@ -41,7 +41,8 @@ namespace orcus {
  * @param p pointer to the first character of encoded name
  * @param n length of encoded name
  *
- * @return single character that corresponds with the encoded name.
+ * @return single character that corresponds with the encoded name.  '\0' is
+ *         returned if decoding fails.
  */
 ORCUS_DLLPUBLIC char decode_xml_encoded_char(const char* p, size_t n);
 
