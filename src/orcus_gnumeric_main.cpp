@@ -30,6 +30,8 @@
 #include "spreadsheet/factory.hpp"
 #include "orcus/pstring.hpp"
 
+#include <iostream>
+
 #include <boost/scoped_ptr.hpp>
 
 using namespace orcus;
