@@ -206,6 +206,7 @@
 				<F N="../include/orcus/pstring.hpp"/>
 				<F N="../include/orcus/sax_ns_parser.hpp"/>
 				<F N="../include/orcus/sax_parser.hpp"/>
+				<F N="../include/orcus/sax_parser_global.hpp"/>
 				<F N="../include/orcus/sax_token_parser.hpp"/>
 				<F N="../include/orcus/tokens.hpp"/>
 				<F N="../include/orcus/types.hpp"/>
@@ -273,6 +274,7 @@
 			</Folder>
 			<Folder Name="parser">
 				<F N="../src/parser/cell_buffer.cpp"/>
+				<F N="../src/parser/sax_parser_global.cpp"/>
 			</Folder>
 			<Folder Name="spreadsheet">
 				<F N="../src/spreadsheet/document.cpp"/>

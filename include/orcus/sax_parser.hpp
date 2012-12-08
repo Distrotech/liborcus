@@ -34,6 +34,7 @@
 
 #include "pstring.hpp"
 #include "cell_buffer.hpp"
+#include "sax_parser_global.hpp"
 
 #define ORCUS_DEBUG_SAX_PARSER 0
 
@@ -527,39 +528,14 @@ void sax_parser<_Handler>::parse_encoded_char()
         cout << "sax_parser::parse_encoded_char: raw='" << std::string(p0, n) << "'" << endl;
 #endif
 
-        bool found = true;
-        if (n == 2)
-        {
-            if (!std::strncmp(p0, "lt", 2))
-                m_cell_buf.append("<", 1);
-            else if (!std::strncmp(p0, "gt", 2))
-                m_cell_buf.append(">", 1);
-            else
-                found = false;
-        }
-        else if (n == 3)
-        {
-            if (!std::strncmp(p0, "amp", 3))
-                m_cell_buf.append("&", 1);
-            else
-                found = false;
-        }
-        else if (n == 4)
-        {
-            if (!std::strncmp(p0, "apos", 4))
-                m_cell_buf.append("'", 1);
-            else if (!std::strncmp(p0, "quot", 4))
-                m_cell_buf.append("\"", 1);
-            else
-                found = false;
-        }
-        else
-            found = false;
+        char c = decode_xml_encoded_char(p0, n);
+        if (c)
+            m_cell_buf.append(&c, 1);
 
         // Move to the character past ';' before returning to the parent call.
         next();
 
-        if (!found)
+        if (!c)
         {
 #if ORCUS_DEBUG_SAX_PARSER
             cout << "sax_parser::parse_encoded_char: not a known encoding name. Use the original." << endl;
