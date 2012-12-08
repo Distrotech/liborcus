@@ -35,7 +35,7 @@
 
 namespace ixion {
     class model_context;
-    class abs_address_t;
+    struct abs_address_t;
 }
 
 namespace orcus {
