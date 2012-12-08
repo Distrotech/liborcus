@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus", "liborcus\liborcus.vcproj", "{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}"
@@ -36,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus-static-nozip", "li
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orcus-gnumeric", "orcus-gnumeric\orcus-gnumeric.vcproj", "{0E226F67-F653-45C7-AE6F-154843911C70}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus-parser", "liborcus-parser\liborcus-parser.vcproj", "{03B02C82-1064-420E-8AD7-8FB13DBEB584}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -70,10 +71,13 @@ Global
 		{50DD1B15-9FEB-4037-9FBF-D52A711977E7}.Debug|Win32.Build.0 = Debug|Win32
 		{50DD1B15-9FEB-4037-9FBF-D52A711977E7}.Release|Win32.ActiveCfg = Release|Win32
 		{50DD1B15-9FEB-4037-9FBF-D52A711977E7}.Release|Win32.Build.0 = Release|Win32
-               {0E226F67-F653-45C7-AE6F-154843911C70}.Debug|Win32.ActiveCfg = Debug|Win32
-               {0E226F67-F653-45C7-AE6F-154843911C70}.Debug|Win32.Build.0 = Debug|Win32
-               {0E226F67-F653-45C7-AE6F-154843911C70}.Release|Win32.ActiveCfg = Release|Win32
-               {0E226F67-F653-45C7-AE6F-154843911C70}.Release|Win32.Build.0 = Release|Win32
+		{0E226F67-F653-45C7-AE6F-154843911C70}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0E226F67-F653-45C7-AE6F-154843911C70}.Release|Win32.ActiveCfg = Release|Win32
+		{0E226F67-F653-45C7-AE6F-154843911C70}.Release|Win32.Build.0 = Release|Win32
+		{03B02C82-1064-420E-8AD7-8FB13DBEB584}.Debug|Win32.ActiveCfg = Debug|Win32
+		{03B02C82-1064-420E-8AD7-8FB13DBEB584}.Debug|Win32.Build.0 = Debug|Win32
+		{03B02C82-1064-420E-8AD7-8FB13DBEB584}.Release|Win32.ActiveCfg = Release|Win32
+		{03B02C82-1064-420E-8AD7-8FB13DBEB584}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\DefaultConfig.vsprops;.\LibZip.vsprops;.\zLib.vsprops"
+			InheritedPropertySheets=".\DefaultConfig.vsprops;.\LibZip.vsprops;.\zLib.vsprops;..\liborcus-parser.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -93,7 +93,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\DefaultConfig.vsprops;.\LibZip.vsprops;.\zLib.vsprops"
+			InheritedPropertySheets=".\DefaultConfig.vsprops;.\LibZip.vsprops;.\zLib.vsprops;..\liborcus-parser.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -384,11 +384,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\ooxml\global.hpp"
+				RelativePath="..\..\include\orcus\global.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\global.hpp"
+				RelativePath="..\..\include\orcus\ooxml\global.hpp"
 				>
 			</File>
 			<File
@@ -484,11 +484,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\spreadsheet\types.hpp"
+				RelativePath="..\..\include\orcus\types.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\types.hpp"
+				RelativePath="..\..\include\orcus\spreadsheet\types.hpp"
 				>
 			</File>
 			<File

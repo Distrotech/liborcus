@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
-			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\liborcus\zLib.vsprops"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\liborcus\zLib.vsprops;..\liborcus-parser.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -83,7 +83,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
-			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\liborcus\zLib.vsprops"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\liborcus\zLib.vsprops;..\liborcus-parser.vsprops"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -338,11 +338,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\spreadsheet\types.hpp"
+				RelativePath="..\..\include\orcus\types.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\types.hpp"
+				RelativePath="..\..\include\orcus\spreadsheet\types.hpp"
 				>
 			</File>
 			<File
