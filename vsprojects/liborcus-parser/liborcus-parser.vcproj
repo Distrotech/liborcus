@@ -40,6 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\..\include"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -148,6 +149,10 @@
 				RelativePath="..\..\src\parser\cell_buffer.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\parser\sax_parser_global.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -156,6 +161,10 @@
 			>
 			<File
 				RelativePath="..\..\include\orcus\cell_buffer.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\orcus\sax_parser_global.hpp"
 				>
 			</File>
 		</Filter>
