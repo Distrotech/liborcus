@@ -35,10 +35,18 @@ namespace orcus {
 extern const xmlns_id_t NS_ooxml_r;
 extern const xmlns_id_t NS_ooxml_xlsx;
 
+extern const xmlns_id_t NS_opc_ct;
+extern const xmlns_id_t NS_opc_rel;
+
 /**
  * Null-terminated array of all ooxml namespaces.
  */
 extern const xmlns_id_t* NS_ooxml_all;
+
+/**
+ * Null-terminated array of all opc namespaces.
+ */
+extern const xmlns_id_t* NS_opc_all;
 
 }
 
