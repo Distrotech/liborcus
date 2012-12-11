@@ -122,7 +122,7 @@ opc_content_types_context::opc_content_types_context(const tokens& _tokens) :
     xml_context_base(_tokens)
 {
     // build content type cache.
-    for (content_type_t* p = CT_all; *p; ++p)
+    for (const content_type_t* p = CT_all; *p; ++p)
         m_ct_cache.insert(pstring(*p));
 }
 
