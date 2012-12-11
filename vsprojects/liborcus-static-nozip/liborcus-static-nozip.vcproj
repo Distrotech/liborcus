@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="liborcus-static-nozip"
 	ProjectGUID="{50DD1B15-9FEB-4037-9FBF-D52A711977E7}"
 	RootNamespace="liborcusnozip"
@@ -196,11 +196,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\xml_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\xml_handler.cpp"
+				RelativePath="..\..\src\liborcus\xml_context_base.cpp"
 				>
 			</File>
 			<File
@@ -208,19 +204,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\xml_map_tree.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\liborcus\xml_namespace.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\xml_parser.cpp"
+				RelativePath="..\..\src\liborcus\xml_simple_stream_handler.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\xml_simple_handler.cpp"
+				RelativePath="..\..\src\liborcus\xml_stream_handler.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\liborcus\xml_stream_parser.cpp"
 				>
 			</File>
 			<File
@@ -290,15 +286,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\spreadsheet\export_interface.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\orcus\global.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\spreadsheet\import_interface.hpp"
 				>
 			</File>
 			<File
@@ -326,11 +314,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\sax_token_parser.hpp"
+				RelativePath="..\..\include\orcus\sax_parser_global.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\string_pool.hpp"
+				RelativePath="..\..\include\orcus\sax_token_parser.hpp"
 				>
 			</File>
 			<File
@@ -342,27 +330,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\spreadsheet\types.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\xml_context.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\xml_handler.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\orcus\xml_namespace.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\xml_parser.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\xml_simple_handler.hpp"
 				>
 			</File>
 			<File
@@ -373,35 +341,35 @@
 				Name="gnumeric"
 				>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_cell_context.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_cell_context.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_context.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_context.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_handler.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_handler.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_helper.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_helper.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_sheet_context.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_sheet_context.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_token_constants.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_token_constants.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_token_constants.inl"
+					RelativePath="..\..\src\liborcus\gnumeric_token_constants.inl"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_tokens.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_tokens.hpp"
 					>
 				</File>
 			</Filter>
