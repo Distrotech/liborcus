@@ -28,7 +28,7 @@
 #ifndef __ORCUS_XLSX_HANDLER_HPP__
 #define __ORCUS_XLSX_HANDLER_HPP__
 
-#include "xml_handler.hpp"
+#include "xml_stream_handler.hpp"
 #include "orcus/xml_context.hpp"
 
 #include <string>

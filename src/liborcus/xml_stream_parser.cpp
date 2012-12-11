@@ -25,51 +25,58 @@
  *
  ************************************************************************/
 
-#include "xml_simple_handler.hpp"
-#include "orcus/xml_context.hpp"
+#include "xml_stream_parser.hpp"
+#include "xml_stream_handler.hpp"
 
-#include <cassert>
+#include "orcus/tokens.hpp"
+#include "orcus/sax_token_parser.hpp"
+
+#include <iostream>
+#include <vector>
+#include <sstream>
+
+using namespace std;
 
 namespace orcus {
 
-xml_simple_stream_handler::xml_simple_stream_handler(xml_context_base* context) :
-    xml_stream_handler(),
-    mp_context(context)
+// ============================================================================
+
+xml_stream_parser::parse_error::parse_error(const string& msg) :
+    m_msg(msg) {}
+
+xml_stream_parser::parse_error::~parse_error() throw() {}
+
+const char* xml_stream_parser::parse_error::what() const throw()
 {
-    assert(mp_context);
+    return m_msg.c_str();
 }
 
-xml_simple_stream_handler::~xml_simple_stream_handler()
-{
-    delete mp_context;
-}
-
-xml_context_base& xml_simple_stream_handler::get_context()
-{
-    return *mp_context;
-}
-
-void xml_simple_stream_handler::start_document()
+xml_stream_parser::xml_stream_parser(const tokens& tokens, const char* content, size_t size, const string& name) :
+    m_tokens(tokens), mp_handler(NULL), m_content(content), m_size(size), m_name(name)
 {
 }
 
-void xml_simple_stream_handler::end_document()
+xml_stream_parser::~xml_stream_parser()
 {
 }
 
-void xml_simple_stream_handler::start_element(const sax_token_parser_element& elem)
+void xml_stream_parser::parse()
 {
-    mp_context->start_element(elem.ns, elem.name, elem.attrs);
+    if (!mp_handler)
+        return;
+
+    sax_token_parser<xml_stream_handler, tokens> sax(m_content, m_size, m_tokens, *mp_handler);
+    sax.parse();
 }
 
-void xml_simple_stream_handler::end_element(const sax_token_parser_element& elem)
+void xml_stream_parser::set_handler(xml_stream_handler* handler)
 {
-    mp_context->end_element(elem.ns, elem.name);
+    mp_handler = handler;
 }
 
-void xml_simple_stream_handler::characters(const pstring& str)
+xml_stream_handler* xml_stream_parser::get_handler() const
 {
-    mp_context->characters(str);
+    return mp_handler;
 }
 
 }

@@ -26,7 +26,7 @@
  ************************************************************************/
 
 #include "opc_reader.hpp"
-#include "xml_parser.hpp"
+#include "xml_stream_parser.hpp"
 
 #include "orcus/ooxml/global.hpp"
 #include "orcus/ooxml/opc_context.hpp"

@@ -27,15 +27,15 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	string_pool.cpp \
 	tokens.cpp \
 	xml_context.cpp \
-	xml_handler.hpp \
-	xml_handler.cpp \
 	xml_map_tree.hpp \
 	xml_map_tree.cpp \
 	xml_namespace.cpp \
-	xml_parser.hpp \
-	xml_parser.cpp \
-	xml_simple_handler.hpp \
-	xml_simple_handler.cpp \
+	xml_stream_handler.hpp \
+	xml_stream_handler.cpp \
+	xml_stream_parser.hpp \
+	xml_stream_parser.cpp \
+	xml_simple_stream_handler.hpp \
+	xml_simple_stream_handler.cpp \
 	xml_structure_tree.cpp
 
 if WITH_LIBZIP

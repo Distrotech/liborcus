@@ -26,7 +26,7 @@
  ************************************************************************/
 
 #include "orcus/orcus_ods.hpp"
-#include "xml_parser.hpp"
+#include "xml_stream_parser.hpp"
 #include "orcus/odf/ods_handler.hpp"
 #include "orcus/odf/odf_tokens.hpp"
 

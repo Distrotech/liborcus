@@ -25,36 +25,51 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_XML_SIMPLE_HANDLER_HPP__
-#define __ORCUS_XML_SIMPLE_HANDLER_HPP__
+#include "xml_simple_stream_handler.hpp"
+#include "orcus/xml_context.hpp"
 
-#include "xml_handler.hpp"
+#include <cassert>
 
 namespace orcus {
 
-class xml_context_base;
-
-/**
- * Simple stream handler that only uses a single context instance.
- */
-class xml_simple_stream_handler : public xml_stream_handler
+xml_simple_stream_handler::xml_simple_stream_handler(xml_context_base* context) :
+    xml_stream_handler(),
+    mp_context(context)
 {
-public:
-    xml_simple_stream_handler(xml_context_base* context);
-    ~xml_simple_stream_handler();
-
-    xml_context_base& get_context();
-
-    virtual void start_document();
-    virtual void end_document();
-    virtual void start_element(const sax_token_parser_element& elem);
-    virtual void end_element(const sax_token_parser_element& elem);
-    virtual void characters(const pstring& str);
-
-private:
-    xml_context_base* mp_context;
-};
-
+    assert(mp_context);
 }
 
-#endif
+xml_simple_stream_handler::~xml_simple_stream_handler()
+{
+    delete mp_context;
+}
+
+xml_context_base& xml_simple_stream_handler::get_context()
+{
+    return *mp_context;
+}
+
+void xml_simple_stream_handler::start_document()
+{
+}
+
+void xml_simple_stream_handler::end_document()
+{
+}
+
+void xml_simple_stream_handler::start_element(const sax_token_parser_element& elem)
+{
+    mp_context->start_element(elem.ns, elem.name, elem.attrs);
+}
+
+void xml_simple_stream_handler::end_element(const sax_token_parser_element& elem)
+{
+    mp_context->end_element(elem.ns, elem.name);
+}
+
+void xml_simple_stream_handler::characters(const pstring& str)
+{
+    mp_context->characters(str);
+}
+
+}

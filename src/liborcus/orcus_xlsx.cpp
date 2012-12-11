@@ -35,8 +35,8 @@
 #include "orcus/ooxml/ooxml_tokens.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
 
-#include "xml_parser.hpp"
-#include "xml_simple_handler.hpp"
+#include "xml_stream_parser.hpp"
+#include "xml_simple_stream_handler.hpp"
 #include "opc_reader.hpp"
 
 #include <cstdlib>
