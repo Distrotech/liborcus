@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="liborcus"
 	ProjectGUID="{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}"
 	RootNamespace="orcus"
@@ -186,62 +186,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\odf_ods_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\odf_ods_handler.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\odf_para_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\odf_tokens.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\ooxml_content_types.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\ooxml_global.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\ooxml_opc_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\ooxml_schemas.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\ooxml_tokens.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\ooxml_xlsx_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\ooxml_xlsx_handler.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\ooxml_xlsx_sheet_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\ooxml_xlsx_workbook_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\opc_reader.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\liborcus\orcus_css.cpp"
 				>
 			</File>
@@ -278,19 +222,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\string_pool.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\liborcus\tokens.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\xml_context.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\xml_handler.cpp"
+				RelativePath="..\..\src\liborcus\xml_context_base.cpp"
 				>
 			</File>
 			<File
@@ -298,19 +234,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\xml_map_tree.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\liborcus\xml_namespace.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\xml_parser.cpp"
+				RelativePath="..\..\src\liborcus\xml_simple_stream_handler.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\xml_simple_handler.cpp"
+				RelativePath="..\..\src\liborcus\xml_stream_handler.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\liborcus\xml_stream_parser.cpp"
 				>
 			</File>
 			<File
@@ -349,6 +285,86 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="odf"
+				>
+				<File
+					RelativePath="..\..\src\liborcus\odf_para_context.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\odf_tokens.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\odf_tokens.inl"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ods_content_xml_context.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ods_content_xml_handler.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ooxml"
+				>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_content_types.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_global.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_namespace_types.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_schemas.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_tokens.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_tokens.inl"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\opc_context.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\opc_reader.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\opc_tokens.inl"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\xlsx_context.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\xlsx_handler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\xlsx_sheet_context.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\xlsx_workbook_context.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -356,7 +372,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\include\orcus\ooxml\content_types.hpp"
+				RelativePath="..\..\include\orcus\cell_buffer.hpp"
 				>
 			</File>
 			<File
@@ -380,59 +396,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\spreadsheet\export_interface.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\orcus\global.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\global.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\spreadsheet\import_interface.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\odf\odf_token_constants.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\odf\odf_tokens.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\odf\ods_context.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\odf\ods_handler.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\ooxml_token_constants.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\ooxml_tokens.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\ooxml_types.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\opc_context.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\opc_reader.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\opc_token_constants.hpp"
 				>
 			</File>
 			<File
@@ -456,10 +420,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\odf\para_context.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\orcus\pstring.hpp"
 				>
 			</File>
@@ -472,11 +432,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\sax_token_parser.hpp"
+				RelativePath="..\..\include\orcus\sax_parser_global.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\ooxml\schemas.hpp"
+				RelativePath="..\..\include\orcus\sax_token_parser.hpp"
 				>
 			</File>
 			<File
@@ -488,47 +448,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\spreadsheet\types.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\xlsx_context.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\xlsx_handler.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\xlsx_sheet_context.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\xlsx_types.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\ooxml\xlsx_workbook_context.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\xml_context.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\xml_handler.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\orcus\xml_namespace.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\xml_parser.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\xml_simple_handler.hpp"
 				>
 			</File>
 			<File
@@ -539,35 +459,123 @@
 				Name="gnumeric"
 				>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_cell_context.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_cell_context.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_context.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_context.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_handler.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_handler.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_helper.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_helper.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_sheet_context.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_sheet_context.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_token_constants.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_token_constants.hpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_token_constants.inl"
+					RelativePath="..\..\src\liborcus\gnumeric_token_constants.inl"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\orcus\gnumeric\gnumeric_tokens.hpp"
+					RelativePath="..\..\src\liborcus\gnumeric_tokens.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="odf"
+				>
+				<File
+					RelativePath="..\..\src\liborcus\odf_para_context.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\odf_token_constants.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\odf_token_constants.inl"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\odf_tokens.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ods_content_xml_context.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ods_content_xml_handler.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ooxml"
+				>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_content_types.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_global.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_namespace_types.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_schemas.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_token_constants.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_token_constants.inl"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_tokens.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\ooxml_types.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\opc_token_constants.inl"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\xlsx_context.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\xlsx_handler.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\xlsx_sheet_context.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\xlsx_types.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\xlsx_workbook_context.hpp"
 					>
 				</File>
 			</Filter>
