@@ -63,10 +63,17 @@ endif # WITH_XLSX_FILTER
 if WITH_ODS_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
-	odf_ods_context.cpp \
-	odf_ods_handler.cpp \
+	odf_para_context.hpp \
 	odf_para_context.cpp \
+	odf_token_constants.hpp \
+	odf_token_constants.inl \
+	odf_tokens.hpp \
+	odf_tokens.inl \
 	odf_tokens.cpp \
+	ods_content_xml_context.hpp \
+	ods_content_xml_context.cpp \
+	ods_content_xml_handler.hpp \
+	ods_content_xml_handler.cpp \
 	orcus_ods.cpp
 
 endif # WITH_ODS_FILTER

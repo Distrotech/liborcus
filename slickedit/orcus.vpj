@@ -150,14 +150,6 @@
 	<Files AutoFolders="DirectoryView">
 		<Folder Name="../include">
 			<Folder Name="orcus">
-				<Folder Name="odf">
-					<F N="../include/orcus/odf/odf_token_constants.hpp"/>
-					<F N="../include/orcus/odf/odf_token_constants.inl"/>
-					<F N="../include/orcus/odf/odf_tokens.hpp"/>
-					<F N="../include/orcus/odf/ods_context.hpp"/>
-					<F N="../include/orcus/odf/ods_handler.hpp"/>
-					<F N="../include/orcus/odf/para_context.hpp"/>
-				</Folder>
 				<Folder Name="ooxml">
 					<F N="../include/orcus/ooxml/content_types.hpp"/>
 					<F N="../include/orcus/ooxml/global.hpp"/>
@@ -227,8 +219,14 @@
 				<F N="../src/liborcus/odf_ods_context.cpp"/>
 				<F N="../src/liborcus/odf_ods_handler.cpp"/>
 				<F N="../src/liborcus/odf_para_context.cpp"/>
+				<F N="../src/liborcus/odf_para_context.hpp"/>
+				<F N="../src/liborcus/odf_token_constants.hpp"/>
+				<F N="../src/liborcus/odf_token_constants.inl"/>
 				<F N="../src/liborcus/odf_tokens.cpp"/>
+				<F N="../src/liborcus/odf_tokens.hpp"/>
 				<F N="../src/liborcus/odf_tokens.inl"/>
+				<F N="../src/liborcus/ods_content_xml_context.hpp"/>
+				<F N="../src/liborcus/ods_content_xml_handler.hpp"/>
 				<F N="../src/liborcus/ooxml_content_types.cpp"/>
 				<F N="../src/liborcus/ooxml_global.cpp"/>
 				<F N="../src/liborcus/ooxml_namespace_types.cpp"/>

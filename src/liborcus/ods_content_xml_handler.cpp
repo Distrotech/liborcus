@@ -25,8 +25,9 @@
  *
  ************************************************************************/
 
-#include "orcus/odf/ods_handler.hpp"
-#include "orcus/odf/ods_context.hpp"
+#include "ods_content_xml_handler.hpp"
+#include "ods_content_xml_context.hpp"
+
 #include "orcus/exception.hpp"
 
 #include <iostream>

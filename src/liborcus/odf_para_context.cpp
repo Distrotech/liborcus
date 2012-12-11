@@ -25,8 +25,9 @@
  *
  ************************************************************************/
 
-#include "orcus/odf/para_context.hpp"
-#include "orcus/odf/odf_token_constants.hpp"
+#include "odf_para_context.hpp"
+#include "odf_token_constants.hpp"
+
 #include "orcus/spreadsheet/import_interface.hpp"
 
 #include <iostream>
