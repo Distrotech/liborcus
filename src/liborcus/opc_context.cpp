@@ -25,10 +25,10 @@
  *
  ************************************************************************/
 
-#include "orcus/ooxml/opc_context.hpp"
-#include "orcus/ooxml/opc_token_constants.hpp"
-#include "orcus/ooxml/content_types.hpp"
-#include "orcus/ooxml/schemas.hpp"
+#include "opc_context.hpp"
+#include "opc_token_constants.hpp"
+#include "ooxml_content_types.hpp"
+#include "ooxml_schemas.hpp"
 #include "orcus/exception.hpp"
 #include "orcus/global.hpp"
 

@@ -28,7 +28,7 @@
 #ifndef __ORCUS_OOXML_CONTENT_TYPES_HPP__
 #define __ORCUS_OOXML_CONTENT_TYPES_HPP__
 
-#include "orcus/ooxml/ooxml_types.hpp"
+#include "ooxml_types.hpp"
 
 namespace orcus {
 

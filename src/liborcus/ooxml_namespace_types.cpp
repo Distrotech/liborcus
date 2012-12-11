@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/ooxml/namespace_types.hpp"
+#include "ooxml_namespace_types.hpp"
 
 namespace orcus {
 

@@ -28,9 +28,9 @@
 #include "opc_reader.hpp"
 #include "xml_stream_parser.hpp"
 
-#include "orcus/ooxml/global.hpp"
-#include "orcus/ooxml/opc_context.hpp"
-#include "orcus/ooxml/ooxml_tokens.hpp"
+#include "ooxml_global.hpp"
+#include "opc_context.hpp"
+#include "ooxml_tokens.hpp"
 
 #include <zip.h>
 #include <iostream>

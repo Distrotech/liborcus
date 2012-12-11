@@ -45,18 +45,37 @@ if WITH_XLSX_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	ooxml_content_types.cpp \
+	ooxml_content_types.hpp \
 	ooxml_global.cpp \
+	ooxml_global.hpp \
 	ooxml_namespace_types.cpp \
-	ooxml_opc_context.cpp \
+	ooxml_namespace_types.hpp \
 	ooxml_schemas.cpp \
+	ooxml_schemas.hpp \
+	ooxml_token_constants.hpp \
+	ooxml_token_constants.inl \
 	ooxml_tokens.cpp \
-	ooxml_xlsx_context.cpp \
-	ooxml_xlsx_handler.cpp \
-	ooxml_xlsx_sheet_context.cpp \
-	ooxml_xlsx_workbook_context.cpp \
-	opc_reader.hpp \
+	ooxml_tokens.hpp \
+	ooxml_tokens.inl \
+	ooxml_types.hpp \
+	opc_context.cpp \
+	opc_context.hpp \
 	opc_reader.cpp \
-	orcus_xlsx.cpp
+	opc_reader.hpp \
+	opc_reader.hpp \
+	opc_token_constants.hpp \
+	opc_token_constants.inl \
+	opc_tokens.inl \
+	orcus_xlsx.cpp \
+	xlsx_context.cpp \
+	xlsx_context.hpp \
+	xlsx_handler.cpp \
+	xlsx_handler.hpp \
+	xlsx_sheet_context.cpp \
+	xlsx_sheet_context.hpp \
+	xlsx_types.hpp \
+	xlsx_workbook_context.cpp \
+	xlsx_workbook_context.hpp
 
 endif # WITH_XLSX_FILTER
 

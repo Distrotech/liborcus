@@ -28,7 +28,7 @@
 #ifndef __ORCUS_OPC_READER_HPP__
 #define __ORCUS_OPC_READER_HPP__
 
-#include "orcus/ooxml/schemas.hpp"
+#include "ooxml_schemas.hpp"
 #include "xml_simple_stream_handler.hpp"
 #include "orcus/env.hpp"
 

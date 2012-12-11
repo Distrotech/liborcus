@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/ooxml/ooxml_tokens.hpp"
+#include "ooxml_tokens.hpp"
 
 namespace orcus {
 
@@ -37,7 +37,7 @@ namespace ooxml {
 
 namespace opc {
 
-#include "ooxml_opc_tokens.inl"
+#include "opc_tokens.inl"
 
 }
 

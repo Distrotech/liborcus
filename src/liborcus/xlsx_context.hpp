@@ -30,7 +30,7 @@
 
 #include "xml_context_base.hpp"
 #include "orcus/spreadsheet/types.hpp"
-#include "orcus/ooxml/xlsx_types.hpp"
+#include "xlsx_types.hpp"
 
 #include <boost/ptr_container/ptr_vector.hpp>
 

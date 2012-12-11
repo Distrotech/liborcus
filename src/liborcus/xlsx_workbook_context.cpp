@@ -25,10 +25,10 @@
  *
  ************************************************************************/
 
-#include "orcus/ooxml/xlsx_workbook_context.hpp"
-#include "orcus/ooxml/global.hpp"
-#include "orcus/ooxml/schemas.hpp"
-#include "orcus/ooxml/ooxml_token_constants.hpp"
+#include "xlsx_workbook_context.hpp"
+#include "ooxml_global.hpp"
+#include "ooxml_schemas.hpp"
+#include "ooxml_token_constants.hpp"
 #include "orcus/global.hpp"
 
 using namespace std;

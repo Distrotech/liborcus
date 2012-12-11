@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2011 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,50 +25,43 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_OOXML_GLOBAL_HPP__
-#define __ORCUS_OOXML_GLOBAL_HPP__
+#ifndef __ORCUS_XLSX_WORKBOOK_CONTEXT_HPP__
+#define __ORCUS_XLSX_WORKBOOK_CONTEXT_HPP__
 
-#include "orcus/types.hpp"
-#include "orcus/ooxml/ooxml_types.hpp"
+#include "xml_context_base.hpp"
+#include "orcus/spreadsheet/types.hpp"
+#include "xlsx_types.hpp"
 
-#include <functional>
+#include <boost/unordered_map.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
 
-struct opc_rel_t;
-struct xml_token_attr_t;
-
 /**
- * Function object to print relationship information.
+ * Context for xl/workbook.xml.
  */
-struct print_opc_rel : ::std::unary_function<opc_rel_t, void>
-{
-    void operator() (const opc_rel_t& v) const;
-};
-
-/**
- * Function object to parse attributes of root elements.
- */
-class root_element_attr_parser: ::std::unary_function<xml_token_attr_t, void>
+class xlsx_workbook_context : public xml_context_base
 {
 public:
-    root_element_attr_parser(
-        const schema_t expected_schema, const xmlns_token_t expected_ns);
+    typedef boost::unordered_map<
+        pstring, xlsx_rel_sheet_info, pstring::hash> sheet_info_type;
 
-    virtual ~root_element_attr_parser();
+    xlsx_workbook_context(const tokens& tokens);
+    virtual ~xlsx_workbook_context();
 
-    virtual void handle_other_attrs(const xml_token_attr_t& attr);
+    virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
+    virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
+    virtual void end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child);
 
-    root_element_attr_parser& operator= (const root_element_attr_parser& r);
+    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
+    virtual bool end_element(xmlns_token_t ns, xml_token_t name);
+    virtual void characters(const pstring& str);
 
-    void operator() (const xml_token_attr_t& attr);
-
-    xmlns_token_t get_default_ns() const;
+    void pop_sheet_info(opc_rel_extras_t& sheets);
 
 private:
-    xmlns_token_t m_default_ns;
-    schema_t m_expected_schema;
-    xmlns_token_t m_expected_ns;
+    opc_rel_extras_t m_sheet_info;
+    ::boost::ptr_vector<xlsx_rel_sheet_info> m_sheets;
 };
 
 }

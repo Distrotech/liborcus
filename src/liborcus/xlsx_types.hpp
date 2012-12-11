@@ -25,30 +25,22 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_OOXML_SCHEMAS_HPP__
-#define __ORCUS_OOXML_SCHEMAS_HPP__
+#ifndef __ORCUS_XLSX_TYPES_HPP__
+#define __ORCUS_XLSX_TYPES_HPP__
 
-#include "orcus/ooxml/ooxml_types.hpp"
+#include "ooxml_types.hpp"
 
 namespace orcus {
 
-extern schema_t SCH_opc_content_types;
-extern schema_t SCH_opc_rels;
-extern schema_t SCH_opc_rels_metadata_core_props;
-extern schema_t SCH_od_rels_connections;
-extern schema_t SCH_od_rels_printer_settings;
-extern schema_t SCH_od_rels_shared_strings;
-extern schema_t SCH_od_rels_styles;
-extern schema_t SCH_od_rels_theme;
-extern schema_t SCH_od_rels_worksheet;
-extern schema_t SCH_od_rels_extended_props;
-extern schema_t SCH_od_rels_office_doc;
-extern schema_t SCH_xlsx_main;
+struct xlsx_rel_sheet_info : public opc_rel_extra
+{
+    pstring name;
+    size_t  id;
 
-/**
- * Null-terminated array of all schema types.
- */
-extern schema_t* SCH_all;
+    xlsx_rel_sheet_info() : id(0) {}
+
+    virtual ~xlsx_rel_sheet_info() {}
+};
 
 }
 

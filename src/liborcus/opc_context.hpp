@@ -29,7 +29,7 @@
 #define __ORCUS_OPC_CONTEXT_HPP__
 
 #include "xml_context_base.hpp"
-#include "orcus/ooxml/ooxml_types.hpp"
+#include "ooxml_types.hpp"
 
 #include <boost/unordered_set.hpp>
 #include <vector>

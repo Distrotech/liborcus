@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/ooxml/schemas.hpp"
+#include "ooxml_schemas.hpp"
 
 namespace orcus {
 

@@ -1,4 +1,4 @@
-SUBDIRS = spreadsheet ooxml
+SUBDIRS = spreadsheet
 
 liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus
 liborcus_HEADERS = \

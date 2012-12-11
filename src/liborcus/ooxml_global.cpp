@@ -25,9 +25,9 @@
  *
  ************************************************************************/
 
-#include "orcus/ooxml/global.hpp"
-#include "orcus/ooxml/ooxml_types.hpp"
-#include "orcus/ooxml/ooxml_token_constants.hpp"
+#include "ooxml_global.hpp"
+#include "ooxml_types.hpp"
+#include "ooxml_token_constants.hpp"
 
 #include <iostream>
 

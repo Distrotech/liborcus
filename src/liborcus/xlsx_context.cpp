@@ -25,13 +25,13 @@
  *
  ************************************************************************/
 
-#include "orcus/ooxml/xlsx_context.hpp"
+#include "xlsx_context.hpp"
 #include "orcus/global.hpp"
 #include "orcus/tokens.hpp"
-#include "orcus/ooxml/global.hpp"
-#include "orcus/ooxml/ooxml_token_constants.hpp"
-#include "orcus/ooxml/ooxml_types.hpp"
-#include "orcus/ooxml/schemas.hpp"
+#include "ooxml_global.hpp"
+#include "ooxml_token_constants.hpp"
+#include "ooxml_types.hpp"
+#include "ooxml_schemas.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
 
 #include <iostream>

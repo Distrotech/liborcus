@@ -28,11 +28,11 @@
 #include "orcus/orcus_xlsx.hpp"
 
 #include "orcus/global.hpp"
-#include "orcus/ooxml/xlsx_types.hpp"
-#include "orcus/ooxml/xlsx_handler.hpp"
-#include "orcus/ooxml/xlsx_context.hpp"
-#include "orcus/ooxml/xlsx_workbook_context.hpp"
-#include "orcus/ooxml/ooxml_tokens.hpp"
+#include "xlsx_types.hpp"
+#include "xlsx_handler.hpp"
+#include "xlsx_context.hpp"
+#include "xlsx_workbook_context.hpp"
+#include "ooxml_tokens.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
 
 #include "xml_stream_parser.hpp"
