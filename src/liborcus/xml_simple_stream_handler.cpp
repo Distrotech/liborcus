@@ -26,7 +26,7 @@
  ************************************************************************/
 
 #include "xml_simple_stream_handler.hpp"
-#include "orcus/xml_context.hpp"
+#include "xml_context_base.hpp"
 
 #include <cassert>
 

@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/xml_context.hpp"
+#include "xml_context_base.hpp"
 #include "orcus/exception.hpp"
 #include "orcus/tokens.hpp"
 

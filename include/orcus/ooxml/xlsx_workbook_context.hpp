@@ -28,7 +28,7 @@
 #ifndef __ORCUS_XLSX_WORKBOOK_CONTEXT_HPP__
 #define __ORCUS_XLSX_WORKBOOK_CONTEXT_HPP__
 
-#include "orcus/xml_context.hpp"
+#include "xml_context_base.hpp"
 #include "orcus/spreadsheet/types.hpp"
 #include "orcus/ooxml/xlsx_types.hpp"
 

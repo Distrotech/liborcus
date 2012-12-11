@@ -29,7 +29,7 @@
 #define __ORCUS_ODSHANDLER_HPP__
 
 #include "xml_stream_handler.hpp"
-#include "orcus/xml_context.hpp"
+#include "xml_context_base.hpp"
 
 #include <string>
 #include <boost/ptr_container/ptr_vector.hpp>

@@ -28,7 +28,7 @@
 #ifndef __ORCUS_ODSCONTEXT_HPP__
 #define __ORCUS_ODSCONTEXT_HPP__
 
-#include "orcus/xml_context.hpp"
+#include "xml_context_base.hpp"
 
 #include <vector>
 

@@ -28,7 +28,7 @@
 #ifndef __ORCUS_GNUMERIC_CELL_CONTEXT_HPP__
 #define __ORCUS_GNUMERIC_CELL_CONTEXT_HPP__
 
-#include "orcus/xml_context.hpp"
+#include "xml_context_base.hpp"
 #include <boost/scoped_ptr.hpp>
 
 namespace orcus {

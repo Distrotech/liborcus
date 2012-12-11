@@ -18,7 +18,6 @@ liborcus_HEADERS = \
 	sax_token_parser.hpp \
 	tokens.hpp \
 	types.hpp \
-	xml_context.hpp \
 	xml_namespace.hpp \
 	xml_structure_tree.hpp
 

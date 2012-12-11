@@ -26,7 +26,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	string_pool.hpp \
 	string_pool.cpp \
 	tokens.cpp \
-	xml_context.cpp \
+	xml_context_base.hpp \
+	xml_context_base.cpp \
 	xml_map_tree.hpp \
 	xml_map_tree.cpp \
 	xml_namespace.cpp \

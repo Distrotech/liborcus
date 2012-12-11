@@ -210,7 +210,6 @@
 				<F N="../include/orcus/sax_token_parser.hpp"/>
 				<F N="../include/orcus/tokens.hpp"/>
 				<F N="../include/orcus/types.hpp"/>
-				<F N="../include/orcus/xml_context.hpp"/>
 				<F N="../include/orcus/xml_namespace.hpp"/>
 				<F N="../include/orcus/xml_structure_tree.hpp"/>
 			</Folder>
@@ -259,7 +258,8 @@
 				<F N="../src/liborcus/string_pool.hpp"/>
 				<F N="../src/liborcus/string_pool_test.cpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>
-				<F N="../src/liborcus/xml_context.cpp"/>
+				<F N="../src/liborcus/xml_context_base.cpp"/>
+				<F N="../src/liborcus/xml_context_base.hpp"/>
 				<F N="../src/liborcus/xml_map_tree.cpp"/>
 				<F N="../src/liborcus/xml_map_tree.hpp"/>
 				<F N="../src/liborcus/xml_map_tree_test.cpp"/>
