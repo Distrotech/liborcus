@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/gnumeric/gnumeric_helper.hpp"
+#include "gnumeric_helper.hpp"
 
 #include <cstdlib>
 #include <vector>

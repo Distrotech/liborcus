@@ -25,9 +25,9 @@
  *
  ************************************************************************/
 
-#include "orcus/gnumeric/gnumeric_context.hpp"
-#include "orcus/gnumeric/gnumeric_token_constants.hpp"
-#include "orcus/gnumeric/gnumeric_sheet_context.hpp"
+#include "gnumeric_context.hpp"
+#include "gnumeric_token_constants.hpp"
+#include "gnumeric_sheet_context.hpp"
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
 

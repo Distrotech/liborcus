@@ -27,8 +27,8 @@
 
 #include "orcus/orcus_gnumeric.hpp"
 #include "xml_stream_parser.hpp"
-#include "orcus/gnumeric/gnumeric_handler.hpp"
-#include "orcus/gnumeric/gnumeric_tokens.hpp"
+#include "gnumeric_handler.hpp"
+#include "gnumeric_tokens.hpp"
 
 #include <zlib.h>
 

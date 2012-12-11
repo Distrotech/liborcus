@@ -25,13 +25,13 @@
  *
  ************************************************************************/
 
-#include "orcus/gnumeric/gnumeric_sheet_context.hpp"
-#include "orcus/gnumeric/gnumeric_cell_context.hpp"
-#include "orcus/gnumeric/gnumeric_token_constants.hpp"
-#include "orcus/gnumeric/gnumeric_helper.hpp"
+#include "gnumeric_sheet_context.hpp"
+#include "gnumeric_cell_context.hpp"
+#include "gnumeric_token_constants.hpp"
+#include "gnumeric_helper.hpp"
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
-#include "orcus/gnumeric/gnumeric_helper.hpp"
+#include "gnumeric_helper.hpp"
 
 namespace orcus {
 

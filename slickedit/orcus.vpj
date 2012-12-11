@@ -150,16 +150,6 @@
 	<Files AutoFolders="DirectoryView">
 		<Folder Name="../include">
 			<Folder Name="orcus">
-				<Folder Name="gnumeric">
-					<F N="../include/orcus/gnumeric/gnumeric_cell_context.hpp"/>
-					<F N="../include/orcus/gnumeric/gnumeric_context.hpp"/>
-					<F N="../include/orcus/gnumeric/gnumeric_handler.hpp"/>
-					<F N="../include/orcus/gnumeric/gnumeric_helper.hpp"/>
-					<F N="../include/orcus/gnumeric/gnumeric_sheet_context.hpp"/>
-					<F N="../include/orcus/gnumeric/gnumeric_token_constants.hpp"/>
-					<F N="../include/orcus/gnumeric/gnumeric_token_constants.inl"/>
-					<F N="../include/orcus/gnumeric/gnumeric_tokens.hpp"/>
-				</Folder>
 				<Folder Name="odf">
 					<F N="../include/orcus/odf/odf_token_constants.hpp"/>
 					<F N="../include/orcus/odf/odf_token_constants.inl"/>
@@ -220,11 +210,19 @@
 				<F N="../src/liborcus/exception.cpp"/>
 				<F N="../src/liborcus/global.cpp"/>
 				<F N="../src/liborcus/gnumeric_cell_context.cpp"/>
+				<F N="../src/liborcus/gnumeric_cell_context.hpp"/>
 				<F N="../src/liborcus/gnumeric_context.cpp"/>
+				<F N="../src/liborcus/gnumeric_context.hpp"/>
 				<F N="../src/liborcus/gnumeric_handler.cpp"/>
+				<F N="../src/liborcus/gnumeric_handler.hpp"/>
 				<F N="../src/liborcus/gnumeric_helper.cpp"/>
+				<F N="../src/liborcus/gnumeric_helper.hpp"/>
 				<F N="../src/liborcus/gnumeric_sheet_context.cpp"/>
+				<F N="../src/liborcus/gnumeric_sheet_context.hpp"/>
+				<F N="../src/liborcus/gnumeric_token_constants.hpp"/>
+				<F N="../src/liborcus/gnumeric_token_constants.inl"/>
 				<F N="../src/liborcus/gnumeric_tokens.cpp"/>
+				<F N="../src/liborcus/gnumeric_tokens.hpp"/>
 				<F N="../src/liborcus/gnumeric_tokens.inl"/>
 				<F N="../src/liborcus/odf_ods_context.cpp"/>
 				<F N="../src/liborcus/odf_ods_handler.cpp"/>

@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/gnumeric/gnumeric_tokens.hpp"
+#include "gnumeric_tokens.hpp"
 
 namespace orcus {
 

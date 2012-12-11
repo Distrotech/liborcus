@@ -1,5 +1,5 @@
 
-INCLUDES = -I$(top_srcdir)/include
+INCLUDES = -I$(top_srcdir)/include -I./include
 
 EXTRA_PROGRAMS = \
 	liborcus-test-string-pool \
@@ -76,6 +76,14 @@ endif # WITH_LIBZIP
 if WITH_GNUMERIC_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
+	gnumeric_cell_context.hpp \
+	gnumeric_context.hpp \
+	gnumeric_handler.hpp \
+	gnumeric_helper.hpp \
+	gnumeric_sheet_context.hpp \
+	gnumeric_token_constants.hpp \
+	gnumeric_token_constants.inl \
+	gnumeric_tokens.hpp \
     	gnumeric_cell_context.cpp \
 	gnumeric_context.cpp \
 	gnumeric_handler.cpp \

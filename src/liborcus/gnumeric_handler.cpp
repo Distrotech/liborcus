@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#include "orcus/gnumeric/gnumeric_handler.hpp"
-#include "orcus/gnumeric/gnumeric_context.hpp"
+#include "gnumeric_handler.hpp"
+#include "gnumeric_context.hpp"
 #include "orcus/exception.hpp"
 
 #include <iostream>
