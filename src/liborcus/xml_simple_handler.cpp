@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/xml_simple_handler.hpp"
+#include "xml_simple_handler.hpp"
 #include "orcus/xml_context.hpp"
 
 #include <cassert>

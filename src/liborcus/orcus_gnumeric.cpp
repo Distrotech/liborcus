@@ -26,7 +26,7 @@
  ************************************************************************/
 
 #include "orcus/orcus_gnumeric.hpp"
-#include "orcus/xml_parser.hpp"
+#include "xml_parser.hpp"
 #include "orcus/gnumeric/gnumeric_handler.hpp"
 #include "orcus/gnumeric/gnumeric_tokens.hpp"
 

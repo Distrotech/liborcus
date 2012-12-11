@@ -23,15 +23,18 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	orcus_csv.cpp \
 	orcus_xml.cpp \
 	pstring.cpp \
-	string_pool.cpp \
 	string_pool.hpp \
+	string_pool.cpp \
 	tokens.cpp \
 	xml_context.cpp \
+	xml_handler.hpp \
 	xml_handler.cpp \
-	xml_map_tree.cpp \
 	xml_map_tree.hpp \
+	xml_map_tree.cpp \
 	xml_namespace.cpp \
+	xml_parser.hpp \
 	xml_parser.cpp \
+	xml_simple_handler.hpp \
 	xml_simple_handler.cpp \
 	xml_structure_tree.cpp
 
@@ -50,6 +53,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	ooxml_xlsx_handler.cpp \
 	ooxml_xlsx_sheet_context.cpp \
 	ooxml_xlsx_workbook_context.cpp \
+	opc_reader.hpp \
 	opc_reader.cpp \
 	orcus_xlsx.cpp
 

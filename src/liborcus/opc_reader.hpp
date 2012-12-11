@@ -29,7 +29,7 @@
 #define __ORCUS_OPC_READER_HPP__
 
 #include "orcus/ooxml/schemas.hpp"
-#include "orcus/xml_simple_handler.hpp"
+#include "xml_simple_handler.hpp"
 #include "orcus/env.hpp"
 
 #include <vector>

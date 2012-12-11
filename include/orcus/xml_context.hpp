@@ -28,7 +28,7 @@
 #ifndef __ORCUS_XMLCONTEXT_HPP__
 #define __ORCUS_XMLCONTEXT_HPP__
 
-#include "orcus/xml_handler.hpp"
+#include "xml_handler.hpp"
 
 namespace orcus {
 

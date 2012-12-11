@@ -25,11 +25,12 @@
  *
  ************************************************************************/
 
-#include "orcus/ooxml/opc_reader.hpp"
+#include "opc_reader.hpp"
+#include "xml_parser.hpp"
+
 #include "orcus/ooxml/global.hpp"
 #include "orcus/ooxml/opc_context.hpp"
 #include "orcus/ooxml/ooxml_tokens.hpp"
-#include "orcus/xml_parser.hpp"
 
 #include <zip.h>
 #include <iostream>

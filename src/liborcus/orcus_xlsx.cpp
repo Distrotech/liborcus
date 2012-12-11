@@ -28,14 +28,16 @@
 #include "orcus/orcus_xlsx.hpp"
 
 #include "orcus/global.hpp"
-#include "orcus/xml_parser.hpp"
-#include "orcus/xml_simple_handler.hpp"
 #include "orcus/ooxml/xlsx_types.hpp"
 #include "orcus/ooxml/xlsx_handler.hpp"
 #include "orcus/ooxml/xlsx_context.hpp"
 #include "orcus/ooxml/xlsx_workbook_context.hpp"
 #include "orcus/ooxml/ooxml_tokens.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
+
+#include "xml_parser.hpp"
+#include "xml_simple_handler.hpp"
+#include "opc_reader.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -64,46 +66,62 @@ struct print_sheet_info : unary_function<pair<pstring, const opc_rel_extra*>, vo
 
 }
 
-orcus_xlsx::opc_handler::opc_handler(orcus_xlsx& parent) : m_parent(parent) {}
-orcus_xlsx::opc_handler::~opc_handler() {}
-
-bool orcus_xlsx::opc_handler::handle_part(
-    schema_t type, const std::string& dir_path, const std::string& file_name, const opc_rel_extra* data)
+class xlsx_opc_handler : public opc_reader::part_handler
 {
-    if (type == SCH_od_rels_office_doc)
-    {
-        m_parent.read_workbook(dir_path, file_name);
-        return true;
-    }
-    else if (type == SCH_od_rels_worksheet)
-    {
-        m_parent.read_sheet(dir_path, file_name, static_cast<const xlsx_rel_sheet_info*>(data));
-        return true;
-    }
-    else if (type == SCH_od_rels_shared_strings)
-    {
-        m_parent.read_shared_strings(dir_path, file_name);
-        return true;
-    }
-    else if (type == SCH_od_rels_styles)
-    {
-        m_parent.read_styles(dir_path, file_name);
-        return true;
-    }
+    orcus_xlsx& m_parent;
+public:
+    xlsx_opc_handler(orcus_xlsx& parent) : m_parent(parent) {}
+    virtual ~xlsx_opc_handler() {}
 
-    return false;
-}
+    virtual bool handle_part(
+        schema_t type, const std::string& dir_path, const std::string& file_name, const opc_rel_extra* data)
+    {
+        if (type == SCH_od_rels_office_doc)
+        {
+            m_parent.read_workbook(dir_path, file_name);
+            return true;
+        }
+        else if (type == SCH_od_rels_worksheet)
+        {
+            m_parent.read_sheet(dir_path, file_name, static_cast<const xlsx_rel_sheet_info*>(data));
+            return true;
+        }
+        else if (type == SCH_od_rels_shared_strings)
+        {
+            m_parent.read_shared_strings(dir_path, file_name);
+            return true;
+        }
+        else if (type == SCH_od_rels_styles)
+        {
+            m_parent.read_styles(dir_path, file_name);
+            return true;
+        }
+
+        return false;
+    }
+};
+
+struct orcus_xlsx_impl
+{
+    spreadsheet::iface::import_factory* mp_factory;
+    xlsx_opc_handler m_opc_handler;
+    opc_reader m_opc_reader;
+
+    orcus_xlsx_impl(spreadsheet::iface::import_factory* factory, orcus_xlsx& parent) :
+        mp_factory(factory), m_opc_handler(parent), m_opc_reader(m_opc_handler) {}
+};
 
 orcus_xlsx::orcus_xlsx(spreadsheet::iface::import_factory* factory) :
-    mp_factory(factory),
-    m_opc_handler(*this),
-    m_opc_reader(m_opc_handler) {}
+    mp_impl(new orcus_xlsx_impl(factory, *this)) {}
 
-orcus_xlsx::~orcus_xlsx() {}
+orcus_xlsx::~orcus_xlsx()
+{
+    delete mp_impl;
+}
 
 void orcus_xlsx::read_file(const char* fpath)
 {
-    m_opc_reader.read_file(fpath);
+    mp_impl->m_opc_reader.read_file(fpath);
 }
 
 void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
@@ -112,7 +130,7 @@ void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
     cout << "read_workbook: file path = " << filepath << endl;
 
     opc_reader::zip_stream strm;
-    if (!m_opc_reader.open_zip_stream(filepath, strm))
+    if (!mp_impl->m_opc_reader.open_zip_stream(filepath, strm))
         return;
 
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
@@ -125,7 +143,7 @@ void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
         parser.parse();
     }
 
-    m_opc_reader.close_zip_stream(strm);
+    mp_impl->m_opc_reader.close_zip_stream(strm);
 
     // Get sheet info from the context instance.
     xlsx_workbook_context& context =
@@ -134,7 +152,7 @@ void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
     context.pop_sheet_info(sheet_data);
     for_each(sheet_data.begin(), sheet_data.end(), print_sheet_info());
 
-    m_opc_reader.check_relation_part(file_name, &sheet_data);
+    mp_impl->m_opc_reader.check_relation_part(file_name, &sheet_data);
 }
 
 void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, const xlsx_rel_sheet_info* data)
@@ -144,7 +162,7 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, con
     cout << "read_sheet: file path = " << filepath << endl;
 
     opc_reader::zip_stream strm;
-    if (!m_opc_reader.open_zip_stream(filepath, strm))
+    if (!mp_impl->m_opc_reader.open_zip_stream(filepath, strm))
         return;
 
     if (data)
@@ -156,14 +174,14 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, con
     if (strm.buffer_read > 0)
     {
         xml_stream_parser parser(ooxml_tokens, &strm.buffer[0], strm.buffer_read, file_name);
-        spreadsheet::iface::import_sheet* sheet = mp_factory->append_sheet(data->name.get(), data->name.size());
+        spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->append_sheet(data->name.get(), data->name.size());
         ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler(ooxml_tokens, sheet));
         parser.set_handler(handler.get());
         parser.parse();
     }
 
-    m_opc_reader.close_zip_stream(strm);
-    m_opc_reader.check_relation_part(file_name, NULL);
+    mp_impl->m_opc_reader.close_zip_stream(strm);
+    mp_impl->m_opc_reader.check_relation_part(file_name, NULL);
 }
 
 void orcus_xlsx::read_shared_strings(const string& dir_path, const string& file_name)
@@ -173,18 +191,19 @@ void orcus_xlsx::read_shared_strings(const string& dir_path, const string& file_
     cout << "read_shared_strings: file path = " << filepath << endl;
 
     opc_reader::zip_stream strm;
-    if (!m_opc_reader.open_zip_stream(filepath, strm))
+    if (!mp_impl->m_opc_reader.open_zip_stream(filepath, strm))
         return;
 
     if (strm.buffer_read > 0)
     {
         xml_stream_parser parser(ooxml_tokens, &strm.buffer[0], strm.buffer_read, file_name);
         ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-            new xml_simple_stream_handler(new xlsx_shared_strings_context(ooxml_tokens, mp_factory->get_shared_strings())));
+            new xml_simple_stream_handler(
+                new xlsx_shared_strings_context(ooxml_tokens, mp_impl->mp_factory->get_shared_strings())));
         parser.set_handler(handler.get());
         parser.parse();
     }
-    m_opc_reader.close_zip_stream(strm);
+    mp_impl->m_opc_reader.close_zip_stream(strm);
 }
 
 void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
@@ -194,20 +213,21 @@ void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
     cout << "read_styles: file path = " << filepath << endl;
 
     opc_reader::zip_stream strm;
-    if (!m_opc_reader.open_zip_stream(filepath, strm))
+    if (!mp_impl->m_opc_reader.open_zip_stream(filepath, strm))
         return;
 
     if (strm.buffer_read > 0)
     {
         xml_stream_parser parser(ooxml_tokens, &strm.buffer[0], strm.buffer_read, file_name);
         ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-            new xml_simple_stream_handler(new xlsx_styles_context(ooxml_tokens, mp_factory->get_styles())));
+            new xml_simple_stream_handler(
+                new xlsx_styles_context(ooxml_tokens, mp_impl->mp_factory->get_styles())));
 //      xlsx_styles_context& context =
 //          static_cast<xlsx_styles_context&>(handler->get_context());
         parser.set_handler(handler.get());
         parser.parse();
     }
-    m_opc_reader.close_zip_stream(strm);
+    mp_impl->m_opc_reader.close_zip_stream(strm);
 }
 
 }

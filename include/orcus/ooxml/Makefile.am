@@ -12,7 +12,6 @@ liborcus_HEADERS = \
 	ooxml_tokens.hpp \
 	ooxml_types.hpp \
 	opc_context.hpp \
-	opc_reader.hpp \
 	opc_token_constants.hpp \
 	opc_token_constants.inl \
 	schemas.hpp

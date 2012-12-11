@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/xml_handler.hpp"
+#include "xml_handler.hpp"
 
 namespace orcus {
 

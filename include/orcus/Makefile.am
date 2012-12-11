@@ -19,10 +19,7 @@ liborcus_HEADERS = \
 	tokens.hpp \
 	types.hpp \
 	xml_context.hpp \
-	xml_handler.hpp \
 	xml_namespace.hpp \
-	xml_parser.hpp \
-	xml_simple_handler.hpp \
 	xml_structure_tree.hpp
 
 if WITH_LIBZIP

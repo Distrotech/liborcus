@@ -28,7 +28,7 @@
 #ifndef __ORCUS_GNUMERICHANDLER_HPP__
 #define __ORCUS_GNUMERICHANDLER_HPP__
 
-#include "orcus/xml_handler.hpp"
+#include "xml_handler.hpp"
 #include "orcus/xml_context.hpp"
 
 #include <string>

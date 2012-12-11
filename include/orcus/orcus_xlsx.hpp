@@ -29,25 +29,20 @@
 #define __ORCUS_ORCUS_XLSX_HPP__
 
 #include "env.hpp"
-#include "ooxml/opc_reader.hpp"
+
+#include <string>
 
 namespace orcus {
 
 namespace spreadsheet { namespace iface { class import_factory; }}
 
 struct xlsx_rel_sheet_info;
+struct orcus_xlsx_impl;
+class xlsx_opc_handler;
 
 class ORCUS_DLLPUBLIC orcus_xlsx
 {
-    class opc_handler : public opc_reader::part_handler
-    {
-        orcus_xlsx& m_parent;
-    public:
-        opc_handler(orcus_xlsx& parent);
-        virtual ~opc_handler();
-        virtual bool handle_part(
-            schema_t type, const std::string& dir_path, const std::string& file_name, const opc_rel_extra* data);
-    };
+    friend class xlsx_opc_handler;
 
     orcus_xlsx(const orcus_xlsx&); // disabled
     orcus_xlsx& operator= (const orcus_xlsx&); // disabled
@@ -76,9 +71,7 @@ private:
     void read_styles(const std::string& dir_path, const std::string& file_name);
 
 private:
-    spreadsheet::iface::import_factory* mp_factory;
-    opc_handler m_opc_handler;
-    opc_reader m_opc_reader;
+    orcus_xlsx_impl* mp_impl;
 };
 
 }

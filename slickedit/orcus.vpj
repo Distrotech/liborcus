@@ -177,7 +177,6 @@
 					<F N="../include/orcus/ooxml/ooxml_tokens.hpp"/>
 					<F N="../include/orcus/ooxml/ooxml_types.hpp"/>
 					<F N="../include/orcus/ooxml/opc_context.hpp"/>
-					<F N="../include/orcus/ooxml/opc_reader.hpp"/>
 					<F N="../include/orcus/ooxml/opc_token_constants.hpp"/>
 					<F N="../include/orcus/ooxml/opc_token_constants.inl"/>
 					<F N="../include/orcus/ooxml/schemas.hpp"/>
@@ -212,10 +211,7 @@
 				<F N="../include/orcus/tokens.hpp"/>
 				<F N="../include/orcus/types.hpp"/>
 				<F N="../include/orcus/xml_context.hpp"/>
-				<F N="../include/orcus/xml_handler.hpp"/>
 				<F N="../include/orcus/xml_namespace.hpp"/>
-				<F N="../include/orcus/xml_parser.hpp"/>
-				<F N="../include/orcus/xml_simple_handler.hpp"/>
 				<F N="../include/orcus/xml_structure_tree.hpp"/>
 			</Folder>
 		</Folder>
@@ -249,6 +245,7 @@
 				<F N="../src/liborcus/ooxml_xlsx_sheet_context.cpp"/>
 				<F N="../src/liborcus/ooxml_xlsx_workbook_context.cpp"/>
 				<F N="../src/liborcus/opc_reader.cpp"/>
+				<F N="../src/liborcus/opc_reader.hpp"/>
 				<F N="../src/liborcus/orcus_css.cpp"/>
 				<F N="../src/liborcus/orcus_csv.cpp"/>
 				<F N="../src/liborcus/orcus_gnumeric.cpp"/>
@@ -264,13 +261,16 @@
 				<F N="../src/liborcus/tokens.cpp"/>
 				<F N="../src/liborcus/xml_context.cpp"/>
 				<F N="../src/liborcus/xml_handler.cpp"/>
+				<F N="../src/liborcus/xml_handler.hpp"/>
 				<F N="../src/liborcus/xml_map_tree.cpp"/>
 				<F N="../src/liborcus/xml_map_tree.hpp"/>
 				<F N="../src/liborcus/xml_map_tree_test.cpp"/>
 				<F N="../src/liborcus/xml_namespace.cpp"/>
 				<F N="../src/liborcus/xml_namespace_test.cpp"/>
 				<F N="../src/liborcus/xml_parser.cpp"/>
+				<F N="../src/liborcus/xml_parser.hpp"/>
 				<F N="../src/liborcus/xml_simple_handler.cpp"/>
+				<F N="../src/liborcus/xml_simple_handler.hpp"/>
 				<F N="../src/liborcus/xml_structure_tree.cpp"/>
 				<F N="../src/liborcus/xml_structure_tree_test.cpp"/>
 			</Folder>
