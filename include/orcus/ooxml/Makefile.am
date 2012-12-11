@@ -6,6 +6,7 @@ liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus/ooxml
 liborcus_HEADERS = \
 	content_types.hpp \
 	global.hpp \
+	namespace_types.hpp \
 	ooxml_token_constants.hpp \
 	ooxml_token_constants.inl \
 	ooxml_tokens.hpp \

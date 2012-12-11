@@ -42,6 +42,7 @@ if WITH_XLSX_FILTER
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	ooxml_content_types.cpp \
 	ooxml_global.cpp \
+	ooxml_namespace_types.cpp \
 	ooxml_opc_context.cpp \
 	ooxml_schemas.cpp \
 	ooxml_tokens.cpp \

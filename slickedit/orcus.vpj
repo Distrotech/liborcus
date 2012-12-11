@@ -171,6 +171,7 @@
 				<Folder Name="ooxml">
 					<F N="../include/orcus/ooxml/content_types.hpp"/>
 					<F N="../include/orcus/ooxml/global.hpp"/>
+					<F N="../include/orcus/ooxml/namespace_types.hpp"/>
 					<F N="../include/orcus/ooxml/ooxml_token_constants.hpp"/>
 					<F N="../include/orcus/ooxml/ooxml_token_constants.inl"/>
 					<F N="../include/orcus/ooxml/ooxml_tokens.hpp"/>
@@ -237,6 +238,7 @@
 				<F N="../src/liborcus/odf_tokens.inl"/>
 				<F N="../src/liborcus/ooxml_content_types.cpp"/>
 				<F N="../src/liborcus/ooxml_global.cpp"/>
+				<F N="../src/liborcus/ooxml_namespace_types.cpp"/>
 				<F N="../src/liborcus/ooxml_opc_context.cpp"/>
 				<F N="../src/liborcus/ooxml_opc_tokens.inl"/>
 				<F N="../src/liborcus/ooxml_schemas.cpp"/>
