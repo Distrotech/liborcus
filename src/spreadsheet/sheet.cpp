@@ -55,6 +55,8 @@
 
 #include <boost/unordered_map.hpp>
 
+#define ORCUS_DEBUG_SHEET 0
+
 using namespace std;
 
 namespace orcus { namespace spreadsheet {
@@ -114,6 +116,10 @@ void sheet::set_string(row_t row, col_t col, size_t sindex)
 {
     ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     cxt.set_string_cell(ixion::abs_address_t(mp_impl->m_sheet,row,col), sindex);
+
+#if ORCUS_DEBUG_SHEET
+    cout << "sheet::set_string: sheet=" << mp_impl->m_sheet << ", row=" << row << ", col=" << col << ", si=" << sindex << endl;
+#endif
 }
 
 void sheet::set_value(row_t row, col_t col, double value)
