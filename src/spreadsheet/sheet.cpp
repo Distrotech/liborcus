@@ -66,7 +66,6 @@ typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
 
 struct sheet_impl
 {
-
     document& m_doc;
     mutable cell_format_type m_cell_formats;
     row_t m_max_row;
