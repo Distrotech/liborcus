@@ -291,6 +291,7 @@
 			<F N="../src/orcus_ods_main.cpp"/>
 			<F N="../src/orcus_test_common.cpp"/>
 			<F N="../src/orcus_test_csv.cpp"/>
+			<F N="../src/orcus_test_xlsx.cpp"/>
 			<F N="../src/orcus_test_xml.cpp"/>
 			<F N="../src/orcus_test_xml_mapped.cpp"/>
 			<F N="../src/orcus_xlsx_main.cpp"/>

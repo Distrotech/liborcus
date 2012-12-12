@@ -148,6 +148,9 @@ if WITH_XLSX_FILTER
 bin_PROGRAMS += \
 	orcus-xlsx
 
+EXTRA_PROGRAMS += \
+	orcus-test-xlsx
+
 # orcus-xlsx
 
 orcus_xlsx_SOURCES = \
@@ -163,6 +166,20 @@ orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 if HAVE_STATIC_LIB
 orcus_xlsx_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 endif
+
+# orcus-test-xlsx
+
+orcus_test_xlsx_SOURCES = \
+	orcus_test_xlsx.cpp
+
+orcus_test_xlsx_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+
+orcus_test_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
+TESTS += orcus-test-xlsx
 
 endif # WITH_XLSX_FILTER
 
