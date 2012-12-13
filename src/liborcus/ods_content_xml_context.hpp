@@ -50,9 +50,14 @@ public:
         row_attr();
     };
 
+    enum cell_value_type
+    {
+        vt_float, vt_string // TODO: more to come...
+    };
     struct cell_attr
     {
         int number_columns_repeated;
+
         cell_attr();
     };
 

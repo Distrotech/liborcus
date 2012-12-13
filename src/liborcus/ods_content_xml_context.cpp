@@ -94,15 +94,44 @@ public:
 
     void operator() (const xml_token_attr_t& attr)
     {
-        if (attr.ns == XMLNS_table && attr.name == XML_number_columns_repeated)
-        {
-            char* endptr;
-            long val = strtol(attr.value.str().c_str(), &endptr, 10);
-            if (endptr != attr.value.str())
-                m_attr.number_columns_repeated = static_cast<int>(val);
-        }
+        if (attr.ns == XMLNS_table)
+            process_ns_table(attr);
+
+        if (attr.ns == XMLNS_office)
+            process_ns_office(attr);
     }
 private:
+    void process_ns_table(const xml_token_attr_t &attr)
+    {
+        switch (attr.name)
+        {
+            case XML_number_columns_repeated:
+            {
+                char* endptr;
+                long val = strtol(attr.value.str().c_str(), &endptr, 10);
+                if (endptr != attr.value.str())
+                    m_attr.number_columns_repeated = static_cast<int>(val);
+            }
+            break;
+            default:
+                ;
+        }
+    }
+
+    void process_ns_office(const xml_token_attr_t &attr)
+    {
+        switch (attr.name)
+        {
+            case XML_value_type:
+            {
+
+            }
+            break;
+            default:
+                ;
+        }
+    }
+
     ods_content_xml_context::cell_attr& m_attr;
 };
 
