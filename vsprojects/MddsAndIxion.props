@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <MDDS_DIR>C:\Users\Kohei\Workspace\multidimalgorithm\</MDDS_DIR>
+    <IXION_DIR>C:\Users\Kohei\Workspace\ixion</IXION_DIR>
+    <IXION_LIB>C:\dev\installed\lib</IXION_LIB>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(IXION_DIR)\include;$(MDDS_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>MDDS_HASH_CONTAINER_BOOST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="MDDS_DIR">
+      <Value>$(MDDS_DIR)</Value>
+    </BuildMacro>
+    <BuildMacro Include="IXION_DIR">
+      <Value>$(IXION_DIR)</Value>
+    </BuildMacro>
+    <BuildMacro Include="IXION_LIB">
+      <Value>$(IXION_LIB)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

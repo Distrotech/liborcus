@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <LIBZIP_DIR>C:\dev\installed\include</LIBZIP_DIR>
+    <LIBZIP_LIB>C:\dev\installed\lib</LIBZIP_LIB>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(LIBZIP_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>zip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(LIBZIP_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="LIBZIP_DIR">
+      <Value>$(LIBZIP_DIR)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LIBZIP_LIB">
+      <Value>$(LIBZIP_LIB)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

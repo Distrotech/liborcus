@@ -1,0 +1,59 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus", "liborcus\liborcus.vcxproj", "{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orcus-ods", "orcus-ods\orcus-ods.vcxproj", "{C19DCAC9-0C83-484C-86CA-29733628C391}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orcus-xlsx", "orcus-xlsx\orcus-xlsx.vcxproj", "{0A6D7067-D219-4104-BB07-6218E0CC0162}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orcus-csv", "orcus-csv\orcus-csv.vcxproj", "{4B0605D9-32D0-43FB-BD73-A1B8C2AF9A40}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus-spreadsheet-model", "liborcus-spreadsheet-model\liborcus-spreadsheet-model.vcxproj", "{7C6822F2-EFBA-4FA8-9BBD-B66434E622EB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orcus-xml", "orcus-xml\orcus-xml.vcxproj", "{561E1A45-D5B8-4621-AFCC-CA8A07005379}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus-static-nozip", "liborcus-static-nozip\liborcus-static-nozip.vcxproj", "{50DD1B15-9FEB-4037-9FBF-D52A711977E7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orcus-gnumeric", "orcus-gnumeric\orcus-gnumeric.vcxproj", "{0E226F67-F653-45C7-AE6F-154843911C70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}.Debug|Win32.Build.0 = Debug|Win32
+		{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}.Release|Win32.ActiveCfg = Release|Win32
+		{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}.Release|Win32.Build.0 = Release|Win32
+		{C19DCAC9-0C83-484C-86CA-29733628C391}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C19DCAC9-0C83-484C-86CA-29733628C391}.Debug|Win32.Build.0 = Debug|Win32
+		{C19DCAC9-0C83-484C-86CA-29733628C391}.Release|Win32.ActiveCfg = Release|Win32
+		{C19DCAC9-0C83-484C-86CA-29733628C391}.Release|Win32.Build.0 = Release|Win32
+		{0A6D7067-D219-4104-BB07-6218E0CC0162}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0A6D7067-D219-4104-BB07-6218E0CC0162}.Debug|Win32.Build.0 = Debug|Win32
+		{0A6D7067-D219-4104-BB07-6218E0CC0162}.Release|Win32.ActiveCfg = Release|Win32
+		{0A6D7067-D219-4104-BB07-6218E0CC0162}.Release|Win32.Build.0 = Release|Win32
+		{4B0605D9-32D0-43FB-BD73-A1B8C2AF9A40}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4B0605D9-32D0-43FB-BD73-A1B8C2AF9A40}.Debug|Win32.Build.0 = Debug|Win32
+		{4B0605D9-32D0-43FB-BD73-A1B8C2AF9A40}.Release|Win32.ActiveCfg = Release|Win32
+		{4B0605D9-32D0-43FB-BD73-A1B8C2AF9A40}.Release|Win32.Build.0 = Release|Win32
+		{7C6822F2-EFBA-4FA8-9BBD-B66434E622EB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7C6822F2-EFBA-4FA8-9BBD-B66434E622EB}.Debug|Win32.Build.0 = Debug|Win32
+		{7C6822F2-EFBA-4FA8-9BBD-B66434E622EB}.Release|Win32.ActiveCfg = Release|Win32
+		{7C6822F2-EFBA-4FA8-9BBD-B66434E622EB}.Release|Win32.Build.0 = Release|Win32
+		{561E1A45-D5B8-4621-AFCC-CA8A07005379}.Debug|Win32.ActiveCfg = Debug|Win32
+		{561E1A45-D5B8-4621-AFCC-CA8A07005379}.Debug|Win32.Build.0 = Debug|Win32
+		{561E1A45-D5B8-4621-AFCC-CA8A07005379}.Release|Win32.ActiveCfg = Release|Win32
+		{561E1A45-D5B8-4621-AFCC-CA8A07005379}.Release|Win32.Build.0 = Release|Win32
+		{50DD1B15-9FEB-4037-9FBF-D52A711977E7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{50DD1B15-9FEB-4037-9FBF-D52A711977E7}.Debug|Win32.Build.0 = Debug|Win32
+		{50DD1B15-9FEB-4037-9FBF-D52A711977E7}.Release|Win32.ActiveCfg = Release|Win32
+		{50DD1B15-9FEB-4037-9FBF-D52A711977E7}.Release|Win32.Build.0 = Release|Win32
+		{0E226F67-F653-45C7-AE6F-154843911C70}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0E226F67-F653-45C7-AE6F-154843911C70}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
