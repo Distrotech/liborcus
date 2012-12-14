@@ -26,6 +26,8 @@
  ************************************************************************/
 
 #include "orcus/orcus_gnumeric.hpp"
+#include "orcus/xml_namespace.hpp"
+
 #include "xml_stream_parser.hpp"
 #include "gnumeric_handler.hpp"
 #include "gnumeric_tokens.hpp"
@@ -47,20 +49,30 @@ using namespace std;
 
 namespace orcus {
 
+struct orcus_gnumeric_impl
+{
+    xmlns_repository m_ns_repo;
+    spreadsheet::iface::import_factory* mp_factory;
+
+    orcus_gnumeric_impl(spreadsheet::iface::import_factory* im_factory) :
+        mp_factory(im_factory) {}
+};
+
 orcus_gnumeric::orcus_gnumeric(spreadsheet::iface::import_factory* factory) :
-    mp_factory(factory)
+    mp_impl(new orcus_gnumeric_impl(factory))
 {
 }
 
 orcus_gnumeric::~orcus_gnumeric()
 {
+    delete mp_impl;
 }
 
 void orcus_gnumeric::read_content_xml(const char* p, size_t size)
 {
-    xml_stream_parser parser(gnumeric_tokens, p, size, "content.xml");
+    xml_stream_parser parser(mp_impl->m_ns_repo, gnumeric_tokens, p, size, "content.xml");
     ::boost::scoped_ptr<gnumeric_content_xml_handler> handler(
-        new gnumeric_content_xml_handler(gnumeric_tokens, mp_factory));
+        new gnumeric_content_xml_handler(gnumeric_tokens, mp_impl->mp_factory));
     parser.set_handler(handler.get());
     parser.parse();
 }

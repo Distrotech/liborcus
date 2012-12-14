@@ -51,8 +51,13 @@ const char* xml_stream_parser::parse_error::what() const throw()
     return m_msg.c_str();
 }
 
-xml_stream_parser::xml_stream_parser(const tokens& tokens, const char* content, size_t size, const string& name) :
-    m_tokens(tokens), mp_handler(NULL), m_content(content), m_size(size), m_name(name)
+xml_stream_parser::xml_stream_parser(xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size, const string& name) :
+    m_ns_cxt(ns_repo.create_context()),
+    m_tokens(tokens),
+    mp_handler(NULL),
+    m_content(content),
+    m_size(size),
+    m_name(name)
 {
 }
 

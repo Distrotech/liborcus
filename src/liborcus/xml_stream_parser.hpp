@@ -32,6 +32,8 @@
 #include <string>
 #include <exception>
 
+#include "orcus/xml_namespace.hpp"
+
 namespace orcus {
 
 class xml_stream_handler;
@@ -55,7 +57,7 @@ public:
         ::std::string m_msg;
     };
 
-    xml_stream_parser(const tokens& tokens, const char* content, size_t size, const ::std::string& name);
+    xml_stream_parser(xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size, const ::std::string& name);
     ~xml_stream_parser();
 
     void parse();
@@ -66,6 +68,7 @@ public:
 private:
     xml_stream_parser(); // disabled
 
+    xmlns_context m_ns_cxt;
     const tokens& m_tokens;
     xml_stream_handler* mp_handler;
     const char* m_content;

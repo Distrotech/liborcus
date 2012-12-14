@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "orcus/orcus_ods.hpp"
+#include "orcus/xml_namespace.hpp"
 
 #include "xml_stream_parser.hpp"
 #include "ods_content_xml_handler.hpp"
@@ -43,14 +44,21 @@ using namespace std;
 
 namespace orcus {
 
+struct orcus_ods_impl
+{
+    xmlns_repository m_ns_repo;
+    spreadsheet::iface::import_factory* mp_factory;
+
+    orcus_ods_impl(spreadsheet::iface::import_factory* im_factory) :
+        mp_factory(im_factory) {}
+};
 
 orcus_ods::orcus_ods(spreadsheet::iface::import_factory* factory) :
-    mp_factory(factory)
-{
-}
+    mp_impl(new orcus_ods_impl(factory)) {}
 
 orcus_ods::~orcus_ods()
 {
+    delete mp_impl;
 }
 
 void orcus_ods::list_content(struct zip* archive) const
@@ -92,9 +100,9 @@ void orcus_ods::read_content(struct zip* archive)
 
 void orcus_ods::read_content_xml(const char* p, size_t size)
 {
-    xml_stream_parser parser(odf_tokens, p, size, "content.xml");
+    xml_stream_parser parser(mp_impl->m_ns_repo, odf_tokens, p, size, "content.xml");
     ::boost::scoped_ptr<ods_content_xml_handler> handler(
-        new ods_content_xml_handler(odf_tokens, mp_factory));
+        new ods_content_xml_handler(odf_tokens, mp_impl->mp_factory));
     parser.set_handler(handler.get());
     parser.parse();
 }

@@ -42,6 +42,7 @@ struct zip_file;
 namespace orcus {
 
 class pstring;
+class xmlns_repository;
 struct opc_rel_extra;
 
 /**
@@ -84,7 +85,7 @@ public:
         struct ::zip_file* zfd;
     };
 
-    opc_reader(part_handler& handler);
+    opc_reader(xmlns_repository& ns_repo, part_handler& handler);
 
     void read_file(const char* fpath);
     bool open_zip_stream(const std::string& path, zip_stream& data);
@@ -119,6 +120,7 @@ private:
     std::string get_current_dir() const;
 
 private:
+    xmlns_repository& m_ns_repo;
     part_handler& m_handler;
 
     struct zip* m_archive;

@@ -39,6 +39,8 @@ namespace orcus {
 
 namespace spreadsheet { namespace iface { class import_factory; }}
 
+struct orcus_ods_impl;
+
 class ORCUS_DLLPUBLIC orcus_ods
 {
     orcus_ods(const orcus_ods&); // disabled
@@ -56,7 +58,7 @@ private:
     void read_content_xml(const char* p, size_t size);
 
 private:
-    spreadsheet::iface::import_factory* mp_factory;
+    orcus_ods_impl* mp_impl;
 };
 
 }

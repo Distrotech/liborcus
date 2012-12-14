@@ -27,13 +27,15 @@
 
 #include "orcus/orcus_xlsx.hpp"
 
+#include "orcus/xml_namespace.hpp"
 #include "orcus/global.hpp"
+#include "orcus/spreadsheet/import_interface.hpp"
+
 #include "xlsx_types.hpp"
 #include "xlsx_handler.hpp"
 #include "xlsx_context.hpp"
 #include "xlsx_workbook_context.hpp"
 #include "ooxml_tokens.hpp"
-#include "orcus/spreadsheet/import_interface.hpp"
 
 #include "xml_stream_parser.hpp"
 #include "xml_simple_stream_handler.hpp"
@@ -103,12 +105,13 @@ public:
 
 struct orcus_xlsx_impl
 {
+    xmlns_repository m_ns_repo;
     spreadsheet::iface::import_factory* mp_factory;
     xlsx_opc_handler m_opc_handler;
     opc_reader m_opc_reader;
 
     orcus_xlsx_impl(spreadsheet::iface::import_factory* factory, orcus_xlsx& parent) :
-        mp_factory(factory), m_opc_handler(parent), m_opc_reader(m_opc_handler) {}
+        mp_factory(factory), m_opc_handler(parent), m_opc_reader(m_ns_repo, m_opc_handler) {}
 };
 
 orcus_xlsx::orcus_xlsx(spreadsheet::iface::import_factory* factory) :
@@ -138,7 +141,7 @@ void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
 
     if (strm.buffer_read > 0)
     {
-        xml_stream_parser parser(ooxml_tokens, &strm.buffer[0], strm.buffer_read, filepath);
+        xml_stream_parser parser(mp_impl->m_ns_repo, ooxml_tokens, &strm.buffer[0], strm.buffer_read, filepath);
         parser.set_handler(handler.get());
         parser.parse();
     }
@@ -173,7 +176,7 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, con
 
     if (strm.buffer_read > 0)
     {
-        xml_stream_parser parser(ooxml_tokens, &strm.buffer[0], strm.buffer_read, file_name);
+        xml_stream_parser parser(mp_impl->m_ns_repo, ooxml_tokens, &strm.buffer[0], strm.buffer_read, file_name);
         spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->append_sheet(data->name.get(), data->name.size());
         ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler(ooxml_tokens, sheet));
         parser.set_handler(handler.get());
@@ -196,7 +199,7 @@ void orcus_xlsx::read_shared_strings(const string& dir_path, const string& file_
 
     if (strm.buffer_read > 0)
     {
-        xml_stream_parser parser(ooxml_tokens, &strm.buffer[0], strm.buffer_read, file_name);
+        xml_stream_parser parser(mp_impl->m_ns_repo, ooxml_tokens, &strm.buffer[0], strm.buffer_read, file_name);
         ::boost::scoped_ptr<xml_simple_stream_handler> handler(
             new xml_simple_stream_handler(
                 new xlsx_shared_strings_context(ooxml_tokens, mp_impl->mp_factory->get_shared_strings())));
@@ -218,7 +221,7 @@ void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
 
     if (strm.buffer_read > 0)
     {
-        xml_stream_parser parser(ooxml_tokens, &strm.buffer[0], strm.buffer_read, file_name);
+        xml_stream_parser parser(mp_impl->m_ns_repo, ooxml_tokens, &strm.buffer[0], strm.buffer_read, file_name);
         ::boost::scoped_ptr<xml_simple_stream_handler> handler(
             new xml_simple_stream_handler(
                 new xlsx_styles_context(ooxml_tokens, mp_impl->mp_factory->get_styles())));

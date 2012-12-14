@@ -113,7 +113,8 @@ struct ::zip_file* get_zip_stream_from_archive(
 
 opc_reader::part_handler::~part_handler() {}
 
-opc_reader::opc_reader(part_handler& handler) :
+opc_reader::opc_reader(xmlns_repository& ns_repo, part_handler& handler) :
+    m_ns_repo(ns_repo),
     m_handler(handler),
     m_opc_rel_handler(new opc_relations_context(opc_tokens)) {}
 
@@ -273,7 +274,7 @@ void opc_reader::read_content_types()
 
     if (buf_read > 0)
     {
-        xml_stream_parser parser(opc_tokens, &buf[0], buf_read, "[Content_Types].xml");
+        xml_stream_parser parser(m_ns_repo, opc_tokens, &buf[0], buf_read, "[Content_Types].xml");
         ::boost::scoped_ptr<xml_simple_stream_handler> handler(
             new xml_simple_stream_handler(new opc_content_types_context(opc_tokens)));
         parser.set_handler(handler.get());
@@ -300,7 +301,7 @@ void opc_reader::read_relations(const char* path, vector<opc_rel_t>& rels)
 
     if (buf_read > 0)
     {
-        xml_stream_parser parser(opc_tokens, &buf[0], buf_read, filepath);
+        xml_stream_parser parser(m_ns_repo, opc_tokens, &buf[0], buf_read, filepath);
 
         opc_relations_context& context =
             static_cast<opc_relations_context&>(m_opc_rel_handler.get_context());

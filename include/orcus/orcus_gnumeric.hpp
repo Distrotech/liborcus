@@ -39,6 +39,8 @@ namespace orcus {
 
 namespace spreadsheet { namespace iface { class import_factory; }}
 
+struct orcus_gnumeric_impl;
+
 class ORCUS_DLLPUBLIC orcus_gnumeric
 {
     orcus_gnumeric(const orcus_gnumeric&); // disabled
@@ -52,7 +54,7 @@ private:
     void read_content_xml(const char* p, size_t size);
 
 private:
-    spreadsheet::iface::import_factory* mp_factory;
+    orcus_gnumeric_impl* mp_impl;
 };
 
 }
