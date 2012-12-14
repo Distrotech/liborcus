@@ -52,12 +52,13 @@ public:
 
     enum cell_value_type
     {
-        vt_float, vt_string // TODO: more to come...
+        vt_unknown, vt_float, vt_string // TODO: more to come...
     };
     struct cell_attr
     {
         int number_columns_repeated;
-
+        cell_value_type type;
+        double value;
         cell_attr();
     };
 
@@ -84,6 +85,8 @@ private:
 
     void start_cell(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
     void end_cell();
+
+    void push_cell_value();
 
 private:
     spreadsheet::iface::import_factory* mp_factory;

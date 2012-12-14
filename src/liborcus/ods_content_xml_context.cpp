@@ -35,6 +35,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <cstring>
 
 using namespace std;
 
@@ -94,6 +95,9 @@ public:
 
     void operator() (const xml_token_attr_t& attr)
     {
+        if (attr.value.empty())
+            return;
+
         if (attr.ns == XMLNS_table)
             process_ns_table(attr);
 
@@ -107,9 +111,10 @@ private:
         {
             case XML_number_columns_repeated:
             {
+                const char* end = attr.value.get() + attr.value.size();
                 char* endptr;
-                long val = strtol(attr.value.str().c_str(), &endptr, 10);
-                if (endptr != attr.value.str())
+                long val = strtol(attr.value.get(), &endptr, 10);
+                if (endptr == end)
                     m_attr.number_columns_repeated = static_cast<int>(val);
             }
             break;
@@ -122,9 +127,21 @@ private:
     {
         switch (attr.name)
         {
+            case XML_value:
+            {
+                const char* end = attr.value.get() + attr.value.size();
+                char* endptr;
+                double val = strtod(attr.value.get(), &endptr);
+                if (endptr == end)
+                    m_attr.value = val;
+            }
+            break;
             case XML_value_type:
             {
-
+                if (!std::strncmp(attr.value.get(), "float", 5))
+                    m_attr.type = ods_content_xml_context::vt_float;
+                else if (!std::strncmp(attr.value.get(), "string", 6))
+                    m_attr.type = ods_content_xml_context::vt_string;
             }
             break;
             default:
@@ -145,7 +162,7 @@ ods_content_xml_context::row_attr::row_attr() :
 }
 
 ods_content_xml_context::cell_attr::cell_attr() :
-    number_columns_repeated(1)
+    number_columns_repeated(1), type(vt_unknown), value(0.0)
 {
 }
 
@@ -363,20 +380,32 @@ void ods_content_xml_context::start_cell(const xml_attrs_t& attrs, const xml_tok
 
 void ods_content_xml_context::end_cell()
 {
-    if (m_has_content)
-        m_tables.back()->set_string(m_row, m_col, m_para_index);
+    push_cell_value();
 
     ++m_col;
     if (m_cell_attr.number_columns_repeated > 1)
     {
         int col_upper = m_col + m_cell_attr.number_columns_repeated - 2;
         for (; m_col <= col_upper; ++m_col)
-        {
-            if (m_has_content)
-                m_tables.back()->set_string(m_row, m_col, m_para_index);
-        }
+            push_cell_value();
     }
     m_has_content = false;
+}
+
+void ods_content_xml_context::push_cell_value()
+{
+    switch (m_cell_attr.type)
+    {
+        case vt_float:
+            m_tables.back()->set_value(m_row, m_col, m_cell_attr.value);
+        break;
+        case vt_string:
+            if (m_has_content)
+                m_tables.back()->set_string(m_row, m_col, m_para_index);
+        break;
+        default:
+            ;
+    }
 }
 
 }
