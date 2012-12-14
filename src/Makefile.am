@@ -124,6 +124,9 @@ if WITH_ODS_FILTER
 bin_PROGRAMS += \
 	orcus-ods
 
+EXTRA_PROGRAMS += \
+	orcus-test-ods
+
 # orcus-ods
 
 orcus_ods_SOURCES = \
@@ -140,6 +143,20 @@ orcus_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 if HAVE_STATIC_LIB
 orcus_ods_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 endif
+
+# orcus-test-ods
+
+orcus_test_ods_SOURCES = \
+	orcus_test_ods.cpp
+
+orcus_test_ods_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+
+orcus_test_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
+
+TESTS += orcus-test-ods
 
 endif # WITH_ODS_FILTER
 

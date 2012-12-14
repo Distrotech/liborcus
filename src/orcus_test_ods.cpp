@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/orcus_xlsx.hpp"
+#include "orcus/orcus_ods.hpp"
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
 #include "spreadsheet/factory.hpp"
@@ -45,10 +45,10 @@ using namespace std;
 namespace {
 
 const char* dirs[] = {
-    "../test/xlsx/raw-values-1/",
+    "../test/ods/raw-values-1/",
 };
 
-void test_xlsx_import()
+void test_ods_import()
 {
     size_t n = sizeof(dirs)/sizeof(dirs[0]);
     for (size_t i = 0; i < n; ++i)
@@ -56,10 +56,10 @@ void test_xlsx_import()
         const char* dir = dirs[i];
         string path(dir);
 
-        // Read the input.xlsx document.
-        path.append("input.xlsx");
+        // Read the input.ods document.
+        path.append("input.ods");
         boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-        orcus_xlsx app(new spreadsheet::import_factory(doc.get()));
+        orcus_ods app(new spreadsheet::import_factory(doc.get()));
         app.read_file(path.c_str());
 
         // Dump the content of the model.
@@ -85,6 +85,6 @@ void test_xlsx_import()
 
 int main()
 {
-    test_xlsx_import();
+    test_ods_import();
     return EXIT_SUCCESS;
 }
