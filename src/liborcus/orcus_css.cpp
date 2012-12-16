@@ -98,6 +98,14 @@ public:
     }
 };
 
+struct pstring_dispose_guard
+{
+    ~pstring_dispose_guard()
+    {
+        pstring::intern::dispose();
+    }
+};
+
 }
 
 class orcus_css
@@ -135,13 +143,20 @@ void orcus_css::parse(const string& strm)
 }
 
 int main(int argc, char** argv)
+try
 {
     if (argc != 2)
         return EXIT_FAILURE;
 
+    pstring_dispose_guard guard;
+    (void) guard;
+
     orcus_css app;
     app.read_file(argv[1]);
-    pstring::intern::dispose();
 
     return EXIT_SUCCESS;
+}
+catch (...)
+{
+    return EXIT_FAILURE;
 }
