@@ -74,10 +74,17 @@ struct xmlns_repository_impl
 {
     string_pool m_pool; /// storage of live string instances.
     std::vector<pstring> m_identifiers; /// map strings to numerical identifiers.
-    strid_map_type m_strid_map;
+    strid_map_type m_strid_map; /// string-to-numerical identifiers map for quick lookup.
+
+    xmlns_repository_impl() {}
 };
 
 xmlns_repository::xmlns_repository() : mp_impl(new xmlns_repository_impl) {}
+
+xmlns_repository::xmlns_repository(const xmlns_id_t* predefined_ns) : mp_impl(new xmlns_repository_impl)
+{
+    // TODO: implement this
+}
 
 xmlns_repository::~xmlns_repository()
 {
