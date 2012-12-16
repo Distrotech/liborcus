@@ -183,7 +183,8 @@ private:
 gnumeric_sheet_context::gnumeric_sheet_context(
     const tokens& tokens, spreadsheet::iface::import_factory* factory) :
     xml_context_base(tokens),
-    mp_factory(factory)
+    mp_factory(factory),
+    mp_sheet(0)
 {
 }
 
