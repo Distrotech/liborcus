@@ -54,6 +54,7 @@ struct csv_parser_config
     bool trim_cell_value:1;
 
     csv_parser_config() :
+        text_qualifier('\0'),
         trim_cell_value(false) {}
 };
 
