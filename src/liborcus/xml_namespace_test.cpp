@@ -111,6 +111,11 @@ void test_predefined_ns()
     assert(ns_id == NS_opc_ct);
     ns_id = cxt.push("test4", "http://schemas.openxmlformats.org/package/2006/relationships");
     assert(ns_id == NS_opc_rel);
+
+    // Push the same predefined namespace to default namespace.
+    ns_id = cxt.push("", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
+    assert(ns_id == NS_ooxml_xlsx);
+    assert(cxt.get("") == NS_ooxml_xlsx);
 }
 
 } // anonymous namespace
