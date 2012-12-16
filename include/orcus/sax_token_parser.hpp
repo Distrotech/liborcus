@@ -33,7 +33,7 @@
 #include <functional>
 
 #include "types.hpp"
-#include "sax_parser.hpp"
+#include "sax_ns_parser.hpp"
 
 namespace orcus {
 
@@ -84,7 +84,7 @@ public:
     typedef _Handler    handler_type;
     typedef _Tokens     tokens_map;
 
-    sax_token_parser(const char* content, const size_t size, const tokens_map& tokens, handler_type& handler);
+    sax_token_parser(const char* content, const size_t size, const tokens_map& tokens, xmlns_context& ns_cxt, handler_type& handler);
     ~sax_token_parser();
 
     void parse();
@@ -156,13 +156,15 @@ private:
     };
 
 private:
+    xmlns_context& m_ns_cxt;
     handler_wrapper m_wrapper;
     sax_parser<handler_wrapper> m_parser;
 };
 
 template<typename _Handler, typename _Tokens>
 sax_token_parser<_Handler,_Tokens>::sax_token_parser(
-    const char* content, const size_t size, const tokens_map& tokens, handler_type& handler) :
+    const char* content, const size_t size, const tokens_map& tokens, xmlns_context& ns_cxt, handler_type& handler) :
+    m_ns_cxt(ns_cxt),
     m_wrapper(tokens, handler),
     m_parser(content, size, m_wrapper)
 {
