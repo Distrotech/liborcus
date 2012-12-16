@@ -72,19 +72,15 @@ typedef boost::unordered_map<pstring, size_t, pstring::hash> strid_map_type;
 
 struct xmlns_repository_impl
 {
+    size_t m_predefined_ns_size;
     string_pool m_pool; /// storage of live string instances.
     std::vector<pstring> m_identifiers; /// map strings to numerical identifiers.
     strid_map_type m_strid_map; /// string-to-numerical identifiers map for quick lookup.
 
-    xmlns_repository_impl() {}
+    xmlns_repository_impl() : m_predefined_ns_size(0) {}
 };
 
 xmlns_repository::xmlns_repository() : mp_impl(new xmlns_repository_impl) {}
-
-xmlns_repository::xmlns_repository(const xmlns_id_t* predefined_ns) : mp_impl(new xmlns_repository_impl)
-{
-    // TODO: implement this
-}
 
 xmlns_repository::~xmlns_repository()
 {
@@ -95,6 +91,11 @@ xmlns_id_t xmlns_repository::intern(const pstring& uri)
 {
     if (uri.empty())
         return XMLNS_UNKNOWN_ID;
+
+    // See if the uri is already registered.
+    strid_map_type::iterator it = mp_impl->m_strid_map.find(uri);
+    if (it != mp_impl->m_strid_map.end())
+        return it->first.get();
 
     try
     {
@@ -113,8 +114,12 @@ xmlns_id_t xmlns_repository::intern(const pstring& uri)
 #endif
                 mp_impl->m_identifiers.push_back(r.first);
 
-                assert(mp_impl->m_pool.size() == mp_impl->m_identifiers.size());
-                assert(mp_impl->m_pool.size() == mp_impl->m_strid_map.size());
+#if ORCUS_DEBUG_XML_NAMESPACE
+                cout << "pool size=" << mp_impl->m_pool.size() << ", predefined ns size=" << mp_impl->m_predefined_ns_size <<
+                    ", identifiers size=" << mp_impl->m_identifiers.size() << ", map size=" << mp_impl->m_strid_map.size() << endl;
+#endif
+                assert(mp_impl->m_pool.size()+mp_impl->m_predefined_ns_size == mp_impl->m_identifiers.size());
+                assert(mp_impl->m_pool.size()+mp_impl->m_predefined_ns_size == mp_impl->m_strid_map.size());
             }
             return uri_interned.get();
         }
@@ -124,6 +129,27 @@ xmlns_id_t xmlns_repository::intern(const pstring& uri)
     }
 
     return XMLNS_UNKNOWN_ID;
+}
+
+void xmlns_repository::add_predefined_values(const xmlns_id_t* predefined_ns)
+{
+    if (!predefined_ns)
+        return;
+
+    const xmlns_id_t* val = &predefined_ns[0];
+    for (; *val; ++val)
+    {
+        pstring s(*val);
+        mp_impl->m_strid_map.insert(
+            strid_map_type::value_type(s, mp_impl->m_identifiers.size()));
+        mp_impl->m_identifiers.push_back(s);
+
+        ++mp_impl->m_predefined_ns_size;
+
+#if ORCUS_DEBUG_XML_NAMESPACE
+        cout << "xlmns_repository: predefined ns='" << s << "'" << endl;
+#endif
+    }
 }
 
 xmlns_context xmlns_repository::create_context()

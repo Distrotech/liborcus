@@ -55,8 +55,11 @@ class xmlns_repository
 
 public:
     ORCUS_DLLPUBLIC xmlns_repository();
+    ORCUS_DLLPUBLIC ~xmlns_repository();
 
     /**
+     * Add a set of predefined namespace values to the repository.
+     *
      * @param predefined_ns predefined set of namespace values. This is a
      *                      null-terminated array of xmlns_id_t.  This
      *                      xmlns_repository instance will assume that the
@@ -66,8 +69,7 @@ public:
      *                      corresponding xmlns_repository instance is
      *                      deleted.
      */
-    ORCUS_DLLPUBLIC xmlns_repository(const xmlns_id_t* predefined_ns);
-    ORCUS_DLLPUBLIC ~xmlns_repository();
+    ORCUS_DLLPUBLIC void add_predefined_values(const xmlns_id_t* predefined_ns);
 
     ORCUS_DLLPUBLIC xmlns_context create_context();
 

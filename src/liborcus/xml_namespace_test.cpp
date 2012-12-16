@@ -27,6 +27,7 @@
 
 #include "orcus/xml_namespace.hpp"
 #include "orcus/pstring.hpp"
+#include "ooxml_namespace_types.hpp"
 
 #include <cstdlib>
 #include <cassert>
@@ -96,11 +97,28 @@ void test_all_namespaces()
     assert(ns3 == all_ns[2]);
 }
 
+void test_predefined_ns()
+{
+    xmlns_repository ooxmlns_repo;
+    ooxmlns_repo.add_predefined_values(NS_opc_all);
+    ooxmlns_repo.add_predefined_values(NS_ooxml_all);
+    xmlns_context cxt = ooxmlns_repo.create_context();
+    xmlns_id_t ns_id = cxt.push("test", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+    assert(ns_id == NS_ooxml_r);
+    ns_id = cxt.push("test2", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
+    assert(ns_id == NS_ooxml_xlsx);
+    ns_id = cxt.push("test3", "http://schemas.openxmlformats.org/package/2006/content-types");
+    assert(ns_id == NS_opc_ct);
+    ns_id = cxt.push("test4", "http://schemas.openxmlformats.org/package/2006/relationships");
+    assert(ns_id == NS_opc_rel);
+}
+
 } // anonymous namespace
 
 int main()
 {
     test_basic();
     test_all_namespaces();
+    test_predefined_ns();
     return EXIT_SUCCESS;
 }
