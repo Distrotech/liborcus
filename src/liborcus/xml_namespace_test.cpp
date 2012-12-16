@@ -105,7 +105,7 @@ void test_predefined_ns()
     xmlns_context cxt = ooxmlns_repo.create_context();
     xmlns_id_t ns_id = cxt.push("test", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
     assert(ns_id == NS_ooxml_r);
-    ns_id = cxt.push("test2", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
+    ns_id = cxt.push("xlsx", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
     assert(ns_id == NS_ooxml_xlsx);
     ns_id = cxt.push("test3", "http://schemas.openxmlformats.org/package/2006/content-types");
     assert(ns_id == NS_opc_ct);
@@ -116,6 +116,7 @@ void test_predefined_ns()
     ns_id = cxt.push("", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
     assert(ns_id == NS_ooxml_xlsx);
     assert(cxt.get("") == NS_ooxml_xlsx);
+    assert(cxt.get("xlsx") == NS_ooxml_xlsx);
 }
 
 } // anonymous namespace
