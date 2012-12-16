@@ -54,6 +54,7 @@ enum gnumeric_celltype
 
 struct gnumeric_cell_data
 {
+    gnumeric_cell_data() : row(0), col(0), cell_type(celltype_unknown), shared_formula_id(-1) {}
     row_t row;
     col_t col;
     gnumeric_celltype cell_type;
@@ -68,7 +69,6 @@ public:
     cell_attr_parser()
     {
         cell_data.cell_type = celltype_formula;
-        cell_data.shared_formula_id = -1;
     }
 
     cell_attr_parser(const cell_attr_parser& r):
