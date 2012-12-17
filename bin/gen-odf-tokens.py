@@ -175,7 +175,7 @@ def gen_namespace_tokens (filepath, ns_values):
         outfile.write("\"")
         outfile.write(";\n")
 
-    outfile.write("\n}\n\n")
+    outfile.write("\n")
     outfile.write("namespace {\n\n")
     outfile.write("const xmlns_id_t odf_ns[] = {\n")
     for key in keys:

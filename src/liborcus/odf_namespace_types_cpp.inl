@@ -25,8 +25,6 @@ const xmlns_id_t NS_odf_xforms = "http://www.w3.org/2002/xforms";
 const xmlns_id_t NS_odf_xhtml = "http://www.w3.org/1999/xhtml";
 const xmlns_id_t NS_odf_xlink = "http://www.w3.org/1999/xlink";
 
-}
-
 namespace {
 
 const xmlns_id_t odf_ns[] = {
