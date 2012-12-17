@@ -161,6 +161,8 @@ liborcus_test_xml_namespace_SOURCES = \
 	xml_namespace.hpp \
 	ooxml_namespace_types.hpp \
 	ooxml_namespace_types.cpp \
+	odf_namespace_types.hpp \
+	odf_namespace_types.cpp \
 	xml_namespace_test.cpp
 
 liborcus_test_xml_namespace_LDADD = \

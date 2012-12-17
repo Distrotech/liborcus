@@ -27,6 +27,7 @@
 
 #include "orcus/xml_namespace.hpp"
 #include "orcus/pstring.hpp"
+#include "odf_namespace_types.hpp"
 #include "ooxml_namespace_types.hpp"
 
 #include <cstdlib>
@@ -99,24 +100,44 @@ void test_all_namespaces()
 
 void test_predefined_ns()
 {
-    xmlns_repository ooxmlns_repo;
-    ooxmlns_repo.add_predefined_values(NS_opc_all);
-    ooxmlns_repo.add_predefined_values(NS_ooxml_all);
-    xmlns_context cxt = ooxmlns_repo.create_context();
-    xmlns_id_t ns_id = cxt.push("test", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
-    assert(ns_id == NS_ooxml_r);
-    ns_id = cxt.push("xlsx", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
-    assert(ns_id == NS_ooxml_xlsx);
-    ns_id = cxt.push("test3", "http://schemas.openxmlformats.org/package/2006/content-types");
-    assert(ns_id == NS_opc_ct);
-    ns_id = cxt.push("test4", "http://schemas.openxmlformats.org/package/2006/relationships");
-    assert(ns_id == NS_opc_rel);
+    {
+        // OOXML namespaces
+        xmlns_repository ooxmlns_repo;
+        ooxmlns_repo.add_predefined_values(NS_opc_all);
+        ooxmlns_repo.add_predefined_values(NS_ooxml_all);
+        xmlns_context cxt = ooxmlns_repo.create_context();
+        xmlns_id_t ns_id = cxt.push("test", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+        assert(ns_id == NS_ooxml_r);
+        ns_id = cxt.push("xlsx", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
+        assert(ns_id == NS_ooxml_xlsx);
+        ns_id = cxt.push("test3", "http://schemas.openxmlformats.org/package/2006/content-types");
+        assert(ns_id == NS_opc_ct);
+        ns_id = cxt.push("test4", "http://schemas.openxmlformats.org/package/2006/relationships");
+        assert(ns_id == NS_opc_rel);
 
-    // Push the same predefined namespace to default namespace.
-    ns_id = cxt.push("", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
-    assert(ns_id == NS_ooxml_xlsx);
-    assert(cxt.get("") == NS_ooxml_xlsx);
-    assert(cxt.get("xlsx") == NS_ooxml_xlsx);
+        // Push the same predefined namespace to default namespace.
+        ns_id = cxt.push("", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
+        assert(ns_id == NS_ooxml_xlsx);
+        assert(cxt.get("") == NS_ooxml_xlsx);
+        assert(cxt.get("xlsx") == NS_ooxml_xlsx);
+    }
+
+    {
+        // ODF namespaces
+        xmlns_repository odfns_repo;
+        odfns_repo.add_predefined_values(NS_odf_all);
+        xmlns_context cxt = odfns_repo.create_context();
+        xmlns_id_t ns_id = cxt.push("office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
+        assert(ns_id == NS_odf_office);
+        ns_id = cxt.push("table", "urn:oasis:names:tc:opendocument:xmlns:table:1.0");
+        assert(ns_id == NS_odf_table);
+        ns_id = cxt.push("chart", "urn:oasis:names:tc:opendocument:xmlns:chart:1.0");
+        assert(ns_id == NS_odf_chart);
+
+        assert(cxt.get("office") == NS_odf_office);
+        assert(cxt.get("table") == NS_odf_table);
+        assert(cxt.get("chart") == NS_odf_chart);
+    }
 }
 
 } // anonymous namespace
