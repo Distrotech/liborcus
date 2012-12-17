@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #************************************************************************
 #
-#  Copyright (c) 2010 Kohei Yoshida
-#  
+#  Copyright (c) 2010-2012 Kohei Yoshida
+#
 #  Permission is hereby granted, free of charge, to any person
 #  obtaining a copy of this software and associated documentation
 #  files (the "Software"), to deal in the Software without
@@ -11,10 +11,10 @@
 #  copies of the Software, and to permit persons to whom the
 #  Software is furnished to do so, subject to the following
 #  conditions:
-#  
+#
 #  The above copyright notice and this permission notice shall be
 #  included in all copies or substantial portions of the Software.
-#  
+#
 #  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 #  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 #  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -37,6 +37,7 @@ class xml_parser:
         self.__elem = None
         self.tokens = {}
         self.ns_tokens = {'xmlns': True}  # namespace tokens
+        self.ns_values = {} # namespace values
 
     def start_element(self, name, attrs):
         self.__elem = name
@@ -57,6 +58,16 @@ class xml_parser:
 
             for token in tokens:
                 self.tokens[token] = True
+
+        elif name == "grammar":
+            names = attrs.keys()
+            for name in names:
+                tokens = name.split(':')
+                if len(tokens) < 2 or tokens[0] != "xmlns":
+                    continue
+
+                val = attrs[name]
+                self.ns_values[tokens[1]] = val
 
     def end_element(self, name):
         pass
@@ -134,12 +145,58 @@ def gen_token_names (filepath, tokens, ns_tokens):
 
     outfile.close()
 
+def gen_namespace_tokens (filepath, ns_values):
+
+    keys = ns_values.keys()
+    keys.sort()
+
+    # header (.hpp)
+    filepath_hpp = filepath + "_hpp.inl"
+    outfile = open(filepath_hpp, 'w')
+    outfile.write("namespace orcus {\n\n")
+    for key in keys:
+        outfile.write("extern const xmlns_id_t NS_odf_")
+        outfile.write(key)
+        outfile.write(";\n")
+    outfile.write("\nextern const xmlns_id_t* NS_odf_all;\n")
+    outfile.write("\n}\n\n")
+    outfile.close()
+
+    # source (.cpp)
+    filepath_cpp = filepath + "_cpp.inl"
+    outfile = open(filepath_cpp, 'w')
+    outfile.write("namespace orcus {\n\n")
+    for key in keys:
+        outfile.write("const xmlns_id_t NS_odf_")
+        outfile.write(key)
+        val = ns_values[key]
+        outfile.write(" = \"")
+        outfile.write(val)
+        outfile.write("\"")
+        outfile.write(";\n")
+
+    outfile.write("\n}\n\n")
+    outfile.write("namespace {\n\n")
+    outfile.write("const xmlns_id_t odf_ns[] = {\n")
+    for key in keys:
+        outfile.write("    NS_odf_")
+        outfile.write(key)
+        outfile.write(",\n")
+    outfile.write("    NULL\n")
+    outfile.write("};\n\n")
+    outfile.write("} // anonymous\n\n")
+
+    outfile.write("const xmlns_id_t* NS_odf_all = odf_ns;\n\n")
+
+    outfile.write("}\n\n")
+    outfile.close()
+
 def main (args):
 
     file = open(sys.argv[1], 'r')
     chars = file.read()
     file.close()
-    
+
     parser = xml_parser(chars)
     parser.parse()
     tokens = parser.tokens.keys()
@@ -149,7 +206,7 @@ def main (args):
 
     gen_token_constants(sys.argv[2], tokens, ns_tokens)
     gen_token_names(sys.argv[3], tokens, ns_tokens)
-    token_util.gen_token_list(sys.argv[4], tokens, ns_tokens)
+    gen_namespace_tokens(sys.argv[4], parser.ns_values)
 
 if __name__ == '__main__':
     main(sys.argv)
