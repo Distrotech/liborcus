@@ -82,6 +82,8 @@ endif # WITH_XLSX_FILTER
 if WITH_ODS_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
+	odf_namespace_types.hpp \
+	odf_namespace_types.cpp \
 	odf_para_context.hpp \
 	odf_para_context.cpp \
 	odf_token_constants.hpp \

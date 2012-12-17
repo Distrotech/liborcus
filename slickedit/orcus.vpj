@@ -198,6 +198,10 @@
 				<F N="../src/liborcus/gnumeric_tokens.cpp"/>
 				<F N="../src/liborcus/gnumeric_tokens.hpp"/>
 				<F N="../src/liborcus/gnumeric_tokens.inl"/>
+				<F N="../src/liborcus/odf_namespace_types.cpp"/>
+				<F N="../src/liborcus/odf_namespace_types.hpp"/>
+				<F N="../src/liborcus/odf_namespace_types_cpp.inl"/>
+				<F N="../src/liborcus/odf_namespace_types_hpp.inl"/>
 				<F N="../src/liborcus/odf_para_context.cpp"/>
 				<F N="../src/liborcus/odf_para_context.hpp"/>
 				<F N="../src/liborcus/odf_token_constants.hpp"/>
