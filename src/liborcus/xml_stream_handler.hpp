@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_XMLHANDLER_HPP__
-#define __ORCUS_XMLHANDLER_HPP__
+#ifndef __ORCUS_XML_STREAM_HANDLER_HPP__
+#define __ORCUS_XML_STREAM_HANDLER_HPP__
 
 #include "orcus/sax_token_parser.hpp"
 
