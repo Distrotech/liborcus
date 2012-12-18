@@ -2254,36 +2254,3 @@ const char* token_names[] = {
 };
 
 size_t token_name_count = 2250;
-
-const char* nstoken_names[] = {
-    "??", // 0
-    "anim", // 1
-    "chart", // 2
-    "config", // 3
-    "db", // 4
-    "dc", // 5
-    "dr3d", // 6
-    "draw", // 7
-    "fo", // 8
-    "form", // 9
-    "grddl", // 10
-    "math", // 11
-    "meta", // 12
-    "number", // 13
-    "office", // 14
-    "presentation", // 15
-    "script", // 16
-    "smil", // 17
-    "style", // 18
-    "svg", // 19
-    "table", // 20
-    "text", // 21
-    "xforms", // 22
-    "xhtml", // 23
-    "xlink", // 24
-    "xml", // 25
-    "xmlns"  // 26
-};
-
-size_t nstoken_name_count = 27;
-

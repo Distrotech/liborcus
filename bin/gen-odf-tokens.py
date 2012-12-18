@@ -36,7 +36,6 @@ class xml_parser:
         self.__strm = strm
         self.__elem = None
         self.tokens = {}
-        self.ns_tokens = {'xmlns': True}  # namespace tokens
         self.ns_values = {} # namespace values
 
     def start_element(self, name, attrs):
@@ -49,7 +48,6 @@ class xml_parser:
                 self.tokens[tokens[0]] = True
             elif n == 2:
                 # namespaced token
-                self.ns_tokens[tokens[0]] = True
                 self.tokens[tokens[1]] = True
             else:
                 sys.stderr.write("unrecognized token type: "+attrs['name'])
@@ -88,7 +86,7 @@ class xml_parser:
 def get_auto_gen_warning ():
     return "// This file has been auto-generated.  Do not hand-edit this.\n\n"
 
-def gen_token_constants (filepath, tokens, ns_tokens):
+def gen_token_constants (filepath, tokens):
 
     outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
@@ -100,17 +98,9 @@ def gen_token_constants (filepath, tokens, ns_tokens):
         outfile.write("const xml_token_t XML_%s = %d;\n"%(token, token_id))
         token_id += 1
     outfile.write("\n")
-
-    token_id = 1
-    token_size = len(ns_tokens)
-    for i in xrange(0, token_size):
-        token = token_util.normalize_name(ns_tokens[i])
-        outfile.write("const xmlns_token_t XMLNS_%s = %d;\n"%(token, token_id))
-        token_id += 1
-
     outfile.close()
 
-def gen_token_names (filepath, tokens, ns_tokens):
+def gen_token_names (filepath, tokens):
 
     outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
@@ -127,22 +117,7 @@ def gen_token_names (filepath, tokens, ns_tokens):
         outfile.write("    \"%s\"%s // %d\n"%(token, s, token_id))
         token_id += 1
     outfile.write("};\n\n")
-    outfile.write("size_t token_name_count = %d;\n\n"%token_id)
-
-    outfile.write("const char* nstoken_names[] = {\n")
-    outfile.write("    \"%s\", // 0\n"%token_util.unknown_token_name)
-    token_id = 1
-    token_size = len(ns_tokens)
-    for i in xrange(0, token_size):
-        token = ns_tokens[i]
-        s = ','
-        if i == token_size-1:
-            s = ' '
-        outfile.write("    \"%s\"%s // %d\n"%(token, s, token_id))
-        token_id += 1
-    outfile.write("};\n\n")
-    outfile.write("size_t nstoken_name_count = %d;\n\n"%token_id)
-
+    outfile.write("size_t token_name_count = %d;\n"%token_id)
     outfile.close()
 
 def gen_namespace_tokens (filepath, ns_values):
@@ -201,11 +176,9 @@ def main (args):
     parser.parse()
     tokens = parser.tokens.keys()
     tokens.sort()
-    ns_tokens = parser.ns_tokens.keys()
-    ns_tokens.sort()
 
-    gen_token_constants(sys.argv[2], tokens, ns_tokens)
-    gen_token_names(sys.argv[3], tokens, ns_tokens)
+    gen_token_constants(sys.argv[2], tokens)
+    gen_token_names(sys.argv[3], tokens)
     gen_namespace_tokens(sys.argv[4], parser.ns_values)
 
 if __name__ == '__main__':

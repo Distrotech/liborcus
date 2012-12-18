@@ -2,45 +2,35 @@
 
 const char* token_names[] = {
     "??", // 0
-    "xmlns", // 1
-    "ContentType", // 2
-    "Default", // 3
-    "Extension", // 4
-    "Format", // 5
-    "Id", // 6
-    "Override", // 7
-    "PartName", // 8
-    "Relationship", // 9
-    "RelationshipReference", // 10
-    "Relationships", // 11
-    "RelationshipsGroupReference", // 12
-    "SignatureTime", // 13
-    "SourceId", // 14
-    "SourceType", // 15
-    "Target", // 16
-    "TargetMode", // 17
-    "Type", // 18
-    "Types", // 19
-    "Value", // 20
-    "category", // 21
-    "contentStatus", // 22
-    "contentType", // 23
-    "coreProperties", // 24
-    "keywords", // 25
-    "lastModifiedBy", // 26
-    "lastPrinted", // 27
-    "revision", // 28
-    "version"  // 29
+    "ContentType", // 1
+    "Default", // 2
+    "Extension", // 3
+    "Format", // 4
+    "Id", // 5
+    "Override", // 6
+    "PartName", // 7
+    "Relationship", // 8
+    "RelationshipReference", // 9
+    "Relationships", // 10
+    "RelationshipsGroupReference", // 11
+    "SignatureTime", // 12
+    "SourceId", // 13
+    "SourceType", // 14
+    "Target", // 15
+    "TargetMode", // 16
+    "Type", // 17
+    "Types", // 18
+    "Value", // 19
+    "category", // 20
+    "contentStatus", // 21
+    "contentType", // 22
+    "coreProperties", // 23
+    "keywords", // 24
+    "lastModifiedBy", // 25
+    "lastPrinted", // 26
+    "revision", // 27
+    "version"  // 28
 };
 
-size_t token_name_count = 30;
-
-const char* nstoken_names[] = {
-    "??", // 0
-    "xmlns", // 1
-    "ct", // 2
-    "rel"  // 3
-};
-
-size_t nstoken_name_count = 4;
+size_t token_name_count = 29;
 

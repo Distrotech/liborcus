@@ -36,8 +36,6 @@
 namespace orcus {
 
 typedef size_t xml_token_t;
-typedef size_t xmlns_token_t;
-
 typedef const char* xmlns_id_t;
 
 const xmlns_id_t XMLNS_UNKNOWN_ID = NULL;

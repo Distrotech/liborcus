@@ -41,12 +41,8 @@ namespace opc {
 
 }
 
-tokens ooxml_tokens = 
-    tokens(ooxml::token_names, ooxml::token_name_count, 
-                ooxml::nstoken_names, ooxml::nstoken_name_count);
+tokens ooxml_tokens = tokens(ooxml::token_names, ooxml::token_name_count);
 
-tokens opc_tokens = 
-    tokens(opc::token_names, opc::token_name_count, 
-                opc::nstoken_names, opc::nstoken_name_count);
+tokens opc_tokens = tokens(opc::token_names, opc::token_name_count);
 
 }

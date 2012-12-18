@@ -42,7 +42,7 @@ class tokens
 {
 public:
 
-    tokens(const char** token_names, size_t token_name_count, const char** nstoken_names, size_t nstoken_name_count);
+    tokens(const char** token_names, size_t token_name_count);
 
     /**
      * Check if a token returned from get_token() method is valid.
@@ -72,15 +72,9 @@ public:
 
 private:
     typedef boost::unordered_map<pstring, xml_token_t, pstring::hash>     token_map_type;
-    typedef boost::unordered_map<pstring, xmlns_token_t, pstring::hash>   nstoken_map_type;
-
     token_map_type   m_tokens;
-    nstoken_map_type m_nstokens;
-
     const char** m_token_names;
-    const char** m_nstoken_names;
     size_t m_token_name_count;
-    size_t m_nstoken_name_count;
 };
 
 }

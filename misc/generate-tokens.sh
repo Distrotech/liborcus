@@ -9,11 +9,14 @@
 ./bin/gen-ooxml-tokens.py -t ooxml \
     misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip \
     src/liborcus/ooxml_token_constants.inl \
-    src/liborcus/ooxml_tokens.inl \
-    src/liborcus/ooxml_tokens.txt
+    src/liborcus/ooxml_tokens.inl
 
 ./bin/gen-ooxml-tokens.py -t opc \
     misc/ooxml-ecma-376/OpenPackagingConventions-XMLSchema.zip \
     src/liborcus/opc_token_constants.inl \
-    src/liborcus/ooxml_opc_tokens.inl \
-    src/liborcus/ooxml_opc_tokens.txt
+    src/liborcus/opc_tokens.inl
+
+./bin/gen-gnumeric-tokens.py \
+    misc/gnumeric.xsd \
+    src/liborcus/gnumeric_token_constants.inl \
+    src/liborcus/gnumeric_tokens.inl

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #************************************************************************
 #
-#  Copyright (c) 2010 Kohei Yoshida
+#  Copyright (c) 2010-2012 Kohei Yoshida
 #
 #  Permission is hereby granted, free of charge, to any person
 #  obtaining a copy of this software and associated documentation
@@ -57,16 +57,10 @@ class xml_parser:
         p.Parse(self.__strm, 1)
 
 
-
 def get_auto_gen_warning ():
     return "// This file has been auto-generated.  Do not hand-edit this.\n\n"
 
-def gen_gnumeric_namespaces ():
-    nstokens = ['xmlns', 'gnm', 'office']
-    return nstokens
-
-
-def gen_token_constants (filepath, tokens, nstokens):
+def gen_token_constants (filepath, tokens):
 
     outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
@@ -78,18 +72,10 @@ def gen_token_constants (filepath, tokens, nstokens):
         outfile.write("const xml_token_t XML_%s = %d;\n"%(token, token_id))
         token_id += 1
     outfile.write("\n")
-
-    token_id = 1
-    token_size = len(nstokens)
-    for i in xrange(0, token_size):
-        token = token_util.normalize_name(nstokens[i])
-        outfile.write("const xmlns_token_t XMLNS_%s = %d;\n"%(token, token_id))
-        token_id += 1
-
     outfile.close()
 
 
-def gen_token_names (filepath, tokens, nstokens):
+def gen_token_names (filepath, tokens):
 
     outfile = open(filepath, 'w')
     outfile.write(get_auto_gen_warning())
@@ -107,22 +93,6 @@ def gen_token_names (filepath, tokens, nstokens):
         token_id += 1
     outfile.write("};\n\n")
     outfile.write("size_t token_name_count = %d;\n\n"%token_id)
-
-    outfile.write("const char* nstoken_names[] = {\n")
-    outfile.write("    \"%s\", // 0\n"%token_util.unknown_token_name)
-    token_id = 1
-
-    token_size = len(nstokens)
-    for i in xrange(0, token_size):
-        token = nstokens[i]
-        s = ','
-        if i == token_size-1:
-            s = ' '
-        outfile.write("    \"%s\"%s // %d\n"%(token, s, token_id))
-        token_id += 1
-    outfile.write("};\n\n")
-    outfile.write("size_t nstoken_name_count = %d;\n\n"%token_id)
-
     outfile.close()
 
 def parse_file(filename):
@@ -141,17 +111,9 @@ def parse_file(filename):
 
 
 def main ():
-    tokens = ['xmlns']
-    more_tokens = parse_file(sys.argv[1])
-
-    tokens = ['xmlns'] # default tokens
-
-    tokens.extend(more_tokens)
-    nstokens = gen_gnumeric_namespaces()
-
-    gen_token_constants(sys.argv[2], tokens, nstokens)
-    gen_token_names(sys.argv[3], tokens, nstokens)
-    token_util.gen_token_list(sys.argv[4], tokens, nstokens)
+    tokens = parse_file(sys.argv[1])
+    gen_token_constants(sys.argv[2], tokens)
+    gen_token_names(sys.argv[3], tokens)
 
 if __name__ == '__main__':
     main()

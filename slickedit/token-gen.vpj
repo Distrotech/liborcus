@@ -75,6 +75,7 @@
 	</Config>
 	<Files AutoFolders="DirectoryView">
 		<Folder Name="../bin">
+			<F N="../bin/gen-gnumeric-tokens.py"/>
 			<F N="../bin/gen-odf-tokens.py"/>
 			<F N="../bin/gen-ooxml-tokens.py"/>
 			<F N="../bin/token_util.py"/>

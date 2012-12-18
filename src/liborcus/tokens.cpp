@@ -32,24 +32,15 @@ using namespace std;
 
 namespace orcus {
 
-tokens::tokens(const char** token_names, size_t token_name_count, const char** nstoken_names, size_t nstoken_name_count) :
+tokens::tokens(const char** token_names, size_t token_name_count) :
     m_token_names(token_names), 
-    m_nstoken_names(nstoken_names), 
-    m_token_name_count(token_name_count), 
-    m_nstoken_name_count(nstoken_name_count)
+    m_token_name_count(token_name_count)
 {
     for (size_t i = 0; i < m_token_name_count; ++i)
     {
         m_tokens.insert(
             token_map_type::value_type(
                 pstring(m_token_names[i]), static_cast<xml_token_t>(i)));
-    }
-
-    for (size_t i = 0; i < m_nstoken_name_count; ++i)
-    {
-        m_nstokens.insert(
-            nstoken_map_type::value_type(
-                pstring(m_nstoken_names[i]), static_cast<xmlns_token_t>(i)));
     }
 }
 
