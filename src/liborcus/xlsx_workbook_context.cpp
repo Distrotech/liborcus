@@ -43,9 +43,9 @@ class workbook_sheet_attr_parser : public unary_function<xml_token_attr_t, void>
 public:
     void operator() (const xml_token_attr_t& attr)
     {
-        if (attr.ns == XMLNS_UNKNOWN_ID && attr.name == XML_name)
+        if (attr.ns == NS_ooxml_xlsx && attr.name == XML_name)
             m_sheet.name = attr.value.intern();
-        else if (attr.ns == XMLNS_UNKNOWN_ID && attr.name == XML_sheetId)
+        else if (attr.ns == NS_ooxml_xlsx && attr.name == XML_sheetId)
         {
             const pstring& val = attr.value;
             if (!val.empty())

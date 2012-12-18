@@ -184,36 +184,6 @@ void opc_content_types_context::pop_ext_defaults(vector<xml_part_t>& ext_default
 
 namespace {
 
-/**
- * Attribute parser for Relationships element.
- */
-class rels_attr_parser : public unary_function<void, xml_token_attr_t>
-{
-public:
-    explicit rels_attr_parser() :
-        m_default_ns(XMLNS_UNKNOWN_ID) {}
-
-    rels_attr_parser(const rels_attr_parser& r) :
-        m_default_ns(r.m_default_ns) {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.ns == XMLNS_UNKNOWN_ID && attr.name == XML_xmlns)
-        {
-            if (attr.value != SCH_opc_rels)
-                throw xml_structure_error("invalid namespace for types element!");
-            m_default_ns = NS_opc_rel;
-        }
-    }
-
-    xmlns_id_t get_default_ns() const
-    {
-        return m_default_ns;
-    }
-private:
-    xmlns_id_t m_default_ns;
-};
-
 class rel_attr_parser : public unary_function<void, xml_token_attr_t>
 {
 public:
