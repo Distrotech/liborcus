@@ -52,7 +52,7 @@ class pstring_back_inserter
 {
 public:
     pstring_back_inserter(vector<const string*>& store) : m_store(store) {}
-    void operator() (const string* p) { m_store.push_back(p); }
+    void operator() (const string& r) { m_store.push_back(&r); }
 private:
     vector<const string*>& m_store;
 };
@@ -95,25 +95,25 @@ pair<pstring, bool> string_pool::intern(const char* str, size_t n)
     if (!n)
         return pair<pstring, bool>(pstring(), false);
 
-    unique_ptr<string> new_str(new string(str, n));
-    string_store_type::const_iterator itr = m_store.find(new_str.get());
-    if (itr == m_store.end())
+    string_set_type::const_iterator itr = m_set.find(pstring(str, n));
+    if (itr == m_set.end())
     {
         // This string has not been interned.  Intern it.
-        pair<string_store_type::iterator,bool> r = m_store.insert(new_str.release());
+        m_store.push_back(new string(str, n));
+        pair<string_set_type::iterator,bool> r = m_set.insert(pstring(&m_store.back()[0], n));
         if (!r.second)
             throw general_error("failed to intern a new string instance.");
-        const string* p = *r.first;
-        assert(p->size() == n);
+        const pstring& ps = *r.first;
+        assert(ps.size() == n);
 
-        return pair<pstring, bool>(pstring(&(*p)[0], n), true);
+        return pair<pstring, bool>(ps, true);
     }
 
     // This string has already been interned.
 
-    const string* stored_str = *itr;
-    assert(stored_str->size() == n);
-    return pair<pstring, bool>(pstring(&(*stored_str)[0], n), false);
+    const pstring& stored_str = *itr;
+    assert(stored_str.size() == n);
+    return pair<pstring, bool>(stored_str, false);
 }
 
 pair<pstring, bool> string_pool::intern(const pstring& str)
@@ -137,7 +137,7 @@ void string_pool::dump() const
 
 void string_pool::clear()
 {
-    for_each(m_store.begin(), m_store.end(), default_deleter<string>());
+    m_set.clear();
     m_store.clear();
 }
 
