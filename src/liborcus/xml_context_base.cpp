@@ -46,7 +46,7 @@ void print_stack(const tokens& tokens, const xml_elem_stack_t& elem_stack)
     {
         if (itr != itr_beg)
             cerr << " -> ";
-        cerr << tokens.get_nstoken_name(itr->first) << ":" << tokens.get_token_name(itr->second);
+        cerr << itr->first << ":" << tokens.get_token_name(itr->second);
     }
     cerr << " ]";
 }
@@ -54,9 +54,7 @@ void print_stack(const tokens& tokens, const xml_elem_stack_t& elem_stack)
 }
 
 xml_context_base::xml_context_base(const tokens& tokens) :
-    m_tokens(tokens),
-    m_default_ns(XMLNS_UNKNOWN_TOKEN)
-    {}
+    m_tokens(tokens) {}
 
 xml_context_base::~xml_context_base()
 {
@@ -67,21 +65,15 @@ const tokens& xml_context_base::get_tokens() const
     return m_tokens;
 }
 
-xml_token_pair_t xml_context_base::push_stack(xmlns_token_t ns, xml_token_t name)
+xml_token_pair_t xml_context_base::push_stack(xmlns_id_t ns, xml_token_t name)
 {
-    if (ns == XMLNS_UNKNOWN_TOKEN)
-        ns = m_default_ns;
-
-    xml_token_pair_t parent = m_stack.empty() ? xml_token_pair_t(XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN) : m_stack.back();
+    xml_token_pair_t parent = m_stack.empty() ? xml_token_pair_t(XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN) : m_stack.back();
     m_stack.push_back(xml_token_pair_t(ns, name));
     return parent;
 }
 
-bool xml_context_base::pop_stack(xmlns_token_t ns, xml_token_t name)
+bool xml_context_base::pop_stack(xmlns_id_t ns, xml_token_t name)
 {
-    if (ns == XMLNS_UNKNOWN_TOKEN)
-        ns = m_default_ns;
-
     const xml_token_pair_t& r = m_stack.back();
 
     if (ns != r.first || name != r.second)
@@ -140,18 +132,8 @@ void xml_context_base::warn(const char* msg) const
     cerr << "warning: " << msg << endl;
 }
 
-void xml_context_base::set_default_ns(xmlns_token_t ns)
-{
-    m_default_ns = ns;
-}
-
-xmlns_token_t xml_context_base::get_default_ns() const
-{
-    return m_default_ns;
-}
-
 void xml_context_base::xml_element_expected(
-    const xml_token_pair_t& elem, xmlns_token_t ns, xml_token_t name,
+    const xml_token_pair_t& elem, xmlns_id_t ns, xml_token_t name,
     const string* error)
 {
     if (elem.first == ns && elem.second == name)
@@ -165,8 +147,8 @@ void xml_context_base::xml_element_expected(
 
     // Create a generic error message.
     ostringstream os;
-    os << "element '" << m_tokens.get_nstoken_name(ns) << ":" << m_tokens.get_token_name(name) << "' expected, but '";
-    os << m_tokens.get_nstoken_name(elem.first) << ":" << m_tokens.get_token_name(elem.second) << "' encountered.";
+    os << "element '" << ns << ":" << m_tokens.get_token_name(name) << "' expected, but '";
+    os << elem.first << ":" << m_tokens.get_token_name(elem.second) << "' encountered.";
     throw xml_structure_error(os.str());
 }
 
@@ -182,7 +164,7 @@ void xml_context_base::xml_element_expected(
 
     // Create a generic error message.
     ostringstream os;
-    os << "unexpected element encountered: " << m_tokens.get_nstoken_name(elem.first) << ":" << m_tokens.get_token_name(elem.second);
+    os << "unexpected element encountered: " << elem.first << ":" << m_tokens.get_token_name(elem.second);
     throw xml_structure_error(os.str());
 }
 

@@ -27,6 +27,7 @@
 
 #include "odf_para_context.hpp"
 #include "odf_token_constants.hpp"
+#include "odf_namespace_types.hpp"
 
 #include "orcus/spreadsheet/import_interface.hpp"
 
@@ -49,36 +50,36 @@ text_para_context::~text_para_context()
 {
 }
 
-bool text_para_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+bool text_para_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
 {
     return true;
 }
 
-xml_context_base* text_para_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+xml_context_base* text_para_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
 {
     return NULL;
 }
 
-void text_para_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
+void text_para_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
 {
     // not implemented yet.
 }
 
-void text_para_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
+void text_para_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
-    if (ns == XMLNS_text)
+    if (ns == NS_odf_text)
     {
         switch (name)
         {
             case XML_p:
                 // paragraph
-                xml_element_expected(parent, XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN);
+                xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
                 m_formatted = false;
             break;
             case XML_span:
                 // text span.
-                xml_element_expected(parent, XMLNS_text, XML_p);
+                xml_element_expected(parent, NS_odf_text, XML_p);
                 m_formatted = true;
             break;
             case XML_s:
@@ -92,9 +93,9 @@ void text_para_context::start_element(xmlns_token_t ns, xml_token_t name, const 
         warn_unhandled();
 }
 
-bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
+bool text_para_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
-    if (ns == XMLNS_text && name == XML_p)
+    if (ns == NS_odf_text && name == XML_p)
     {
         // paragraph
         if (m_formatted)
@@ -125,7 +126,7 @@ bool text_para_context::end_element(xmlns_token_t ns, xml_token_t name)
             m_string_index = mp_sstrings->commit_segments();
         }
     }
-    else if (ns == XMLNS_text && name == XML_span)
+    else if (ns == NS_odf_text && name == XML_span)
     {
         // text span.
     }

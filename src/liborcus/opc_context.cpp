@@ -28,7 +28,9 @@
 #include "opc_context.hpp"
 #include "opc_token_constants.hpp"
 #include "ooxml_content_types.hpp"
+#include "ooxml_namespace_types.hpp"
 #include "ooxml_schemas.hpp"
+
 #include "orcus/exception.hpp"
 #include "orcus/global.hpp"
 
@@ -41,33 +43,6 @@ using namespace std;
 namespace orcus {
 
 namespace {
-
-class types_attr_parser : public unary_function<void, xml_token_attr_t>
-{
-public:
-    explicit types_attr_parser() :
-        m_default_ns(XMLNS_UNKNOWN_TOKEN) {}
-
-    types_attr_parser(const types_attr_parser& r) :
-        m_default_ns(r.m_default_ns) {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_xmlns)
-        {
-            if (attr.value != SCH_opc_content_types)
-                throw xml_structure_error("invalid namespace for types element!");
-            m_default_ns = XMLNS_ct;
-        }
-    }
-
-    xmlns_token_t get_default_ns() const
-    {
-        return m_default_ns;
-    }
-private:
-    xmlns_token_t m_default_ns;
-};
 
 class part_ext_attr_parser : public unary_function<void, xml_token_attr_t>
 {
@@ -130,42 +105,35 @@ opc_content_types_context::~opc_content_types_context()
 {
 }
 
-bool opc_content_types_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+bool opc_content_types_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
 {
     return true;
 }
 
-xml_context_base* opc_content_types_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+xml_context_base* opc_content_types_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
 {
     return NULL;
 }
 
-void opc_content_types_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base *child)
+void opc_content_types_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base *child)
 {
 }
 
-void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name, const::std::vector<xml_token_attr_t> &attrs)
+void opc_content_types_context::start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t> &attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
     switch (name)
     {
         case XML_Types:
         {
-            xml_element_expected(parent, XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN);
+            xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
 
             print_attrs(get_tokens(), attrs);
-
-            xmlns_token_t default_ns =
-                for_each(attrs.begin(), attrs.end(), types_attr_parser()).get_default_ns();
-
-            // the namespace for Types element comes from its own 'xmlns' attribute.
-            get_current_element().first = default_ns;
-            set_default_ns(default_ns);
         }
         break;
         case XML_Override:
         {
-            xml_element_expected(parent, XMLNS_ct, XML_Types);
+            xml_element_expected(parent, NS_opc_ct, XML_Types);
             part_ext_attr_parser func(&m_ct_cache, XML_PartName);
             func = for_each(attrs.begin(), attrs.end(), func);
 
@@ -178,7 +146,7 @@ void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name
         break;
         case XML_Default:
         {
-            xml_element_expected(parent, XMLNS_ct, XML_Types);
+            xml_element_expected(parent, NS_opc_ct, XML_Types);
             part_ext_attr_parser func(&m_ct_cache, XML_Extension);
             func = for_each(attrs.begin(), attrs.end(), func);
 
@@ -193,7 +161,7 @@ void opc_content_types_context::start_element(xmlns_token_t ns, xml_token_t name
     }
 }
 
-bool opc_content_types_context::end_element(xmlns_token_t ns, xml_token_t name)
+bool opc_content_types_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
     return pop_stack(ns, name);
 }
@@ -223,27 +191,27 @@ class rels_attr_parser : public unary_function<void, xml_token_attr_t>
 {
 public:
     explicit rels_attr_parser() :
-        m_default_ns(XMLNS_UNKNOWN_TOKEN) {}
+        m_default_ns(XMLNS_UNKNOWN_ID) {}
 
     rels_attr_parser(const rels_attr_parser& r) :
         m_default_ns(r.m_default_ns) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
-        if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_xmlns)
+        if (attr.ns == XMLNS_UNKNOWN_ID && attr.name == XML_xmlns)
         {
             if (attr.value != SCH_opc_rels)
                 throw xml_structure_error("invalid namespace for types element!");
-            m_default_ns = XMLNS_rel;
+            m_default_ns = NS_opc_rel;
         }
     }
 
-    xmlns_token_t get_default_ns() const
+    xmlns_id_t get_default_ns() const
     {
         return m_default_ns;
     }
 private:
-    xmlns_token_t m_default_ns;
+    xmlns_id_t m_default_ns;
 };
 
 class rel_attr_parser : public unary_function<void, xml_token_attr_t>
@@ -328,42 +296,35 @@ opc_relations_context::~opc_relations_context()
 {
 }
 
-bool opc_relations_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+bool opc_relations_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
 {
     return true;
 }
 
-xml_context_base* opc_relations_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+xml_context_base* opc_relations_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
 {
     return NULL;
 }
 
-void opc_relations_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base *child)
+void opc_relations_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base *child)
 {
 }
 
-void opc_relations_context::start_element(xmlns_token_t ns, xml_token_t name, const vector<xml_token_attr_t> &attrs)
+void opc_relations_context::start_element(xmlns_id_t ns, xml_token_t name, const vector<xml_token_attr_t> &attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
     switch (name)
     {
         case XML_Relationships:
         {
-            xml_element_expected(parent, XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN);
+            xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
             print_attrs(get_tokens(), attrs);
-
-            xmlns_token_t default_ns =
-                for_each(attrs.begin(), attrs.end(), rels_attr_parser()).get_default_ns();
-
-            // the namespace for Types element comes from its own 'xmlns' attribute.
-            get_current_element().first = default_ns;
-            set_default_ns(default_ns);
         }
         break;
         case XML_Relationship:
         {
             rel_attr_parser func(&m_schema_cache);
-            xml_element_expected(parent, XMLNS_rel, XML_Relationships);
+            xml_element_expected(parent, NS_opc_rel, XML_Relationships);
             func = for_each(attrs.begin(), attrs.end(), func);
             const opc_rel_t& rel = func.get_rel();
             if (rel.type)
@@ -375,7 +336,7 @@ void opc_relations_context::start_element(xmlns_token_t ns, xml_token_t name, co
     }
 }
 
-bool opc_relations_context::end_element(xmlns_token_t ns, xml_token_t name)
+bool opc_relations_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
     return pop_stack(ns, name);
 }

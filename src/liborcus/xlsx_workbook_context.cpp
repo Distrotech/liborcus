@@ -29,6 +29,7 @@
 #include "ooxml_global.hpp"
 #include "ooxml_schemas.hpp"
 #include "ooxml_token_constants.hpp"
+#include "ooxml_namespace_types.hpp"
 #include "orcus/global.hpp"
 
 using namespace std;
@@ -37,29 +38,20 @@ namespace orcus {
 
 namespace {
 
-class workbook_attr_parser : public root_element_attr_parser
-{
-public:
-    workbook_attr_parser() :
-        root_element_attr_parser(SCH_xlsx_main, XMLNS_xlsx) {}
-    virtual ~workbook_attr_parser() {}
-    virtual void handle_other_attrs(const xml_token_attr_t &attr) {}
-};
-
 class workbook_sheet_attr_parser : public unary_function<xml_token_attr_t, void>
 {
 public:
     void operator() (const xml_token_attr_t& attr)
     {
-        if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_name)
+        if (attr.ns == XMLNS_UNKNOWN_ID && attr.name == XML_name)
             m_sheet.name = attr.value.intern();
-        else if (attr.ns == XMLNS_UNKNOWN_TOKEN && attr.name == XML_sheetId)
+        else if (attr.ns == XMLNS_UNKNOWN_ID && attr.name == XML_sheetId)
         {
             const pstring& val = attr.value;
             if (!val.empty())
                 m_sheet.id = strtoul(val.str().c_str(), NULL, 10);
         }
-        else if (attr.ns == XMLNS_r && attr.name == XML_id)
+        else if (attr.ns == NS_ooxml_r && attr.name == XML_id)
         {
             m_rid = attr.value.intern();
         }
@@ -80,44 +72,37 @@ xlsx_workbook_context::xlsx_workbook_context(const tokens& tokens) :
 
 xlsx_workbook_context::~xlsx_workbook_context() {}
 
-bool xlsx_workbook_context::can_handle_element(xmlns_token_t /*ns*/, xml_token_t /*name*/) const
+bool xlsx_workbook_context::can_handle_element(xmlns_id_t /*ns*/, xml_token_t /*name*/) const
 {
     return true;
 }
 
-xml_context_base* xlsx_workbook_context::create_child_context(xmlns_token_t /*ns*/, xml_token_t /*name*/) const
+xml_context_base* xlsx_workbook_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/) const
 {
     return NULL;
 }
 
-void xlsx_workbook_context::end_child_context(xmlns_token_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
+void xlsx_workbook_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
 {
 }
 
-void xlsx_workbook_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
+void xlsx_workbook_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
     switch (name)
     {
         case XML_workbook:
         {
-            xml_element_expected(parent, XMLNS_UNKNOWN_TOKEN, XML_UNKNOWN_TOKEN);
+            xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
             print_attrs(get_tokens(), attrs);
-
-            xmlns_token_t default_ns =
-                for_each(attrs.begin(), attrs.end(), workbook_attr_parser()).get_default_ns();
-
-            // the namespace for worksheet element comes from its own 'xmlns' attribute.
-            get_current_element().first = default_ns;
-            set_default_ns(default_ns);
         }
         break;
         case XML_sheets:
-            xml_element_expected(parent, XMLNS_xlsx, XML_workbook);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_workbook);
         break;
         case XML_sheet:
         {
-            xml_element_expected(parent, XMLNS_xlsx, XML_sheets);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_sheets);
             workbook_sheet_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
             m_sheets.push_back(new xlsx_rel_sheet_info(func.get_sheet()));
@@ -131,7 +116,7 @@ void xlsx_workbook_context::start_element(xmlns_token_t ns, xml_token_t name, co
     }
 }
 
-bool xlsx_workbook_context::end_element(xmlns_token_t ns, xml_token_t name)
+bool xlsx_workbook_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
     return pop_stack(ns, name);
 }

@@ -28,6 +28,7 @@
 #include "ods_content_xml_context.hpp"
 #include "odf_para_context.hpp"
 #include "odf_token_constants.hpp"
+#include "odf_namespace_types.hpp"
 
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
@@ -54,7 +55,7 @@ public:
 
     void operator() (const xml_token_attr_t& attr)
     {
-        if (attr.ns == XMLNS_table && attr.name == XML_name)
+        if (attr.ns == NS_odf_table && attr.name == XML_name)
             m_name = attr.value;
     }
 
@@ -73,7 +74,7 @@ public:
 
     void operator() (const xml_token_attr_t& attr)
     {
-        if (attr.ns == XMLNS_table && attr.name == XML_number_rows_repeated)
+        if (attr.ns == NS_odf_table && attr.name == XML_number_rows_repeated)
         {
             char* endptr;
             long val = strtol(attr.value.str().c_str(), &endptr, 10);
@@ -98,10 +99,10 @@ public:
         if (attr.value.empty())
             return;
 
-        if (attr.ns == XMLNS_table)
+        if (attr.ns == NS_odf_table)
             process_ns_table(attr);
 
-        if (attr.ns == XMLNS_office)
+        if (attr.ns == NS_odf_office)
             process_ns_office(attr);
     }
 private:
@@ -181,25 +182,25 @@ ods_content_xml_context::~ods_content_xml_context()
 {
 }
 
-bool ods_content_xml_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+bool ods_content_xml_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
 {
-    if (ns == XMLNS_text && name == XML_p)
+    if (ns == NS_odf_text && name == XML_p)
         return false;
 
     return true;
 }
 
-xml_context_base* ods_content_xml_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+xml_context_base* ods_content_xml_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
 {
-    if (ns == XMLNS_text && name == XML_p)
+    if (ns == NS_odf_text && name == XML_p)
         return new text_para_context(get_tokens(), mp_factory->get_shared_strings());
 
     return NULL;
 }
 
-void ods_content_xml_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
+void ods_content_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
 {
-    if (ns == XMLNS_text && name == XML_p)
+    if (ns == NS_odf_text && name == XML_p)
     {
         text_para_context* para_context = static_cast<text_para_context*>(child);
         m_has_content = !para_context->empty();
@@ -207,11 +208,11 @@ void ods_content_xml_context::end_child_context(xmlns_token_t ns, xml_token_t na
     }
 }
 
-void ods_content_xml_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
+void ods_content_xml_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
 
-    if (ns == XMLNS_office)
+    if (ns == NS_odf_office)
     {
         switch (name)
         {
@@ -223,7 +224,7 @@ void ods_content_xml_context::start_element(xmlns_token_t ns, xml_token_t name, 
                 warn_unhandled();
         }
     }
-    else if (ns == XMLNS_table)
+    else if (ns == NS_odf_table)
     {
         switch (name)
         {
@@ -247,9 +248,9 @@ void ods_content_xml_context::start_element(xmlns_token_t ns, xml_token_t name, 
         warn_unhandled();
 }
 
-bool ods_content_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
+bool ods_content_xml_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
-    if (ns == XMLNS_office)
+    if (ns == NS_odf_office)
     {
         switch (name)
         {
@@ -261,7 +262,7 @@ bool ods_content_xml_context::end_element(xmlns_token_t ns, xml_token_t name)
                 ;
         }
     }
-    else if (ns == XMLNS_table)
+    else if (ns == NS_odf_table)
     {
         switch (name)
         {
@@ -290,7 +291,7 @@ void ods_content_xml_context::characters(const pstring& str)
 
 void ods_content_xml_context::start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
-    if (parent.first != XMLNS_office || parent.second != XML_spreadsheet)
+    if (parent.first != NS_odf_office || parent.second != XML_spreadsheet)
     {
         warn_unexpected();
         return;
@@ -311,7 +312,7 @@ void ods_content_xml_context::end_table()
 
 void ods_content_xml_context::start_column(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
-    if (parent.first == XMLNS_table)
+    if (parent.first == NS_odf_table)
     {
         switch (parent.second)
         {
@@ -332,7 +333,7 @@ void ods_content_xml_context::end_column()
 
 void ods_content_xml_context::start_row(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
-    if (parent.first == XMLNS_table)
+    if (parent.first == NS_odf_table)
     {
         switch (parent.second)
         {
@@ -362,7 +363,7 @@ void ods_content_xml_context::end_row()
 
 void ods_content_xml_context::start_cell(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
 {
-    if (parent.first == XMLNS_table)
+    if (parent.first == NS_odf_table)
     {
         switch (parent.second)
         {

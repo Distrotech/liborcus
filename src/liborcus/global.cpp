@@ -49,8 +49,8 @@ public:
     void operator()(const xml_token_attr_t& attr) const
     {
         cout << "  ";
-        if (attr.ns != XMLNS_UNKNOWN_TOKEN)
-            cout << m_tokens.get_nstoken_name(attr.ns) << ":";
+        if (attr.ns != XMLNS_UNKNOWN_ID)
+            cout << attr.ns << ":";
 
         cout << m_tokens.get_token_name(attr.name) << " = \"" << attr.value << "\"" << endl;
     }
@@ -61,10 +61,10 @@ private:
 
 }
 
-void print_element(const tokens& tokens, xmlns_token_t ns, xml_token_t name)
+void print_element(const tokens& tokens, xmlns_id_t ns, xml_token_t name)
 {
-    if (ns != XMLNS_UNKNOWN_TOKEN)
-        cout << tokens.get_nstoken_name(ns) << ":";
+    if (ns != XMLNS_UNKNOWN_ID)
+        cout << ns << ":";
     cout << tokens.get_token_name(name) << endl;
 }
 

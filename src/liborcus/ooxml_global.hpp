@@ -46,31 +46,6 @@ struct print_opc_rel : ::std::unary_function<opc_rel_t, void>
     void operator() (const opc_rel_t& v) const;
 };
 
-/**
- * Function object to parse attributes of root elements.
- */
-class root_element_attr_parser: ::std::unary_function<xml_token_attr_t, void>
-{
-public:
-    root_element_attr_parser(
-        const schema_t expected_schema, const xmlns_token_t expected_ns);
-
-    virtual ~root_element_attr_parser();
-
-    virtual void handle_other_attrs(const xml_token_attr_t& attr);
-
-    root_element_attr_parser& operator= (const root_element_attr_parser& r);
-
-    void operator() (const xml_token_attr_t& attr);
-
-    xmlns_token_t get_default_ns() const;
-
-private:
-    xmlns_token_t m_default_ns;
-    schema_t m_expected_schema;
-    xmlns_token_t m_expected_ns;
-};
-
 }
 
 #endif

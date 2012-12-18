@@ -29,6 +29,7 @@
 #include "ooxml_global.hpp"
 #include "ooxml_schemas.hpp"
 #include "ooxml_token_constants.hpp"
+#include "ooxml_namespace_types.hpp"
 #include "orcus/exception.hpp"
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
@@ -41,15 +42,6 @@ using namespace std;
 namespace orcus {
 
 namespace {
-
-class worksheet_attr_parser : public root_element_attr_parser
-{
-public:
-    worksheet_attr_parser() :
-        root_element_attr_parser(SCH_xlsx_main, XMLNS_xlsx) {}
-    virtual ~worksheet_attr_parser() {}
-    virtual void handle_other_attrs(const xml_token_attr_t &attr) {}
-};
 
 class row_attr_parser : public std::unary_function<void, xml_token_attr_t>
 {
@@ -222,21 +214,21 @@ xlsx_sheet_context::~xlsx_sheet_context()
 {
 }
 
-bool xlsx_sheet_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+bool xlsx_sheet_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
 {
     return true;
 }
 
-xml_context_base* xlsx_sheet_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+xml_context_base* xlsx_sheet_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
 {
     return NULL;
 }
 
-void xlsx_sheet_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
+void xlsx_sheet_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
 {
 }
 
-void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
+void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
 
@@ -245,45 +237,38 @@ void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const
         case XML_worksheet:
         {
             print_attrs(get_tokens(), attrs);
-
-            xmlns_token_t default_ns =
-                for_each(attrs.begin(), attrs.end(), worksheet_attr_parser()).get_default_ns();
-
-            // the namespace for worksheet element comes from its own 'xmlns' attribute.
-            get_current_element().first = default_ns;
-            set_default_ns(default_ns);
         }
         break;
         case XML_cols:
-            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
         break;
         case XML_col:
-            xml_element_expected(parent, XMLNS_xlsx, XML_cols);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_cols);
         break;
         case XML_dimension:
-            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
         break;
         case XML_pageMargins:
-            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
         break;
         case XML_sheetViews:
-            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
         break;
         case XML_sheetView:
-            xml_element_expected(parent, XMLNS_xlsx, XML_sheetViews);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_sheetViews);
         break;
         case XML_selection:
-            xml_element_expected(parent, XMLNS_xlsx, XML_sheetView);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_sheetView);
         break;
         case XML_sheetData:
-            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
         break;
         case XML_sheetFormatPr:
-            xml_element_expected(parent, XMLNS_xlsx, XML_worksheet);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
         break;
         case XML_row:
         {
-            xml_element_expected(parent, XMLNS_xlsx, XML_sheetData);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_sheetData);
             row_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
             m_cur_row = func.get_row();
@@ -291,7 +276,7 @@ void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const
         break;
         case XML_c:
         {
-            xml_element_expected(parent, XMLNS_xlsx, XML_row);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_row);
             cell_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
 
@@ -305,7 +290,7 @@ void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const
         break;
         case XML_f:
         {
-            xml_element_expected(parent, XMLNS_xlsx, XML_c);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_c);
             formula_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
             m_cur_formula_type = func.get_type();
@@ -314,7 +299,7 @@ void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const
         }
         break;
         case XML_v:
-            xml_element_expected(parent, XMLNS_xlsx, XML_c);
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_c);
         break;
         default:
             warn_unhandled();
@@ -322,7 +307,7 @@ void xlsx_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const
 
 }
 
-bool xlsx_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
+bool xlsx_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
     switch (name)
     {

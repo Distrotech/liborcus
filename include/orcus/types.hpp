@@ -40,10 +40,8 @@ typedef size_t xmlns_token_t;
 
 typedef const char* xmlns_id_t;
 
-const xml_token_t   XML_UNKNOWN_TOKEN = 0;
-const xmlns_token_t XMLNS_UNKNOWN_TOKEN = 0;
-
 const xmlns_id_t XMLNS_UNKNOWN_ID = NULL;
+const xml_token_t XML_UNKNOWN_TOKEN = 0;
 
 struct xml_name_t
 {
@@ -57,12 +55,12 @@ struct xml_name_t
 
 struct xml_token_attr_t
 {
-    xmlns_token_t ns;
-    xml_token_t   name;
-    pstring       value;
+    xmlns_id_t ns;
+    xml_token_t name;
+    pstring value;
 
-    xml_token_attr_t() : ns(XML_UNKNOWN_TOKEN), name(XML_UNKNOWN_TOKEN) {}
-    xml_token_attr_t(xmlns_token_t _ns, xml_token_t _name, const pstring& _value) :
+    xml_token_attr_t() : ns(XMLNS_UNKNOWN_ID), name(XML_UNKNOWN_TOKEN) {}
+    xml_token_attr_t(xmlns_id_t _ns, xml_token_t _name, const pstring& _value) :
         ns(_ns), name(_name), value(_value) {}
 };
 

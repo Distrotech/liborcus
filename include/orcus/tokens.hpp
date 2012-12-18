@@ -70,32 +70,6 @@ public:
      */
     const char* get_token_name(xml_token_t token) const;
 
-    /**
-     * Check if a namespace token returned from get_nstoken() method is valid.
-     *
-     * @return true if valid, false otherwise.
-     */
-    bool is_valid_nstoken(xmlns_token_t token) const;
-
-    /**
-     * Get a namespace token from a specified name.
-     *
-     * @param name textural token name
-     *
-     * @return token value representing the given textural token.
-     */
-    xmlns_token_t get_nstoken(const pstring& name) const;
-
-    /**
-     * Get textural token name from a namespace token value.
-     *
-     * @param token numeric token value
-     *
-     * @return textural token name, or empty string in case the given token is
-     *         not valid.
-     */
-    const char* get_nstoken_name(xmlns_token_t token) const;
-
 private:
     typedef boost::unordered_map<pstring, xml_token_t, pstring::hash>     token_map_type;
     typedef boost::unordered_map<pstring, xmlns_token_t, pstring::hash>   nstoken_map_type;

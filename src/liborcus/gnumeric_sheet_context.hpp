@@ -58,12 +58,12 @@ public:
     gnumeric_sheet_context(const tokens& tokens, spreadsheet::iface::import_factory* factory);
     virtual ~gnumeric_sheet_context();
 
-    virtual bool can_handle_element(xmlns_token_t ns, xml_token_t name) const;
-    virtual xml_context_base* create_child_context(xmlns_token_t ns, xml_token_t name) const;
-    virtual void end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child);
+    virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
+    virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name) const;
+    virtual void end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child);
 
-    virtual void start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs);
-    virtual bool end_element(xmlns_token_t ns, xml_token_t name);
+    virtual void start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs);
+    virtual bool end_element(xmlns_id_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
 
 private:

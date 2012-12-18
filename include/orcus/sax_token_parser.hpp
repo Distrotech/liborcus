@@ -51,7 +51,7 @@ public:
     {
         using namespace std;
         cout << m_indent << "  attribute: "
-            << m_tokens.get_nstoken_name(attr.ns) << ":"
+            << attr.ns << ":"
             << m_tokens.get_token_name(attr.name) << "=\""
             << attr.value.str() << "\"" << endl;
     }
@@ -69,7 +69,7 @@ private:
  */
 struct sax_token_parser_element
 {
-    xmlns_token_t ns;
+    xmlns_id_t ns;
     xml_token_t name;
     std::vector<xml_token_attr_t> attrs;
 };
@@ -110,17 +110,17 @@ private:
             m_elem.attrs.clear();
         }
 
-        void start_element(const sax_parser_element& elem)
+        void start_element(const sax_ns_parser_element& elem)
         {
-            m_elem.ns = tokenize_ns(elem.ns);
+            m_elem.ns = elem.ns;
             m_elem.name = tokenize(elem.name);
             m_handler.start_element(m_elem);
             m_elem.attrs.clear();
         }
 
-        void end_element(const sax_parser_element& elem)
+        void end_element(const sax_ns_parser_element& elem)
         {
-            m_elem.ns = tokenize_ns(elem.ns);
+            m_elem.ns = elem.ns;
             m_elem.name = tokenize(elem.name);
             m_handler.end_element(m_elem);
         }
@@ -130,21 +130,17 @@ private:
             m_handler.characters(val);
         }
 
-        void attribute(const pstring& ns, const pstring& name, const pstring& val)
+        void attribute(const pstring& /*name*/, const pstring& /*val*/)
         {
-            xml_token_t elem_token = tokenize(name);
-            xmlns_token_t elem_nstoken = tokenize_ns(ns);
-            m_elem.attrs.push_back(xml_token_attr_t(elem_nstoken, elem_token, val));
+            // Right now we don't process XML declaration.
+        }
+
+        void attribute(const sax_ns_parser_attribute& attr)
+        {
+            m_elem.attrs.push_back(xml_token_attr_t(attr.ns, tokenize(attr.name), attr.value));
         }
 
     private:
-        xmlns_token_t tokenize_ns(const pstring& ns) const
-        {
-            xmlns_token_t token = XMLNS_UNKNOWN_TOKEN;
-            if (!ns.empty())
-                token = m_tokens.get_nstoken(ns);
-            return token;
-        }
 
         xml_token_t tokenize(const pstring& name) const
         {
@@ -158,7 +154,7 @@ private:
 private:
     xmlns_context& m_ns_cxt;
     handler_wrapper m_wrapper;
-    sax_parser<handler_wrapper> m_parser;
+    sax_ns_parser<handler_wrapper> m_parser;
 };
 
 template<typename _Handler, typename _Tokens>
@@ -166,7 +162,7 @@ sax_token_parser<_Handler,_Tokens>::sax_token_parser(
     const char* content, const size_t size, const tokens_map& tokens, xmlns_context& ns_cxt, handler_type& handler) :
     m_ns_cxt(ns_cxt),
     m_wrapper(tokens, handler),
-    m_parser(content, size, m_wrapper)
+    m_parser(content, size, m_ns_cxt, m_wrapper)
 {
 }
 

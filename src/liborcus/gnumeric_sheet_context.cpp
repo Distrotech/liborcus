@@ -28,6 +28,7 @@
 #include "gnumeric_sheet_context.hpp"
 #include "gnumeric_cell_context.hpp"
 #include "gnumeric_token_constants.hpp"
+#include "gnumeric_namespace_types.hpp"
 #include "gnumeric_helper.hpp"
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
@@ -192,30 +193,30 @@ gnumeric_sheet_context::~gnumeric_sheet_context()
 {
 }
 
-bool gnumeric_sheet_context::can_handle_element(xmlns_token_t ns, xml_token_t name) const
+bool gnumeric_sheet_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
 {
-    if (ns == XMLNS_gnm && name == XML_Cells)
+    if (ns == NS_gnumeric_gnm && name == XML_Cells)
         return false;
 
     return true;
 }
 
-xml_context_base* gnumeric_sheet_context::create_child_context(xmlns_token_t ns, xml_token_t name) const
+xml_context_base* gnumeric_sheet_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
 {
-    if (ns == XMLNS_gnm && name == XML_Cells)
+    if (ns == NS_gnumeric_gnm && name == XML_Cells)
         return new gnumeric_cell_context(get_tokens(), mp_factory, mp_sheet);
 
     return NULL;
 }
 
-void gnumeric_sheet_context::end_child_context(xmlns_token_t ns, xml_token_t name, xml_context_base* child)
+void gnumeric_sheet_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
 {
 }
 
-void gnumeric_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, const xml_attrs_t& attrs)
+void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     push_stack(ns, name);
-    if (ns == XMLNS_gnm)
+    if (ns == NS_gnumeric_gnm)
     {
         switch (name)
         {
@@ -234,16 +235,16 @@ void gnumeric_sheet_context::start_element(xmlns_token_t ns, xml_token_t name, c
     }
 }
 
-bool gnumeric_sheet_context::end_element(xmlns_token_t ns, xml_token_t name)
+bool gnumeric_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
-    if (ns == XMLNS_gnm)
+    if (ns == NS_gnumeric_gnm)
     {
         switch(name)
         {
             case XML_Name:
             {
                 xml_token_pair_t parent = get_parent_element();
-                if(parent.first == XMLNS_gnm && parent.second == XML_Sheet)
+                if(parent.first == NS_gnumeric_gnm && parent.second == XML_Sheet)
                     end_table();
                 else
                     warn_unhandled();

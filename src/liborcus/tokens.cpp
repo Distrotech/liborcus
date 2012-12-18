@@ -74,25 +74,4 @@ const char* tokens::get_token_name(xml_token_t token) const
     return m_token_names[token];
 }
 
-bool tokens::is_valid_nstoken(xmlns_token_t token) const
-{
-    return token != XMLNS_UNKNOWN_TOKEN;
-}
-
-xmlns_token_t tokens::get_nstoken(const pstring& name) const
-{
-    nstoken_map_type::const_iterator itr = m_nstokens.find(name);
-    if (itr == m_nstokens.end())
-        return XMLNS_UNKNOWN_TOKEN;
-    return itr->second;
-}
-
-const char* tokens::get_nstoken_name(xmlns_token_t token) const
-{
-    if (static_cast<size_t>(token) >= m_nstoken_name_count)
-        return "";
-
-    return m_nstoken_names[token];
-}
-
 }

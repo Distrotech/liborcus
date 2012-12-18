@@ -39,7 +39,7 @@ namespace orcus {
 
 class tokens;
 
-void print_element(xmlns_token_t ns, xml_token_t name);
+void print_element(xmlns_id_t ns, xml_token_t name);
 
 /**
  * Print attributes to stdout for debugging purposes.
