@@ -81,14 +81,13 @@ void pstring::intern::dump()
 
 size_t pstring::hash::operator() (const pstring& val) const
 {
-    // TODO: make this hashing algoritm more efficient.
-    size_t hash_val = val.size();
-    size_t loop_size = ::std::min<size_t>(hash_val, 20); // prevent too much looping.
+    size_t hash_val = 0;
     const char* p = val.get();
-    for (size_t i = 0; i < loop_size; ++i, ++p)
+    const char* p_end = p + val.size();
+    for (; p != p_end; ++p)
     {
-        hash_val += static_cast<size_t>(*p);
-        hash_val *= 2;
+        hash_val *= 0x01000193;
+        hash_val ^= *p;
     }
 
     return hash_val;
