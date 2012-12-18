@@ -191,6 +191,8 @@
 				<F N="../src/liborcus/gnumeric_handler.hpp"/>
 				<F N="../src/liborcus/gnumeric_helper.cpp"/>
 				<F N="../src/liborcus/gnumeric_helper.hpp"/>
+				<F N="../src/liborcus/gnumeric_namespace_types.cpp"/>
+				<F N="../src/liborcus/gnumeric_namespace_types.hpp"/>
 				<F N="../src/liborcus/gnumeric_sheet_context.cpp"/>
 				<F N="../src/liborcus/gnumeric_sheet_context.hpp"/>
 				<F N="../src/liborcus/gnumeric_token_constants.hpp"/>

@@ -29,6 +29,7 @@
 #include "orcus/pstring.hpp"
 #include "odf_namespace_types.hpp"
 #include "ooxml_namespace_types.hpp"
+#include "gnumeric_namespace_types.hpp"
 
 #include <cstdlib>
 #include <cassert>
@@ -137,6 +138,27 @@ void test_predefined_ns()
         assert(cxt.get("office") == NS_odf_office);
         assert(cxt.get("table") == NS_odf_table);
         assert(cxt.get("chart") == NS_odf_chart);
+    }
+
+    {
+        // Gnumeric namespaces
+        xmlns_repository gnm_repo;
+        gnm_repo.add_predefined_values(NS_gnumeric_all);
+        xmlns_context cxt = gnm_repo.create_context();
+
+        // It borrows some namespaces from ODF.
+        xmlns_id_t ns_id = cxt.push("office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
+        assert(ns_id == NS_odf_office);
+        ns_id = cxt.push("meta", "urn:oasis:names:tc:opendocument:xmlns:meta:1.0");
+        assert(ns_id == NS_odf_meta);
+
+        // Main gnumeric namespace
+        ns_id = cxt.push("gnm", "http://www.gnumeric.org/v10.dtd");
+        assert(ns_id == NS_gnumeric_gnm);
+
+        assert(cxt.get("office") == NS_odf_office);
+        assert(cxt.get("meta") == NS_odf_meta);
+        assert(cxt.get("gnm") == NS_gnumeric_gnm);
     }
 }
 

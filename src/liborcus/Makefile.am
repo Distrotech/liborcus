@@ -37,7 +37,13 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	xml_stream_parser.cpp \
 	xml_simple_stream_handler.hpp \
 	xml_simple_stream_handler.cpp \
-	xml_structure_tree.cpp
+	xml_structure_tree.cpp \
+	ooxml_namespace_types.cpp \
+	ooxml_namespace_types.hpp \
+	odf_namespace_types.hpp \
+	odf_namespace_types.cpp \
+	gnumeric_namespace_types.hpp \
+	gnumeric_namespace_types.cpp
 
 if WITH_LIBZIP
 
@@ -48,8 +54,6 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	ooxml_content_types.hpp \
 	ooxml_global.cpp \
 	ooxml_global.hpp \
-	ooxml_namespace_types.cpp \
-	ooxml_namespace_types.hpp \
 	ooxml_schemas.cpp \
 	ooxml_schemas.hpp \
 	ooxml_token_constants.hpp \
@@ -82,8 +86,6 @@ endif # WITH_XLSX_FILTER
 if WITH_ODS_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
-	odf_namespace_types.hpp \
-	odf_namespace_types.cpp \
 	odf_para_context.hpp \
 	odf_para_context.cpp \
 	odf_token_constants.hpp \
@@ -163,6 +165,8 @@ liborcus_test_xml_namespace_SOURCES = \
 	ooxml_namespace_types.cpp \
 	odf_namespace_types.hpp \
 	odf_namespace_types.cpp \
+	gnumeric_namespace_types.hpp \
+	gnumeric_namespace_types.cpp \
 	xml_namespace_test.cpp
 
 liborcus_test_xml_namespace_LDADD = \
