@@ -458,7 +458,6 @@ void sax_parser<_Handler>::characters_with_encoded_char()
                 m_cell_buf.append(m_content+first, m_pos-first);
 
             parse_encoded_char();
-            assert(cur_char() != ';');
             first = m_pos;
         }
 
