@@ -71,9 +71,8 @@ const test_case tests[] =
 
 const char* temp_output_xml = "out.xml";
 
-void dump_xml_structure(string& dump_content, const char* filepath, xmlns_context& cxt)
+void dump_xml_structure(string& dump_content, string& strm, const char* filepath, xmlns_context& cxt)
 {
-    string strm;
     load_file_content(filepath, strm);
     dom_tree_sax_handler hdl(cxt);
     sax_ns_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
@@ -136,8 +135,9 @@ void test_mapped_xml_import()
             // input one. They should be identical.
 
             string dump_input, dump_output;
-            dump_xml_structure(dump_input, data_file.c_str(), cxt);
-            dump_xml_structure(dump_output, out_file.c_str(), cxt);
+            string strm_data_file, strm_out_file; // Hold the stream content in memory while the namespace context is being used.
+            dump_xml_structure(dump_input, strm_data_file, data_file.c_str(), cxt);
+            dump_xml_structure(dump_output, strm_out_file, out_file.c_str(), cxt);
             assert(!dump_input.empty() && !dump_output.empty());
             assert(dump_input == dump_output);
         }
