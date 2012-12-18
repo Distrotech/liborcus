@@ -31,6 +31,7 @@
 #include "xml_stream_parser.hpp"
 #include "ods_content_xml_handler.hpp"
 #include "odf_tokens.hpp"
+#include "odf_namespace_types.hpp"
 
 #include <zip.h>
 
@@ -54,7 +55,10 @@ struct orcus_ods_impl
 };
 
 orcus_ods::orcus_ods(spreadsheet::iface::import_factory* factory) :
-    mp_impl(new orcus_ods_impl(factory)) {}
+    mp_impl(new orcus_ods_impl(factory))
+{
+    mp_impl->m_ns_repo.add_predefined_values(NS_odf_all);
+}
 
 orcus_ods::~orcus_ods()
 {

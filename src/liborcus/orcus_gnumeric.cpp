@@ -31,6 +31,7 @@
 #include "xml_stream_parser.hpp"
 #include "gnumeric_handler.hpp"
 #include "gnumeric_tokens.hpp"
+#include "gnumeric_namespace_types.hpp"
 
 #include <zlib.h>
 
@@ -61,6 +62,7 @@ struct orcus_gnumeric_impl
 orcus_gnumeric::orcus_gnumeric(spreadsheet::iface::import_factory* factory) :
     mp_impl(new orcus_gnumeric_impl(factory))
 {
+    mp_impl->m_ns_repo.add_predefined_values(NS_gnumeric_all);
 }
 
 orcus_gnumeric::~orcus_gnumeric()

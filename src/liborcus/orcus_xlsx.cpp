@@ -40,6 +40,7 @@
 #include "xml_stream_parser.hpp"
 #include "xml_simple_stream_handler.hpp"
 #include "opc_reader.hpp"
+#include "ooxml_namespace_types.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -115,7 +116,11 @@ struct orcus_xlsx_impl
 };
 
 orcus_xlsx::orcus_xlsx(spreadsheet::iface::import_factory* factory) :
-    mp_impl(new orcus_xlsx_impl(factory, *this)) {}
+    mp_impl(new orcus_xlsx_impl(factory, *this))
+{
+    mp_impl->m_ns_repo.add_predefined_values(NS_ooxml_all);
+    mp_impl->m_ns_repo.add_predefined_values(NS_opc_all);
+}
 
 orcus_xlsx::~orcus_xlsx()
 {
