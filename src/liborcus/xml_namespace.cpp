@@ -268,6 +268,9 @@ xmlns_id_t xmlns_context::push(const pstring& key, const pstring& uri)
 
 void xmlns_context::pop(const pstring& key)
 {
+#if ORCUS_DEBUG_XML_NAMESPACE
+    cout << "xmlns_context::pop: key='" << key << "'" << endl;
+#endif
     if (key.empty())
     {
         // empty key value is associated with default namespace.
