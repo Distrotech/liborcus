@@ -6,4 +6,5 @@
     <data attr="&lt;&gt;&apos;&quot;&amp;">Less than (&lt;) and greater than (&gt;) are also encoded.</data>
     <data>&lt;&gt;&apos;&quot;&amp;</data>
     <data single-char="&amp;">&gt;</data>
+    <data>&quot;B&quot;;</data>
 </root>

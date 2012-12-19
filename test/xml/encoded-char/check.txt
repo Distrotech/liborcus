@@ -13,3 +13,5 @@
 /root/data
 /root/data@single-char="&"
 /root/data">"
+/root/data
+/root/data"\"B\";"
