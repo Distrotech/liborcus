@@ -210,7 +210,7 @@ xml_map_tree::attribute::~attribute()
             delete field_ref;
         break;
         default:
-            throw general_error("unexpected reference type in the destructor of attribute.");
+            assert(!"unexpected reference type in the destructor of attribute.");
     }
 }
 
@@ -261,7 +261,7 @@ xml_map_tree::element::~element()
             delete field_ref;
         break;
         default:
-            throw general_error("unexpected reference type in the destructor of element.");
+            assert(!"unexpected reference type in the destructor of element.");
     }
 }
 
