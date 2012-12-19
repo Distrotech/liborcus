@@ -26,6 +26,13 @@ orcus_exec()
         exit 0
     fi
 
+    if [ "$ARG_ONE" == "callgrind" ]; then
+        shift
+        # execute inside valgrind for memcheck
+        valgrind --tool=callgrind --simulate-cache=yes $EXECPATH "$@" || exit 1
+        exit 0
+    fi
+
     # normal execution
     exec $EXECPATH "$@" || exit 1
     exit 0
