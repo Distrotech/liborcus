@@ -25,7 +25,6 @@
  *
  ************************************************************************/
 
-#include "gnumeric_context.hpp"
 #include "gnumeric_token_constants.hpp"
 #include "gnumeric_namespace_types.hpp"
 #include "gnumeric_cell_context.hpp"
