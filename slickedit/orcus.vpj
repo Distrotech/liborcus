@@ -150,6 +150,9 @@
 	<Files AutoFolders="DirectoryView">
 		<Folder Name="../include">
 			<Folder Name="orcus">
+				<Folder Name="mso">
+					<F N="../include/orcus/mso/encryption_info.hpp"/>
+				</Folder>
 				<Folder Name="spreadsheet">
 					<F N="../include/orcus/spreadsheet/export_interface.hpp"/>
 					<F N="../include/orcus/spreadsheet/import_interface.hpp"/>
@@ -274,6 +277,9 @@
 				<F N="../src/liborcus/xml_structure_tree.cpp"/>
 				<F N="../src/liborcus/xml_structure_tree_test.cpp"/>
 			</Folder>
+			<Folder Name="mso">
+				<F N="../src/mso/encryption_info.cpp"/>
+			</Folder>
 			<Folder Name="parser">
 				<F N="../src/parser/cell_buffer.cpp"/>
 				<F N="../src/parser/sax_parser_global.cpp"/>
@@ -294,6 +300,7 @@
 			<F N="../src/dom_tree_sax_handler.hpp"/>
 			<F N="../src/orcus_csv_main.cpp"/>
 			<F N="../src/orcus_gnumeric_main.cpp"/>
+			<F N="../src/orcus_mso_encryption.cpp"/>
 			<F N="../src/orcus_ods_main.cpp"/>
 			<F N="../src/orcus_test_common.cpp"/>
 			<F N="../src/orcus_test_csv.cpp"/>

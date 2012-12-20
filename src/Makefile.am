@@ -1,8 +1,10 @@
-SUBDIRS = parser liborcus spreadsheet
+SUBDIRS = parser mso liborcus spreadsheet
 
 INCLUDES = -I$(top_srcdir)/include
 
-bin_PROGRAMS = orcus-xml-dump
+bin_PROGRAMS = \
+	orcus-mso-encryption \
+	orcus-xml-dump
 
 EXTRA_PROGRAMS = \
 	orcus-test-common \
@@ -49,6 +51,19 @@ orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CP
 TESTS = \
 	orcus-test-common \
 	orcus-test-xml
+
+#----------------------------------------------------------------------------
+# msoffice utility
+#----------------------------------------------------------------------------
+
+# orcus-mso-encryption
+
+orcus_mso_encryption_SOURCES = orcus_mso_encryption.cpp
+orcus_mso_encryption_LDADD = \
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	mso/liborcus-mso-@ORCUS_API_VERSION@.la
+
+orcus_mso_encryption_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
 #----------------------------------------------------------------------------
 # spreadsheet model
