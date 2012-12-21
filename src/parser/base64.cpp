@@ -37,7 +37,7 @@ using namespace std;
 namespace orcus {
 
 typedef transform_width<binary_from_base64<vector<char>::const_iterator>, 8, 6> to_binary;
-typedef base64_from_binary<transform_width<vector<char>::const_iterator,6,8> > to_base64;
+typedef base64_from_binary<transform_width<vector<char>::const_iterator, 6, 8> > to_base64;
 
 void decode_from_base64(const char* p_base64, size_t len_base64, vector<char>& decoded)
 {
