@@ -30,7 +30,7 @@
 
 #include "env.hpp"
 #include <vector>
-#include <ostream>
+#include <string>
 
 namespace orcus {
 
