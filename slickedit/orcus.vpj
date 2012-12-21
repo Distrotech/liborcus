@@ -158,6 +158,7 @@
 					<F N="../include/orcus/spreadsheet/import_interface.hpp"/>
 					<F N="../include/orcus/spreadsheet/types.hpp"/>
 				</Folder>
+				<F N="../include/orcus/base64.hpp"/>
 				<F N="../include/orcus/cell_buffer.hpp"/>
 				<F N="../include/orcus/css_parser.hpp"/>
 				<F N="../include/orcus/csv_parser.hpp"/>
@@ -281,6 +282,8 @@
 				<F N="../src/mso/encryption_info.cpp"/>
 			</Folder>
 			<Folder Name="parser">
+				<F N="../src/parser/base64.cpp"/>
+				<F N="../src/parser/base64_test.cpp"/>
 				<F N="../src/parser/cell_buffer.cpp"/>
 				<F N="../src/parser/sax_parser_global.cpp"/>
 			</Folder>
