@@ -204,18 +204,29 @@ void gnumeric_cell_context::end_cell()
     switch (cell_type)
     {
         case celltype_value:
+        {
+            double val = atof(chars.get());
+            mp_sheet->set_value(row, col, val);
+        }
+        break;
         case celltype_string:
-            mp_sheet->set_auto(row, col, chars.get(), chars.size());
-            break;
+        {
+            spreadsheet::iface::import_shared_strings* shared_strings = mp_factory->get_shared_strings();
+            size_t id = shared_strings->add(chars.get(), chars.size());
+            mp_sheet->set_string(row, col, id);
+        }
+        break;
         case celltype_formula:
             mp_sheet->set_formula(row, col, spreadsheet::gnumeric, chars.get(), chars.size());
-            break;
+        break;
         case celltype_shared_formula:
+        {
             if (chars.empty())
                 mp_sheet->set_shared_formula(row, col, mp_cell_data->shared_formula_id);
             else
                 mp_sheet->set_shared_formula(row, col, spreadsheet::gnumeric, mp_cell_data->shared_formula_id, chars.get(), chars.size());
-            break;
+        }
+        break;
         default:
             ;
     }
