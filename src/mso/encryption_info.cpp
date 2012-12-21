@@ -28,6 +28,7 @@
 #include "orcus/mso/encryption_info.hpp"
 #include "orcus/sax_ns_parser.hpp"
 #include "orcus/xml_namespace.hpp"
+#include "orcus/base64.hpp"
 
 #define ORCUS_DEBUG_MSO_ENCRYPTION_INFO 1
 
@@ -35,21 +36,94 @@
 #include <iostream>
 #endif
 
+#include <vector>
+#include <ostream>
+
 using namespace std;
 
 namespace orcus { namespace mso {
 
 namespace {
 
-class sax_handler
+const xmlns_id_t NS_mso_encryption = "http://schemas.microsoft.com/office/2006/encryption";
+const xmlns_id_t NS_mso_password = "http://schemas.microsoft.com/office/2006/keyEncryptor/password";
+
+const xmlns_id_t NS_mso_all[] = {
+    NS_mso_encryption,
+    NS_mso_password,
+    NULL
+};
+
+class char_printer : unary_function<char, void>
+{
+    ostream& m_os;
+public:
+    char_printer(ostream& os) : m_os(os) {}
+    void operator() (const char c) const
+    {
+        short v = c;
+        v &= 0x00FF;
+        m_os << hex << uppercase << "0x";
+        if (v < 16)
+            m_os << '0';
+        m_os << v << ' ';
+    }
+};
+
+void print_binary(ostream& os, const vector<char>& value)
+{
+    for_each(value.begin(), value.end(), char_printer(os));
+}
+
+class key_data_attr_handler : unary_function<sax_ns_parser_attribute, void>
 {
 public:
+    void operator() (const sax_ns_parser_attribute& attr)
+    {
+        if (attr.ns != NS_mso_encryption)
+            // wrong namespace
+            return;
+
+        if (attr.name == "saltSize")
+            cout << "salt size: " << attr.value << endl;
+        else if (attr.name == "blockSize")
+            cout << "block size: " << attr.value << endl;
+        else if (attr.name == "keyBits")
+            cout << "key bits: " << attr.value << endl;
+        else if (attr.name == "hashSize")
+            cout << "hash size: " << attr.value << endl;
+        else if (attr.name == "cipherAlgorithm")
+            cout << "cipher algorithm: " << attr.value << endl;
+        else if (attr.name == "cipherChaining")
+            cout << "cipher chaining: " << attr.value << endl;
+        else if (attr.name == "hashAlgorithm")
+            cout << "hash algorithm: " << attr.value << endl;
+        else if (attr.name == "saltValue")
+        {
+            cout << "salt value (base64): " << attr.value << endl;
+            vector<char> value;
+            orcus::decode_from_base64(attr.value.get(), attr.value.size(), value);
+            cout << "salt value (binary): ";
+            print_binary(cout, value);
+            cout << endl;
+        }
+    }
+};
+
+class sax_handler
+{
+    xmlns_context& m_ns_cxt;
+    vector<sax_ns_parser_attribute> m_attrs;
+
+public:
+    sax_handler(xmlns_context& ns_cxt) : m_ns_cxt(ns_cxt) {}
     void declaration() {}
 
     void attribute(const pstring&, const pstring&) {}
 
     void attribute(const sax_ns_parser_attribute& attr)
     {
+        m_attrs.push_back(attr);
     }
 
     void characters(const pstring& c)
@@ -58,6 +132,12 @@ public:
 
     void start_element(const sax_ns_parser_element& elem)
     {
+        if (elem.ns == NS_mso_encryption && elem.name == "keyData")
+        {
+            key_data_attr_handler func;
+            for_each(m_attrs.begin(), m_attrs.end(), func);
+        }
+        m_attrs.clear();
     }
 
     void end_element(const sax_ns_parser_element& elem)
@@ -70,6 +150,11 @@ public:
 struct encryption_info_reader_impl
 {
     orcus::xmlns_repository m_ns_repo;
+
+    encryption_info_reader_impl()
+    {
+        m_ns_repo.add_predefined_values(NS_mso_all);
+    }
 };
 
 encryption_info_reader::encryption_info_reader() :
@@ -85,11 +170,10 @@ void encryption_info_reader::read(const char* p, size_t n)
 #if ORCUS_DEBUG_MSO_ENCRYPTION_INFO
     cout << "encryption_info_reader::read: stream size=" << n << endl;
 #endif
-    sax_handler hdl;
     orcus::xmlns_context cxt = mp_impl->m_ns_repo.create_context();
+    sax_handler hdl(cxt);
     orcus::sax_ns_parser<sax_handler> parser(p, n, cxt, hdl);
     parser.parse();
-
 }
 
 }}
