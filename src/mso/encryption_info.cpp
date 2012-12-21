@@ -126,9 +126,7 @@ public:
         m_attrs.push_back(attr);
     }
 
-    void characters(const pstring& c)
-    {
-    }
+    void characters(const pstring&) {}
 
     void start_element(const sax_ns_parser_element& elem)
     {
@@ -140,9 +138,7 @@ public:
         m_attrs.clear();
     }
 
-    void end_element(const sax_ns_parser_element& elem)
-    {
-    }
+    void end_element(const sax_ns_parser_element&) {}
 };
 
 }
