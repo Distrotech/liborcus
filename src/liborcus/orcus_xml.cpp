@@ -31,6 +31,7 @@
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/spreadsheet/export_interface.hpp"
 #include "orcus/xml_namespace.hpp"
+#include "orcus/stream.hpp"
 
 #include "xml_map_tree.hpp"
 

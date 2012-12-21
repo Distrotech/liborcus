@@ -25,25 +25,23 @@
  *
  ************************************************************************/
 
-#include "orcus/mso/encryption_info.hpp"
-#include "orcus/stream.hpp"
+#ifndef __ORCUS_STREAM_HPP__
+#define __ORCUS_STREAM_HPP__
 
-using namespace orcus;
-using namespace std;
+#include "env.hpp"
 
-int main(int argc, char** argv)
-{
-    if (argc != 2)
-        return EXIT_FAILURE;
+#include <string>
 
-    mso::encryption_info_reader reader;
-    string strm;
-    load_file_content(argv[1], strm);
+namespace orcus {
 
-    if (strm.empty())
-        return EXIT_FAILURE;
+/**
+ * Load the content of a file into a file stream.
+ *
+ * @param filepath file to open
+ * @param strm content of the file
+ */
+ORCUS_DLLPUBLIC void load_file_content(const char* filepath, std::string& strm);
 
-    reader.read(&strm[0], strm.size());
-
-    return EXIT_SUCCESS;
 }
+
+#endif

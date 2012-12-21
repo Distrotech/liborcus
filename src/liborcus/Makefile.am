@@ -16,7 +16,6 @@ endif
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	dom_tree.cpp \
-	exception.cpp \
 	global.cpp \
 	spreadsheet_interface.cpp \
 	orcus_css.cpp \

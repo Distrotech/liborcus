@@ -31,7 +31,6 @@
 #include "types.hpp"
 #include "env.hpp"
 
-#include <string>
 #include <functional>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
@@ -45,14 +44,6 @@ void print_element(xmlns_id_t ns, xml_token_t name);
  * Print attributes to stdout for debugging purposes.
  */
 void print_attrs(const tokens& tokens, const xml_attrs_t& attrs);
-
-/**
- * Load the content of a file into a file stream.
- *
- * @param filepath file to open
- * @param strm content of the file
- */
-ORCUS_DLLPUBLIC void load_file_content(const char* filepath, std::string& strm);
 
 template<typename _T>
 struct default_deleter : public std::unary_function<_T*, void>

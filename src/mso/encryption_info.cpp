@@ -27,6 +27,14 @@
 
 #include "orcus/mso/encryption_info.hpp"
 
+#define ORCUS_DEBUG_MSO_ENCRYPTION_INFO 1
+
+#if ORCUS_DEBUG_MSO_ENCRYPTION_INFO
+#include <iostream>
+#endif
+
+using namespace std;
+
 namespace orcus { namespace mso {
 
 struct encryption_info_reader_impl
@@ -43,6 +51,9 @@ encryption_info_reader::~encryption_info_reader()
 
 void encryption_info_reader::read(const char* p, size_t n)
 {
+#if ORCUS_DEBUG_MSO_ENCRYPTION_INFO
+    cout << "encryption_info_reader::read: stream size=" << n << endl;
+#endif
 }
 
 }}

@@ -25,67 +25,31 @@
  *
  ************************************************************************/
 
-#include "orcus/orcus_xlsx.hpp"
-#include "orcus/pstring.hpp"
-#include "orcus/global.hpp"
 #include "orcus/stream.hpp"
-#include "spreadsheet/factory.hpp"
-#include "spreadsheet/document.hpp"
+#include "orcus/exception.hpp"
 
-#include <boost/scoped_ptr.hpp>
-
-#include <cstdlib>
-#include <cassert>
-#include <string>
-#include <iostream>
 #include <sstream>
+#include <fstream>
 
-using namespace orcus;
 using namespace std;
 
-namespace {
+namespace orcus {
 
-const char* dirs[] = {
-    "../test/xlsx/raw-values-1/",
-};
-
-void test_xlsx_import()
+void load_file_content(const char* filepath, string& strm)
 {
-    size_t n = sizeof(dirs)/sizeof(dirs[0]);
-    for (size_t i = 0; i < n; ++i)
+    ifstream file(filepath);
+    if (!file)
     {
-        const char* dir = dirs[i];
-        string path(dir);
-
-        // Read the input.xlsx document.
-        path.append("input.xlsx");
-        boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-        orcus_xlsx app(new spreadsheet::import_factory(doc.get()));
-        app.read_file(path.c_str());
-
-        // Dump the content of the model.
+        // failed to open the specified file.
         ostringstream os;
-        doc->dump_check(os);
-        string check = os.str();
-
-        // Check that against known control.
-        path = dir;
-        path.append("check.txt");
-        string control;
-        load_file_content(path.c_str(), control);
-
-        assert(!check.empty());
-        assert(!control.empty());
-
-        pstring s1(&check[0], check.size()), s2(&control[0], control.size());
-        assert(s1.trim() == s2.trim());
+        os << "failed to load " << filepath;
+        throw general_error(os.str());
     }
+
+    ostringstream os;
+    os << file.rdbuf();
+    file.close();
+    strm = os.str();
 }
 
-}
-
-int main()
-{
-    test_xlsx_import();
-    return EXIT_SUCCESS;
 }

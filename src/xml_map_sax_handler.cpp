@@ -31,6 +31,7 @@
 #include "orcus/orcus_xml.hpp"
 #include "orcus/global.hpp"
 #include "orcus/sax_parser.hpp"
+#include "orcus/stream.hpp"
 
 using namespace std;
 

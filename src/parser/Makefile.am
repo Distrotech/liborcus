@@ -7,7 +7,9 @@ lib_LTLIBRARIES = liborcus-parser-@ORCUS_API_VERSION@.la
 liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	base64.cpp \
 	cell_buffer.cpp \
-	sax_parser_global.cpp
+	exception.cpp \
+	sax_parser_global.cpp \
+	stream.cpp
 
 liborcus_parser_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 

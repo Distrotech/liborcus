@@ -29,9 +29,7 @@
 #include "orcus/tokens.hpp"
 #include "orcus/exception.hpp"
 
-#include <fstream>
 #include <iostream>
-#include <sstream>
 #include <algorithm>
 
 using namespace std;
@@ -71,23 +69,6 @@ void print_element(const tokens& tokens, xmlns_id_t ns, xml_token_t name)
 void print_attrs(const tokens& tokens, const xml_attrs_t& attrs)
 {
     for_each(attrs.begin(), attrs.end(), attr_printer(tokens));
-}
-
-void load_file_content(const char* filepath, string& strm)
-{
-    ifstream file(filepath);
-    if (!file)
-    {
-        // failed to open the specified file.
-        ostringstream os;
-        os << "failed to load " << filepath;
-        throw general_error(os.str());
-    }
-
-    ostringstream os;
-    os << file.rdbuf();
-    file.close();
-    strm = os.str();
 }
 
 }

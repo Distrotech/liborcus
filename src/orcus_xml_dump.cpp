@@ -30,6 +30,7 @@
 #include "orcus/sax_ns_parser.hpp"
 #include "orcus/global.hpp"
 #include "orcus/xml_namespace.hpp"
+#include "orcus/stream.hpp"
 
 #include "dom_tree_sax_handler.hpp"
 

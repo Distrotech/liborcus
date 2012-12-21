@@ -176,6 +176,7 @@
 				<F N="../include/orcus/sax_parser.hpp"/>
 				<F N="../include/orcus/sax_parser_global.hpp"/>
 				<F N="../include/orcus/sax_token_parser.hpp"/>
+				<F N="../include/orcus/stream.hpp"/>
 				<F N="../include/orcus/tokens.hpp"/>
 				<F N="../include/orcus/types.hpp"/>
 				<F N="../include/orcus/xml_namespace.hpp"/>
@@ -185,7 +186,6 @@
 		<Folder Name="../src">
 			<Folder Name="liborcus">
 				<F N="../src/liborcus/dom_tree.cpp"/>
-				<F N="../src/liborcus/exception.cpp"/>
 				<F N="../src/liborcus/global.cpp"/>
 				<F N="../src/liborcus/gnumeric_cell_context.cpp"/>
 				<F N="../src/liborcus/gnumeric_cell_context.hpp"/>
@@ -285,6 +285,7 @@
 				<F N="../src/parser/base64.cpp"/>
 				<F N="../src/parser/base64_test.cpp"/>
 				<F N="../src/parser/cell_buffer.cpp"/>
+				<F N="../src/parser/exception.cpp"/>
 				<F N="../src/parser/sax_parser_global.cpp"/>
 			</Folder>
 			<Folder Name="spreadsheet">

@@ -28,6 +28,7 @@
 #include "orcus/orcus_ods.hpp"
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
+#include "orcus/stream.hpp"
 #include "spreadsheet/factory.hpp"
 #include "spreadsheet/document.hpp"
 

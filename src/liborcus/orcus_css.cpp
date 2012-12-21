@@ -28,6 +28,7 @@
 #include "orcus/css_parser.hpp"
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
+#include "orcus/stream.hpp"
 
 #include <iostream>
 #include <string>
