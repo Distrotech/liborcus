@@ -31,7 +31,7 @@
 #include "orcus/global.hpp"
 #include "orcus/exception.hpp"
 
-#include "string_pool.hpp"
+#include "orcus/string_pool.hpp"
 
 #include <iostream>
 #include <sstream>

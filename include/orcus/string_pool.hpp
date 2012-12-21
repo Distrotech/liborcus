@@ -33,14 +33,15 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/functional/hash.hpp>
 
-#include "orcus/pstring.hpp"
+#include "env.hpp"
+#include "pstring.hpp"
 
 namespace orcus {
 
 /**
  * Implements string hash map.
  */
-class string_pool
+class ORCUS_DLLPUBLIC string_pool
 {
     struct string_hash
     {

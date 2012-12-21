@@ -29,7 +29,7 @@
 #include "orcus/exception.hpp"
 #include "orcus/xml_namespace.hpp"
 
-#include "string_pool.hpp"
+#include "orcus/string_pool.hpp"
 
 #include <iostream>
 #include <sstream>

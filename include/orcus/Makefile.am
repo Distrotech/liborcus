@@ -17,6 +17,7 @@ liborcus_HEADERS = \
 	sax_ns_parser.hpp \
 	sax_token_parser.hpp \
 	stream.hpp \
+	string_pool.hpp \
 	tokens.hpp \
 	types.hpp \
 	xml_namespace.hpp \

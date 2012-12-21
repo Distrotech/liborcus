@@ -2,9 +2,7 @@
 INCLUDES = -I$(top_srcdir)/include -I./include
 
 EXTRA_PROGRAMS = \
-	liborcus-test-string-pool \
 	liborcus-test-xml-map-tree \
-	liborcus-test-xml-namespace \
 	liborcus-test-xml-structure-tree
 
 if HAVE_STATIC_LIB
@@ -21,15 +19,11 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	orcus_css.cpp \
 	orcus_csv.cpp \
 	orcus_xml.cpp \
-	pstring.cpp \
-	string_pool.hpp \
-	string_pool.cpp \
 	tokens.cpp \
 	xml_context_base.hpp \
 	xml_context_base.cpp \
 	xml_map_tree.hpp \
 	xml_map_tree.cpp \
-	xml_namespace.cpp \
 	xml_stream_handler.hpp \
 	xml_stream_handler.cpp \
 	xml_stream_parser.hpp \
@@ -129,22 +123,9 @@ liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 liborcus_@ORCUS_API_VERSION@_la_LIBADD = \
 	 $(BOOST_SYSTEM_LIBS) $(BOOST_SYSTEM_LIB) $(LIBZIP_LIBS) $(ZLIB_LIBS)
 
-# liborcus-test-string-pool
-
-liborcus_test_string_pool_SOURCES = \
-	string_pool.cpp \
-	string_pool.hpp \
-	string_pool_test.cpp
-
-liborcus_test_string_pool_LDADD = \
-	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
-	liborcus-@ORCUS_API_VERSION@.la
-
 # liborcus-test-xml-map-tree
 
 liborcus_test_xml_map_tree_SOURCES = \
-	string_pool.cpp \
-	string_pool.hpp \
 	xml_map_tree.cpp \
 	xml_map_tree.hpp \
 	xml_map_tree_test.cpp
@@ -153,32 +134,10 @@ liborcus_test_xml_map_tree_LDADD = \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus-@ORCUS_API_VERSION@.la
 
-# liborcus-test-xml-namespace
-
-liborcus_test_xml_namespace_SOURCES = \
-	string_pool.cpp \
-	string_pool.hpp \
-	xml_namespace.cpp \
-	xml_namespace.hpp \
-	ooxml_namespace_types.hpp \
-	ooxml_namespace_types.cpp \
-	odf_namespace_types.hpp \
-	odf_namespace_types.cpp \
-	gnumeric_namespace_types.hpp \
-	gnumeric_namespace_types.cpp \
-	xml_namespace_test.cpp
-
-liborcus_test_xml_namespace_LDADD = \
-	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
-	liborcus-@ORCUS_API_VERSION@.la
-
 # liborcus-test-xml-structure-tree
 
 liborcus_test_xml_structure_tree_SOURCES = \
-	string_pool.cpp \
-	string_pool.hpp \
 	xml_structure_tree.cpp \
-	xml_namespace.cpp \
 	xml_structure_tree_test.cpp
 
 liborcus_test_xml_structure_tree_LDADD = \
@@ -186,7 +145,5 @@ liborcus_test_xml_structure_tree_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la
 
 TESTS = \
-	liborcus-test-string-pool \
 	liborcus-test-xml-map-tree \
-	liborcus-test-xml-namespace \
 	liborcus-test-xml-structure-tree

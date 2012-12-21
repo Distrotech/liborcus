@@ -26,6 +26,8 @@
  ************************************************************************/
 
 #include "orcus/mso/encryption_info.hpp"
+#include "orcus/sax_ns_parser.hpp"
+#include "orcus/xml_namespace.hpp"
 
 #define ORCUS_DEBUG_MSO_ENCRYPTION_INFO 1
 
@@ -37,8 +39,37 @@ using namespace std;
 
 namespace orcus { namespace mso {
 
+namespace {
+
+class sax_handler
+{
+public:
+    void declaration() {}
+
+    void attribute(const pstring&, const pstring&) {}
+
+    void attribute(const sax_ns_parser_attribute& attr)
+    {
+    }
+
+    void characters(const pstring& c)
+    {
+    }
+
+    void start_element(const sax_ns_parser_element& elem)
+    {
+    }
+
+    void end_element(const sax_ns_parser_element& elem)
+    {
+    }
+};
+
+}
+
 struct encryption_info_reader_impl
 {
+    orcus::xmlns_repository m_ns_repo;
 };
 
 encryption_info_reader::encryption_info_reader() :
@@ -54,6 +85,11 @@ void encryption_info_reader::read(const char* p, size_t n)
 #if ORCUS_DEBUG_MSO_ENCRYPTION_INFO
     cout << "encryption_info_reader::read: stream size=" << n << endl;
 #endif
+    sax_handler hdl;
+    orcus::xmlns_context cxt = mp_impl->m_ns_repo.create_context();
+    orcus::sax_ns_parser<sax_handler> parser(p, n, cxt, hdl);
+    parser.parse();
+
 }
 
 }}

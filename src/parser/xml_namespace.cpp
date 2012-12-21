@@ -27,7 +27,7 @@
 
 #include "orcus/xml_namespace.hpp"
 #include "orcus/exception.hpp"
-#include "string_pool.hpp"
+#include "orcus/string_pool.hpp"
 
 #include <boost/unordered_map.hpp>
 #include <vector>

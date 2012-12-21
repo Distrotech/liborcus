@@ -177,6 +177,7 @@
 				<F N="../include/orcus/sax_parser_global.hpp"/>
 				<F N="../include/orcus/sax_token_parser.hpp"/>
 				<F N="../include/orcus/stream.hpp"/>
+				<F N="../include/orcus/string_pool.hpp"/>
 				<F N="../include/orcus/tokens.hpp"/>
 				<F N="../include/orcus/types.hpp"/>
 				<F N="../include/orcus/xml_namespace.hpp"/>
@@ -246,12 +247,7 @@
 				<F N="../src/liborcus/orcus_ods.cpp"/>
 				<F N="../src/liborcus/orcus_xlsx.cpp"/>
 				<F N="../src/liborcus/orcus_xml.cpp"/>
-				<F N="../src/liborcus/pstring.cpp"/>
-				<F N="../src/liborcus/pstring_intern_test.cpp"/>
 				<F N="../src/liborcus/spreadsheet_interface.cpp"/>
-				<F N="../src/liborcus/string_pool.cpp"/>
-				<F N="../src/liborcus/string_pool.hpp"/>
-				<F N="../src/liborcus/string_pool_test.cpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>
 				<F N="../src/liborcus/xlsx_context.cpp"/>
 				<F N="../src/liborcus/xlsx_context.hpp"/>
@@ -267,8 +263,6 @@
 				<F N="../src/liborcus/xml_map_tree.cpp"/>
 				<F N="../src/liborcus/xml_map_tree.hpp"/>
 				<F N="../src/liborcus/xml_map_tree_test.cpp"/>
-				<F N="../src/liborcus/xml_namespace.cpp"/>
-				<F N="../src/liborcus/xml_namespace_test.cpp"/>
 				<F N="../src/liborcus/xml_simple_stream_handler.cpp"/>
 				<F N="../src/liborcus/xml_simple_stream_handler.hpp"/>
 				<F N="../src/liborcus/xml_stream_handler.cpp"/>
@@ -286,7 +280,14 @@
 				<F N="../src/parser/base64_test.cpp"/>
 				<F N="../src/parser/cell_buffer.cpp"/>
 				<F N="../src/parser/exception.cpp"/>
+				<F N="../src/parser/pstring.cpp"/>
+				<F N="../src/parser/pstring_intern_test.cpp"/>
 				<F N="../src/parser/sax_parser_global.cpp"/>
+				<F N="../src/parser/stream.cpp"/>
+				<F N="../src/parser/string_pool.cpp"/>
+				<F N="../src/parser/string_pool_test.cpp"/>
+				<F N="../src/parser/xml_namespace.cpp"/>
+				<F N="../src/parser/xml_namespace_test.cpp"/>
 			</Folder>
 			<Folder Name="spreadsheet">
 				<F N="../src/spreadsheet/document.cpp"/>

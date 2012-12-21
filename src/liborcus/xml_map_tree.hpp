@@ -33,7 +33,7 @@
 #include "orcus/exception.hpp"
 #include "orcus/types.hpp"
 #include "orcus/xml_namespace.hpp"
-#include "string_pool.hpp"
+#include "orcus/string_pool.hpp"
 
 #include <ostream>
 #include <map>

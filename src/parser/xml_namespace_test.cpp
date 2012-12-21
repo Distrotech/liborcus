@@ -27,9 +27,6 @@
 
 #include "orcus/xml_namespace.hpp"
 #include "orcus/pstring.hpp"
-#include "odf_namespace_types.hpp"
-#include "ooxml_namespace_types.hpp"
-#include "gnumeric_namespace_types.hpp"
 
 #include <cstdlib>
 #include <cassert>
@@ -99,67 +96,31 @@ void test_all_namespaces()
     assert(ns3 == all_ns[2]);
 }
 
+const xmlns_id_t NS_test_name1 = "test:name:1";
+const xmlns_id_t NS_test_name2 = "test:name:2";
+const xmlns_id_t NS_test_name3 = "test:name:3";
+
+xmlns_id_t NS_test_all[] = {
+    NS_test_name1,
+    NS_test_name2,
+    NS_test_name3,
+    NULL
+};
+
 void test_predefined_ns()
 {
-    {
-        // OOXML namespaces
-        xmlns_repository ooxmlns_repo;
-        ooxmlns_repo.add_predefined_values(NS_opc_all);
-        ooxmlns_repo.add_predefined_values(NS_ooxml_all);
-        xmlns_context cxt = ooxmlns_repo.create_context();
-        xmlns_id_t ns_id = cxt.push("test", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
-        assert(ns_id == NS_ooxml_r);
-        ns_id = cxt.push("xlsx", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
-        assert(ns_id == NS_ooxml_xlsx);
-        ns_id = cxt.push("test3", "http://schemas.openxmlformats.org/package/2006/content-types");
-        assert(ns_id == NS_opc_ct);
-        ns_id = cxt.push("test4", "http://schemas.openxmlformats.org/package/2006/relationships");
-        assert(ns_id == NS_opc_rel);
-
-        // Push the same predefined namespace to default namespace.
-        ns_id = cxt.push("", "http://schemas.openxmlformats.org/spreadsheetml/2006/main");
-        assert(ns_id == NS_ooxml_xlsx);
-        assert(cxt.get("") == NS_ooxml_xlsx);
-        assert(cxt.get("xlsx") == NS_ooxml_xlsx);
-    }
-
-    {
-        // ODF namespaces
-        xmlns_repository odfns_repo;
-        odfns_repo.add_predefined_values(NS_odf_all);
-        xmlns_context cxt = odfns_repo.create_context();
-        xmlns_id_t ns_id = cxt.push("office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
-        assert(ns_id == NS_odf_office);
-        ns_id = cxt.push("table", "urn:oasis:names:tc:opendocument:xmlns:table:1.0");
-        assert(ns_id == NS_odf_table);
-        ns_id = cxt.push("chart", "urn:oasis:names:tc:opendocument:xmlns:chart:1.0");
-        assert(ns_id == NS_odf_chart);
-
-        assert(cxt.get("office") == NS_odf_office);
-        assert(cxt.get("table") == NS_odf_table);
-        assert(cxt.get("chart") == NS_odf_chart);
-    }
-
-    {
-        // Gnumeric namespaces
-        xmlns_repository gnm_repo;
-        gnm_repo.add_predefined_values(NS_gnumeric_all);
-        xmlns_context cxt = gnm_repo.create_context();
-
-        // It borrows some namespaces from ODF.
-        xmlns_id_t ns_id = cxt.push("office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
-        assert(ns_id == NS_odf_office);
-        ns_id = cxt.push("meta", "urn:oasis:names:tc:opendocument:xmlns:meta:1.0");
-        assert(ns_id == NS_odf_meta);
-
-        // Main gnumeric namespace
-        ns_id = cxt.push("gnm", "http://www.gnumeric.org/v10.dtd");
-        assert(ns_id == NS_gnumeric_gnm);
-
-        assert(cxt.get("office") == NS_odf_office);
-        assert(cxt.get("meta") == NS_odf_meta);
-        assert(cxt.get("gnm") == NS_gnumeric_gnm);
-    }
+    xmlns_repository ns_repo;
+    ns_repo.add_predefined_values(NS_test_all);
+    xmlns_context cxt = ns_repo.create_context();
+    xmlns_id_t ns_id = cxt.push("tn1", "test:name:1");
+    assert(ns_id == NS_test_name1);
+    ns_id = cxt.push("tn2", "test:name:2");
+    assert(ns_id == NS_test_name2);
+    ns_id = cxt.push("tn3", "test:name:3");
+    assert(ns_id == NS_test_name3);
+    assert(cxt.get("tn1") == NS_test_name1);
+    assert(cxt.get("tn2") == NS_test_name2);
+    assert(cxt.get("tn3") == NS_test_name3);
 }
 
 } // anonymous namespace
