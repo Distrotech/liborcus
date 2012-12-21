@@ -63,16 +63,21 @@ public:
     {
         short v = c;
         v &= 0x00FF;
-        m_os << hex << uppercase << "0x";
+        m_os << hex << uppercase;
         if (v < 16)
             m_os << '0';
         m_os << v << ' ';
     }
 };
 
-void print_binary(ostream& os, const vector<char>& value)
+void print_base64(const char* caption, const pstring& base64)
 {
-    for_each(value.begin(), value.end(), char_printer(os));
+    cout << caption << " (base64): " << base64 << endl;
+    vector<char> value;
+    orcus::decode_from_base64(base64.get(), base64.size(), value);
+    cout << caption << " (binary): ";
+    for_each(value.begin(), value.end(), char_printer(cout));
+    cout << endl;
 }
 
 class key_data_attr_handler : unary_function<sax_ns_parser_attribute, void>
@@ -99,14 +104,60 @@ public:
         else if (attr.name == "hashAlgorithm")
             cout << "hash algorithm: " << attr.value << endl;
         else if (attr.name == "saltValue")
-        {
-            cout << "salt value (base64): " << attr.value << endl;
-            vector<char> value;
-            orcus::decode_from_base64(attr.value.get(), attr.value.size(), value);
-            cout << "salt value (binary): ";
-            print_binary(cout, value);
-            cout << endl;
-        }
+            print_base64("salt value", attr.value);
+    }
+};
+
+class data_integrity_attr_handler : unary_function<sax_ns_parser_attribute, void>
+{
+public:
+    void operator() (const sax_ns_parser_attribute& attr)
+    {
+        if (attr.ns != NS_mso_encryption)
+            // wrong namespace
+            return;
+
+        if (attr.name == "encryptedHmacKey")
+            print_base64("encrypted HMAC key", attr.value);
+        else if (attr.name == "encryptedHmacValue")
+            print_base64("encrypted HMAC value", attr.value);
+    }
+};
+
+class password_encrypted_key_attr_handler : unary_function<sax_ns_parser_attribute, void>
+{
+public:
+    void operator() (const sax_ns_parser_attribute& attr)
+    {
+        if (attr.ns != NS_mso_encryption)
+            // wrong namespace
+            return;
+
+        if (attr.name == "spinCount")
+            cout << "spin count: " << attr.value << endl;
+        else if (attr.name == "saltSize")
+            cout << "salt size: " << attr.value << endl;
+        else if (attr.name == "blockSize")
+            cout << "block size: " << attr.value << endl;
+        else if (attr.name == "keyBits")
+            cout << "key bits: " << attr.value << endl;
+        else if (attr.name == "hashSize")
+            cout << "hash size: " << attr.value << endl;
+        else if (attr.name == "cipherAlgorithm")
+            cout << "cipher algorithm: " << attr.value << endl;
+        else if (attr.name == "cipherChaining")
+            cout << "cipher chaining: " << attr.value << endl;
+        else if (attr.name == "hashAlgorithm")
+            cout << "hash algorithm: " << attr.value << endl;
+        else if (attr.name == "saltValue")
+            print_base64("salt value", attr.value);
+        else if (attr.name == "encryptedVerifierHashInput")
+            print_base64("encrypted verifier hash input", attr.value);
+        else if (attr.name == "encryptedVerifierHashValue")
+            print_base64("encrypted verifier hash value", attr.value);
+        else if (attr.name == "encryptedKeyValue")
+            print_base64("encrypted key value", attr.value);
+
     }
 };
 
@@ -130,11 +181,31 @@ public:
 
     void start_element(const sax_ns_parser_element& elem)
     {
-        if (elem.ns == NS_mso_encryption && elem.name == "keyData")
+        if (elem.ns == NS_mso_encryption)
         {
-            key_data_attr_handler func;
-            for_each(m_attrs.begin(), m_attrs.end(), func);
+            if (elem.name == "keyData")
+            {
+                cout << "--- key data" << endl;
+                key_data_attr_handler func;
+                for_each(m_attrs.begin(), m_attrs.end(), func);
+            }
+            else if (elem.name == "dataIntegrity")
+            {
+                cout << "--- data integrity" << endl;
+                data_integrity_attr_handler func;
+                for_each(m_attrs.begin(), m_attrs.end(), func);
+            }
         }
+        else if (elem.ns == NS_mso_password)
+        {
+            if (elem.name == "encryptedKey")
+            {
+                cout << "--- encrypted key" << endl;
+                password_encrypted_key_attr_handler func;
+                for_each(m_attrs.begin(), m_attrs.end(), func);
+            }
+        }
+
         m_attrs.clear();
     }
 
