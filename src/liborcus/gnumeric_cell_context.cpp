@@ -1,6 +1,7 @@
 /*************************************************************************
  *
- * Copyright (c) 2010, 2011 Kohei Yoshida
+ * Copyright (c) 2010-2012 Kohei Yoshida
+ * Copyright (c) 2012 Markus Mohrhard
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
