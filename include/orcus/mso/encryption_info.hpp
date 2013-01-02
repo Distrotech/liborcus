@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ENCRYPTION_INFO_HPP__
-#define __ENCRYPTION_INFO_HPP__
+#ifndef __ORCUS_MSO_ENCRYPTION_INFO_HPP__
+#define __ORCUS_MSO_ENCRYPTION_INFO_HPP__
 
 #include "../env.hpp"
 #include <cstdlib>
