@@ -49,17 +49,21 @@ enum gnumeric_celltype
     celltype_string,
     celltype_formula,
     celltype_shared_formula,
+    celltype_array,
     celltype_unknown
 };
 
 
 struct gnumeric_cell_data
 {
-    gnumeric_cell_data() : row(0), col(0), cell_type(celltype_unknown), shared_formula_id(-1) {}
+    gnumeric_cell_data() : row(0), col(0), cell_type(celltype_unknown), shared_formula_id(-1),
+                            array_rows(0), array_cols(0) {}
     row_t row;
     col_t col;
     gnumeric_celltype cell_type;
     size_t shared_formula_id;
+    row_t array_rows;
+    col_t array_cols;
 };
 
 namespace {
@@ -105,6 +109,14 @@ public:
             case XML_ExprID:
                 cell_data.shared_formula_id = atoi(attr.value.get());
                 cell_data.cell_type = celltype_shared_formula;
+                break;
+            case XML_Rows:
+                cell_data.array_rows = atoi(attr.value.get());
+                cell_data.cell_type = celltype_array;
+                break;
+            case XML_Cols:
+                cell_data.array_cols = atoi(attr.value.get());
+                cell_data.cell_type = celltype_array;
                 break;
         }
     }
@@ -228,6 +240,11 @@ void gnumeric_cell_context::end_cell()
                 mp_sheet->set_shared_formula(row, col, spreadsheet::gnumeric, mp_cell_data->shared_formula_id, chars.get(), chars.size());
         }
         break;
+        case celltype_array:
+        {
+            mp_sheet->set_array_formula(row, col, spreadsheet::gnumeric,
+                    chars.get(), chars.size(), mp_cell_data->array_rows, mp_cell_data->array_cols);
+        }
         default:
             ;
     }

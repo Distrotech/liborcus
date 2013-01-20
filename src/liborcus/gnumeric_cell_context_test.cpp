@@ -58,6 +58,17 @@ public:
         assert(grammar == gnumeric);
         assert(string(s, n) == "=formula");
     }
+
+    virtual void set_array_formula(row_t row, col_t col, formula_grammar_t grammar,
+            const char* s, size_t n, row_t rows, col_t cols)
+    {
+        assert(row == 19);
+        assert(col == 111);
+        assert(grammar == gnumeric);
+        assert(string(s, n) == "=arrayFormula");
+        assert(rows == 2);
+        assert(cols == 3);
+    }
 };
 
 class mock_shared_strings : public import_shared_strings
@@ -176,6 +187,25 @@ void test_cell_formula()
     context.end_element(ns, elem);
 }
 
+void test_cell_array_formula()
+{
+    mock_sheet sheet;
+    mock_factory factory;
+
+    orcus::gnumeric_cell_context context(orcus::gnumeric_tokens, &factory, &sheet);
+
+    orcus::xmlns_id_t ns = NS_gnumeric_gnm;
+    orcus::xml_token_t elem = XML_Cell;
+    orcus::xml_attrs_t attrs;
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "19"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "111"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Rows, "2"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Cols, "3"));
+    context.start_element(ns, elem, attrs);
+    context.characters("=arrayFormula");
+    context.end_element(ns, elem);
+}
+
 }
 
 int main()
@@ -185,6 +215,7 @@ int main()
     test_shared_formula_with_string();
     test_shared_formula_without_string();
     test_cell_formula();
+    test_cell_array_formula();
 
     return EXIT_SUCCESS;
 }
