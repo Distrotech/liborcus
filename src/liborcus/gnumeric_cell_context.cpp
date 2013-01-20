@@ -248,7 +248,8 @@ void gnumeric_cell_context::end_cell()
         break;
         case cell_type_bool:
         {
-
+            bool val = chars == "TRUE";
+            mp_sheet->set_bool(row, col, val);
         }
         break;
         default:

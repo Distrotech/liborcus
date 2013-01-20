@@ -26,6 +26,13 @@ public:
         assert(val == 5.0);
     }
 
+    virtual void set_bool(row_t row, col_t col, bool val)
+    {
+        assert(row == 31);
+        assert(col == 32);
+        assert(val == true);
+    }
+
     virtual void set_string(row_t row, col_t col, size_t id)
     {
         assert(row == 10);
@@ -110,6 +117,24 @@ void test_cell_value()
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ValueType, "40"));
     context.start_element(ns, elem, attrs);
     context.characters("5");
+    context.end_element(ns, elem);
+}
+
+void test_cell_bool()
+{
+    mock_sheet sheet;
+    import_factory factory;
+
+    orcus::gnumeric_cell_context context(orcus::gnumeric_tokens, &factory, &sheet);
+
+    orcus::xmlns_id_t ns = NS_gnumeric_gnm;
+    orcus::xml_token_t elem = XML_Cell;
+    orcus::xml_attrs_t attrs;
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "31"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "32"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ValueType, "20"));
+    context.start_element(ns, elem, attrs);
+    context.characters("TRUE");
     context.end_element(ns, elem);
 }
 
@@ -211,6 +236,7 @@ void test_cell_array_formula()
 int main()
 {
     test_cell_value();
+    test_cell_bool();
     test_cell_string();
     test_shared_formula_with_string();
     test_shared_formula_without_string();
