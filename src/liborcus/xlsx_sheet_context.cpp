@@ -397,6 +397,13 @@ void xlsx_sheet_context::end_element_cell()
                 mp_sheet->set_value(m_cur_row, m_cur_col, val);
             }
             break;
+            case cell_type_boolean:
+            {
+                // boolean cell
+                bool val = strtoul(m_cur_value.get(), NULL, 10) != 0;
+                mp_sheet->set_bool(m_cur_row, m_cur_col, val);
+            }
+            break;
             default:
                 warn("unhanlded cell content type");
         }

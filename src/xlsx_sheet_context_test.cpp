@@ -58,6 +58,29 @@ void test_cell_value()
     context.end_element(ns, elem);
 }
 
+void test_cell_bool()
+{
+    mock_sheet sheet;
+
+    orcus::xlsx_sheet_context context(orcus::ooxml_tokens, &sheet);
+
+    orcus::xmlns_id_t ns = NS_ooxml_xlsx;
+    orcus::xml_token_t elem = XML_c;
+    orcus::xml_attrs_t attrs;
+    attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_r, "A1"));
+    attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_t, "b"));
+    context.start_element(ns, elem, attrs);
+
+    {
+        xml_attrs_t val_attrs;
+        context.start_element(ns, XML_v, val_attrs);
+        context.characters("1");
+        context.end_element(ns, XML_v);
+    }
+
+    context.end_element(ns, elem);
+}
+
 void test_array_formula()
 {
     mock_sheet sheet;
