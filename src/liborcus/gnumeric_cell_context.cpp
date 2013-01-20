@@ -42,25 +42,25 @@ namespace orcus {
 
 using namespace spreadsheet;
 
-enum gnumeric_celltype
+enum gnumeric_cell_type
 {
-    celltype_bool,
-    celltype_value,
-    celltype_string,
-    celltype_formula,
-    celltype_shared_formula,
-    celltype_array,
-    celltype_unknown
+    cell_type_bool,
+    cell_type_value,
+    cell_type_string,
+    cell_type_formula,
+    cell_type_shared_formula,
+    cell_type_array,
+    cell_type_unknown
 };
 
 
 struct gnumeric_cell_data
 {
-    gnumeric_cell_data() : row(0), col(0), cell_type(celltype_unknown), shared_formula_id(-1),
+    gnumeric_cell_data() : row(0), col(0), cell_type(cell_type_unknown), shared_formula_id(-1),
                             array_rows(0), array_cols(0) {}
     row_t row;
     col_t col;
-    gnumeric_celltype cell_type;
+    gnumeric_cell_type cell_type;
     size_t shared_formula_id;
     row_t array_rows;
     col_t array_cols;
@@ -73,7 +73,7 @@ class cell_attr_parser : public unary_function<xml_token_attr_t, void>
 public:
     cell_attr_parser()
     {
-        cell_data.cell_type = celltype_formula;
+        cell_data.cell_type = cell_type_formula;
     }
 
     cell_attr_parser(const cell_attr_parser& r):
@@ -95,28 +95,28 @@ public:
                 switch (value_type)
                 {
                     case 20:
-                        cell_data.cell_type = celltype_bool;
+                        cell_data.cell_type = cell_type_bool;
                         break;
                     case 30:
                     case 40:
-                        cell_data.cell_type = celltype_value;
+                        cell_data.cell_type = cell_type_value;
                         break;
                     case 60:
-                        cell_data.cell_type = celltype_string;
+                        cell_data.cell_type = cell_type_string;
                 }
             }
             break;
             case XML_ExprID:
                 cell_data.shared_formula_id = atoi(attr.value.get());
-                cell_data.cell_type = celltype_shared_formula;
+                cell_data.cell_type = cell_type_shared_formula;
                 break;
             case XML_Rows:
                 cell_data.array_rows = atoi(attr.value.get());
-                cell_data.cell_type = celltype_array;
+                cell_data.cell_type = cell_type_array;
                 break;
             case XML_Cols:
                 cell_data.array_cols = atoi(attr.value.get());
-                cell_data.cell_type = celltype_array;
+                cell_data.cell_type = cell_type_array;
                 break;
         }
     }
@@ -213,26 +213,26 @@ void gnumeric_cell_context::end_cell()
 
     col_t col = mp_cell_data->col;
     row_t row = mp_cell_data->row;
-    gnumeric_celltype cell_type = mp_cell_data->cell_type;
+    gnumeric_cell_type cell_type = mp_cell_data->cell_type;
     switch (cell_type)
     {
-        case celltype_value:
+        case cell_type_value:
         {
             double val = atof(chars.get());
             mp_sheet->set_value(row, col, val);
         }
         break;
-        case celltype_string:
+        case cell_type_string:
         {
             spreadsheet::iface::import_shared_strings* shared_strings = mp_factory->get_shared_strings();
             size_t id = shared_strings->add(chars.get(), chars.size());
             mp_sheet->set_string(row, col, id);
         }
         break;
-        case celltype_formula:
+        case cell_type_formula:
             mp_sheet->set_formula(row, col, spreadsheet::gnumeric, chars.get(), chars.size());
         break;
-        case celltype_shared_formula:
+        case cell_type_shared_formula:
         {
             if (chars.empty())
                 mp_sheet->set_shared_formula(row, col, mp_cell_data->shared_formula_id);
@@ -240,7 +240,7 @@ void gnumeric_cell_context::end_cell()
                 mp_sheet->set_shared_formula(row, col, spreadsheet::gnumeric, mp_cell_data->shared_formula_id, chars.get(), chars.size());
         }
         break;
-        case celltype_array:
+        case cell_type_array:
         {
             mp_sheet->set_array_formula(row, col, spreadsheet::gnumeric,
                     chars.get(), chars.size(), mp_cell_data->array_rows, mp_cell_data->array_cols);
