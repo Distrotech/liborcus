@@ -181,6 +181,15 @@ public:
     virtual void set_value(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, double value) = 0;
 
     /**
+     * Set a boolean value to a cell.
+     *
+     * @param row row ID
+     * @param col col ID
+     * @param value boolean value being assigned to the cell
+     */
+    virtual void set_bool(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, bool value) = 0;
+
+    /**
      * Set cell format to specified cell.  The cell format is referred to by
      * the xf (cell format) index in the styles table.
      *

@@ -245,6 +245,12 @@ void gnumeric_cell_context::end_cell()
             mp_sheet->set_array_formula(row, col, spreadsheet::gnumeric,
                     chars.get(), chars.size(), mp_cell_data->array_rows, mp_cell_data->array_cols);
         }
+        break;
+        case cell_type_bool:
+        {
+
+        }
+        break;
         default:
             ;
     }

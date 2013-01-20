@@ -127,6 +127,12 @@ void sheet::set_value(row_t row, col_t col, double value)
     cxt.set_numeric_cell(ixion::abs_address_t(mp_impl->m_sheet,row,col), value);
 }
 
+void sheet::set_bool(row_t row, col_t col, bool value)
+{
+    ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    cxt.set_boolean_cell(ixion::abs_address_t(mp_impl->m_sheet,row,col), value);
+}
+
 void sheet::set_format(row_t row, col_t col, size_t index)
 {
     cell_format_type::iterator itr = mp_impl->m_cell_formats.find(row);
