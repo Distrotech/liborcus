@@ -257,6 +257,38 @@ public:
 
     virtual void set_formula_result(
         orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, const char* p, size_t n) = 0;
+
+    /**
+     * Set a array formula to the specified cells. The formula covers an area
+     * specified by array_rows and array_cols beginning from the base cell.
+     *
+     * @param row row ID 
+     * @param col column ID
+     * @param grammar grammar used in the formula expression
+     * @param p pointer to the first character of the raw formula expression string.
+     * @param n size of the raw formula expression string
+     * @param array_rows number of rows the array formula covers
+     * @param array_cols number of columns the array formula covers
+     */
+    virtual void set_array_formula(
+        orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, orcus::spreadsheet::formula_grammar_t grammar,
+        const char* p, size_t n, orcus::spreadsheet::row_t array_rows, orcus::spreadsheet::col_t array_cols) = 0;
+
+    /**
+     * Set a array formula to the specified cells. The formula covers an area
+     * specified by the range string.
+     *
+     * @param row row ID 
+     * @param col column ID
+     * @param grammar grammar used in the formula expression
+     * @param p pointer to the first character of the raw formula expression string.
+     * @param n size of the raw formula expression string
+     * @param p_range pointer to the first character of the range string
+     * @param n_range isze of the range string
+     */
+    virtual void set_array_formula(
+        orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, orcus::spreadsheet::formula_grammar_t grammar,
+        const char* p, size_t n, const char* p_range, size_t n_range) = 0;
 };
 
 /**

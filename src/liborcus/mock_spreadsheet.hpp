@@ -144,6 +144,12 @@ public:
 
     virtual void set_formula_result(
         orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, const char* p, size_t n);
+
+    virtual void set_array_formula(row_t, col_t, formula_grammar_t,
+            const char*, size_t, row_t, col_t);
+
+    virtual void set_array_formula(row_t, col_t, formula_grammar_t,
+            const char*, size_t, const char*, size_t);
 };
 
 class import_factory : public orcus::spreadsheet::iface::import_factory
