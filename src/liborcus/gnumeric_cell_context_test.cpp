@@ -32,6 +32,32 @@ public:
         assert(col == 321);
         assert(id = 2);
     }
+
+    virtual void set_shared_formula(row_t row, col_t col, size_t id)
+    {
+        assert(row == 6);
+        assert(col == 16);
+        assert(id == 3);
+    }
+
+    virtual void set_shared_formula(row_t row, col_t col, formula_grammar_t grammar,
+                                        size_t id, const char* s, size_t n)
+    {
+        assert(id == 2);
+        assert(col == 15);
+        assert(row == 5);
+        assert(grammar == spreadsheet::gnumeric);
+        assert(string(s, n) == "=basicFormulaString");
+    }
+
+    virtual void set_formula(row_t row, col_t col, formula_grammar_t grammar,
+                                        const char* s, size_t n)
+    {
+        assert(row == 9);
+        assert(col == 11);
+        assert(grammar == gnumeric);
+        assert(string(s, n) == "=formula");
+    }
 };
 
 class mock_shared_strings : public import_shared_strings
@@ -94,12 +120,71 @@ void test_cell_string()
     context.end_element(ns, elem);
 }
 
+void test_shared_formula_with_string()
+{
+    mock_sheet sheet;
+    mock_factory factory;
+
+    orcus::gnumeric_cell_context context(orcus::gnumeric_tokens, &factory, &sheet);
+
+    orcus::xmlns_id_t ns = NS_gnumeric_gnm;
+    orcus::xml_token_t elem = XML_Cell;
+    orcus::xml_attrs_t attrs;
+
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "5"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "15"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ExprID, "2"));
+
+    context.start_element(ns, elem, attrs);
+    context.characters("=basicFormulaString");
+    context.end_element(ns, elem);
+}
+
+void test_shared_formula_without_string()
+{
+    mock_sheet sheet;
+    mock_factory factory;
+
+    orcus::gnumeric_cell_context context(orcus::gnumeric_tokens, &factory, &sheet);
+
+    orcus::xmlns_id_t ns = NS_gnumeric_gnm;
+    orcus::xml_token_t elem = XML_Cell;
+    orcus::xml_attrs_t attrs;
+
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "6"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "16"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ExprID, "3"));
+
+    context.start_element(ns, elem, attrs);
+    context.end_element(ns, elem);
+}
+
+void test_cell_formula()
+{
+    mock_sheet sheet;
+    mock_factory factory;
+
+    orcus::gnumeric_cell_context context(orcus::gnumeric_tokens, &factory, &sheet);
+
+    orcus::xmlns_id_t ns = NS_gnumeric_gnm;
+    orcus::xml_token_t elem = XML_Cell;
+    orcus::xml_attrs_t attrs;
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "9"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "11"));
+    context.start_element(ns, elem, attrs);
+    context.characters("=formula");
+    context.end_element(ns, elem);
+}
+
 }
 
 int main()
 {
     test_cell_value();
     test_cell_string();
+    test_shared_formula_with_string();
+    test_shared_formula_without_string();
+    test_cell_formula();
 
     return EXIT_SUCCESS;
 }
