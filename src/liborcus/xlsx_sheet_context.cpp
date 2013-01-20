@@ -358,6 +358,14 @@ void xlsx_sheet_context::end_element_cell()
                 m_cur_formula_str.get(), m_cur_formula_str.size(),
                 m_cur_formula_ref.get(), m_cur_formula_ref.size());
         }
+        else if (m_cur_formula_type == "array")
+        {
+            // array formula expression
+            mp_sheet->set_array_formula(
+                m_cur_row, m_cur_col, spreadsheet::xlsx_2007,
+                m_cur_formula_str.get(), m_cur_formula_str.size(),
+                m_cur_formula_ref.get(), m_cur_formula_ref.size());
+        }
         else
         {
             // normal (non-shared) formula expression
