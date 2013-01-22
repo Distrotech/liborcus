@@ -27,6 +27,8 @@
 
 #include "styles.hpp"
 
+#include <algorithm>
+
 namespace orcus { namespace spreadsheet {
 
 import_styles::font::font() :
@@ -92,13 +94,18 @@ void import_styles::protection::reset()
     *this = protection();
 }
 
+void import_styles::number_format::reset()
+{
+    *this = number_format();
+}
+
 
 import_styles::xf::xf() :
-    num_format(0),
     font(0),
     fill(0),
     border(0),
     protection(0),
+    number_format(0),
     style_xf(0),
     apply_num_format(false),
     apply_font(false),
@@ -250,6 +257,24 @@ size_t import_styles::commit_cell_protection()
     return m_protections.size() - 1;
 }
 
+void import_styles::set_number_format(const char* s, size_t n)
+{
+    m_cur_number_format.format_string = pstring(s, n);
+}
+
+size_t import_styles::commit_number_format()
+{
+    std::vector<number_format>::iterator itr = std::find(m_number_formats.begin(), m_number_formats.end(), m_cur_number_format);
+    if(itr != m_number_formats.end())
+    {
+        m_cur_number_format.reset();
+        return std::distance(m_number_formats.begin(), itr);
+    }
+
+    m_number_formats.push_back(m_cur_number_format);
+    return m_number_formats.size () - 1;
+}
+
 void import_styles::set_cell_style_xf_count(size_t n)
 {
     m_cell_style_formats.reserve(n);
@@ -274,11 +299,6 @@ size_t import_styles::commit_cell_xf()
     return m_cell_formats.size() - 1;
 }
 
-void import_styles::set_xf_number_format(size_t index)
-{
-    m_cur_cell_format.num_format = index;
-}
-
 void import_styles::set_xf_font(size_t index)
 {
     m_cur_cell_format.font = index;
@@ -297,6 +317,11 @@ void import_styles::set_xf_border(size_t index)
 void import_styles::set_xf_protection(size_t index)
 {
     m_cur_cell_format.protection = index;
+}
+
+void import_styles::set_xf_number_format(size_t index)
+{
+    m_cur_cell_format.number_format = index;
 }
 
 void import_styles::set_xf_style_xf(size_t index)

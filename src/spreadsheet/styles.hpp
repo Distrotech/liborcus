@@ -102,16 +102,28 @@ public:
         void reset();
     };
 
+    struct number_format
+    {
+        pstring format_string;
+
+        void reset();
+
+        bool operator==(const number_format& r)
+        {
+            return format_string == r.format_string;
+        }
+    };
+
     /**
      * Cell format attributes
      */
     struct xf
     {
-        size_t num_format;      /// number format ID
         size_t font;            /// font ID
         size_t fill;            /// fill ID
         size_t border;          /// border ID
         size_t protection;      /// protection ID
+        size_t number_format;   /// number format ID
         size_t style_xf;        /// style XF ID (used only for cell format)
         bool apply_num_format;
         bool apply_font;
@@ -158,17 +170,20 @@ public:
     virtual void set_cell_locked(bool b);
     virtual size_t commit_cell_protection();
 
+    virtual void set_number_format(const char* s, size_t n);
+    virtual size_t commit_number_format();
+
     virtual void set_cell_style_xf_count(size_t n);
     virtual size_t commit_cell_style_xf();
 
     virtual void set_cell_xf_count(size_t n);
     virtual size_t commit_cell_xf();
 
-    virtual void set_xf_number_format(size_t index);
     virtual void set_xf_font(size_t index);
     virtual void set_xf_fill(size_t index);
     virtual void set_xf_border(size_t index);
     virtual void set_xf_protection(size_t index);
+    virtual void set_xf_number_format(size_t index);
     virtual void set_xf_style_xf(size_t index);
 
     virtual void set_cell_style_count(size_t n);
@@ -186,6 +201,7 @@ private:
     fill m_cur_fill;
     border m_cur_border;
     protection m_cur_protection;
+    number_format m_cur_number_format;
     xf m_cur_cell_format;
     cell_style m_cur_cell_style;
 
@@ -193,6 +209,7 @@ private:
     ::std::vector<fill> m_fills;
     ::std::vector<border> m_borders;
     ::std::vector<protection> m_protections;
+    ::std::vector<number_format> m_number_formats;
     ::std::vector<xf> m_cell_style_formats;
     ::std::vector<xf> m_cell_formats;
     ::std::vector<cell_style> m_cell_styles;
