@@ -139,7 +139,9 @@ class gnumeric_style_attr_parser : public std::unary_function<xml_token_attr_t, 
 {
 public:
     gnumeric_style_attr_parser(spreadsheet::iface::import_styles& styles) :
-        m_styles(styles) {}
+        m_styles(styles),
+        m_fill(false),
+        m_protection(false) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -150,6 +152,8 @@ public:
                 spreadsheet::color_elem_t red, green, blue;
                 gnumeric_helper::parse_RGB_color_attribute(red, green, blue, attr.value);
                 m_styles.set_fill_fg_color(0, red, green, blue);
+
+                m_fill = true;
             }
             break;
             case XML_Back:
@@ -157,18 +161,24 @@ public:
                 spreadsheet::color_elem_t red, green, blue;
                 gnumeric_helper::parse_RGB_color_attribute(red, green, blue, attr.value);
                 m_styles.set_fill_bg_color(0, red, green, blue);
+
+                m_fill = true;
             }
             break;
             case XML_Hidden:
             {
                 bool b = atoi(attr.value.get());
                 m_styles.set_cell_hidden(b);
+
+                m_protection = true;
             }
             break;
             case XML_Locked:
             {
                 bool b = atoi(attr.value.get());
                 m_styles.set_cell_locked(b);
+
+                m_protection = true;
             }
             break;
             case XML_Format:
@@ -183,8 +193,21 @@ public:
         }
     }
 
+    bool is_protection_set() const
+    {
+        return m_protection;
+    }
+
+    bool is_fill_set() const
+    {
+        return m_fill;
+    }
+
 private:
     spreadsheet::iface::import_styles& m_styles;
+
+    bool m_fill;
+    bool m_protection;
 };
 
 }
@@ -285,7 +308,18 @@ void gnumeric_sheet_context::start_font(const xml_attrs_t& attrs)
 
 void gnumeric_sheet_context::start_style(const xml_attrs_t& attrs)
 {
-    for_each(attrs.begin(), attrs.end(), gnumeric_style_attr_parser(*mp_factory->get_styles()));
+    const gnumeric_style_attr_parser& attr_parser = for_each(attrs.begin(), attrs.end(), gnumeric_style_attr_parser(*mp_factory->get_styles()));
+    spreadsheet::iface::import_styles& styles = *mp_factory->get_styles();
+    if (attr_parser.is_fill_set())
+    {
+        size_t fill_id = styles.commit_fill();
+        styles.set_xf_fill(fill_id);
+    }
+    if (attr_parser.is_protection_set())
+    {
+        size_t protection_id = styles.commit_cell_protection();
+        styles.set_xf_protection(protection_id);
+    }
 }
 
 void gnumeric_sheet_context::start_style_region(const xml_attrs_t& attrs)
@@ -310,8 +344,6 @@ void gnumeric_sheet_context::end_font()
 void gnumeric_sheet_context::end_style()
 {
     spreadsheet::iface::import_styles& styles = *mp_factory->get_styles();
-    size_t fill_id = styles.commit_fill();
-    styles.set_xf_fill(fill_id);
     size_t id = styles.commit_cell_xf();
     mp_region_data->xf_id = id;
 }
