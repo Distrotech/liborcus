@@ -30,7 +30,7 @@
 
 #include <orcus/spreadsheet/import_interface.hpp>
 
-namespace orcus { namespace spreadsheet { namespace mock { namespace iface {
+namespace orcus { namespace spreadsheet { namespace mock {
 
 class import_shared_strings : public orcus::spreadsheet::iface::import_shared_strings
 {
@@ -160,6 +160,6 @@ public:
     virtual orcus::spreadsheet::iface::import_sheet* get_sheet(const char* sheet_name, size_t sheet_name_length);
 };
 
-}}}}
+}}}
 
 #endif

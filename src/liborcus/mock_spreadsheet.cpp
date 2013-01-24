@@ -31,7 +31,7 @@
 
 using namespace orcus::spreadsheet;
 
-namespace orcus { namespace spreadsheet { namespace mock { namespace iface {
+namespace orcus { namespace spreadsheet { namespace mock {
 
 //import_factory
 
@@ -167,4 +167,4 @@ void import_sheet::set_formula_result(row_t, col_t, const char*, size_t)
 }
 
 
-} } } }
+}}}

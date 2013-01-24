@@ -12,7 +12,7 @@
 using namespace orcus;
 using namespace std;
 using namespace orcus::spreadsheet;
-using namespace orcus::spreadsheet::mock::iface;
+using namespace orcus::spreadsheet::mock;
 
 namespace {
 
