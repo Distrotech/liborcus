@@ -5,6 +5,8 @@ EXTRA_PROGRAMS = \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-structure-tree
 
+TESTS =
+
 if HAVE_STATIC_LIB
 AM_CPPFLAGS = -D__ORCUS_STATIC_LIB=1
 else
@@ -115,6 +117,30 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	gnumeric_tokens.cpp \
 	orcus_gnumeric.cpp
 
+# gnumeric-cell-context-test
+
+EXTRA_PROGRAMS += \
+	gnumeric-cell-context-test
+
+gnumeric_cell_context_test_SOURCES = \
+	gnumeric_cell_context_test.cpp \
+	gnumeric_cell_context.cpp \
+	xml_context_base.cpp \
+	gnumeric_namespace_types.cpp \
+	tokens.cpp \
+	gnumeric_tokens.cpp \
+	odf_namespace_types.cpp \
+	spreadsheet_interface.cpp \
+	mock_spreadsheet.hpp \
+	mock_spreadsheet.cpp
+
+gnumeric_cell_context_test_LDADD = \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
+orcus_gnumeric_cell_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+
+TESTS += gnumeric-cell-context-test
+
 endif # WITH_GNUMERIC_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS = \
@@ -144,6 +170,6 @@ liborcus_test_xml_structure_tree_LDADD = \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus-@ORCUS_API_VERSION@.la
 
-TESTS = \
+TESTS += \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-structure-tree

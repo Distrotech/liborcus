@@ -25,7 +25,8 @@
  *
  ************************************************************************/
 
-#include "spreadsheet-mock.hpp"
+#include "mock_spreadsheet.hpp"
+
 #include <cassert>
 
 using namespace orcus::spreadsheet;

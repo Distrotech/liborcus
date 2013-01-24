@@ -222,7 +222,7 @@ if WITH_GNUMERIC_FILTER
 bin_PROGRAMS += \
 	orcus-gnumeric
 
-# orcus_gnumeric
+# orcus-gnumeric
 
 orcus_gnumeric_SOURCES = \
 	orcus_gnumeric_main.cpp
@@ -233,29 +233,6 @@ orcus_gnumeric_LDADD = \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 
 orcus_gnumeric_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
-
-# orcus-gnumeric-mock
-
-EXTRA_PROGRAMS += \
-	orcus-gnumeric-cell-context-test
-
-orcus_gnumeric_cell_context_test_SOURCES = \
-	gnumeric_cell_context_test.cpp \
-	liborcus/gnumeric_cell_context.cpp \
-	liborcus/xml_context_base.cpp \
-	liborcus/gnumeric_namespace_types.cpp \
-	liborcus/tokens.cpp \
-	liborcus/gnumeric_tokens.cpp \
-	liborcus/odf_namespace_types.cpp \
-	liborcus/spreadsheet_interface.cpp \
-	mock/spreadsheet-mock.cpp
-
-orcus_gnumeric_cell_context_test_LDADD = \
-	parser/liborcus-parser-@ORCUS_API_VERSION@.la
-
-orcus_gnumeric_cell_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
-
-TESTS += orcus-gnumeric-cell-context-test
 
 if HAVE_STATIC_LIB
 orcus_gnumeric_CPPFLAGS += -D__ORCUS_STATIC_LIB=1

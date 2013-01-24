@@ -1,12 +1,13 @@
-#include "liborcus/gnumeric_cell_context.hpp"
-#include "liborcus/gnumeric_tokens.hpp"
-#include "liborcus/gnumeric_namespace_types.hpp"
-#include "liborcus/gnumeric_token_constants.hpp"
-#include "mock/spreadsheet-mock.hpp"
+#include "gnumeric_cell_context.hpp"
+#include "gnumeric_tokens.hpp"
+#include "gnumeric_namespace_types.hpp"
+#include "gnumeric_token_constants.hpp"
+#include "mock_spreadsheet.hpp"
 #include "orcus/types.hpp"
 
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
 using namespace orcus;
 using namespace std;
@@ -99,5 +100,6 @@ int main()
 {
     test_cell_value();
     test_cell_string();
-    return 0;
+
+    return EXIT_SUCCESS;
 }
