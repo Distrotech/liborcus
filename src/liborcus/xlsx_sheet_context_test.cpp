@@ -1,15 +1,15 @@
-#include "mock/spreadsheet-mock.hpp"
-#include "liborcus/ooxml_namespace_types.hpp"
-#include "liborcus/ooxml_tokens.hpp"
-#include "liborcus/ooxml_schemas.hpp"
-#include "liborcus/xlsx_sheet_context.hpp"
-#include "liborcus/ooxml_token_constants.hpp"
+#include "mock_spreadsheet.hpp"
+#include "ooxml_namespace_types.hpp"
+#include "ooxml_tokens.hpp"
+#include "ooxml_schemas.hpp"
+#include "xlsx_sheet_context.hpp"
+#include "ooxml_token_constants.hpp"
 #include "orcus/types.hpp"
 
 using namespace orcus;
 using namespace std;
 using namespace orcus::spreadsheet;
-using namespace orcus::spreadsheet::mock::iface;
+using namespace orcus::spreadsheet::mock;
 
 namespace {
 

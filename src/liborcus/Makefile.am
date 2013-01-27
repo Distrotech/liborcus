@@ -44,6 +44,9 @@ if WITH_LIBZIP
 
 if WITH_XLSX_FILTER
 
+EXTRA_PROGRAMS += \
+	orcus-xlsx-sheet-context-test
+
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	ooxml_content_types.cpp \
 	ooxml_content_types.hpp \
@@ -75,6 +78,31 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	xlsx_types.hpp \
 	xlsx_workbook_context.cpp \
 	xlsx_workbook_context.hpp
+
+# orcus-xlsx-sheet-context-test
+
+orcus_xlsx_sheet_context_test_SOURCES = \
+	xlsx_sheet_context_test.cpp \
+	xlsx_sheet_context.cpp \
+	ooxml_global.cpp \
+	ooxml_namespace_types.cpp \
+	ooxml_tokens.cpp \
+	ooxml_schemas.cpp \
+	xml_context_base.cpp \
+	tokens.cpp \
+	global.cpp \
+	spreadsheet_interface.cpp \
+	mock_spreadsheet.hpp \
+	mock_spreadsheet.cpp
+
+orcus_xlsx_sheet_context_test_LDADD = \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
+orcus_xlsx_sheet_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS) -DNO_XML_EXPECTED
+
+TESTS += \
+	 orcus-xlsx-sheet-context-test
+
 
 endif # WITH_XLSX_FILTER
 

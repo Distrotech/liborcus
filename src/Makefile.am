@@ -181,8 +181,7 @@ bin_PROGRAMS += \
 	orcus-xlsx
 
 EXTRA_PROGRAMS += \
-	orcus-test-xlsx \
-	orcus-xlsx-sheet-context-test
+	orcus-test-xlsx
 
 # orcus-xlsx
 
@@ -212,29 +211,8 @@ orcus_test_xlsx_LDADD = \
 
 orcus_test_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
-# orcus-xlsx-sheet-context-test
-
-orcus_xlsx_sheet_context_test_SOURCES = \
-	xlsx_sheet_context_test.cpp \
-	liborcus/xlsx_sheet_context.cpp \
-	liborcus/ooxml_global.cpp \
-	liborcus/ooxml_namespace_types.cpp \
-	liborcus/ooxml_tokens.cpp \
-	liborcus/ooxml_schemas.cpp \
-	liborcus/xml_context_base.cpp \
-	liborcus/tokens.cpp \
-	liborcus/global.cpp \
-	liborcus/spreadsheet_interface.cpp \
-	mock/spreadsheet-mock.cpp
-
-orcus_xlsx_sheet_context_test_LDADD = \
-	parser/liborcus-parser-@ORCUS_API_VERSION@.la
-
-orcus_xlsx_sheet_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS) -DNO_XML_EXPECTED
-
 TESTS += \
-	 orcus-test-xlsx \
-	 orcus-xlsx-sheet-context-test
+	 orcus-test-xlsx
 
 
 endif # WITH_XLSX_FILTER
