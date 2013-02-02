@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="liborcus-parser"
 	ProjectGUID="{03B02C82-1064-420E-8AD7-8FB13DBEB584}"
 	RootNamespace="liborcusparser"
@@ -20,6 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -87,6 +88,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -160,11 +162,35 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\parser\base64.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\parser\cell_buffer.cpp"
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\parser\exception.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\parser\pstring.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\parser\sax_parser_global.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\parser\stream.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\parser\string_pool.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\parser\xml_namespace.cpp"
 				>
 			</File>
 		</Filter>
@@ -174,11 +200,31 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\..\include\orcus\base64.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\orcus\cell_buffer.hpp"
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\orcus\exception.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\orcus\sax_parser_global.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\orcus\stream.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\orcus\string_pool.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\orcus\xml_namespace.hpp"
 				>
 			</File>
 		</Filter>

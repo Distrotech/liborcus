@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="liborcus"
 	ProjectGUID="{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}"
 	RootNamespace="orcus"
@@ -178,10 +178,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\exception.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\liborcus\global.cpp"
 				>
 			</File>
@@ -215,10 +211,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\liborcus\spreadsheet_interface.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\string_pool.cpp"
 				>
 			</File>
 			<File
@@ -372,10 +364,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\include\orcus\cell_buffer.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\orcus\css_parser.hpp"
 				>
 			</File>
@@ -389,10 +377,6 @@
 			</File>
 			<File
 				RelativePath="..\..\include\orcus\env.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\exception.hpp"
 				>
 			</File>
 			<File
@@ -445,10 +429,6 @@
 			</File>
 			<File
 				RelativePath="..\..\include\orcus\types.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\orcus\xml_namespace.hpp"
 				>
 			</File>
 			<File
