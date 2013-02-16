@@ -34,6 +34,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <boost/noncopyable.hpp>
+
 using namespace std;
 
 namespace orcus {
