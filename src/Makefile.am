@@ -61,7 +61,8 @@ TESTS = \
 orcus_mso_encryption_SOURCES = orcus_mso_encryption.cpp
 orcus_mso_encryption_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
-	mso/liborcus-mso-@ORCUS_API_VERSION@.la
+	mso/liborcus-mso-@ORCUS_API_VERSION@.la \
+	$(BOOST_SYSTEM_LIB)
 
 orcus_mso_encryption_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
