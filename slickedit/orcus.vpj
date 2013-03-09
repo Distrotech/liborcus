@@ -321,6 +321,7 @@
 			<F N="../src/orcus_xlsx_main.cpp"/>
 			<F N="../src/orcus_xml_dump.cpp"/>
 			<F N="../src/orcus_xml_main.cpp"/>
+			<F N="../src/orcus_zip_dump.cpp"/>
 			<F N="../src/xml_map_sax_handler.cpp"/>
 			<F N="../src/xml_map_sax_handler.hpp"/>
 		</Folder>
