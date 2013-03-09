@@ -62,30 +62,51 @@ public:
     }
 };
 
+struct zip_file_param
+{
+    enum compress_method_type { stored = 0, deflated = 8 };
+
+    string filename;
+    compress_method_type compress_method;
+    size_t offset_in_archive;
+    size_t size_compressed;
+    size_t size_uncompressed;
+};
+
 class zip_inflater
 {
-    z_stream* m_zlib_cxt;
+    z_stream m_zlib_cxt;
 
     zip_inflater(); // disabled
 public:
-    zip_inflater(z_stream* cxt) : m_zlib_cxt(cxt) {}
+    zip_inflater(vector<unsigned char>& raw_buf, vector<unsigned char>& dest_buf, const zip_file_param& param)
+    {
+        m_zlib_cxt.total_out = 0;
+        m_zlib_cxt.zalloc = 0;
+        m_zlib_cxt.zfree = 0;
+        m_zlib_cxt.opaque = 0;
+        m_zlib_cxt.next_in = &raw_buf[0];
+        m_zlib_cxt.avail_in = param.size_compressed;
+
+        m_zlib_cxt.next_out = &dest_buf[0];
+        m_zlib_cxt.avail_out = param.size_uncompressed;
+    }
 
     ~zip_inflater()
     {
-        if (m_zlib_cxt)
-            inflateEnd(m_zlib_cxt);
+        inflateEnd(&m_zlib_cxt);
     }
 
     bool init()
     {
-        int err = inflateInit2(m_zlib_cxt, -MAX_WBITS);
+        int err = inflateInit2(&m_zlib_cxt, -MAX_WBITS);
         return err == Z_OK;
     }
 
     bool inflate()
     {
-        int err = ::inflate(m_zlib_cxt, Z_SYNC_FLUSH);
-        if (err >= 0 && m_zlib_cxt->msg)
+        int err = ::inflate(&m_zlib_cxt, Z_SYNC_FLUSH);
+        if (err >= 0 && m_zlib_cxt.msg)
             return false;
 
         return true;
@@ -171,17 +192,6 @@ public:
     {
         return m_pos + m_pos_internal;
     }
-};
-
-struct zip_file_param
-{
-    enum compress_method_type { stored = 0, deflated = 8 };
-
-    string filename;
-    compress_method_type compress_method;
-    size_t offset_in_archive;
-    size_t size_compressed;
-    size_t size_uncompressed;
 };
 
 } // anonymous namespace
@@ -397,22 +407,8 @@ void zip_archive_impl::dump_file_entry(size_t pos) const
         case zip_file_param::deflated:
         {
             // deflate compression
-            z_stream zlib_cxt;
-            zlib_cxt.total_out = 0;
-            zlib_cxt.zalloc = 0;
-            zlib_cxt.zfree = 0;
-            zlib_cxt.opaque = 0;
-            zlib_cxt.next_in = &raw_buf[0];
-            zlib_cxt.avail_in = param.size_compressed;
-
-            size_t zip_buf_size = param.size_uncompressed;
-
-            vector<unsigned char> zip_buf(zip_buf_size+1, 0);
-
-            zlib_cxt.next_out = &zip_buf[0];
-            zlib_cxt.avail_out = zip_buf_size;
-
-            zip_inflater inflater(&zlib_cxt);
+            vector<unsigned char> zip_buf(param.size_uncompressed+1, 0); // null-terminated
+            zip_inflater inflater(raw_buf, zip_buf, param);
             if (!inflater.init())
                 break;
 
