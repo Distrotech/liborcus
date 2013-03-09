@@ -4,7 +4,8 @@ INCLUDES = -I$(top_srcdir)/include
 
 bin_PROGRAMS = \
 	orcus-mso-encryption \
-	orcus-xml-dump
+	orcus-xml-dump \
+	orcus-zip-dump
 
 EXTRA_PROGRAMS = \
 	orcus-test-common \
@@ -15,6 +16,16 @@ COMMON_CPPFLAGS = $(BOOST_SYSTEM_CFLAGS)
 if HAVE_STATIC_LIB
 COMMON_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 endif
+
+# orcus-zip-dump
+
+orcus_zip_dump_SOURCES = \
+	orcus_zip_dump.cpp
+
+orcus_zip_dump_LDADD = \
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
+orcus_zip_dump_CPPFLAGS =
 
 # orcus-xml-dump
 

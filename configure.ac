@@ -121,6 +121,9 @@ AS_IF([test "x$enable_debug" != "xno"], [
 	AC_DEFINE([NDEBUG], [], [Disable debugging information])
 ])
 
+# zlib is a hard requirement in liborcus-parser.
+PKG_CHECK_MODULES([ZLIB], [zlib])
+
 # ==============
 # libzip support
 # ==============
@@ -163,9 +166,6 @@ AC_ARG_WITH(gnumeric-filter,
 	[with_gnumeric_filter="$withval"],
 	[with_gnumeric_filter=yes]
 )
-AS_IF([test "x$with_gnumeric_filter" != "xno"], [
-	PKG_CHECK_MODULES([ZLIB], [zlib])
-])
 
 AM_CONDITIONAL([WITH_LIBZIP], [test "x$with_libzip" != "xno"])
 AS_IF([test "x$with_libzip" == "xno"], [

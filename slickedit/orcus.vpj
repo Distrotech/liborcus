@@ -182,6 +182,7 @@
 				<F N="../include/orcus/types.hpp"/>
 				<F N="../include/orcus/xml_namespace.hpp"/>
 				<F N="../include/orcus/xml_structure_tree.hpp"/>
+				<F N="../include/orcus/zip_archive.hpp"/>
 			</Folder>
 		</Folder>
 		<Folder Name="../src">
@@ -291,6 +292,7 @@
 				<F N="../src/parser/string_pool_test.cpp"/>
 				<F N="../src/parser/xml_namespace.cpp"/>
 				<F N="../src/parser/xml_namespace_test.cpp"/>
+				<F N="../src/parser/zip_archive.cpp"/>
 			</Folder>
 			<Folder Name="spreadsheet">
 				<F N="../src/spreadsheet/document.cpp"/>
