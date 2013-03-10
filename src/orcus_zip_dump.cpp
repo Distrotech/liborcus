@@ -40,7 +40,6 @@ int main(int argc, char** argv)
     orcus::zip_archive_stream_fd stream(argv[1]);
     orcus::zip_archive archive(&stream);
     archive.load();
-    archive.read_file_entries();
     size_t n = archive.get_file_entry_count();
 
     for (size_t i = 0; i < n; ++i)

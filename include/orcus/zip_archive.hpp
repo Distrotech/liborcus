@@ -62,7 +62,6 @@ public:
     ~zip_archive();
 
     void load();
-    void read_file_entries();
     void dump_file_entry(size_t pos) const;
     size_t get_file_entry_count() const;
 };

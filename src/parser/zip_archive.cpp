@@ -192,7 +192,6 @@ public:
     ~zip_archive_impl();
 
     void load();
-    void read_file_entries();
     void dump_file_entry(size_t pos) const;
 
     size_t get_file_entry_count() const
@@ -209,6 +208,7 @@ private:
     size_t seek_central_dir();
 
     void read_central_dir_end();
+    void read_file_entries();
 };
 
 zip_archive_impl::zip_archive_impl(zip_archive_stream* stream) :
@@ -233,14 +233,17 @@ void zip_archive_impl::load()
     cout << "central directory position: " << central_dir_end_pos << endl;
 
     m_central_dir_end = stream(m_stream, central_dir_end_pos);
+
+    // Read the end part of the central directory.
+    read_central_dir_end();
+
+    // Read file entries that are in the front part of the central directory.
+    read_file_entries();
 }
 
 void zip_archive_impl::read_file_entries()
 {
     m_file_params.clear();
-
-    // Read the end part of the central directory.
-    read_central_dir_end();
 
     stream central_dir(m_stream, m_central_dir_pos);
     uint32_t magic_num = central_dir.read_4bytes();
@@ -491,11 +494,6 @@ zip_archive::~zip_archive()
 void zip_archive::load()
 {
     mp_impl->load();
-}
-
-void zip_archive::read_file_entries()
-{
-    mp_impl->read_file_entries();
 }
 
 void zip_archive::dump_file_entry(size_t pos) const
