@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "orcus/zip_archive.hpp"
+#include "orcus/zip_archive_stream.hpp"
 
 #include <cstdio>
 #include <cstdlib>
@@ -78,10 +79,10 @@ public:
         m_zlib_cxt.zalloc = 0;
         m_zlib_cxt.zfree = 0;
         m_zlib_cxt.opaque = 0;
-        m_zlib_cxt.next_in = &raw_buf[0];
+        m_zlib_cxt.next_in = static_cast<Bytef*>(&raw_buf[0]);
         m_zlib_cxt.avail_in = param.size_compressed;
 
-        m_zlib_cxt.next_out = &dest_buf[0];
+        m_zlib_cxt.next_out = static_cast<Bytef*>(&dest_buf[0]);
         m_zlib_cxt.avail_out = param.size_uncompressed;
     }
 
@@ -112,30 +113,25 @@ public:
  */
 class stream
 {
-    FILE* m_stream;
+    zip_archive_stream* m_stream;
     size_t m_pos;
     size_t m_pos_internal;
 
 public:
     stream() : m_stream(NULL), m_pos(0), m_pos_internal(0) {}
-    stream(FILE* stream, size_t pos) : m_stream(stream), m_pos(pos), m_pos_internal(0) {}
+    stream(zip_archive_stream* stream, size_t pos) : m_stream(stream), m_pos(pos), m_pos_internal(0) {}
 
     string read_string(size_t n)
     {
         if (!n)
             throw zip_error("attempt to read string of zero size.");
 
-        if (fseeko(m_stream, m_pos+m_pos_internal, SEEK_SET))
-            throw zip_error();
+        m_stream->seek(m_pos+m_pos_internal);
 
-        vector<char> buf(n+1, '\0');
-        size_t bytes_read = fread(&buf[0], 1, n, m_stream);
-        if (bytes_read != n)
-            throw zip_error("failed to read string.");
-
+        vector<unsigned char> buf(n+1, '\0');
+        m_stream->read(&buf[0], n);
         m_pos_internal += n;
-
-        return string(&buf[0]);
+        return string(reinterpret_cast<const char*>(&buf[0]));
     }
 
     void skip_bytes(size_t n)
@@ -145,14 +141,9 @@ public:
 
     uint32_t read_4bytes()
     {
-        if (fseeko(m_stream, m_pos+m_pos_internal, SEEK_SET))
-            throw zip_error();
-
+        m_stream->seek(m_pos+m_pos_internal);
         unsigned char buf[4];
-        size_t bytes_read = fread(buf, 1, 4, m_stream);
-        if (bytes_read != 4)
-            throw zip_error("failed to read 4 bytes.");
-
+        m_stream->read(&buf[0], 4);
         m_pos_internal += 4;
 
         uint32_t ret = buf[0];
@@ -165,14 +156,9 @@ public:
 
     uint16_t read_2bytes()
     {
-        if (fseeko(m_stream, m_pos+m_pos_internal, SEEK_SET))
-            throw zip_error();
-
+        m_stream->seek(m_pos+m_pos_internal);
         unsigned char buf[2];
-        size_t bytes_read = fread(buf, 1, 2, m_stream);
-        if (bytes_read != 2)
-            throw zip_error();
-
+        m_stream->read(&buf[0], 2);
         m_pos_internal += 2;
 
         uint16_t ret = buf[0];
@@ -193,8 +179,7 @@ class zip_archive_impl
 {
     typedef std::vector<zip_file_param> file_params_type;
 
-    string m_filepath;
-    FILE* m_stream;
+    zip_archive_stream* m_stream;
     off_t m_stream_size;
     size_t m_central_dir_pos;
 
@@ -203,10 +188,10 @@ class zip_archive_impl
     file_params_type m_file_params;
 
 public:
-    zip_archive_impl(const char* path);
+    zip_archive_impl(zip_archive_stream* stream);
     ~zip_archive_impl();
 
-    void open();
+    void load();
     void read_file_entries();
     void dump_file_entry(size_t pos) const;
 
@@ -226,29 +211,21 @@ private:
     void read_central_dir_end();
 };
 
-zip_archive_impl::zip_archive_impl(const char* path) :
-    m_filepath(path), m_stream(NULL), m_stream_size(0), m_central_dir_pos(0) {}
+zip_archive_impl::zip_archive_impl(zip_archive_stream* stream) :
+    m_stream(stream), m_stream_size(0), m_central_dir_pos(0)
+{
+    if (!m_stream)
+        zip_error("null stream is not allowed.");
+
+    m_stream_size = m_stream->size();
+}
 
 zip_archive_impl::~zip_archive_impl()
 {
-    if (m_stream)
-        fclose(m_stream);
 }
 
-void zip_archive_impl::open()
+void zip_archive_impl::load()
 {
-    cout << "filename: " << m_filepath << endl;
-    m_stream = fopen(m_filepath.c_str(), "r");
-    if (!m_stream)
-        // failed to open the file.
-        throw zip_error();
-
-    if (fseeko(m_stream, 0, SEEK_END))
-        throw zip_error();
-
-    m_stream_size = ftello(m_stream);
-    cout << "stream size: " << m_stream_size << endl;
-
     size_t central_dir_end_pos = seek_central_dir();
     if (!central_dir_end_pos)
         throw zip_error();
@@ -381,14 +358,10 @@ void zip_archive_impl::dump_file_entry(size_t pos) const
 
     // Header followed by the actual data bytes.
 
-    if (fseeko(m_stream, file_header.tell(), SEEK_SET))
-        // Failed to seek in the stream.
-        return;
+    m_stream->seek(file_header.tell());
 
     vector<unsigned char> raw_buf(param.size_compressed+1, 0);
-    size_t size_read = fread(&raw_buf[0], 1, param.size_compressed, m_stream);
-    if (size_read != param.size_compressed)
-        throw zip_error("actual size read doesn't match what was expected.");
+    m_stream->read(&raw_buf[0], param.size_compressed);
 
     cout << "-- data section" << endl;
     switch (param.compress_method)
@@ -448,12 +421,8 @@ size_t zip_archive_impl::seek_central_dir()
 
         size_t read_pos = read_end_pos - buf.size();
         cout << "read pos: " << read_pos << endl;
-        if (fseeko(m_stream, read_pos, SEEK_SET))
-            throw zip_error();
-
-        size_t bytes_read = fread(&buf[0], 1, buf.size(), m_stream);
-        if (bytes_read != buf.size())
-            throw zip_error();
+        m_stream->seek(read_pos);
+        m_stream->read(&buf[0], buf.size());
 
         // Search this byte segment for the magic number.
         vector<unsigned char>::reverse_iterator i = buf.rbegin(), ie = buf.rend();
@@ -509,8 +478,8 @@ void zip_archive_impl::read_central_dir_end()
     cout << "--" << endl;
 }
 
-zip_archive::zip_archive(const char* filepath) :
-    mp_impl(new zip_archive_impl(filepath))
+zip_archive::zip_archive(zip_archive_stream* stream) :
+    mp_impl(new zip_archive_impl(stream))
 {
 }
 
@@ -519,9 +488,9 @@ zip_archive::~zip_archive()
     delete mp_impl;
 }
 
-void zip_archive::open()
+void zip_archive::load()
 {
-    mp_impl->open();
+    mp_impl->load();
 }
 
 void zip_archive::read_file_entries()

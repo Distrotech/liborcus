@@ -39,10 +39,10 @@ class ORCUS_DLLPUBLIC zip_archive_stream
 public:
     virtual ~zip_archive_stream();
 
+    virtual size_t size() const = 0;
     virtual size_t tell() const = 0;
     virtual void seek(size_t pos) = 0;
-    virtual void seek_end() = 0;
-    virtual void read(char* buffer, size_t length) const = 0;
+    virtual void read(unsigned char* buffer, size_t length) const = 0;
 };
 
 class ORCUS_DLLPUBLIC zip_archive_stream_fd : public zip_archive_stream
@@ -55,13 +55,10 @@ public:
     zip_archive_stream_fd(const char* filepath);
     virtual ~zip_archive_stream_fd();
 
-    virtual void seek_end();
-    virtual void seek(size_t pos);
-
-    virtual void read(char* buffer, size_t length) const;
-
+    virtual size_t size() const;
     virtual size_t tell() const;
-
+    virtual void seek(size_t pos);
+    virtual void read(unsigned char* buffer, size_t length) const;
 };
 
 }

@@ -35,6 +35,7 @@
 
 namespace orcus {
 
+class zip_archive_stream;
 class zip_archive_impl;
 
 class ORCUS_DLLPUBLIC zip_error : public std::exception
@@ -57,10 +58,10 @@ class ORCUS_DLLPUBLIC zip_archive
     zip_archive& operator= (const zip_archive); // disabled
 
 public:
-    zip_archive(const char* filepath);
+    zip_archive(zip_archive_stream* stream);
     ~zip_archive();
 
-    void open();
+    void load();
     void read_file_entries();
     void dump_file_entry(size_t pos) const;
     size_t get_file_entry_count() const;

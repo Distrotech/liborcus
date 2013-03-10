@@ -54,12 +54,20 @@ zip_archive_stream_fd::~zip_archive_stream_fd()
         fclose(m_stream);
 }
 
+size_t zip_archive_stream_fd::size() const
+{
+    if (fseeko(m_stream, 0, SEEK_END))
+        throw zip_error("failed to set seek position to the end of stream.");
+
+    return ftello(m_stream);
+}
+
 size_t zip_archive_stream_fd::tell() const
 {
     return ftello(m_stream);
 }
 
-void zip_archive_stream_fd::read(char* buffer, size_t length) const
+void zip_archive_stream_fd::read(unsigned char* buffer, size_t length) const
 {
     size_t size_read = fread(buffer, 1, length, m_stream);
     if (size_read != length)
@@ -72,16 +80,6 @@ void zip_archive_stream_fd::seek(size_t pos)
     {
         ostringstream os;
         os << "failed to set seek position to " << pos << ".";
-        throw zip_error(os.str());
-    }
-}
-
-void zip_archive_stream_fd::seek_end()
-{
-    if (fseeko(m_stream, 0, SEEK_END))
-    {
-        ostringstream os;
-        os << "failed to set seek position to the end of the stream.";
         throw zip_error(os.str());
     }
 }

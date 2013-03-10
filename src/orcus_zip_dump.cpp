@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "orcus/zip_archive.hpp"
+#include "orcus/zip_archive_stream.hpp"
 
 #include <cstdlib>
 
@@ -36,8 +37,9 @@ int main(int argc, char** argv)
     if (argc < 2)
         return EXIT_FAILURE;
 
-    orcus::zip_archive archive(argv[1]);
-    archive.open();
+    orcus::zip_archive_stream_fd stream(argv[1]);
+    orcus::zip_archive archive(&stream);
+    archive.load();
     archive.read_file_entries();
     size_t n = archive.get_file_entry_count();
 
