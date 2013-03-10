@@ -13,7 +13,8 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	stream.cpp \
 	string_pool.cpp \
 	xml_namespace.cpp \
-	zip_archive.cpp
+	zip_archive.cpp \
+	zip_archive_stream.cpp
 
 liborcus_parser_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 liborcus_parser_@ORCUS_API_VERSION@_la_LIBADD = \

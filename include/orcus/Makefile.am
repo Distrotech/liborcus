@@ -22,7 +22,8 @@ liborcus_HEADERS = \
 	types.hpp \
 	xml_namespace.hpp \
 	xml_structure_tree.hpp \
-	zip_archive.hpp
+	zip_archive.hpp \
+	zip_archive_stream.hpp
 
 if WITH_LIBZIP
 

@@ -30,8 +30,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-#include <string>
-#include <exception>
 #include <vector>
 #include <stdint.h>
 #include <cstdio>
@@ -44,23 +42,18 @@ using namespace std;
 
 namespace orcus {
 
-namespace {
+zip_error::zip_error() {}
+zip_error::zip_error(const string& msg) : m_msg(msg) {}
+zip_error::~zip_error() throw() {}
 
-class zip_error : public exception
+const char* zip_error::what() const throw()
 {
-    string m_msg;
-public:
-    zip_error() {}
-    zip_error(const string& msg) : m_msg(msg) {}
-    virtual ~zip_error() throw() {}
+    ostringstream os;
+    os << "zip error: " << m_msg;
+    return os.str().c_str();
+}
 
-    virtual const char* what() const throw()
-    {
-        ostringstream os;
-        os << "zip error: " << m_msg;
-        return os.str().c_str();
-    }
-};
+namespace {
 
 struct zip_file_param
 {

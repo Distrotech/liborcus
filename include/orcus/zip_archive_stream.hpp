@@ -25,45 +25,43 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_ZIP_ARCHIVE_HPP__
-#define __ORCUS_ZIP_ARCHIVE_HPP__
+#ifndef __ORCUS_ZIP_ARCHIVE_STREAM_HPP__
+#define __ORCUS_ZIP_ARCHIVE_STREAM_HPP__
 
 #include "env.hpp"
 #include <cstdlib>
-#include <exception>
-#include <string>
+#include <cstdio>
 
 namespace orcus {
 
-class zip_archive_impl;
-
-class ORCUS_DLLPUBLIC zip_error : public std::exception
+class ORCUS_DLLPUBLIC zip_archive_stream
 {
-    std::string m_msg;
 public:
-    zip_error();
-    zip_error(const std::string& msg);
-    virtual ~zip_error() throw();
+    virtual ~zip_archive_stream();
 
-    virtual const char* what() const throw();
+    virtual size_t tell() const = 0;
+    virtual void seek(size_t pos) = 0;
+    virtual void seek_end() = 0;
+    virtual void read(char* buffer, size_t length) const = 0;
 };
 
-class ORCUS_DLLPUBLIC zip_archive
+class ORCUS_DLLPUBLIC zip_archive_stream_fd : public zip_archive_stream
 {
-    zip_archive_impl* mp_impl;
+    FILE* m_stream;
 
-    zip_archive(); // disabled
-    zip_archive(const zip_archive&); // disabled
-    zip_archive& operator= (const zip_archive); // disabled
+    zip_archive_stream_fd(); // disabled
 
 public:
-    zip_archive(const char* filepath);
-    ~zip_archive();
+    zip_archive_stream_fd(const char* filepath);
+    virtual ~zip_archive_stream_fd();
 
-    void open();
-    void read_file_entries();
-    void dump_file_entry(size_t pos) const;
-    size_t get_file_entry_count() const;
+    virtual void seek_end();
+    virtual void seek(size_t pos);
+
+    virtual void read(char* buffer, size_t length) const;
+
+    virtual size_t tell() const;
+
 };
 
 }
