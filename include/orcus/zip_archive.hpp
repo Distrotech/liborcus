@@ -61,8 +61,27 @@ public:
     zip_archive(zip_archive_stream* stream);
     ~zip_archive();
 
+    /**
+     * Loading involves the parsing of the central directory of a zip archive
+     * (located toward the end of the stream) and building of file entry data
+     * which are stored in the central directory.
+     */
     void load();
-    void dump_file_entry(size_t pos) const;
+
+    /**
+     * Dump the content of a specified file entry to stdout.
+     *
+     * @param index file entry index
+     */
+    void dump_file_entry(size_t index) const;
+
+    /**
+     * Return the number of file entries stored in this zip archive.  Note
+     * that a file entry may be a directory, so the number of files stored in
+     * the zip archive may not equal the number of file entries.
+     *
+     * @return number of file entries.
+     */
     size_t get_file_entry_count() const;
 };
 

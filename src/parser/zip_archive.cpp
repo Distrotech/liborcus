@@ -496,9 +496,9 @@ void zip_archive::load()
     mp_impl->load();
 }
 
-void zip_archive::dump_file_entry(size_t pos) const
+void zip_archive::dump_file_entry(size_t index) const
 {
-    mp_impl->dump_file_entry(pos);
+    mp_impl->dump_file_entry(index);
 }
 
 size_t zip_archive::get_file_entry_count() const
