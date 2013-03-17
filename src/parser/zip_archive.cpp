@@ -40,6 +40,8 @@
 #include <zlib.h>
 #include <zconf.h>
 
+#define ORCUS_DEBUG_ZIP_ARCHIVE 1
+
 using namespace std;
 
 namespace orcus {
@@ -175,6 +177,21 @@ public:
     }
 };
 
+/**
+ * Content of the end part of the central directory.
+ */
+struct central_dir_end
+{
+    uint32_t magic_number;
+    uint16_t this_disk_id;
+    uint16_t central_dir_disk_id;
+    uint16_t num_central_dir_records_local;
+    uint16_t num_celtral_dir_records_total;
+    uint32_t size_central_dir;
+    size_t central_dir_pos;
+    uint16_t comment_length;
+};
+
 } // anonymous namespace
 
 class zip_archive_impl
@@ -236,8 +253,6 @@ void zip_archive_impl::load()
     size_t central_dir_end_pos = seek_central_dir();
     if (!central_dir_end_pos)
         throw zip_error();
-
-    cout << "central directory position: " << central_dir_end_pos << endl;
 
     m_central_dir_end = stream(m_stream, central_dir_end_pos);
 
@@ -450,8 +465,6 @@ bool zip_archive_impl::read_file_entry(const char* entry_name, vector<unsigned c
 
 size_t zip_archive_impl::seek_central_dir()
 {
-    cout << "searching for the central directory position..." << endl;
-
     // Search for the position of 0x06054b50 (read in little endian order - so
     // it's 0x50, 0x4b, 0x05, 0x06 in this order) somewhere near the end of
     // the stream.
@@ -470,14 +483,10 @@ size_t zip_archive_impl::seek_central_dir()
     while (true)
     {
         if (read_end_pos < buf.size())
-        {
             // Last segment to read.
-            cout << "last segment to read" << endl;
             buf.resize(read_end_pos);
-        }
 
         size_t read_pos = read_end_pos - buf.size();
-        cout << "read pos: " << read_pos << endl;
         m_stream->seek(read_pos);
         m_stream->read(&buf[0], buf.size());
 
@@ -510,29 +519,30 @@ size_t zip_archive_impl::seek_central_dir()
 
 void zip_archive_impl::read_central_dir_end()
 {
+    central_dir_end content;
+    content.magic_number = m_central_dir_end.read_4bytes();
+    content.this_disk_id = m_central_dir_end.read_2bytes();
+    content.central_dir_disk_id = m_central_dir_end.read_2bytes();
+    content.num_central_dir_records_local = m_central_dir_end.read_2bytes();
+    content.num_celtral_dir_records_total = m_central_dir_end.read_2bytes();
+    content.size_central_dir = m_central_dir_end.read_4bytes();
+    content.central_dir_pos = m_central_dir_end.read_4bytes();
+    m_central_dir_pos = content.central_dir_pos;
+
+    content.comment_length = m_central_dir_end.read_2bytes();
+
+#if ORCUS_DEBUG_ZIP_ARCHIVE
     cout << "-- central directory content" << endl;
-
-    uint32_t v32 = m_central_dir_end.read_4bytes();
-    printf("  magic number: 0x%8.8x\n", v32);
-
-    uint16_t v16 = m_central_dir_end.read_2bytes();
-    printf("  number of this disk: %d\n", v16);
-    v16 = m_central_dir_end.read_2bytes();
-    printf("  disk where central directory starts: %d\n", v16);
-    v16 = m_central_dir_end.read_2bytes();
-    printf("  number of central directory records on this disk: %d\n", v16);
-    v16 = m_central_dir_end.read_2bytes();
-    printf("  total number of central directory records: %d\n", v16);
-    v32 = m_central_dir_end.read_4bytes();
-    printf("  size of central directory: %d\n", v32);
-    v32 = m_central_dir_end.read_4bytes();
-    printf("  offset of start of central directory, relative to start of archive: %d\n", v32);
-    m_central_dir_pos = v32;
-
-    v16 = m_central_dir_end.read_2bytes();
-    printf("  comment length: %d\n", v16);
-
+    printf("  magic number: 0x%8.8x\n", content.magic_number);
+    cout << "  number of this disk: " << content.this_disk_id << endl;
+    cout << "  disk where central directory starts: " << content.central_dir_disk_id << endl;
+    cout << "  number of central directory records on this disk: " << content.num_central_dir_records_local << endl;
+    cout << "  total number of central directory records: " << content.num_celtral_dir_records_total << endl;
+    cout << "  size of central directory: " << content.size_central_dir << endl;
+    cout << "  offset of start of central directory, relative to start of archive: " << content.central_dir_pos << endl;
+    cout << "  comment length: " << content.comment_length << endl;
     cout << "--" << endl;
+#endif
 }
 
 zip_archive::zip_archive(zip_archive_stream* stream) :
