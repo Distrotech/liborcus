@@ -72,11 +72,11 @@ void orcus_ods::list_content(const zip_archive& archive) const
 
     for (size_t i = 0; i < num; ++i)
     {
-        const char* filename = archive.get_file_entry_name(i);
-        if (filename)
-            cout << filename << endl;
-        else
+        pstring filename = archive.get_file_entry_name(i);
+        if (filename.empty())
             cout << "(empty)" << endl;
+        else
+            cout << filename << endl;
     }
 }
 

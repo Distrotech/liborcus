@@ -63,7 +63,7 @@ struct zip_file_param
 {
     enum compress_method_type { stored = 0, deflated = 8 };
 
-    string filename;
+    pstring filename;
     compress_method_type compress_method;
     size_t offset_file_header;
     size_t offset_data_stream;
@@ -137,21 +137,32 @@ class zip_stream_parser
     size_t m_pos;
     size_t m_pos_internal;
 
+    void read_string_to_buffer(size_t n, vector<unsigned char>& buf)
+    {
+        if (!n)
+            throw zip_error("attempt to read string of zero size.");
+
+        m_stream->seek(m_pos+m_pos_internal);
+        m_stream->read(&buf[0], n);
+        m_pos_internal += n;
+    }
+
 public:
     zip_stream_parser() : m_stream(NULL), m_pos(0), m_pos_internal(0) {}
     zip_stream_parser(zip_archive_stream* stream, size_t pos) : m_stream(stream), m_pos(pos), m_pos_internal(0) {}
 
     string read_string(size_t n)
     {
-        if (!n)
-            throw zip_error("attempt to read string of zero size.");
-
-        m_stream->seek(m_pos+m_pos_internal);
-
         vector<unsigned char> buf(n+1, '\0');
-        m_stream->read(&buf[0], n);
-        m_pos_internal += n;
+        read_string_to_buffer(n, buf);
         return string(reinterpret_cast<const char*>(&buf[0]));
+    }
+
+    pstring read_string(size_t n, string_pool& pool)
+    {
+        vector<unsigned char> buf(n+1, '\0');
+        read_string_to_buffer(n, buf);
+        return pool.intern(reinterpret_cast<const char*>(&buf[0]), n).first;
     }
 
     void skip_bytes(size_t n)
@@ -232,14 +243,14 @@ public:
     void load();
     void dump_file_entry(size_t pos) const;
     void dump_file_entry(const char* entry_name) const;
-    const char* get_file_entry_name(size_t pos) const;
+    pstring get_file_entry_name(size_t pos) const;
 
     size_t get_file_entry_count() const
     {
         return m_file_params.size();
     }
 
-    bool read_file_entry(const char* entry_name, vector<unsigned char>& buf) const;
+    bool read_file_entry(const pstring& entry_name, vector<unsigned char>& buf) const;
 
 private:
 
@@ -312,7 +323,7 @@ void zip_archive_impl::read_file_entries()
         param.offset_file_header = central_dir.read_4bytes();
 
         if (param.filename_length)
-            param.filename = central_dir.read_string(param.filename_length);
+            param.filename = central_dir.read_string(param.filename_length, m_pool);
 
         if (param.extra_field_length)
             // Ignore extra field for now.
@@ -325,11 +336,7 @@ void zip_archive_impl::read_file_entries()
         magic_num = central_dir.read_4bytes(); // magic number for the next entry.
 
         m_file_params.push_back(param);
-        std::pair<pstring,bool> r = m_pool.intern(&param.filename[0], param.filename.size());
-        if (!r.second)
-            throw zip_error("Failed to intern a file name entry.");
-
-        m_filenames.insert(filename_map_type::value_type(r.first, m_file_params.size()-1));
+        m_filenames.insert(filename_map_type::value_type(param.filename, m_file_params.size()-1));
 
 #if ORCUS_DEBUG_ZIP_ARCHIVE
         cout << "-- file entries" << endl;
@@ -386,7 +393,7 @@ void zip_archive_impl::dump_file_entry(size_t pos) const
     cout << "  compressed size: " << v32 << endl;
     v32 = file_header.read_4bytes();
     cout << "  uncompressed size: " << v32 << endl;
-    uint16_t filename_len = file_header.read_2bytes();
+    size_t filename_len = file_header.read_2bytes();
     cout << "  filename length: " << filename_len << endl;
     uint16_t extra_field_len = file_header.read_2bytes();
     cout << "  extra field length: " << extra_field_len << endl;
@@ -407,7 +414,7 @@ void zip_archive_impl::dump_file_entry(size_t pos) const
     m_stream->seek(file_header.tell());
 
     vector<unsigned char> buf;
-    if (read_file_entry(param.filename.c_str(), buf))
+    if (read_file_entry(param.filename, buf))
     {
         cout << "-- data section" << endl;
         cout << &buf[0] << endl;
@@ -429,15 +436,15 @@ void zip_archive_impl::dump_file_entry(const char* entry_name) const
     dump_file_entry(it->second);
 }
 
-const char* zip_archive_impl::get_file_entry_name(size_t pos) const
+pstring zip_archive_impl::get_file_entry_name(size_t pos) const
 {
     if (pos >= m_file_params.size())
         return NULL;
 
-    return m_file_params[pos].filename.c_str();
+    return m_file_params[pos].filename;
 }
 
-bool zip_archive_impl::read_file_entry(const char* entry_name, vector<unsigned char>& buf) const
+bool zip_archive_impl::read_file_entry(const pstring& entry_name, vector<unsigned char>& buf) const
 {
     pstring name(entry_name);
     filename_map_type::const_iterator it = m_filenames.find(name);
@@ -603,7 +610,7 @@ void zip_archive::dump_file_entry(size_t index) const
     mp_impl->dump_file_entry(index);
 }
 
-const char* zip_archive::get_file_entry_name(size_t index) const
+pstring zip_archive::get_file_entry_name(size_t index) const
 {
     return mp_impl->get_file_entry_name(index);
 }
@@ -618,7 +625,7 @@ size_t zip_archive::get_file_entry_count() const
     return mp_impl->get_file_entry_count();
 }
 
-bool zip_archive::read_file_entry(const char* entry_name, vector<unsigned char>& buf) const
+bool zip_archive::read_file_entry(const pstring& entry_name, vector<unsigned char>& buf) const
 {
     return mp_impl->read_file_entry(entry_name, buf);
 }

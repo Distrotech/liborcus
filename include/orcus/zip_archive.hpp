@@ -40,6 +40,7 @@ namespace orcus {
 
 class zip_archive_stream;
 class zip_archive_impl;
+class pstring;
 
 class ORCUS_DLLPUBLIC zip_error : public std::exception
 {
@@ -86,7 +87,14 @@ public:
      */
     void dump_file_entry(const char* entry_name) const;
 
-    const char* get_file_entry_name(size_t index) const;
+    /**
+     * Get file entry name from its index.
+     *
+     * @param index file entry index
+     *
+     * @return file entry name
+     */
+    pstring get_file_entry_name(size_t index) const;
 
     /**
      * Return the number of file entries stored in this zip archive.  Note
@@ -108,7 +116,7 @@ public:
      *
      * @return true if successful, false otherwise.
      */
-    bool read_file_entry(const char* entry_name, std::vector<unsigned char>& buf) const;
+    bool read_file_entry(const pstring& entry_name, std::vector<unsigned char>& buf) const;
 };
 
 }
