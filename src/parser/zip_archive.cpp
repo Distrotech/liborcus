@@ -375,35 +375,13 @@ void zip_archive_impl::dump_file_entry(size_t pos) const
 
     m_stream->seek(file_header.tell());
 
-    vector<unsigned char> raw_buf(param.size_compressed+1, 0);
-    m_stream->read(&raw_buf[0], param.size_compressed);
-
-    cout << "-- data section" << endl;
-    switch (param.compress_method)
+    vector<unsigned char> buf;
+    if (read_file_entry(param.filename.c_str(), buf))
     {
-        case zip_file_param::stored:
-            // Not compressed at all.
-            cout << &raw_buf[0] << endl;
-        break;
-        case zip_file_param::deflated:
-        {
-            // deflate compression
-            vector<unsigned char> zip_buf(param.size_uncompressed+1, 0); // null-terminated
-            zip_inflater inflater(raw_buf, zip_buf, param);
-            if (!inflater.init())
-                break;
-
-            if (!inflater.inflate())
-                throw zip_error("error during inflate.");
-
-            cout << &zip_buf[0] << endl;
-        }
-        break;
-        default:
-            ;
+        cout << "-- data section" << endl;
+        cout << &buf[0] << endl;
+        cout << "--" << endl;
     }
-
-    cout << "--" << endl;
 }
 
 bool zip_archive_impl::read_file_entry(const char* entry_name, vector<unsigned char>& buf) const

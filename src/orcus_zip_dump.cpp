@@ -46,12 +46,5 @@ int main(int argc, char** argv)
     for (size_t i = 0; i < n; ++i)
         archive.dump_file_entry(i);
 
-    vector<unsigned char> content_xml;
-    if (archive.read_file_entry("content.xml", content_xml))
-    {
-        cout << "-- content.xml --" << endl;
-        cout << &content_xml[0] << endl;
-    }
-
     return EXIT_SUCCESS;
 }
