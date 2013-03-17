@@ -231,6 +231,7 @@ public:
 
     void load();
     void dump_file_entry(size_t pos) const;
+    void dump_file_entry(const char* entry_name) const;
 
     size_t get_file_entry_count() const
     {
@@ -413,6 +414,20 @@ void zip_archive_impl::dump_file_entry(size_t pos) const
     }
 }
 
+void zip_archive_impl::dump_file_entry(const char* entry_name) const
+{
+    pstring name(entry_name);
+    filename_map_type::const_iterator it = m_filenames.find(name);
+    if (it == m_filenames.end())
+    {
+        // entry name not found.
+        cout << "file entry '" << entry_name << "' not found." << endl;
+        return;
+    }
+
+    dump_file_entry(it->second);
+}
+
 bool zip_archive_impl::read_file_entry(const char* entry_name, vector<unsigned char>& buf) const
 {
     pstring name(entry_name);
@@ -577,6 +592,11 @@ void zip_archive::load()
 void zip_archive::dump_file_entry(size_t index) const
 {
     mp_impl->dump_file_entry(index);
+}
+
+void zip_archive::dump_file_entry(const char* entry_name) const
+{
+    mp_impl->dump_file_entry(entry_name);
 }
 
 size_t zip_archive::get_file_entry_count() const

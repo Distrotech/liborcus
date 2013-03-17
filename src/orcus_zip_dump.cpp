@@ -43,8 +43,15 @@ int main(int argc, char** argv)
     archive.load();
     size_t n = archive.get_file_entry_count();
 
-    for (size_t i = 0; i < n; ++i)
-        archive.dump_file_entry(i);
+    if (argc < 3)
+    {
+        for (size_t i = 0; i < n; ++i)
+            archive.dump_file_entry(i);
+        return EXIT_SUCCESS;
+    }
+
+    const char* entry_name = argv[2];
+    archive.dump_file_entry(entry_name);
 
     return EXIT_SUCCESS;
 }
