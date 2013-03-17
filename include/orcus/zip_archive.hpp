@@ -32,6 +32,9 @@
 #include <cstdlib>
 #include <exception>
 #include <string>
+#include <vector>
+
+#include <boost/unordered_map.hpp>
 
 namespace orcus {
 
@@ -83,6 +86,8 @@ public:
      * @return number of file entries.
      */
     size_t get_file_entry_count() const;
+
+    bool read_file_entry(const char* entry_name, std::vector<unsigned char>& buf) const;
 };
 
 }

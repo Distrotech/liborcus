@@ -27,6 +27,7 @@
 
 #include "orcus/zip_archive.hpp"
 #include "orcus/zip_archive_stream.hpp"
+#include "orcus/string_pool.hpp"
 
 #include <cstdio>
 #include <cstdlib>
@@ -62,7 +63,8 @@ struct zip_file_param
 
     string filename;
     compress_method_type compress_method;
-    size_t offset_in_archive;
+    size_t offset_file_header;
+    size_t offset_data_stream;
     size_t size_compressed;
     size_t size_uncompressed;
 };
@@ -178,7 +180,9 @@ public:
 class zip_archive_impl
 {
     typedef std::vector<zip_file_param> file_params_type;
+    typedef boost::unordered_map<pstring, size_t, pstring::hash> filename_map_type;
 
+    string_pool m_pool;
     zip_archive_stream* m_stream;
     off_t m_stream_size;
     size_t m_central_dir_pos;
@@ -186,6 +190,7 @@ class zip_archive_impl
     stream m_central_dir_end;
 
     file_params_type m_file_params;
+    filename_map_type m_filenames;
 
 public:
     zip_archive_impl(zip_archive_stream* stream);
@@ -198,6 +203,8 @@ public:
     {
         return m_file_params.size();
     }
+
+    bool read_file_entry(const char* entry_name, vector<unsigned char>& buf) const;
 
 private:
 
@@ -287,8 +294,8 @@ void zip_archive_impl::read_file_entries()
         printf("  internal file attributes: 0x%4.4x\n", v16);
         v32 = central_dir.read_4bytes();
         printf("  external file attributes: 0x%8.8x\n", v32);
-        param.offset_in_archive = central_dir.read_4bytes();
-        cout << "  relative offset of local file header: " << param.offset_in_archive << endl;
+        param.offset_file_header = central_dir.read_4bytes();
+        cout << "  relative offset of local file header: " << param.offset_file_header << endl;
 
         if (filename_len)
         {
@@ -311,6 +318,11 @@ void zip_archive_impl::read_file_entries()
         magic_num = central_dir.read_4bytes(); // magic number for the next entry.
 
         m_file_params.push_back(param);
+        std::pair<pstring,bool> r = m_pool.intern(&param.filename[0], param.filename.size());
+        if (!r.second)
+            throw zip_error("Failed to intern a file name entry.");
+
+        m_filenames.insert(filename_map_type::value_type(r.first, m_file_params.size()-1));
 
         cout << "--" << endl;
     }
@@ -324,7 +336,7 @@ void zip_archive_impl::dump_file_entry(size_t pos) const
     const zip_file_param& param = m_file_params[pos];
     cout << "-- filename: " << param.filename << endl;
 
-    stream file_header(m_stream, param.offset_in_archive);
+    stream file_header(m_stream, param.offset_file_header);
     uint32_t v32 = file_header.read_4bytes();
     printf("  header signature: 0x%8.8x\n", v32);
     uint16_t v16 = file_header.read_2bytes();
@@ -392,6 +404,70 @@ void zip_archive_impl::dump_file_entry(size_t pos) const
     }
 
     cout << "--" << endl;
+}
+
+bool zip_archive_impl::read_file_entry(const char* entry_name, vector<unsigned char>& buf) const
+{
+    pstring name(entry_name);
+    filename_map_type::const_iterator it = m_filenames.find(name);
+    if (it == m_filenames.end())
+        // entry name not found.
+        return false;
+
+    size_t index = it->second;
+    if (index >= m_file_params.size())
+        // entry index is out of bound.
+        return false;
+
+    const zip_file_param& param = m_file_params[index];
+
+    // Skip the file header section.
+    stream file_header(m_stream, param.offset_file_header);
+    file_header.skip_bytes(4);
+    file_header.skip_bytes(2);
+    file_header.skip_bytes(2);
+    file_header.skip_bytes(2);
+    file_header.skip_bytes(2);
+    file_header.skip_bytes(2);
+    file_header.skip_bytes(4);
+    file_header.skip_bytes(4);
+    file_header.skip_bytes(4);
+    uint16_t filename_len = file_header.read_2bytes();
+    uint16_t extra_field_len = file_header.read_2bytes();
+    file_header.skip_bytes(filename_len);
+    file_header.skip_bytes(extra_field_len);
+
+    // Data section is immediately followed by the header section.
+    m_stream->seek(file_header.tell());
+
+    vector<unsigned char> raw_buf(param.size_compressed+1, 0);
+    m_stream->read(&raw_buf[0], param.size_compressed);
+
+    switch (param.compress_method)
+    {
+        case zip_file_param::stored:
+            // Not compressed at all.
+            buf.swap(raw_buf);
+            return true;
+        case zip_file_param::deflated:
+        {
+            // deflate compression
+            vector<unsigned char> zip_buf(param.size_uncompressed+1, 0); // null-terminated
+            zip_inflater inflater(raw_buf, zip_buf, param);
+            if (!inflater.init())
+                break;
+
+            if (!inflater.inflate())
+                throw zip_error("error during inflate.");
+
+            buf.swap(zip_buf);
+            return true;
+        }
+        default:
+            ;
+    }
+
+    return false;
 }
 
 size_t zip_archive_impl::seek_central_dir()
@@ -504,6 +580,11 @@ void zip_archive::dump_file_entry(size_t index) const
 size_t zip_archive::get_file_entry_count() const
 {
     return mp_impl->get_file_entry_count();
+}
+
+bool zip_archive::read_file_entry(const char* entry_name, vector<unsigned char>& buf) const
+{
+    return mp_impl->read_file_entry(entry_name, buf);
 }
 
 }
