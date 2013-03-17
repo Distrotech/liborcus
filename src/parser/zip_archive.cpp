@@ -131,15 +131,15 @@ public:
  * Stream doesn't know its size; only its starting offset position within
  * the file stream.
  */
-class stream
+class zip_stream_parser
 {
     zip_archive_stream* m_stream;
     size_t m_pos;
     size_t m_pos_internal;
 
 public:
-    stream() : m_stream(NULL), m_pos(0), m_pos_internal(0) {}
-    stream(zip_archive_stream* stream, size_t pos) : m_stream(stream), m_pos(pos), m_pos_internal(0) {}
+    zip_stream_parser() : m_stream(NULL), m_pos(0), m_pos_internal(0) {}
+    zip_stream_parser(zip_archive_stream* stream, size_t pos) : m_stream(stream), m_pos(pos), m_pos_internal(0) {}
 
     string read_string(size_t n)
     {
@@ -220,7 +220,7 @@ class zip_archive_impl
     off_t m_stream_size;
     size_t m_central_dir_pos;
 
-    stream m_central_dir_end;
+    zip_stream_parser m_central_dir_end;
 
     file_params_type m_file_params;
     filename_map_type m_filenames;
@@ -271,7 +271,7 @@ void zip_archive_impl::load()
     if (!central_dir_end_pos)
         throw zip_error();
 
-    m_central_dir_end = stream(m_stream, central_dir_end_pos);
+    m_central_dir_end = zip_stream_parser(m_stream, central_dir_end_pos);
 
     // Read the end part of the central directory.
     read_central_dir_end();
@@ -284,7 +284,7 @@ void zip_archive_impl::read_file_entries()
 {
     m_file_params.clear();
 
-    stream central_dir(m_stream, m_central_dir_pos);
+    zip_stream_parser central_dir(m_stream, m_central_dir_pos);
     uint32_t magic_num = central_dir.read_4bytes();
 
     while (magic_num == 0x02014b50)
@@ -366,7 +366,7 @@ void zip_archive_impl::dump_file_entry(size_t pos) const
     const zip_file_param& param = m_file_params[pos];
     cout << "-- filename: " << param.filename << endl;
 
-    stream file_header(m_stream, param.offset_file_header);
+    zip_stream_parser file_header(m_stream, param.offset_file_header);
     uint32_t v32 = file_header.read_4bytes();
     printf("  header signature: 0x%8.8x\n", v32);
     uint16_t v16 = file_header.read_2bytes();
@@ -444,7 +444,7 @@ bool zip_archive_impl::read_file_entry(const char* entry_name, vector<unsigned c
     const zip_file_param& param = m_file_params[index];
 
     // Skip the file header section.
-    stream file_header(m_stream, param.offset_file_header);
+    zip_stream_parser file_header(m_stream, param.offset_file_header);
     file_header.skip_bytes(4);
     file_header.skip_bytes(2);
     file_header.skip_bytes(2);
