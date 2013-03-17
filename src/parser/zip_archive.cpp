@@ -40,7 +40,7 @@
 #include <zlib.h>
 #include <zconf.h>
 
-#define ORCUS_DEBUG_ZIP_ARCHIVE 1
+#define ORCUS_DEBUG_ZIP_ARCHIVE 0
 
 using namespace std;
 
