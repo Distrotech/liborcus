@@ -40,6 +40,7 @@ namespace orcus {
 namespace spreadsheet { namespace iface { class import_factory; }}
 
 struct orcus_ods_impl;
+class zip_archive;
 
 class ORCUS_DLLPUBLIC orcus_ods
 {
@@ -53,9 +54,9 @@ public:
     void read_file(const char* fpath);
 
 private:
-    void list_content(struct zip* archive) const;
-    void read_content(struct zip* archive);
-    void read_content_xml(const char* p, size_t size);
+    void list_content(const zip_archive& archive) const;
+    void read_content(const zip_archive& archive);
+    void read_content_xml(const unsigned char* p, size_t size);
 
 private:
     orcus_ods_impl* mp_impl;

@@ -232,6 +232,7 @@ public:
     void load();
     void dump_file_entry(size_t pos) const;
     void dump_file_entry(const char* entry_name) const;
+    const char* get_file_entry_name(size_t pos) const;
 
     size_t get_file_entry_count() const
     {
@@ -428,6 +429,14 @@ void zip_archive_impl::dump_file_entry(const char* entry_name) const
     dump_file_entry(it->second);
 }
 
+const char* zip_archive_impl::get_file_entry_name(size_t pos) const
+{
+    if (pos >= m_file_params.size())
+        return NULL;
+
+    return m_file_params[pos].filename.c_str();
+}
+
 bool zip_archive_impl::read_file_entry(const char* entry_name, vector<unsigned char>& buf) const
 {
     pstring name(entry_name);
@@ -592,6 +601,11 @@ void zip_archive::load()
 void zip_archive::dump_file_entry(size_t index) const
 {
     mp_impl->dump_file_entry(index);
+}
+
+const char* zip_archive::get_file_entry_name(size_t index) const
+{
+    return mp_impl->get_file_entry_name(index);
 }
 
 void zip_archive::dump_file_entry(const char* entry_name) const

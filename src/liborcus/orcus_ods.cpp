@@ -27,13 +27,13 @@
 
 #include "orcus/orcus_ods.hpp"
 #include "orcus/xml_namespace.hpp"
+#include "orcus/zip_archive.hpp"
+#include "orcus/zip_archive_stream.hpp"
 
 #include "xml_stream_parser.hpp"
 #include "ods_content_xml_handler.hpp"
 #include "odf_tokens.hpp"
 #include "odf_namespace_types.hpp"
-
-#include <zip.h>
 
 #include <cstdlib>
 #include <iostream>
@@ -65,46 +65,36 @@ orcus_ods::~orcus_ods()
     delete mp_impl;
 }
 
-void orcus_ods::list_content(struct zip* archive) const
+void orcus_ods::list_content(const zip_archive& archive) const
 {
-    zip_uint64_t num = zip_get_num_entries(archive, 0);
+    size_t num = archive.get_file_entry_count();
     cout << "number of files this archive contains: " << num << endl;
 
-    for (zip_uint64_t i = 0; i < num; ++i)
+    for (size_t i = 0; i < num; ++i)
     {
-        const char* filename = zip_get_name(archive, i, 0);
-        cout << filename << endl;
+        const char* filename = archive.get_file_entry_name(i);
+        if (filename)
+            cout << filename << endl;
+        else
+            cout << "(empty)" << endl;
     }
 }
 
-void orcus_ods::read_content(struct zip* archive)
+void orcus_ods::read_content(const zip_archive& archive)
 {
-    if (!archive)
-        return;
-
-    struct zip_stat file_stat;
-    if (zip_stat(archive, "content.xml", 0, &file_stat))
+    vector<unsigned char> buf;
+    if (!archive.read_file_entry("content.xml", buf))
     {
         cout << "failed to get stat on content.xml" << endl;
         return;
     }
 
-    cout << "name: " << file_stat.name << "  size: " << file_stat.size << endl;
-    struct zip_file* zfd = zip_fopen(archive, file_stat.name, 0);
-    if (zfd)
-    {
-        vector<char> buf(file_stat.size, 0);
-        int buf_read = zip_fread(zfd, &buf[0], file_stat.size);
-        cout << "actual buffer read: " << buf_read << endl;
-        if (buf_read > 0)
-            read_content_xml(&buf[0], buf_read);
-        zip_fclose(zfd);
-    }
+    read_content_xml(&buf[0], buf.size());
 }
 
-void orcus_ods::read_content_xml(const char* p, size_t size)
+void orcus_ods::read_content_xml(const unsigned char* p, size_t size)
 {
-    xml_stream_parser parser(mp_impl->m_ns_repo, odf_tokens, p, size, "content.xml");
+    xml_stream_parser parser(mp_impl->m_ns_repo, odf_tokens, reinterpret_cast<const char*>(p), size, "content.xml");
     ::boost::scoped_ptr<ods_content_xml_handler> handler(
         new ods_content_xml_handler(odf_tokens, mp_impl->mp_factory));
     parser.set_handler(handler.get());
@@ -114,17 +104,11 @@ void orcus_ods::read_content_xml(const char* p, size_t size)
 void orcus_ods::read_file(const char* fpath)
 {
     cout << "reading " << fpath << endl;
-    int error;
-    struct zip* archive = zip_open(fpath, 0, &error);
-    if (!archive)
-    {
-        cout << "failed to open " << fpath << endl;
-        return;
-    }
-
+    zip_archive_stream_fd stream(fpath);
+    zip_archive archive(&stream);
+    archive.load();
     list_content(archive);
     read_content(archive);
-    zip_close(archive);
 }
 
 }

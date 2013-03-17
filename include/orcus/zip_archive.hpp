@@ -86,6 +86,8 @@ public:
      */
     void dump_file_entry(const char* entry_name) const;
 
+    const char* get_file_entry_name(size_t index) const;
+
     /**
      * Return the number of file entries stored in this zip archive.  Note
      * that a file entry may be a directory, so the number of files stored in
