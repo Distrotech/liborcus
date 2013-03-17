@@ -69,6 +69,22 @@ struct zip_file_param
     size_t offset_data_stream;
     size_t size_compressed;
     size_t size_uncompressed;
+
+    uint16_t version_made_by;
+    uint16_t minimum_version_needed;
+    uint16_t flags;
+    uint16_t last_modified_time;
+    uint16_t last_modified_date;
+
+    uint16_t filename_length;
+    uint16_t extra_field_length;
+    uint16_t comment_length;
+
+    uint16_t disk_id_where_file_starts;
+    uint16_t file_attributes_internal;
+    uint32_t file_attributes_external;
+
+    uint32_t crc32;
 };
 
 class zip_inflater
@@ -269,65 +285,46 @@ void zip_archive_impl::read_file_entries()
 
     stream central_dir(m_stream, m_central_dir_pos);
     uint32_t magic_num = central_dir.read_4bytes();
-    uint16_t v16;
-    uint32_t v32;
+
     while (magic_num == 0x02014b50)
     {
         zip_file_param param;
 
-        cout << "-- file entries" << endl;
-        printf("  magic number: 0x%8.8x\n", magic_num);
-        v16 = central_dir.read_2bytes();
-        cout << "  version made by: " << v16 << endl;
-        v16 = central_dir.read_2bytes();
-        cout << "  minimum version needed to extract: " << v16 << endl;
-        v16 = central_dir.read_2bytes();
-        printf("  general purpose bit flag: 0x%4.4x\n", v16);
-        v16 = central_dir.read_2bytes();
-        cout << "  compression method: " << v16 << " (0=stored, 8=deflated)" << endl;
-        param.compress_method = static_cast<zip_file_param::compress_method_type>(v16);
+        param.version_made_by = central_dir.read_2bytes();
+        param.minimum_version_needed = central_dir.read_2bytes();
+        param.flags = central_dir.read_2bytes();
+        param.compress_method =
+            static_cast<zip_file_param::compress_method_type>(central_dir.read_2bytes());
 
-        v16 = central_dir.read_2bytes();
-        cout << "  file last modified time: " << v16 << endl;
-        v16 = central_dir.read_2bytes();
-        cout << "  file last modified date: " << v16 << endl;
-        v32 = central_dir.read_4bytes();
-        printf("  crc32: 0x%8.8x\n", v32);
+        param.last_modified_time = central_dir.read_2bytes();
+        param.last_modified_date = central_dir.read_2bytes();
+        param.crc32 = central_dir.read_4bytes();
         param.size_compressed = central_dir.read_4bytes();
-        cout << "  compressed size: " << param.size_compressed << endl;
         param.size_uncompressed = central_dir.read_4bytes();
-        cout << "  uncompressed size: " << param.size_uncompressed << endl;
-        uint16_t filename_len = central_dir.read_2bytes();
-        cout << "  file name length: " << filename_len << endl;
-        uint16_t extra_field_len = central_dir.read_2bytes();
-        cout << "  extra field length: " << extra_field_len << endl;
-        uint16_t file_comment_len = central_dir.read_2bytes();
-        cout << "  file comment length: " << file_comment_len << endl;
-        v16 = central_dir.read_2bytes();
-        cout << "  disk number where file starts: " << v16 << endl;
-        v16 = central_dir.read_2bytes();
-        printf("  internal file attributes: 0x%4.4x\n", v16);
-        v32 = central_dir.read_4bytes();
-        printf("  external file attributes: 0x%8.8x\n", v32);
+        param.filename_length = central_dir.read_2bytes();
+        param.extra_field_length = central_dir.read_2bytes();
+        param.comment_length = central_dir.read_2bytes();
+        param.disk_id_where_file_starts = central_dir.read_2bytes();
+        param.file_attributes_internal = central_dir.read_2bytes();
+        param.file_attributes_external = central_dir.read_4bytes();
         param.offset_file_header = central_dir.read_4bytes();
-        cout << "  relative offset of local file header: " << param.offset_file_header << endl;
 
-        if (filename_len)
+        if (param.filename_length)
         {
-            param.filename = central_dir.read_string(filename_len);
+            param.filename = central_dir.read_string(param.filename_length);
             cout << "  filename: '" << param.filename << "'" << endl;
         }
 
-        if (extra_field_len)
+        if (param.extra_field_length)
         {
             // Ignore extra field for now.
-            central_dir.skip_bytes(extra_field_len);
+            central_dir.skip_bytes(param.extra_field_length);
         }
 
-        if (file_comment_len)
+        if (param.comment_length)
         {
             // Ignore file comment for now.
-            central_dir.skip_bytes(file_comment_len);
+            central_dir.skip_bytes(param.comment_length);
         }
 
         magic_num = central_dir.read_4bytes(); // magic number for the next entry.
@@ -339,7 +336,31 @@ void zip_archive_impl::read_file_entries()
 
         m_filenames.insert(filename_map_type::value_type(r.first, m_file_params.size()-1));
 
+#if ORCUS_DEBUG_ZIP_ARCHIVE
+        cout << "-- file entries" << endl;
+        printf( "  magic number: 0x%8.8x\n", magic_num);
+        cout << "  version made by: " << param.version_made_by << endl;
+        cout << "  minimum version needed to extract: " << param.minimum_version_needed << endl;
+        printf( "  general purpose bit flag: 0x%4.4x\n", param.flags);
+        cout << "  compression method: " << param.compress_method << " (0=stored, 8=deflated)" << endl;
+        cout << "  file last modified time: " << param.last_modified_time << endl;
+        cout << "  file last modified date: " << param.last_modified_date << endl;
+        printf( "  crc32: 0x%8.8x\n", param.crc32);
+        cout << "  compressed size: " << param.size_compressed << endl;
+        cout << "  uncompressed size: " << param.size_uncompressed << endl;
+        cout << "  file name length: " << param.filename_length << endl;
+        cout << "  extra field length: " << param.extra_field_length << endl;
+        cout << "  file comment length: " << param.comment_length << endl;
+        cout << "  disk number where file starts: " << param.disk_id_where_file_starts << endl;
+        printf( "  internal file attributes: 0x%4.4x\n", param.file_attributes_internal);
+        printf( "  external file attributes: 0x%8.8x\n", param.file_attributes_external);
+        cout << "  relative offset of local file header: " << param.offset_file_header << endl;
+
+        if (param.filename_length)
+            cout << "  filename: '" << param.filename << "'" << endl;
+
         cout << "--" << endl;
+#endif
     }
 }
 
