@@ -78,6 +78,12 @@ public:
      */
     void dump_file_entry(size_t index) const;
 
+    /**
+     * Dump the content of a specified file entry to stdout.
+     *
+     *
+     * @param entry_name file entry name.
+     */
     void dump_file_entry(const char* entry_name) const;
 
     /**
@@ -89,6 +95,17 @@ public:
      */
     size_t get_file_entry_count() const;
 
+    /**
+     * Retrieve data stream of specified file entry into buffer. The retrieved
+     * data stream gets uncompressed if the original stream is compressed.
+     * The method will overwrite the content of passed buffer if there is any
+     * pre-existing data in it.
+     *
+     * @param entry_name file entry name
+     * @param buf buffer to put the retrieved data stream into.
+     *
+     * @return true if successful, false otherwise.
+     */
     bool read_file_entry(const char* entry_name, std::vector<unsigned char>& buf) const;
 };
 
