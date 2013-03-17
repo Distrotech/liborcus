@@ -310,22 +310,15 @@ void zip_archive_impl::read_file_entries()
         param.offset_file_header = central_dir.read_4bytes();
 
         if (param.filename_length)
-        {
             param.filename = central_dir.read_string(param.filename_length);
-            cout << "  filename: '" << param.filename << "'" << endl;
-        }
 
         if (param.extra_field_length)
-        {
             // Ignore extra field for now.
             central_dir.skip_bytes(param.extra_field_length);
-        }
 
         if (param.comment_length)
-        {
             // Ignore file comment for now.
             central_dir.skip_bytes(param.comment_length);
-        }
 
         magic_num = central_dir.read_4bytes(); // magic number for the next entry.
 
