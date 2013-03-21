@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\DefaultConfig.vsprops;.\LibZip.vsprops;.\zLib.vsprops;..\liborcus-parser.vsprops"
+			InheritedPropertySheets=".\DefaultConfig.vsprops;.\zLib.vsprops;.\LibZip.vsprops;..\liborcus-parser.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -93,7 +93,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\DefaultConfig.vsprops;.\LibZip.vsprops;.\zLib.vsprops;..\liborcus-parser.vsprops"
+			InheritedPropertySheets=".\DefaultConfig.vsprops;.\zLib.vsprops;.\LibZip.vsprops;..\liborcus-parser.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -206,10 +206,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\liborcus\pstring.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\liborcus\spreadsheet_interface.cpp"
 				>
 			</File>
@@ -223,10 +219,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\liborcus\xml_map_tree.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\xml_namespace.cpp"
 				>
 			</File>
 			<File
