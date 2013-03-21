@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\liborcus\zLib.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -60,6 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="zlibd.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -88,7 +89,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops"
+			InheritedPropertySheets="..\liborcus\DefaultConfig.vsprops;..\liborcus\zLib.vsprops"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -129,6 +130,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="zlib.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -193,6 +195,14 @@
 				RelativePath="..\..\src\parser\xml_namespace.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\parser\zip_archive.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\parser\zip_archive_stream.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -221,6 +231,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\orcus\string_pool.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\parser\win_stdint.h"
 				>
 			</File>
 			<File
