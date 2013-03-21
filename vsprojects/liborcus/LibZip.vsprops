@@ -13,12 +13,4 @@
 		AdditionalDependencies="zip.lib"
 		AdditionalLibraryDirectories="$(LIBZIP_LIB)"
 	/>
-	<UserMacro
-		Name="LIBZIP_DIR"
-		Value="C:\dev\installed\include"
-	/>
-	<UserMacro
-		Name="LIBZIP_LIB"
-		Value="C:\dev\installed\lib"
-	/>
 </VisualStudioPropertySheet>
