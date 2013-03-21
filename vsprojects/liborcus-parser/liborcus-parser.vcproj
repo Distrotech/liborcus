@@ -222,6 +222,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\orcus\pstring.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\orcus\sax_parser_global.hpp"
 				>
 			</File>

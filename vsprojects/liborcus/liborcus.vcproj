@@ -257,6 +257,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\liborcus\gnumeric_namespace_types.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\liborcus\gnumeric_sheet_context.cpp"
 					>
 				</File>
@@ -272,6 +276,10 @@
 			<Filter
 				Name="odf"
 				>
+				<File
+					RelativePath="..\..\src\liborcus\odf_namespace_types.cpp"
+					>
+				</File>
 				<File
 					RelativePath="..\..\src\liborcus\odf_para_context.cpp"
 					>
@@ -396,10 +404,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\pstring.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\orcus\sax_ns_parser.hpp"
 				>
 			</File>
@@ -447,6 +451,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\liborcus\gnumeric_namespace_types.hpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\liborcus\gnumeric_sheet_context.hpp"
 					>
 				</File>
@@ -466,6 +474,10 @@
 			<Filter
 				Name="odf"
 				>
+				<File
+					RelativePath="..\..\src\liborcus\odf_namespace_types.hpp"
+					>
+				</File>
 				<File
 					RelativePath="..\..\src\liborcus\odf_para_context.hpp"
 					>

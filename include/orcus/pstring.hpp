@@ -125,7 +125,7 @@ public:
         m_size = 0;
     }
 
-    struct hash
+    struct ORCUS_DLLPUBLIC hash
     {
         size_t operator() (const pstring& val) const;
     };
