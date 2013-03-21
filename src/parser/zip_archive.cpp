@@ -33,7 +33,11 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#ifdef _WIN32
+#include "win_stdint.h"
+#else
 #include <stdint.h>
+#endif
 #include <cstdio>
 #include <sstream>
 
