@@ -28,22 +28,25 @@
 #ifndef __ORCUS_OPC_READER_HPP__
 #define __ORCUS_OPC_READER_HPP__
 
+#include "orcus/env.hpp"
+#include "orcus/zip_archive.hpp"
+#include "orcus/zip_archive_stream.hpp"
+
 #include "ooxml_schemas.hpp"
 #include "xml_simple_stream_handler.hpp"
-#include "orcus/env.hpp"
 
 #include <vector>
 #include <string>
 #include <boost/noncopyable.hpp>
-
-struct zip;
-struct zip_file;
+#include <boost/scoped_ptr.hpp>
 
 namespace orcus {
 
 class pstring;
 class xmlns_repository;
 struct opc_rel_extra;
+class zip_archive;
+class zip_archive_stream;
 
 /**
  * Class to handle parsing through all xml parts stored in a file packaged
@@ -78,18 +81,10 @@ public:
             schema_t type, const std::string& dir_path, const std::string& file_name, const opc_rel_extra* data) = 0;
     };
 
-    struct zip_stream
-    {
-        std::vector<char> buffer;
-        int buffer_read;
-        struct ::zip_file* zfd;
-    };
-
     opc_reader(xmlns_repository& ns_repo, part_handler& handler);
 
     void read_file(const char* fpath);
-    bool open_zip_stream(const std::string& path, zip_stream& data);
-    void close_zip_stream(zip_stream& data);
+    bool open_zip_stream(const std::string& path, std::vector<unsigned char>& buf);
 
     /**
      * Read an xml part inside package.  The path is relative to the relation
@@ -123,7 +118,8 @@ private:
     xmlns_repository& m_ns_repo;
     part_handler& m_handler;
 
-    struct zip* m_archive;
+    boost::scoped_ptr<zip_archive> m_archive;
+    boost::scoped_ptr<zip_archive_stream> m_archive_stream;
 
     xml_simple_stream_handler m_opc_rel_handler;
 

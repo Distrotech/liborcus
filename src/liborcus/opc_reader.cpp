@@ -32,7 +32,6 @@
 #include "opc_context.hpp"
 #include "ooxml_tokens.hpp"
 
-#include <zip.h>
 #include <iostream>
 #include <boost/scoped_ptr.hpp>
 
@@ -82,33 +81,6 @@ private:
     const opc_rel_extras_t* m_extras;
 };
 
-struct ::zip_file* get_zip_stream_from_archive(
-    struct zip* archive, const string& filepath, vector<char>& buf, int& buf_read)
-{
-    buf_read = 0;
-    struct zip_stat file_stat;
-    if (zip_stat(archive, filepath.c_str(), 0, &file_stat))
-    {
-        cout << "failed to get stat on " << filepath << endl;
-        return NULL;
-    }
-
-    cout << "name: " << file_stat.name << "  size: " << file_stat.size << endl;
-    struct ::zip_file* zfd = zip_fopen(archive, file_stat.name, 0);
-    if (!zfd)
-    {
-        cout << "failed to open " << file_stat.name << endl;
-        return NULL;
-    }
-
-    vector<char> _buf(file_stat.size, 0);
-    buf_read = zip_fread(zfd, &_buf[0], file_stat.size);
-    cout << "actual buffer read: " << buf_read << endl;
-
-    buf.swap(_buf);
-    return zfd;
-}
-
 }
 
 opc_reader::part_handler::~part_handler() {}
@@ -122,31 +94,23 @@ void opc_reader::read_file(const char* fpath)
 {
     cout << "reading " << fpath << endl;
 
-    int error;
-    m_archive = zip_open(fpath, 0, &error);
-    if (!m_archive)
-    {
-        cout << "failed to open " << fpath << endl;
-        return;
-    }
+    m_archive_stream.reset(new zip_archive_stream_fd(fpath));
+    m_archive.reset(new zip_archive(m_archive_stream.get()));
+
+    m_archive->load();
 
     m_dir_stack.push_back(string()); // push root directory.
 
     list_content();
     read_content();
 
-    zip_close(m_archive);
+    m_archive.reset();
+    m_archive_stream.reset();
 }
 
-bool opc_reader::open_zip_stream(const string& path, zip_stream& data)
+bool opc_reader::open_zip_stream(const string& path, vector<unsigned char>& buf)
 {
-    data.zfd = get_zip_stream_from_archive(m_archive, path, data.buffer, data.buffer_read);
-    return data.zfd != NULL;
-}
-
-void opc_reader::close_zip_stream(zip_stream& data)
-{
-    zip_fclose(data.zfd);
+    return m_archive->read_file_entry(path.c_str(), buf);
 }
 
 void opc_reader::read_part(const pstring& path, const schema_t type, const opc_rel_extra* data)
@@ -231,12 +195,12 @@ void opc_reader::check_relation_part(const std::string& file_name, const opc_rel
 
 void opc_reader::list_content() const
 {
-    zip_uint64_t num = zip_get_num_entries(m_archive, 0);
+    size_t num = m_archive->get_file_entry_count();
     cout << "number of files this archive contains: " << num << endl;
 
-    for (zip_uint64_t i = 0; i < num; ++i)
+    for (size_t i = 0; i < num; ++i)
     {
-        const char* filename = zip_get_name(m_archive, i, 0);
+        pstring filename = m_archive->get_file_entry_name(i);
         cout << filename << endl;
     }
 }
@@ -266,26 +230,23 @@ void opc_reader::read_content()
 void opc_reader::read_content_types()
 {
     string filepath("[Content_Types].xml");
-    vector<char> buf;
-    int buf_read;
-    struct zip_file* zfd = get_zip_stream_from_archive(m_archive, filepath, buf, buf_read);
-    if (!zfd)
+    vector<unsigned char> buffer;
+    if (!open_zip_stream(filepath, buffer))
         return;
 
-    if (buf_read > 0)
-    {
-        xml_stream_parser parser(m_ns_repo, opc_tokens, &buf[0], buf_read, "[Content_Types].xml");
-        ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-            new xml_simple_stream_handler(new opc_content_types_context(opc_tokens)));
-        parser.set_handler(handler.get());
-        parser.parse();
+    if (buffer.empty())
+        return;
 
-        opc_content_types_context& context =
-            static_cast<opc_content_types_context&>(handler->get_context());
-        context.pop_parts(m_parts);
-        context.pop_ext_defaults(m_ext_defaults);
-    }
-    zip_fclose(zfd);
+    xml_stream_parser parser(m_ns_repo, opc_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), "[Content_Types].xml");
+    ::boost::scoped_ptr<xml_simple_stream_handler> handler(
+        new xml_simple_stream_handler(new opc_content_types_context(opc_tokens)));
+    parser.set_handler(handler.get());
+    parser.parse();
+
+    opc_content_types_context& context =
+        static_cast<opc_content_types_context&>(handler->get_context());
+    context.pop_parts(m_parts);
+    context.pop_ext_defaults(m_ext_defaults);
 }
 
 void opc_reader::read_relations(const char* path, vector<opc_rel_t>& rels)
@@ -293,24 +254,21 @@ void opc_reader::read_relations(const char* path, vector<opc_rel_t>& rels)
     string filepath = get_current_dir() + path;
     cout << "file path: " << filepath << endl;
 
-    vector<char> buf;
-    int buf_read;
-    struct zip_file* zfd = get_zip_stream_from_archive(m_archive, filepath, buf, buf_read);
-    if (!zfd)
+    vector<unsigned char> buffer;
+    if (!open_zip_stream(filepath, buffer))
         return;
 
-    if (buf_read > 0)
-    {
-        xml_stream_parser parser(m_ns_repo, opc_tokens, &buf[0], buf_read, filepath);
+    if (buffer.empty())
+        return;
 
-        opc_relations_context& context =
-            static_cast<opc_relations_context&>(m_opc_rel_handler.get_context());
-        context.init();
-        parser.set_handler(&m_opc_rel_handler);
-        parser.parse();
-        context.pop_rels(rels);
-    }
-    zip_fclose(zfd);
+    xml_stream_parser parser(m_ns_repo, opc_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), filepath);
+
+    opc_relations_context& context =
+        static_cast<opc_relations_context&>(m_opc_rel_handler.get_context());
+    context.init();
+    parser.set_handler(&m_opc_rel_handler);
+    parser.parse();
+    context.pop_rels(rels);
 }
 
 string opc_reader::get_current_dir() const
