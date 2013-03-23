@@ -144,8 +144,6 @@ TESTS += \
 	orcus-test-csv \
 	orcus-test-xml-mapped
 
-if WITH_LIBZIP
-
 if WITH_ODS_FILTER
 
 bin_PROGRAMS += \
@@ -162,8 +160,7 @@ orcus_ods_SOURCES = \
 orcus_ods_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
-	$(LIBZIP_LIBS)
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 
 orcus_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la
 
@@ -228,8 +225,6 @@ TESTS += \
 
 
 endif # WITH_XLSX_FILTER
-
-endif # WITH_LIBZIP
 
 if WITH_GNUMERIC_FILTER
 

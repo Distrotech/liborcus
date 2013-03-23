@@ -40,8 +40,6 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	gnumeric_namespace_types.hpp \
 	gnumeric_namespace_types.cpp
 
-if WITH_LIBZIP
-
 if WITH_XLSX_FILTER
 
 EXTRA_PROGRAMS += \
@@ -124,8 +122,6 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 
 endif # WITH_ODS_FILTER
 
-endif # WITH_LIBZIP
-
 if WITH_GNUMERIC_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
@@ -172,10 +168,10 @@ TESTS += gnumeric-cell-context-test
 endif # WITH_GNUMERIC_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS = \
-	$(BOOST_SYSTEM_CFLAGS) $(LIBZIP_CFLAGS) $(ZLIB_CFLAGS)
+	$(BOOST_SYSTEM_CFLAGS) $(ZLIB_CFLAGS)
 liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 liborcus_@ORCUS_API_VERSION@_la_LIBADD = \
-	 $(BOOST_SYSTEM_LIBS) $(BOOST_SYSTEM_LIB) $(LIBZIP_LIBS) $(ZLIB_LIBS)
+	 $(BOOST_SYSTEM_LIBS) $(BOOST_SYSTEM_LIB) $(ZLIB_LIBS)
 
 # liborcus-test-xml-map-tree
 

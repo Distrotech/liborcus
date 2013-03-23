@@ -25,8 +25,6 @@ liborcus_HEADERS = \
 	zip_archive.hpp \
 	zip_archive_stream.hpp
 
-if WITH_LIBZIP
-
 if WITH_ODS_FILTER
 
 liborcus_HEADERS += \
@@ -40,8 +38,6 @@ liborcus_HEADERS += \
 	orcus_xlsx.hpp
 
 endif # WITH_XLSX_FILTER
-
-endif # WITH_LIBZIP
 
 if WITH_GNUMERIC_FILTER
 

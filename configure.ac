@@ -125,19 +125,6 @@ AS_IF([test "x$enable_debug" != "xno"], [
 PKG_CHECK_MODULES([ZLIB], [zlib])
 
 # ==============
-# libzip support
-# ==============
-AC_ARG_WITH(libzip,
-	AS_HELP_STRING([--without-libzip],
-		[Disable libzip. Support for all zip-storage based formats will be disabled if libzip is disabled.]),
-	[with_libzip="$withval"],
-	[with_libzip=yes]
-)
-AS_IF([test "x$with_libzip" != "xno"], [
-	PKG_CHECK_MODULES([LIBZIP], [libzip])
-])
-
-# ==============
 # ods filter support
 # ==============
 AC_ARG_WITH(ods-filter,
@@ -166,12 +153,6 @@ AC_ARG_WITH(gnumeric-filter,
 	[with_gnumeric_filter="$withval"],
 	[with_gnumeric_filter=yes]
 )
-
-AM_CONDITIONAL([WITH_LIBZIP], [test "x$with_libzip" != "xno"])
-AS_IF([test "x$with_libzip" == "xno"], [
-        with_ods_filter=no
-        with_xlsx_filter=no
-])
 
 AM_CONDITIONAL([WITH_ODS_FILTER], [test "x$with_ods_filter" != "xno"])
 AM_CONDITIONAL([WITH_XLSX_FILTER], [test "x$with_xlsx_filter" != "xno"])
@@ -242,7 +223,6 @@ Build configuration:
 	debug:               $enable_debug
 	werror:              $enable_werror
 	mdds-include-dir:    $with_mdds_include_path
-	libzip:              $with_libzip
 	spreadsheet-model:   $enable_spreadsheet_model
         gnumeric-filter:     $with_gnumeric_filter
         ods-filter:          $with_ods_filter
