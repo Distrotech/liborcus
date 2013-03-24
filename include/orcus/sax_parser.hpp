@@ -255,8 +255,11 @@ void sax_parser<_Handler>::body()
                 // Root element closed.  Stop parsing.
                 return;
         }
-        else
+        else if (m_nest_level)
+            // Call characters only when in xml hierarchy.
             characters();
+        else
+            next();
     }
 }
 
