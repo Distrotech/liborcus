@@ -163,7 +163,7 @@ void xlsx_shared_strings_context::start_element(xmlns_id_t ns, xml_token_t name,
         {
             // font size
             xml_element_expected(parent, NS_ooxml_xlsx, XML_rPr);
-            const pstring& s = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
+            pstring s = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
             double point = strtod(s.str().c_str(), NULL);
             mp_strings->set_segment_font_size(point);
         }
@@ -176,7 +176,7 @@ void xlsx_shared_strings_context::start_element(xmlns_id_t ns, xml_token_t name,
         {
             // font
             xml_element_expected(parent, NS_ooxml_xlsx, XML_rPr);
-            const pstring& font = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
+            pstring font = for_each(attrs.begin(), attrs.end(), single_attr_getter(XML_val)).get_value();
             mp_strings->set_segment_font_name(font.get(), font.size());
         }
         break;
