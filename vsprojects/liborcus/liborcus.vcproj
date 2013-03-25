@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="liborcus"
 	ProjectGUID="{BAC18CCC-5ED5-4E30-9A5A-058BB0C24DDC}"
 	RootNamespace="orcus"
@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\DefaultConfig.vsprops;.\zLib.vsprops;.\LibZip.vsprops;..\liborcus-parser.vsprops"
+			InheritedPropertySheets=".\DefaultConfig.vsprops;.\zLib.vsprops;..\liborcus-parser.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -93,7 +93,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\DefaultConfig.vsprops;.\zLib.vsprops;.\LibZip.vsprops;..\liborcus-parser.vsprops"
+			InheritedPropertySheets=".\DefaultConfig.vsprops;.\zLib.vsprops;..\liborcus-parser.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
