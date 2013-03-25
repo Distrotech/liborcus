@@ -42,7 +42,7 @@ namespace orcus {
 zip_archive_stream::~zip_archive_stream() {}
 
 zip_archive_stream_fd::zip_archive_stream_fd(const char* filepath) :
-    m_stream(fopen(filepath, "r"))
+    m_stream(fopen(filepath, "rb"))
 {
     if (!m_stream)
     {
