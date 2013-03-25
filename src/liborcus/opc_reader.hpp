@@ -42,11 +42,8 @@
 
 namespace orcus {
 
-class pstring;
 class xmlns_repository;
 struct opc_rel_extra;
-class zip_archive;
-class zip_archive_stream;
 
 /**
  * Class to handle parsing through all xml parts stored in a file packaged
