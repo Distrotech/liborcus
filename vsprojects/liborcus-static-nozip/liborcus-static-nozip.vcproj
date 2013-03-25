@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252" ?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
@@ -201,10 +201,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\liborcus\xml_map_tree.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\liborcus\xml_namespace.cpp"
 				>
 			</File>
 			<File

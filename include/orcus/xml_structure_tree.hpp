@@ -92,9 +92,6 @@ public:
         walker(); // disabled
         walker(const xml_structure_tree_impl& parent_impl);
     public:
-
-        static size_t index_not_found;
-
         walker(const walker& r);
         ~walker();
         walker& operator= (const walker& r);

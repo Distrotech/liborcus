@@ -174,7 +174,7 @@ string xmlns_repository::get_short_name(xmlns_id_t ns_id) const
 
 string xmlns_repository::get_short_name(size_t index) const
 {
-    if (index == xmlns_context::index_not_found)
+    if (index == index_not_found)
         return string("???");
 
     ostringstream os;
@@ -185,11 +185,11 @@ string xmlns_repository::get_short_name(size_t index) const
 size_t xmlns_repository::get_index(xmlns_id_t ns_id) const
 {
     if (!ns_id)
-        return xmlns_context::index_not_found;
+        return index_not_found;
 
     strid_map_type::const_iterator it = mp_impl->m_strid_map.find(pstring(ns_id));
     if (it == mp_impl->m_strid_map.end())
-        return xmlns_context::index_not_found;
+        return index_not_found;
 
     return it->second;
 }
@@ -210,8 +210,6 @@ struct xmlns_context_impl
     xmlns_context_impl(const xmlns_context_impl& r) :
         m_repo(r.m_repo), m_all_ns(r.m_all_ns), m_default(r.m_default), m_map(r.m_map), m_trim_all_ns(r.m_trim_all_ns) {}
 };
-
-size_t xmlns_context::index_not_found = std::numeric_limits<size_t>::max();
 
 xmlns_context::xmlns_context(xmlns_repository& repo) : mp_impl(new xmlns_context_impl(repo)) {}
 xmlns_context::xmlns_context(const xmlns_context& r) : mp_impl(new xmlns_context_impl(*r.mp_impl)) {}
@@ -368,7 +366,7 @@ public:
     void operator() (xmlns_id_t ns)
     {
         size_t num_id = m_cxt.get_index(ns);
-        if (num_id != xmlns_context::index_not_found)
+        if (num_id != index_not_found)
             m_store.push_back(ns_item(num_id, ns));
     }
 };

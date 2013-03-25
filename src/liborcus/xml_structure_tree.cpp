@@ -259,7 +259,7 @@ void print_scope(ostream& os, const scopes_type& scopes, const xmlns_context& cx
     {
         os << "/";
         size_t num_id = cxt.get_index(it->name.ns);
-        if (num_id != xmlns_context::index_not_found)
+        if (num_id != index_not_found)
             os << "ns" << num_id << ":";
         os << it->name.name;
         if (it->repeat)
@@ -330,8 +330,6 @@ xml_structure_tree::element::element() :
 
 xml_structure_tree::element::element(const entity_name& _name, bool _repeat) :
     name(_name), repeat(_repeat) {}
-
-size_t xml_structure_tree::walker::index_not_found = xmlns_context::index_not_found;
 
 xml_structure_tree::walker::walker(const xml_structure_tree_impl& parent_impl) :
     mp_impl(new walker_impl(parent_impl))
@@ -473,7 +471,7 @@ void xml_structure_tree::dump_compact(ostream& os) const
 
             ss << "/";
             size_t num_id = cxt.get_index(this_elem.name.ns);
-            if (num_id != xmlns_context::index_not_found)
+            if (num_id != index_not_found)
                 ss << "ns" << num_id << ":";
             ss << this_elem.name.name;
             if (this_elem.prop->repeat)

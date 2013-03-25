@@ -104,8 +104,6 @@ class ORCUS_DLLPUBLIC xmlns_context
     xmlns_context(); // disabled
     xmlns_context(xmlns_repository& repo);
 public:
-    static size_t index_not_found;
-
     xmlns_context(const xmlns_context& r);
     ~xmlns_context();
 

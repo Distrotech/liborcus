@@ -93,7 +93,7 @@ void dom_tree::entity_name::print(std::ostream& os, const xmlns_context& cxt) co
     if (ns)
     {
         size_t index = cxt.get_index(ns);
-        if (index != xmlns_context::index_not_found)
+        if (index != index_not_found)
             os << "ns" << index << ':';
     }
     os << name;

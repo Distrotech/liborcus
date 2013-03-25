@@ -31,7 +31,8 @@
 #include <cstdlib>
 #include <vector>
 #include <string>
-#include "orcus/pstring.hpp"
+#include "pstring.hpp"
+#include "env.hpp"
 
 namespace orcus {
 
@@ -40,6 +41,7 @@ typedef const char* xmlns_id_t;
 
 ORCUS_DLLPUBLIC extern const xmlns_id_t XMLNS_UNKNOWN_ID;
 ORCUS_DLLPUBLIC extern const xml_token_t XML_UNKNOWN_TOKEN;
+ORCUS_DLLPUBLIC extern const size_t index_not_found;
 
 struct xml_name_t
 {
