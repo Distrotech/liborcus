@@ -12,6 +12,7 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	sax_parser_global.cpp \
 	stream.cpp \
 	string_pool.cpp \
+	types.cpp \
 	xml_namespace.cpp \
 	zip_archive.cpp \
 	zip_archive_stream.cpp
