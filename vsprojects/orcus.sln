@@ -40,6 +40,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus-parser", "liborcus
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus-parser-static", "liborcus-parser-static\liborcus-parser-static.vcproj", "{C4EFDC7F-B436-4CF4-8EBB-2D55A776D494}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liborcus-static", "liborcus-static\liborcus-static.vcproj", "{68B0EEB7-3FCD-44F4-9363-B475CF493064}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C4EFDC7F-B436-4CF4-8EBB-2D55A776D494} = {C4EFDC7F-B436-4CF4-8EBB-2D55A776D494}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -85,6 +90,10 @@ Global
 		{C4EFDC7F-B436-4CF4-8EBB-2D55A776D494}.Debug|Win32.Build.0 = Debug|Win32
 		{C4EFDC7F-B436-4CF4-8EBB-2D55A776D494}.Release|Win32.ActiveCfg = Release|Win32
 		{C4EFDC7F-B436-4CF4-8EBB-2D55A776D494}.Release|Win32.Build.0 = Release|Win32
+		{68B0EEB7-3FCD-44F4-9363-B475CF493064}.Debug|Win32.ActiveCfg = Debug|Win32
+		{68B0EEB7-3FCD-44F4-9363-B475CF493064}.Debug|Win32.Build.0 = Debug|Win32
+		{68B0EEB7-3FCD-44F4-9363-B475CF493064}.Release|Win32.ActiveCfg = Release|Win32
+		{68B0EEB7-3FCD-44F4-9363-B475CF493064}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

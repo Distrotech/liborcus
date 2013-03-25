@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="liborcus-parser-static"
 	ProjectGUID="{C4EFDC7F-B436-4CF4-8EBB-2D55A776D494}"
 	RootNamespace="liborcusparser"
@@ -178,6 +178,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\parser\types.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\parser\xml_namespace.cpp"
 				>
 			</File>
@@ -204,11 +208,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\orcus\env.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\orcus\exception.hpp"
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\orcus\sax_ns_parser.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\orcus\sax_parser.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\orcus\sax_parser_global.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\orcus\sax_token_parser.hpp"
 				>
 			</File>
 			<File
@@ -217,6 +237,14 @@
 			</File>
 			<File
 				RelativePath="..\..\include\orcus\string_pool.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\orcus\types.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\parser\win_stdint.h"
 				>
 			</File>
 			<File
