@@ -216,6 +216,11 @@ void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
     string filepath = dir_path + file_name;
     cout << "read_styles: file path = " << filepath << endl;
 
+    spreadsheet::iface::import_styles* styles = mp_impl->mp_factory->get_styles();
+    if (!styles)
+        // Client code doesn't support styles.
+        return;
+
     vector<unsigned char> buffer;
     if (!mp_impl->m_opc_reader.open_zip_stream(filepath, buffer))
         return;
