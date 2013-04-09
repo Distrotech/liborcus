@@ -109,6 +109,8 @@ void orcus_ods::read_file(const char* fpath)
     archive.load();
     list_content(archive);
     read_content(archive);
+
+    mp_impl->mp_factory->finalize();
 }
 
 }

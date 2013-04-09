@@ -86,6 +86,8 @@ void orcus_csv::read_file(const char* filepath)
     string strm;
     load_file_content(filepath, strm);
     parse(strm);
+
+    mp_factory->finalize();
 }
 
 void orcus_csv::parse(const string& strm)

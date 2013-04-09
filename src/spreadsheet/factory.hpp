@@ -46,6 +46,7 @@ public:
     virtual iface::import_styles* get_styles();
     virtual iface::import_sheet* append_sheet(const char* sheet_name, size_t sheet_name_length);
     virtual iface::import_sheet* get_sheet(const char* sheet_name, size_t sheet_name_length);
+    virtual void finalize();
 
 private:
     document* mp_document;

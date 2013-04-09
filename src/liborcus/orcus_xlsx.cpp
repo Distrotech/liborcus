@@ -130,6 +130,7 @@ orcus_xlsx::~orcus_xlsx()
 void orcus_xlsx::read_file(const char* fpath)
 {
     mp_impl->m_opc_reader.read_file(fpath);
+    mp_impl->mp_factory->finalize();
 }
 
 void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)

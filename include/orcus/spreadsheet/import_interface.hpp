@@ -275,7 +275,7 @@ public:
      * Set a array formula to the specified cells. The formula covers an area
      * specified by array_rows and array_cols beginning from the base cell.
      *
-     * @param row row ID 
+     * @param row row ID
      * @param col column ID
      * @param grammar grammar used in the formula expression
      * @param p pointer to the first character of the raw formula expression string.
@@ -291,7 +291,7 @@ public:
      * Set a array formula to the specified cells. The formula covers an area
      * specified by the range string.
      *
-     * @param row row ID 
+     * @param row row ID
      * @param col column ID
      * @param grammar grammar used in the formula expression
      * @param p pointer to the first character of the raw formula expression string.
@@ -343,6 +343,12 @@ public:
      *         exists by the specified name.
      */
     virtual import_sheet* get_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
+
+    /**
+     * This method is called at the end of import, to give the implementor a
+     * chance to perform post-processing if necessary.
+     */
+    virtual void finalize() = 0;
 };
 
 }}}
