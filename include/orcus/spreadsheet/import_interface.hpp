@@ -194,15 +194,14 @@ public:
     virtual void set_bool(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, bool value) = 0;
 
     /**
-     * Set date value to a cell.
+     * Set date and time value to a cell.
      *
      * @param row row ID
      * @param col column ID
-     * @param p pointer to the first character of the raw string value
-     *          representing the date value.
-     * @param n size of the raw string value.
      */
-    virtual void set_date(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, const char* p, size_t n) = 0;
+    virtual void set_date_time(
+        orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col,
+        int year, int month, int day, int hour, int minute, double second) = 0;
 
     /**
      * Set cell format to specified cell.  The cell format is referred to by
@@ -226,7 +225,7 @@ public:
      */
     virtual void set_formula(
         orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, orcus::spreadsheet::formula_grammar_t grammar,
-         const char* p, size_t n) = 0;
+        const char* p, size_t n) = 0;
 
     /**
      * Set shared formula expression to specified cell.  This call also

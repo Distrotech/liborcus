@@ -45,6 +45,20 @@ void print_element(xmlns_id_t ns, xml_token_t name);
  */
 void print_attrs(const tokens& tokens, const xml_attrs_t& attrs);
 
+/**
+ * Parse the string representation of a date-time value, and convert it into
+ * a set of numerical values.  A string representation allows either a date
+ * only or a date and time value.  It does not allow a time only value; it
+ * always expects to have a date element.
+ *
+ * date only: 2013-04-09
+ * date and time: 2013-04-09T21:34:09.55
+ *
+ * @param str string representation of a date-time value.
+ * @return converted date-time value consisting of a set of numeric values.
+ */
+date_time_t to_date_time(const pstring& str);
+
 template<typename _T>
 struct default_deleter : public std::unary_function<_T*, void>
 {

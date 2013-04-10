@@ -71,4 +71,170 @@ void print_attrs(const tokens& tokens, const xml_attrs_t& attrs)
     for_each(attrs.begin(), attrs.end(), attr_printer(tokens));
 }
 
+namespace {
+
+void process_char(const char* p, const char*& digit, size_t& digit_len)
+{
+    if (!digit)
+    {
+        digit = p;
+        digit_len = 1;
+        return;
+    }
+
+    ++digit;
+    ++digit_len;
+}
+
+void flush_int(int& store, const char*& digit, size_t& digit_len)
+{
+    store = strtol(digit, NULL, 10);
+    digit = NULL;
+    digit_len = 0;
+}
+
+}
+
+date_time_t to_date_time(const pstring& str)
+{
+    date_time_t ret;
+    int dash_count = 0, t_count = 0, colon_count = 0;
+
+    const char* p = str.get();
+    const char* p_end = p + str.size();
+    const char* digit = NULL;
+    size_t digit_len = 0;
+
+    bool valid = true;
+    for (; p != p_end && valid; ++p)
+    {
+        switch (*p)
+        {
+            case '-':
+            {
+                if (t_count || colon_count || !digit)
+                {
+                    // Invalid date-time value.  All dashes must occur before
+                    // any of 'T' and ':' occur.
+                    valid = false;
+                    break;
+                }
+
+                switch (dash_count)
+                {
+                    case 0:
+                        // Flush year.
+                        flush_int(ret.year, digit, digit_len);
+                    break;
+                    case 1:
+                        // Flush month.
+                        flush_int(ret.month, digit, digit_len);
+                    break;
+                    default:
+                        valid = false;
+                }
+                ++dash_count;
+            }
+            break;
+            case 'T':
+            {
+                if (t_count || dash_count != 2 || !digit)
+                {
+                    // Invalid date-time value.
+                    valid = false;
+                    break;
+                }
+
+                // Flush day.
+                ret.day = strtol(digit, NULL, 10);
+                digit = NULL;
+                digit_len = 0;
+
+                ++t_count;
+            }
+            break;
+            case ':':
+            {
+                if (!t_count || !digit)
+                {
+                    // Invalid date-time value.
+                    valid = false;
+                    break;
+                }
+
+                switch (colon_count)
+                {
+                    case 0:
+                        // Flush hour.
+                        flush_int(ret.hour, digit, digit_len);
+                    break;
+                    case 1:
+                        // Flush minute.
+                        flush_int(ret.minute, digit, digit_len);
+                    break;
+                    default:
+                        valid = false;
+                }
+
+                ++colon_count;
+            }
+            break;
+            default:
+            {
+                if (t_count)
+                {
+                    // Time element.
+                    switch (colon_count)
+                    {
+                        case 0:
+                            // Hour
+                            process_char(p, digit, digit_len);
+                        break;
+                        case 1:
+                            // Minute
+                            process_char(p, digit, digit_len);
+                        break;
+                        case 2:
+                            // Second
+                            process_char(p, digit, digit_len);
+                        break;
+                        default:
+                            valid = false;
+                    }
+                }
+                else
+                {
+                    // Date element.
+                    switch (dash_count)
+                    {
+                        case 0:
+                            // Year
+                            process_char(p, digit, digit_len);
+                        break;
+                        case 1:
+                            // Month
+                            process_char(p, digit, digit_len);
+                        break;
+                        case 2:
+                            // Day
+                            process_char(p, digit, digit_len);
+                        break;
+                        default:
+                            valid = false;
+                    }
+                }
+            }
+        }
+
+    }
+
+    if (!valid || !digit)
+        return ret;
+
+    // Flush second.
+    ret.second = strtod(digit, NULL);
+
+    return ret;
+}
+
 }

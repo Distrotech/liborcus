@@ -61,7 +61,7 @@ public:
     virtual void set_string(row_t row, col_t col, size_t sindex);
     virtual void set_value(row_t row, col_t col, double value);
     virtual void set_bool(row_t row, col_t col, bool value);
-    virtual void set_date(row_t row, col_t col, const char* p, size_t n);
+    virtual void set_date_time(row_t row, col_t col, int year, int month, int day, int hour, int minute, double second);
     virtual void set_format(row_t row, col_t col, size_t index);
     virtual void set_formula(row_t row, col_t col, formula_grammar_t grammar, const char* p, size_t n);
     virtual void set_shared_formula(

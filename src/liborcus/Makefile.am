@@ -3,7 +3,8 @@ INCLUDES = -I$(top_srcdir)/include -I./include
 
 EXTRA_PROGRAMS = \
 	liborcus-test-xml-map-tree \
-	liborcus-test-xml-structure-tree
+	liborcus-test-xml-structure-tree \
+	liborcus-test-common
 
 TESTS =
 
@@ -194,6 +195,19 @@ liborcus_test_xml_structure_tree_LDADD = \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus-@ORCUS_API_VERSION@.la
 
+# liborcus-test-common
+
+liborcus_test_common_SOURCES = \
+	global.cpp \
+	tokens.cpp \
+	common_test.cpp
+
+liborcus_test_common_LDADD = \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	liborcus-@ORCUS_API_VERSION@.la
+
 TESTS += \
 	liborcus-test-xml-map-tree \
-	liborcus-test-xml-structure-tree
+	liborcus-test-xml-structure-tree \
+	liborcus-test-common
+

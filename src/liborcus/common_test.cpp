@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010-2012 Kohei Yoshida
+ * Copyright (c) 2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,59 +25,32 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_TYPES_HPP__
-#define __ORCUS_TYPES_HPP__
-
 #include <cstdlib>
-#include <vector>
-#include <string>
-#include "pstring.hpp"
-#include "env.hpp"
+#include <cassert>
+#include <iostream>
+#include <sstream>
 
-namespace orcus {
+#include "orcus/global.hpp"
 
-typedef size_t xml_token_t;
-typedef const char* xmlns_id_t;
+using namespace orcus;
 
-ORCUS_DLLPUBLIC extern const xmlns_id_t XMLNS_UNKNOWN_ID;
-ORCUS_DLLPUBLIC extern const xml_token_t XML_UNKNOWN_TOKEN;
-ORCUS_DLLPUBLIC extern const size_t index_not_found;
-
-struct xml_name_t
+void test_date_time_conversion()
 {
-    xmlns_id_t ns;
-    pstring name;
-
-    xml_name_t() : ns(XMLNS_UNKNOWN_ID), name() {}
-    xml_name_t(xmlns_id_t _ns, const pstring& _name) : ns(_ns), name(_name) {}
-    xml_name_t(const xml_name_t& r) : ns(r.ns), name(r.name) {}
-};
-
-struct xml_token_attr_t
-{
-    xmlns_id_t ns;
-    xml_token_t name;
-    pstring value;
-
-    xml_token_attr_t() : ns(XMLNS_UNKNOWN_ID), name(XML_UNKNOWN_TOKEN) {}
-    xml_token_attr_t(xmlns_id_t _ns, xml_token_t _name, const pstring& _value) :
-        ns(_ns), name(_name), value(_value) {}
-};
-
-struct date_time_t
-{
-    int year;
-    int month;
-    int day;
-    int hour;
-    int minute;
-    double second;
-
-    date_time_t() : year(0), month(0), day(0), hour(0), minute(0), second(0.0) {}
-};
-
-typedef ::std::vector<xml_token_attr_t> xml_attrs_t;
-
+    struct {
+        const char* str;
+        int year;
+        int month;
+        int day;
+        int hour;
+        int minute;
+        double second;
+    } tests[] = {
+        { "2011-02-12", 2011, 2, 12, 0, 0, 0.0 }
+    };
 }
 
-#endif
+int main()
+{
+    test_date_time_conversion();
+    return EXIT_SUCCESS;
+}

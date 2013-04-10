@@ -410,8 +410,11 @@ void ods_content_xml_context::push_cell_value()
                 m_tables.back()->set_string(m_row, m_col, m_para_index);
         break;
         case vt_date:
-            m_tables.back()->set_date(
-                m_row, m_col, m_cell_attr.date_value.get(), m_cell_attr.date_value.size());
+        {
+            date_time_t val = to_date_time(m_cell_attr.date_value);
+            m_tables.back()->set_date_time(
+                m_row, m_col, val.year, val.month, val.day, val.hour, val.minute, val.second);
+        }
         break;
         default:
             ;

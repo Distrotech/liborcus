@@ -133,10 +133,8 @@ void sheet::set_bool(row_t row, col_t col, bool value)
     cxt.set_boolean_cell(ixion::abs_address_t(mp_impl->m_sheet,row,col), value);
 }
 
-void sheet::set_date(row_t row, col_t col, const char* p, size_t n)
+void sheet::set_date_time(row_t row, col_t col, int year, int month, int day, int hour, int minute, double second)
 {
-    // For now, we'll import this as a string.
-    set_auto(row, col, p, n);
 }
 
 void sheet::set_format(row_t row, col_t col, size_t index)

@@ -136,7 +136,7 @@ void import_sheet::set_bool(row_t, col_t, bool)
     assert(false);
 }
 
-void import_sheet::set_date(row_t, col_t, const char*, size_t)
+void import_sheet::set_date_time(row_t, col_t, int, int, int, int, int, double)
 {
     assert(false);
 }
