@@ -127,6 +127,8 @@ public:
 
     virtual void set_bool(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, bool value);
 
+    virtual void set_date(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, const char* p, size_t n);
+
     virtual void set_format(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, size_t xf_index);
 
     virtual void set_formula(

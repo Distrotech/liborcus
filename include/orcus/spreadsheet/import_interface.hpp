@@ -194,6 +194,17 @@ public:
     virtual void set_bool(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, bool value) = 0;
 
     /**
+     * Set date value to a cell.
+     *
+     * @param row row ID
+     * @param col column ID
+     * @param p pointer to the first character of the raw string value
+     *          representing the date value.
+     * @param n size of the raw string value.
+     */
+    virtual void set_date(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, const char* p, size_t n) = 0;
+
+    /**
      * Set cell format to specified cell.  The cell format is referred to by
      * the xf (cell format) index in the styles table.
      *

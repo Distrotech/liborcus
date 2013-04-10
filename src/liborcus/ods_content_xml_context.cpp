@@ -143,7 +143,12 @@ private:
                     m_attr.type = ods_content_xml_context::vt_float;
                 else if (!std::strncmp(attr.value.get(), "string", 6))
                     m_attr.type = ods_content_xml_context::vt_string;
+                else if (!std::strncmp(attr.value.get(), "date", 4))
+                    m_attr.type = ods_content_xml_context::vt_date;
             }
+            break;
+            case XML_date_value:
+                m_attr.date_value = attr.value;
             break;
             default:
                 ;
@@ -403,6 +408,10 @@ void ods_content_xml_context::push_cell_value()
         case vt_string:
             if (m_has_content)
                 m_tables.back()->set_string(m_row, m_col, m_para_index);
+        break;
+        case vt_date:
+            m_tables.back()->set_date(
+                m_row, m_col, m_cell_attr.date_value.get(), m_cell_attr.date_value.size());
         break;
         default:
             ;

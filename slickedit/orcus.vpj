@@ -210,6 +210,7 @@
 				<F N="../src/liborcus/gnumeric_tokens.inl"/>
 				<F N="../src/liborcus/mock_spreadsheet.cpp"/>
 				<F N="../src/liborcus/mock_spreadsheet.hpp"/>
+				<F N="../src/liborcus/odf_namespace_constants.inl"/>
 				<F N="../src/liborcus/odf_namespace_types.cpp"/>
 				<F N="../src/liborcus/odf_namespace_types.hpp"/>
 				<F N="../src/liborcus/odf_namespace_types_cpp.inl"/>
@@ -260,6 +261,7 @@
 				<F N="../src/liborcus/xlsx_handler.hpp"/>
 				<F N="../src/liborcus/xlsx_sheet_context.cpp"/>
 				<F N="../src/liborcus/xlsx_sheet_context.hpp"/>
+				<F N="../src/liborcus/xlsx_sheet_context_test.cpp"/>
 				<F N="../src/liborcus/xlsx_types.hpp"/>
 				<F N="../src/liborcus/xlsx_workbook_context.cpp"/>
 				<F N="../src/liborcus/xlsx_workbook_context.hpp"/>
@@ -291,6 +293,8 @@
 				<F N="../src/parser/stream.cpp"/>
 				<F N="../src/parser/string_pool.cpp"/>
 				<F N="../src/parser/string_pool_test.cpp"/>
+				<F N="../src/parser/types.cpp"/>
+				<F N="../src/parser/win_stdint.h"/>
 				<F N="../src/parser/xml_namespace.cpp"/>
 				<F N="../src/parser/xml_namespace_test.cpp"/>
 				<F N="../src/parser/zip_archive.cpp"/>
