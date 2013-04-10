@@ -44,6 +44,26 @@ namespace orcus {
 
 namespace {
 
+class null_date_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+public:
+    null_date_attr_parser() {}
+    null_date_attr_parser(const null_date_attr_parser& r) :
+        m_date_value(r.m_date_value)
+    {
+    }
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns == NS_odf_table && attr.name == XML_date_value)
+            m_date_value = attr.value;
+    }
+
+    const pstring& get_date_value() const { return m_date_value; }
+private:
+    pstring m_date_value;
+};
+
 class table_attr_parser : public unary_function<xml_token_attr_t, void>
 {
 public:
@@ -233,6 +253,11 @@ void ods_content_xml_context::start_element(xmlns_id_t ns, xml_token_t name, con
     {
         switch (name)
         {
+            case XML_calculation_settings:
+            break;
+            case XML_null_date:
+                start_null_date(attrs, parent);
+            break;
             case XML_table:
                 start_table(attrs, parent);
             break;
@@ -271,6 +296,10 @@ bool ods_content_xml_context::end_element(xmlns_id_t ns, xml_token_t name)
     {
         switch (name)
         {
+            case XML_calculation_settings:
+            break;
+            case XML_null_date:
+            break;
             case XML_table:
                 end_table();
             break;
@@ -292,6 +321,25 @@ bool ods_content_xml_context::end_element(xmlns_id_t ns, xml_token_t name)
 
 void ods_content_xml_context::characters(const pstring& str)
 {
+}
+
+void ods_content_xml_context::start_null_date(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
+{
+    if (parent.first != NS_odf_table || parent.second != XML_calculation_settings)
+    {
+        warn_unexpected();
+        return;
+    }
+
+    spreadsheet::iface::import_global_settings* gs = mp_factory->get_global_settings();
+    if (!gs)
+        // Global settings not available. No point going further.
+        return;
+
+    pstring null_date = for_each(attrs.begin(), attrs.end(), null_date_attr_parser()).get_date_value();
+    date_time_t val = to_date_time(null_date);
+
+    gs->set_origin_date(val.year, val.month, val.day);
 }
 
 void ods_content_xml_context::start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent)

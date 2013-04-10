@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2012 Kohei Yoshida
+ * Copyright (c) 2012-2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -35,6 +35,8 @@ import_shared_strings::~import_shared_strings() {}
 import_styles::~import_styles() {}
 
 import_sheet::~import_sheet() {}
+
+import_global_settings::~import_global_settings() {}
 
 import_factory::~import_factory() {}
 

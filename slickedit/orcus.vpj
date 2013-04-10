@@ -306,6 +306,8 @@
 				<F N="../src/spreadsheet/document.hpp"/>
 				<F N="../src/spreadsheet/factory.cpp"/>
 				<F N="../src/spreadsheet/factory.hpp"/>
+				<F N="../src/spreadsheet/global_settings.cpp"/>
+				<F N="../src/spreadsheet/global_settings.hpp"/>
 				<F N="../src/spreadsheet/shared_strings.cpp"/>
 				<F N="../src/spreadsheet/shared_strings.hpp"/>
 				<F N="../src/spreadsheet/sheet.cpp"/>

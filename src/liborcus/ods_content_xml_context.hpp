@@ -74,6 +74,8 @@ public:
     virtual void characters(const pstring& str);
 
 private:
+    void start_null_date(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
+
     void start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
     void end_table();
 

@@ -38,6 +38,11 @@ import_factory::import_factory(document* doc) : mp_document(doc) {}
 
 import_factory::~import_factory() {}
 
+iface::import_global_settings* import_factory::get_global_settings()
+{
+    return NULL;
+}
+
 iface::import_shared_strings* import_factory::get_shared_strings()
 {
     return mp_document->get_shared_strings();

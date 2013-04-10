@@ -44,6 +44,7 @@ class pstring;
 
 namespace spreadsheet {
 
+class import_global_settings;
 class import_shared_strings;
 class import_styles;
 class sheet;
@@ -64,6 +65,9 @@ class ORCUS_DLLPUBLIC document
 public:
     document();
     ~document();
+
+    import_global_settings* get_global_settings();
+    const import_global_settings* get_global_settings() const;
 
     import_shared_strings* get_shared_strings();
     const import_shared_strings* get_shared_strings() const;
@@ -97,6 +101,8 @@ public:
 
     sheet_t get_sheet_index(const pstring& name) const;
     pstring get_sheet_name(sheet_t) const;
+
+    void set_origin_date(int year, int month, int day);
 
 private:
     ixion::model_context& get_model_context();

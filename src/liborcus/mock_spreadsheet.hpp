@@ -163,6 +163,8 @@ class import_factory : public orcus::spreadsheet::iface::import_factory
 public:
     virtual ~import_factory();
 
+    virtual orcus::spreadsheet::iface::import_global_settings* get_global_settings();
+
     virtual orcus::spreadsheet::iface::import_shared_strings* get_shared_strings();
 
     virtual orcus::spreadsheet::iface::import_styles* get_styles();

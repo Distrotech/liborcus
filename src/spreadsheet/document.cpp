@@ -27,11 +27,13 @@
 
 #include "document.hpp"
 
+#include "global_settings.hpp"
 #include "sheet.hpp"
 #include "shared_strings.hpp"
 #include "styles.hpp"
 
 #include "orcus/pstring.hpp"
+#include "orcus/types.hpp"
 
 #include <ixion/formula.hpp>
 #include <ixion/formula_result.hpp>
@@ -122,16 +124,22 @@ public:
 
 struct document_impl
 {
+    document& m_doc;
+
     ixion::model_context m_context;
+    date_time_t m_origin_date;
     boost::ptr_vector<sheet_item > m_sheets;
+    import_global_settings* mp_settings;
     import_shared_strings* mp_strings;
     import_styles* mp_styles;
     ixion::dirty_formula_cells_t m_dirty_cells;
 
-    document_impl() :
+    document_impl(document& doc) :
+        m_doc(doc),
+        mp_settings(new import_global_settings(m_doc)),
+        mp_strings(new import_shared_strings(m_context)),
         mp_styles(new import_styles)
     {
-        mp_strings = new import_shared_strings(m_context);
     }
 
     ~document_impl()
@@ -142,11 +150,21 @@ struct document_impl
 };
 
 document::document() :
-    mp_impl(new document_impl) {}
+    mp_impl(new document_impl(*this)) {}
 
 document::~document()
 {
     delete mp_impl;
+}
+
+import_global_settings* document::get_global_settings()
+{
+    return mp_impl->mp_settings;
+}
+
+const import_global_settings* document::get_global_settings() const
+{
+    return mp_impl->mp_settings;
 }
 
 import_shared_strings* document::get_shared_strings()
@@ -248,6 +266,13 @@ pstring document::get_sheet_name(sheet_t sheet) const
         return pstring();
 
     return mp_impl->m_sheets[pos].name;
+}
+
+void document::set_origin_date(int year, int month, int day)
+{
+    mp_impl->m_origin_date.year = year;
+    mp_impl->m_origin_date.month = month;
+    mp_impl->m_origin_date.day = day;
 }
 
 void document::insert_dirty_cell(const ixion::abs_address_t& pos)

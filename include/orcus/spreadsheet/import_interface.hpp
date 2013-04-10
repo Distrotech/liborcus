@@ -314,6 +314,14 @@ public:
         const char* p, size_t n, const char* p_range, size_t n_range) = 0;
 };
 
+class import_global_settings
+{
+public:
+    ORCUS_DLLPUBLIC virtual ~import_global_settings() = 0;
+
+    virtual void set_origin_date(int year, int month, int day) = 0;
+};
+
 /**
  * This interface provides the filters a means to instantiate concrete
  * classes that implement the above interfaces.  The client code never has
@@ -328,6 +336,8 @@ class import_factory
 {
 public:
     ORCUS_DLLPUBLIC virtual ~import_factory() = 0;
+
+    virtual import_global_settings* get_global_settings() = 0;
 
     /**
      * @return pointer to the shared strings instance. It may return NULL if

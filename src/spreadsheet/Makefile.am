@@ -13,7 +13,9 @@ liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_SOURCES = \
 	sheet.cpp \
 	sheet.hpp \
 	styles.cpp \
-	styles.hpp
+	styles.hpp \
+	global_settings.cpp \
+	global_settings.hpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS = $(LIBIXION_CFLAGS)
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined

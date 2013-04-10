@@ -39,6 +39,12 @@ import_factory::~import_factory()
 {
 }
 
+orcus::spreadsheet::iface::import_global_settings* import_factory::get_global_settings()
+{
+    assert(false);
+    return NULL;
+}
+
 orcus::spreadsheet::iface::import_shared_strings* import_factory::get_shared_strings()
 {
     assert(false);

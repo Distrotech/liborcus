@@ -42,6 +42,7 @@ public:
     import_factory(document* doc);
     virtual ~import_factory();
 
+    virtual iface::import_global_settings* get_global_settings();
     virtual iface::import_shared_strings* get_shared_strings();
     virtual iface::import_styles* get_styles();
     virtual iface::import_sheet* append_sheet(const char* sheet_name, size_t sheet_name_length);
