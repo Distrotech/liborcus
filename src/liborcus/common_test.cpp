@@ -32,6 +32,7 @@
 
 #include "orcus/global.hpp"
 
+using namespace std;
 using namespace orcus;
 
 void test_date_time_conversion()
@@ -47,6 +48,21 @@ void test_date_time_conversion()
     } tests[] = {
         { "2011-02-12", 2011, 2, 12, 0, 0, 0.0 }
     };
+
+    for (size_t i = 0, n = sizeof(tests)/sizeof(tests[0]); i < n; ++i)
+    {
+        pstring str(tests[i].str);
+        date_time_t ret = to_date_time(str);
+        cout << "original: " << str << endl;
+        cout << "converted: year=" << ret.year << "; month=" << ret.month << "; day="
+            << ret.day << "; hour=" << ret.hour << "; minute=" << ret.minute << "; second=" << ret.second << endl;
+        assert(ret.year == tests[i].year);
+        assert(ret.month == tests[i].month);
+        assert(ret.day == tests[i].day);
+        assert(ret.hour == tests[i].hour);
+        assert(ret.minute == tests[i].minute);
+        assert(ret.second == tests[i].second);
+    }
 }
 
 int main()

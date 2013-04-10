@@ -188,6 +188,7 @@
 		</Folder>
 		<Folder Name="../src">
 			<Folder Name="liborcus">
+				<F N="../src/liborcus/common_test.cpp"/>
 				<F N="../src/liborcus/dom_tree.cpp"/>
 				<F N="../src/liborcus/global.cpp"/>
 				<F N="../src/liborcus/gnumeric_cell_context.cpp"/>
