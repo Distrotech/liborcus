@@ -82,7 +82,6 @@ void process_char(const char* p, const char*& digit, size_t& digit_len)
         return;
     }
 
-    ++digit;
     ++digit_len;
 }
 
@@ -102,7 +101,7 @@ date_time_t to_date_time(const pstring& str)
 
     const char* p = str.get();
     const char* p_end = p + str.size();
-    const char* digit = NULL;
+    const char* digit = p;
     size_t digit_len = 0;
 
     bool valid = true;
@@ -231,8 +230,16 @@ date_time_t to_date_time(const pstring& str)
     if (!valid || !digit)
         return ret;
 
-    // Flush second.
-    ret.second = strtod(digit, NULL);
+    if (t_count)
+    {
+        // Flush second.
+        ret.second = strtod(digit, NULL);
+    }
+    else
+    {
+        // Flush day.
+        ret.day = strtol(digit, NULL, 10);
+    }
 
     return ret;
 }

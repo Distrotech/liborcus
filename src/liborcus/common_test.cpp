@@ -46,7 +46,8 @@ void test_date_time_conversion()
         int minute;
         double second;
     } tests[] = {
-        { "2011-02-12", 2011, 2, 12, 0, 0, 0.0 }
+        { "2011-02-12", 2011, 2, 12, 0, 0, 0.0 },
+        { "1934-12-23T21:34:56.69", 1934, 12, 23, 21, 34, 56.69 },
     };
 
     for (size_t i = 0, n = sizeof(tests)/sizeof(tests[0]); i < n; ++i)
