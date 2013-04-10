@@ -135,6 +135,27 @@ void sheet::set_bool(row_t row, col_t col, bool value)
 
 void sheet::set_date_time(row_t row, col_t col, int year, int month, int day, int hour, int minute, double second)
 {
+    // I'll convert this into a string value for now.
+
+    ostringstream os;
+    os << year << '-';
+    if (month < 10)
+        os << '0';
+    os << month << '-';
+    if (day < 10)
+        os << '0';
+    os << day << 'T';
+    if (hour < 10)
+        os << '0';
+    os << hour << ':';
+    if (minute < 10)
+        os << '0';
+    os << minute << ':';
+    if (second < 10.0)
+        os << '0';
+    os << second;
+    string s = os.str();
+    set_auto(row, col, &s[0], s.size());
 }
 
 void sheet::set_format(row_t row, col_t col, size_t index)
