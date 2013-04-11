@@ -37,7 +37,9 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	ooxml_namespace_types.cpp \
 	ooxml_namespace_types.hpp \
 	odf_namespace_types.hpp \
+	odf_namespace_types_hpp.inl \
 	odf_namespace_types.cpp \
+	odf_namespace_types_cpp.inl \
 	gnumeric_namespace_types.hpp \
 	gnumeric_namespace_types.cpp
 
@@ -140,6 +142,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	gnumeric_helper.cpp \
 	gnumeric_sheet_context.cpp \
 	gnumeric_tokens.cpp \
+	gnumeric_tokens.inl \
 	orcus_gnumeric.cpp
 
 # gnumeric-cell-context-test
