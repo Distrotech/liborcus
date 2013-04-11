@@ -20,7 +20,7 @@ m4_define([orcus_api_version], [orcus_major_version.orcus_minor_api_version])
 # =============
 # Automake init
 # =============
-AC_INIT([orcus],[orcus_version])
+AC_INIT([liborcus],[orcus_version])
 AC_CONFIG_MACRO_DIR([m4])
 AM_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([1.11 foreign dist-bzip2 dist-xz])
