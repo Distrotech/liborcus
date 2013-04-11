@@ -110,10 +110,7 @@ test_data = \
 	test/xml-mapped/content-namespace-2/map.xml \
 	test/xml-mapped/attribute-range-self-close/input.xml \
 	test/xml-mapped/attribute-range-self-close/check.txt \
-	test/xml-mapped/attribute-range-self-close/map.xml \
-	test-manual/ods/george-ou-perf.ods \
-	test-manual/ods/cell-styles-ru.ods \
-	test-manual/mso-crypto/agile-aes128-sha1/input.xml
+	test/xml-mapped/attribute-range-self-close/map.xml
 
 vsprojects_data = \
 	vsprojects/MddsAndIxion.vsprops \
