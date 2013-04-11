@@ -7,7 +7,7 @@ AC_PREREQ([2.65])
 # Version informations
 # ====================
 m4_define([orcus_major_version], [0])
-m4_define([orcus_minor_version], [3])
+m4_define([orcus_minor_version], [5])
 m4_define([orcus_micro_version], [0])
 m4_define([orcus_version], [orcus_major_version.orcus_minor_version.orcus_micro_version])
 
