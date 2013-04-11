@@ -2,6 +2,7 @@ SUBDIRS = mso spreadsheet
 
 liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus
 liborcus_HEADERS = \
+	base64.hpp \
 	cell_buffer.hpp	\
 	css_parser.hpp \
 	csv_parser.hpp \

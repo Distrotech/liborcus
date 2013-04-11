@@ -47,7 +47,6 @@ parser_test_xml_namespace_CPPFLAGS = $(COMMON_CPPFLAGS)
 # parser-test-base64
 
 parser_test_base64_SOURCES = \
-	base64.hpp \
 	base64.cpp \
 	base64_test.cpp
 

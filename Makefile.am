@@ -34,9 +34,10 @@ bin_data = \
 	bin/pack-release.sh
 
 misc_data = \
-	misc/OpenDocument-schema-v1.2-cd04.rng \
+	misc/OpenDocument-v1.2-os-schema.rng \
 	misc/ooxml-ecma-376/OfficeOpenXML-XMLSchema.zip \
 	misc/ooxml-ecma-376/OpenPackagingConventions-XMLSchema.zip \
+	misc/gnumeric.xsd \
 	misc/generate-tokens.sh
 
 slickedit_data = \
@@ -107,18 +108,21 @@ test_data = \
 	test/xlsx/formula-shared.xlsx
 
 vsprojects_data = \
-	vsprojects/liborcus-static-nozip/liborcus-static-nozip.vcproj \
-	vsprojects/liborcus/DefaultConfig.vsprops \
-	vsprojects/liborcus/LibZip.vsprops \
-	vsprojects/liborcus/liborcus.vcproj \
+	vsprojects/MddsAndIxion.vsprops \
+	vsprojects/liborcus-parser-static/liborcus-parser-static.vcproj \
+	vsprojects/liborcus-parser.vsprops \
+	vsprojects/liborcus-parser/liborcus-parser.vcproj \
 	vsprojects/liborcus-spreadsheet-model/liborcus-spreadsheet-model.vcproj \
+	vsprojects/liborcus-static/liborcus-static.vcproj \
+	vsprojects/liborcus/DefaultConfig.vsprops \
+	vsprojects/liborcus/liborcus.vcproj \
+	vsprojects/liborcus/zLib.vsprops \
 	vsprojects/orcus-csv/AdditionalLibs.vsprops \
 	vsprojects/orcus-csv/orcus-csv.vcproj \
+	vsprojects/orcus-gnumeric/orcus-gnumeric.vcproj \
 	vsprojects/orcus-ods/orcus-ods.vcproj \
 	vsprojects/orcus-xlsx/orcus-xlsx.vcproj \
-	vsprojects/orcus-xml/orcus-xml.vcproj \
-	vsprojects/orcus.sln \
-	vsprojects/MddsAndIxion.vsprops
+	vsprojects/orcus-xml/orcus-xml.vcproj
 
 EXTRA_DIST = \
 	liborcus.pc.in \
