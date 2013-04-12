@@ -5,6 +5,7 @@ COMMON_CPPFLAGS = $(BOOST_SYSTEM_CFLAGS)
 
 lib_LTLIBRARIES = liborcus-parser-@ORCUS_API_VERSION@.la
 liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
+	win_stdint.h \
 	base64.cpp \
 	cell_buffer.cpp \
 	exception.cpp \
