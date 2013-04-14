@@ -100,7 +100,7 @@ public:
             break;
             case XML_s:
                 // cell style
-                m_xf = strtoul(attr.value.str().c_str(), NULL, 10);
+                m_xf = strtoul(attr.value.get(), NULL, 10);
             break;
         }
     }
