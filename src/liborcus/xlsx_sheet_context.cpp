@@ -201,8 +201,8 @@ public:
 
 }
 
-xlsx_sheet_context::xlsx_sheet_context(const tokens& tokens, spreadsheet::iface::import_sheet* sheet) :
-    xml_context_base(tokens),
+xlsx_sheet_context::xlsx_sheet_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_sheet* sheet) :
+    xml_context_base(session_cxt, tokens),
     mp_sheet(sheet),
     m_cur_row(0),
     m_cur_cell_type(cell_type_value),
@@ -219,7 +219,7 @@ bool xlsx_sheet_context::can_handle_element(xmlns_id_t ns, xml_token_t name) con
     return true;
 }
 
-xml_context_base* xlsx_sheet_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
+xml_context_base* xlsx_sheet_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     return NULL;
 }

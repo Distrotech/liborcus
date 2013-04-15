@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     app.read_file(argv[1]);
     doc->calc_formulas();
     doc->dump();
-//  doc->dump_html("./obj");
+    doc->dump_html("./html");
 //  pstring::intern::dump();
     pstring::intern::dispose();
     return EXIT_SUCCESS;

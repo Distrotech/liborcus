@@ -67,8 +67,8 @@ private:
 
 }
 
-xlsx_workbook_context::xlsx_workbook_context(const tokens& tokens) :
-    xml_context_base(tokens) {}
+xlsx_workbook_context::xlsx_workbook_context(session_context& session_cxt, const tokens& tokens) :
+    xml_context_base(session_cxt, tokens) {}
 
 xlsx_workbook_context::~xlsx_workbook_context() {}
 
@@ -77,7 +77,7 @@ bool xlsx_workbook_context::can_handle_element(xmlns_id_t /*ns*/, xml_token_t /*
     return true;
 }
 
-xml_context_base* xlsx_workbook_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/) const
+xml_context_base* xlsx_workbook_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
     return NULL;
 }

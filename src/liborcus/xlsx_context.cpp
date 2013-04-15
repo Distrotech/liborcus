@@ -101,8 +101,8 @@ public:
 
 }
 
-xlsx_shared_strings_context::xlsx_shared_strings_context(const tokens& tokens, spreadsheet::iface::import_shared_strings* strings) :
-    xml_context_base(tokens), mp_strings(strings), m_in_segments(false) {}
+xlsx_shared_strings_context::xlsx_shared_strings_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_shared_strings* strings) :
+    xml_context_base(session_cxt, tokens), mp_strings(strings), m_in_segments(false) {}
 
 xlsx_shared_strings_context::~xlsx_shared_strings_context() {}
 
@@ -111,7 +111,7 @@ bool xlsx_shared_strings_context::can_handle_element(xmlns_id_t ns, xml_token_t 
     return true;
 }
 
-xml_context_base* xlsx_shared_strings_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
+xml_context_base* xlsx_shared_strings_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     return NULL;
 }
@@ -431,8 +431,8 @@ public:
 
 }
 
-xlsx_styles_context::xlsx_styles_context(const tokens& tokens, spreadsheet::iface::import_styles* styles) :
-    xml_context_base(tokens), mp_styles(styles), m_cell_style_xf(false) {}
+xlsx_styles_context::xlsx_styles_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_styles* styles) :
+    xml_context_base(session_cxt, tokens), mp_styles(styles), m_cell_style_xf(false) {}
 
 xlsx_styles_context::~xlsx_styles_context() {}
 
@@ -441,7 +441,7 @@ bool xlsx_styles_context::can_handle_element(xmlns_id_t ns, xml_token_t name) co
     return true;
 }
 
-xml_context_base* xlsx_styles_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
+xml_context_base* xlsx_styles_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     return NULL;
 }

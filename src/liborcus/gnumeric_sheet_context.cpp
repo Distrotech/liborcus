@@ -214,8 +214,8 @@ private:
 
 
 gnumeric_sheet_context::gnumeric_sheet_context(
-    const tokens& tokens, spreadsheet::iface::import_factory* factory) :
-    xml_context_base(tokens),
+    session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
+    xml_context_base(session_cxt, tokens),
     mp_factory(factory),
     mp_sheet(0)
 {
@@ -233,10 +233,10 @@ bool gnumeric_sheet_context::can_handle_element(xmlns_id_t ns, xml_token_t name)
     return true;
 }
 
-xml_context_base* gnumeric_sheet_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
+xml_context_base* gnumeric_sheet_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     if (ns == NS_gnumeric_gnm && name == XML_Cells)
-        return new gnumeric_cell_context(get_tokens(), mp_factory, mp_sheet);
+        return new gnumeric_cell_context(get_session_context(), get_tokens(), mp_factory, mp_sheet);
 
     return NULL;
 }

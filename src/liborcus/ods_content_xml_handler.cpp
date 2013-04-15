@@ -36,10 +36,10 @@ using namespace std;
 
 namespace orcus {
 
-ods_content_xml_handler::ods_content_xml_handler(const tokens& tokens, spreadsheet::iface::import_factory* factory) :
+ods_content_xml_handler::ods_content_xml_handler(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
     mp_factory(factory)
 {
-    m_context_stack.push_back(new ods_content_xml_context(tokens, factory));
+    m_context_stack.push_back(new ods_content_xml_context(session_cxt, tokens, factory));
 }
 
 ods_content_xml_handler::~ods_content_xml_handler()

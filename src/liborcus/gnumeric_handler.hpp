@@ -36,6 +36,7 @@
 
 namespace orcus {
 
+struct session_context;
 class tokens;
 
 namespace spreadsheet { namespace iface { class import_factory; }}
@@ -46,7 +47,7 @@ namespace spreadsheet { namespace iface { class import_factory; }}
 class gnumeric_content_xml_handler : public xml_stream_handler
 {
 public:
-    gnumeric_content_xml_handler(const tokens& tokens, spreadsheet::iface::import_factory* factory);
+    gnumeric_content_xml_handler(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory);
     virtual ~gnumeric_content_xml_handler();
 
     virtual void start_document();

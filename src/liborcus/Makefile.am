@@ -49,6 +49,7 @@ EXTRA_PROGRAMS += \
 	orcus-xlsx-sheet-context-test
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
+	session_context.hpp \
 	ooxml_content_types.cpp \
 	ooxml_content_types.hpp \
 	ooxml_global.cpp \
@@ -110,6 +111,7 @@ endif # WITH_XLSX_FILTER
 if WITH_ODS_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
+	session_context.hpp \
 	odf_para_context.hpp \
 	odf_para_context.cpp \
 	odf_token_constants.hpp \
@@ -128,6 +130,7 @@ endif # WITH_ODS_FILTER
 if WITH_GNUMERIC_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
+	session_context.hpp \
 	gnumeric_cell_context.hpp \
 	gnumeric_context.hpp \
 	gnumeric_handler.hpp \

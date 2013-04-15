@@ -34,6 +34,7 @@
 #include "ods_content_xml_handler.hpp"
 #include "odf_tokens.hpp"
 #include "odf_namespace_types.hpp"
+#include "session_context.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -48,6 +49,7 @@ namespace orcus {
 struct orcus_ods_impl
 {
     xmlns_repository m_ns_repo;
+    session_context m_cxt;
     spreadsheet::iface::import_factory* mp_factory;
 
     orcus_ods_impl(spreadsheet::iface::import_factory* im_factory) :
@@ -96,7 +98,7 @@ void orcus_ods::read_content_xml(const unsigned char* p, size_t size)
 {
     xml_stream_parser parser(mp_impl->m_ns_repo, odf_tokens, reinterpret_cast<const char*>(p), size, "content.xml");
     ::boost::scoped_ptr<ods_content_xml_handler> handler(
-        new ods_content_xml_handler(odf_tokens, mp_impl->mp_factory));
+        new ods_content_xml_handler(mp_impl->m_cxt, odf_tokens, mp_impl->mp_factory));
     parser.set_handler(handler.get());
     parser.parse();
 }

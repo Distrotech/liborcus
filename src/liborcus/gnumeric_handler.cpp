@@ -35,10 +35,11 @@ using namespace std;
 
 namespace orcus {
 
-gnumeric_content_xml_handler::gnumeric_content_xml_handler(const tokens& tokens, spreadsheet::iface::import_factory* factory) :
+gnumeric_content_xml_handler::gnumeric_content_xml_handler(
+    session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
     mp_factory(factory)
 {
-    m_context_stack.push_back(new gnumeric_content_xml_context(tokens, factory));
+    m_context_stack.push_back(new gnumeric_content_xml_context(session_cxt, tokens, factory));
 }
 
 gnumeric_content_xml_handler::~gnumeric_content_xml_handler()

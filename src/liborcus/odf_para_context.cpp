@@ -38,8 +38,8 @@ using namespace std;
 
 namespace orcus {
 
-text_para_context::text_para_context(const tokens& tokens, spreadsheet::iface::import_shared_strings* ssb) :
-    xml_context_base(tokens),
+text_para_context::text_para_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_shared_strings* ssb) :
+    xml_context_base(session_cxt, tokens),
     mp_sstrings(ssb),
     m_string_index(0),
     m_formatted(false)
@@ -55,7 +55,7 @@ bool text_para_context::can_handle_element(xmlns_id_t ns, xml_token_t name) cons
     return true;
 }
 
-xml_context_base* text_para_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
+xml_context_base* text_para_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     return NULL;
 }

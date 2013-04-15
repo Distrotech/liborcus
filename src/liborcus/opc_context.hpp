@@ -46,11 +46,11 @@ class opc_content_types_context : public xml_context_base
 public:
     typedef boost::unordered_set<pstring, pstring::hash> ct_cache_type;
 
-    opc_content_types_context(const tokens& _tokens);
+    opc_content_types_context(session_context& session_cxt, const tokens& _tokens);
     virtual ~opc_content_types_context();
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
-    virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name) const;
+    virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name);
     virtual void end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base *child);
 
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t> &attrs);
@@ -87,11 +87,11 @@ class opc_relations_context : public xml_context_base
 public:
     typedef boost::unordered_set<pstring, pstring::hash> schema_cache_type;
 
-    opc_relations_context(const tokens& _tokens);
+    opc_relations_context(session_context& session_cxt, const tokens& _tokens);
     virtual ~opc_relations_context();
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
-    virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name) const;
+    virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name);
     virtual void end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base *child);
 
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t> &attrs);

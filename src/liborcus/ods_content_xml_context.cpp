@@ -194,8 +194,8 @@ ods_content_xml_context::cell_attr::cell_attr() :
 
 // ============================================================================
 
-ods_content_xml_context::ods_content_xml_context(const tokens& tokens, spreadsheet::iface::import_factory* factory) :
-    xml_context_base(tokens),
+ods_content_xml_context::ods_content_xml_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
+    xml_context_base(session_cxt, tokens),
     mp_factory(factory),
     m_row(0), m_col(0),
     m_para_index(0),
@@ -215,10 +215,10 @@ bool ods_content_xml_context::can_handle_element(xmlns_id_t ns, xml_token_t name
     return true;
 }
 
-xml_context_base* ods_content_xml_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
+xml_context_base* ods_content_xml_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     if (ns == NS_odf_text && name == XML_p)
-        return new text_para_context(get_tokens(), mp_factory->get_shared_strings());
+        return new text_para_context(get_session_context(), get_tokens(), mp_factory->get_shared_strings());
 
     return NULL;
 }

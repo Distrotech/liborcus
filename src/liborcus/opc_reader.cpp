@@ -85,10 +85,11 @@ private:
 
 opc_reader::part_handler::~part_handler() {}
 
-opc_reader::opc_reader(xmlns_repository& ns_repo, part_handler& handler) :
+opc_reader::opc_reader(xmlns_repository& ns_repo, session_context& cxt, part_handler& handler) :
     m_ns_repo(ns_repo),
+    m_session_cxt(cxt),
     m_handler(handler),
-    m_opc_rel_handler(new opc_relations_context(opc_tokens)) {}
+    m_opc_rel_handler(new opc_relations_context(m_session_cxt, opc_tokens)) {}
 
 void opc_reader::read_file(const char* fpath)
 {
@@ -239,7 +240,7 @@ void opc_reader::read_content_types()
 
     xml_stream_parser parser(m_ns_repo, opc_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), "[Content_Types].xml");
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-        new xml_simple_stream_handler(new opc_content_types_context(opc_tokens)));
+        new xml_simple_stream_handler(new opc_content_types_context(m_session_cxt, opc_tokens)));
     parser.set_handler(handler.get());
     parser.parse();
 

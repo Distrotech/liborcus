@@ -43,6 +43,7 @@
 namespace orcus {
 
 class xmlns_repository;
+struct session_context;
 struct opc_rel_extra;
 
 /**
@@ -78,7 +79,7 @@ public:
             schema_t type, const std::string& dir_path, const std::string& file_name, const opc_rel_extra* data) = 0;
     };
 
-    opc_reader(xmlns_repository& ns_repo, part_handler& handler);
+    opc_reader(xmlns_repository& ns_repo, session_context& session_cxt, part_handler& handler);
 
     void read_file(const char* fpath);
     bool open_zip_stream(const std::string& path, std::vector<unsigned char>& buf);
@@ -113,6 +114,7 @@ private:
 
 private:
     xmlns_repository& m_ns_repo;
+    session_context& m_session_cxt;
     part_handler& m_handler;
 
     boost::scoped_ptr<zip_archive> m_archive;

@@ -254,6 +254,7 @@
 				<F N="../src/liborcus/orcus_ods.cpp"/>
 				<F N="../src/liborcus/orcus_xlsx.cpp"/>
 				<F N="../src/liborcus/orcus_xml.cpp"/>
+				<F N="../src/liborcus/session_context.hpp"/>
 				<F N="../src/liborcus/spreadsheet_interface.cpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>
 				<F N="../src/liborcus/xlsx_context.cpp"/>

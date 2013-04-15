@@ -93,8 +93,8 @@ private:
 
 }
 
-opc_content_types_context::opc_content_types_context(const tokens& _tokens) :
-    xml_context_base(_tokens)
+opc_content_types_context::opc_content_types_context(session_context& session_cxt, const tokens& _tokens) :
+    xml_context_base(session_cxt, _tokens)
 {
     // build content type cache.
     for (const content_type_t* p = CT_all; *p; ++p)
@@ -110,7 +110,7 @@ bool opc_content_types_context::can_handle_element(xmlns_id_t ns, xml_token_t na
     return true;
 }
 
-xml_context_base* opc_content_types_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
+xml_context_base* opc_content_types_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     return NULL;
 }
@@ -254,8 +254,8 @@ struct compare_rels : binary_function<bool, opc_rel_t, opc_rel_t>
 
 }
 
-opc_relations_context::opc_relations_context(const tokens &_tokens) :
-    xml_context_base(_tokens)
+opc_relations_context::opc_relations_context(session_context& session_cxt, const tokens &_tokens) :
+    xml_context_base(session_cxt, _tokens)
 {
     // build content type cache.
     for (schema_t* p = SCH_all; *p; ++p)
@@ -271,7 +271,7 @@ bool opc_relations_context::can_handle_element(xmlns_id_t ns, xml_token_t name) 
     return true;
 }
 
-xml_context_base* opc_relations_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
+xml_context_base* opc_relations_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     return NULL;
 }

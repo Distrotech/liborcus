@@ -4,6 +4,7 @@
 #include "ooxml_schemas.hpp"
 #include "xlsx_sheet_context.hpp"
 #include "ooxml_token_constants.hpp"
+#include "session_context.hpp"
 #include "orcus/types.hpp"
 
 using namespace orcus;
@@ -39,8 +40,9 @@ public:
 void test_cell_value()
 {
     mock_sheet sheet;
+    session_context cxt;
 
-    orcus::xlsx_sheet_context context(orcus::ooxml_tokens, &sheet);
+    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, &sheet);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
@@ -61,8 +63,9 @@ void test_cell_value()
 void test_cell_bool()
 {
     mock_sheet sheet;
+    session_context cxt;
 
-    orcus::xlsx_sheet_context context(orcus::ooxml_tokens, &sheet);
+    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, &sheet);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
@@ -84,8 +87,9 @@ void test_cell_bool()
 void test_array_formula()
 {
     mock_sheet sheet;
+    session_context cxt;
 
-    orcus::xlsx_sheet_context context(orcus::ooxml_tokens, &sheet);
+    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, &sheet);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;

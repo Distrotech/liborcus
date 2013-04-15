@@ -32,6 +32,7 @@
 #include "gnumeric_handler.hpp"
 #include "gnumeric_tokens.hpp"
 #include "gnumeric_namespace_types.hpp"
+#include "session_context.hpp"
 
 #include <zlib.h>
 
@@ -53,6 +54,7 @@ namespace orcus {
 struct orcus_gnumeric_impl
 {
     xmlns_repository m_ns_repo;
+    session_context m_cxt;
     spreadsheet::iface::import_factory* mp_factory;
 
     orcus_gnumeric_impl(spreadsheet::iface::import_factory* im_factory) :
@@ -74,7 +76,7 @@ void orcus_gnumeric::read_content_xml(const char* p, size_t size)
 {
     xml_stream_parser parser(mp_impl->m_ns_repo, gnumeric_tokens, p, size, "content.xml");
     ::boost::scoped_ptr<gnumeric_content_xml_handler> handler(
-        new gnumeric_content_xml_handler(gnumeric_tokens, mp_impl->mp_factory));
+        new gnumeric_content_xml_handler(mp_impl->m_cxt, gnumeric_tokens, mp_impl->mp_factory));
     parser.set_handler(handler.get());
     parser.parse();
 }

@@ -53,11 +53,16 @@ void print_stack(const tokens& tokens, const xml_elem_stack_t& elem_stack)
 
 }
 
-xml_context_base::xml_context_base(const tokens& tokens) :
-    m_tokens(tokens) {}
+xml_context_base::xml_context_base(session_context& session_cxt, const tokens& tokens) :
+    m_session_cxt(session_cxt), m_tokens(tokens) {}
 
 xml_context_base::~xml_context_base()
 {
+}
+
+session_context& xml_context_base::get_session_context()
+{
+    return m_session_cxt;
 }
 
 const tokens& xml_context_base::get_tokens() const

@@ -134,8 +134,8 @@ private:
 
 // ============================================================================
 
-gnumeric_cell_context::gnumeric_cell_context(const tokens& tokens, spreadsheet::iface::import_factory* factory, spreadsheet::iface::import_sheet* sheet) :
-    xml_context_base(tokens),
+gnumeric_cell_context::gnumeric_cell_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory, spreadsheet::iface::import_sheet* sheet) :
+    xml_context_base(session_cxt, tokens),
     mp_factory(factory),
     mp_sheet(sheet)
 {
@@ -150,7 +150,7 @@ bool gnumeric_cell_context::can_handle_element(xmlns_id_t ns, xml_token_t name) 
     return true;
 }
 
-xml_context_base* gnumeric_cell_context::create_child_context(xmlns_id_t ns, xml_token_t name) const
+xml_context_base* gnumeric_cell_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     return NULL;
 }

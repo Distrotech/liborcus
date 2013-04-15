@@ -32,6 +32,7 @@
 
 namespace orcus {
 
+struct session_context;
 class tokens;
 
 typedef ::std::pair<xmlns_id_t, xml_token_t> xml_token_pair_t;
@@ -40,11 +41,11 @@ typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
 class xml_context_base
 {
 public:
-    xml_context_base(const tokens& tokens);
+    xml_context_base(session_context& session_cxt, const tokens& tokens);
     virtual ~xml_context_base() = 0;
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const = 0;
-    virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name) const = 0;
+    virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name) = 0;
     virtual void end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child) = 0;
 
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const ::std::vector<xml_token_attr_t>& attrs) = 0;
@@ -52,6 +53,7 @@ public:
     virtual void characters(const pstring& str) = 0;
 
 protected:
+    session_context& get_session_context();
     const tokens& get_tokens() const;
     xml_token_pair_t push_stack(xmlns_id_t ns, xml_token_t name);
     bool pop_stack(xmlns_id_t ns, xml_token_t name);
@@ -80,6 +82,7 @@ protected:
         const xml_token_pair_t& elem, const xml_elem_stack_t& expected_elems);
 
 private:
+    session_context& m_session_cxt;
     const tokens& m_tokens;
     xml_elem_stack_t m_stack;
 };
