@@ -156,7 +156,5 @@ int main(int argc, char** argv)
             ;
     }
 
-    pstring::intern::dispose();
-
     return EXIT_SUCCESS;
 }

@@ -30,6 +30,8 @@
 #include "ooxml_schemas.hpp"
 #include "ooxml_token_constants.hpp"
 #include "ooxml_namespace_types.hpp"
+#include "session_context.hpp"
+
 #include "orcus/global.hpp"
 
 using namespace std;
@@ -41,10 +43,12 @@ namespace {
 class workbook_sheet_attr_parser : public unary_function<xml_token_attr_t, void>
 {
 public:
+    workbook_sheet_attr_parser(session_context* cxt) : m_cxt(cxt) {}
+
     void operator() (const xml_token_attr_t& attr)
     {
         if (attr.ns == NS_ooxml_xlsx && attr.name == XML_name)
-            m_sheet.name = attr.value.intern();
+            m_sheet.name = m_cxt->m_string_pool.intern(attr.value).first;
         else if (attr.ns == NS_ooxml_xlsx && attr.name == XML_sheetId)
         {
             const pstring& val = attr.value;
@@ -53,7 +57,7 @@ public:
         }
         else if (attr.ns == NS_ooxml_r && attr.name == XML_id)
         {
-            m_rid = attr.value.intern();
+            m_rid = m_cxt->m_string_pool.intern(attr.value).first;
         }
     }
 
@@ -61,6 +65,7 @@ public:
     const pstring& get_rid() const { return m_rid; }
 
 private:
+    session_context* m_cxt;
     pstring m_rid;
     xlsx_rel_sheet_info m_sheet;
 };
@@ -103,7 +108,7 @@ void xlsx_workbook_context::start_element(xmlns_id_t ns, xml_token_t name, const
         case XML_sheet:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_sheets);
-            workbook_sheet_attr_parser func;
+            workbook_sheet_attr_parser func(&get_session_context());
             func = for_each(attrs.begin(), attrs.end(), func);
             m_sheets.push_back(new xlsx_rel_sheet_info(func.get_sheet()));
             const xlsx_rel_sheet_info& info = m_sheets.back();

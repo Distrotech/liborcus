@@ -54,7 +54,6 @@ int main(int argc, char** argv)
     }
     doc->dump();
     doc->dump_html("./obj");
-    pstring::intern::dispose();
 
     return EXIT_SUCCESS;
 }

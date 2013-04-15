@@ -30,6 +30,7 @@
 #include "ooxml_content_types.hpp"
 #include "ooxml_namespace_types.hpp"
 #include "ooxml_schemas.hpp"
+#include "session_context.hpp"
 
 #include "orcus/exception.hpp"
 #include "orcus/global.hpp"
@@ -140,8 +141,9 @@ void opc_content_types_context::start_element(xmlns_id_t ns, xml_token_t name, c
             // We need to use allocated strings for part names here because
             // the part names need to survive after the [Content_Types].xml
             // stream is destroyed.
+            pstring part_name = get_session_context().m_string_pool.intern(func.get_name()).first;
             m_parts.push_back(
-                xml_part_t(func.get_name().intern(), func.get_content_type()));
+                xml_part_t(part_name, func.get_content_type()));
         }
         break;
         case XML_Default:
@@ -152,8 +154,9 @@ void opc_content_types_context::start_element(xmlns_id_t ns, xml_token_t name, c
 
             // Like the part names, we need to use allocated strings for
             // extension names.
+            pstring ext_name = get_session_context().m_string_pool.intern(func.get_name()).first;
             m_ext_defaults.push_back(
-                xml_part_t(func.get_name().intern(), func.get_content_type()));
+                xml_part_t(ext_name, func.get_content_type()));
         }
         break;
         default:
@@ -187,8 +190,8 @@ namespace {
 class rel_attr_parser : public unary_function<void, xml_token_attr_t>
 {
 public:
-    rel_attr_parser(const opc_relations_context::schema_cache_type* cache) :
-        mp_schema_cache(cache) {}
+    rel_attr_parser(session_context* cxt, const opc_relations_context::schema_cache_type* cache) :
+        m_cxt(cxt), mp_schema_cache(cache) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -198,13 +201,13 @@ public:
         switch (attr.name)
         {
             case XML_Target:
-                m_rel.target = attr.value.intern();
+                m_rel.target = m_cxt->m_string_pool.intern(attr.value).first;
             break;
             case XML_Type:
                 m_rel.type = to_schema(attr.value);
             break;
             case XML_Id:
-                m_rel.rid = attr.value.intern();
+                m_rel.rid = m_cxt->m_string_pool.intern(attr.value).first;
             break;
         }
     }
@@ -226,6 +229,7 @@ private:
     }
 
 private:
+    session_context* m_cxt;
     const opc_relations_context::schema_cache_type* mp_schema_cache;
     opc_rel_t m_rel;
 };
@@ -293,7 +297,7 @@ void opc_relations_context::start_element(xmlns_id_t ns, xml_token_t name, const
         break;
         case XML_Relationship:
         {
-            rel_attr_parser func(&m_schema_cache);
+            rel_attr_parser func(&get_session_context(), &m_schema_cache);
             xml_element_expected(parent, NS_opc_rel, XML_Relationships);
             func = for_each(attrs.begin(), attrs.end(), func);
             const opc_rel_t& rel = func.get_rel();

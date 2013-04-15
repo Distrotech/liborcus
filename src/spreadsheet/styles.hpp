@@ -33,7 +33,11 @@
 
 #include <vector>
 
-namespace orcus { namespace spreadsheet {
+namespace orcus {
+
+class string_pool;
+
+namespace spreadsheet {
 
 class import_styles : public iface::import_styles
 {
@@ -145,7 +149,7 @@ public:
         void reset();
     };
 
-    import_styles();
+    import_styles(string_pool& sp);
     virtual ~import_styles();
 
     virtual void set_font_count(size_t n);
@@ -197,6 +201,8 @@ public:
     const fill* get_fill(size_t index) const;
 
 private:
+    string_pool& m_string_pool;
+
     font m_cur_font;
     fill m_cur_fill;
     border m_cur_border;

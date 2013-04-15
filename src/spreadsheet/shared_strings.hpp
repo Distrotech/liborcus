@@ -39,7 +39,11 @@
 
 namespace ixion { class model_context; }
 
-namespace orcus { namespace spreadsheet {
+namespace orcus {
+
+class string_pool;
+
+namespace spreadsheet {
 
 /**
  * This class handles global pool of string instances.
@@ -70,7 +74,7 @@ public:
     // format runs for all shared strings, mapped by string IDs.
     typedef boost::unordered_map<size_t, format_runs_type*> format_runs_map_type;
 
-    import_shared_strings(ixion::model_context& cxt);
+    import_shared_strings(orcus::string_pool& sp, ixion::model_context& cxt);
     virtual ~import_shared_strings();
 
     virtual size_t append(const char* s, size_t n);
@@ -88,6 +92,7 @@ public:
     void dump() const;
 
 private:
+    orcus::string_pool& m_string_pool;
     ixion::model_context& m_cxt;
 
     /**

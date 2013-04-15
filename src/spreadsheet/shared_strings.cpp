@@ -29,6 +29,7 @@
 
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
+#include "orcus/string_pool.hpp"
 
 #include <ixion/model_context.hpp>
 
@@ -69,10 +70,8 @@ bool import_shared_strings::format_run::formatted() const
     return false;
 }
 
-import_shared_strings::import_shared_strings(ixion::model_context& cxt) :
-    m_cxt(cxt), mp_cur_format_runs(NULL)
-{
-}
+import_shared_strings::import_shared_strings(orcus::string_pool& sp, ixion::model_context& cxt) :
+    m_string_pool(sp), m_cxt(cxt), mp_cur_format_runs(NULL) {}
 
 import_shared_strings::~import_shared_strings()
 {
@@ -114,7 +113,7 @@ void import_shared_strings::set_segment_italic(bool b)
 
 void import_shared_strings::set_segment_font_name(const char* s, size_t n)
 {
-    m_cur_format.font = pstring(s, n).intern();
+    m_cur_format.font = m_string_pool.intern(s, n).first;
 }
 
 void import_shared_strings::set_segment_font_size(double point)

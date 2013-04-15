@@ -38,47 +38,6 @@ using namespace std;
 
 namespace orcus {
 
-namespace {
-
-/**
- * Internal cache to store interned string instances.
- */
-struct _interned_strings {
-    string_pool store;
-    ::boost::mutex mtx;
-} interned_strings;
-
-}
-
-pstring pstring::intern(const char* str)
-{
-    return intern(str, strlen(str));
-}
-
-pstring pstring::intern(const char* str, size_t n)
-{
-    ::boost::mutex::scoped_lock lock(interned_strings.mtx);
-    return interned_strings.store.intern(str, n).first;
-}
-
-void pstring::intern::dispose()
-{
-    ::boost::mutex::scoped_lock lock(interned_strings.mtx);
-    interned_strings.store.clear();
-}
-
-size_t pstring::intern::size()
-{
-    ::boost::mutex::scoped_lock lock(interned_strings.mtx);
-    return interned_strings.store.size();
-}
-
-void pstring::intern::dump()
-{
-    ::boost::mutex::scoped_lock lock(interned_strings.mtx);
-    interned_strings.store.dump();
-}
-
 size_t pstring::hash::operator() (const pstring& val) const
 {
     size_t hash_val = 0;
@@ -180,11 +139,6 @@ pstring pstring::trim() const
 
     ++p_end;
     return pstring(p, p_end-p);
-}
-
-pstring pstring::intern() const
-{
-    return intern(m_pos, m_size);
 }
 
 }

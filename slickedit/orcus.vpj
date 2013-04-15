@@ -290,7 +290,6 @@
 				<F N="../src/parser/cell_buffer.cpp"/>
 				<F N="../src/parser/exception.cpp"/>
 				<F N="../src/parser/pstring.cpp"/>
-				<F N="../src/parser/pstring_intern_test.cpp"/>
 				<F N="../src/parser/sax_parser_global.cpp"/>
 				<F N="../src/parser/stream.cpp"/>
 				<F N="../src/parser/string_pool.cpp"/>

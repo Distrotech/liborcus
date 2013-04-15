@@ -34,6 +34,7 @@
 
 #include "orcus/pstring.hpp"
 #include "orcus/types.hpp"
+#include "orcus/string_pool.hpp"
 
 #include <ixion/formula.hpp>
 #include <ixion/formula_result.hpp>
@@ -126,6 +127,7 @@ struct document_impl
 {
     document& m_doc;
 
+    string_pool m_string_pool;
     ixion::model_context m_context;
     date_time_t m_origin_date;
     boost::ptr_vector<sheet_item > m_sheets;
@@ -137,8 +139,8 @@ struct document_impl
     document_impl(document& doc) :
         m_doc(doc),
         mp_settings(new import_global_settings(m_doc)),
-        mp_strings(new import_shared_strings(m_context)),
-        mp_styles(new import_styles)
+        mp_strings(new import_shared_strings(m_string_pool, m_context)),
+        mp_styles(new import_styles(m_string_pool))
     {
     }
 
@@ -199,9 +201,10 @@ const ixion::model_context& document::get_model_context() const
 
 sheet* document::append_sheet(const pstring& sheet_name)
 {
+    pstring sheet_name_safe = mp_impl->m_string_pool.intern(sheet_name).first;
     sheet_t sheet = static_cast<sheet_t>(mp_impl->m_sheets.size());
-    mp_impl->m_sheets.push_back(new sheet_item(*this, sheet_name.intern(), sheet));
-    mp_impl->m_context.append_sheet(sheet_name.get(), sheet_name.size());
+    mp_impl->m_sheets.push_back(new sheet_item(*this, sheet_name_safe, sheet));
+    mp_impl->m_context.append_sheet(sheet_name_safe.get(), sheet_name_safe.size());
     return &mp_impl->m_sheets.back().data;
 }
 

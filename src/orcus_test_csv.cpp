@@ -45,7 +45,6 @@ int main()
     orcus_csv app(new spreadsheet::import_factory(doc.get()));
     app.read_file("../test/csv/simple-numbers.csv");
     doc->dump();
-    pstring::intern::dispose();
 
     return EXIT_SUCCESS;
 }

@@ -45,7 +45,6 @@ int main(int argc, char** argv)
     app.read_file(argv[1]);
     doc->dump();
 //  doc->dump_html("./obj");
-    pstring::intern::dispose();
 
     return EXIT_SUCCESS;
 }

@@ -46,7 +46,6 @@ int main(int argc, char** argv)
     doc->calc_formulas();
     doc->dump();
     doc->dump_html("./html");
-//  pstring::intern::dump();
-    pstring::intern::dispose();
+
     return EXIT_SUCCESS;
 }

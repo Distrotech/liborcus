@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "styles.hpp"
+#include "orcus/string_pool.hpp"
 
 #include <algorithm>
 
@@ -130,9 +131,7 @@ void import_styles::cell_style::reset()
     *this = cell_style();
 }
 
-import_styles::import_styles()
-{
-}
+import_styles::import_styles(string_pool& sp) : m_string_pool(sp) {}
 
 import_styles::~import_styles()
 {
@@ -155,7 +154,7 @@ void import_styles::set_font_italic(bool b)
 
 void import_styles::set_font_name(const char* s, size_t n)
 {
-    m_cur_font.name = pstring(s, n).intern();
+    m_cur_font.name = m_string_pool.intern(s, n).first;
 }
 
 void import_styles::set_font_size(double point)
@@ -182,7 +181,7 @@ void import_styles::set_fill_count(size_t n)
 
 void import_styles::set_fill_pattern_type(const char* s, size_t n)
 {
-    m_cur_fill.pattern_type = pstring(s, n).intern();
+    m_cur_fill.pattern_type = m_string_pool.intern(s, n).first;
 }
 
 void import_styles::set_fill_fg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
@@ -230,7 +229,7 @@ void import_styles::set_border_style(border_direction_t dir, const char* s, size
     }
 
     if (p)
-        p->style = pstring(s, n).intern();
+        p->style = m_string_pool.intern(s, n).first;
 }
 
 size_t import_styles::commit_border()
@@ -336,7 +335,7 @@ void import_styles::set_cell_style_count(size_t n)
 
 void import_styles::set_cell_style_name(const char* s, size_t n)
 {
-    m_cur_cell_style.name = pstring(s, n).intern();
+    m_cur_cell_style.name = m_string_pool.intern(s, n).first;
 }
 
 void import_styles::set_cell_style_xf(size_t index)

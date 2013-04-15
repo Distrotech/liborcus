@@ -37,6 +37,8 @@
 
 namespace orcus {
 
+class string_pool;
+
 /**
  * This string class does not store any char arrays, but it only stores the
  * position of the first char in the memory, and the size of the char array.
@@ -46,40 +48,6 @@ class ORCUS_DLLPUBLIC pstring
     friend ::std::ostream& operator<< (::std::ostream& os, const pstring& str);
 
 public:
-    /**
-     * Create a new string instance and hold it internally until
-     * intern::dispose() gets called.
-     *
-     * @param str string to intern.
-     *
-     * @return pstring instance pointing to the interned string.
-     */
-    static pstring intern(const char* str);
-
-    static pstring intern(const char* str, size_t n);
-
-    struct ORCUS_DLLPUBLIC intern
-    {
-        /**
-         * Destroy all interned string instances.  Call this before the
-         * program exits.
-         */
-        static void dispose();
-
-        /**
-         * Return how many strings have been interned so far.
-         *
-         * @return size_t number of interned string instances.
-         */
-        static size_t size();
-
-        static void dump();
-
-    private:
-        intern();
-        intern(const intern&);
-        ~intern();
-    };
 
     pstring() : m_pos(NULL), m_size(0) {}
     pstring(const char* _pos) : m_pos(_pos) { m_size = std::strlen(_pos); }
@@ -129,8 +97,6 @@ public:
     {
         size_t operator() (const pstring& val) const;
     };
-
-    pstring intern() const;
 
 private:
     const char* m_pos;
