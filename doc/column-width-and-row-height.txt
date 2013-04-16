@@ -1,0 +1,69 @@
+== XLSX ==
+
+Spec name: Office Open XML Part 4 - Markup Language Reference.pdf
+
+=== Column Width ===
+
+<cols>
+    <col min="1" max="2" width="13.140625" customWidth="1"/>
+    <col min="4" max="10" width="6.7109375" customWidth="1"/>
+</cols>
+
+Spec location: 3.3.1.12 col (Column Width & Formatting) (page 1946)
+
+  Column width measured as the number of characters of the maximum
+  digit width of the numbers 0, 1, 2, ..., 9 as rendered in the normal
+  style's font.  There are 4 pixels of margin padding (two on each
+  side), plus 1 pixel padding for the gridlines.
+
+  width = Truncate([{Number of Characters} * {Maximum Digit Width} +
+  {5 pixel padding}]/{Maximum Digit Width}*256)/256
+
+  Using the Calibri font as an example, the maximum digit width of 11
+  point font size is 7 pixels (at 96 dpi).  In fact, each digit is the
+  same width for this font.  Therefore if the cell width is 8
+  characters wide, the value of this attribute shall be
+  Truncate([8*7+5]/7*256)/256 = 8.7109375.
+
+=== Row Height ===
+
+<row r="10" spans="1:10" ht="40.5" customHeight="1">
+    <c r="D10">
+        <v>11.1</v>
+    </c>
+</row>
+
+Spec location: 3.3.1.71 row (Row) (page 2012)
+
+  Row height measured in point size.  There is no margin padding on
+  row height.
+
+== ODS ==
+
+=== Column Width & Row Height ===
+
+<style:style style:name="co1" style:family="table-column">
+    <style:table-column-properties fo:break-before="auto" style:column-width="0.8925in"/>
+</style:style>
+<style:style style:name="ro1" style:family="table-row">
+    <style:table-row-properties style:row-height="0.178in" fo:break-before="auto" style:use-optimal-row-height="true"/>
+</style:style>
+
+<table:table table:name="Test1" table:style-name="ta1" table:print="false">
+    <table:table-column table:style-name="co2" table:default-cell-style-name="Default"/>
+    <table:table-column table:style-name="co1" table:default-cell-style-name="Default"/>
+    <table:table-column table:style-name="co4" table:number-columns-repeated="2" table:default-cell-style-name="Default"/>
+    <table:table-row table:style-name="ro2">
+        <table:table-cell office:value-type="string">
+            <text:p>Name</text:p>
+        </table:table-cell>
+        <table:table-cell office:value-type="string">
+            <text:p>Value</text:p>
+        </table:table-cell>
+        <table:table-cell table:number-columns-repeated="6"/>
+    </table:table-row>
+</table:table>
+
+Spec doesn't say much, but it appears that the order of these
+<table:table-column> elements is significant & determines which column
+gets which automatic style, from left to right.
