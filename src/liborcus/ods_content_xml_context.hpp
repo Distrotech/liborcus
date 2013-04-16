@@ -29,9 +29,9 @@
 #define __ORCUS_ODSCONTEXT_HPP__
 
 #include "xml_context_base.hpp"
+#include "odf_para_context.hpp"
 
 #include <vector>
-#include <boost/scoped_ptr.hpp>
 
 namespace orcus {
 
@@ -95,7 +95,7 @@ private:
     spreadsheet::iface::import_factory* mp_factory;
     std::vector<spreadsheet::iface::import_sheet*> m_tables;
 
-    boost::scoped_ptr<xml_context_base> mp_child;
+    text_para_context m_child_para;
 
     row_attr    m_row_attr;
     cell_attr   m_cell_attr;

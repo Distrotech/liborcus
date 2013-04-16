@@ -197,6 +197,7 @@ ods_content_xml_context::cell_attr::cell_attr() :
 ods_content_xml_context::ods_content_xml_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
     xml_context_base(session_cxt, tokens),
     mp_factory(factory),
+    m_child_para(session_cxt, tokens, factory->get_shared_strings()),
     m_row(0), m_col(0),
     m_para_index(0),
     m_has_content(false)
@@ -219,12 +220,8 @@ xml_context_base* ods_content_xml_context::create_child_context(xmlns_id_t ns, x
 {
     if (ns == NS_odf_text && name == XML_p)
     {
-        if (!mp_child)
-            mp_child.reset(new text_para_context(get_session_context(), get_tokens(), mp_factory->get_shared_strings()));
-
-        text_para_context* p = static_cast<text_para_context*>(mp_child.get());
-        p->reset();
-        return p;
+        m_child_para.reset();
+        return &m_child_para;
     }
 
     return NULL;
