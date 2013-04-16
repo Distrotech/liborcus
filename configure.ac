@@ -124,6 +124,16 @@ AS_IF([test "x$enable_debug" != "xno"], [
 # zlib is a hard requirement in liborcus-parser.
 PKG_CHECK_MODULES([ZLIB], [zlib])
 
+# ==============
+# tools (binary)
+# ==============
+AC_ARG_WITH(tools,
+            AS_HELP_STRING([--without-tools],
+                           [Disables building of binary executable tools.]),
+	[with_tools="$withval"],
+	[with_tools=yes]
+)
+
 # ==================
 # ods filter support
 # ==================
@@ -157,6 +167,7 @@ AC_ARG_WITH(gnumeric-filter,
 AM_CONDITIONAL([WITH_ODS_FILTER], [test "x$with_ods_filter" != "xno"])
 AM_CONDITIONAL([WITH_XLSX_FILTER], [test "x$with_xlsx_filter" != "xno"])
 AM_CONDITIONAL([WITH_GNUMERIC_FILTER], [test "x$with_gnumeric_filter" != "xno"])
+AM_CONDITIONAL([WITH_TOOLS], [test "x$with_tools" != "xno"])
 
 # ============
 # mdds support
@@ -227,6 +238,7 @@ Build configuration:
         gnumeric-filter:     $with_gnumeric_filter
         ods-filter:          $with_ods_filter
         xlsx-filter:         $with_xlsx_filter
+        tools:               $with_tools
 ==============================================================================
 ])
 
