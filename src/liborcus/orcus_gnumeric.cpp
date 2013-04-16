@@ -120,6 +120,8 @@ void orcus_gnumeric::read_file(const char *fpath)
     read_content_xml(file_content.c_str(), file_content.length());
 
     mp_impl->mp_factory->finalize();
+
+    gzclose(file);
 }
 
 }
