@@ -138,6 +138,13 @@ void text_para_context::characters(const pstring& str)
     m_contents.push_back(str);
 }
 
+void text_para_context::reset()
+{
+    m_string_index = 0;
+    m_formatted = false;
+    m_contents.clear();
+}
+
 size_t text_para_context::get_string_index() const
 {
     return m_string_index;
