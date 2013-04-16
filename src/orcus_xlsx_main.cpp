@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     app.read_file(argv[1]);
     doc->calc_formulas();
     doc->dump();
-    doc->dump_html("./html");
+//  doc->dump_html("./html");
 
     return EXIT_SUCCESS;
 }
