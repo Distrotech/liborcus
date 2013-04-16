@@ -66,7 +66,10 @@ bool gnumeric_content_xml_context::can_handle_element(xmlns_id_t ns, xml_token_t
 xml_context_base* gnumeric_content_xml_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     if (ns == NS_gnumeric_gnm && name == XML_Sheet)
-        return new gnumeric_sheet_context(get_session_context(), get_tokens(), mp_factory);
+    {
+        mp_child.reset(new gnumeric_sheet_context(get_session_context(), get_tokens(), mp_factory));
+        return mp_child.get();
+    }
 
     return NULL;
 }

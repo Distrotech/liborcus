@@ -81,6 +81,7 @@ private:
 
     spreadsheet::iface::import_sheet* mp_sheet;
 
+    boost::scoped_ptr<xml_context_base> mp_child;
     boost::scoped_ptr<gnumeric_style_region> mp_region_data;
 
     /**

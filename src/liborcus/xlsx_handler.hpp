@@ -32,7 +32,7 @@
 #include "xml_context_base.hpp"
 
 #include <string>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
 
 namespace orcus {
 
@@ -60,7 +60,7 @@ private:
     xml_context_base& get_current_context();
 
 private:
-    typedef ::boost::ptr_vector<xml_context_base> context_stack_type;
+    typedef std::vector<xml_context_base*> context_stack_type;
     context_stack_type m_context_stack;
 };
 

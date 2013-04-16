@@ -32,7 +32,7 @@
 #include "xml_context_base.hpp"
 
 #include <string>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
 
 namespace orcus {
 
@@ -61,7 +61,7 @@ private:
 
 private:
     spreadsheet::iface::import_factory* mp_factory;
-    typedef ::boost::ptr_vector<xml_context_base> context_stack_type;
+    typedef std::vector<xml_context_base*> context_stack_type;
     context_stack_type m_context_stack;
 };
 

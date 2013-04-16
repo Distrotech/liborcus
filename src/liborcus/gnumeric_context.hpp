@@ -31,6 +31,7 @@
 #include "xml_context_base.hpp"
 
 #include <vector>
+#include <boost/scoped_ptr.hpp>
 
 namespace orcus {
 
@@ -59,6 +60,7 @@ private:
 
 private:
     spreadsheet::iface::import_factory* mp_factory;
+    boost::scoped_ptr<xml_context_base> mp_child;
 };
 
 }

@@ -30,6 +30,8 @@
 
 #include "xml_stream_handler.hpp"
 
+#include <boost/noncopyable.hpp>
+
 namespace orcus {
 
 struct session_context;
@@ -38,7 +40,7 @@ class tokens;
 typedef ::std::pair<xmlns_id_t, xml_token_t> xml_token_pair_t;
 typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
 
-class xml_context_base
+class xml_context_base : boost::noncopyable
 {
 public:
     xml_context_base(session_context& session_cxt, const tokens& tokens);

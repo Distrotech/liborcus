@@ -39,6 +39,7 @@ gnumeric_content_xml_handler::gnumeric_content_xml_handler(
     session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
     mp_factory(factory)
 {
+    // Only the first stack instance needs to be managed.
     m_context_stack.push_back(new gnumeric_content_xml_context(session_cxt, tokens, factory));
 }
 
@@ -69,14 +70,22 @@ void gnumeric_content_xml_handler::end_element(const sax_token_parser_element& e
 
     if (ended)
     {
-        if (m_context_stack.size() > 1)
+        size_t n = m_context_stack.size();
+
+        if (n > 1)
         {
             // Call end_child_context of the parent context to provide a way for
             // the two adjacent contexts to communicate with each other.
             context_stack_type::reverse_iterator itr_cur = m_context_stack.rbegin();
             context_stack_type::reverse_iterator itr_par = itr_cur + 1;
-            itr_par->end_child_context(elem.ns, elem.name, &(*itr_cur));
+            (*itr_par)->end_child_context(elem.ns, elem.name, *itr_cur);
         }
+        else if (n == 1)
+        {
+            // About to pop back the root stack. Be sure to delete it.
+            delete m_context_stack.back();
+        }
+
         m_context_stack.pop_back();
     }
 }
@@ -94,7 +103,7 @@ xml_context_base& gnumeric_content_xml_handler::get_current_context()
     if (m_context_stack.empty())
         throw general_error("context stack is empty");
 
-    return m_context_stack.back();
+    return *m_context_stack.back();
 }
 
 }
