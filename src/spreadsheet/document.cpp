@@ -146,6 +146,7 @@ struct document_impl
 
     ~document_impl()
     {
+        delete mp_settings;
         delete mp_strings;
         delete mp_styles;
     }
