@@ -33,20 +33,18 @@
 namespace orcus {
 
 xml_simple_stream_handler::xml_simple_stream_handler(xml_context_base* context) :
-    xml_stream_handler(),
-    mp_context(context)
+    xml_stream_handler(context)
 {
-    assert(mp_context);
+    assert(context);
 }
 
 xml_simple_stream_handler::~xml_simple_stream_handler()
 {
-    delete mp_context;
 }
 
 xml_context_base& xml_simple_stream_handler::get_context()
 {
-    return *mp_context;
+    return get_current_context();
 }
 
 void xml_simple_stream_handler::start_document()
@@ -55,21 +53,6 @@ void xml_simple_stream_handler::start_document()
 
 void xml_simple_stream_handler::end_document()
 {
-}
-
-void xml_simple_stream_handler::start_element(const sax_token_parser_element& elem)
-{
-    mp_context->start_element(elem.ns, elem.name, elem.attrs);
-}
-
-void xml_simple_stream_handler::end_element(const sax_token_parser_element& elem)
-{
-    mp_context->end_element(elem.ns, elem.name);
-}
-
-void xml_simple_stream_handler::characters(const pstring& str)
-{
-    mp_context->characters(str);
 }
 
 }

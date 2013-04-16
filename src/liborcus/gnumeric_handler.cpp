@@ -27,20 +27,13 @@
 
 #include "gnumeric_handler.hpp"
 #include "gnumeric_context.hpp"
-#include "orcus/exception.hpp"
-
-#include <iostream>
-
-using namespace std;
 
 namespace orcus {
 
 gnumeric_content_xml_handler::gnumeric_content_xml_handler(
     session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
-    mp_factory(factory)
+    xml_stream_handler(new gnumeric_content_xml_context(session_cxt, tokens, factory))
 {
-    // Only the first stack instance needs to be managed.
-    m_context_stack.push_back(new gnumeric_content_xml_context(session_cxt, tokens, factory));
 }
 
 gnumeric_content_xml_handler::~gnumeric_content_xml_handler()
@@ -53,57 +46,6 @@ void gnumeric_content_xml_handler::start_document()
 
 void gnumeric_content_xml_handler::end_document()
 {
-}
-
-void gnumeric_content_xml_handler::start_element(const sax_token_parser_element& elem)
-{
-    xml_context_base& cur = get_current_context();
-    if (!cur.can_handle_element(elem.ns, elem.name))
-        m_context_stack.push_back(cur.create_child_context(elem.ns, elem.name));
-
-    get_current_context().start_element(elem.ns, elem.name, elem.attrs);
-}
-
-void gnumeric_content_xml_handler::end_element(const sax_token_parser_element& elem)
-{
-    bool ended = get_current_context().end_element(elem.ns, elem.name);
-
-    if (ended)
-    {
-        size_t n = m_context_stack.size();
-
-        if (n > 1)
-        {
-            // Call end_child_context of the parent context to provide a way for
-            // the two adjacent contexts to communicate with each other.
-            context_stack_type::reverse_iterator itr_cur = m_context_stack.rbegin();
-            context_stack_type::reverse_iterator itr_par = itr_cur + 1;
-            (*itr_par)->end_child_context(elem.ns, elem.name, *itr_cur);
-        }
-        else if (n == 1)
-        {
-            // About to pop back the root stack. Be sure to delete it.
-            delete m_context_stack.back();
-        }
-
-        m_context_stack.pop_back();
-    }
-}
-
-void gnumeric_content_xml_handler::characters(const pstring& str)
-{
-    if (m_context_stack.empty())
-        return;
-
-    get_current_context().characters(str);
-}
-
-xml_context_base& gnumeric_content_xml_handler::get_current_context()
-{
-    if (m_context_stack.empty())
-        throw general_error("context stack is empty");
-
-    return *m_context_stack.back();
 }
 
 }

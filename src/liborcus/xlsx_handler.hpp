@@ -52,16 +52,6 @@ public:
 
     virtual void start_document();
     virtual void end_document();
-    virtual void start_element(const sax_token_parser_element& elem);
-    virtual void end_element(const sax_token_parser_element& elem);
-    virtual void characters(const pstring& str);
-
-private:
-    xml_context_base& get_current_context();
-
-private:
-    typedef std::vector<xml_context_base*> context_stack_type;
-    context_stack_type m_context_stack;
 };
 
 }

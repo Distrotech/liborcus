@@ -211,7 +211,6 @@
 				<F N="../src/liborcus/gnumeric_tokens.inl"/>
 				<F N="../src/liborcus/mock_spreadsheet.cpp"/>
 				<F N="../src/liborcus/mock_spreadsheet.hpp"/>
-				<F N="../src/liborcus/odf_namespace_constants.inl"/>
 				<F N="../src/liborcus/odf_namespace_types.cpp"/>
 				<F N="../src/liborcus/odf_namespace_types.hpp"/>
 				<F N="../src/liborcus/odf_namespace_types_cpp.inl"/>

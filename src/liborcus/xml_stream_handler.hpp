@@ -36,17 +36,29 @@
 
 namespace orcus {
 
+class xml_context_base;
+
 class xml_stream_handler
 {
+    xml_context_base* mp_root_context;
+    typedef std::vector<xml_context_base*> context_stack_type;
+    context_stack_type m_context_stack;
+
+    xml_stream_handler(); // disabled
 public:
-    xml_stream_handler();
+    xml_stream_handler(xml_context_base* root_context);
     virtual ~xml_stream_handler() = 0;
 
     virtual void start_document() = 0;
     virtual void end_document() = 0;
-    virtual void start_element(const sax_token_parser_element& elem) = 0;
-    virtual void end_element(const sax_token_parser_element& elem) = 0;
-    virtual void characters(const pstring& str) = 0;
+
+    void start_element(const sax_token_parser_element& elem);
+    void end_element(const sax_token_parser_element& elem);
+    void characters(const pstring& str);
+
+protected:
+    xml_context_base& get_current_context();
+
 };
 
 }
