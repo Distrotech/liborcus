@@ -124,9 +124,9 @@ AS_IF([test "x$enable_debug" != "xno"], [
 # zlib is a hard requirement in liborcus-parser.
 PKG_CHECK_MODULES([ZLIB], [zlib])
 
-# ==============
+# ==================
 # ods filter support
-# ==============
+# ==================
 AC_ARG_WITH(ods-filter,
             AS_HELP_STRING([--without-ods-filter],
                            [Disables the OpenDocument Format spreadsheet import filter.]),
@@ -134,9 +134,9 @@ AC_ARG_WITH(ods-filter,
 	[with_ods_filter=yes]
 )
 
-# ==============
+# ===================
 # xlsx filter support
-# ==============
+# ===================
 AC_ARG_WITH(xlsx-filter,
             AS_HELP_STRING([--without-xlsx-filter],
                            [Disables the Microsoft Excel OOXML import filter.]),
@@ -144,9 +144,9 @@ AC_ARG_WITH(xlsx-filter,
 	[with_xlsx_filter=yes]
 )
 
-# ==============
+# =======================
 # gnumeric filter support
-# ==============
+# =======================
 AC_ARG_WITH(gnumeric-filter,
             AS_HELP_STRING([--without-gnumeric-filter],
                            [Disables the gnumeric import filter. The gnumeric import filter depends on zLib.]),
