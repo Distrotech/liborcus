@@ -217,6 +217,8 @@
 				<F N="../src/liborcus/odf_namespace_types_hpp.inl"/>
 				<F N="../src/liborcus/odf_para_context.cpp"/>
 				<F N="../src/liborcus/odf_para_context.hpp"/>
+				<F N="../src/liborcus/odf_styles_context.cpp"/>
+				<F N="../src/liborcus/odf_styles_context.hpp"/>
 				<F N="../src/liborcus/odf_token_constants.hpp"/>
 				<F N="../src/liborcus/odf_token_constants.inl"/>
 				<F N="../src/liborcus/odf_tokens.cpp"/>

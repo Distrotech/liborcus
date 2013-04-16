@@ -51,6 +51,16 @@ public:
     virtual void end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child) = 0;
 
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const ::std::vector<xml_token_attr_t>& attrs) = 0;
+
+    /**
+     * Called on closing element.
+     *
+     * @param ns namespace token
+     * @param name element name
+     *
+     * @return true if the base element of the context is closing, false
+     *         otherwise.
+     */
     virtual bool end_element(xmlns_id_t ns, xml_token_t name) = 0;
     virtual void characters(const pstring& str) = 0;
 

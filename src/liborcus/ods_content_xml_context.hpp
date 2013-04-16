@@ -32,6 +32,7 @@
 #include "odf_para_context.hpp"
 
 #include <vector>
+#include <boost/scoped_ptr.hpp>
 
 namespace orcus {
 
@@ -96,6 +97,7 @@ private:
     std::vector<spreadsheet::iface::import_sheet*> m_tables;
 
     text_para_context m_child_para;
+    boost::scoped_ptr<xml_context_base> mp_child;
 
     row_attr    m_row_attr;
     cell_attr   m_cell_attr;

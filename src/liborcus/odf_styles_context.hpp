@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010 Kohei Yoshida
+ * Copyright (c) 2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,45 +25,24 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_PARACONTEXT_HPP__
-#define __ORCUS_PARACONTEXT_HPP__
+#ifndef ODF_STYLES_CONTEXT_HPP
+#define ODF_STYLES_CONTEXT_HPP
 
 #include "xml_context_base.hpp"
-#include "orcus/pstring.hpp"
-
-#include <vector>
 
 namespace orcus {
 
-namespace spreadsheet { namespace iface { class import_shared_strings; }}
-
-/**
- * This class handles <text:p> contexts.
- */
-class text_para_context : public xml_context_base
+class automatic_styles_context : public xml_context_base
 {
 public:
-    text_para_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_shared_strings* ssb);
-    virtual ~text_para_context();
+    automatic_styles_context(session_context& session_cxt, const tokens& tk);
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
     virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name);
     virtual void end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child);
-
-    virtual void start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs);
+    virtual void start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t>& attrs);
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
-
-    void reset();
-
-    size_t get_string_index() const;
-    bool empty() const;
-
-private:
-    spreadsheet::iface::import_shared_strings* mp_sstrings;
-    ::std::vector<pstring> m_contents;
-    size_t m_string_index;
-    bool m_formatted;
 };
 
 }
