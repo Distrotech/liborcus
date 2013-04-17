@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef ODF_STYLES_CONTEXT_HPP
-#define ODF_STYLES_CONTEXT_HPP
+#ifndef ORCUS_ODF_STYLES_CONTEXT_HPP
+#define ORCUS_ODF_STYLES_CONTEXT_HPP
 
 #include "xml_context_base.hpp"
 
