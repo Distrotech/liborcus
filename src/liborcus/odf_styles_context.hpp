@@ -35,6 +35,8 @@ namespace orcus {
 class automatic_styles_context : public xml_context_base
 {
 public:
+    enum style_family { unknown = 0, table_column, table_row, table, graphic, paragraph, text };
+
     automatic_styles_context(session_context& session_cxt, const tokens& tk);
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
@@ -43,6 +45,10 @@ public:
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const std::vector<xml_token_attr_t>& attrs);
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
+
+private:
+    pstring m_current_style_name;
+    style_family m_current_style_family;
 };
 
 }

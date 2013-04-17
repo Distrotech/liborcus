@@ -244,6 +244,11 @@ void ods_content_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name,
         m_has_content = !para_context->empty();
         m_para_index = para_context->get_string_index();
     }
+    else if (ns == NS_odf_office && name == XML_automatic_styles)
+    {
+        automatic_styles_context* as_cxt = static_cast<automatic_styles_context*>(child);
+        // TODO: do stuff
+    }
 }
 
 void ods_content_xml_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs)
