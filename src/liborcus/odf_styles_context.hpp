@@ -32,11 +32,19 @@
 
 namespace orcus {
 
+enum odf_style_family {
+    style_family_unknown = 0,
+    style_family_table_column,
+    style_family_table_row,
+    style_family_table,
+    style_family_graphic,
+    style_family_paragraph,
+    style_family_text
+};
+
 class automatic_styles_context : public xml_context_base
 {
 public:
-    enum style_family { unknown = 0, table_column, table_row, table, graphic, paragraph, text };
-
     automatic_styles_context(session_context& session_cxt, const tokens& tk);
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
@@ -48,7 +56,7 @@ public:
 
 private:
     pstring m_current_style_name;
-    style_family m_current_style_family;
+    odf_style_family m_current_style_family;
 };
 
 }

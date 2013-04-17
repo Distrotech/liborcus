@@ -37,6 +37,107 @@ namespace orcus {
 
 namespace {
 
+odf_style_family to_style_family(const pstring& val)
+{
+    static const char* p_graphic      = "graphic";
+    static const char* p_paragraph    = "paragraph";
+    static const char* p_table        = "table";
+    static const char* p_table_column = "table-column";
+    static const char* p_table_row    = "table-row";
+    static const char* p_text         = "text";
+
+    static size_t n_graphic      = strlen(p_graphic);
+    static size_t n_paragraph    = strlen(p_paragraph);
+    static size_t n_table        = strlen(p_table);
+    static size_t n_table_column = strlen(p_table_column);
+    static size_t n_table_row    = strlen(p_table_row);
+    static size_t n_text         = strlen(p_text);
+
+    if (val.size() < 4)
+        return style_family_unknown;
+
+    const char* p = val.get();
+    const char* p_end = p + val.size();
+
+    if (*p == 'g')
+    {
+        // The only choice is 'graphic'.
+        if (val.size() != n_graphic)
+            return style_family_unknown;
+
+        return strncmp(p, p_graphic, n_graphic) ? style_family_unknown : style_family_graphic;
+    }
+
+    if (*p == 'p')
+    {
+        // The only choice is 'paragraph'.
+        if (val.size() != n_paragraph)
+            return style_family_unknown;
+
+        return strncmp(p, p_paragraph, n_paragraph) ? style_family_unknown : style_family_paragraph;
+    }
+
+    if (*p == 't')
+    {
+        ++p;
+        switch (*p)
+        {
+            case 'a':
+            {
+                // 'table', 'table-column' or 'table-row'.
+                if (strncmp(p, p_table+1, n_table-1))
+                    // Text doesn't begin with 'table'.
+                    return style_family_unknown;
+
+                p += 4; // Skip the 'able'.
+                if (p == p_end)
+                    return style_family_table;
+
+                if (*p != '-')
+                    // Text doesn't begin with 'table-'.
+                    return style_family_unknown;
+
+                ++p; // Skip the '-'.
+
+                switch (*p)
+                {
+                    case 'c':
+                    {
+                        // The only choice is 'table-column'.
+                        if (val.size() != n_table_column)
+                            return style_family_unknown;
+
+                        const char* p2 = p_table_column + 6;
+                        return strncmp(p, p2, n_table_column-6) ? style_family_unknown : style_family_table_column;
+                    }
+                    case 'r':
+                    {
+                        // The only choice is 'table-row'.
+                        if (val.size() != n_table_row)
+                            return style_family_unknown;
+
+                        const char* p2 = p_table_row + 6;
+                        return strncmp(p, p2, n_table_row-6) ? style_family_unknown : style_family_table_row;
+                    }
+                    default:
+                        ;
+                }
+            }
+            break;
+            case 'e':
+                // The only choice is 'text'.
+                if (val.size() != n_text)
+                    return style_family_unknown;
+
+                return strncmp(p, p_text+1, n_text-1) ? style_family_unknown : style_family_text;
+            break;
+            default:
+                ;
+        }
+    }
+    return style_family_unknown;
+}
+
 class style_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
     pstring m_name;
@@ -98,7 +199,7 @@ public:
 
 automatic_styles_context::automatic_styles_context(session_context& session_cxt, const tokens& tk) :
     xml_context_base(session_cxt, tk),
-    m_current_style_family(unknown)
+    m_current_style_family(style_family_unknown)
 {
 }
 
