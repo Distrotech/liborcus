@@ -30,6 +30,8 @@
 
 #include "xml_context_base.hpp"
 
+#include <boost/unordered_map.hpp>
+
 namespace orcus {
 
 enum odf_style_family {
@@ -40,6 +42,17 @@ enum odf_style_family {
     style_family_graphic,
     style_family_paragraph,
     style_family_text
+};
+
+class style_value_converter
+{
+    typedef boost::unordered_map<pstring, odf_style_family, pstring::hash> style_families_type;
+    style_families_type m_style_families;
+
+public:
+    style_value_converter();
+
+    odf_style_family to_style_family(const pstring& val) const;
 };
 
 class automatic_styles_context : public xml_context_base
@@ -55,6 +68,8 @@ public:
     virtual void characters(const pstring& str);
 
 private:
+    style_value_converter m_converter;
+
     pstring m_current_style_name;
     odf_style_family m_current_style_family;
 };

@@ -37,111 +37,15 @@ namespace orcus {
 
 namespace {
 
-odf_style_family to_style_family(const pstring& val)
-{
-    static const char* p_graphic      = "graphic";
-    static const char* p_paragraph    = "paragraph";
-    static const char* p_table        = "table";
-    static const char* p_table_column = "table-column";
-    static const char* p_table_row    = "table-row";
-    static const char* p_text         = "text";
-
-    static size_t n_graphic      = strlen(p_graphic);
-    static size_t n_paragraph    = strlen(p_paragraph);
-    static size_t n_table        = strlen(p_table);
-    static size_t n_table_column = strlen(p_table_column);
-    static size_t n_table_row    = strlen(p_table_row);
-    static size_t n_text         = strlen(p_text);
-
-    if (val.size() < 4)
-        return style_family_unknown;
-
-    const char* p = val.get();
-    const char* p_end = p + val.size();
-
-    if (*p == 'g')
-    {
-        // The only choice is 'graphic'.
-        if (val.size() != n_graphic)
-            return style_family_unknown;
-
-        return strncmp(p, p_graphic, n_graphic) ? style_family_unknown : style_family_graphic;
-    }
-
-    if (*p == 'p')
-    {
-        // The only choice is 'paragraph'.
-        if (val.size() != n_paragraph)
-            return style_family_unknown;
-
-        return strncmp(p, p_paragraph, n_paragraph) ? style_family_unknown : style_family_paragraph;
-    }
-
-    if (*p == 't')
-    {
-        ++p;
-        switch (*p)
-        {
-            case 'a':
-            {
-                // 'table', 'table-column' or 'table-row'.
-                if (strncmp(p, p_table+1, n_table-1))
-                    // Text doesn't begin with 'table'.
-                    return style_family_unknown;
-
-                p += 4; // Skip the 'able'.
-                if (p == p_end)
-                    return style_family_table;
-
-                if (*p != '-')
-                    // Text doesn't begin with 'table-'.
-                    return style_family_unknown;
-
-                ++p; // Skip the '-'.
-
-                switch (*p)
-                {
-                    case 'c':
-                    {
-                        // The only choice is 'table-column'.
-                        if (val.size() != n_table_column)
-                            return style_family_unknown;
-
-                        const char* p2 = p_table_column + 6;
-                        return strncmp(p, p2, n_table_column-6) ? style_family_unknown : style_family_table_column;
-                    }
-                    case 'r':
-                    {
-                        // The only choice is 'table-row'.
-                        if (val.size() != n_table_row)
-                            return style_family_unknown;
-
-                        const char* p2 = p_table_row + 6;
-                        return strncmp(p, p2, n_table_row-6) ? style_family_unknown : style_family_table_row;
-                    }
-                    default:
-                        ;
-                }
-            }
-            break;
-            case 'e':
-                // The only choice is 'text'.
-                if (val.size() != n_text)
-                    return style_family_unknown;
-
-                return strncmp(p, p_text+1, n_text-1) ? style_family_unknown : style_family_text;
-            break;
-            default:
-                ;
-        }
-    }
-    return style_family_unknown;
-}
-
 class style_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
+    const style_value_converter* m_converter;
+
     pstring m_name;
+    odf_style_family m_family;
 public:
+    style_attr_parser(const style_value_converter* converter) : m_converter(converter), m_family(style_family_unknown) {}
+
     void operator() (const xml_token_attr_t& attr)
     {
         if (attr.ns == NS_odf_style)
@@ -152,13 +56,14 @@ public:
                     m_name = attr.value;
                 break;
                 case XML_family:
-                    // TODO: parse style familiy string into an enum.
+                    m_family = m_converter->to_style_family(attr.value);
                 break;
             }
         }
     }
 
     const pstring& get_name() const { return m_name; }
+    odf_style_family get_family() const { return m_family; }
 };
 
 class col_prop_attr_parser : public std::unary_function<xml_token_attr_t, void>
@@ -195,6 +100,35 @@ public:
     }
 };
 
+}
+
+style_value_converter::style_value_converter()
+{
+    static const struct {
+        const char* str;
+        odf_style_family val;
+    } style_family_values[] = {
+        { "graphic", style_family_graphic },
+        { "paragraph", style_family_paragraph },
+        { "table", style_family_table },
+        { "table-column", style_family_table_column },
+        { "table-row", style_family_table_row },
+        { "text", style_family_text }
+    };
+
+    size_t n = sizeof(style_family_values)/sizeof(style_family_values[0]);
+    for (size_t i = 0; i < n; ++i)
+    {
+        m_style_families.insert(
+            style_families_type::value_type(
+                style_family_values[i].str, style_family_values[i].val));
+    }
+}
+
+odf_style_family style_value_converter::to_style_family(const pstring& val) const
+{
+    style_families_type::const_iterator it = m_style_families.find(val);
+    return it == m_style_families.end() ? style_family_unknown : it->second;
 }
 
 automatic_styles_context::automatic_styles_context(session_context& session_cxt, const tokens& tk) :
@@ -238,9 +172,10 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
             case XML_style:
             {
                 xml_element_expected(parent, NS_odf_office, XML_automatic_styles);
-                style_attr_parser func;
+                style_attr_parser func(&m_converter);
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style_name = func.get_name();
+                m_current_style_family = func.get_family();
             }
             break;
             case XML_table_column_properties:
