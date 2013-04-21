@@ -102,6 +102,11 @@ length_t to_length(const pstring& str)
     const char* p_end = p_start + str.size();
     ret.value = parse_numeric(p, p_end);
 
+    // TODO: See if this part can be optimized.
+    pstring tail(p, p_end-p);
+    if (tail == "in")
+        ret.unit = length_unit_inch;
+
     return ret;
 }
 

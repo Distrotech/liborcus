@@ -103,6 +103,9 @@ void test_measurement_conversion()
         { "-3", -3.0, 0, length_unit_unknown },
         { "-3.456", -3.456, 3, length_unit_unknown },
         { "-.987", -0.987, 3, length_unit_unknown },
+        { "-100.987.", -100.987, 3, length_unit_unknown }, // Second decimal point should stop the parsing.
+
+        { "12.345in", 12.345, 3, length_unit_inch },
     };
 
     for (size_t i = 0, n = sizeof(tests)/sizeof(tests[0]); i < n; ++i)
