@@ -91,8 +91,8 @@ void test_measurement_conversion()
 {
     struct {
         const char* str;
-        double converted;
-        int decimals;
+        double expected;
+        size_t decimals;
         length_unit_t unit;
     } tests[] = {
         { "12.34", 12.34, 2, length_unit_unknown },
@@ -114,7 +114,7 @@ void test_measurement_conversion()
         length_t ret = to_length(tests[i].str);
         cout << "original: '" << tests[i].str << "', converted: " << ret.value
             << " (" << to_string(ret.unit) << "), expected: "
-            << tests[i].converted << " (" << to_string(tests[i].unit) << ")" << endl;
+            << tests[i].expected << " (" << to_string(tests[i].unit) << ")" << endl;
 
         // Check for double-precision equality without the rounding error.
         double factor = 1.0;
@@ -122,10 +122,50 @@ void test_measurement_conversion()
             factor *= 10.0;
 
         double converted = round(ret.value * factor);
-        double expected = round(tests[i].converted * factor);
+        double expected = round(tests[i].expected * factor);
         assert(converted == expected);
 
         assert(ret.unit == tests[i].unit);
+    }
+}
+
+void test_string2number_conversion()
+{
+    struct {
+        const char* str;
+        double expected;
+        size_t decimals;
+        size_t end_pos;
+    } tests[] = {
+        { "1.2", 1.2, 1, 3 },
+        { "1.2a", 1.2, 1, 3 },
+        { "1.2.", 1.2, 1, 3 },
+        { "1.3456", 1.3456, 4, 6 },
+        { "-10.345", -10.345, 3, 7 },
+        { "-10.345-", -10.345, 3, 7 },
+    };
+
+    for (size_t i = 0, n = sizeof(tests)/sizeof(tests[0]); i < n; ++i)
+    {
+        const char* p = tests[i].str;
+        const char* p_end = p + strlen(p);
+        const char* p_parse_ended = NULL;
+        double converted = to_double(p, p_end, &p_parse_ended);
+        cout << "original: '" << tests[i].str << "', converted: " << converted
+            << ", expected: " << tests[i].expected << endl;
+
+        // Check for double-precision equality without the rounding error.
+        double factor = 1.0;
+        for (size_t j = 0; j < tests[i].decimals; ++j)
+            factor *= 10.0;
+
+        converted = round(converted * factor);
+        double expected = round(tests[i].expected * factor);
+        assert(converted == expected);
+
+        // Check the end parse position.
+        const char* pos_expected = p + tests[i].end_pos;
+        assert(pos_expected == p_parse_ended);
     }
 }
 
@@ -133,5 +173,6 @@ int main()
 {
     test_date_time_conversion();
     test_measurement_conversion();
+    test_string2number_conversion();
     return EXIT_SUCCESS;
 }

@@ -30,6 +30,8 @@
 
 #include "env.hpp"
 
+#include <cstdlib>
+
 namespace orcus {
 
 class pstring;
@@ -52,6 +54,8 @@ struct ORCUS_DLLPUBLIC length_t
 
     length_t();
 };
+
+ORCUS_DLLPUBLIC double to_double(const char* p, const char* p_end, const char** p_parse_ended = NULL);
 
 /**
  * Parse a string value containing a part representing a numerical value

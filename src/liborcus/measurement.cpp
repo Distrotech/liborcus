@@ -91,6 +91,15 @@ double parse_numeric(const char*& p, const char* p_end)
 
 length_t::length_t() : unit(length_unit_unknown), value(0.0) {}
 
+double to_double(const char* p, const char* p_end, const char** p_parse_ended)
+{
+    double val = parse_numeric(p, p_end);
+    if (p_parse_ended)
+        *p_parse_ended = p;
+
+    return val;
+}
+
 length_t to_length(const pstring& str)
 {
     length_t ret;
