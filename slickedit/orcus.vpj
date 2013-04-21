@@ -166,6 +166,7 @@
 				<F N="../include/orcus/env.hpp"/>
 				<F N="../include/orcus/exception.hpp"/>
 				<F N="../include/orcus/global.hpp"/>
+				<F N="../include/orcus/measurement.hpp"/>
 				<F N="../include/orcus/orcus_csv.hpp"/>
 				<F N="../include/orcus/orcus_gnumeric.hpp"/>
 				<F N="../include/orcus/orcus_ods.hpp"/>
@@ -209,6 +210,7 @@
 				<F N="../src/liborcus/gnumeric_tokens.cpp"/>
 				<F N="../src/liborcus/gnumeric_tokens.hpp"/>
 				<F N="../src/liborcus/gnumeric_tokens.inl"/>
+				<F N="../src/liborcus/measurement.cpp"/>
 				<F N="../src/liborcus/mock_spreadsheet.cpp"/>
 				<F N="../src/liborcus/mock_spreadsheet.hpp"/>
 				<F N="../src/liborcus/odf_namespace_types.cpp"/>

@@ -22,6 +22,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	orcus_css.cpp \
 	orcus_csv.cpp \
 	orcus_xml.cpp \
+	measurement.cpp \
 	tokens.cpp \
 	xml_context_base.hpp \
 	xml_context_base.cpp \

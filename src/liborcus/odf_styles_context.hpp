@@ -34,7 +34,8 @@
 
 namespace orcus {
 
-enum odf_style_family {
+enum odf_style_family
+{
     style_family_unknown = 0,
     style_family_table_column,
     style_family_table_row,
