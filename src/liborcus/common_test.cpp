@@ -106,6 +106,7 @@ void test_measurement_conversion()
         { "-100.987.", -100.987, 3, length_unit_unknown }, // Second decimal point should stop the parsing.
 
         { "12.345in", 12.345, 3, length_unit_inch },
+        { "120.30001cm", 120.30001, 5, length_unit_centimeter },
     };
 
     for (size_t i = 0, n = sizeof(tests)/sizeof(tests[0]); i < n; ++i)
@@ -116,8 +117,12 @@ void test_measurement_conversion()
             << tests[i].converted << " (" << to_string(tests[i].unit) << ")" << endl;
 
         // Check for double-precision equality without the rounding error.
-        double converted = round(ret.value * tests[i].decimals);
-        double expected = round(tests[i].converted * tests[i].decimals);
+        double factor = 1.0;
+        for (size_t j = 0; j < tests[i].decimals; ++j)
+            factor *= 10.0;
+
+        double converted = round(ret.value * factor);
+        double expected = round(tests[i].converted * factor);
         assert(converted == expected);
 
         assert(ret.unit == tests[i].unit);

@@ -106,6 +106,8 @@ length_t to_length(const pstring& str)
     pstring tail(p, p_end-p);
     if (tail == "in")
         ret.unit = length_unit_inch;
+    else if (tail == "cm")
+        ret.unit = length_unit_centimeter;
 
     return ret;
 }
