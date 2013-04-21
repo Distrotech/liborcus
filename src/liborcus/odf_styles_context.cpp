@@ -29,6 +29,8 @@
 #include "odf_namespace_types.hpp"
 #include "odf_token_constants.hpp"
 
+#include "orcus/measurement.hpp"
+
 #include <iostream>
 
 using namespace std;
@@ -68,6 +70,7 @@ public:
 
 class col_prop_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
+    length_t m_width;
 public:
     void operator() (const xml_token_attr_t& attr)
     {
@@ -76,15 +79,19 @@ public:
             switch (attr.name)
             {
                 case XML_column_width:
-                    cout << "column width: " << attr.value << endl;
+                    m_width = to_length(attr.value);
+                    cout << "column width: s='" << attr.value << "', value=" << m_width.value << endl;
                 break;
             }
         }
     }
+
+    const length_t& get_width() const { return m_width; }
 };
 
 class row_prop_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
+    length_t m_height;
 public:
     void operator() (const xml_token_attr_t& attr)
     {
@@ -93,11 +100,14 @@ public:
             switch (attr.name)
             {
                 case XML_row_height:
-                    cout << "row height: " << attr.value << endl;
+                    m_height = to_length(attr.value);
+                    cout << "row height: s='" << attr.value << "', value=" << m_height.value << endl;
                 break;
             }
         }
     }
+
+    const length_t& get_height() const { return m_height; }
 };
 
 }
