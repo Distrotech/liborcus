@@ -18,12 +18,14 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	zip_archive.cpp \
 	zip_archive_stream.cpp
 
+
 liborcus_parser_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 liborcus_parser_@ORCUS_API_VERSION@_la_LIBADD = \
-	 $(ZLIB_LIBS)
+						$(BOOST_SYSTEM_LIB) \
+						$(ZLIB_LIBS)
 
 EXTRA_PROGRAMS = \
-	parser-test-string-pool \
+		parser-test-string-pool \
 	parser-test-xml-namespace \
 	parser-test-base64
 

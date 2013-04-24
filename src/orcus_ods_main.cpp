@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
     orcus_ods app(fact.get());
     app.read_file(argv[1]);
-    doc->dump();
+//  doc->dump();
 //  doc->dump_html("./obj");
 
     return EXIT_SUCCESS;
