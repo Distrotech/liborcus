@@ -66,7 +66,7 @@ public:
     {
         assert(row == 10);
         assert(col == 321);
-        assert(id = 2);
+        assert(id == 2);
     }
 
     virtual void set_shared_formula(row_t row, col_t col, size_t id)
