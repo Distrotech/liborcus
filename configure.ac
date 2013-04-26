@@ -172,28 +172,8 @@ AM_CONDITIONAL([WITH_TOOLS], [test "x$with_tools" != "xno"])
 # ============
 # mdds support
 # ============
-AC_ARG_WITH(mdds-include-path,
-	AS_HELP_STRING([--with-mdds-include-path], [Path for mdds, if different default [/usr/include].]),
-	[with_mdds_include_path="$withval"],
-	[with_mdds_include_path=default]
-,)
-AS_IF([test "x$with_mdds_include_path" != "xdefault"], [
-	# Check with other include path in mind
-	MDDS_CXXFLAGS="-I${with_mdds_include_path}"
-])
-# define for boost container
-MDDS_CPPFLAGS="-DMDDS_HASH_CONTAINER_BOOST"
-
-# Try to check for our desired header
-#save_CPPFLAGS="$CPPFLAGS"
-#save_CXXFLAGS="$CXXFLAGS"
-CPPFLAGS="$CPPFLAGS $MDDS_CPPFLAGS"
-CXXFLAGS="$CXXFLAGS $MDDS_CXXFLAGS"
-AC_CHECK_HEADERS([mdds/flat_segment_tree.hpp])
-# We do not restore here as we use mdds with this settings during the build.
-# Keeping the command here so none gets fancy ideas like adding it.
-#CPPFLAGS="$save_CPPFLAGS"
-#CXXFLAGS="$save_CXXFLAGS"
+PKG_CHECK_MODULES([MDDS],[mdds >= 0.7.1])
+CXXFLAGS="$CXXFLAGS -DMDDS_HASH_CONTAINER_BOOST"
 
 # =================
 # Spreadsheet model
@@ -233,7 +213,6 @@ AC_MSG_NOTICE([
 Build configuration:
 	debug:               $enable_debug
 	werror:              $enable_werror
-	mdds-include-dir:    $with_mdds_include_path
 	spreadsheet-model:   $enable_spreadsheet_model
         gnumeric-filter:     $with_gnumeric_filter
         ods-filter:          $with_ods_filter
