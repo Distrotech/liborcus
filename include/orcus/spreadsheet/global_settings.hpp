@@ -29,12 +29,13 @@
 #define ORCUS_GLOBAL_SETTINGS_HPP
 
 #include "orcus/spreadsheet/import_interface.hpp"
+#include "orcus/env.hpp"
 
 namespace orcus { namespace spreadsheet {
 
 class document;
 
-class import_global_settings : public spreadsheet::iface::import_global_settings
+class ORCUS_DLLPUBLIC import_global_settings : public spreadsheet::iface::import_global_settings
 {
     spreadsheet::document& m_doc;
 

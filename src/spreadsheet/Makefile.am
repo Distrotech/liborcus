@@ -11,17 +11,11 @@ endif
 lib_LTLIBRARIES = liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_SOURCES = \
 	document.cpp \
-	document.hpp \
 	factory.cpp \
-	factory.hpp \
 	shared_strings.cpp \
-	shared_strings.hpp \
 	sheet.cpp \
-	sheet.hpp \
 	styles.cpp \
-	styles.hpp \
-	global_settings.cpp \
-	global_settings.hpp
+	global_settings.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS = $(COMMON_CPPFLAGS)
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS = $(LIBIXION_CFLAGS) $(MDDS_CFLAGS)

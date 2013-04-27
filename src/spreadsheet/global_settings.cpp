@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#include "global_settings.hpp"
-#include "document.hpp"
+#include "orcus/spreadsheet/global_settings.hpp"
+#include "orcus/spreadsheet/document.hpp"
 
 namespace orcus { namespace spreadsheet {
 

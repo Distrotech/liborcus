@@ -29,8 +29,8 @@
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
 #include "orcus/stream.hpp"
-#include "spreadsheet/factory.hpp"
-#include "spreadsheet/document.hpp"
+#include "orcus/spreadsheet/factory.hpp"
+#include "orcus/spreadsheet/document.hpp"
 
 #include <boost/scoped_ptr.hpp>
 

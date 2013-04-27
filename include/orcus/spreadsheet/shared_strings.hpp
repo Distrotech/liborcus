@@ -30,6 +30,7 @@
 
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/env.hpp"
 
 #include <cstdlib>
 #include <vector>
@@ -48,7 +49,7 @@ namespace spreadsheet {
 /**
  * This class handles global pool of string instances.
  */
-class import_shared_strings : public iface::import_shared_strings, private boost::noncopyable
+class ORCUS_DLLPUBLIC import_shared_strings : public iface::import_shared_strings, private boost::noncopyable
 {
     typedef boost::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
 

@@ -30,6 +30,7 @@
 
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/env.hpp"
 
 #include <vector>
 
@@ -39,7 +40,7 @@ class string_pool;
 
 namespace spreadsheet {
 
-class import_styles : public iface::import_styles
+class ORCUS_DLLPUBLIC import_styles : public iface::import_styles
 {
 public:
     struct font

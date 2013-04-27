@@ -25,11 +25,11 @@
  *
  ************************************************************************/
 
-#include "sheet.hpp"
+#include "orcus/spreadsheet/sheet.hpp"
 
-#include "styles.hpp"
-#include "shared_strings.hpp"
-#include "document.hpp"
+#include "orcus/spreadsheet/styles.hpp"
+#include "orcus/spreadsheet/shared_strings.hpp"
+#include "orcus/spreadsheet/document.hpp"
 
 #include "orcus/global.hpp"
 

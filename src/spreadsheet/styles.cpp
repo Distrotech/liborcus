@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "styles.hpp"
+#include "orcus/spreadsheet/styles.hpp"
 #include "orcus/string_pool.hpp"
 
 #include <algorithm>

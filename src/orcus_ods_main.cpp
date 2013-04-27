@@ -27,8 +27,8 @@
 
 #include "orcus/orcus_ods.hpp"
 #include "orcus/pstring.hpp"
-#include "spreadsheet/document.hpp"
-#include "spreadsheet/factory.hpp"
+#include "orcus/spreadsheet/document.hpp"
+#include "orcus/spreadsheet/factory.hpp"
 
 #include <boost/scoped_ptr.hpp>
 

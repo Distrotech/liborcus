@@ -31,8 +31,8 @@
 #include "orcus/xml_namespace.hpp"
 #include "orcus/stream.hpp"
 
-#include "spreadsheet/factory.hpp"
-#include "spreadsheet/document.hpp"
+#include "orcus/spreadsheet/factory.hpp"
+#include "orcus/spreadsheet/document.hpp"
 
 #include "xml_map_sax_handler.hpp"
 #include "dom_tree_sax_handler.hpp"

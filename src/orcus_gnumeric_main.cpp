@@ -26,8 +26,8 @@
  ************************************************************************/
 
 #include "orcus/orcus_gnumeric.hpp"
-#include "spreadsheet/document.hpp"
-#include "spreadsheet/factory.hpp"
+#include "orcus/spreadsheet/document.hpp"
+#include "orcus/spreadsheet/factory.hpp"
 #include "orcus/pstring.hpp"
 
 #include <iostream>

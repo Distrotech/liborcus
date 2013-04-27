@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "shared_strings.hpp"
+#include "orcus/spreadsheet/shared_strings.hpp"
 
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"

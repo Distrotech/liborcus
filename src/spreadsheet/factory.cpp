@@ -25,12 +25,12 @@
  *
  ************************************************************************/
 
-#include "factory.hpp"
+#include "orcus/spreadsheet/factory.hpp"
 
-#include "shared_strings.hpp"
-#include "styles.hpp"
-#include "sheet.hpp"
-#include "document.hpp"
+#include "orcus/spreadsheet/shared_strings.hpp"
+#include "orcus/spreadsheet/styles.hpp"
+#include "orcus/spreadsheet/sheet.hpp"
+#include "orcus/spreadsheet/document.hpp"
 
 namespace orcus { namespace spreadsheet {
 
