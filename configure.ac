@@ -185,7 +185,7 @@ AC_ARG_ENABLE(spreadsheet-model,
 	[enable_spreadsheet_model=yes]
 )
 AS_IF([test "x$enable_spreadsheet_model" != "xno"], [
-	PKG_CHECK_MODULES([LIBIXION],[libixion-0.6])
+	PKG_CHECK_MODULES([LIBIXION],[libixion-0.8])
 ])
 AM_CONDITIONAL([BUILD_SPREADSHEET_MODEL], [test "x$enable_spreadsheet_model" != "xno"])
 
