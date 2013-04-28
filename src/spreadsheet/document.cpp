@@ -130,7 +130,7 @@ struct document_impl
     string_pool m_string_pool;
     ixion::model_context m_context;
     date_time_t m_origin_date;
-    boost::ptr_vector<sheet_item > m_sheets;
+    boost::ptr_vector<sheet_item> m_sheets;
     import_global_settings* mp_settings;
     import_shared_strings* mp_strings;
     import_styles* mp_styles;
