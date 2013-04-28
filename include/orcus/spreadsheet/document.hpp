@@ -81,6 +81,11 @@ public:
     void calc_formulas();
 
     /**
+     * Clear document content, to make it empty.
+     */
+    void clear();
+
+    /**
      * Dump document content to stdout for debugging.
      */
     void dump() const;
