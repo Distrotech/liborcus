@@ -109,9 +109,10 @@ public:
 
     void set_origin_date(int year, int month, int day);
 
-private:
     ixion::model_context& get_model_context();
     const ixion::model_context& get_model_context() const;
+
+private:
     void insert_dirty_cell(const ixion::abs_address_t& pos);
 
 private:
