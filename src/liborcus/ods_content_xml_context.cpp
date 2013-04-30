@@ -246,7 +246,7 @@ void ods_content_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name,
     }
     else if (ns == NS_odf_office && name == XML_automatic_styles)
     {
-        automatic_styles_context* as_cxt = static_cast<automatic_styles_context*>(child);
+//      automatic_styles_context* as_cxt = static_cast<automatic_styles_context*>(child);
         // TODO: do stuff
     }
 }
