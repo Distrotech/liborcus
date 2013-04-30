@@ -55,4 +55,19 @@ void xml_simple_stream_handler::end_document()
 {
 }
 
+void xml_simple_stream_handler::start_element(const sax_token_parser_element& elem)
+{
+    get_current_context().start_element(elem.ns, elem.name, elem.attrs);
+}
+
+void xml_simple_stream_handler::end_element(const sax_token_parser_element& elem)
+{
+    get_current_context().end_element(elem.ns, elem.name);
+}
+
+void xml_simple_stream_handler::characters(const pstring& str)
+{
+    get_current_context().characters(str);
+}
+
 }
