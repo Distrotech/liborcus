@@ -193,6 +193,7 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 xml_element_expected(parent, NS_odf_style, XML_style);
                 col_prop_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
+                assert(m_current_style->family == style_family_table_column);
                 m_current_style->column_data->width = func.get_width();
             }
             break;
@@ -201,6 +202,7 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 xml_element_expected(parent, NS_odf_style, XML_style);
                 row_prop_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
+                assert(m_current_style->family == style_family_table_row);
                 m_current_style->row_data->height = func.get_height();
             }
             break;
