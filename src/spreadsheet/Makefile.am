@@ -14,6 +14,7 @@ liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_SOURCES = \
 	factory.cpp \
 	shared_strings.cpp \
 	sheet.cpp \
+	sheet_properties.cpp \
 	styles.cpp \
 	global_settings.cpp
 

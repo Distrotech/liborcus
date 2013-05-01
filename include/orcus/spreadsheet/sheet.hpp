@@ -58,6 +58,8 @@ public:
 
     // Import methods
 
+    virtual iface::import_sheet_properties* get_sheet_properties();
+
     virtual void set_auto(row_t row, col_t col, const char* p, size_t n);
     virtual void set_string(row_t row, col_t col, size_t sindex);
     virtual void set_value(row_t row, col_t col, double value);

@@ -29,6 +29,7 @@
 
 #include "orcus/spreadsheet/styles.hpp"
 #include "orcus/spreadsheet/shared_strings.hpp"
+#include "orcus/spreadsheet/sheet_properties.hpp"
 #include "orcus/spreadsheet/document.hpp"
 
 #include "orcus/global.hpp"
@@ -67,13 +68,14 @@ typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
 struct sheet_impl
 {
     document& m_doc;
+    sheet_properties m_sheet_props;
     mutable cell_format_type m_cell_formats;
     row_t m_max_row;
     col_t m_max_col;
     const sheet_t m_sheet; /// sheet ID
 
-    sheet_impl(document& doc, sheet_t sheet) :
-        m_doc(doc), m_max_row(0), m_max_col(0), m_sheet(sheet) {}
+    sheet_impl(document& doc, sheet& sh, sheet_t sheet) :
+        m_doc(doc), m_sheet_props(doc, sh), m_max_row(0), m_max_col(0), m_sheet(sheet) {}
 
     ~sheet_impl()
     {
@@ -85,11 +87,16 @@ struct sheet_impl
 const row_t sheet::max_row_limit = 1048575;
 const col_t sheet::max_col_limit = 1023;
 
-sheet::sheet(document& doc, sheet_t sheet) : mp_impl(new sheet_impl(doc, sheet)) {}
+sheet::sheet(document& doc, sheet_t sheet) : mp_impl(new sheet_impl(doc, *this, sheet)) {}
 
 sheet::~sheet()
 {
     delete mp_impl;
+}
+
+iface::import_sheet_properties* sheet::get_sheet_properties()
+{
+    return &mp_impl->m_sheet_props;
 }
 
 void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
