@@ -36,6 +36,8 @@
 
 namespace orcus {
 
+// XML specific types
+
 typedef size_t xml_token_t;
 typedef const char* xmlns_id_t;
 
@@ -62,6 +64,19 @@ struct xml_token_attr_t
     xml_token_attr_t() : ns(XMLNS_UNKNOWN_ID), name(XML_UNKNOWN_TOKEN) {}
     xml_token_attr_t(xmlns_id_t _ns, xml_token_t _name, const pstring& _value) :
         ns(_ns), name(_name), value(_value) {}
+};
+
+// Other types
+
+enum length_unit_t
+{
+    length_unit_unknown = 0,
+    length_unit_centimeter,
+    length_unit_inch,
+    length_unit_point,
+    length_unit_twip
+
+    // TODO: Add more.
 };
 
 struct date_time_t

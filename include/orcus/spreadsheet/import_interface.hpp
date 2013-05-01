@@ -31,6 +31,7 @@
 #include <cstdlib>
 
 #include "types.hpp"
+#include "../types.hpp"
 #include "../env.hpp"
 
 namespace orcus { namespace spreadsheet { namespace iface {
@@ -147,13 +148,25 @@ public:
     virtual size_t commit_cell_style() = 0;
 };
 
+class import_sheet_properties
+{
+public:
+    ORCUS_DLLPUBLIC virtual ~import_sheet_properties() = 0;
+
+    virtual void set_column_width(orcus::spreadsheet::col_t col, double width, orcus::length_unit_t unit) = 0;
+
+    virtual void set_row_height(orcus::spreadsheet::row_t row, double height, orcus::length_unit_t unit) = 0;
+};
+
 /**
  * Interface for sheet.
  */
-class import_sheet
+class ORCUS_DLLPUBLIC import_sheet
 {
 public:
-    ORCUS_DLLPUBLIC virtual ~import_sheet() = 0;
+    virtual ~import_sheet() = 0;
+
+    virtual import_sheet_properties* get_sheet_properties();
 
     /**
      * Set raw string value to a cell and have the implementation

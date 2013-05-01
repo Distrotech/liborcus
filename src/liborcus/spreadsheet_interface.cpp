@@ -34,7 +34,14 @@ import_shared_strings::~import_shared_strings() {}
 
 import_styles::~import_styles() {}
 
+import_sheet_properties::~import_sheet_properties() {}
+
 import_sheet::~import_sheet() {}
+
+import_sheet_properties* import_sheet::get_sheet_properties()
+{
+    return NULL;
+}
 
 import_global_settings::~import_global_settings() {}
 

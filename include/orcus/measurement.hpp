@@ -28,6 +28,7 @@
 #ifndef ORCUS_MEASUREMENT_HPP
 #define ORCUS_MEASUREMENT_HPP
 
+#include "types.hpp"
 #include "env.hpp"
 
 #include <cstdlib>
@@ -36,17 +37,6 @@
 namespace orcus {
 
 class pstring;
-
-enum length_unit_t
-{
-    length_unit_unknown = 0,
-    length_unit_centimeter,
-    length_unit_inch,
-    length_unit_point,
-    length_unit_twip
-
-    // TODO: Add more.
-};
 
 struct ORCUS_DLLPUBLIC length_t
 {
