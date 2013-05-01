@@ -250,17 +250,17 @@ void ods_content_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name,
         odf_styles_map_type::const_iterator it = m_styles.begin(), it_end = m_styles.end();
         for (; it != it_end; ++it)
         {
-            cout << "  style: " << it->first;
+            cout << "  style: " << it->first << " [ ";
             switch (it->second->family)
             {
                 case style_family_table_column:
-                    cout << " : column width: " << it->second->column_data->width.print();
+                    cout << "column width: " << it->second->column_data->width.print();
                 break;
                 case style_family_table_row:
-                    cout << " : row height: " << it->second->row_data->height.print();
+                    cout << "row height: " << it->second->row_data->height.print();
                 break;
             }
-            cout << endl;
+            cout << " ]" << endl;
         }
     }
 }
