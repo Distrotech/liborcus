@@ -31,6 +31,7 @@
 #include "env.hpp"
 
 #include <cstdlib>
+#include <string>
 
 namespace orcus {
 
@@ -53,6 +54,8 @@ struct ORCUS_DLLPUBLIC length_t
     double value;
 
     length_t();
+
+    std::string print() const;
 };
 
 ORCUS_DLLPUBLIC double to_double(const char* p, const char* p_end, const char** p_parse_ended = NULL);

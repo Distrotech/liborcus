@@ -28,6 +28,10 @@
 #include "orcus/measurement.hpp"
 #include "orcus/pstring.hpp"
 
+#include <sstream>
+
+using namespace std;
+
 namespace orcus {
 
 namespace {
@@ -90,6 +94,33 @@ double parse_numeric(const char*& p, const char* p_end)
 }
 
 length_t::length_t() : unit(length_unit_unknown), value(0.0) {}
+
+std::string length_t::print() const
+{
+    ostringstream os;
+    os << value;
+
+    switch (unit)
+    {
+        case length_unit_centimeter:
+            os << " cm";
+        break;
+        case length_unit_inch:
+            os << " in";
+        break;
+        case length_unit_point:
+            os << " pt";
+        break;
+        case length_unit_twip:
+            os << " twip";
+        break;
+        case length_unit_unknown:
+        default:
+            ;
+    }
+
+    return os.str();
+}
 
 double to_double(const char* p, const char* p_end, const char** p_parse_ended)
 {
