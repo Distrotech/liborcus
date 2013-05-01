@@ -30,6 +30,7 @@
 
 #include "xml_context_base.hpp"
 #include "odf_para_context.hpp"
+#include "odf_styles.hpp"
 
 #include <vector>
 #include <boost/scoped_ptr.hpp>
@@ -106,6 +107,8 @@ private:
     int m_col;
     size_t m_para_index;
     bool m_has_content;
+
+    odf_styles_map_type m_styles;
 };
 
 }

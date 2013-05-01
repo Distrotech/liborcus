@@ -141,9 +141,10 @@ odf_style_family style_value_converter::to_style_family(const pstring& val) cons
     return it == m_style_families.end() ? style_family_unknown : it->second;
 }
 
-automatic_styles_context::automatic_styles_context(session_context& session_cxt, const tokens& tk) :
+automatic_styles_context::automatic_styles_context(
+    session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles) :
     xml_context_base(session_cxt, tk),
-    m_current_style_family(style_family_unknown)
+    m_styles(styles)
 {
 }
 
@@ -184,8 +185,7 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 xml_element_expected(parent, NS_odf_office, XML_automatic_styles);
                 style_attr_parser func(&m_converter);
                 func = std::for_each(attrs.begin(), attrs.end(), func);
-                m_current_style_name = func.get_name();
-                m_current_style_family = func.get_family();
+                m_current_style.reset(new odf_style(func.get_name(), func.get_family()));
             }
             break;
             case XML_table_column_properties:
@@ -221,6 +221,15 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
 
 bool automatic_styles_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
+    if (ns == NS_odf_style)
+    {
+        switch (name)
+        {
+            case XML_style:
+                m_styles.insert(m_current_style->name, m_current_style.release());
+            break;
+        }
+    }
     return pop_stack(ns, name);
 }
 

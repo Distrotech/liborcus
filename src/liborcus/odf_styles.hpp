@@ -25,51 +25,78 @@
  *
  ************************************************************************/
 
-#ifndef ORCUS_ODF_STYLES_CONTEXT_HPP
-#define ORCUS_ODF_STYLES_CONTEXT_HPP
+#ifndef ORCUS_ODF_STYLES_HPP
+#define ORCUS_ODF_STYLES_HPP
 
-#include "xml_context_base.hpp"
-#include "odf_styles.hpp"
+#include "orcus/pstring.hpp"
+#include "orcus/measurement.hpp"
 
-#include "orcus/global.hpp"
-
-#include <boost/unordered_map.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/ptr_container/ptr_map.hpp>
 
 namespace orcus {
 
-class style_value_converter
+enum odf_style_family
 {
-    typedef boost::unordered_map<pstring, odf_style_family, pstring::hash> style_families_type;
-    style_families_type m_style_families;
-
-public:
-    style_value_converter();
-
-    odf_style_family to_style_family(const pstring& val) const;
+    style_family_unknown = 0,
+    style_family_table_column,
+    style_family_table_row,
+    style_family_table,
+    style_family_graphic,
+    style_family_paragraph,
+    style_family_text
 };
 
 /**
- * Context that handles <office:automatic-styles> scope.
+ * Each instance of this class represents a single <style:style> entry.
  */
-class automatic_styles_context : public xml_context_base
+struct odf_style : boost::noncopyable
 {
-public:
-    automatic_styles_context(session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles);
+    struct column
+    {
+        length_t width;
+    };
 
-    virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
-    virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name);
-    virtual void end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child);
-    virtual void start_element(xmlns_id_t ns, xml_token_t name, const std::vector<xml_token_attr_t>& attrs);
-    virtual bool end_element(xmlns_id_t ns, xml_token_t name);
-    virtual void characters(const pstring& str);
+    struct row
+    {
+        length_t height;
+    };
 
-private:
-    odf_styles_map_type& m_styles;
+    struct table
+    {
+    };
 
-    style_value_converter m_converter;
+    struct graphic
+    {
+    };
 
-    unique_ptr<odf_style> m_current_style;
+    struct paragraph
+    {
+    };
+
+    struct text
+    {
+    };
+
+    pstring name;
+    odf_style_family family;
+
+    union {
+        column* column_data;
+        row* row_data;
+        table* table_data;
+        graphic* graphic_data;
+        paragraph* paragraph_data;
+        text* text_data;
+    };
+
+    odf_style();
+    odf_style(const pstring& _name, odf_style_family _family);
+
+    ~odf_style();
 };
+
+typedef boost::ptr_map<pstring, odf_style> odf_styles_map_type;
 
 }
 

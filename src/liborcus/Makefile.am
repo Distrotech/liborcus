@@ -115,6 +115,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	session_context.hpp \
 	odf_para_context.hpp \
 	odf_para_context.cpp \
+	odf_styles.hpp \
+	odf_styles.cpp \
 	odf_styles_context.hpp \
 	odf_styles_context.cpp \
 	odf_token_constants.hpp \

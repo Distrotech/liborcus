@@ -229,7 +229,7 @@ xml_context_base* ods_content_xml_context::create_child_context(xmlns_id_t ns, x
 
     if (ns == NS_odf_office && name == XML_automatic_styles)
     {
-        mp_child.reset(new automatic_styles_context(get_session_context(), get_tokens()));
+        mp_child.reset(new automatic_styles_context(get_session_context(), get_tokens(), m_styles));
         return mp_child.get();
     }
 
