@@ -25,6 +25,13 @@ public:
         assert(val == 5.0);
     }
 
+    virtual void set_bool(row_t row, col_t col, bool val)
+    {
+        assert(row == 0);
+        assert(col == 0);
+        assert(val == true);
+    }
+
     virtual void set_array_formula(row_t row, col_t col, formula_grammar_t grammar,
             const char* s, size_t n, const char* s_range, size_t n_range)
     {
@@ -120,5 +127,7 @@ void test_array_formula()
 int main()
 {
     test_cell_value();
+    test_cell_bool();
+    test_array_formula();
     return 0;
 }
