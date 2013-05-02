@@ -286,6 +286,8 @@ void ods_content_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name,
                 case style_family_table_row:
                     cout << "row height: " << it->second->row_data->height.print();
                 break;
+                default:
+                    ;
             }
             cout << " ]" << endl;
         }
