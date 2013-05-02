@@ -230,7 +230,14 @@ bool automatic_styles_context::end_element(xmlns_id_t ns, xml_token_t name)
         switch (name)
         {
             case XML_style:
-                m_styles.insert(m_current_style->name, m_current_style.release());
+            {
+                if (m_current_style)
+                {
+                    // ptr_map's first argument must be a non-const reference.
+                    pstring name = m_current_style->name;
+                    m_styles.insert(name, m_current_style.release());
+                }
+            }
             break;
         }
     }
