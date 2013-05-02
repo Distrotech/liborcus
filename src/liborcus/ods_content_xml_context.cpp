@@ -84,6 +84,22 @@ private:
     pstring m_name;
 };
 
+class column_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+    pstring m_style_name;
+public:
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns == NS_odf_table)
+        {
+            if (attr.name == XML_style_name)
+                m_style_name = attr.value;
+        }
+    }
+
+    const pstring& get_style_name() const { return m_style_name; }
+};
+
 class row_attr_parser : public unary_function<xml_token_attr_t, void>
 {
 public:
@@ -390,10 +406,28 @@ void ods_content_xml_context::end_table()
 
 void ods_content_xml_context::start_column(const xml_attrs_t& attrs)
 {
+    spreadsheet::iface::import_sheet_properties* sheet_props =
+        m_tables.back()->get_sheet_properties();
+
+    if (!sheet_props)
+        return;
+
+    column_attr_parser func;
+    func = for_each(attrs.begin(), attrs.end(), func);
+    pstring style_name = func.get_style_name();
+
+    odf_styles_map_type::const_iterator it = m_styles.find(func.get_style_name());
+    if (it == m_styles.end())
+        // Style by this name not found.
+        return;
+
+    const odf_style& style = *it->second;
+    sheet_props->set_column_width(m_col, style.column_data->width.value, style.column_data->width.unit);
 }
 
 void ods_content_xml_context::end_column()
 {
+    ++m_col;
 }
 
 void ods_content_xml_context::start_row(const xml_attrs_t& attrs)

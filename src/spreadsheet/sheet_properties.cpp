@@ -27,6 +27,10 @@
 
 #include "orcus/spreadsheet/sheet_properties.hpp"
 
+#include <iostream>
+
+using namespace std;
+
 namespace orcus { namespace spreadsheet {
 
 struct sheet_properties_impl
@@ -47,6 +51,7 @@ sheet_properties::~sheet_properties()
 
 void sheet_properties::set_column_width(col_t col, double width, orcus::length_unit_t unit)
 {
+    cout << "col: " << col << " width: " << width << " unit: " << unit << endl;
 }
 
 void sheet_properties::set_row_height(row_t row, double height, orcus::length_unit_t unit)
