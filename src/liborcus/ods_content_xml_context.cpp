@@ -288,19 +288,24 @@ void ods_content_xml_context::start_element(xmlns_id_t ns, xml_token_t name, con
             case XML_calculation_settings:
             break;
             case XML_null_date:
-                start_null_date(attrs, parent);
+                xml_element_expected(parent, NS_odf_table, XML_calculation_settings);
+                start_null_date(attrs);
             break;
             case XML_table:
-                start_table(attrs, parent);
+                xml_element_expected(parent, NS_odf_office, XML_spreadsheet);
+                start_table(attrs);
             break;
             case XML_table_column:
-                start_column(attrs, parent);
+                xml_element_expected(parent, NS_odf_table, XML_table);
+                start_column(attrs);
             break;
             case XML_table_row:
-                start_row(attrs, parent);
+                xml_element_expected(parent, NS_odf_table, XML_table);
+                start_row(attrs);
             break;
             case XML_table_cell:
-                start_cell(attrs, parent);
+                xml_element_expected(parent, NS_odf_table, XML_table_row);
+                start_cell(attrs);
             break;
             default:
                 warn_unhandled();
@@ -355,14 +360,8 @@ void ods_content_xml_context::characters(const pstring& str)
 {
 }
 
-void ods_content_xml_context::start_null_date(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
+void ods_content_xml_context::start_null_date(const xml_attrs_t& attrs)
 {
-    if (parent.first != NS_odf_table || parent.second != XML_calculation_settings)
-    {
-        warn_unexpected();
-        return;
-    }
-
     spreadsheet::iface::import_global_settings* gs = mp_factory->get_global_settings();
     if (!gs)
         // Global settings not available. No point going further.
@@ -374,14 +373,8 @@ void ods_content_xml_context::start_null_date(const xml_attrs_t& attrs, const xm
     gs->set_origin_date(val.year, val.month, val.day);
 }
 
-void ods_content_xml_context::start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
+void ods_content_xml_context::start_table(const xml_attrs_t& attrs)
 {
-    if (parent.first != NS_odf_office || parent.second != XML_spreadsheet)
-    {
-        warn_unexpected();
-        return;
-    }
-
     table_attr_parser parser = for_each(attrs.begin(), attrs.end(), table_attr_parser());
     const pstring& name = parser.get_name();
     m_tables.push_back(mp_factory->append_sheet(name.get(), name.size()));
@@ -395,45 +388,19 @@ void ods_content_xml_context::end_table()
     cout << "end table" << endl;
 }
 
-void ods_content_xml_context::start_column(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
+void ods_content_xml_context::start_column(const xml_attrs_t& attrs)
 {
-    if (parent.first == NS_odf_table)
-    {
-        switch (parent.second)
-        {
-            case XML_table:
-                // TODO: Handle this.
-            break;
-            default:
-                warn_unexpected();
-        }
-    }
-    else
-        warn_unexpected();
 }
 
 void ods_content_xml_context::end_column()
 {
 }
 
-void ods_content_xml_context::start_row(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
+void ods_content_xml_context::start_row(const xml_attrs_t& attrs)
 {
-    if (parent.first == NS_odf_table)
-    {
-        switch (parent.second)
-        {
-            case XML_table:
-                m_col = 0;
-                m_row_attr = row_attr();
-                for_each(attrs.begin(), attrs.end(), row_attr_parser(m_row_attr));
-            break;
-            default:
-                warn_unexpected();
-        }
-    }
-    else
-        warn_unexpected();
-
+    m_col = 0;
+    m_row_attr = row_attr();
+    for_each(attrs.begin(), attrs.end(), row_attr_parser(m_row_attr));
 }
 
 void ods_content_xml_context::end_row()
@@ -446,22 +413,10 @@ void ods_content_xml_context::end_row()
     m_row += m_row_attr.number_rows_repeated;
 }
 
-void ods_content_xml_context::start_cell(const xml_attrs_t& attrs, const xml_token_pair_t& parent)
+void ods_content_xml_context::start_cell(const xml_attrs_t& attrs)
 {
-    if (parent.first == NS_odf_table)
-    {
-        switch (parent.second)
-        {
-            case XML_table_row:
-                m_cell_attr = cell_attr();
-                for_each(attrs.begin(), attrs.end(), cell_attr_parser(m_cell_attr));
-            break;
-            default:
-                warn_unexpected();
-        }
-    }
-    else
-        warn_unexpected();
+    m_cell_attr = cell_attr();
+    for_each(attrs.begin(), attrs.end(), cell_attr_parser(m_cell_attr));
 }
 
 void ods_content_xml_context::end_cell()

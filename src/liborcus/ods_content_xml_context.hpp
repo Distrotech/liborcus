@@ -77,18 +77,18 @@ public:
     virtual void characters(const pstring& str);
 
 private:
-    void start_null_date(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
+    void start_null_date(const xml_attrs_t& attrs);
 
-    void start_table(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
+    void start_table(const xml_attrs_t& attrs);
     void end_table();
 
-    void start_column(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
+    void start_column(const xml_attrs_t& attrs);
     void end_column();
 
-    void start_row(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
+    void start_row(const xml_attrs_t& attrs);
     void end_row();
 
-    void start_cell(const xml_attrs_t& attrs, const xml_token_pair_t& parent);
+    void start_cell(const xml_attrs_t& attrs);
     void end_cell();
 
     void push_cell_value();
@@ -108,7 +108,7 @@ private:
     size_t m_para_index;
     bool m_has_content;
 
-    odf_styles_map_type m_styles;
+    odf_styles_map_type m_styles; /// map storing all automatic styles by their names.
 };
 
 }
