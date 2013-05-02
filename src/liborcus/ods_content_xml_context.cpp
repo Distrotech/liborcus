@@ -449,6 +449,7 @@ void ods_content_xml_context::start_row(const xml_attrs_t& attrs)
     func = for_each(attrs.begin(), attrs.end(), func);
     m_row_attr.number_rows_repeated = func.get_number_rows_repeated();
 
+    // Pass row properties to the interface.
     spreadsheet::iface::import_sheet_properties* sheet_props =
         m_tables.back()->get_sheet_properties();
 
