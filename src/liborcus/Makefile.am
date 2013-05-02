@@ -99,6 +99,7 @@ orcus_xlsx_sheet_context_test_SOURCES = \
 	mock_spreadsheet.cpp
 
 orcus_xlsx_sheet_context_test_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 orcus_xlsx_sheet_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS) -DNO_XML_EXPECTED
@@ -144,7 +145,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	gnumeric_token_constants.hpp \
 	gnumeric_token_constants.inl \
 	gnumeric_tokens.hpp \
-    	gnumeric_cell_context.cpp \
+	gnumeric_cell_context.cpp \
 	gnumeric_context.cpp \
 	gnumeric_handler.cpp \
 	gnumeric_helper.cpp \
@@ -171,7 +172,7 @@ gnumeric_cell_context_test_SOURCES = \
 	mock_spreadsheet.cpp
 
 gnumeric_cell_context_test_LDADD = \
-	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la
 
 orcus_gnumeric_cell_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -183,6 +184,7 @@ liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS = \
 	$(BOOST_SYSTEM_CFLAGS) $(ZLIB_CFLAGS)
 liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 liborcus_@ORCUS_API_VERSION@_la_LIBADD = \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	 $(BOOST_SYSTEM_LIBS) $(BOOST_SYSTEM_LIB) $(ZLIB_LIBS)
 
 # liborcus-test-xml-map-tree
@@ -193,7 +195,6 @@ liborcus_test_xml_map_tree_SOURCES = \
 	xml_map_tree_test.cpp
 
 liborcus_test_xml_map_tree_LDADD = \
-	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus-@ORCUS_API_VERSION@.la
 
 # liborcus-test-xml-structure-tree
@@ -203,7 +204,6 @@ liborcus_test_xml_structure_tree_SOURCES = \
 	xml_structure_tree_test.cpp
 
 liborcus_test_xml_structure_tree_LDADD = \
-	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus-@ORCUS_API_VERSION@.la
 
 # liborcus-test-common
@@ -214,7 +214,6 @@ liborcus_test_common_SOURCES = \
 	common_test.cpp
 
 liborcus_test_common_LDADD = \
-	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus-@ORCUS_API_VERSION@.la
 
 TESTS += \

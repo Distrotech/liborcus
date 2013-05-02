@@ -29,7 +29,10 @@
 #define __ORCUS_ENV_HPP__
 
 #if defined _WIN32 || defined __CYGWIN__
-  #ifdef __ORCUS_BUILDING_DLL
+  #if defined __MINGW32__
+    #define ORCUS_DLLPUBLIC
+    #define ORCUS_DLLLOCAL
+  #elif defined __ORCUS_BUILDING_DLL
     #ifdef __GNUC__
       #define ORCUS_DLLPUBLIC __attribute__ ((dllexport))
     #else
