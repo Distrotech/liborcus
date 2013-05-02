@@ -62,13 +62,15 @@ using namespace std;
 
 namespace orcus { namespace spreadsheet {
 
+// TODO: we should sotre cell formats column-major, not row-major.
 typedef ::mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
 typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
 
 struct sheet_impl
 {
     document& m_doc;
-    sheet_properties m_sheet_props;
+    sheet_properties m_sheet_props; /// sheet properties import interface.
+
     mutable cell_format_type m_cell_formats;
     row_t m_max_row;
     col_t m_max_col;

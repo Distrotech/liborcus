@@ -37,6 +37,10 @@ class document;
 class sheet;
 struct sheet_properties_impl;
 
+/**
+ * Implement the sheet properties import interface, but the actual
+ * properties are stored in sheet.
+ */
 class sheet_properties : public iface::import_sheet_properties
 {
     sheet_properties_impl* mp_impl;
