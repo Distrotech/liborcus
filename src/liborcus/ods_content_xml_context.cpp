@@ -102,24 +102,35 @@ public:
 
 class row_attr_parser : public unary_function<xml_token_attr_t, void>
 {
+    int m_number_rows_repeated;
+    pstring m_style_name;
+
 public:
-    row_attr_parser(ods_content_xml_context::row_attr& attr) :
-        m_attr(attr) {}
-    row_attr_parser(const row_attr_parser& r) :
-        m_attr(r.m_attr) {}
+    row_attr_parser() : m_number_rows_repeated(1) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
-        if (attr.ns == NS_odf_table && attr.name == XML_number_rows_repeated)
+        if (attr.ns == NS_odf_table)
         {
-            char* endptr;
-            long val = strtol(attr.value.str().c_str(), &endptr, 10);
-            if (endptr != attr.value.str())
-                m_attr.number_rows_repeated = val;
+            switch (attr.name)
+            {
+                case XML_number_rows_repeated:
+                {
+                    char* endptr;
+                    long val = strtol(attr.value.str().c_str(), &endptr, 10);
+                    if (endptr != attr.value.str())
+                        m_number_rows_repeated = val;
+                }
+                break;
+                case XML_style_name:
+                    m_style_name = attr.value;
+                break;
+            }
         }
     }
-private:
-    ods_content_xml_context::row_attr& m_attr;
+
+    int get_number_rows_repeated() const { return m_number_rows_repeated; }
+    const pstring& get_style_name() const { return m_style_name; }
 };
 
 class cell_attr_parser : public unary_function<xml_token_attr_t, void>
@@ -434,7 +445,22 @@ void ods_content_xml_context::start_row(const xml_attrs_t& attrs)
 {
     m_col = 0;
     m_row_attr = row_attr();
-    for_each(attrs.begin(), attrs.end(), row_attr_parser(m_row_attr));
+    row_attr_parser func;
+    func = for_each(attrs.begin(), attrs.end(), func);
+    m_row_attr.number_rows_repeated = func.get_number_rows_repeated();
+
+    spreadsheet::iface::import_sheet_properties* sheet_props =
+        m_tables.back()->get_sheet_properties();
+
+    if (sheet_props)
+    {
+        odf_styles_map_type::const_iterator it = m_styles.find(func.get_style_name());
+        if (it != m_styles.end())
+        {
+            const odf_style::row& row_data = *it->second->row_data;
+            sheet_props->set_row_height(m_row, row_data.height.value, row_data.height.unit);
+        }
+    }
 }
 
 void ods_content_xml_context::end_row()

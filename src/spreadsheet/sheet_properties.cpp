@@ -56,6 +56,7 @@ void sheet_properties::set_column_width(col_t col, double width, orcus::length_u
 
 void sheet_properties::set_row_height(row_t row, double height, orcus::length_unit_t unit)
 {
+    cout << "row: " << row << " height: " << height << " unit: " << unit << endl;
 }
 
 }}
