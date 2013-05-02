@@ -34,6 +34,8 @@ typedef int row_t;
 typedef int col_t;
 typedef int sheet_t;
 typedef unsigned char color_elem_t;
+typedef unsigned short col_width_t;
+typedef unsigned short row_height_t;
 
 enum border_direction_t
 {

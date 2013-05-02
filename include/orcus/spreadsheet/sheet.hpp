@@ -49,6 +49,8 @@ struct sheet_impl;
  */
 class ORCUS_DLLPUBLIC sheet : public iface::import_sheet, public iface::export_sheet
 {
+    friend struct sheet_impl;
+
     static const row_t max_row_limit;
     static const col_t max_col_limit;
 
@@ -83,6 +85,9 @@ public:
     // Export methods
 
     virtual void write_string(std::ostream& os, row_t row, col_t col) const;
+
+    void set_col_width(col_t col, col_width_t width);
+    void set_row_height(row_t row, row_height_t height);
 
     row_t row_size() const;
     col_t col_size() const;

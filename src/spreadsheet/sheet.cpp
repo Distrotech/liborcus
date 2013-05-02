@@ -62,22 +62,35 @@ using namespace std;
 
 namespace orcus { namespace spreadsheet {
 
-// TODO: we should sotre cell formats column-major, not row-major.
-typedef ::mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
+// TODO: we should store cell formats column-major, not row-major.
+typedef mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
 typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
+
+// Widths and heights are stored in twips.
+typedef mdds::flat_segment_tree<col_t, col_width_t> col_widths_store_type;
+typedef mdds::flat_segment_tree<row_t, row_height_t> row_heights_store_type;
 
 struct sheet_impl
 {
     document& m_doc;
     sheet_properties m_sheet_props; /// sheet properties import interface.
 
-    mutable cell_format_type m_cell_formats;
+    col_widths_store_type m_col_widths;
+    row_heights_store_type m_row_heights;
+    col_widths_store_type::const_iterator m_col_width_pos;
+    row_heights_store_type::const_iterator m_row_height_pos;
+
+    cell_format_type m_cell_formats;
     row_t m_max_row;
     col_t m_max_col;
     const sheet_t m_sheet; /// sheet ID
 
     sheet_impl(document& doc, sheet& sh, sheet_t sheet) :
-        m_doc(doc), m_sheet_props(doc, sh), m_max_row(0), m_max_col(0), m_sheet(sheet) {}
+        m_doc(doc), m_sheet_props(doc, sh),
+        m_col_widths(0, sheet::max_col_limit+1, 0), m_row_heights(0, sheet::max_row_limit+1, 0),
+        m_col_width_pos(m_col_widths.begin()),
+        m_row_height_pos(m_row_heights.begin()),
+        m_max_row(0), m_max_col(0), m_sheet(sheet) {}
 
     ~sheet_impl()
     {
@@ -175,7 +188,7 @@ void sheet::set_format(row_t row, col_t col, size_t index)
         pair<cell_format_type::iterator, bool> r =
             mp_impl->m_cell_formats.insert(
                 cell_format_type::value_type(
-                    row, new segment_col_index_type(0, max_col_limit, 0)));
+                    row, new segment_col_index_type(0, max_col_limit+1, 0)));
 
         if (!r.second)
         {
@@ -267,6 +280,18 @@ void sheet::write_string(ostream& os, row_t row, col_t col) const
         default:
             ;
     }
+}
+
+void sheet::set_col_width(col_t col, col_width_t width)
+{
+    mp_impl->m_col_width_pos =
+        mp_impl->m_col_widths.insert(mp_impl->m_col_width_pos, col, col+1, width).first;
+}
+
+void sheet::set_row_height(row_t row, row_height_t height)
+{
+    mp_impl->m_row_height_pos =
+        mp_impl->m_row_heights.insert(mp_impl->m_row_height_pos, row, row+1, height).first;
 }
 
 row_t sheet::row_size() const
