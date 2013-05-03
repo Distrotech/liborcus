@@ -210,6 +210,61 @@ private:
     bool m_protection;
 };
 
+class gnumeric_col_row_info : public std::unary_function<xml_token_attr_t, void>
+{
+public:
+    gnumeric_col_row_info() :
+        m_position(0),
+        m_num_repeated(1),
+        m_size(0.0) {}
+
+    void operator()(const xml_token_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_No:
+            {
+                size_t i = atoi(attr.value.get());
+                m_position = i;
+            }
+            break;
+            case XML_Unit:
+            {
+                double n = atof(attr.value.get());
+                m_size = n;
+            }
+            break;
+            case XML_Count:
+            {
+                size_t i = atoi(attr.value.get());
+                m_num_repeated = i;
+            }
+            break;
+        }
+    }
+
+    size_t get_position() const
+    {
+        return m_position;
+    }
+
+    size_t get_col_row_repeated() const
+    {
+        return m_num_repeated;
+    }
+
+    double get_size() const
+    {
+        return m_size;
+    }
+
+private:
+    size_t m_position;
+    size_t m_num_repeated;
+    double m_size;
+
+};
+
 }
 
 
@@ -264,6 +319,12 @@ void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, cons
             case XML_StyleRegion:
                 start_style_region(attrs);
             break;
+            case XML_ColInfo:
+                start_col(attrs);
+            break;
+            case XML_RowInfo:
+                start_row(attrs);
+            break;
             default:
                 ;
         }
@@ -307,6 +368,32 @@ void gnumeric_sheet_context::characters(const pstring& str)
 void gnumeric_sheet_context::start_font(const xml_attrs_t& attrs)
 {
     for_each(attrs.begin(), attrs.end(), gnumeric_font_attr_parser(*mp_factory->get_styles()));
+}
+
+void gnumeric_sheet_context::start_col(const xml_attrs_t& attrs)
+{
+    gnumeric_col_row_info col_info = for_each(attrs.begin(), attrs.end(),
+            gnumeric_col_row_info());
+    spreadsheet::iface::import_sheet_properties* p_sheet_props = mp_sheet->get_sheet_properties();
+    double col_size = col_info.get_size();
+    for (size_t i = col_info.get_position(),
+            n = col_info.get_col_row_repeated() + col_info.get_position(); i < n; ++i)
+    {
+        p_sheet_props->set_column_width(i, col_size, length_unit_point);
+    }
+}
+
+void gnumeric_sheet_context::start_row(const xml_attrs_t& attrs)
+{
+    gnumeric_col_row_info row_info = for_each(attrs.begin(), attrs.end(),
+            gnumeric_col_row_info());
+    spreadsheet::iface::import_sheet_properties* p_sheet_props = mp_sheet->get_sheet_properties();
+    double row_size = row_info.get_size();
+    for (size_t i = row_info.get_position(),
+            n = row_info.get_col_row_repeated() + row_info.get_position(); i < n; ++i)
+    {
+        p_sheet_props->set_row_height(i, row_size, length_unit_point);
+    }
 }
 
 void gnumeric_sheet_context::start_style(const xml_attrs_t& attrs)

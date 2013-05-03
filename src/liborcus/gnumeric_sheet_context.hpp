@@ -70,6 +70,8 @@ private:
     void start_style_region(const xml_attrs_t& attrs);
     void start_style(const xml_attrs_t& attrs);
     void start_font(const xml_attrs_t& attrs);
+    void start_col(const xml_attrs_t& attrs);
+    void start_row(const xml_attrs_t& attrs);
 
     void end_table();
     void end_style();
