@@ -297,7 +297,7 @@ col_width_t sheet::get_col_width(col_t col, col_t* col_start, col_t* col_end) co
         col_widths.build_tree();
 
     col_width_t ret = 0;
-    if (!col_widths.search_tree(col, ret, col_start, col_end))
+    if (!col_widths.search_tree(col, ret, col_start, col_end).second)
         throw orcus::general_error("sheet::get_col_width: failed to search tree.");
 
     return ret;
@@ -317,7 +317,7 @@ row_height_t sheet::get_row_height(row_t row, row_t* row_start, row_t* row_end) 
         row_heights.build_tree();
 
     row_height_t ret = 0;
-    if (!row_heights.search_tree(row, ret, row_start, row_end))
+    if (!row_heights.search_tree(row, ret, row_start, row_end).second)
         throw orcus::general_error("sheet::get_row_height: failed to search tree.");
 
     return ret;
@@ -791,7 +791,7 @@ size_t sheet::get_cell_format(row_t row, col_t col) const
         con.build_tree();
 
     size_t index;
-    if (!con.search_tree(col, index))
+    if (!con.search_tree(col, index).second)
         return 0;
 
     return index;
