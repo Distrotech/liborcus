@@ -320,6 +320,7 @@
 				<F N="../src/spreadsheet/sheet.cpp"/>
 				<F N="../src/spreadsheet/sheet_properties.cpp"/>
 				<F N="../src/spreadsheet/styles.cpp"/>
+				<F N="../src/spreadsheet/types.cpp"/>
 			</Folder>
 			<F N="../src/dom_tree_sax_handler.cpp"/>
 			<F N="../src/dom_tree_sax_handler.hpp"/>

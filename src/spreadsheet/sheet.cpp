@@ -88,7 +88,8 @@ struct sheet_impl
 
     sheet_impl(document& doc, sheet& sh, sheet_t sheet) :
         m_doc(doc), m_sheet_props(doc, sh),
-        m_col_widths(0, sheet::max_col_limit+1, 0), m_row_heights(0, sheet::max_row_limit+1, 0),
+        m_col_widths(0, sheet::max_col_limit+1, default_column_width),
+        m_row_heights(0, sheet::max_row_limit+1, default_row_height),
         m_col_width_pos(m_col_widths.begin()),
         m_row_height_pos(m_row_heights.begin()),
         m_max_row(0), m_max_col(0), m_sheet(sheet) {}
