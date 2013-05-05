@@ -298,24 +298,12 @@ void sheet::set_row_height(row_t row, row_height_t height)
 
 row_t sheet::row_size() const
 {
-    return 0;
-#if 0
-    if (m_rows.empty())
-        return 0;
-
-    return mp_impl->m_max_row + 1;
-#endif
+    return max_row_limit + 1;
 }
 
 col_t sheet::col_size() const
 {
-    return 0;
-#if 0
-    if (m_rows.empty())
-        return 0;
-
-    return mp_impl->m_max_col + 1;
-#endif
+    return max_col_limit + 1;
 }
 
 void sheet::finalize()
