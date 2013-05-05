@@ -172,7 +172,7 @@ AM_CONDITIONAL([WITH_TOOLS], [test "x$with_tools" != "xno"])
 # ============
 # mdds support
 # ============
-PKG_CHECK_MODULES([MDDS],[mdds >= 0.7.1])
+PKG_CHECK_MODULES([MDDS],[mdds >= 0.8.0])
 CXXFLAGS="$CXXFLAGS -DMDDS_HASH_CONTAINER_BOOST"
 
 # =================
