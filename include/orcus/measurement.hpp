@@ -63,6 +63,8 @@ ORCUS_DLLPUBLIC double to_double(const char* p, const char* p_end, const char** 
  */
 ORCUS_DLLPUBLIC length_t to_length(const pstring& str);
 
+ORCUS_DLLPUBLIC double convert(double value, length_unit_t unit_from, length_unit_t unit_to);
+
 }
 
 #endif

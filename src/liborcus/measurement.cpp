@@ -27,6 +27,7 @@
 
 #include "orcus/measurement.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/exception.hpp"
 
 #include <sstream>
 
@@ -150,6 +151,36 @@ length_t to_length(const pstring& str)
         ret.unit = length_unit_centimeter;
 
     return ret;
+}
+
+namespace {
+
+double convert_inch(double value, length_unit_t unit_to)
+{
+    switch (unit_to)
+    {
+        case length_unit_twip:
+            // inches to twips : 1 twip = 1/1440 inches
+            return value * 1440.0;
+        default:
+            ;
+    }
+
+    throw general_error("convert_inch: unsupported unit of measurement.");
+}
+
+}
+
+double convert(double value, length_unit_t unit_from, length_unit_t unit_to)
+{
+    switch (unit_from)
+    {
+        case length_unit_inch:
+            return convert_inch(value, unit_to);
+        default:
+            ;
+    }
+    throw general_error("convert: unsupported unit of measurement.");
 }
 
 }
