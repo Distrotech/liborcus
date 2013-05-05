@@ -65,6 +65,7 @@ iface::import_sheet* import_factory::get_sheet(const char* sheet_name, size_t sh
 
 void import_factory::finalize()
 {
+    mp_document->finalize();
 }
 
 export_factory::export_factory(document* doc) : mp_document(doc) {}

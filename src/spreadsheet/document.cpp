@@ -200,6 +200,23 @@ const ixion::model_context& document::get_model_context() const
     return mp_impl->m_context;
 }
 
+namespace {
+
+struct sheet_finalizer : unary_function<sheet_item, void>
+{
+    void operator() (sheet_item& sh)
+    {
+        sh.data.finalize();
+    }
+};
+
+}
+
+void document::finalize()
+{
+    for_each(mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), sheet_finalizer());
+}
+
 sheet* document::append_sheet(const pstring& sheet_name)
 {
     pstring sheet_name_safe = mp_impl->m_string_pool.intern(sheet_name).first;

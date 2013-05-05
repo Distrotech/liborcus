@@ -112,6 +112,8 @@ public:
     ixion::model_context& get_model_context();
     const ixion::model_context& get_model_context() const;
 
+    void finalize();
+
 private:
     void insert_dirty_cell(const ixion::abs_address_t& pos);
 

@@ -318,6 +318,12 @@ col_t sheet::col_size() const
 #endif
 }
 
+void sheet::finalize()
+{
+    mp_impl->m_col_widths.build_tree();
+    mp_impl->m_row_heights.build_tree();
+}
+
 void sheet::dump() const
 {
     const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();

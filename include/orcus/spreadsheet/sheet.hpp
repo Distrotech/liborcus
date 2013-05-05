@@ -92,6 +92,8 @@ public:
     row_t row_size() const;
     col_t col_size() const;
 
+    void finalize();
+
     void dump() const;
     void dump_check(std::ostream& os, const pstring& sheet_name) const;
     void dump_html(const ::std::string& filepath) const;
