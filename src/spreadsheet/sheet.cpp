@@ -33,6 +33,7 @@
 #include "orcus/spreadsheet/document.hpp"
 
 #include "orcus/global.hpp"
+#include "orcus/exception.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -75,8 +76,8 @@ struct sheet_impl
     document& m_doc;
     sheet_properties m_sheet_props; /// sheet properties import interface.
 
-    col_widths_store_type m_col_widths;
-    row_heights_store_type m_row_heights;
+    mutable col_widths_store_type m_col_widths;
+    mutable row_heights_store_type m_row_heights;
     col_widths_store_type::const_iterator m_col_width_pos;
     row_heights_store_type::const_iterator m_row_height_pos;
 
@@ -289,11 +290,37 @@ void sheet::set_col_width(col_t col, col_width_t width)
         mp_impl->m_col_widths.insert(mp_impl->m_col_width_pos, col, col+1, width).first;
 }
 
+col_width_t sheet::get_col_width(col_t col, col_t* col_start, col_t* col_end) const
+{
+    col_widths_store_type& col_widths = mp_impl->m_col_widths;
+    if (!col_widths.is_tree_valid())
+        col_widths.build_tree();
+
+    col_width_t ret = 0;
+    if (!col_widths.search_tree(col, ret, col_start, col_end))
+        throw orcus::general_error("sheet::get_col_width: failed to search tree.");
+
+    return ret;
+}
+
 void sheet::set_row_height(row_t row, row_height_t height)
 {
     cout << "row: " << row << " height (twips): " << height << endl;
     mp_impl->m_row_height_pos =
         mp_impl->m_row_heights.insert(mp_impl->m_row_height_pos, row, row+1, height).first;
+}
+
+row_height_t sheet::get_row_height(row_t row, row_t* row_start, row_t* row_end) const
+{
+    row_heights_store_type& row_heights = mp_impl->m_row_heights;
+    if (!row_heights.is_tree_valid())
+        row_heights.build_tree();
+
+    row_height_t ret = 0;
+    if (!row_heights.search_tree(row, ret, row_start, row_end))
+        throw orcus::general_error("sheet::get_row_height: failed to search tree.");
+
+    return ret;
 }
 
 row_t sheet::row_size() const

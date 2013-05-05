@@ -87,7 +87,10 @@ public:
     virtual void write_string(std::ostream& os, row_t row, col_t col) const;
 
     void set_col_width(col_t col, col_width_t width);
+    col_width_t get_col_width(col_t col, col_t* col_start, col_t* col_end) const;
+
     void set_row_height(row_t row, row_height_t height);
+    row_height_t get_row_height(row_t row, row_t* row_start, row_t* row_end) const;
 
     row_t row_size() const;
     col_t col_size() const;
