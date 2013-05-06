@@ -237,6 +237,22 @@ sheet* document::get_sheet(const pstring& sheet_name)
     return &it->data;
 }
 
+sheet* document::get_sheet(sheet_t sheet_pos)
+{
+    if (static_cast<size_t>(sheet_pos) >= mp_impl->m_sheets.size())
+        return NULL;
+
+    return &mp_impl->m_sheets[sheet_pos].data;
+}
+
+const sheet* document::get_sheet(sheet_t sheet_pos) const
+{
+    if (static_cast<size_t>(sheet_pos) >= mp_impl->m_sheets.size())
+        return NULL;
+
+    return &mp_impl->m_sheets[sheet_pos].data;
+}
+
 void document::calc_formulas()
 {
     ixion::iface::model_context& cxt = get_model_context();
@@ -283,12 +299,12 @@ sheet_t document::get_sheet_index(const pstring& name) const
     return static_cast<sheet_t>(pos);
 }
 
-pstring document::get_sheet_name(sheet_t sheet) const
+pstring document::get_sheet_name(sheet_t sheet_pos) const
 {
-    if (sheet < 0)
+    if (sheet_pos < 0)
         return pstring();
 
-    size_t pos = static_cast<size_t>(sheet);
+    size_t pos = static_cast<size_t>(sheet_pos);
     if (pos >= mp_impl->m_sheets.size())
         return pstring();
 
