@@ -169,6 +169,20 @@ double convert_inch(double value, length_unit_t unit_to)
     throw general_error("convert_inch: unsupported unit of measurement.");
 }
 
+double convert_centimeter(double value, length_unit_t unit_to)
+{
+    switch (unit_to)
+    {
+        case length_unit_twip:
+            // centimeters to twips : 2.54 cm = 1 inch = 1440 twips
+            return value / 2.54 * 1440.0;
+        default:
+            ;
+    }
+
+    throw general_error("convert_centimeter: unsupported unit of measurement.");
+}
+
 }
 
 double convert(double value, length_unit_t unit_from, length_unit_t unit_to)
@@ -177,6 +191,8 @@ double convert(double value, length_unit_t unit_from, length_unit_t unit_to)
     {
         case length_unit_inch:
             return convert_inch(value, unit_to);
+        case length_unit_centimeter:
+            return convert_centimeter(value, unit_to);
         default:
             ;
     }
