@@ -51,14 +51,18 @@ using namespace std;
 namespace orcus {
 
 zip_error::zip_error() {}
-zip_error::zip_error(const string& msg) : m_msg(msg) {}
+zip_error::zip_error(const string& msg) : m_msg()
+{
+    ostringstream os;
+    os << "zip error: " << msg;
+    m_msg = os.str();
+}
+
 zip_error::~zip_error() throw() {}
 
 const char* zip_error::what() const throw()
 {
-    ostringstream os;
-    os << "zip error: " << m_msg;
-    return os.str().c_str();
+    return m_msg.c_str();
 }
 
 namespace {
