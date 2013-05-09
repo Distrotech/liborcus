@@ -272,7 +272,7 @@ zip_archive_impl::zip_archive_impl(zip_archive_stream* stream) :
     m_stream(stream), m_stream_size(0), m_central_dir_pos(0)
 {
     if (!m_stream)
-        zip_error("null stream is not allowed.");
+        throw zip_error("null stream is not allowed.");
 
     m_stream_size = m_stream->size();
 }
