@@ -494,6 +494,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             else if (ps == "doubleAccounting")
                 mp_styles->set_font_underline(spreadsheet::underline_double_accounting);
         }
+        break;
         case XML_sz:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_font);
