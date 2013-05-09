@@ -205,7 +205,9 @@ xlsx_sheet_context::xlsx_sheet_context(session_context& session_cxt, const token
     xml_context_base(session_cxt, tokens),
     mp_sheet(sheet),
     m_cur_row(0),
+    m_cur_col(0),
     m_cur_cell_type(cell_type_value),
+    m_cur_cell_xf(0),
     m_cur_shared_formula_id(-1)
 {
 }
