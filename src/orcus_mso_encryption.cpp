@@ -31,7 +31,7 @@
 using namespace orcus;
 using namespace std;
 
-int main(int argc, char** argv)
+int main(int argc, char** argv) try
 {
     if (argc != 2)
         return EXIT_FAILURE;
@@ -46,4 +46,8 @@ int main(int argc, char** argv)
     reader.read(&strm[0], strm.size());
 
     return EXIT_SUCCESS;
+}
+catch (...)
+{
+    return EXIT_FAILURE;
 }
