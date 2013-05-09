@@ -427,7 +427,6 @@ void ods_content_xml_context::start_column(const xml_attrs_t& attrs)
 
     column_attr_parser func;
     func = for_each(attrs.begin(), attrs.end(), func);
-    pstring style_name = func.get_style_name();
 
     odf_styles_map_type::const_iterator it = m_styles.find(func.get_style_name());
     if (it == m_styles.end())
