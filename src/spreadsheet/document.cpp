@@ -215,6 +215,7 @@ struct sheet_finalizer : unary_function<sheet_item, void>
 void document::finalize()
 {
     for_each(mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), sheet_finalizer());
+    calc_formulas();
 }
 
 sheet* document::append_sheet(const pstring& sheet_name)
