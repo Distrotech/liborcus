@@ -53,14 +53,12 @@ sheet_properties::~sheet_properties()
 
 void sheet_properties::set_column_width(col_t col, double width, orcus::length_unit_t unit)
 {
-    cout << "col: " << col << " width: " << width << " unit: " << unit << endl;
     col_width_t w = orcus::convert(width, unit, length_unit_twip);
     mp_impl->m_sheet.set_col_width(col, w);
 }
 
 void sheet_properties::set_row_height(row_t row, double height, orcus::length_unit_t unit)
 {
-    cout << "row: " << row << " height: " << height << " unit: " << unit << endl;
     row_height_t h = orcus::convert(height, unit, length_unit_twip);
     mp_impl->m_sheet.set_row_height(row, h);
 }

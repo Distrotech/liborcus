@@ -80,7 +80,6 @@ public:
             {
                 case XML_column_width:
                     m_width = to_length(attr.value);
-                    cout << "column width: s='" << attr.value << "', value=" << m_width.value << endl;
                 break;
             }
         }
@@ -101,7 +100,6 @@ public:
             {
                 case XML_row_height:
                     m_height = to_length(attr.value);
-                    cout << "row height: s='" << attr.value << "', value=" << m_height.value << endl;
                 break;
             }
         }

@@ -286,7 +286,6 @@ void sheet::write_string(ostream& os, row_t row, col_t col) const
 
 void sheet::set_col_width(col_t col, col_width_t width)
 {
-    cout << "column: " << col << " width (twips): " << width << endl;
     mp_impl->m_col_width_pos =
         mp_impl->m_col_widths.insert(mp_impl->m_col_width_pos, col, col+1, width).first;
 }
@@ -306,7 +305,6 @@ col_width_t sheet::get_col_width(col_t col, col_t* col_start, col_t* col_end) co
 
 void sheet::set_row_height(row_t row, row_height_t height)
 {
-    cout << "row: " << row << " height (twips): " << height << endl;
     mp_impl->m_row_height_pos =
         mp_impl->m_row_heights.insert(mp_impl->m_row_height_pos, row, row+1, height).first;
 }
