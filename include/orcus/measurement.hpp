@@ -49,6 +49,7 @@ struct ORCUS_DLLPUBLIC length_t
 };
 
 ORCUS_DLLPUBLIC double to_double(const char* p, const char* p_end, const char** p_parse_ended = NULL);
+ORCUS_DLLPUBLIC long to_long(const char* p, const char* p_end, const char** p_parse_ended = NULL);
 
 /**
  * Parse a string value containing a part representing a numerical value

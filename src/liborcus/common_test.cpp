@@ -169,10 +169,42 @@ void test_string2number_conversion()
     }
 }
 
+void test_string2long_conversion()
+{
+    struct {
+        const char* str;
+        long expected;
+        size_t end_pos;
+    } tests[] = {
+        { "1", 1, 1 },
+        { "12", 12, 2 },
+        { "13.4", 13, 2 },
+        { "-23", -23, 3 },
+        { "678abc", 678, 3 },
+    };
+
+    for (size_t i = 0, n = sizeof(tests)/sizeof(tests[0]); i < n; ++i)
+    {
+        const char* p = tests[i].str;
+        const char* p_end = p + strlen(p);
+        const char* p_parse_ended = NULL;
+        long converted = to_long(p, p_end, &p_parse_ended);
+        cout << "original: '" << tests[i].str << "', converted: " << converted
+            << ", expected: " << tests[i].expected << endl;
+
+        assert(converted == tests[i].expected);
+
+        // Check the end parse position.
+        const char* pos_expected = p + tests[i].end_pos;
+        assert(pos_expected == p_parse_ended);
+    }
+}
+
 int main()
 {
     test_date_time_conversion();
     test_measurement_conversion();
     test_string2number_conversion();
+    test_string2long_conversion();
     return EXIT_SUCCESS;
 }

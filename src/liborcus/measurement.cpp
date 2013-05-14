@@ -92,6 +92,40 @@ double parse_numeric(const char*& p, const char* p_end)
     return negative_sign ? -ret : ret;
 }
 
+long parse_integer(const char*& p, const char* p_end)
+{
+    long ret = 0.0;
+    bool negative_sign = false;
+
+    // Check for presence of a sign.
+    if (p != p_end)
+    {
+        switch (*p)
+        {
+            case '+':
+                ++p;
+            break;
+            case '-':
+                negative_sign = true;
+                ++p;
+            break;
+            default:
+                ;
+        }
+    }
+
+    for (; p != p_end; ++p)
+    {
+        if (*p < '0' || '9' < *p)
+            return negative_sign ? -ret : ret;
+
+        ret *= 10;
+        ret += *p - '0';
+    }
+
+    return negative_sign ? -ret : ret;
+}
+
 }
 
 length_t::length_t() : unit(length_unit_unknown), value(0.0) {}
@@ -126,6 +160,15 @@ std::string length_t::print() const
 double to_double(const char* p, const char* p_end, const char** p_parse_ended)
 {
     double val = parse_numeric(p, p_end);
+    if (p_parse_ended)
+        *p_parse_ended = p;
+
+    return val;
+}
+
+long to_long(const char* p, const char* p_end, const char** p_parse_ended)
+{
+    long val = parse_integer(p, p_end);
     if (p_parse_ended)
         *p_parse_ended = p;
 

@@ -72,6 +72,7 @@ enum length_unit_t
 {
     length_unit_unknown = 0,
     length_unit_centimeter,
+    length_unit_excel_column,
     length_unit_inch,
     length_unit_point,
     length_unit_twip

@@ -33,6 +33,7 @@
 #include "orcus/exception.hpp"
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
+#include "orcus/measurement.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -42,6 +43,48 @@ using namespace std;
 namespace orcus {
 
 namespace {
+
+class col_attr_parser : public std::unary_function<void, xml_token_attr_t>
+{
+    long m_min;
+    long m_max;
+    double m_width;
+    bool m_custom_width;
+public:
+    col_attr_parser() : m_min(0), m_max(0), m_width(0.0), m_custom_width(false) {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.value.empty())
+            return;
+
+        const char* p = attr.value.get();
+        const char* p_end = p + attr.value.size();
+
+        switch (attr.name)
+        {
+            case XML_min:
+                m_min = to_long(p, p_end);
+            break;
+            case XML_max:
+                m_max = to_long(p, p_end);
+            break;
+            case XML_width:
+                m_width = to_double(p, p_end);
+            break;
+            case XML_customWidth:
+                m_custom_width = to_long(p, p_end);
+            break;
+            default:
+                ;
+        }
+    }
+
+    long get_min() const { return m_min; }
+    long get_max() const { return m_max; }
+    double get_width() const { return m_width; }
+    bool is_custom_width() const { return m_custom_width; }
+};
 
 class row_attr_parser : public std::unary_function<void, xml_token_attr_t>
 {
@@ -245,7 +288,13 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
         break;
         case XML_col:
+        {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_cols);
+            col_attr_parser func;
+            func = for_each(attrs.begin(), attrs.end(), func);
+            cout << "column: min=" << func.get_min() << " max=" << func.get_max() <<
+                " width=" << func.get_width() << " custom=" << func.is_custom_width() << endl;
+        }
         break;
         case XML_dimension:
             xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
