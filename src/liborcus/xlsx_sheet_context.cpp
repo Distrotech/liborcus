@@ -294,6 +294,13 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             func = for_each(attrs.begin(), attrs.end(), func);
             cout << "column: min=" << func.get_min() << " max=" << func.get_max() <<
                 " width=" << func.get_width() << " custom=" << func.is_custom_width() << endl;
+
+            spreadsheet::iface::import_sheet_properties* sheet_props = mp_sheet->get_sheet_properties();
+            if (sheet_props)
+            {
+                for (spreadsheet::col_t col = func.get_min(); col <= func.get_max(); ++col)
+                    sheet_props->set_column_width(col-1, func.get_width(), length_unit_xlsx_column_digit);
+            }
         }
         break;
         case XML_dimension:

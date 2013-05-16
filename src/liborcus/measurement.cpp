@@ -226,6 +226,20 @@ double convert_centimeter(double value, length_unit_t unit_to)
     throw general_error("convert_centimeter: unsupported unit of measurement.");
 }
 
+/**
+ * Since Excel's column width is based on the maximum digit width of font
+ * used as the "Normal" style font, it's impossible to convert it accurately
+ * without the font information.
+ */
+double convert_xlsx_column_digit(double value, length_unit_t unit_to)
+{
+    // Convert to centimeters first. Here, we'll just assume that a single
+    // digit always equals 2 millimeters. TODO: find a better way to convert
+    // this.
+    value *= 0.2;
+    return convert_centimeter(value, unit_to);
+}
+
 }
 
 double convert(double value, length_unit_t unit_from, length_unit_t unit_to)
@@ -236,6 +250,8 @@ double convert(double value, length_unit_t unit_from, length_unit_t unit_to)
             return convert_inch(value, unit_to);
         case length_unit_centimeter:
             return convert_centimeter(value, unit_to);
+        case length_unit_xlsx_column_digit:
+            return convert_xlsx_column_digit(value, unit_to);
         default:
             ;
     }
