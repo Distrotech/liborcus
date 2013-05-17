@@ -212,6 +212,13 @@ double convert_inch(double value, length_unit_t unit_to)
     throw general_error("convert_inch: unsupported unit of measurement.");
 }
 
+double convert_point(double value, length_unit_t unit_to)
+{
+    // 72 points = 1 inch
+    value /= 72.0;
+    return convert_inch(value, unit_to);
+}
+
 double convert_centimeter(double value, length_unit_t unit_to)
 {
     switch (unit_to)
@@ -234,9 +241,9 @@ double convert_centimeter(double value, length_unit_t unit_to)
 double convert_xlsx_column_digit(double value, length_unit_t unit_to)
 {
     // Convert to centimeters first. Here, we'll just assume that a single
-    // digit always equals 2 millimeters. TODO: find a better way to convert
+    // digit always equals 1.9 millimeters. TODO: find a better way to convert
     // this.
-    value *= 0.2;
+    value *= 0.19;
     return convert_centimeter(value, unit_to);
 }
 
@@ -246,6 +253,8 @@ double convert(double value, length_unit_t unit_from, length_unit_t unit_to)
 {
     switch (unit_from)
     {
+        case length_unit_point:
+            return convert_point(value, unit_to);
         case length_unit_inch:
             return convert_inch(value, unit_to);
         case length_unit_centimeter:

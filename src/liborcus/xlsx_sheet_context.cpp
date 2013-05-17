@@ -88,26 +88,40 @@ public:
 
 class row_attr_parser : public std::unary_function<void, xml_token_attr_t>
 {
+    spreadsheet::row_t m_row;
+    length_t m_height;
 public:
     row_attr_parser() : m_row(0) {}
     void operator() (const xml_token_attr_t& attr)
     {
-        if (attr.name == XML_r)
+        switch (attr.name)
         {
-            // row index
-            m_row = static_cast<spreadsheet::row_t>(
-                strtoul(attr.value.str().c_str(), NULL, 10));
-            if (!m_row)
-                throw xml_structure_error("row number can never be zero!");
+            case XML_r:
+            {
+                // row index
+                m_row = static_cast<spreadsheet::row_t>(
+                    strtoul(attr.value.str().c_str(), NULL, 10));
+                if (!m_row)
+                    throw xml_structure_error("row number can never be zero!");
 
-            m_row -= 1; // from 1-based to 0-based.
+                m_row -= 1; // from 1-based to 0-based.
+            }
+            break;
+            case XML_ht:
+            {
+                const pstring& s = attr.value;
+                m_height.value = to_double(s.get(), s.get()+s.size(), NULL);
+                m_height.unit = length_unit_point;
+            }
+            break;
+            default:
+                ;
         }
     }
 
     spreadsheet::row_t get_row() const { return m_row; }
 
-private:
-    spreadsheet::row_t m_row;
+    length_t get_height() const { return m_height; }
 };
 
 class cell_attr_parser : public std::unary_function<xml_token_attr_t, void>
@@ -330,6 +344,14 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             row_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
             m_cur_row = func.get_row();
+
+            spreadsheet::iface::import_sheet_properties* sheet_props = mp_sheet->get_sheet_properties();
+            if (sheet_props)
+            {
+                length_t ht = func.get_height();
+                if (ht.unit != length_unit_unknown)
+                    sheet_props->set_row_height(m_cur_row, ht.value, ht.unit);
+            }
         }
         break;
         case XML_c:
