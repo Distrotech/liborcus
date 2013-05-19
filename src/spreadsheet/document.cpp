@@ -136,16 +136,11 @@ struct document_impl
     import_styles* mp_styles;
     ixion::dirty_formula_cells_t m_dirty_cells;
 
-    row_t m_default_row_size;
-    col_t m_default_column_size;
-
-    document_impl(document& doc, row_t default_row_size, col_t default_col_size) :
+    document_impl(document& doc) :
         m_doc(doc),
         mp_settings(new import_global_settings(m_doc)),
         mp_strings(new import_shared_strings(m_string_pool, m_context)),
-        mp_styles(new import_styles(m_string_pool)),
-        m_default_row_size(default_row_size),
-        m_default_column_size(default_col_size)
+        mp_styles(new import_styles(m_string_pool))
     {
     }
 
@@ -157,8 +152,8 @@ struct document_impl
     }
 };
 
-document::document(row_t default_row_size, col_t default_col_size) :
-    mp_impl(new document_impl(*this, default_row_size, default_col_size)) {}
+document::document() :
+    mp_impl(new document_impl(*this)) {}
 
 document::~document()
 {
@@ -223,17 +218,18 @@ void document::finalize()
     calc_formulas();
 }
 
-sheet* document::append_sheet(const pstring& sheet_name)
+sheet* document::append_sheet(const pstring& sheet_name, row_t row_size, col_t col_size)
 {
     pstring sheet_name_safe = mp_impl->m_string_pool.intern(sheet_name).first;
     sheet_t sheet_index = static_cast<sheet_t>(mp_impl->m_sheets.size());
 
     mp_impl->m_sheets.push_back(
         new sheet_item(
-            *this, sheet_name_safe, sheet_index, mp_impl->m_default_row_size, mp_impl->m_default_column_size));
+            *this, sheet_name_safe, sheet_index, row_size, col_size));
 
     mp_impl->m_context.append_sheet(
-        sheet_name_safe.get(), sheet_name_safe.size(), mp_impl->m_default_row_size, mp_impl->m_default_column_size);
+        sheet_name_safe.get(), sheet_name_safe.size(), row_size, col_size);
+
     return &mp_impl->m_sheets.back().data;
 }
 
@@ -272,10 +268,8 @@ void document::calc_formulas()
 
 void document::clear()
 {
-    row_t default_row_size = mp_impl->m_default_row_size;
-    col_t default_col_size = mp_impl->m_default_column_size;
     delete mp_impl;
-    mp_impl = new document_impl(*this, default_row_size, default_col_size);
+    mp_impl = new document_impl(*this);
 }
 
 void document::dump() const

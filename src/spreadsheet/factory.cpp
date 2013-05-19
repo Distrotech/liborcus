@@ -34,7 +34,8 @@
 
 namespace orcus { namespace spreadsheet {
 
-import_factory::import_factory(document* doc) : mp_document(doc) {}
+import_factory::import_factory(document* doc, row_t row_size, col_t col_size) :
+    mp_document(doc), m_default_row_size(row_size), m_default_col_size(col_size) {}
 
 import_factory::~import_factory() {}
 
@@ -55,7 +56,7 @@ iface::import_styles* import_factory::get_styles()
 
 iface::import_sheet* import_factory::append_sheet(const char* sheet_name, size_t sheet_name_length)
 {
-    return mp_document->append_sheet(pstring(sheet_name, sheet_name_length));
+    return mp_document->append_sheet(pstring(sheet_name, sheet_name_length), m_default_row_size, m_default_col_size);
 }
 
 iface::import_sheet* import_factory::get_sheet(const char* sheet_name, size_t sheet_name_length)

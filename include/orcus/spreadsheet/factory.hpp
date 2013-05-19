@@ -39,7 +39,7 @@ class document;
 class ORCUS_DLLPUBLIC import_factory : public iface::import_factory
 {
 public:
-    import_factory(document* doc);
+    import_factory(document* doc, row_t row_size = 1048576, col_t col_size = 1024);
     virtual ~import_factory();
 
     virtual iface::import_global_settings* get_global_settings();
@@ -51,6 +51,8 @@ public:
 
 private:
     document* mp_document;
+    row_t m_default_row_size;
+    col_t m_default_col_size;
 };
 
 class ORCUS_DLLPUBLIC export_factory : public iface::export_factory

@@ -63,7 +63,7 @@ class ORCUS_DLLPUBLIC document
     document& operator= (const document&); // disabled
 
 public:
-    document(row_t default_row_size = 1048576, col_t default_col_size = 1024);
+    document();
     ~document();
 
     import_global_settings* get_global_settings();
@@ -75,7 +75,7 @@ public:
     import_styles* get_styles();
     const import_styles* get_styles() const;
 
-    sheet* append_sheet(const pstring& sheet_name);
+    sheet* append_sheet(const pstring& sheet_name, row_t row_size, col_t col_size);
     sheet* get_sheet(const pstring& sheet_name);
     sheet* get_sheet(sheet_t sheet_pos);
     const sheet* get_sheet(sheet_t sheet_pos) const;
