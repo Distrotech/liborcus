@@ -63,7 +63,7 @@ class ORCUS_DLLPUBLIC document
     document& operator= (const document&); // disabled
 
 public:
-    document();
+    document(row_t default_row_size = 1048576, col_t default_col_size = 1024);
     ~document();
 
     import_global_settings* get_global_settings();

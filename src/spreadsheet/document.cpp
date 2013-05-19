@@ -59,7 +59,7 @@ struct sheet_item : private boost::noncopyable
 {
     pstring name;
     sheet   data;
-    sheet_item(document& doc, const pstring& _name, sheet_t sheet);
+    sheet_item(document& doc, const pstring& _name, sheet_t sheet_index, row_t row_size, col_t col_size);
 
     struct printer : public ::std::unary_function<sheet_item, void>
     {
@@ -83,8 +83,8 @@ struct sheet_item : private boost::noncopyable
     };
 };
 
-sheet_item::sheet_item(document& doc, const pstring& _name, sheet_t sheet) :
-    name(_name), data(doc, sheet) {}
+sheet_item::sheet_item(document& doc, const pstring& _name, sheet_t sheet_index, row_t row_size, col_t col_size) :
+    name(_name), data(doc, sheet_index, row_size, col_size) {}
 
 void sheet_item::printer::operator() (const sheet_item& item) const
 {
@@ -136,11 +136,16 @@ struct document_impl
     import_styles* mp_styles;
     ixion::dirty_formula_cells_t m_dirty_cells;
 
-    document_impl(document& doc) :
+    row_t m_default_row_size;
+    col_t m_default_column_size;
+
+    document_impl(document& doc, row_t default_row_size, col_t default_col_size) :
         m_doc(doc),
         mp_settings(new import_global_settings(m_doc)),
         mp_strings(new import_shared_strings(m_string_pool, m_context)),
-        mp_styles(new import_styles(m_string_pool))
+        mp_styles(new import_styles(m_string_pool)),
+        m_default_row_size(default_row_size),
+        m_default_column_size(default_col_size)
     {
     }
 
@@ -152,8 +157,8 @@ struct document_impl
     }
 };
 
-document::document() :
-    mp_impl(new document_impl(*this)) {}
+document::document(row_t default_row_size, col_t default_col_size) :
+    mp_impl(new document_impl(*this, default_row_size, default_col_size)) {}
 
 document::~document()
 {
@@ -221,9 +226,14 @@ void document::finalize()
 sheet* document::append_sheet(const pstring& sheet_name)
 {
     pstring sheet_name_safe = mp_impl->m_string_pool.intern(sheet_name).first;
-    sheet_t sheet = static_cast<sheet_t>(mp_impl->m_sheets.size());
-    mp_impl->m_sheets.push_back(new sheet_item(*this, sheet_name_safe, sheet));
-    mp_impl->m_context.append_sheet(sheet_name_safe.get(), sheet_name_safe.size());
+    sheet_t sheet_index = static_cast<sheet_t>(mp_impl->m_sheets.size());
+
+    mp_impl->m_sheets.push_back(
+        new sheet_item(
+            *this, sheet_name_safe, sheet_index, mp_impl->m_default_row_size, mp_impl->m_default_column_size));
+
+    mp_impl->m_context.append_sheet(
+        sheet_name_safe.get(), sheet_name_safe.size(), mp_impl->m_default_row_size, mp_impl->m_default_column_size);
     return &mp_impl->m_sheets.back().data;
 }
 
@@ -262,8 +272,10 @@ void document::calc_formulas()
 
 void document::clear()
 {
+    row_t default_row_size = mp_impl->m_default_row_size;
+    col_t default_col_size = mp_impl->m_default_column_size;
     delete mp_impl;
-    mp_impl = new document_impl(*this);
+    mp_impl = new document_impl(*this, default_row_size, default_col_size);
 }
 
 void document::dump() const

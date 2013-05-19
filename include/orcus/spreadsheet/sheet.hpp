@@ -55,7 +55,7 @@ class ORCUS_DLLPUBLIC sheet : public iface::import_sheet, public iface::export_s
     static const col_t max_col_limit;
 
 public:
-    sheet(document& doc, sheet_t sheet);
+    sheet(document& doc, sheet_t sheet_index, row_t row_size, col_t col_size);
     virtual ~sheet();
 
     // Import methods

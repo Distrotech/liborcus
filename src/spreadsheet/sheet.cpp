@@ -86,13 +86,13 @@ struct sheet_impl
     col_t m_max_col;
     const sheet_t m_sheet; /// sheet ID
 
-    sheet_impl(document& doc, sheet& sh, sheet_t sheet) :
+    sheet_impl(document& doc, sheet& sh, sheet_t sheet_index, col_t col_size, row_t row_size) :
         m_doc(doc), m_sheet_props(doc, sh),
         m_col_widths(0, sheet::max_col_limit+1, default_column_width),
         m_row_heights(0, sheet::max_row_limit+1, default_row_height),
         m_col_width_pos(m_col_widths.begin()),
         m_row_height_pos(m_row_heights.begin()),
-        m_max_row(0), m_max_col(0), m_sheet(sheet) {}
+        m_max_row(0), m_max_col(0), m_sheet(sheet_index) {}
 
     ~sheet_impl()
     {
@@ -104,7 +104,8 @@ struct sheet_impl
 const row_t sheet::max_row_limit = 1048575;
 const col_t sheet::max_col_limit = 1023;
 
-sheet::sheet(document& doc, sheet_t sheet) : mp_impl(new sheet_impl(doc, *this, sheet)) {}
+sheet::sheet(document& doc, sheet_t sheet_index, row_t row_size, col_t col_size) :
+    mp_impl(new sheet_impl(doc, *this, sheet_index, row_size, col_size)) {}
 
 sheet::~sheet()
 {
