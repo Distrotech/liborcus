@@ -102,7 +102,6 @@ public:
     void dump_html(const ::std::string& filepath) const;
 
 private:
-    void update_size(row_t row, col_t col);
     size_t get_cell_format(row_t row, col_t col) const;
 
 private:

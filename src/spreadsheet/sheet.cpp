@@ -82,17 +82,17 @@ struct sheet_impl
     row_heights_store_type::const_iterator m_row_height_pos;
 
     cell_format_type m_cell_formats;
-    row_t m_max_row;
-    col_t m_max_col;
+    row_t m_row_size;
+    col_t m_col_size;
     const sheet_t m_sheet; /// sheet ID
 
-    sheet_impl(document& doc, sheet& sh, sheet_t sheet_index, col_t col_size, row_t row_size) :
+    sheet_impl(document& doc, sheet& sh, sheet_t sheet_index, row_t row_size, col_t col_size) :
         m_doc(doc), m_sheet_props(doc, sh),
-        m_col_widths(0, sheet::max_col_limit+1, default_column_width),
-        m_row_heights(0, sheet::max_row_limit+1, default_row_height),
+        m_col_widths(0, col_size, default_column_width),
+        m_row_heights(0, row_size, default_row_height),
         m_col_width_pos(m_col_widths.begin()),
         m_row_height_pos(m_row_heights.begin()),
-        m_max_row(0), m_max_col(0), m_sheet(sheet_index) {}
+        m_row_size(row_size), m_col_size(col_size), m_sheet(sheet_index) {}
 
     ~sheet_impl()
     {
@@ -203,8 +203,6 @@ void sheet::set_format(row_t row, col_t col, size_t index)
 
     segment_col_index_type& con = *itr->second;
     con.insert_back(col, col+1, index);
-
-    update_size(row, col);
 }
 
 void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
@@ -325,12 +323,12 @@ row_height_t sheet::get_row_height(row_t row, row_t* row_start, row_t* row_end) 
 
 row_t sheet::row_size() const
 {
-    return max_row_limit + 1;
+    return mp_impl->m_row_size;
 }
 
 col_t sheet::col_size() const
 {
-    return max_col_limit + 1;
+    return mp_impl->m_col_size;
 }
 
 void sheet::finalize()
@@ -770,14 +768,6 @@ void sheet::dump_html(const string& filepath) const
             }
         }
     }
-}
-
-void sheet::update_size(row_t row, col_t col)
-{
-    if (mp_impl->m_max_row < row)
-        mp_impl->m_max_row = row;
-    if (mp_impl->m_max_col < col)
-        mp_impl->m_max_col = col;
 }
 
 size_t sheet::get_cell_format(row_t row, col_t col) const
