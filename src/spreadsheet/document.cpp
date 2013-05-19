@@ -318,6 +318,11 @@ pstring document::get_sheet_name(sheet_t sheet_pos) const
     return mp_impl->m_sheets[pos].name;
 }
 
+size_t document::sheet_size() const
+{
+    return mp_impl->m_sheets.size();
+}
+
 void document::set_origin_date(int year, int month, int day)
 {
     mp_impl->m_origin_date.year = year;

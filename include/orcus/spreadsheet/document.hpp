@@ -109,6 +109,8 @@ public:
     sheet_t get_sheet_index(const pstring& name) const;
     pstring get_sheet_name(sheet_t sheet_pos) const;
 
+    size_t sheet_size() const;
+
     void set_origin_date(int year, int month, int day);
 
     ixion::model_context& get_model_context();
