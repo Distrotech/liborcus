@@ -82,6 +82,8 @@ public:
 
     void calc_formulas();
 
+    void swap(document& other);
+
     /**
      * Clear document content, to make it empty.
      */

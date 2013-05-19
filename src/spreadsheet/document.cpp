@@ -266,6 +266,11 @@ void document::calc_formulas()
     ixion::calculate_cells(cxt, mp_impl->m_dirty_cells, 0);
 }
 
+void document::swap(document& other)
+{
+    std::swap(mp_impl, other.mp_impl);
+}
+
 void document::clear()
 {
     delete mp_impl;
