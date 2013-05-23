@@ -6,12 +6,6 @@ if BUILD_SPREADSHEET_MODEL
 pcfiles += liborcus-spreadsheet-model-@ORCUS_API_VERSION@.pc
 endif
 
-liborcus-@ORCUS_API_VERSION@.pc: liborcus.pc
-	@cp -f $< $@
-
-liborcus-spreadsheet-model-@ORCUS_API_VERSION@.pc: liborcus-spreadsheet-model.pc
-	@cp -f $< $@
-
 pkgconfig_DATA = $(pcfiles)
 pkgconfigdir = $(libdir)/pkgconfig
 
@@ -29,7 +23,6 @@ bin_data = \
 	bin/orcus-xlsx.sh \
 	bin/orcus-xml.sh \
 	bin/token_util.py \
-	bin/token_util.pyc \
 	bin/orcus-xml-dump.sh \
 	bin/pack-release.sh
 
@@ -139,6 +132,9 @@ EXTRA_DIST = \
 	$(test_data) \
 	$(vsprojects_data)
 
+
+distclean-local:
+	rm -rf *.pc
 
 dist-hook:
 	git log --date=short --pretty="format:@%cd  %an  <%ae>  [%H]%n%n%s%n%n%e%b" | sed -e "s|^\([^@]\)|\t\1|" -e "s|^@||" >$(distdir)/ChangeLog

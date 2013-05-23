@@ -46,7 +46,7 @@ using namespace std;
 namespace {
 
 const char* dirs[] = {
-    "../test/ods/raw-values-1/",
+    SRCDIR"/test/ods/raw-values-1/",
 };
 
 void test_ods_import()

@@ -43,7 +43,7 @@ int main()
     boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
 
     orcus_csv app(new spreadsheet::import_factory(doc.get()));
-    app.read_file("../test/csv/simple-numbers.csv");
+    app.read_file(SRCDIR"/test/csv/simple-numbers.csv");
     doc->dump();
 
     return EXIT_SUCCESS;

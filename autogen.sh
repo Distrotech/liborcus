@@ -59,5 +59,5 @@ autoconf || {
     exit 1
 }
 
-./configure "$@"
+test x$NOCONFIGURE = x && ./configure $@
 

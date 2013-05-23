@@ -59,3 +59,7 @@ TESTS = \
 	parser-test-string-pool \
 	parser-test-xml-namespace \
 	parser-test-base64
+
+distclean-local:
+	rm -rf $(TESTS)
+

@@ -190,8 +190,8 @@ AS_IF([test "x$enable_spreadsheet_model" != "xno"], [
 AM_CONDITIONAL([BUILD_SPREADSHEET_MODEL], [test "x$enable_spreadsheet_model" != "xno"])
 
 AC_CONFIG_FILES([Makefile
-	liborcus.pc
-	liborcus-spreadsheet-model.pc
+	liborcus-$ORCUS_API_VERSION.pc:liborcus.pc.in
+	liborcus-spreadsheet-model-$ORCUS_API_VERSION.pc:liborcus-spreadsheet-model.pc.in
 	VERSION
 	include/Makefile
 	include/orcus/Makefile

@@ -46,8 +46,8 @@ using namespace std;
 namespace {
 
 const char* dirs[] = {
-    "../test/xlsx/raw-values-1/",
-    "../test/xlsx/empty-shared-strings/",
+    SRCDIR"/test/xlsx/raw-values-1/",
+    SRCDIR"/test/xlsx/empty-shared-strings/",
 };
 
 void test_xlsx_import()

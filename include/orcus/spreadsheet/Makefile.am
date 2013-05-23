@@ -13,6 +13,7 @@ liborcus_HEADERS += \
 	global_settings.hpp \
 	shared_strings.hpp \
 	sheet.hpp \
+	sheet_properties.hpp \
 	styles.hpp
 
 endif

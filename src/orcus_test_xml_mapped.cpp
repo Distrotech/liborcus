@@ -60,14 +60,14 @@ struct test_case
 
 const test_case tests[] =
 {
-    { "../test/xml-mapped/attribute-basic", true },
-    { "../test/xml-mapped/attribute-namespace", true },
-    { "../test/xml-mapped/attribute-range-self-close", true },
-    { "../test/xml-mapped/attribute-single-element", true },
-    { "../test/xml-mapped/attribute-single-element-2", true },
-    { "../test/xml-mapped/content-basic", true },
-    { "../test/xml-mapped/content-namespace", false },
-    { "../test/xml-mapped/content-namespace-2", true },
+    { SRCDIR"/test/xml-mapped/attribute-basic", true },
+    { SRCDIR"/test/xml-mapped/attribute-namespace", true },
+    { SRCDIR"/test/xml-mapped/attribute-range-self-close", true },
+    { SRCDIR"/test/xml-mapped/attribute-single-element", true },
+    { SRCDIR"/test/xml-mapped/attribute-single-element-2", true },
+    { SRCDIR"/test/xml-mapped/content-basic", true },
+    { SRCDIR"/test/xml-mapped/content-namespace", false },
+    { SRCDIR"/test/xml-mapped/content-namespace-2", true },
 };
 
 const char* temp_output_xml = "out.xml";
@@ -126,7 +126,7 @@ void test_mapped_xml_import()
         assert(p1 == p2);
 
         // Output to xml file with the linked values coming from the document.
-        string out_file = base_dir + "/" + temp_output_xml;
+        string out_file = temp_output_xml;
         cout << "writing to " << out_file << endl;
         app.write_file(out_file.c_str());
 

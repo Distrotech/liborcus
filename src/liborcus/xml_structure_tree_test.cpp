@@ -39,12 +39,12 @@ using namespace std;
 using namespace orcus;
 
 const char* base_dirs[] = {
-    "../../test/xml-structure/basic-1/",
-    "../../test/xml-structure/basic-2/",
-    "../../test/xml-structure/basic-3/",
-    "../../test/xml-structure/attribute-1/",
-    "../../test/xml-structure/nested-repeat-1/",
-    "../../test/xml-structure/namespace-default/"
+    SRCDIR"/test/xml-structure/basic-1/",
+    SRCDIR"/test/xml-structure/basic-2/",
+    SRCDIR"/test/xml-structure/basic-3/",
+    SRCDIR"/test/xml-structure/attribute-1/",
+    SRCDIR"/test/xml-structure/nested-repeat-1/",
+    SRCDIR"/test/xml-structure/namespace-default/"
 };
 
 void test_basic()

@@ -203,6 +203,8 @@ liborcus_test_xml_structure_tree_SOURCES = \
 	xml_structure_tree.cpp \
 	xml_structure_tree_test.cpp
 
+liborcus_test_xml_structure_tree_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
+
 liborcus_test_xml_structure_tree_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la
 
@@ -220,4 +222,7 @@ TESTS += \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-structure-tree \
 	liborcus-test-common
+
+distclean-local:
+	rm -rf $(TESTS)
 

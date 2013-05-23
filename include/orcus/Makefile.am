@@ -10,6 +10,7 @@ liborcus_HEADERS = \
 	env.hpp \
 	exception.hpp \
 	global.hpp \
+	measurement.hpp \
 	orcus_csv.hpp \
 	orcus_xml.hpp \
 	pstring.hpp \
