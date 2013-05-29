@@ -37,6 +37,8 @@
 #include "sax_parser_global.hpp"
 
 #define ORCUS_DEBUG_SAX_PARSER 0
+#include <iostream>
+using std::cout;
 
 #if ORCUS_DEBUG_SAX_PARSER
 #include <iostream>
@@ -147,6 +149,11 @@ private:
     void characters_with_encoded_char();
     void attribute();
 
+    /**
+     * Skip an optional byte order mark at the begining of the xml stream.
+     */
+    void skip_bom();
+
     void parse_encoded_char();
 
     void name(pstring& str);
@@ -224,6 +231,9 @@ void sax_parser<_Handler>::blank()
 template<typename _Handler>
 void sax_parser<_Handler>::header()
 {
+    // we don't handle multi byte encodings so we can just skip bom entry if exists.
+    skip_bom();
+
     char c = cur_char();
     if (c != '<' || next_char() != '?' || next_char() != 'x' || next_char() != 'm' || next_char() != 'l')
         throw malformed_xml_error("xml header must begin with '<?xml'.");
@@ -241,6 +251,19 @@ void sax_parser<_Handler>::header()
     next();
 
     m_handler.declaration();
+}
+
+template<typename _Handler>
+void sax_parser<_Handler>::skip_bom()
+{
+    // 0xef 0xbb 0 xbf is the UTF-8 byte order mark
+    unsigned char c = static_cast<unsigned char>(cur_char());
+    if (c != '<')
+    {
+        if (c != 0xef || static_cast<unsigned char>(next_char()) != 0xbb ||
+            static_cast<unsigned char>(next_char()) != 0xbf || next_char() != '<')
+            throw malformed_xml_error("unsupported encoding. only 8 bit encodings are supported");
+    }
 }
 
 template<typename _Handler>
