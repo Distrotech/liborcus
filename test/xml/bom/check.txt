@@ -1,0 +1,11 @@
+ns0="http://schemas.openxmlformats.org/package/2006/content-types"
+/ns0:Types
+/ns0:Types/ns0:Default
+/ns0:Types/ns0:Default@ns0:ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
+/ns0:Types/ns0:Default@ns0:Extension="xml"
+/ns0:Types/ns0:Default
+/ns0:Types/ns0:Default@ns0:ContentType="application/vnd.openxmlformats-package.relationships+xml"
+/ns0:Types/ns0:Default@ns0:Extension="rels"
+/ns0:Types/ns0:Override
+/ns0:Types/ns0:Override@ns0:ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"
+/ns0:Types/ns0:Override@ns0:PartName="/xl/worksheets/sheet.xml"
