@@ -20,14 +20,14 @@ public:
 
     virtual void set_value(row_t row, col_t col, double val)
     {
-        assert(row == 0);
+        assert(row == -1);
         assert(col == 0);
         assert(val == 5.0);
     }
 
     virtual void set_bool(row_t row, col_t col, bool val)
     {
-        assert(row == 0);
+        assert(row == -1);
         assert(col == 0);
         assert(val == true);
     }
@@ -35,7 +35,7 @@ public:
     virtual void set_array_formula(row_t row, col_t col, formula_grammar_t grammar,
             const char* s, size_t n, const char* s_range, size_t n_range)
     {
-        assert(row == 0);
+        assert(row == -1);
         assert(col == 0);
         assert(grammar == xlsx_2007);
         assert(string(s, n) == "A1:A2");
@@ -54,7 +54,6 @@ void test_cell_value()
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
     orcus::xml_attrs_t attrs;
-    attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_r, "A1"));
     context.start_element(ns, elem, attrs);
 
     {
@@ -77,7 +76,6 @@ void test_cell_bool()
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
     orcus::xml_attrs_t attrs;
-    attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_r, "A1"));
     attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_t, "b"));
     context.start_element(ns, elem, attrs);
 
@@ -101,7 +99,6 @@ void test_array_formula()
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
     orcus::xml_attrs_t attrs;
-    attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_r, "A1"));
     context.start_element(ns, elem, attrs);
 
     {

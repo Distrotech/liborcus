@@ -90,8 +90,9 @@ class row_attr_parser : public std::unary_function<void, xml_token_attr_t>
 {
     spreadsheet::row_t m_row;
     length_t m_height;
+    bool m_contains_address;
 public:
-    row_attr_parser() : m_row(0) {}
+    row_attr_parser() : m_row(0), m_contains_address(false) {}
     void operator() (const xml_token_attr_t& attr)
     {
         switch (attr.name)
@@ -105,6 +106,7 @@ public:
                     throw xml_structure_error("row number can never be zero!");
 
                 m_row -= 1; // from 1-based to 0-based.
+                m_contains_address = true;
             }
             break;
             case XML_ht:
@@ -122,6 +124,8 @@ public:
     spreadsheet::row_t get_row() const { return m_row; }
 
     length_t get_height() const { return m_height; }
+
+    bool contains_address() const { return m_contains_address; }
 };
 
 class cell_attr_parser : public std::unary_function<xml_token_attr_t, void>
@@ -136,12 +140,14 @@ class cell_attr_parser : public std::unary_function<xml_token_attr_t, void>
     xlsx_sheet_context::cell_type m_type;
     address m_address;
     size_t m_xf;
+    bool m_contains_address;
 
 public:
     cell_attr_parser() :
         m_type(xlsx_sheet_context::cell_type_value),
         m_address(0,0),
-        m_xf(0) {}
+        m_xf(0),
+        m_contains_address(false) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -150,6 +156,7 @@ public:
             case XML_r:
                 // cell address in A1 notation.
                 m_address = to_cell_address(attr.value);
+                m_contains_address = true;
             break;
             case XML_t:
                 // cell type
@@ -167,6 +174,7 @@ public:
     spreadsheet::row_t get_row() const { return m_address.row; }
     spreadsheet::col_t get_col() const { return m_address.col; }
     size_t get_xf() const { return m_xf; }
+    bool contains_address() const { return m_contains_address; }
 
 private:
     xlsx_sheet_context::cell_type to_cell_type(const pstring& s) const
@@ -261,8 +269,8 @@ public:
 xlsx_sheet_context::xlsx_sheet_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_sheet* sheet) :
     xml_context_base(session_cxt, tokens),
     mp_sheet(sheet),
-    m_cur_row(0),
-    m_cur_col(0),
+    m_cur_row(-1),
+    m_cur_col(-1),
     m_cur_cell_type(cell_type_value),
     m_cur_cell_xf(0),
     m_cur_shared_formula_id(-1)
@@ -343,7 +351,12 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             xml_element_expected(parent, NS_ooxml_xlsx, XML_sheetData);
             row_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
-            m_cur_row = func.get_row();
+            if (func.contains_address())
+                m_cur_row = func.get_row();
+            else
+                ++m_cur_row;
+
+            m_cur_col = -1;
 
             spreadsheet::iface::import_sheet_properties* sheet_props = mp_sheet->get_sheet_properties();
             if (sheet_props)
@@ -360,10 +373,18 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             cell_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
 
-            if (m_cur_row != func.get_row())
-                throw xml_structure_error("row numbers differ!");
+            if (func.contains_address())
+            {
+                if (m_cur_row != func.get_row())
+                    throw xml_structure_error("row numbers differ!");
 
-            m_cur_col = func.get_col();
+                m_cur_col = func.get_col();
+            }
+            else
+            {
+                ++m_cur_col;
+            }
+
             m_cur_cell_type = func.get_cell_type();
             m_cur_cell_xf = func.get_xf();
         }
