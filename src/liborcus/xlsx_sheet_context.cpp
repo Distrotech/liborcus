@@ -50,8 +50,10 @@ class col_attr_parser : public std::unary_function<void, xml_token_attr_t>
     long m_max;
     double m_width;
     bool m_custom_width;
+    bool m_hidden;
 public:
-    col_attr_parser() : m_min(0), m_max(0), m_width(0.0), m_custom_width(false) {}
+    col_attr_parser() : m_min(0), m_max(0), m_width(0.0), m_custom_width(false),
+                        m_hidden(false) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -75,6 +77,9 @@ public:
             case XML_customWidth:
                 m_custom_width = to_long(p, p_end);
             break;
+            case XML_hidden:
+                m_hidden = to_long(p, p_end);
+            break;
             default:
                 ;
         }
@@ -84,6 +89,7 @@ public:
     long get_max() const { return m_max; }
     double get_width() const { return m_width; }
     bool is_custom_width() const { return m_custom_width; }
+    bool is_hidden() const { return m_hidden; }
 };
 
 class row_attr_parser : public std::unary_function<void, xml_token_attr_t>
@@ -91,8 +97,9 @@ class row_attr_parser : public std::unary_function<void, xml_token_attr_t>
     spreadsheet::row_t m_row;
     length_t m_height;
     bool m_contains_address;
+    bool m_hidden;
 public:
-    row_attr_parser() : m_row(0), m_contains_address(false) {}
+    row_attr_parser() : m_row(0), m_contains_address(false), m_hidden(false) {}
     void operator() (const xml_token_attr_t& attr)
     {
         switch (attr.name)
@@ -115,6 +122,11 @@ public:
                 m_height.value = to_double(s.get(), s.get()+s.size(), NULL);
                 m_height.unit = length_unit_point;
             }
+            case XML_hidden:
+            {
+                const pstring& s = attr.value;
+                m_hidden = to_long(s.get(), s.get() + s.size());
+            }
             break;
             default:
                 ;
@@ -126,6 +138,8 @@ public:
     length_t get_height() const { return m_height; }
 
     bool contains_address() const { return m_contains_address; }
+
+    bool is_hidden() const { return m_hidden; }
 };
 
 class cell_attr_parser : public std::unary_function<xml_token_attr_t, void>
@@ -320,8 +334,13 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             spreadsheet::iface::import_sheet_properties* sheet_props = mp_sheet->get_sheet_properties();
             if (sheet_props)
             {
+                double width = func.get_width();
+                bool hidden = func.is_hidden();
                 for (spreadsheet::col_t col = func.get_min(); col <= func.get_max(); ++col)
-                    sheet_props->set_column_width(col-1, func.get_width(), length_unit_xlsx_column_digit);
+                {
+                    sheet_props->set_column_width(col-1, width, length_unit_xlsx_column_digit);
+                    sheet_props->set_column_hidden(col-1, hidden);
+                }
             }
         }
         break;
@@ -364,6 +383,9 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
                 length_t ht = func.get_height();
                 if (ht.unit != length_unit_unknown)
                     sheet_props->set_row_height(m_cur_row, ht.value, ht.unit);
+
+                bool hidden = func.is_hidden();
+                sheet_props->set_row_hidden(m_cur_row, hidden);
             }
         }
         break;
