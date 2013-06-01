@@ -46,7 +46,7 @@ class string_pool;
 
 namespace spreadsheet {
 
-struct format_run
+struct ORCUS_DLLPUBLIC format_run
 {
     size_t pos;
     size_t size;
