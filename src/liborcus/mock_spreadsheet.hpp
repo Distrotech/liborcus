@@ -118,7 +118,11 @@ public:
 
     virtual void set_column_width(orcus::spreadsheet::col_t col, double width, orcus::length_unit_t unit);
 
+    virtual void set_column_hidden(orcus::spreadsheet::col_t col, bool hidden);
+
     virtual void set_row_height(orcus::spreadsheet::row_t row, double height, orcus::length_unit_t unit);
+
+    virtual void set_row_hidden(orcus::spreadsheet::row_t row, bool hidden);
 };
 
 /**

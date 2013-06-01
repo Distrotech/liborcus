@@ -70,6 +70,10 @@ typedef boost::unordered_map<col_t, segment_row_index_type*> cell_format_type;
 typedef mdds::flat_segment_tree<col_t, col_width_t> col_widths_store_type;
 typedef mdds::flat_segment_tree<row_t, row_height_t> row_heights_store_type;
 
+// hidden information
+typedef mdds::flat_segment_tree<col_t, bool> col_hidden_store_type;
+typedef mdds::flat_segment_tree<row_t, bool> row_hidden_store_type;
+
 struct sheet_impl
 {
     document& m_doc;
@@ -79,6 +83,11 @@ struct sheet_impl
     mutable row_heights_store_type m_row_heights;
     col_widths_store_type::const_iterator m_col_width_pos;
     row_heights_store_type::const_iterator m_row_height_pos;
+
+    col_hidden_store_type m_col_hidden;
+    row_hidden_store_type m_row_hidden;
+    col_hidden_store_type::const_iterator m_col_hidden_pos;
+    row_hidden_store_type::const_iterator m_row_hidden_pos;
 
     cell_format_type m_cell_formats;
     row_t m_row_size;
@@ -91,6 +100,10 @@ struct sheet_impl
         m_row_heights(0, row_size, default_row_height),
         m_col_width_pos(m_col_widths.begin()),
         m_row_height_pos(m_row_heights.begin()),
+        m_col_hidden(0, col_size, false),
+        m_row_hidden(0, row_size, false),
+        m_col_hidden_pos(m_col_hidden.begin()),
+        m_row_hidden_pos(m_row_hidden.begin()),
         m_row_size(row_size), m_col_size(col_size), m_sheet(sheet_index) {}
 
     ~sheet_impl()
@@ -301,6 +314,12 @@ col_width_t sheet::get_col_width(col_t col, col_t* col_start, col_t* col_end) co
     return ret;
 }
 
+void sheet::set_col_hidden(col_t col, bool hidden)
+{
+    mp_impl->m_col_hidden_pos =
+        mp_impl->m_col_hidden.insert(mp_impl->m_col_hidden_pos, col, col+1, hidden).first;
+}
+
 void sheet::set_row_height(row_t row, row_height_t height)
 {
     mp_impl->m_row_height_pos =
@@ -318,6 +337,12 @@ row_height_t sheet::get_row_height(row_t row, row_t* row_start, row_t* row_end) 
         throw orcus::general_error("sheet::get_row_height: failed to search tree.");
 
     return ret;
+}
+
+void sheet::set_row_hidden(row_t row, bool hidden)
+{
+    mp_impl->m_row_hidden_pos =
+        mp_impl->m_row_hidden.insert(mp_impl->m_row_hidden_pos, row, row+1, hidden).first;
 }
 
 row_t sheet::row_size() const

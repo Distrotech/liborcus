@@ -216,7 +216,8 @@ public:
     gnumeric_col_row_info() :
         m_position(0),
         m_num_repeated(1),
-        m_size(0.0) {}
+        m_size(0.0),
+        m_hidden(false) {}
 
     void operator()(const xml_token_attr_t& attr)
     {
@@ -240,6 +241,11 @@ public:
                 m_num_repeated = i;
             }
             break;
+            case XML_Hidden:
+            {
+                bool b = atoi(attr.value.get()) != 0;
+                m_hidden = b;
+            }
         }
     }
 
@@ -258,10 +264,16 @@ public:
         return m_size;
     }
 
+    bool is_hidden() const
+    {
+        return m_hidden;
+    }
+
 private:
     size_t m_position;
     size_t m_num_repeated;
     double m_size;
+    bool m_hidden;
 
 };
 
@@ -376,10 +388,12 @@ void gnumeric_sheet_context::start_col(const xml_attrs_t& attrs)
             gnumeric_col_row_info());
     spreadsheet::iface::import_sheet_properties* p_sheet_props = mp_sheet->get_sheet_properties();
     double col_size = col_info.get_size();
+    bool hidden = col_info.is_hidden();
     for (size_t i = col_info.get_position(),
             n = col_info.get_col_row_repeated() + col_info.get_position(); i < n; ++i)
     {
         p_sheet_props->set_column_width(i, col_size, length_unit_point);
+        p_sheet_props->set_column_hidden(i, hidden);
     }
 }
 
@@ -389,10 +403,12 @@ void gnumeric_sheet_context::start_row(const xml_attrs_t& attrs)
             gnumeric_col_row_info());
     spreadsheet::iface::import_sheet_properties* p_sheet_props = mp_sheet->get_sheet_properties();
     double row_size = row_info.get_size();
+    bool hidden = row_info.is_hidden();
     for (size_t i = row_info.get_position(),
             n = row_info.get_col_row_repeated() + row_info.get_position(); i < n; ++i)
     {
         p_sheet_props->set_row_height(i, row_size, length_unit_point);
+        p_sheet_props->set_row_hidden(i, hidden);
     }
 }
 

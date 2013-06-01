@@ -131,11 +131,20 @@ void import_sheet_properties::set_column_width(col_t, double, length_unit_t)
     assert(false);
 }
 
+void import_sheet_properties::set_column_hidden(col_t, bool)
+{
+    assert(false);
+}
+
 void import_sheet_properties::set_row_height(row_t, double, length_unit_t)
 {
     assert(false);
 }
 
+void import_sheet_properties::set_row_hidden(row_t, bool)
+{
+    assert(false);
+}
 
 // import_sheet
 
