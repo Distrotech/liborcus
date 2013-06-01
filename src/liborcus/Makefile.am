@@ -157,7 +157,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 # gnumeric-cell-context-test
 
 EXTRA_PROGRAMS += \
-	gnumeric-cell-context-test
+	gnumeric-cell-context-test \
+	orcus-gnumeric-sheet-context-test
 
 gnumeric_cell_context_test_SOURCES = \
 	gnumeric_cell_context_test.cpp \
@@ -177,6 +178,29 @@ gnumeric_cell_context_test_LDADD = \
 orcus_gnumeric_cell_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
 TESTS += gnumeric-cell-context-test
+
+# orcus-gnumeric-sheet-context-test
+
+orcus_gnumeric_sheet_context_test_SOURCES = \
+	gnumeric_sheet_context_test.cpp \
+	gnumeric_sheet_context.cpp \
+	gnumeric_cell_context.cpp \
+	gnumeric_helper.cpp \
+	xml_context_base.cpp \
+	gnumeric_namespace_types.cpp \
+	tokens.cpp \
+	gnumeric_tokens.cpp \
+	odf_namespace_types.cpp \
+	spreadsheet_interface.cpp \
+	mock_spreadsheet.hpp \
+	mock_spreadsheet.cpp
+
+orcus_gnumeric_sheet_context_test_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la
+
+orcus_gnumeric_sheet_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+
+TESTS += orcus-gnumeric-sheet-context-test
 
 endif # WITH_GNUMERIC_FILTER
 
