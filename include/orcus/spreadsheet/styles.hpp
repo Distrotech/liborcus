@@ -40,115 +40,116 @@ class string_pool;
 
 namespace spreadsheet {
 
+struct font
+{
+    pstring name;
+    double size;
+    bool bold:1;
+    bool italic:1;
+    underline_t underline;
+
+    font();
+    void reset();
+};
+
+struct color
+{
+    color_elem_t alpha;
+    color_elem_t red;
+    color_elem_t green;
+    color_elem_t blue;
+
+    color();
+    color(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue);
+
+    void reset();
+};
+
+struct fill
+{
+    pstring pattern_type;
+    color fg_color;
+    color bg_color;
+
+    fill();
+    void reset();
+};
+
+struct border_attrs
+{
+    pstring style;
+
+    border_attrs();
+    void reset();
+};
+
+struct border
+{
+    border_attrs top;
+    border_attrs bottom;
+    border_attrs left;
+    border_attrs right;
+    border_attrs diagonal;
+
+    border();
+    void reset();
+};
+
+struct protection
+{
+    bool locked;
+    bool hidden;
+
+    protection();
+    void reset();
+};
+
+struct number_format
+{
+    pstring format_string;
+
+    void reset();
+
+    bool operator==(const number_format& r)
+    {
+        return format_string == r.format_string;
+    }
+};
+
+/**
+ * Cell format attributes
+ */
+struct xf
+{
+    size_t font;            /// font ID
+    size_t fill;            /// fill ID
+    size_t border;          /// border ID
+    size_t protection;      /// protection ID
+    size_t number_format;   /// number format ID
+    size_t style_xf;        /// style XF ID (used only for cell format)
+    bool apply_num_format;
+    bool apply_font;
+    bool apply_fill;
+    bool apply_border;
+    bool apply_alignment;
+
+    xf();
+    void reset();
+};
+
+struct cell_style
+{
+    pstring name;
+    size_t xf;
+    size_t builtin;
+
+    cell_style();
+    void reset();
+};
+
 class ORCUS_DLLPUBLIC import_styles : public iface::import_styles
 {
 public:
-    struct font
-    {
-        pstring name;
-        double size;
-        bool bold:1;
-        bool italic:1;
-        underline_t underline;
-
-        font();
-        void reset();
-    };
-
-    struct color
-    {
-        color_elem_t alpha;
-        color_elem_t red;
-        color_elem_t green;
-        color_elem_t blue;
-
-        color();
-        color(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue);
-
-        void reset();
-    };
-
-    struct fill
-    {
-        pstring pattern_type;
-        color fg_color;
-        color bg_color;
-
-        fill();
-        void reset();
-    };
-
-    struct border_attrs
-    {
-        pstring style;
-
-        border_attrs();
-        void reset();
-    };
-
-    struct border
-    {
-        border_attrs top;
-        border_attrs bottom;
-        border_attrs left;
-        border_attrs right;
-        border_attrs diagonal;
-
-        border();
-        void reset();
-    };
-
-    struct protection
-    {
-        bool locked;
-        bool hidden;
-
-        protection();
-        void reset();
-    };
-
-    struct number_format
-    {
-        pstring format_string;
-
-        void reset();
-
-        bool operator==(const number_format& r)
-        {
-            return format_string == r.format_string;
-        }
-    };
-
-    /**
-     * Cell format attributes
-     */
-    struct xf
-    {
-        size_t font;            /// font ID
-        size_t fill;            /// fill ID
-        size_t border;          /// border ID
-        size_t protection;      /// protection ID
-        size_t number_format;   /// number format ID
-        size_t style_xf;        /// style XF ID (used only for cell format)
-        bool apply_num_format;
-        bool apply_font;
-        bool apply_fill;
-        bool apply_border;
-        bool apply_alignment;
-
-        xf();
-        void reset();
-    };
-
-    struct cell_style
-    {
-        pstring name;
-        size_t xf;
-        size_t builtin;
-
-        cell_style();
-        void reset();
-    };
 
     import_styles(string_pool& sp);
     virtual ~import_styles();

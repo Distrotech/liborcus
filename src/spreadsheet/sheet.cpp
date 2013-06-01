@@ -622,12 +622,12 @@ void print_formatted_text(_OSTREAM& strm, const string& text, const format_runs_
     }
 }
 
-void build_style_string(string& str, const import_styles& styles, const import_styles::xf& fmt)
+void build_style_string(string& str, const import_styles& styles, const xf& fmt)
 {
     ostringstream os;
     if (fmt.font)
     {
-        const import_styles::font* p = styles.get_font(fmt.font);
+        const font* p = styles.get_font(fmt.font);
         if (p)
         {
             if (!p->name.empty())
@@ -642,12 +642,12 @@ void build_style_string(string& str, const import_styles& styles, const import_s
     }
     if (fmt.fill)
     {
-        const import_styles::fill* p = styles.get_fill(fmt.fill);
+        const fill* p = styles.get_fill(fmt.fill);
         if (p)
         {
             if (p->pattern_type == "solid")
             {
-                const import_styles::color& r = p->fg_color;
+                const color& r = p->fg_color;
                 os << "background-color: rgb(" << r.red << "," << r.green << "," << r.blue << ");";
             }
         }
@@ -698,13 +698,13 @@ void sheet::dump_html(const string& filepath) const
             {
                 ixion::abs_address_t pos(mp_impl->m_sheet,row,col);
 
-                size_t xf = get_cell_format(row, col);
+                size_t xf_id = get_cell_format(row, col);
                 string style = p_table_attrs;
-                if (xf)
+                if (xf_id)
                 {
                     // Apply cell format.
                     import_styles* p_styles = mp_impl->m_doc.get_styles();
-                    const import_styles::xf* fmt = p_styles->get_cell_xf(xf);
+                    const xf* fmt = p_styles->get_cell_xf(xf_id);
                     if (fmt)
                         build_style_string(style, *p_styles, *fmt);
                 }

@@ -32,76 +32,75 @@
 
 namespace orcus { namespace spreadsheet {
 
-import_styles::font::font() :
+font::font() :
     size(0.0), bold(false),
     italic(false), underline(underline_none)
 {
 }
 
-void import_styles::font::reset()
+void font::reset()
 {
     *this = font();
 }
 
-import_styles::color::color() :
+color::color() :
     alpha(0), red(0), green(0), blue(0)
 {
 }
 
-import_styles::color::color(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue) :
+color::color(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue) :
     alpha(_alpha), red(_red), green(_green), blue(_blue)
 {
 }
 
-void import_styles::color::reset()
+void color::reset()
 {
     *this = color();
 }
 
-import_styles::fill::fill()
+fill::fill()
 {
 }
 
-void import_styles::fill::reset()
+void fill::reset()
 {
     *this = fill();
 }
 
-import_styles::border_attrs::border_attrs()
+border_attrs::border_attrs()
 {
 }
 
-void import_styles::border_attrs::reset()
+void border_attrs::reset()
 {
     *this = border_attrs();
 }
 
-import_styles::border::border()
+border::border()
 {
 }
 
-void import_styles::border::reset()
+void border::reset()
 {
     *this = border();
 }
 
-import_styles::protection::protection() :
+protection::protection() :
     locked(false), hidden(false)
 {
 }
 
-void import_styles::protection::reset()
+void protection::reset()
 {
     *this = protection();
 }
 
-void import_styles::number_format::reset()
+void number_format::reset()
 {
     *this = number_format();
 }
 
-
-import_styles::xf::xf() :
+xf::xf() :
     font(0),
     fill(0),
     border(0),
@@ -116,17 +115,17 @@ import_styles::xf::xf() :
 {
 }
 
-void import_styles::xf::reset()
+void xf::reset()
 {
     *this = xf();
 }
 
-import_styles::cell_style::cell_style() :
+cell_style::cell_style() :
     xf(0), builtin(0)
 {
 }
 
-void import_styles::cell_style::reset()
+void cell_style::reset()
 {
     *this = cell_style();
 }
@@ -355,7 +354,7 @@ size_t import_styles::commit_cell_style()
     return m_cell_styles.size() - 1;
 }
 
-const import_styles::font* import_styles::get_font(size_t index) const
+const font* import_styles::get_font(size_t index) const
 {
     if (index >= m_fonts.size())
         return NULL;
@@ -363,7 +362,7 @@ const import_styles::font* import_styles::get_font(size_t index) const
     return &m_fonts[index];
 }
 
-const import_styles::xf* import_styles::get_cell_xf(size_t index) const
+const xf* import_styles::get_cell_xf(size_t index) const
 {
     if (index >= m_cell_formats.size())
         return NULL;
@@ -371,7 +370,7 @@ const import_styles::xf* import_styles::get_cell_xf(size_t index) const
     return &m_cell_formats[index];
 }
 
-const import_styles::fill* import_styles::get_fill(size_t index) const
+const fill* import_styles::get_fill(size_t index) const
 {
     if (index >= m_fills.size())
         return NULL;
