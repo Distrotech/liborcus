@@ -46,6 +46,23 @@ class string_pool;
 
 namespace spreadsheet {
 
+struct format_run
+{
+    size_t pos;
+    size_t size;
+    pstring font;
+    double font_size;
+    bool bold:1;
+    bool italic:1;
+
+    format_run();
+
+    void reset();
+    bool formatted() const;
+};
+
+typedef std::vector<format_run> format_runs_t;
+
 /**
  * This class handles global pool of string instances.
  */
@@ -56,24 +73,9 @@ class ORCUS_DLLPUBLIC import_shared_strings : public iface::import_shared_string
     import_shared_strings(); // disabled
 
 public:
-    struct format_run
-    {
-        size_t pos;
-        size_t size;
-        pstring font;
-        double font_size;
-        bool bold:1;
-        bool italic:1;
-        format_run();
 
-        void reset();
-        bool formatted() const;
-    };
-
-    // format runs for single string
-    typedef ::std::vector<format_run> format_runs_type;
     // format runs for all shared strings, mapped by string IDs.
-    typedef boost::unordered_map<size_t, format_runs_type*> format_runs_map_type;
+    typedef boost::unordered_map<size_t, format_runs_t*> format_runs_map_type;
 
     import_shared_strings(orcus::string_pool& sp, ixion::model_context& cxt);
     virtual ~import_shared_strings();
@@ -88,7 +90,7 @@ public:
     virtual void append_segment(const char* s, size_t n);
     virtual size_t commit_segments();
 
-    const format_runs_type* get_format_runs(size_t index) const;
+    const format_runs_t* get_format_runs(size_t index) const;
 
     void dump() const;
 
@@ -104,7 +106,7 @@ private:
 
     ::std::string   m_cur_segment_string;
     format_run      m_cur_format;
-    format_runs_type*   mp_cur_format_runs;
+    format_runs_t* mp_cur_format_runs;
     str_index_map_type m_set;
 };
 

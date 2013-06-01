@@ -568,17 +568,17 @@ private:
 };
 
 template<typename _OSTREAM>
-void print_formatted_text(_OSTREAM& strm, const string& text, const import_shared_strings::format_runs_type& formats)
+void print_formatted_text(_OSTREAM& strm, const string& text, const format_runs_t& formats)
 {
     typedef html_elem<_OSTREAM> elem;
 
     const char* p_span = "span";
 
     size_t pos = 0;
-    import_shared_strings::format_runs_type::const_iterator itr = formats.begin(), itr_end = formats.end();
+    format_runs_t::const_iterator itr = formats.begin(), itr_end = formats.end();
     for (; itr != itr_end; ++itr)
     {
-        const import_shared_strings::format_run& run = *itr;
+        const format_run& run = *itr;
         if (pos < run.pos)
         {
             // flush unformatted text.
@@ -729,7 +729,7 @@ void sheet::dump_html(const string& filepath) const
                         size_t sindex = cxt.get_string_identifier(pos);
                         const string* p = cxt.get_string(sindex);
                         assert(p);
-                        const import_shared_strings::format_runs_type* pformat = sstrings->get_format_runs(sindex);
+                        const format_runs_t* pformat = sstrings->get_format_runs(sindex);
                         if (pformat)
                             print_formatted_text<ostringstream>(os, *p, *pformat);
                         else

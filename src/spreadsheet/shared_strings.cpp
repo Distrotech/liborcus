@@ -41,12 +41,12 @@ using namespace std;
 
 namespace orcus { namespace spreadsheet {
 
-import_shared_strings::format_run::format_run() :
+format_run::format_run() :
     pos(0), size(0),
     font_size(0),
     bold(false), italic(false) {}
 
-void import_shared_strings::format_run::reset()
+void format_run::reset()
 {
     pos = 0;
     size = 0;
@@ -56,7 +56,7 @@ void import_shared_strings::format_run::reset()
     italic = false;
 }
 
-bool import_shared_strings::format_run::formatted() const
+bool format_run::formatted() const
 {
     if (bold || italic)
         return true;
@@ -93,7 +93,7 @@ size_t import_shared_strings::add(const char* s, size_t n)
     return m_cxt.add_string(s, n);
 }
 
-const import_shared_strings::format_runs_type* import_shared_strings::get_format_runs(size_t index) const
+const format_runs_t* import_shared_strings::get_format_runs(size_t index) const
 {
     format_runs_map_type::const_iterator itr = m_formats.find(index);
     if (itr != m_formats.end())
@@ -137,7 +137,7 @@ void import_shared_strings::append_segment(const char* s, size_t n)
         m_cur_format.size = n;
 
         if (!mp_cur_format_runs)
-            mp_cur_format_runs = new format_runs_type;
+            mp_cur_format_runs = new format_runs_t;
 
         mp_cur_format_runs->push_back(m_cur_format);
         m_cur_format.reset();
