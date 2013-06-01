@@ -31,8 +31,7 @@
 #include "orcus/stream.hpp"
 #include "orcus/spreadsheet/factory.hpp"
 #include "orcus/spreadsheet/document.hpp"
-
-#include <boost/scoped_ptr.hpp>
+#include "orcus/spreadsheet/sheet.hpp"
 
 #include <cstdlib>
 #include <cassert>
@@ -41,6 +40,7 @@
 #include <sstream>
 
 using namespace orcus;
+using namespace orcus::spreadsheet;
 using namespace std;
 
 namespace {
@@ -49,7 +49,7 @@ const char* dirs[] = {
     SRCDIR"/test/ods/raw-values-1/",
 };
 
-void test_ods_import()
+void test_ods_import_cell_values()
 {
     size_t n = sizeof(dirs)/sizeof(dirs[0]);
     for (size_t i = 0; i < n; ++i)
@@ -59,13 +59,14 @@ void test_ods_import()
 
         // Read the input.ods document.
         path.append("input.ods");
-        boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-        orcus_ods app(new spreadsheet::import_factory(doc.get()));
+        spreadsheet::document doc;
+        spreadsheet::import_factory factory(&doc);
+        orcus_ods app(&factory);
         app.read_file(path.c_str());
 
         // Dump the content of the model.
         ostringstream os;
-        doc->dump_check(os);
+        doc.dump_check(os);
         string check = os.str();
 
         // Check that against known control.
@@ -82,10 +83,42 @@ void test_ods_import()
     }
 }
 
+void test_ods_import_column_widths_row_heights()
+{
+    const char* filepath = SRCDIR"/test/ods/column-width-row-height/input.ods";
+    document doc;
+    import_factory factory(&doc);
+    orcus_ods app(&factory);
+    app.read_file(filepath);
+
+    assert(doc.sheet_size() > 0);
+    spreadsheet::sheet* sh = doc.get_sheet(0);
+    assert(sh);
+
+    // Column widths are in twips.
+    col_width_t cw = sh->get_col_width(1, NULL, NULL);
+    assert(cw == 1440); // 1 in
+    cw = sh->get_col_width(2, NULL, NULL);
+    assert(cw == 2160); // 1.5 in
+    cw = sh->get_col_width(3, NULL, NULL);
+    assert(cw == 2592); // 1.8 in
+
+    // Row heights are in twips too.
+    row_height_t rh = sh->get_row_height(3, NULL, NULL);
+    assert(rh == 720); // 0.5 in
+    rh = sh->get_row_height(4, NULL, NULL);
+    assert(rh == 1440); // 1 in
+    rh = sh->get_row_height(5, NULL, NULL);
+    assert(rh == 2160); // 1.5 in
+    rh = sh->get_row_height(6, NULL, NULL);
+    assert(rh == 2592); // 1.8 in
+}
+
 }
 
 int main()
 {
-    test_ods_import();
+    test_ods_import_cell_values();
+    test_ods_import_column_widths_row_heights();
     return EXIT_SUCCESS;
 }
