@@ -111,6 +111,16 @@ public:
     virtual size_t commit_cell_style();
 };
 
+class import_sheet_properties : public orcus::spreadsheet::iface::import_sheet_properties
+{
+public:
+    virtual ~import_sheet_properties();
+
+    virtual void set_column_width(orcus::spreadsheet::col_t col, double width, orcus::length_unit_t unit);
+
+    virtual void set_row_height(orcus::spreadsheet::row_t row, double height, orcus::length_unit_t unit);
+};
+
 /**
  * Interface for sheet.
  */

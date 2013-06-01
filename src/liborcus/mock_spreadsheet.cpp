@@ -120,6 +120,22 @@ size_t import_shared_strings::commit_segments()
     return 0;
 }
 
+// import sheet properties
+
+import_sheet_properties::~import_sheet_properties()
+{
+}
+
+void import_sheet_properties::set_column_width(col_t, double, length_unit_t)
+{
+    assert(false);
+}
+
+void import_sheet_properties::set_row_height(row_t, double, length_unit_t)
+{
+    assert(false);
+}
+
 
 // import_sheet
 
