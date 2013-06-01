@@ -63,9 +63,8 @@ using namespace std;
 
 namespace orcus { namespace spreadsheet {
 
-// TODO: we should store cell formats column-major, not row-major.
-typedef mdds::flat_segment_tree<col_t, size_t>  segment_col_index_type;
-typedef boost::unordered_map<row_t, segment_col_index_type*> cell_format_type;
+typedef mdds::flat_segment_tree<row_t, size_t>  segment_row_index_type;
+typedef boost::unordered_map<col_t, segment_row_index_type*> cell_format_type;
 
 // Widths and heights are stored in twips.
 typedef mdds::flat_segment_tree<col_t, col_width_t> col_widths_store_type;
@@ -185,13 +184,13 @@ void sheet::set_date_time(row_t row, col_t col, int year, int month, int day, in
 
 void sheet::set_format(row_t row, col_t col, size_t index)
 {
-    cell_format_type::iterator itr = mp_impl->m_cell_formats.find(row);
+    cell_format_type::iterator itr = mp_impl->m_cell_formats.find(col);
     if (itr == mp_impl->m_cell_formats.end())
     {
         pair<cell_format_type::iterator, bool> r =
             mp_impl->m_cell_formats.insert(
                 cell_format_type::value_type(
-                    row, new segment_col_index_type(0, max_col_limit+1, 0)));
+                    row, new segment_row_index_type(0, max_col_limit+1, 0)));
 
         if (!r.second)
         {
@@ -201,8 +200,8 @@ void sheet::set_format(row_t row, col_t col, size_t index)
         itr = r.first;
     }
 
-    segment_col_index_type& con = *itr->second;
-    con.insert_back(col, col+1, index);
+    segment_row_index_type& con = *itr->second;
+    con.insert_back(row, row+1, index);
 }
 
 void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
@@ -772,16 +771,16 @@ void sheet::dump_html(const string& filepath) const
 
 size_t sheet::get_cell_format(row_t row, col_t col) const
 {
-    cell_format_type::const_iterator itr = mp_impl->m_cell_formats.find(row);
+    cell_format_type::const_iterator itr = mp_impl->m_cell_formats.find(col);
     if (itr == mp_impl->m_cell_formats.end())
         return 0;
 
-    segment_col_index_type& con = *itr->second;
+    segment_row_index_type& con = *itr->second;
     if (!con.is_tree_valid())
         con.build_tree();
 
     size_t index;
-    if (!con.search_tree(col, index).second)
+    if (!con.search_tree(row, index).second)
         return 0;
 
     return index;
