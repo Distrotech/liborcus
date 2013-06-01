@@ -40,7 +40,7 @@ class string_pool;
 
 namespace spreadsheet {
 
-struct font
+struct ORCUS_DLLPUBLIC font
 {
     pstring name;
     double size;
@@ -52,7 +52,7 @@ struct font
     void reset();
 };
 
-struct color
+struct ORCUS_DLLPUBLIC color
 {
     color_elem_t alpha;
     color_elem_t red;
@@ -65,7 +65,7 @@ struct color
     void reset();
 };
 
-struct fill
+struct ORCUS_DLLPUBLIC fill
 {
     pstring pattern_type;
     color fg_color;
@@ -75,7 +75,7 @@ struct fill
     void reset();
 };
 
-struct border_attrs
+struct ORCUS_DLLPUBLIC border_attrs
 {
     pstring style;
 
@@ -83,7 +83,7 @@ struct border_attrs
     void reset();
 };
 
-struct border
+struct ORCUS_DLLPUBLIC border
 {
     border_attrs top;
     border_attrs bottom;
@@ -95,7 +95,7 @@ struct border
     void reset();
 };
 
-struct protection
+struct ORCUS_DLLPUBLIC protection
 {
     bool locked;
     bool hidden;
@@ -104,7 +104,7 @@ struct protection
     void reset();
 };
 
-struct number_format
+struct ORCUS_DLLPUBLIC number_format
 {
     pstring format_string;
 
@@ -119,7 +119,7 @@ struct number_format
 /**
  * Cell format attributes
  */
-struct xf
+struct ORCUS_DLLPUBLIC xf
 {
     size_t font;            /// font ID
     size_t fill;            /// fill ID
@@ -127,17 +127,17 @@ struct xf
     size_t protection;      /// protection ID
     size_t number_format;   /// number format ID
     size_t style_xf;        /// style XF ID (used only for cell format)
-    bool apply_num_format;
-    bool apply_font;
-    bool apply_fill;
-    bool apply_border;
-    bool apply_alignment;
+    bool apply_num_format:1;
+    bool apply_font:1;
+    bool apply_fill:1;
+    bool apply_border:1;
+    bool apply_alignment:1;
 
     xf();
     void reset();
 };
 
-struct cell_style
+struct ORCUS_DLLPUBLIC cell_style
 {
     pstring name;
     size_t xf;
