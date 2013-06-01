@@ -50,10 +50,11 @@ class col_attr_parser : public std::unary_function<void, xml_token_attr_t>
     long m_max;
     double m_width;
     bool m_custom_width;
+    bool m_contains_width;
     bool m_hidden;
 public:
     col_attr_parser() : m_min(0), m_max(0), m_width(0.0), m_custom_width(false),
-                        m_hidden(false) {}
+                        m_contains_width(false), m_hidden(false) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -73,6 +74,7 @@ public:
             break;
             case XML_width:
                 m_width = to_double(p, p_end);
+                m_contains_width = true;
             break;
             case XML_customWidth:
                 m_custom_width = to_long(p, p_end);
@@ -89,6 +91,7 @@ public:
     long get_max() const { return m_max; }
     double get_width() const { return m_width; }
     bool is_custom_width() const { return m_custom_width; }
+    bool contains_width() const { return m_contains_width; }
     bool is_hidden() const { return m_hidden; }
 };
 
@@ -335,10 +338,12 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             if (sheet_props)
             {
                 double width = func.get_width();
+                bool contains_width = func.contains_width();
                 bool hidden = func.is_hidden();
                 for (spreadsheet::col_t col = func.get_min(); col <= func.get_max(); ++col)
                 {
-                    sheet_props->set_column_width(col-1, width, length_unit_xlsx_column_digit);
+                    if (contains_width)
+                        sheet_props->set_column_width(col-1, width, length_unit_xlsx_column_digit);
                     sheet_props->set_column_hidden(col-1, hidden);
                 }
             }
