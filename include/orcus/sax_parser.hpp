@@ -73,15 +73,27 @@ struct sax_parser_element
     const char* end_pos;   // position of the char after the closing brace '>'.
 };
 
+struct sax_parser_default_config
+{
+    /**
+     * When true, the parser will throw an exception if the xml stream doesn't
+     * begin with a <?xml..?> declaration. When false, the parser will keep
+     * parsing regardless of whether or not the xml stream begins with a
+     * <?xml..?> declaration.
+     */
+    static const bool strict_xml_declaration = true;
+};
+
 /**
  * Template-based sax parser that doesn't use function pointer for
  * callbacks for better performance, especially on large XML streams.
  */
-template<typename _Handler>
+template<typename _Handler, typename _Config = sax_parser_default_config>
 class sax_parser
 {
 public:
     typedef _Handler handler_type;
+    typedef _Config config_type;
 
     sax_parser(const char* content, const size_t size, handler_type& handler);
     ~sax_parser();
@@ -141,7 +153,7 @@ private:
     void element_open(const char* begin_pos);
     void element_close(const char* begin_pos);
     void special_tag();
-    void declaration();
+    void declaration(const char* name_check);
     void comment();
     void content();
     void characters();
@@ -176,8 +188,8 @@ private:
     handler_type& m_handler;
 };
 
-template<typename _Handler>
-sax_parser<_Handler>::sax_parser(
+template<typename _Handler, typename _Config>
+sax_parser<_Handler,_Config>::sax_parser(
     const char* content, const size_t size, handler_type& handler) :
     m_content(content),
     m_char(content),
@@ -189,13 +201,13 @@ sax_parser<_Handler>::sax_parser(
 {
 }
 
-template<typename _Handler>
-sax_parser<_Handler>::~sax_parser()
+template<typename _Handler, typename _Config>
+sax_parser<_Handler,_Config>::~sax_parser()
 {
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::parse()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::parse()
 {
     m_pos = 0;
     m_nest_level = 0;
@@ -205,29 +217,34 @@ void sax_parser<_Handler>::parse()
     body();
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::blank()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::blank()
 {
     char c = cur_char();
     while (sax::is_blank(c))
         c = next_char();
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::header()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::header()
 {
     // we don't handle multi byte encodings so we can just skip bom entry if exists.
     skip_bom();
+    blank();
+    if (cur_char() != '<')
+        throw malformed_xml_error("xml file must begin with '<'.");
 
-    char c = cur_char();
-    if (c != '<' || next_char() != '?')
-        throw malformed_xml_error("xml file must begin with '<?'.");
+    if (config_type::strict_xml_declaration)
+    {
+        if (next_char() != '?')
+            throw malformed_xml_error("xml file must begin with '<?'.");
 
-    declaration();
+        declaration("xml");
+    }
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::skip_bom()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::skip_bom()
 {
     // 0xef 0xbb 0 xbf is the UTF-8 byte order mark
     unsigned char c = static_cast<unsigned char>(cur_char());
@@ -239,8 +256,8 @@ void sax_parser<_Handler>::skip_bom()
     }
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::body()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::body()
 {
     while (has_char())
     {
@@ -259,8 +276,8 @@ void sax_parser<_Handler>::body()
     }
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::element()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::element()
 {
     assert(cur_char() == '<');
     const char* pos = m_char;
@@ -274,7 +291,7 @@ void sax_parser<_Handler>::element()
             special_tag();
         break;
         case '?':
-            declaration();
+            declaration(NULL);
         break;
         default:
             if (!sax::is_alpha(c))
@@ -283,8 +300,8 @@ void sax_parser<_Handler>::element()
     }
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::element_open(const char* begin_pos)
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::element_open(const char* begin_pos)
 {
     assert(sax::is_alpha(cur_char()));
 
@@ -329,8 +346,8 @@ void sax_parser<_Handler>::element_open(const char* begin_pos)
     }
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::element_close(const char* begin_pos)
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::element_close(const char* begin_pos)
 {
     assert(cur_char() == '/');
     nest_down();
@@ -356,8 +373,8 @@ void sax_parser<_Handler>::element_close(const char* begin_pos)
         m_root_elem_open = false;
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::special_tag()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::special_tag()
 {
     assert(cur_char() == '!');
     // This can be either <![CDATA, <!--, or <!DOCTYPE.
@@ -387,8 +404,8 @@ void sax_parser<_Handler>::special_tag()
     }
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::declaration()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::declaration(const char* name_check)
 {
     assert(cur_char() == '?');
     next();
@@ -399,6 +416,13 @@ void sax_parser<_Handler>::declaration()
 #if ORCUS_DEBUG_SAX_PARSER
     cout << "sax_parser::declaration: name='" << decl_name << "'" << endl;
 #endif
+
+    if (name_check && decl_name != name_check)
+    {
+        std::ostringstream os;
+        os << "declaration name of '" << name_check << "' was expected, but '" << decl_name << "' was found instead.";
+        throw malformed_xml_error(os.str());
+    }
 
     m_handler.start_declaration(decl_name);
     blank();
@@ -415,8 +439,8 @@ void sax_parser<_Handler>::declaration()
     m_handler.end_declaration(decl_name);
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::comment()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::comment()
 {
     // Parse until we reach '-->'.
     size_t len = remains();
@@ -445,8 +469,8 @@ void sax_parser<_Handler>::comment()
     next();
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::characters()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::characters()
 {
     size_t first = m_pos;
     const char* p0 = m_char;
@@ -473,8 +497,8 @@ void sax_parser<_Handler>::characters()
     }
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::characters_with_encoded_char()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::characters_with_encoded_char()
 {
     assert(cur_char() == '&');
     parse_encoded_char();
@@ -509,8 +533,8 @@ void sax_parser<_Handler>::characters_with_encoded_char()
         m_handler.characters(pstring(m_cell_buf.get(), m_cell_buf.size()));
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::attribute()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::attribute()
 {
     pstring attr_ns_name, attr_name, attr_value;
     name(attr_name);
@@ -546,8 +570,8 @@ void sax_parser<_Handler>::attribute()
     m_handler.attribute(attr_ns_name, attr_name, attr_value);
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::parse_encoded_char()
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::parse_encoded_char()
 {
     assert(cur_char() == '&');
     next();
@@ -587,8 +611,8 @@ void sax_parser<_Handler>::parse_encoded_char()
     throw malformed_xml_error("error parsing encoded character: terminating character is not found.");
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::name(pstring& str)
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::name(pstring& str)
 {
     size_t first = m_pos;
     char c = cur_char();
@@ -606,8 +630,8 @@ void sax_parser<_Handler>::name(pstring& str)
     str = pstring(m_content+first, size);
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::value(pstring& str)
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::value(pstring& str)
 {
     char c = cur_char();
     if (c != '"')
@@ -635,8 +659,8 @@ void sax_parser<_Handler>::value(pstring& str)
     next();
 }
 
-template<typename _Handler>
-void sax_parser<_Handler>::value_with_encoded_char(pstring& str)
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::value_with_encoded_char(pstring& str)
 {
     assert(cur_char() == '&');
     parse_encoded_char();
