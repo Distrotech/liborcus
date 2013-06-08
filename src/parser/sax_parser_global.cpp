@@ -62,4 +62,40 @@ char decode_xml_encoded_char(const char* p, size_t n)
     return '\0';
 }
 
+bool is_blank(char c)
+{
+    if (c == ' ')
+        return true;
+    if (c == 0x0A || c == 0x0D)
+        // LF or CR
+        return true;
+    return false;
+}
+
+bool is_alpha(char c)
+{
+    if ('a' <= c && c <= 'z')
+        return true;
+    if ('A' <= c && c <= 'Z')
+        return true;
+    return false;
+}
+
+bool is_name_char(char c)
+{
+    switch (c)
+    {
+        case '-':
+        case '_':
+            return true;
+    }
+
+    return false;
+}
+
+bool is_numeric(char c)
+{
+    return ('0' <= c && c <= '9');
+}
+
 }

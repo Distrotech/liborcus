@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_SAX_PARSER_GLOBAL_HPP__
-#define __ORCUS_SAX_PARSER_GLOBAL_HPP__
+#ifndef ORCUS_SAX_PARSER_GLOBAL_HPP
+#define ORCUS_SAX_PARSER_GLOBAL_HPP
 
 #include "env.hpp"
 #include <cstdlib>
@@ -45,6 +45,11 @@ namespace orcus {
  *         returned if decoding fails.
  */
 ORCUS_DLLPUBLIC char decode_xml_encoded_char(const char* p, size_t n);
+
+ORCUS_DLLPUBLIC bool is_blank(char c);
+ORCUS_DLLPUBLIC bool is_alpha(char c);
+ORCUS_DLLPUBLIC bool is_name_char(char c);
+ORCUS_DLLPUBLIC bool is_numeric(char c);
 
 }
 

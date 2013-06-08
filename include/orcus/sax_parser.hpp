@@ -166,11 +166,6 @@ private:
     void value(pstring& str);
     void value_with_encoded_char(pstring& str);
 
-    static bool is_blank(char c);
-    static bool is_alpha(char c);
-    static bool is_name_char(char c);
-    static bool is_numeric(char c);
-
 private:
     cell_buffer m_cell_buf;
     const char* m_content;
@@ -662,48 +657,6 @@ void sax_parser<_Handler>::value_with_encoded_char(pstring& str)
     // Skip the closing quote.
     assert(cur_char() == '"');
     next();
-}
-
-template<typename _Handler>
-bool sax_parser<_Handler>::is_blank(char c)
-{
-    if (c == ' ')
-        return true;
-    if (c == 0x0A || c == 0x0D)
-        // LF or CR
-        return true;
-    return false;
-}
-
-template<typename _Handler>
-bool sax_parser<_Handler>::is_alpha(char c)
-{
-    if ('a' <= c && c <= 'z')
-        return true;
-    if ('A' <= c && c <= 'Z')
-        return true;
-    return false;
-}
-
-template<typename _Handler>
-bool sax_parser<_Handler>::is_name_char(char c)
-{
-    switch (c)
-    {
-        case '-':
-        case '_':
-            return true;
-    }
-
-    return false;
-}
-
-template<typename _Handler>
-bool sax_parser<_Handler>::is_numeric(char c)
-{
-    if ('0' <= c && c <= '9')
-        return true;
-    return false;
 }
 
 }
