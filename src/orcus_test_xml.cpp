@@ -91,7 +91,8 @@ const char* dirs[] = {
     SRCDIR"/test/xml/encoded-char/",
     SRCDIR"/test/xml/default-ns/",
     SRCDIR"/test/xml/ns-alias-1/",
-    SRCDIR"/test/xml/bom/"
+    SRCDIR"/test/xml/bom/",
+    SRCDIR"/test/xml/custom-decl-1/"
 };
 
 void test_xml_sax_parser()
