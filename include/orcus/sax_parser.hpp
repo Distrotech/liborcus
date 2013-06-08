@@ -36,7 +36,7 @@
 #include "cell_buffer.hpp"
 #include "sax_parser_global.hpp"
 
-#define ORCUS_DEBUG_SAX_PARSER 1
+#define ORCUS_DEBUG_SAX_PARSER 0
 #include <iostream>
 using std::cout;
 
@@ -416,11 +416,13 @@ void sax_parser<_Handler>::declaration()
     blank();
 
     // Parse the attributes.
-    attribute();
-    blank();
-
-    if (cur_char() != '?' || next_char() != '>')
-        throw malformed_xml_error("declaration must close with '?>'.");
+    while (cur_char() != '?')
+    {
+        attribute();
+        blank();
+    }
+    if (next_char() != '>')
+        throw malformed_xml_error("declaration must end with '?>'.");
 
     m_handler.end_declaration(decl_name);
 }
