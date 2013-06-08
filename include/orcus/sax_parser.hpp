@@ -301,6 +301,8 @@ void sax_parser<_Handler>::element()
             special_tag();
         break;
         default:
+            if (!is_alpha(c))
+                throw malformed_xml_error("expected an alphabet.");
             element_open(pos);
     }
 }
