@@ -31,7 +31,7 @@
 #include "env.hpp"
 #include <cstdlib>
 
-namespace orcus {
+namespace orcus { namespace sax {
 
 /**
  * Given an encoded name (such as 'quot' and 'amp'), return a single
@@ -51,6 +51,6 @@ ORCUS_DLLPUBLIC bool is_alpha(char c);
 ORCUS_DLLPUBLIC bool is_name_char(char c);
 ORCUS_DLLPUBLIC bool is_numeric(char c);
 
-}
+}}
 
 #endif

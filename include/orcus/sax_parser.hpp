@@ -219,7 +219,7 @@ template<typename _Handler>
 void sax_parser<_Handler>::blank()
 {
     char c = cur_char();
-    while (is_blank(c))
+    while (sax::is_blank(c))
         c = next_char();
 }
 
@@ -296,7 +296,7 @@ void sax_parser<_Handler>::element()
             special_tag();
         break;
         default:
-            if (!is_alpha(c))
+            if (!sax::is_alpha(c))
                 throw malformed_xml_error("expected an alphabet.");
             element_open(pos);
     }
@@ -305,7 +305,7 @@ void sax_parser<_Handler>::element()
 template<typename _Handler>
 void sax_parser<_Handler>::element_open(const char* begin_pos)
 {
-    assert(is_alpha(cur_char()));
+    assert(sax::is_alpha(cur_char()));
 
     sax_parser_element elem;
     elem.begin_pos = begin_pos;
@@ -550,7 +550,7 @@ void sax_parser<_Handler>::parse_encoded_char()
         cout << "sax_parser::parse_encoded_char: raw='" << std::string(p0, n) << "'" << endl;
 #endif
 
-        char c = decode_xml_encoded_char(p0, n);
+        char c = sax::decode_xml_encoded_char(p0, n);
         if (c)
             m_cell_buf.append(&c, 1);
 
@@ -577,14 +577,14 @@ void sax_parser<_Handler>::name(pstring& str)
 {
     size_t first = m_pos;
     char c = cur_char();
-    if (!is_alpha(c))
+    if (!sax::is_alpha(c))
     {
         ::std::ostringstream os;
         os << "name must begin with an alphabet, but got this instead '" << c << "'";
         throw malformed_xml_error(os.str());
     }
 
-    while (is_alpha(c) || is_numeric(c) || is_name_char(c))
+    while (sax::is_alpha(c) || sax::is_numeric(c) || sax::is_name_char(c))
         c = next_char();
 
     size_t size = m_pos - first;

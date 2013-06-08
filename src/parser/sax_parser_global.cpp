@@ -29,7 +29,7 @@
 
 #include <cstring>
 
-namespace orcus {
+namespace orcus { namespace sax {
 
 char decode_xml_encoded_char(const char* p, size_t n)
 {
@@ -98,4 +98,4 @@ bool is_numeric(char c)
     return ('0' <= c && c <= '9');
 }
 
-}
+}}
