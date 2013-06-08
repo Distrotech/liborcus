@@ -43,28 +43,40 @@ using namespace orcus;
 using namespace std;
 
 int main(int argc, char** argv)
-try
 {
     if (argc < 2)
         return EXIT_FAILURE;
 
     string strm;
-    load_file_content(argv[1], strm);
+    try
+    {
+        load_file_content(argv[1], strm);
+    }
+    catch (const std::exception& e)
+    {
+        cerr << "exception caught while loading file: " << e.what() << endl;
+        return EXIT_FAILURE;
+    }
+
     if (strm.empty())
         return EXIT_FAILURE;
 
-    xmlns_repository repo;
-    xmlns_context cxt = repo.create_context();
-    dom_tree_sax_handler hdl(cxt);
-    sax_ns_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
-    parser.parse();
-    ostringstream os;
-    hdl.dump_compact(os);
-    cout << os.str();
+    try
+    {
+        xmlns_repository repo;
+        xmlns_context cxt = repo.create_context();
+        dom_tree_sax_handler hdl(cxt);
+        sax_ns_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
+        parser.parse();
+        ostringstream os;
+        hdl.dump_compact(os);
+        cout << os.str();
+    }
+    catch (const std::exception& e)
+    {
+        cerr << "exception caught while parsing file: " << e.what() << endl;
+        return EXIT_FAILURE;
+    }
 
     return EXIT_SUCCESS;
-}
-catch (...)
-{
-    return EXIT_FAILURE;
 }
