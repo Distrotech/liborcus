@@ -110,6 +110,14 @@ private:
             m_elem.attrs.clear();
         }
 
+        void start_declaration(const pstring& name)
+        {
+        }
+
+        void end_declaration(const pstring& name)
+        {
+        }
+
         void start_element(const sax_ns_parser_element& elem)
         {
             m_elem.ns = elem.ns;

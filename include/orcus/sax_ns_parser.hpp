@@ -145,6 +145,16 @@ private:
             m_handler.declaration();
         }
 
+        void start_declaration(const pstring& name)
+        {
+            m_handler.start_declaration(name);
+        }
+
+        void end_declaration(const pstring& name)
+        {
+            m_handler.end_declaration(name);
+        }
+
         void start_element(const sax_parser_element& elem)
         {
             m_scopes.push_back(new __sax::elem_scope);

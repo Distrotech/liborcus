@@ -134,6 +134,15 @@ public:
         m_attrs.clear();
     }
 
+    void start_declaration(const pstring&)
+    {
+    }
+
+    void end_declaration(const pstring&)
+    {
+        m_attrs.clear();
+    }
+
     void start_element(const sax_ns_parser_element& elem)
     {
         m_scopes.push_back(scope(elem.ns, elem.name));

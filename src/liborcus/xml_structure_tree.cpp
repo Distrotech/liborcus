@@ -135,6 +135,14 @@ public:
         m_attrs.clear();
     }
 
+    void start_declaration(const pstring& name)
+    {
+    }
+
+    void end_declaration(const pstring& name)
+    {
+    }
+
     void start_element(const sax_ns_parser_element& elem)
     {
         if (!mp_root)

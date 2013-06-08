@@ -50,6 +50,15 @@ void xml_map_sax_handler::declaration()
     m_attrs.clear();
 }
 
+void xml_map_sax_handler::start_declaration(const pstring& name)
+{
+}
+
+void xml_map_sax_handler::end_declaration(const pstring& name)
+{
+    m_attrs.clear();
+}
+
 void xml_map_sax_handler::start_element(const sax_parser_element& elem)
 {
     pstring xpath, sheet;

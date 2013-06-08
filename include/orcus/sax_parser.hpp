@@ -36,7 +36,7 @@
 #include "cell_buffer.hpp"
 #include "sax_parser_global.hpp"
 
-#define ORCUS_DEBUG_SAX_PARSER 0
+#define ORCUS_DEBUG_SAX_PARSER 1
 #include <iostream>
 using std::cout;
 
@@ -141,6 +141,7 @@ private:
     void element_open(const char* begin_pos);
     void element_close(const char* begin_pos);
     void special_tag();
+    void declaration();
     void comment();
     void content();
     void characters();
@@ -284,6 +285,9 @@ void sax_parser<_Handler>::element()
         case '!':
             special_tag();
         break;
+        case '?':
+            declaration();
+        break;
         default:
             if (!sax::is_alpha(c))
                 throw malformed_xml_error("expected an alphabet.");
@@ -396,6 +400,32 @@ void sax_parser<_Handler>::special_tag()
 }
 
 template<typename _Handler>
+void sax_parser<_Handler>::declaration()
+{
+    assert(cur_char() == '?');
+    next();
+
+    // Get the declaration name first.
+    pstring decl_name;
+    name(decl_name);
+#if ORCUS_DEBUG_SAX_PARSER
+    cout << "sax_parser::declaration: name='" << decl_name << "'" << endl;
+#endif
+
+    m_handler.start_declaration(decl_name);
+    blank();
+
+    // Parse the attributes.
+    attribute();
+    blank();
+
+    if (cur_char() != '?' || next_char() != '>')
+        throw malformed_xml_error("declaration must close with '?>'.");
+
+    m_handler.end_declaration(decl_name);
+}
+
+template<typename _Handler>
 void sax_parser<_Handler>::comment()
 {
     // Parse until we reach '-->'.
@@ -503,7 +533,8 @@ void sax_parser<_Handler>::attribute()
     }
 
 #if ORCUS_DEBUG_SAX_PARSER
-    cout << "attribute: ns='" << attr_ns_name << "', name='" << attr_name << "'" << endl;
+    std::ostringstream os;
+    os << "sax_parser::attribute: ns='" << attr_ns_name << "', name='" << attr_name << "'";
 #endif
 
     char c = cur_char();
@@ -516,6 +547,11 @@ void sax_parser<_Handler>::attribute()
 
     next();
     value(attr_value);
+
+#if ORCUS_DEBUG_SAX_PARSER
+    os << " value='" << attr_value << "'" << endl;
+    cout << os.str();
+#endif
 
     m_handler.attribute(attr_ns_name, attr_name, attr_value);
 }

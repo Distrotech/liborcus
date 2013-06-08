@@ -51,6 +51,14 @@ public:
         m_tree.end_declaration();
     }
 
+    void start_declaration(const pstring&)
+    {
+    }
+
+    void end_declaration(const pstring&)
+    {
+    }
+
     void start_element(const sax_ns_parser_element& elem)
     {
         m_tree.start_element(elem.ns, elem.name);

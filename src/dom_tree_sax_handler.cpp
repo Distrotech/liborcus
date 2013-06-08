@@ -37,6 +37,14 @@ void dom_tree_sax_handler::declaration()
     m_tree.end_declaration();
 }
 
+void dom_tree_sax_handler::start_declaration(const pstring& name)
+{
+}
+
+void dom_tree_sax_handler::end_declaration(const pstring& name)
+{
+}
+
 void dom_tree_sax_handler::start_element(const sax_ns_parser_element& elem)
 {
     m_tree.start_element(elem.ns, elem.name);
