@@ -90,8 +90,6 @@ public:
 
 private:
 
-    std::string indent() const;
-
     void next() { ++m_pos; ++m_char; }
 
     void nest_up() { ++m_nest_level; }
@@ -204,15 +202,6 @@ void sax_parser<_Handler>::parse()
     header();
     blank();
     body();
-}
-
-template<typename _Handler>
-::std::string sax_parser<_Handler>::indent() const
-{
-    ::std::ostringstream os;
-    for (size_t i = 0; i < m_nest_level; ++i)
-        os << "  ";
-    return os.str();
 }
 
 template<typename _Handler>
