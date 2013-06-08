@@ -137,21 +137,17 @@ private:
         bool m_declaration;
 
     public:
-        handler_wrapper(xmlns_context& ns_cxt, handler_type& handler) : m_ns_cxt(ns_cxt), m_handler(handler), m_declaration(true) {}
-
-        void declaration()
-        {
-            m_declaration = false;
-            m_handler.declaration();
-        }
+        handler_wrapper(xmlns_context& ns_cxt, handler_type& handler) : m_ns_cxt(ns_cxt), m_handler(handler), m_declaration(false) {}
 
         void start_declaration(const pstring& name)
         {
+            m_declaration = true;
             m_handler.start_declaration(name);
         }
 
         void end_declaration(const pstring& name)
         {
+            m_declaration = false;
             m_handler.end_declaration(name);
         }
 

@@ -105,17 +105,13 @@ private:
         handler_wrapper(const tokens_map& tokens, handler_type& handler) :
             m_tokens(tokens), m_handler(handler) {}
 
-        void declaration()
-        {
-            m_elem.attrs.clear();
-        }
-
         void start_declaration(const pstring& name)
         {
         }
 
         void end_declaration(const pstring& name)
         {
+            m_elem.attrs.clear();
         }
 
         void start_element(const sax_ns_parser_element& elem)

@@ -129,11 +129,6 @@ public:
         mp_current_elem(NULL),
         m_in_range_ref(false) {}
 
-    void declaration()
-    {
-        m_attrs.clear();
-    }
-
     void start_declaration(const pstring&)
     {
     }

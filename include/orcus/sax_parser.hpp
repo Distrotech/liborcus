@@ -220,22 +220,10 @@ void sax_parser<_Handler>::header()
     skip_bom();
 
     char c = cur_char();
-    if (c != '<' || next_char() != '?' || next_char() != 'x' || next_char() != 'm' || next_char() != 'l')
-        throw malformed_xml_error("xml header must begin with '<?xml'.");
+    if (c != '<' || next_char() != '?')
+        throw malformed_xml_error("xml file must begin with '<?'.");
 
-    next();
-    blank();
-    while (cur_char() != '?')
-    {
-        attribute();
-        blank();
-    }
-    if (next_char() != '>')
-        throw malformed_xml_error("xml header must end with '?>'.");
-
-    next();
-
-    m_handler.declaration();
+    declaration();
 }
 
 template<typename _Handler>

@@ -130,17 +130,13 @@ public:
     xml_sax_handler(string_pool& pool) :
         m_pool(pool), mp_root(NULL) {}
 
-    void declaration()
-    {
-        m_attrs.clear();
-    }
-
     void start_declaration(const pstring& name)
     {
     }
 
     void end_declaration(const pstring& name)
     {
+        m_attrs.clear();
     }
 
     void start_element(const sax_ns_parser_element& elem)
