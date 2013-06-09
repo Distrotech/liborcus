@@ -66,9 +66,15 @@ bool is_blank(char c)
 {
     if (c == ' ')
         return true;
+
     if (c == 0x0A || c == 0x0D)
         // LF or CR
         return true;
+
+    if (c == '\t')
+        // tab character.
+        return true;
+
     return false;
 }
 
