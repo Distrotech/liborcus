@@ -150,10 +150,6 @@ void test_xml_sax_parser()
 void test_xml_declarations()
 {
     const char* file_path = SRCDIR"/test/xml/custom-decl-1/input.xml";
-    string strm;
-    load_file_content(file_path, strm);
-    assert(!strm.empty());
-
     xmlns_repository repo;
     xmlns_context cxt = repo.create_context();
     boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file_path));
