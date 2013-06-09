@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Roundtrip to Shanghai via Tokyo</title>
+	<atom:link href="http://kohei.us/feed/" rel="self" type="application/rss+xml" />
+	<link>http://kohei.us</link>
+	<description>Kohei Yoshida&#039;s Webspace</description>
+	<lastBuildDate>Wed, 17 Apr 2013 16:48:48 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+	<generator>http://wordpress.org/?v=3.5.1</generator>
+		<item>
+		<title>SUSE Hack Week</title>
+		<link>http://kohei.us/2013/04/17/suse-hack-week/</link>
+		<comments>http://kohei.us/2013/04/17/suse-hack-week/#comments</comments>
+		<pubDate>Wed, 17 Apr 2013 16:48:48 +0000</pubDate>
+		<dc:creator>Kohei Yoshida</dc:creator>
+				<category><![CDATA[]]></category>
+		<category><![CDATA[calc]]></category>
+		<category><![CDATA[excel]]></category>
+		<category><![CDATA[hack week]]></category>
+		<category><![CDATA[orcus]]></category>
+		<category><![CDATA[performance]]></category>
+
+		<guid isPermaLink="false">http://kohei.us/?p=1646</guid>
+		<description><![CDATA[Last week was SUSE&#8217;s Hack Week &#8211; an event my employer does periodically to allow us &#8211; hard working engineers &#8211; to go wild with our wildest ideas and execute them in one week. Just like what I did at my last Hack Week event, I decided to work on integration of Orcus library into LibreOffice once again, to pick up on what I&#8217;d left off from my previous integration work. Integration bits Prior to Hack Week, orcus was already partially integrated; it was used to provide the backend functionality for Calc&#8217;s XML Source feature, and experimental support for Gnumeric file import. The XML Source side was pretty well integrated, [...]]]></description>
+				<content:encoded><![CDATA[<p>Last week was SUSE&#8217;s Hack Week &#8211; an event my employer does periodically to allow us &#8211; hard working engineers &#8211; to go wild with our wildest ideas and execute them in one week.  Just like what I did at <a href="2012/08/08/orcus-integration-into-libreoffice/">my last Hack Week event</a>, I decided to work on integration of <a href="https://gitorious.org/orcus">Orcus library</a> into LibreOffice once again, to pick up on what I&#8217;d left off from my previous integration work.</p>
+<h3>Integration bits</h3>
+<p>Prior to Hack Week, orcus was already partially integrated; it was used to provide the backend functionality for <a href="https://wiki.documentfoundation.org/Development/Calc/XMLSource">Calc&#8217;s XML Source feature</a>, and experimental support for Gnumeric file import.  The XML Source side was pretty well integrated, but the normal file import side was only partially integrated.  Lots of essential pieces were still missing, the largest of which were</p>
+<ul>
+<li>support for multiple filters from a single external filter provider source (such as orcus),</li>
+<li>progress indicator in the status bar, and</li>
+<li>proper type detection by analyzing file content rather than its extension (which we call &#8220;deep detection&#8221;).</li>
+</ul>
+<p>In short, I was able to complete the first two pieces during Hack Week, while the last item still has yet to be worked on. Aside from this, there are still more minor pieces missing, but perhaps I can work on the remaining bits during the next Hack Week.</p>
+<h3>Enabling orcus in your build</h3>
+<p>If you have a recent enough build from the master branch of the LibreOffice repository, you can enable imports via orcus library by</p>
+<ol>
+<li>checking the <strong>Enable experimental features</strong> box in the Options dialog, and</li>
+<li>setting the environment variable <strong>LIBO_USE_ORCUS</strong> to <strong>YES</strong> before launching Calc.</li>
+</ol>
+<p>This will overwrite the stock import filters for ODS, XLSX and CSV.  At present, orcus only performs file extension based detection rather than content based one, so be mindful of this when you try this on your machine.  To go back to the current import filters, simply disable experimental features, or unset the environment variable.</p>
+<p>Note that I&#8217;ve added this bits to showcase a preview of what orcus can potentially do as a future import filter framework. As such, <em>never use this in production if you want stable file loading experience, or don&#8217;t file bugs against this</em>. We are not ready for that yet.  Orcus filters are still missing lots and lots of features.</p>
+<p>Also note that, while in theory you could enable orcus with the Windows build, the performance of orcus on Windows may not be that impressive; in fact, in some cases slower than the current filters.  That is because orcus relies on strtod and strtol system calls to convert string numbers into numeric values, and their implementation depend on the platform. And <a href="http://tinodidriksen.com/2011/05/28/cpp-convert-string-to-double-speed/">the performance of MSVC&#8217;s strtod implementation is known to be suboptimal compared to those of gcc and clang on Linux</a>.  I&#8217;m very much aware of this, and will work on addressing this at a later time.</p>
+<h3>Performance comparison</h3>
+<p>This is perhaps the most interesting part.  I wanted to do a quick performance comparison and see how this orcus filter stands up against the current filter.  Given the orcus filter is still only capable of importing raw cell values and not any other features or properties (not even cell formats), I&#8217;ve used <a href="http://cgit.freedesktop.org/libreoffice/contrib/test-files/plain/calc/xlsx-import/perf/8-by-300000-cells.xlsx">this test file which <em>only</em> consists of raw text and numeric values in a 8-by-300000 range</a>, to measure the load times that are as fair and representative as I could make them.  Here is the result on my machine running openSUSE 11.4:</p>
+<p><a href="http://kohei.us/wp-content/uploads/2013/04/xlsx-load-times.png"><img src="http://kohei.us/wp-content/uploads/2013/04/xlsx-load-times.png" alt="xlsx-load-times" width="575" height="340" class="alignnone size-full wp-image-1648" /></a></p>
+<p>The current filter, which has undergone its set of performance optimizations on raw cell values, still spends upwards of 50 seconds.  Given that it used to take minutes to load this file, it&#8217;s still an improvement.</p>
+<p>The orcus filter, on the other hand, combined with the heavily optimized load handler in Calc core that I put in place during Hack Week, can load the same file in 4.5 seconds.  I would say that is pretty impressive.</p>
+<p>I also measured the load time on the same file using Excel 2007, on the same machine running on top of wine, and the result was 7.5 seconds.  While running an Windows app via wine emulation layer may incur some performance cost, <a href="http://wiki.winehq.org/Debunking_Wine_Myths#head-7c9ecddfaff60d8891414b68d74277244e7109eb">this page</a> suggests that it should not be noticeable, if any.  And my own experience of running various versions of Excel via wine backs up that argument.  So this number should be fairly representative of Excel&#8217;s native performance on the same hardware.</p>
+<p>Considering that my ultimate goal with orcus is to beat Excel on performance on loading its own files (or at least not be slower than Excel), I would say we are making good progress toward that goal.</p>
+<p>That&#8217;s all for today.  Thank you, ladies and gentlemen.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://kohei.us/2013/04/17/suse-hack-week/feed/</wfw:commentRss>
+		<slash:comments>3</slash:comments>
+		</item>
+	</channel>
+</rss>
