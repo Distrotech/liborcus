@@ -100,6 +100,10 @@ const char* sax_parser_test_dirs[] = {
     SRCDIR"/test/xml/custom-decl-1/"
 };
 
+const char* sax_parser_parse_only_test_dirs[] = {
+    SRCDIR"/test/xml/parse-only/rss/"
+};
+
 sax_handler* parse_file(xmlns_context& cxt, const char* filepath)
 {
     string strm;
@@ -149,6 +153,22 @@ void test_xml_sax_parser()
     }
 }
 
+void test_xml_sax_parser_read_only()
+{
+    size_t n = sizeof(sax_parser_parse_only_test_dirs)/sizeof(sax_parser_parse_only_test_dirs[0]);
+    for (size_t i = 0; i < n; ++i)
+    {
+        const char* dir = sax_parser_parse_only_test_dirs[i];
+        string dir_path(dir);
+        string file = dir_path;
+        file.append("input.xml");
+
+        xmlns_repository repo;
+        xmlns_context cxt = repo.create_context();
+        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file.c_str()));
+    }
+}
+
 void test_xml_declarations()
 {
     const char* file_path = SRCDIR"/test/xml/custom-decl-1/input.xml";
@@ -169,6 +189,7 @@ void test_xml_declarations()
 int main()
 {
     test_xml_sax_parser();
+    test_xml_sax_parser_read_only();
     test_xml_declarations();
 
     return EXIT_SUCCESS;
