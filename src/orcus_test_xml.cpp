@@ -36,6 +36,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <boost/scoped_ptr.hpp>
+
 using namespace orcus;
 using namespace std;
 
@@ -96,6 +98,23 @@ const char* sax_parser_test_dirs[] = {
     SRCDIR"/test/xml/custom-decl-1/"
 };
 
+sax_handler* parse_file(xmlns_context& cxt, const char* filepath)
+{
+    string strm;
+    cout << "testing " << filepath << endl;
+    load_file_content(filepath, strm);
+    assert(!strm.empty());
+
+    orcus::unique_ptr<sax_handler> hdl(new sax_handler(cxt));
+    sax_ns_parser<sax_handler> parser(strm.c_str(), strm.size(), cxt, *hdl);
+    parser.parse();
+
+    // Every valid XML file must have <?xml....?> in it.
+    assert(hdl->get_dom().get_declaration_attributes("xml"));
+
+    return hdl.release();
+}
+
 void test_xml_sax_parser()
 {
     size_t n = sizeof(sax_parser_test_dirs)/sizeof(sax_parser_test_dirs[0]);
@@ -105,31 +124,22 @@ void test_xml_sax_parser()
         string dir_path(dir);
         string file = dir_path;
         file.append("input.xml");
-        string strm;
-        cout << "testing " << file << endl;
-        load_file_content(file.c_str(), strm);
-        assert(!strm.empty());
 
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();
-        sax_handler hdl(cxt);
-        sax_ns_parser<sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
-        parser.parse();
-
-        // Every valid XML file must have <?xml....?> in it.
-        assert(hdl.get_dom().get_declaration_attributes("xml"));
+        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file.c_str()));
 
         // Get the compact form of the content.
         ostringstream os;
-        hdl.get_dom().dump_compact(os);
-        strm = os.str(); // re-use this.
+        hdl->get_dom().dump_compact(os);
+        string content = os.str();
 
         // Load the check form.
         string check;
         file = dir_path;
         file.append("check.txt");
         load_file_content(file.c_str(), check);
-        pstring psource(strm.c_str(), strm.size());
+        pstring psource(content.c_str(), content.size());
         pstring pcheck(check.c_str(), check.size());
 
         // They must be equal, minus preceding or trailing spaces (if any).
@@ -146,18 +156,12 @@ void test_xml_declarations()
 
     xmlns_repository repo;
     xmlns_context cxt = repo.create_context();
-    sax_handler hdl(cxt);
-    sax_ns_parser<sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
-    parser.parse();
+    boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file_path));
 
-    const dom_tree& dom = hdl.get_dom();
-
-    // Make sure we parse the XML declaration.
-    const dom_tree::attrs_type* p = dom.get_declaration_attributes("xml");
-    assert(p);
+    const dom_tree& dom = hdl->get_dom();
 
     // Make sure we parse the custom declaration correctly.
-    p = dom.get_declaration_attributes("mso-application");
+    const dom_tree::attrs_type* p = dom.get_declaration_attributes("mso-application");
     assert(p);
     assert(p->size() == 1);
     const dom_tree::attr& at = (*p)[0];
