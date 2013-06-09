@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2012 Kohei Yoshida
+ * Copyright (c) 2012-2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_SAX_PARSER_HPP__
-#define __ORCUS_SAX_PARSER_HPP__
+#ifndef ORCUS_SAX_PARSER_HPP
+#define ORCUS_SAX_PARSER_HPP
 
 #include <exception>
 #include <cassert>
@@ -330,6 +330,9 @@ void sax_parser<_Handler,_Config>::element_open(const char* begin_pos)
             elem.end_pos = m_char;
             m_handler.start_element(elem);
             m_handler.end_element(elem);
+#if ORCUS_DEBUG_SAX_PARSER
+            cout << "element_open: ns='" << elem.ns << "', name='" << elem.name << "' (self-closing)" << endl;
+#endif
             return;
         }
         else if (c == '>')
@@ -339,6 +342,9 @@ void sax_parser<_Handler,_Config>::element_open(const char* begin_pos)
             elem.end_pos = m_char;
             nest_up();
             m_handler.start_element(elem);
+#if ORCUS_DEBUG_SAX_PARSER
+            cout << "element_open: ns='" << elem.ns << "', name='" << elem.name << "'" << endl;
+#endif
             return;
         }
         else
@@ -369,6 +375,9 @@ void sax_parser<_Handler,_Config>::element_close(const char* begin_pos)
     elem.end_pos = m_char;
 
     m_handler.end_element(elem);
+#if ORCUS_DEBUG_SAX_PARSER
+    cout << "element_close: ns='" << elem.ns << "', name='" << elem.name << "'" << endl;
+#endif
     if (!m_nest_level)
         m_root_elem_open = false;
 }
@@ -414,7 +423,7 @@ void sax_parser<_Handler,_Config>::declaration(const char* name_check)
     pstring decl_name;
     name(decl_name);
 #if ORCUS_DEBUG_SAX_PARSER
-    cout << "sax_parser::declaration: name='" << decl_name << "'" << endl;
+    cout << "sax_parser::declaration: start name='" << decl_name << "'" << endl;
 #endif
 
     if (name_check && decl_name != name_check)
@@ -437,6 +446,9 @@ void sax_parser<_Handler,_Config>::declaration(const char* name_check)
         throw malformed_xml_error("declaration must end with '?>'.");
 
     m_handler.end_declaration(decl_name);
+#if ORCUS_DEBUG_SAX_PARSER
+    cout << "sax_parser::declaration: end name='" << decl_name << "'" << endl;
+#endif
 }
 
 template<typename _Handler, typename _Config>
