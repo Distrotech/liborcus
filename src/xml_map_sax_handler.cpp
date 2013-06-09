@@ -45,10 +45,6 @@ xml_map_sax_handler::scope::scope(const pstring& _ns, const pstring& _name) :
 
 xml_map_sax_handler::xml_map_sax_handler(orcus_xml& app) : m_app(app) {}
 
-void xml_map_sax_handler::cdata(const pstring& val)
-{
-}
-
 void xml_map_sax_handler::start_declaration(const pstring& name)
 {
 }

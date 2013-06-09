@@ -130,8 +130,6 @@ public:
     xml_sax_handler(string_pool& pool) :
         m_pool(pool), mp_root(NULL) {}
 
-    void cdata(const pstring&) {}
-
     void start_declaration(const pstring& name)
     {
     }

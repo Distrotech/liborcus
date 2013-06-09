@@ -67,7 +67,6 @@ class xml_map_sax_handler
 public:
     xml_map_sax_handler(orcus_xml& app);
 
-    void cdata(const pstring& val);
     void start_declaration(const pstring& name);
     void end_declaration(const pstring& name);
     void start_element(const sax_parser_element& elem);

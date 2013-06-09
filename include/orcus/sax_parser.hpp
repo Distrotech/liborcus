@@ -525,7 +525,7 @@ void sax_parser<_Handler,_Config>::cdata()
         {
             // Found ']]>'.
             size_t cdata_len = i - 2;
-            m_handler.cdata(pstring(p0, cdata_len));
+            m_handler.characters(pstring(p0, cdata_len));
             next();
             return;
         }
