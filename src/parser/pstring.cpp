@@ -27,6 +27,7 @@
 
 #include "orcus/pstring.hpp"
 #include "orcus/string_pool.hpp"
+#include "orcus/sax_parser_global.hpp"
 
 #include <cassert>
 #include <iostream>
@@ -104,15 +105,8 @@ pstring pstring::trim() const
     // Find the first non-space character.
     for ( ;p != p_end; ++p)
     {
-        switch (*p)
-        {
-            case ' ':
-            case 0x0A:
-            case 0x0D:
-                continue;
-            default:
-                ;
-        }
+        if (sax::is_blank(*p))
+            continue;
         break;
     }
 
@@ -125,15 +119,8 @@ pstring pstring::trim() const
     // Find the last non-space character.
     for (--p_end; p_end != p; --p_end)
     {
-        switch (*p_end)
-        {
-            case ' ':
-            case 0x0A:
-            case 0x0D:
-                continue;
-            default:
-                ;
-        }
+        if (sax::is_blank(*p_end))
+            continue;
         break;
     }
 

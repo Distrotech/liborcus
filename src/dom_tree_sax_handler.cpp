@@ -34,6 +34,7 @@ dom_tree_sax_handler::dom_tree_sax_handler(xmlns_context& cxt) : m_tree(cxt) {}
 
 void dom_tree_sax_handler::cdata(const pstring& val)
 {
+    characters(val);
 }
 
 void dom_tree_sax_handler::start_declaration(const pstring& name)
@@ -58,6 +59,9 @@ void dom_tree_sax_handler::end_element(const sax_ns_parser_element& elem)
 
 void dom_tree_sax_handler::characters(const pstring& val)
 {
+    if (val.trim().empty())
+        return;
+
     m_tree.set_characters(val);
 }
 
