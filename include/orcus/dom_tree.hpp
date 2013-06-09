@@ -113,7 +113,8 @@ public:
     dom_tree(xmlns_context& cxt);
     ~dom_tree();
 
-    void end_declaration();
+    void start_declaration(const pstring& name);
+    void end_declaration(const pstring& name);
     void start_element(xmlns_id_t ns, const pstring& name);
     void end_element(xmlns_id_t ns, const pstring& name);
     void set_characters(const pstring& val);

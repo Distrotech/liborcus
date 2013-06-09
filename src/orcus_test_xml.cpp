@@ -46,13 +46,14 @@ class sax_handler
 public:
     sax_handler(xmlns_context& cxt) : m_tree(cxt) {}
 
-    void start_declaration(const pstring&)
+    void start_declaration(const pstring& name)
     {
+        m_tree.start_declaration(name);
     }
 
-    void end_declaration(const pstring&)
+    void end_declaration(const pstring& name)
     {
-        m_tree.end_declaration();
+        m_tree.end_declaration(name);
     }
 
     void start_element(const sax_ns_parser_element& elem)

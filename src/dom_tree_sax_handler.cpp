@@ -34,11 +34,12 @@ dom_tree_sax_handler::dom_tree_sax_handler(xmlns_context& cxt) : m_tree(cxt) {}
 
 void dom_tree_sax_handler::start_declaration(const pstring& name)
 {
+    m_tree.start_declaration(name);
 }
 
 void dom_tree_sax_handler::end_declaration(const pstring& name)
 {
-    m_tree.end_declaration();
+    m_tree.end_declaration(name);
 }
 
 void dom_tree_sax_handler::start_element(const sax_ns_parser_element& elem)

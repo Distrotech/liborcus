@@ -35,6 +35,7 @@
 #include <sstream>
 
 #include <boost/noncopyable.hpp>
+#include <boost/unordered_map.hpp>
 
 using namespace std;
 
@@ -63,6 +64,8 @@ void escape(ostream& os, const pstring& val)
     }
 }
 
+typedef boost::unordered_map<pstring, dom_tree::attrs_type, pstring::hash> declarations_type;
+
 }
 
 struct dom_tree_impl
@@ -70,6 +73,8 @@ struct dom_tree_impl
     xmlns_context& m_ns_cxt;
     string_pool m_pool;
 
+    pstring m_cur_decl_name;
+    declarations_type m_decls;
     dom_tree::attrs_type m_doc_attrs;
     dom_tree::attrs_type m_cur_attrs;
     dom_tree::element_stack_type m_elem_stack;
@@ -136,9 +141,32 @@ dom_tree::dom_tree(xmlns_context& cxt) : mp_impl(new dom_tree_impl(cxt)) {}
 
 dom_tree::~dom_tree() { delete mp_impl; }
 
-void dom_tree::end_declaration()
+void dom_tree::start_declaration(const pstring& name)
 {
-    mp_impl->m_doc_attrs.swap(mp_impl->m_cur_attrs);
+    mp_impl->m_cur_decl_name = name;
+}
+
+void dom_tree::end_declaration(const pstring& name)
+{
+    assert(mp_impl->m_cur_decl_name == name);
+    declarations_type& decls = mp_impl->m_decls;
+    declarations_type::iterator it = decls.find(name);
+    if (it == decls.end())
+    {
+        // Insert a new entry for this name.
+        std::pair<declarations_type::iterator,bool> r =
+            decls.insert(
+                declarations_type::value_type(
+                    mp_impl->m_pool.intern(name).first, mp_impl->m_cur_attrs));
+
+        if (!r.second)
+            // Insertion failed.
+            throw general_error("dom_tree::end_declaration: failed to insert a new declaration entry.");
+    }
+    else
+        it->second = mp_impl->m_cur_attrs;
+
+    mp_impl->m_cur_attrs.clear();
 }
 
 void dom_tree::start_element(xmlns_id_t ns, const pstring& name)
