@@ -71,9 +71,9 @@ public:
         m_tree.set_characters(val);
     }
 
-    void attribute(const pstring& /*name*/, const pstring& /*val*/)
+    void attribute(const pstring& name, const pstring& val)
     {
-        // We ignore attributes in XML declaration for now.
+        m_tree.set_attribute(XMLNS_UNKNOWN_ID, name, val);
     }
 
     void attribute(const sax_ns_parser_attribute& attr)
@@ -81,13 +81,13 @@ public:
         m_tree.set_attribute(attr.ns, attr.name, attr.value);
     }
 
-    void dump(ostream& os)
+    const dom_tree& get_dom() const
     {
-        m_tree.dump_compact(os);
+        return m_tree;
     }
 };
 
-const char* dirs[] = {
+const char* sax_parser_test_dirs[] = {
     SRCDIR"/test/xml/simple/",
     SRCDIR"/test/xml/encoded-char/",
     SRCDIR"/test/xml/default-ns/",
@@ -98,10 +98,10 @@ const char* dirs[] = {
 
 void test_xml_sax_parser()
 {
-    size_t n = sizeof(dirs)/sizeof(dirs[0]);
+    size_t n = sizeof(sax_parser_test_dirs)/sizeof(sax_parser_test_dirs[0]);
     for (size_t i = 0; i < n; ++i)
     {
-        const char* dir = dirs[i];
+        const char* dir = sax_parser_test_dirs[i];
         string dir_path(dir);
         string file = dir_path;
         file.append("input.xml");
@@ -116,9 +116,12 @@ void test_xml_sax_parser()
         sax_ns_parser<sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
         parser.parse();
 
+        // Every valid XML file must have <?xml....?> in it.
+        assert(hdl.get_dom().get_declaration_attributes("xml"));
+
         // Get the compact form of the content.
         ostringstream os;
-        hdl.dump(os);
+        hdl.get_dom().dump_compact(os);
         strm = os.str(); // re-use this.
 
         // Load the check form.
@@ -134,9 +137,37 @@ void test_xml_sax_parser()
     }
 }
 
+void test_xml_declarations()
+{
+    const char* file_path = SRCDIR"/test/xml/custom-decl-1/input.xml";
+    string strm;
+    load_file_content(file_path, strm);
+    assert(!strm.empty());
+
+    xmlns_repository repo;
+    xmlns_context cxt = repo.create_context();
+    sax_handler hdl(cxt);
+    sax_ns_parser<sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
+    parser.parse();
+
+    const dom_tree& dom = hdl.get_dom();
+
+    // Make sure we parse the XML declaration.
+    const dom_tree::attrs_type* p = dom.get_declaration_attributes("xml");
+    assert(p);
+
+    // Make sure we parse the custom declaration correctly.
+    p = dom.get_declaration_attributes("mso-application");
+    assert(p);
+    assert(p->size() == 1);
+    const dom_tree::attr& at = (*p)[0];
+    assert(at.name.ns == XMLNS_UNKNOWN_ID && at.name.name == "progid" && at.value == "Excel.Sheet");
+}
+
 int main()
 {
     test_xml_sax_parser();
+    test_xml_declarations();
 
     return EXIT_SUCCESS;
 }

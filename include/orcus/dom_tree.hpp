@@ -120,6 +120,8 @@ public:
     void set_characters(const pstring& val);
     void set_attribute(xmlns_id_t ns, const pstring& name, const pstring& val);
 
+    const attrs_type* get_declaration_attributes(const pstring& name) const;
+
     void dump_compact(std::ostream& os) const;
 
 private:

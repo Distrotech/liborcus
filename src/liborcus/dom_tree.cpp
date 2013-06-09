@@ -226,6 +226,12 @@ void dom_tree::set_attribute(xmlns_id_t ns, const pstring& name, const pstring& 
     mp_impl->m_cur_attrs.push_back(attr(ns, name2, val2));
 }
 
+const dom_tree::attrs_type* dom_tree::get_declaration_attributes(const pstring& name) const
+{
+    declarations_type::const_iterator it = mp_impl->m_decls.find(name);
+    return it == mp_impl->m_decls.end() ? NULL : &it->second;
+}
+
 namespace {
 
 struct scope : boost::noncopyable
