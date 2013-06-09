@@ -168,6 +168,7 @@ class sax_handler
 
 public:
     sax_handler(xmlns_context& ns_cxt) : m_ns_cxt(ns_cxt) {}
+    void cdata(const pstring&) {}
     void start_declaration(const pstring&) {}
     void end_declaration(const pstring&) {}
     void attribute(const pstring&, const pstring&) {}

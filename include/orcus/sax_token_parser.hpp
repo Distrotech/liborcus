@@ -105,11 +105,10 @@ private:
         handler_wrapper(const tokens_map& tokens, handler_type& handler) :
             m_tokens(tokens), m_handler(handler) {}
 
-        void start_declaration(const pstring& name)
-        {
-        }
+        void cdata(const pstring&) {}
+        void start_declaration(const pstring&) {}
 
-        void end_declaration(const pstring& name)
+        void end_declaration(const pstring&)
         {
             m_elem.attrs.clear();
         }

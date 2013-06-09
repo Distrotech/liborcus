@@ -32,6 +32,10 @@ namespace orcus {
 
 dom_tree_sax_handler::dom_tree_sax_handler(xmlns_context& cxt) : m_tree(cxt) {}
 
+void dom_tree_sax_handler::cdata(const pstring& val)
+{
+}
+
 void dom_tree_sax_handler::start_declaration(const pstring& name)
 {
     m_tree.start_declaration(name);

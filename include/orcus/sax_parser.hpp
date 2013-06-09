@@ -155,6 +155,7 @@ private:
     void special_tag();
     void declaration(const char* name_check);
     void comment();
+    void cdata();
     void content();
     void characters();
     void characters_with_encoded_char();
@@ -407,6 +408,22 @@ void sax_parser<_Handler,_Config>::special_tag()
             comment();
         }
         break;
+        case '[':
+        {
+            // Possibly a CDATA.
+            len = remains();
+            if (len < 9)
+                // Even an empty CDATA needs at least 9 more characters - "CDATA[]]>"
+                throw malformed_xml_error("CDATA section ends prematurely.");
+
+            if (next_char() != 'C' || next_char() != 'D' || next_char() != 'A' ||
+                next_char() != 'T' || next_char() != 'A' || next_char() != '[')
+                throw malformed_xml_error("not a valid CDATA section.");
+
+            next();
+            cdata();
+        }
+        break;
         default:
             // TODO: Handle CDATA and DOCTYPE.
             throw malformed_xml_error("failed to parse special tag.");
@@ -479,6 +496,43 @@ void sax_parser<_Handler,_Config>::comment()
         throw malformed_xml_error("'--' should not occur in comment other than in the closing tag.");
 
     next();
+}
+
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::cdata()
+{
+    size_t len = remains();
+    assert(len > 3);
+
+    // Parse until we reach ']]>'.
+    const char* p0 = m_char;
+    size_t i = 0, match = 0;
+    for (char c = cur_char(); i < len; ++i, c = next_char())
+    {
+        if (c == ']')
+        {
+            // Be aware that we may encounter a series of more than two ']'
+            // characters, in which case we'll only count the last two.
+
+            if (match == 0)
+                // First ']'
+                ++match;
+            else if (match == 1)
+                // Second ']'
+                ++match;
+        }
+        else if (c == '>' && match == 2)
+        {
+            // Found ']]>'.
+            size_t cdata_len = i - 2;
+            m_handler.cdata(pstring(p0, cdata_len));
+            next();
+            return;
+        }
+        else
+            match = 0;
+    }
+    throw malformed_xml_error("malformed CDATA section.");
 }
 
 template<typename _Handler, typename _Config>

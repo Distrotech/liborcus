@@ -48,6 +48,8 @@ class sax_handler
 public:
     sax_handler(xmlns_context& cxt) : m_tree(cxt) {}
 
+    void cdata(const pstring&) {}
+
     void start_declaration(const pstring& name)
     {
         m_tree.start_declaration(name);

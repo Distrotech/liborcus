@@ -129,6 +129,10 @@ public:
         mp_current_elem(NULL),
         m_in_range_ref(false) {}
 
+    void cdata(const pstring&)
+    {
+    }
+
     void start_declaration(const pstring&)
     {
     }

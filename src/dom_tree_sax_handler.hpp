@@ -48,6 +48,7 @@ class dom_tree_sax_handler
 public:
     dom_tree_sax_handler(xmlns_context& cxt);
 
+    void cdata(const pstring& val);
     void start_declaration(const pstring& name);
     void end_declaration(const pstring& name);
     void start_element(const sax_ns_parser_element& elem);
