@@ -54,9 +54,6 @@ void dom_tree_sax_handler::end_element(const sax_ns_parser_element& elem)
 
 void dom_tree_sax_handler::characters(const pstring& val)
 {
-    if (val.trim().empty())
-        return;
-
     m_tree.set_characters(val);
 }
 

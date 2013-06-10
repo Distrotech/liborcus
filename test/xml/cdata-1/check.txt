@@ -1,0 +1,18 @@
+/root
+/root/header
+/root/header"simple text"
+/root/header
+/root/header"[[inside double braces]]"
+/root/header
+/root/header"multiple"
+/root/header"CDATA"
+/root/header"in succession"
+/root/header
+/root/header"<html><body>...</body></html>"
+/root/header
+/root/header"!@#$%^&*()"
+/root/header
+/root/header"$amp;"
+/root/header
+/root/header"Normal character data and"
+/root/header"CDATA"

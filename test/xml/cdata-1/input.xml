@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<root>
+    <header><![CDATA[simple text]]></header>
+    <header><![CDATA[[[inside double braces]]]]></header>
+    <header><![CDATA[multiple]]><![CDATA[CDATA]]><![CDATA[in succession]]></header>
+    <header><![CDATA[<html><body>...</body></html>]]></header><!-- make sure tags are not parsed as xml -->
+    <header><![CDATA[!@#$%^&*()]]></header>
+    <header><![CDATA[$amp;]]></header><!-- encoded characters are taken literally without decoding -->
+    <header>Normal character data and <![CDATA[CDATA]]></header>
+</root>

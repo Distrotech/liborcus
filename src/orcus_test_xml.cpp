@@ -95,7 +95,8 @@ const char* sax_parser_test_dirs[] = {
     SRCDIR"/test/xml/default-ns/",
     SRCDIR"/test/xml/ns-alias-1/",
     SRCDIR"/test/xml/bom/",
-    SRCDIR"/test/xml/custom-decl-1/"
+    SRCDIR"/test/xml/custom-decl-1/",
+    SRCDIR"/test/xml/cdata-1/"
 };
 
 const char* sax_parser_parse_only_test_dirs[] = {
