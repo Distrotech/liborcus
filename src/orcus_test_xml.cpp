@@ -198,16 +198,33 @@ void test_xml_declarations()
 
 void test_xml_dtd()
 {
+    struct {
+        const char* file_path;
+        sax::doctype_declaration::keyword_type keyword;
+        const char* root_element;
+        const char* fpi;
+        const char* uri;
+    } tests[] = {
+        { SRCDIR"/test/xml/doctype/html.xml", sax::doctype_declaration::keyword_public,
+          "html", "-//W3C//DTD XHTML 1.0 Transitional//EN", "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" }
+    };
+
     xmlns_repository repo;
+
+    size_t n = sizeof(tests)/sizeof(tests[0]);
+    for (size_t i = 0; i < n; ++i)
     {
-        const char* file_path = SRCDIR"/test/xml/doctype/html.xml";
+        const char* file_path = tests[0].file_path;
         xmlns_context cxt = repo.create_context();
         boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file_path));
         const sax::doctype_declaration& dtd = hdl->get_dtd();
-        assert(dtd.keyword == sax::doctype_declaration::keyword_public);
-        assert(dtd.root_element == "html");
-        assert(dtd.fpi == "-//W3C//DTD XHTML 1.0 Transitional//EN");
-        assert(dtd.uri == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
+        assert(dtd.keyword == tests[0].keyword);
+        assert(dtd.root_element == tests[0].root_element);
+        assert(dtd.fpi == tests[0].fpi);
+        if (tests[0].uri)
+        {
+            assert(dtd.uri == tests[0].uri);
+        }
     }
 }
 
