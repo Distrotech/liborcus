@@ -37,8 +37,6 @@
 #include "sax_parser_global.hpp"
 
 #define ORCUS_DEBUG_SAX_PARSER 0
-#include <iostream>
-using std::cout;
 
 #if ORCUS_DEBUG_SAX_PARSER
 #include <iostream>
