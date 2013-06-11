@@ -104,6 +104,13 @@ private:
 
     void next() { ++m_pos; ++m_char; }
 
+    void next_check()
+    {
+        next();
+        if (!has_char())
+            throw malformed_xml_error("xml stream ended prematurely.");
+    }
+
     void nest_up() { ++m_nest_level; }
     void nest_down()
     {
@@ -111,7 +118,13 @@ private:
         --m_nest_level;
     }
 
-    inline bool has_char() const { return m_pos < m_size; }
+    bool has_char() const { return m_pos < m_size; }
+
+    void has_char_throw(const char* msg) const
+    {
+        if (!has_char())
+            throw malformed_xml_error(msg);
+    }
 
     inline size_t remains() const
     {
@@ -141,6 +154,15 @@ private:
         return *m_char;
     }
 
+    char next_char_checked()
+    {
+        next();
+        if (!has_char())
+            throw malformed_xml_error("xml stream ended prematurely.");
+
+        return *m_char;
+    }
+
     void blank();
 
     /**
@@ -156,6 +178,7 @@ private:
     void declaration(const char* name_check);
     void comment();
     void cdata();
+    void doctype();
     void content();
     void characters();
     void characters_with_encoded_char();
@@ -171,11 +194,11 @@ private:
     void name(pstring& str);
 
     /**
-     * Parse attribute value.  Note that the retreived string may be stored in
-     * the temporary cell buffer. Use the string immediately after this call
-     * before the buffer becomes invalid.
+     * Parse quoted value.  Note that the retreived string may be stored in
+     * the temporary cell buffer if the decode parameter is true. Use the
+     * string immediately after this call before the buffer becomes invalid.
      */
-    void value(pstring& str);
+    void value(pstring& str, bool decode);
     void value_with_encoded_char(pstring& str);
 
 private:
@@ -223,7 +246,13 @@ void sax_parser<_Handler,_Config>::blank()
 {
     char c = cur_char();
     while (sax::is_blank(c))
-        c = next_char();
+    {
+        next();
+        if (!has_char())
+            return;
+
+        c = cur_char();
+    }
 }
 
 template<typename _Handler, typename _Config>
@@ -400,7 +429,7 @@ void sax_parser<_Handler,_Config>::special_tag()
             if (next_char() != '-')
                 throw malformed_xml_error("comment expected.");
 
-            len = remains();
+            len -= 2;
             if (len < 3)
                 throw malformed_xml_error("malformed comment.");
 
@@ -411,21 +440,44 @@ void sax_parser<_Handler,_Config>::special_tag()
         case '[':
         {
             // Possibly a CDATA.
-            len = remains();
-            if (len < 9)
-                // Even an empty CDATA needs at least 9 more characters - "CDATA[]]>"
+            --len;
+            assert(len > 0);
+            char c = next_char();
+            --len;
+            if (c != 'C')
+                throw malformed_xml_error("unrecognized special tag.");
+
+            if (len < 8)
+                // Even an empty CDATA needs at least 8 more characters - "DATA[]]>"
                 throw malformed_xml_error("CDATA section ends prematurely.");
 
-            if (next_char() != 'C' || next_char() != 'D' || next_char() != 'A' ||
-                next_char() != 'T' || next_char() != 'A' || next_char() != '[')
+            // check if this is a CDATA.
+            if (next_char() != 'D' || next_char() != 'A' || next_char() != 'T' ||
+                next_char() != 'A' || next_char() != '[')
                 throw malformed_xml_error("not a valid CDATA section.");
 
             next();
             cdata();
         }
         break;
+        case 'D':
+        {
+            // check if this is a DOCTYPE.
+            --len;
+            if (len < 19)
+                // Even a shortest DOCTYPE needs at least 19 more characters. - 'OCTYPE a PUBLIC "">'
+                throw malformed_xml_error("DOCTYPE section ends prematurely.");
+
+            if (next_char() != 'O' || next_char() != 'C' || next_char() != 'T' ||
+                next_char() != 'Y' || next_char() != 'P' || next_char() != 'E')
+                throw malformed_xml_error("not a valid DOCTYPE section.");
+
+            next();
+            blank();
+            doctype();
+        }
+        break;
         default:
-            // TODO: Handle CDATA and DOCTYPE.
             throw malformed_xml_error("failed to parse special tag.");
     }
 }
@@ -536,6 +588,66 @@ void sax_parser<_Handler,_Config>::cdata()
 }
 
 template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::doctype()
+{
+    // Parse the root element first.
+    pstring root_elem;
+    name(root_elem);
+    blank();
+
+    // Either PUBLIC or SYSTEM.
+    size_t len = remains();
+    if (len < 6)
+        malformed_xml_error("DOCTYPE section too short.");
+
+    char c = cur_char();
+    if (c == 'P')
+    {
+        if (next_char() != 'U' || next_char() != 'B' || next_char() != 'L' || next_char() != 'I' || next_char() != 'C')
+            throw malformed_xml_error("malformed DOCTYPE section.");
+    }
+    else if (c == 'S')
+    {
+        if (next_char() != 'Y' || next_char() != 'S' || next_char() != 'T' || next_char() != 'E' || next_char() != 'M')
+            throw malformed_xml_error("malformed DOCTYPE section.");
+    }
+
+    next_check();
+    blank();
+    has_char_throw("DOCTYPE section too short.");
+
+    // Parse FPI.
+    pstring fpi_value;
+    value(fpi_value, false);
+
+    has_char_throw("DOCTYPE section too short.");
+    blank();
+    has_char_throw("DOCTYPE section too short.");
+
+    if (cur_char() == '>')
+    {
+        // Optional URI not given. Exit.
+//      m_handler.doctype();
+        next();
+        return;
+    }
+
+    // Parse optional URI.
+    pstring uri_value;
+    value(uri_value, false);
+
+    has_char_throw("DOCTYPE section too short.");
+    blank();
+    has_char_throw("DOCTYPE section too short.");
+
+    if (cur_char() != '>')
+        throw malformed_xml_error("malformed DOCTYPE section - closing '>' expected but not found.");
+
+//  m_handler.doctype();
+    next();
+}
+
+template<typename _Handler, typename _Config>
 void sax_parser<_Handler,_Config>::characters()
 {
     size_t first = m_pos;
@@ -626,7 +738,7 @@ void sax_parser<_Handler,_Config>::attribute()
     }
 
     next();
-    value(attr_value);
+    value(attr_value, true);
 
 #if ORCUS_DEBUG_SAX_PARSER
     os << " value='" << attr_value << "'" << endl;
@@ -690,26 +802,26 @@ void sax_parser<_Handler,_Config>::name(pstring& str)
     }
 
     while (sax::is_alpha(c) || sax::is_numeric(c) || sax::is_name_char(c))
-        c = next_char();
+        c = next_char_checked();
 
     size_t size = m_pos - first;
     str = pstring(m_content+first, size);
 }
 
 template<typename _Handler, typename _Config>
-void sax_parser<_Handler,_Config>::value(pstring& str)
+void sax_parser<_Handler,_Config>::value(pstring& str, bool decode)
 {
     char c = cur_char();
     if (c != '"')
-        throw malformed_xml_error("attribute value must be quoted");
+        throw malformed_xml_error("value must be quoted");
 
-    c = next_char();
+    c = next_char_checked();
     size_t first = m_pos;
     const char* p0 = m_char;
 
-    for (; c != '"'; c = next_char())
+    for (;c != '"'; c = next_char_checked())
     {
-        if (c == '&')
+        if (decode && c == '&')
         {
             // This value contains one or more encoded characters.
             m_cell_buf.reset();
