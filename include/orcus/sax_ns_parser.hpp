@@ -139,6 +139,11 @@ private:
     public:
         handler_wrapper(xmlns_context& ns_cxt, handler_type& handler) : m_ns_cxt(ns_cxt), m_handler(handler), m_declaration(false) {}
 
+        void doctype(const sax::doctype_declaration& dtd)
+        {
+            m_handler.doctype(dtd);
+        }
+
         void start_declaration(const pstring& name)
         {
             m_declaration = true;

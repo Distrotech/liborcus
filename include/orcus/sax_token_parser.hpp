@@ -105,6 +105,8 @@ private:
         handler_wrapper(const tokens_map& tokens, handler_type& handler) :
             m_tokens(tokens), m_handler(handler) {}
 
+        void doctype(const sax::doctype_declaration&) {}
+
         void start_declaration(const pstring&) {}
 
         void end_declaration(const pstring&)

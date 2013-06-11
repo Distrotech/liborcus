@@ -34,6 +34,10 @@
 
 namespace orcus {
 
+namespace sax {
+    struct doctype_declaration;
+}
+
 class xmlns_context;
 struct sax_ns_parser_element;
 struct sax_ns_parser_attribute;
@@ -48,6 +52,7 @@ class dom_tree_sax_handler
 public:
     dom_tree_sax_handler(xmlns_context& cxt);
 
+    void doctype(const sax::doctype_declaration& dtd);
     void start_declaration(const pstring& name);
     void end_declaration(const pstring& name);
     void start_element(const sax_ns_parser_element& elem);

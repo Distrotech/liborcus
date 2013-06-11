@@ -32,7 +32,6 @@
 #include <cassert>
 #include <sstream>
 
-#include "pstring.hpp"
 #include "cell_buffer.hpp"
 #include "sax_parser_global.hpp"
 
@@ -589,8 +588,8 @@ template<typename _Handler, typename _Config>
 void sax_parser<_Handler,_Config>::doctype()
 {
     // Parse the root element first.
-    pstring root_elem;
-    name(root_elem);
+    sax::doctype_declaration param;
+    name(param.root_element);
     blank();
 
     // Either PUBLIC or SYSTEM.
@@ -598,11 +597,14 @@ void sax_parser<_Handler,_Config>::doctype()
     if (len < 6)
         malformed_xml_error("DOCTYPE section too short.");
 
+    param.keyword = sax::doctype_declaration::keyword_private;
     char c = cur_char();
     if (c == 'P')
     {
         if (next_char() != 'U' || next_char() != 'B' || next_char() != 'L' || next_char() != 'I' || next_char() != 'C')
             throw malformed_xml_error("malformed DOCTYPE section.");
+
+        param.keyword = sax::doctype_declaration::keyword_public;
     }
     else if (c == 'S')
     {
@@ -615,8 +617,7 @@ void sax_parser<_Handler,_Config>::doctype()
     has_char_throw("DOCTYPE section too short.");
 
     // Parse FPI.
-    pstring fpi_value;
-    value(fpi_value, false);
+    value(param.fpi, false);
 
     has_char_throw("DOCTYPE section too short.");
     blank();
@@ -625,14 +626,16 @@ void sax_parser<_Handler,_Config>::doctype()
     if (cur_char() == '>')
     {
         // Optional URI not given. Exit.
-//      m_handler.doctype();
+#if ORCUS_DEBUG_SAX_PARSER
+        cout << "sax_parser::doctype: root='" << param.root_element << "', fpi='" << param.fpi << "'" << endl;
+#endif
+        m_handler.doctype(param);
         next();
         return;
     }
 
     // Parse optional URI.
-    pstring uri_value;
-    value(uri_value, false);
+    value(param.uri, false);
 
     has_char_throw("DOCTYPE section too short.");
     blank();
@@ -641,7 +644,10 @@ void sax_parser<_Handler,_Config>::doctype()
     if (cur_char() != '>')
         throw malformed_xml_error("malformed DOCTYPE section - closing '>' expected but not found.");
 
-//  m_handler.doctype();
+#if ORCUS_DEBUG_SAX_PARSER
+    cout << "sax_parser::doctype: root='" << param.root_element << "', fpi='" << param.fpi << "' uri='" << param.uri << "'" << endl;
+#endif
+    m_handler.doctype(param);
     next();
 }
 

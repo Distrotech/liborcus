@@ -130,6 +130,8 @@ public:
     xml_sax_handler(string_pool& pool) :
         m_pool(pool), mp_root(NULL) {}
 
+    void doctype(const sax::doctype_declaration&) {}
+
     void start_declaration(const pstring& name)
     {
     }

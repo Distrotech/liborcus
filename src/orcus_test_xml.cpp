@@ -43,10 +43,16 @@ using namespace std;
 
 class sax_handler
 {
+    sax::doctype_declaration m_dtd;
     dom_tree m_tree;
 
 public:
     sax_handler(xmlns_context& cxt) : m_tree(cxt) {}
+
+    void doctype(const sax::doctype_declaration& dtd)
+    {
+        m_dtd = dtd;
+    }
 
     void start_declaration(const pstring& name)
     {
@@ -86,6 +92,11 @@ public:
     const dom_tree& get_dom() const
     {
         return m_tree;
+    }
+
+    const sax::doctype_declaration& get_dtd() const
+    {
+        return m_dtd;
     }
 };
 
@@ -185,11 +196,27 @@ void test_xml_declarations()
     assert(at.name.ns == XMLNS_UNKNOWN_ID && at.name.name == "progid" && at.value == "Excel.Sheet");
 }
 
+void test_xml_dtd()
+{
+    xmlns_repository repo;
+    {
+        const char* file_path = SRCDIR"/test/xml/doctype/html.xml";
+        xmlns_context cxt = repo.create_context();
+        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file_path));
+        const sax::doctype_declaration& dtd = hdl->get_dtd();
+        assert(dtd.keyword == sax::doctype_declaration::keyword_public);
+        assert(dtd.root_element == "html");
+        assert(dtd.fpi == "-//W3C//DTD XHTML 1.0 Transitional//EN");
+        assert(dtd.uri == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
+    }
+}
+
 int main()
 {
     test_xml_sax_parser();
     test_xml_sax_parser_read_only();
     test_xml_declarations();
+    test_xml_dtd();
 
     return EXIT_SUCCESS;
 }

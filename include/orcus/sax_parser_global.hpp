@@ -29,9 +29,25 @@
 #define ORCUS_SAX_PARSER_GLOBAL_HPP
 
 #include "env.hpp"
+#include "pstring.hpp"
+
 #include <cstdlib>
 
 namespace orcus { namespace sax {
+
+/**
+ * Document type declaration passed by sax_parser to its handler's doctype()
+ * call.
+ */
+struct doctype_declaration
+{
+    enum keyword_type { keyword_public, keyword_private };
+
+    keyword_type keyword;
+    pstring root_element;
+    pstring fpi;
+    pstring uri;
+};
 
 /**
  * Given an encoded name (such as 'quot' and 'amp'), return a single

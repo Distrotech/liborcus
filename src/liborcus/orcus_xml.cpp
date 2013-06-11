@@ -129,6 +129,10 @@ public:
         mp_current_elem(NULL),
         m_in_range_ref(false) {}
 
+    void doctype(const sax::doctype_declaration&)
+    {
+    }
+
     void start_declaration(const pstring&)
     {
     }
