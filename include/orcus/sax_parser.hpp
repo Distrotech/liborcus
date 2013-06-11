@@ -141,6 +141,14 @@ private:
         return *m_char;
     }
 
+    char cur_char_checked() const
+    {
+        if (!has_char())
+            throw malformed_xml_error("xml stream ended prematurely.");
+
+        return *m_char;
+    }
+
     char next_char()
     {
         next();
@@ -258,12 +266,12 @@ void sax_parser<_Handler,_Config>::header()
     // we don't handle multi byte encodings so we can just skip bom entry if exists.
     skip_bom();
     blank();
-    if (cur_char() != '<')
+    if (!has_char() || cur_char() != '<')
         throw malformed_xml_error("xml file must begin with '<'.");
 
     if (config_type::strict_xml_declaration)
     {
-        if (next_char() != '?')
+        if (next_char_checked() != '?')
             throw malformed_xml_error("xml file must begin with '<?'.");
 
         declaration("xml");
@@ -308,7 +316,7 @@ void sax_parser<_Handler,_Config>::element()
 {
     assert(cur_char() == '<');
     const char* pos = m_char;
-    char c = next_char();
+    char c = next_char_checked();
     switch (c)
     {
         case '/':
@@ -384,7 +392,7 @@ void sax_parser<_Handler,_Config>::element_close(const char* begin_pos)
 {
     assert(cur_char() == '/');
     nest_down();
-    next();
+    next_check();
     sax_parser_element elem;
     elem.begin_pos = begin_pos;
 
@@ -392,7 +400,7 @@ void sax_parser<_Handler,_Config>::element_close(const char* begin_pos)
     if (cur_char() == ':')
     {
         elem.ns = elem.name;
-        next();
+        next_check();
         name(elem.name);
     }
 
@@ -471,6 +479,9 @@ void sax_parser<_Handler,_Config>::special_tag()
 
             next();
             blank();
+            if (!has_char())
+                throw malformed_xml_error("DOCTYPE section ends prematurely.");
+
             doctype();
         }
         break;
@@ -483,7 +494,7 @@ template<typename _Handler, typename _Config>
 void sax_parser<_Handler,_Config>::declaration(const char* name_check)
 {
     assert(cur_char() == '?');
-    next();
+    next_check();
 
     // Get the declaration name first.
     pstring decl_name;
@@ -503,15 +514,16 @@ void sax_parser<_Handler,_Config>::declaration(const char* name_check)
     blank();
 
     // Parse the attributes.
-    while (cur_char() != '?')
+    while (cur_char_checked() != '?')
     {
         attribute();
         blank();
     }
-    if (next_char() != '>')
+    if (next_char_checked() != '>')
         throw malformed_xml_error("declaration must end with '?>'.");
 
     m_handler.end_declaration(decl_name);
+    next();
 #if ORCUS_DEBUG_SAX_PARSER
     cout << "sax_parser::declaration: end name='" << decl_name << "'" << endl;
 #endif
@@ -724,7 +736,7 @@ void sax_parser<_Handler,_Config>::attribute()
     {
         // Attribute name is namespaced.
         attr_ns_name = attr_name;
-        next();
+        next_check();
         name(attr_name);
     }
 
@@ -741,7 +753,7 @@ void sax_parser<_Handler,_Config>::attribute()
         throw malformed_xml_error(os.str());
     }
 
-    next();
+    next_check();
     value(attr_value, true);
 
 #if ORCUS_DEBUG_SAX_PARSER
