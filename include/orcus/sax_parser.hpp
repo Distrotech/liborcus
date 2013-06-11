@@ -281,6 +281,10 @@ void sax_parser<_Handler,_Config>::header()
 template<typename _Handler, typename _Config>
 void sax_parser<_Handler,_Config>::skip_bom()
 {
+    if (remains() < 4)
+        // Stream too short to have a byte order mark.
+        return;
+
     // 0xef 0xbb 0 xbf is the UTF-8 byte order mark
     unsigned char c = static_cast<unsigned char>(cur_char());
     if (c != '<')
