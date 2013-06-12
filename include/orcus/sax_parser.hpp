@@ -206,6 +206,8 @@ private:
     void value(pstring& str, bool decode);
     void value_with_encoded_char(pstring& str);
 
+    void expects_next(const char* p, size_t n);
+
 private:
     cell_buffer m_cell_buf;
     const char* m_content;
@@ -449,44 +451,18 @@ void sax_parser<_Handler,_Config>::special_tag()
         case '[':
         {
             // Possibly a CDATA.
-            --len;
-            assert(len > 0);
-            char c = next_char();
-            --len;
-            if (c != 'C')
-                throw malformed_xml_error("unrecognized special tag.");
-
-            if (len < 8)
-                // Even an empty CDATA needs at least 8 more characters - "DATA[]]>"
-                throw malformed_xml_error("CDATA section ends prematurely.");
-
-            // check if this is a CDATA.
-            if (next_char() != 'D' || next_char() != 'A' || next_char() != 'T' ||
-                next_char() != 'A' || next_char() != '[')
-                throw malformed_xml_error("not a valid CDATA section.");
-
-            next();
-            cdata();
+            expects_next("CDATA[", 6);
+            if (has_char())
+                cdata();
         }
         break;
         case 'D':
         {
             // check if this is a DOCTYPE.
-            --len;
-            if (len < 19)
-                // Even a shortest DOCTYPE needs at least 19 more characters. - 'OCTYPE a PUBLIC "">'
-                throw malformed_xml_error("DOCTYPE section ends prematurely.");
-
-            if (next_char() != 'O' || next_char() != 'C' || next_char() != 'T' ||
-                next_char() != 'Y' || next_char() != 'P' || next_char() != 'E')
-                throw malformed_xml_error("not a valid DOCTYPE section.");
-
-            next();
+            expects_next("OCTYPE", 6);
             blank();
-            if (!has_char())
-                throw malformed_xml_error("DOCTYPE section ends prematurely.");
-
-            doctype();
+            if (has_char())
+                doctype();
         }
         break;
         default:
@@ -894,6 +870,26 @@ void sax_parser<_Handler,_Config>::value_with_encoded_char(pstring& str)
     // Skip the closing quote.
     assert(cur_char() == '"');
     next();
+}
+
+template<typename _Handler, typename _Config>
+void sax_parser<_Handler,_Config>::expects_next(const char* p, size_t n)
+{
+    if (remains() < n+1)
+        throw malformed_xml_error("not enough stream left to check for an expected string segment.");
+
+    const char* p0 = p;
+    const char* p_end = p + n;
+    char c = next_char();
+    for (; p != p_end; ++p, c = next_char())
+    {
+        if (c == *p)
+            continue;
+
+        std::ostringstream os;
+        os << "'" << std::string(p0, n) << "' was expected, but not found.";
+        throw malformed_xml_error("sadf");
+    }
 }
 
 }
