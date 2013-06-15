@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2012 Kohei Yoshida
+ * Copyright (c) 2011-2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,15 +25,13 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_ORCUS_ODS_HPP__
-#define __ORCUS_ORCUS_ODS_HPP__
+#ifndef ORCUS_ORCUS_ODS_HPP
+#define ORCUS_ORCUS_ODS_HPP
 
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/env.hpp"
 
 #include <boost/noncopyable.hpp>
-
-struct zip;
 
 namespace orcus {
 
