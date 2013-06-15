@@ -51,7 +51,7 @@ orcus_zip_dump_SOURCES = \
 	orcus_zip_dump.cpp
 
 orcus_zip_dump_LDADD = \
-	parser/liborcus-parser-@ORCUS_API_VERSION@.la
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la $(BOOST_SYSTEM_LIB)
 
 orcus_zip_dump_CPPFLAGS =
 

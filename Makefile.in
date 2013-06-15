@@ -85,7 +85,7 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(srcdir)/config.h.in $(srcdir)/liborcus.pc.in \
 	$(srcdir)/liborcus-spreadsheet-model.pc.in \
 	$(srcdir)/VERSION.in AUTHORS COPYING NEWS README config.guess \
-	config.sub install-sh missing ltmain.sh
+	config.sub depcomp install-sh missing ltmain.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_boost_base.m4 \
 	$(top_srcdir)/m4/ax_boost_system.m4 \
