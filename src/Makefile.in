@@ -240,7 +240,8 @@ orcus_xml_dump_DEPENDENCIES =  \
 am_orcus_zip_dump_OBJECTS = orcus_zip_dump-orcus_zip_dump.$(OBJEXT)
 orcus_zip_dump_OBJECTS = $(am_orcus_zip_dump_OBJECTS)
 orcus_zip_dump_DEPENDENCIES =  \
-	parser/liborcus-parser-@ORCUS_API_VERSION@.la
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	$(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -721,7 +722,7 @@ orcus_zip_dump_SOURCES = \
 	orcus_zip_dump.cpp
 
 orcus_zip_dump_LDADD = \
-	parser/liborcus-parser-@ORCUS_API_VERSION@.la
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la $(BOOST_SYSTEM_LIB)
 
 orcus_zip_dump_CPPFLAGS = 
 
