@@ -57,44 +57,6 @@ class xml_parser:
         p.Parse(self.__strm, 1)
 
 
-def get_auto_gen_warning ():
-    return "// This file has been auto-generated.  Do not hand-edit this.\n\n"
-
-def gen_token_constants (filepath, tokens):
-
-    outfile = open(filepath, 'w')
-    outfile.write(get_auto_gen_warning())
-
-    token_id = 1
-    token_size = len(tokens)
-    for i in xrange(0, token_size):
-        token = token_util.normalize_name(tokens[i])
-        outfile.write("const xml_token_t XML_%s = %d;\n"%(token, token_id))
-        token_id += 1
-    outfile.write("\n")
-    outfile.close()
-
-
-def gen_token_names (filepath, tokens):
-
-    outfile = open(filepath, 'w')
-    outfile.write(get_auto_gen_warning())
-
-    outfile.write("const char* token_names[] = {\n")
-    outfile.write("    \"%s\", // 0\n"%token_util.unknown_token_name)
-    token_id = 1
-    token_size = len(tokens)
-    for i in xrange(0, token_size):
-        token = tokens[i]
-        s = ','
-        if i == token_size-1:
-            s = ' '
-        outfile.write("    \"%s\"%s // %d\n"%(token, s, token_id))
-        token_id += 1
-    outfile.write("};\n\n")
-    outfile.write("size_t token_name_count = %d;\n\n"%token_id)
-    outfile.close()
-
 def parse_file(filename):
     file = open(filename, 'r')
     chars = file.read()
@@ -112,8 +74,8 @@ def parse_file(filename):
 
 def main ():
     tokens = parse_file(sys.argv[1])
-    gen_token_constants(sys.argv[2], tokens)
-    gen_token_names(sys.argv[3], tokens)
+    token_util.gen_token_constants(sys.argv[2], tokens)
+    token_util.gen_token_names(sys.argv[3], tokens)
 
 if __name__ == '__main__':
     main()
