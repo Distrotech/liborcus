@@ -26,15 +26,27 @@
  ************************************************************************/
 
 #include "orcus/orcus_xls_xml.hpp"
+#include "orcus/stream.hpp"
+
+#define ORCUS_DEBUG_XLS_XML_FILTER 1
+
+#if ORCUS_DEBUG_XLS_XML_FILTER
+#include <iostream>
+#endif
+
+using namespace std;
 
 namespace orcus {
 
 struct orcus_xls_xml_impl
 {
+    spreadsheet::iface::import_factory* mp_factory;
+
+    orcus_xls_xml_impl(spreadsheet::iface::import_factory* factory) : mp_factory(factory) {}
 };
 
 orcus_xls_xml::orcus_xls_xml(spreadsheet::iface::import_factory* factory) :
-    mp_impl(new orcus_xls_xml_impl)
+    mp_impl(new orcus_xls_xml_impl(factory))
 {
 }
 
@@ -45,6 +57,14 @@ orcus_xls_xml::~orcus_xls_xml()
 
 void orcus_xls_xml::read_file(const char* fpath)
 {
+#if ORCUS_DEBUG_XLS_XML_FILTER
+    cout << "reading " << fpath << endl;
+#endif
+
+    string strm;
+    load_file_content(fpath, strm);
+
+    // TODO: to be continued...
 }
 
 }
