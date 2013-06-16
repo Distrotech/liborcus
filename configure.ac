@@ -160,6 +160,16 @@ AC_ARG_WITH(xlsx-filter,
 	[with_xlsx_filter=yes]
 )
 
+# ===================
+# xls xml filter support
+# ===================
+AC_ARG_WITH(xls-xml-filter,
+            AS_HELP_STRING([--without-xls-xml-filter],
+                           [Disables the Microsoft Excel XML import filter.]),
+	[with_xls_xml_filter="$withval"],
+	[with_xls_xml_filter=yes]
+)
+
 # =======================
 # gnumeric filter support
 # =======================
@@ -172,6 +182,7 @@ AC_ARG_WITH(gnumeric-filter,
 
 AM_CONDITIONAL([WITH_ODS_FILTER], [test "x$with_ods_filter" != "xno"])
 AM_CONDITIONAL([WITH_XLSX_FILTER], [test "x$with_xlsx_filter" != "xno"])
+AM_CONDITIONAL([WITH_XLS_XML_FILTER], [test "x$with_xls_xml_filter" != "xno"])
 AM_CONDITIONAL([WITH_GNUMERIC_FILTER], [test "x$with_gnumeric_filter" != "xno"])
 AM_CONDITIONAL([WITH_TOOLS], [test "x$with_tools" != "xno"])
 
@@ -223,6 +234,7 @@ Build configuration:
         gnumeric-filter:     $with_gnumeric_filter
         ods-filter:          $with_ods_filter
         xlsx-filter:         $with_xlsx_filter
+        xls-xml-filter:      $with_xls_xml_filter
         tools:               $with_tools
 ==============================================================================
 ])

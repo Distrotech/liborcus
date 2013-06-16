@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2013 Kohei Yoshida
+ * Copyright (c) 2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,39 +25,25 @@
  *
  ************************************************************************/
 
-#ifndef ORCUS_ORCUS_ODS_HPP
-#define ORCUS_ORCUS_ODS_HPP
+#include "orcus/orcus_xls_xml.hpp"
+#include "orcus/pstring.hpp"
+#include "orcus/spreadsheet/document.hpp"
+#include "orcus/spreadsheet/factory.hpp"
 
-#include "orcus/spreadsheet/import_interface.hpp"
-#include "orcus/env.hpp"
+#include <boost/scoped_ptr.hpp>
 
-namespace orcus {
+using namespace orcus;
 
-namespace spreadsheet { namespace iface { class import_factory; }}
-
-struct orcus_ods_impl;
-class zip_archive;
-
-class ORCUS_DLLPUBLIC orcus_ods
+int main(int argc, char** argv)
 {
-    orcus_ods(const orcus_ods&); // disabled
-    orcus_ods& operator= (const orcus_ods&); // disabled
+    if (argc != 2)
+        return EXIT_FAILURE;
 
-public:
-    orcus_ods(spreadsheet::iface::import_factory* factory);
-    ~orcus_ods();
+    boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
+    boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
+    orcus_xls_xml app(fact.get());
+    app.read_file(argv[1]);
+//  doc->dump();
 
-    void read_file(const char* fpath);
-
-private:
-    void list_content(const zip_archive& archive) const;
-    void read_content(const zip_archive& archive);
-    void read_content_xml(const unsigned char* p, size_t size);
-
-private:
-    orcus_ods_impl* mp_impl;
-};
-
+    return EXIT_SUCCESS;
 }
-
-#endif

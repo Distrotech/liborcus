@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2013 Kohei Yoshida
+ * Copyright (c) 2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,8 +25,8 @@
  *
  ************************************************************************/
 
-#ifndef ORCUS_ORCUS_ODS_HPP
-#define ORCUS_ORCUS_ODS_HPP
+#ifndef ORCUS_ORCUS_XLS_XML_HPP
+#define ORCUS_ORCUS_XLS_XML_HPP
 
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/env.hpp"
@@ -35,27 +35,21 @@ namespace orcus {
 
 namespace spreadsheet { namespace iface { class import_factory; }}
 
-struct orcus_ods_impl;
-class zip_archive;
+struct orcus_xls_xml_impl;
 
-class ORCUS_DLLPUBLIC orcus_ods
+class ORCUS_DLLPUBLIC orcus_xls_xml
 {
-    orcus_ods(const orcus_ods&); // disabled
-    orcus_ods& operator= (const orcus_ods&); // disabled
+    orcus_xls_xml(const orcus_xls_xml&); // disabled
+    orcus_xls_xml& operator= (const orcus_xls_xml&); // disabled
 
 public:
-    orcus_ods(spreadsheet::iface::import_factory* factory);
-    ~orcus_ods();
+    orcus_xls_xml(spreadsheet::iface::import_factory* factory);
+    ~orcus_xls_xml();
 
     void read_file(const char* fpath);
 
 private:
-    void list_content(const zip_archive& archive) const;
-    void read_content(const zip_archive& archive);
-    void read_content_xml(const unsigned char* p, size_t size);
-
-private:
-    orcus_ods_impl* mp_impl;
+    orcus_xls_xml_impl* mp_impl;
 };
 
 }

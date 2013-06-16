@@ -41,6 +41,13 @@ liborcus_HEADERS += \
 
 endif # WITH_XLSX_FILTER
 
+if WITH_XLS_XML_FILTER
+
+liborcus_HEADERS += \
+	orcus_xls_xml.hpp
+
+endif # WITH_XLS_XML_FILTER
+
 if WITH_GNUMERIC_FILTER
 
 liborcus_HEADERS += \

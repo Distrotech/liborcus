@@ -148,6 +148,25 @@ orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLA
 
 endif # WITH_XLSX_FILTER
 
+if WITH_XLS_XML_FILTER
+
+bin_PROGRAMS += \
+	orcus-xls-xml
+
+# orcus-xls-xml
+
+orcus_xls_xml_SOURCES = \
+	orcus_xls_xml_main.cpp
+
+orcus_xls_xml_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+
+orcus_xls_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+
+endif # WITH_XLS_XML_FILTER
+
 if WITH_GNUMERIC_FILTER
 
 bin_PROGRAMS += \

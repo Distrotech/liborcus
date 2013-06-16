@@ -110,6 +110,18 @@ TESTS += \
 
 endif # WITH_XLSX_FILTER
 
+if WITH_XLS_XML_FILTER
+
+liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
+	xls_xml_tokens.hpp \
+	xls_xml_tokens.inl \
+	xls_xml_tokens.cpp \
+	xls_xml_token_constants.hpp \
+	xls_xml_token_constants.inl \
+	orcus_xls_xml.cpp
+
+endif # WITH_XLS_XML_FILTER
+
 if WITH_ODS_FILTER
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \

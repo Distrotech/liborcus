@@ -177,6 +177,7 @@
 				<F N="../include/orcus/orcus_csv.hpp"/>
 				<F N="../include/orcus/orcus_gnumeric.hpp"/>
 				<F N="../include/orcus/orcus_ods.hpp"/>
+				<F N="../include/orcus/orcus_xls_xml.hpp"/>
 				<F N="../include/orcus/orcus_xlsx.hpp"/>
 				<F N="../include/orcus/orcus_xml.hpp"/>
 				<F N="../include/orcus/pstring.hpp"/>
@@ -264,11 +265,15 @@
 				<F N="../src/liborcus/orcus_csv.cpp"/>
 				<F N="../src/liborcus/orcus_gnumeric.cpp"/>
 				<F N="../src/liborcus/orcus_ods.cpp"/>
+				<F N="../src/liborcus/orcus_xls_xml.cpp"/>
 				<F N="../src/liborcus/orcus_xlsx.cpp"/>
 				<F N="../src/liborcus/orcus_xml.cpp"/>
 				<F N="../src/liborcus/session_context.hpp"/>
 				<F N="../src/liborcus/spreadsheet_interface.cpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>
+				<F N="../src/liborcus/xls_xml_token_constants.hpp"/>
+				<F N="../src/liborcus/xls_xml_tokens.cpp"/>
+				<F N="../src/liborcus/xls_xml_tokens.hpp"/>
 				<F N="../src/liborcus/xlsx_context.cpp"/>
 				<F N="../src/liborcus/xlsx_context.hpp"/>
 				<F N="../src/liborcus/xlsx_handler.cpp"/>
@@ -334,6 +339,7 @@
 			<F N="../src/orcus_test_xlsx.cpp"/>
 			<F N="../src/orcus_test_xml.cpp"/>
 			<F N="../src/orcus_test_xml_mapped.cpp"/>
+			<F N="../src/orcus_xls_xml_main.cpp"/>
 			<F N="../src/orcus_xlsx_main.cpp"/>
 			<F N="../src/orcus_xml_dump.cpp"/>
 			<F N="../src/orcus_xml_main.cpp"/>
