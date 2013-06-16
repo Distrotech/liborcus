@@ -26,4 +26,31 @@
 #
 ########################################################################
 
+import token_util, argparse, sys
 
+
+desc = "Generate C++ source files from a list of tokens."
+
+def main ():
+    parser = argparse.ArgumentParser(description=desc)
+    parser.add_argument('tokenlist', nargs=1, help='plain-text file that contains a list of tokens.')
+    parser.add_argument('output1', nargs=1, help="output file that will contain XML token values.")
+    parser.add_argument('output2', nargs=1, help="output file that will contain XML token names.")
+    args = parser.parse_args(sys.argv[1:])
+
+    file = open(args.tokenlist[0], 'r')
+    tokens = {}
+    for line in file.readlines():
+        token = line.strip()
+        tokens[token] = True
+
+    tokens = tokens.keys()
+    tokens.sort()
+    token_util.gen_token_constants(args.output1[0], tokens)
+    token_util.gen_token_names(args.output2[0], tokens)
+
+    file.close()
+
+
+if __name__ == '__main__':
+    main()
