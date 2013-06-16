@@ -35,6 +35,7 @@ class xml_parser:
         self.__strm = strm
         self.__elem = None
         self.tokens = []
+        self.ns_tokens = []
 
     def start_element(self, name, attrs):
         self.__elem = name
@@ -42,6 +43,16 @@ class xml_parser:
             token = attrs['name']
             if len(token) > 0:
                 self.tokens.append(token)
+
+        if name.endswith(':schema'):
+            # Check for namespace entries.
+            attr_names = attrs.keys()
+            for attr_name in attr_names:
+                if attr_name == 'xmlns':
+                    self.ns_tokens.append(['', attrs[attr_name]])
+                elif attr_name.startswith('xmlns:'):
+                    vals = attr_name.split(':')
+                    self.ns_tokens.append([vals[1], attrs[attr_name]])
 
     def end_element(self, name):
         pass
@@ -75,14 +86,57 @@ def parse_files(filenames):
 
     return keys
 
+
+def parse_files_ns(filenames):
+
+    tokens = {}
+    for filename in filenames:
+        file = open(filename, 'r')
+        chars = file.read()
+        file.close()
+
+        parser = xml_parser(chars)
+        parser.parse()
+        for ns_token in parser.ns_tokens:
+            alias, value = ns_token # each namespace token consists of an alias and a value.
+            if not tokens.has_key(value):
+                tokens[value] = []
+            if len(alias) > 0 and not alias in tokens[value]:
+                tokens[value].append(alias)
+
+    keys = tokens.keys()
+    keys.sort()
+    ret_val = []
+    for key in keys:
+        aliases = tokens[key]
+        t = key + " ("
+        first = True
+        for alias in aliases:
+            if first:
+                first = False
+            else:
+                t += ", "
+            t += alias
+        t += ")"
+        ret_val.append(t)
+
+    return ret_val
+
+
 desc = "Given an arbitrary XML Schema file (.xsd), dump all its keys specified in the schema to stdout."
 
 def main ():
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('file', nargs='*', help='XML Shema file (.xsd)')
+    parser.add_argument('--ns', dest='ns_mode', action='store_true', default=False)
     args = parser.parse_args(sys.argv[1:])
+    ns_mode = args.ns_mode
 
-    keys = parse_files(args.file)
+    if ns_mode:
+        keys = parse_files_ns(args.file)
+    else:
+        keys = parse_files(args.file)
+
     for key in keys:
         print(key)
 
