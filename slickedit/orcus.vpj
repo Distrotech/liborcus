@@ -180,6 +180,7 @@
 				<F N="../include/orcus/orcus_xls_xml.hpp"/>
 				<F N="../include/orcus/orcus_xlsx.hpp"/>
 				<F N="../include/orcus/orcus_xml.hpp"/>
+				<F N="../include/orcus/parser_global.hpp"/>
 				<F N="../include/orcus/pstring.hpp"/>
 				<F N="../include/orcus/sax_ns_parser.hpp"/>
 				<F N="../include/orcus/sax_parser.hpp"/>
@@ -306,6 +307,7 @@
 				<F N="../src/parser/base64_test.cpp"/>
 				<F N="../src/parser/cell_buffer.cpp"/>
 				<F N="../src/parser/exception.cpp"/>
+				<F N="../src/parser/parser_global.cpp"/>
 				<F N="../src/parser/pstring.cpp"/>
 				<F N="../src/parser/sax_parser_base.cpp"/>
 				<F N="../src/parser/stream.cpp"/>

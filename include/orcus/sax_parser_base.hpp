@@ -25,12 +25,13 @@
  *
  ************************************************************************/
 
-#ifndef ORCUS_SAX_PARSER_GLOBAL_HPP
-#define ORCUS_SAX_PARSER_GLOBAL_HPP
+#ifndef ORCUS_SAX_PARSER_BASE_HPP
+#define ORCUS_SAX_PARSER_BASE_HPP
 
 #include "env.hpp"
 #include "pstring.hpp"
 #include "cell_buffer.hpp"
+#include "parser_global.hpp"
 
 #include <cassert>
 #include <cstdlib>
@@ -82,11 +83,6 @@ struct doctype_declaration
  *         returned if decoding fails.
  */
 ORCUS_DLLPUBLIC char decode_xml_encoded_char(const char* p, size_t n);
-
-ORCUS_DLLPUBLIC bool is_blank(char c);
-ORCUS_DLLPUBLIC bool is_alpha(char c);
-ORCUS_DLLPUBLIC bool is_name_char(char c);
-ORCUS_DLLPUBLIC bool is_numeric(char c);
 
 /**
  * Element properties passed by sax_parser to its handler's open_element()
