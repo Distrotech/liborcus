@@ -347,4 +347,33 @@ void parser_base::attribute_name(pstring& attr_ns, pstring& attr_name)
     }
 }
 
+void parser_base::characters_with_encoded_char()
+{
+    assert(cur_char() == '&');
+    parse_encoded_char();
+
+    size_t first = m_pos;
+
+    while (has_char())
+    {
+        if (cur_char() == '&')
+        {
+            if (m_pos > first)
+                m_cell_buf.append(m_content+first, m_pos-first);
+
+            parse_encoded_char();
+            first = m_pos;
+        }
+
+        if (cur_char() == '<')
+            break;
+
+        if (cur_char() != '&')
+            next();
+    }
+
+    if (m_pos > first)
+        m_cell_buf.append(m_content+first, m_pos-first);
+}
+
 }}

@@ -207,6 +207,7 @@ protected:
     void name(pstring& str);
     void element_name(parser_element& elem, const char* begin_pos);
     void attribute_name(pstring& attr_ns, pstring& attr_name);
+    void characters_with_encoded_char();
 };
 
 }}

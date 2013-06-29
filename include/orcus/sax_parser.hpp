@@ -75,7 +75,6 @@ private:
     void cdata();
     void doctype();
     void characters();
-    void characters_with_encoded_char();
     void attribute();
 
 private:
@@ -439,6 +438,10 @@ void sax_parser<_Handler,_Config>::characters()
             m_cell_buf.reset();
             m_cell_buf.append(p0, m_pos-first);
             characters_with_encoded_char();
+            if (m_cell_buf.empty())
+                m_handler.characters(pstring());
+            else
+                m_handler.characters(pstring(m_cell_buf.get(), m_cell_buf.size()));
             return;
         }
     }
@@ -449,41 +452,6 @@ void sax_parser<_Handler,_Config>::characters()
         pstring val(m_content + first, size);
         m_handler.characters(val);
     }
-}
-
-template<typename _Handler, typename _Config>
-void sax_parser<_Handler,_Config>::characters_with_encoded_char()
-{
-    assert(cur_char() == '&');
-    parse_encoded_char();
-
-    size_t first = m_pos;
-
-    while (has_char())
-    {
-        if (cur_char() == '&')
-        {
-            if (m_pos > first)
-                m_cell_buf.append(m_content+first, m_pos-first);
-
-            parse_encoded_char();
-            first = m_pos;
-        }
-
-        if (cur_char() == '<')
-            break;
-
-        if (cur_char() != '&')
-            next();
-    }
-
-    if (m_pos > first)
-        m_cell_buf.append(m_content+first, m_pos-first);
-
-    if (m_cell_buf.empty())
-        m_handler.characters(pstring());
-    else
-        m_handler.characters(pstring(m_cell_buf.get(), m_cell_buf.size()));
 }
 
 template<typename _Handler, typename _Config>
