@@ -70,8 +70,8 @@ public:
     void doctype(const sax::doctype_declaration&);
     void start_declaration(const pstring& name);
     void end_declaration(const pstring& name);
-    void start_element(const sax_parser_element& elem);
-    void end_element(const sax_parser_element& elem);
+    void start_element(const sax::parser_element& elem);
+    void end_element(const sax::parser_element& elem);
     void characters(const pstring&);
     void attribute(const pstring& ns, const pstring& name, const pstring& val);
 };

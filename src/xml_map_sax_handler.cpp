@@ -58,7 +58,7 @@ void xml_map_sax_handler::end_declaration(const pstring& name)
     m_attrs.clear();
 }
 
-void xml_map_sax_handler::start_element(const sax_parser_element& elem)
+void xml_map_sax_handler::start_element(const sax::parser_element& elem)
 {
     pstring xpath, sheet;
     spreadsheet::row_t row = -1;
@@ -143,7 +143,7 @@ void xml_map_sax_handler::start_element(const sax_parser_element& elem)
     m_attrs.clear();
 }
 
-void xml_map_sax_handler::end_element(const sax_parser_element& elem)
+void xml_map_sax_handler::end_element(const sax::parser_element& elem)
 {
     if (elem.name == "range")
         m_app.commit_range();

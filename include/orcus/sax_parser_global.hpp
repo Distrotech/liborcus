@@ -88,6 +88,18 @@ ORCUS_DLLPUBLIC bool is_alpha(char c);
 ORCUS_DLLPUBLIC bool is_name_char(char c);
 ORCUS_DLLPUBLIC bool is_numeric(char c);
 
+/**
+ * Element properties passed by sax_parser to its handler's open_element()
+ * and close_element() calls.
+ */
+struct parser_element
+{
+    pstring ns;            // element namespace (optional)
+    pstring name;          // element name
+    const char* begin_pos; // position of the opening brace '<'.
+    const char* end_pos;   // position of the char after the closing brace '>'.
+};
+
 class ORCUS_DLLPUBLIC parser_base
 {
 protected:

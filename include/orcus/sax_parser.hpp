@@ -32,18 +32,6 @@
 
 namespace orcus {
 
-/**
- * Element properties passed by sax_parser to its handler's open_element()
- * and close_element() calls.
- */
-struct sax_parser_element
-{
-    pstring ns;            // element namespace (optional)
-    pstring name;          // element name
-    const char* begin_pos; // position of the opening brace '<'.
-    const char* end_pos;   // position of the char after the closing brace '>'.
-};
-
 struct sax_parser_default_config
 {
     /**
@@ -185,7 +173,7 @@ void sax_parser<_Handler,_Config>::element_open(const char* begin_pos)
 {
     assert(sax::is_alpha(cur_char()));
 
-    sax_parser_element elem;
+    sax::parser_element elem;
     elem.begin_pos = begin_pos;
 
     name(elem.name);
@@ -238,7 +226,7 @@ void sax_parser<_Handler,_Config>::element_close(const char* begin_pos)
     assert(cur_char() == '/');
     nest_down();
     next_check();
-    sax_parser_element elem;
+    sax::parser_element elem;
     elem.begin_pos = begin_pos;
 
     name(elem.name);

@@ -156,7 +156,7 @@ private:
             m_handler.end_declaration(name);
         }
 
-        void start_element(const sax_parser_element& elem)
+        void start_element(const sax::parser_element& elem)
         {
             m_scopes.push_back(new __sax::elem_scope);
             __sax::elem_scope& scope = m_scopes.back();
@@ -174,7 +174,7 @@ private:
             m_attrs.clear();
         }
 
-        void end_element(const sax_parser_element& elem)
+        void end_element(const sax::parser_element& elem)
         {
             __sax::elem_scope& scope = m_scopes.back();
             if (scope.ns != m_ns_cxt.get(elem.ns) || scope.name != elem.name)
