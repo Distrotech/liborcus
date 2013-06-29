@@ -30,8 +30,20 @@
 
 #include "env.hpp"
 #include "pstring.hpp"
+#include "cell_buffer.hpp"
 
+#include <cassert>
 #include <cstdlib>
+#include <exception>
+#include <sstream>
+
+#define ORCUS_DEBUG_SAX_PARSER 0
+
+#if ORCUS_DEBUG_SAX_PARSER
+#include <iostream>
+using std::cout;
+using std::endl;
+#endif
 
 namespace orcus { namespace sax {
 
@@ -75,6 +87,113 @@ ORCUS_DLLPUBLIC bool is_blank(char c);
 ORCUS_DLLPUBLIC bool is_alpha(char c);
 ORCUS_DLLPUBLIC bool is_name_char(char c);
 ORCUS_DLLPUBLIC bool is_numeric(char c);
+
+class ORCUS_DLLPUBLIC parser_base
+{
+protected:
+    cell_buffer m_cell_buf;
+    const char* m_content;
+    const char* m_char;
+    const size_t m_size;
+    size_t m_pos;
+    size_t m_nest_level;
+    bool m_root_elem_open:1;
+
+public:
+    parser_base(const char* content, size_t size);
+
+protected:
+    void next() { ++m_pos; ++m_char; }
+
+    void next_check()
+    {
+        next();
+        if (!has_char())
+            throw malformed_xml_error("xml stream ended prematurely.");
+    }
+
+    void nest_up() { ++m_nest_level; }
+    void nest_down()
+    {
+        assert(m_nest_level > 0);
+        --m_nest_level;
+    }
+
+    bool has_char() const { return m_pos < m_size; }
+
+    void has_char_throw(const char* msg) const
+    {
+        if (!has_char())
+            throw malformed_xml_error(msg);
+    }
+
+    inline size_t remains() const
+    {
+#if ORCUS_DEBUG_SAX_PARSER
+        if (m_pos >= m_size)
+            throw malformed_xml_error("xml stream ended prematurely.");
+#endif
+        return m_size - m_pos;
+    }
+
+    char cur_char() const
+    {
+#if ORCUS_DEBUG_SAX_PARSER
+        if (m_pos >= m_size)
+            throw malformed_xml_error("xml stream ended prematurely.");
+#endif
+        return *m_char;
+    }
+
+    char cur_char_checked() const
+    {
+        if (!has_char())
+            throw malformed_xml_error("xml stream ended prematurely.");
+
+        return *m_char;
+    }
+
+    char next_char()
+    {
+        next();
+#if ORCUS_DEBUG_SAX_PARSER
+        if (m_pos >= m_size)
+            throw malformed_xml_error("xml stream ended prematurely.");
+#endif
+        return *m_char;
+    }
+
+    char next_char_checked()
+    {
+        next();
+        if (!has_char())
+            throw malformed_xml_error("xml stream ended prematurely.");
+
+        return *m_char;
+    }
+
+    void blank();
+    void comment();
+
+    /**
+     * Skip an optional byte order mark at the begining of the xml stream.
+     */
+    void skip_bom();
+
+    void expects_next(const char* p, size_t n);
+
+    void parse_encoded_char();
+    void value_with_encoded_char(pstring& str);
+
+    /**
+     * Parse quoted value.  Note that the retreived string may be stored in
+     * the temporary cell buffer if the decode parameter is true. Use the
+     * string immediately after this call before the buffer becomes invalid.
+     */
+    void value(pstring& str, bool decode);
+
+    void name(pstring& str);
+};
 
 }}
 
