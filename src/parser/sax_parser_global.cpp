@@ -323,8 +323,9 @@ void parser_base::name(pstring& str)
     str = pstring(m_content+first, size);
 }
 
-void parser_base::element_name(parser_element& elem)
+void parser_base::element_name(parser_element& elem, const char* begin_pos)
 {
+    elem.begin_pos = begin_pos;
     name(elem.name);
     if (cur_char() == ':')
     {

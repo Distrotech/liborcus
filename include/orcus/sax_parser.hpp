@@ -174,8 +174,7 @@ void sax_parser<_Handler,_Config>::element_open(const char* begin_pos)
     assert(sax::is_alpha(cur_char()));
 
     sax::parser_element elem;
-    elem.begin_pos = begin_pos;
-    element_name(elem);
+    element_name(elem, begin_pos);
 
     while (true)
     {
@@ -219,8 +218,7 @@ void sax_parser<_Handler,_Config>::element_close(const char* begin_pos)
     nest_down();
     next_check();
     sax::parser_element elem;
-    elem.begin_pos = begin_pos;
-    element_name(elem);
+    element_name(elem, begin_pos);
 
     if (cur_char() != '>')
         throw sax::malformed_xml_error("expected '>' to close the element.");
