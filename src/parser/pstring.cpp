@@ -27,7 +27,7 @@
 
 #include "orcus/pstring.hpp"
 #include "orcus/string_pool.hpp"
-#include "orcus/sax_parser_global.hpp"
+#include "orcus/sax_parser_base.hpp"
 
 #include <cassert>
 #include <iostream>

@@ -28,7 +28,7 @@
 #ifndef ORCUS_SAX_PARSER_HPP
 #define ORCUS_SAX_PARSER_HPP
 
-#include "sax_parser_global.hpp"
+#include "sax_parser_base.hpp"
 
 namespace orcus {
 

@@ -183,7 +183,7 @@
 				<F N="../include/orcus/pstring.hpp"/>
 				<F N="../include/orcus/sax_ns_parser.hpp"/>
 				<F N="../include/orcus/sax_parser.hpp"/>
-				<F N="../include/orcus/sax_parser_global.hpp"/>
+				<F N="../include/orcus/sax_parser_base.hpp"/>
 				<F N="../include/orcus/sax_token_parser.hpp"/>
 				<F N="../include/orcus/stream.hpp"/>
 				<F N="../include/orcus/string_pool.hpp"/>
@@ -307,7 +307,7 @@
 				<F N="../src/parser/cell_buffer.cpp"/>
 				<F N="../src/parser/exception.cpp"/>
 				<F N="../src/parser/pstring.cpp"/>
-				<F N="../src/parser/sax_parser_global.cpp"/>
+				<F N="../src/parser/sax_parser_base.cpp"/>
 				<F N="../src/parser/stream.cpp"/>
 				<F N="../src/parser/string_pool.cpp"/>
 				<F N="../src/parser/string_pool_test.cpp"/>

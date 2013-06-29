@@ -10,7 +10,7 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	cell_buffer.cpp \
 	exception.cpp \
 	pstring.cpp \
-	sax_parser_global.cpp \
+	sax_parser_base.cpp \
 	stream.cpp \
 	string_pool.cpp \
 	types.cpp \

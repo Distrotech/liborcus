@@ -25,7 +25,7 @@
  *
  ************************************************************************/
 
-#include "orcus/sax_parser_global.hpp"
+#include "orcus/sax_parser_base.hpp"
 
 #include <cstring>
 
