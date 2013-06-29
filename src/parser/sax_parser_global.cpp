@@ -335,4 +335,16 @@ void parser_base::element_name(parser_element& elem, const char* begin_pos)
     }
 }
 
+void parser_base::attribute_name(pstring& attr_ns, pstring& attr_name)
+{
+    name(attr_name);
+    if (cur_char() == ':')
+    {
+        // Attribute name is namespaced.
+        attr_ns = attr_name;
+        next_check();
+        name(attr_name);
+    }
+}
+
 }}

@@ -490,14 +490,7 @@ template<typename _Handler, typename _Config>
 void sax_parser<_Handler,_Config>::attribute()
 {
     pstring attr_ns_name, attr_name, attr_value;
-    name(attr_name);
-    if (cur_char() == ':')
-    {
-        // Attribute name is namespaced.
-        attr_ns_name = attr_name;
-        next_check();
-        name(attr_name);
-    }
+    attribute_name(attr_ns_name, attr_name);
 
 #if ORCUS_DEBUG_SAX_PARSER
     std::ostringstream os;
