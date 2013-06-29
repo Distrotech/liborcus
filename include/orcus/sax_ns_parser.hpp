@@ -178,7 +178,7 @@ private:
         {
             __sax::elem_scope& scope = m_scopes.back();
             if (scope.ns != m_ns_cxt.get(elem.ns) || scope.name != elem.name)
-                throw malformed_xml_error("mis-matching closing element.");
+                throw sax::malformed_xml_error("mis-matching closing element.");
 
             m_elem.ns = scope.ns;
             m_elem.ns_alias = elem.ns;
@@ -208,7 +208,7 @@ private:
             }
 
             if (m_attrs.count(__sax::entity_name(ns, name)) > 0)
-                throw malformed_xml_error("You can't define two attributes of the same name in the same element.");
+                throw sax::malformed_xml_error("You can't define two attributes of the same name in the same element.");
 
             m_attrs.insert(__sax::entity_name(ns, name));
 

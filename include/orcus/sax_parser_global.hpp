@@ -35,6 +35,15 @@
 
 namespace orcus { namespace sax {
 
+class ORCUS_DLLPUBLIC malformed_xml_error : public std::exception
+{
+    std::string m_msg;
+public:
+    malformed_xml_error(const std::string& msg);
+    virtual ~malformed_xml_error() throw();
+    virtual const char* what() const throw();
+};
+
 /**
  * Document type declaration passed by sax_parser to its handler's doctype()
  * call.

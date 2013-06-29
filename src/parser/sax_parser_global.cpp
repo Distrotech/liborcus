@@ -31,6 +31,15 @@
 
 namespace orcus { namespace sax {
 
+malformed_xml_error::malformed_xml_error(const std::string& msg) : m_msg(msg) {}
+
+malformed_xml_error::~malformed_xml_error() throw() {}
+
+const char* malformed_xml_error::what() const throw()
+{
+    return m_msg.c_str();
+}
+
 char decode_xml_encoded_char(const char* p, size_t n)
 {
     if (n == 2)
