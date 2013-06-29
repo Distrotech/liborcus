@@ -6,6 +6,7 @@ liborcus_HEADERS = \
 	cell_buffer.hpp	\
 	css_parser.hpp \
 	csv_parser.hpp \
+	csv_parser_base.hpp \
 	dom_tree.hpp \
 	env.hpp \
 	exception.hpp \

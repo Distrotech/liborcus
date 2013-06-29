@@ -25,47 +25,12 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_CSV_PARSER_HPP__
-#define __ORCUS_CSV_PARSER_HPP__
+#ifndef ORCUS_CSV_PARSER_HPP
+#define ORCUS_CSV_PARSER_HPP
 
-#define ORCUS_DEBUG_CSV 0
-
-#include <cstdlib>
-#include <cstring>
-#include <exception>
-#include <string>
-#include <cassert>
-#include <sstream>
-
-#include "cell_buffer.hpp"
-
-#if ORCUS_DEBUG_CSV
-#include <iostream>
-using std::cout;
-using std::endl;
-#endif
+#include "csv_parser_base.hpp"
 
 namespace orcus {
-
-struct csv_parser_config
-{
-    std::string delimiters;
-    char text_qualifier;
-    bool trim_cell_value:1;
-
-    csv_parser_config() :
-        text_qualifier('\0'),
-        trim_cell_value(false) {}
-};
-
-class csv_parse_error : public std::exception
-{
-    std::string m_msg;
-public:
-    csv_parse_error(const std::string& msg) : m_msg(msg) {}
-    virtual ~csv_parse_error() throw() {}
-    virtual const char* what() const throw() { return m_msg.c_str(); }
-};
 
 template<typename _Handler>
 class csv_parser
@@ -73,7 +38,7 @@ class csv_parser
 public:
     typedef _Handler handler_type;
 
-    csv_parser(const char* p, size_t n, handler_type& hdl, const csv_parser_config& config);
+    csv_parser(const char* p, size_t n, handler_type& hdl, const csv::parser_config& config);
     void parse();
 
 private:
@@ -106,7 +71,7 @@ private:
 
 private:
     handler_type& m_handler;
-    const csv_parser_config& m_config;
+    const csv::parser_config& m_config;
     cell_buffer m_cell_buf;
     const char* mp_char;
     size_t m_pos;
@@ -114,7 +79,8 @@ private:
 };
 
 template<typename _Handler>
-csv_parser<_Handler>::csv_parser(const char* p, size_t n, handler_type& hdl, const csv_parser_config& config) :
+csv_parser<_Handler>::csv_parser(
+    const char* p, size_t n, handler_type& hdl, const csv::parser_config& config) :
     m_handler(hdl), m_config(config), mp_char(p), m_pos(0), m_length(n) {}
 
 template<typename _Handler>
@@ -316,7 +282,7 @@ void csv_parser<_Handler>::parse_cell_with_quote(const char* p0, size_t len0)
     }
 
     // Stream ended prematurely.
-    throw csv_parse_error("stream ended prematurely while parsing quoted cell.");
+    throw csv::parse_error("stream ended prematurely while parsing quoted cell.");
 }
 
 template<typename _Handler>
