@@ -107,10 +107,9 @@ protected:
     size_t m_nest_level;
     bool m_root_elem_open:1;
 
-public:
+protected:
     parser_base(const char* content, size_t size);
 
-protected:
     void next() { ++m_pos; ++m_char; }
 
     void next_check()

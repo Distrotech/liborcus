@@ -42,4 +42,44 @@ const char* parse_error::what() const throw()
     return m_msg.c_str();
 }
 
+parser_base::parser_base(
+    const char* p, size_t n, const csv::parser_config& config) :
+    m_config(config), mp_char(p), m_pos(0), m_length(n) {}
+
+void parser_base::next()
+{
+    ++m_pos;
+    ++mp_char;
+}
+
+char parser_base::cur_char() const
+{
+    return *mp_char;
+}
+
+char parser_base::next_char() const
+{
+    return *(mp_char+1);
+}
+
+bool parser_base::is_delim(char c) const
+{
+    return m_config.delimiters.find(c) != std::string::npos;
+}
+
+bool parser_base::is_text_qualifier(char c) const
+{
+    return m_config.text_qualifier == c;
+}
+
+void parser_base::skip_blanks()
+{
+    for (; has_char(); next())
+    {
+        if (!is_blank(*mp_char))
+            break;
+    }
+}
+
+
 }}

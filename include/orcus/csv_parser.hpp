@@ -33,7 +33,7 @@
 namespace orcus {
 
 template<typename _Handler>
-class csv_parser
+class csv_parser : public csv::parser_base
 {
 public:
     typedef _Handler handler_type;
@@ -42,14 +42,6 @@ public:
     void parse();
 
 private:
-    bool has_char() const { return m_pos < m_length; }
-    bool has_next() const { return m_pos + 1 < m_length; }
-    void next();
-    char cur_char() const;
-    char next_char() const;
-
-    bool is_delim(char c) const;
-    bool is_text_qualifier(char c) const;
 
     // handlers
     void row();
@@ -57,31 +49,20 @@ private:
     void quoted_cell();
 
     void parse_cell_with_quote(const char* p0, size_t len0);
-    void skip_blanks();
 
     /**
      * Push cell value to the handler.
      */
     void push_cell_value(const char* p, size_t n);
 
-    static bool is_blank(char c)
-    {
-        return c == ' ' || c == '\t';
-    }
-
 private:
     handler_type& m_handler;
-    const csv::parser_config& m_config;
-    cell_buffer m_cell_buf;
-    const char* mp_char;
-    size_t m_pos;
-    size_t m_length;
 };
 
 template<typename _Handler>
 csv_parser<_Handler>::csv_parser(
     const char* p, size_t n, handler_type& hdl, const csv::parser_config& config) :
-    m_handler(hdl), m_config(config), mp_char(p), m_pos(0), m_length(n) {}
+    csv::parser_base(p, n, config), m_handler(hdl) {}
 
 template<typename _Handler>
 void csv_parser<_Handler>::parse()
@@ -97,37 +78,6 @@ void csv_parser<_Handler>::parse()
     while (has_char())
         row();
     m_handler.end_parse();
-}
-
-template<typename _Handler>
-void csv_parser<_Handler>::next()
-{
-    ++m_pos;
-    ++mp_char;
-}
-
-template<typename _Handler>
-char csv_parser<_Handler>::cur_char() const
-{
-    return *mp_char;
-}
-
-template<typename _Handler>
-char csv_parser<_Handler>::next_char() const
-{
-    return *(mp_char+1);
-}
-
-template<typename _Handler>
-bool csv_parser<_Handler>::is_delim(char c) const
-{
-    return m_config.delimiters.find(c) != std::string::npos;
-}
-
-template<typename _Handler>
-bool csv_parser<_Handler>::is_text_qualifier(char c) const
-{
-    return m_config.text_qualifier == c;
 }
 
 template<typename _Handler>
@@ -283,16 +233,6 @@ void csv_parser<_Handler>::parse_cell_with_quote(const char* p0, size_t len0)
 
     // Stream ended prematurely.
     throw csv::parse_error("stream ended prematurely while parsing quoted cell.");
-}
-
-template<typename _Handler>
-void csv_parser<_Handler>::skip_blanks()
-{
-    for (; has_char(); next())
-    {
-        if (!is_blank(*mp_char))
-            break;
-    }
 }
 
 template<typename _Handler>

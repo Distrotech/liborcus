@@ -30,6 +30,7 @@
 
 #include "env.hpp"
 #include "cell_buffer.hpp"
+#include "parser_global.hpp"
 
 #include <cstdlib>
 #include <cstring>
@@ -64,6 +65,30 @@ public:
     parse_error(const std::string& msg);
     virtual ~parse_error() throw();
     virtual const char* what() const throw();
+};
+
+class ORCUS_DLLPUBLIC parser_base
+{
+protected:
+    const csv::parser_config& m_config;
+    cell_buffer m_cell_buf;
+    const char* mp_char;
+    size_t m_pos;
+    size_t m_length;
+
+protected:
+    parser_base(const char* p, size_t n, const parser_config& config);
+
+    bool has_char() const { return m_pos < m_length; }
+    bool has_next() const { return m_pos + 1 < m_length; }
+    void next();
+    char cur_char() const;
+    char next_char() const;
+
+    bool is_delim(char c) const;
+    bool is_text_qualifier(char c) const;
+
+    void skip_blanks();
 };
 
 }}
