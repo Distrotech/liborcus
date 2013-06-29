@@ -323,4 +323,15 @@ void parser_base::name(pstring& str)
     str = pstring(m_content+first, size);
 }
 
+void parser_base::element_name(parser_element& elem)
+{
+    name(elem.name);
+    if (cur_char() == ':')
+    {
+        elem.ns = elem.name;
+        next_check();
+        name(elem.name);
+    }
+}
+
 }}

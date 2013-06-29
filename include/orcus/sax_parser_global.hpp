@@ -205,6 +205,7 @@ protected:
     void value(pstring& str, bool decode);
 
     void name(pstring& str);
+    void element_name(parser_element& elem);
 };
 
 }}

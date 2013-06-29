@@ -175,15 +175,7 @@ void sax_parser<_Handler,_Config>::element_open(const char* begin_pos)
 
     sax::parser_element elem;
     elem.begin_pos = begin_pos;
-
-    name(elem.name);
-    if (cur_char() == ':')
-    {
-        // this element name is namespaced.
-        elem.ns = elem.name;
-        next();
-        name(elem.name);
-    }
+    element_name(elem);
 
     while (true)
     {
@@ -228,14 +220,7 @@ void sax_parser<_Handler,_Config>::element_close(const char* begin_pos)
     next_check();
     sax::parser_element elem;
     elem.begin_pos = begin_pos;
-
-    name(elem.name);
-    if (cur_char() == ':')
-    {
-        elem.ns = elem.name;
-        next_check();
-        name(elem.name);
-    }
+    element_name(elem);
 
     if (cur_char() != '>')
         throw sax::malformed_xml_error("expected '>' to close the element.");
