@@ -676,7 +676,6 @@ void sax_parser<_Handler,_Config>::characters_with_encoded_char()
 {
     assert(cur_char() == '&');
     parse_encoded_char();
-    assert(cur_char() != ';');
 
     size_t first = m_pos;
 
@@ -850,7 +849,6 @@ void sax_parser<_Handler,_Config>::value_with_encoded_char(pstring& str)
                 m_cell_buf.append(m_content+first, m_pos-first);
 
             parse_encoded_char();
-            assert(cur_char() != ';');
             first = m_pos;
         }
 
