@@ -118,7 +118,11 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	xls_xml_tokens.cpp \
 	xls_xml_token_constants.hpp \
 	xls_xml_token_constants.inl \
-	orcus_xls_xml.cpp
+	orcus_xls_xml.cpp \
+	xls_xml_handler.hpp \
+	xls_xml_handler.cpp \
+	xls_xml_context.hpp \
+	xls_xml_context.cpp
 
 endif # WITH_XLS_XML_FILTER
 

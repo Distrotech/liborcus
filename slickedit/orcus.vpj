@@ -273,6 +273,10 @@
 				<F N="../src/liborcus/session_context.hpp"/>
 				<F N="../src/liborcus/spreadsheet_interface.cpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>
+				<F N="../src/liborcus/xls_xml_context.cpp"/>
+				<F N="../src/liborcus/xls_xml_context.hpp"/>
+				<F N="../src/liborcus/xls_xml_handler.cpp"/>
+				<F N="../src/liborcus/xls_xml_handler.hpp"/>
 				<F N="../src/liborcus/xls_xml_token_constants.hpp"/>
 				<F N="../src/liborcus/xls_xml_tokens.cpp"/>
 				<F N="../src/liborcus/xls_xml_tokens.hpp"/>

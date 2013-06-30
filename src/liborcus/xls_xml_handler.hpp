@@ -25,25 +25,32 @@
  *
  ************************************************************************/
 
-#include "orcus/orcus_xls_xml.hpp"
-#include "orcus/pstring.hpp"
-#include "orcus/spreadsheet/document.hpp"
-#include "orcus/spreadsheet/factory.hpp"
+#ifndef ORCUS_XLS_XML_HANDLER_HPP
+#define ORCUS_XLS_XML_HANDLER_HPP
 
-#include <boost/scoped_ptr.hpp>
+#include "xml_stream_handler.hpp"
 
-using namespace orcus;
+namespace orcus {
 
-int main(int argc, char** argv)
+namespace spreadsheet { namespace iface {
+
+class import_factory;
+
+}}
+
+class tokens;
+struct session_context;
+
+class xls_xml_handler : public xml_stream_handler
 {
-    if (argc != 2)
-        return EXIT_FAILURE;
+public:
+    xls_xml_handler(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory);
+    virtual ~xls_xml_handler();
 
-    boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-    boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
-    orcus_xls_xml app(fact.get());
-    app.read_file(argv[1]);
-    doc->dump();
+    virtual void start_document();
+    virtual void end_document();
+};
 
-    return EXIT_SUCCESS;
 }
+
+#endif

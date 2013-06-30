@@ -27,6 +27,14 @@
 
 #include "orcus/orcus_xls_xml.hpp"
 #include "orcus/stream.hpp"
+#include "orcus/xml_namespace.hpp"
+
+#include "xml_stream_parser.hpp"
+#include "xls_xml_handler.hpp"
+#include "session_context.hpp"
+#include "xls_xml_tokens.hpp"
+
+#include <boost/scoped_ptr.hpp>
 
 #define ORCUS_DEBUG_XLS_XML_FILTER 1
 
@@ -40,6 +48,8 @@ namespace orcus {
 
 struct orcus_xls_xml_impl
 {
+    xmlns_repository m_ns_repo;
+    session_context m_cxt;
     spreadsheet::iface::import_factory* mp_factory;
 
     orcus_xls_xml_impl(spreadsheet::iface::import_factory* factory) : mp_factory(factory) {}
@@ -63,8 +73,14 @@ void orcus_xls_xml::read_file(const char* fpath)
 
     string strm;
     load_file_content(fpath, strm);
+    if (strm.empty())
+        return;
 
-    // TODO: to be continued...
+    xml_stream_parser parser(mp_impl->m_ns_repo, xls_xml_tokens, &strm[0], strm.size(), "content");
+    boost::scoped_ptr<xls_xml_handler> handler(
+        new xls_xml_handler(mp_impl->m_cxt, xls_xml_tokens, mp_impl->mp_factory));
+    parser.set_handler(handler.get());
+    parser.parse();
 }
 
 }

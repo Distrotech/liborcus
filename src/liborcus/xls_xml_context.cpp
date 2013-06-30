@@ -25,25 +25,46 @@
  *
  ************************************************************************/
 
-#include "orcus/orcus_xls_xml.hpp"
-#include "orcus/pstring.hpp"
-#include "orcus/spreadsheet/document.hpp"
-#include "orcus/spreadsheet/factory.hpp"
+#include "xls_xml_context.hpp"
 
-#include <boost/scoped_ptr.hpp>
+namespace orcus {
 
-using namespace orcus;
-
-int main(int argc, char** argv)
+xls_xml_context::xls_xml_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
+    xml_context_base(session_cxt, tokens),
+    mp_factory(factory)
 {
-    if (argc != 2)
-        return EXIT_FAILURE;
+}
 
-    boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-    boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
-    orcus_xls_xml app(fact.get());
-    app.read_file(argv[1]);
-    doc->dump();
+xls_xml_context::~xls_xml_context()
+{
+}
 
-    return EXIT_SUCCESS;
+bool xls_xml_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
+{
+    return true;
+}
+
+xml_context_base* xls_xml_context::create_child_context(xmlns_id_t ns, xml_token_t name)
+{
+    return NULL;
+}
+
+void xls_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+{
+}
+
+void xls_xml_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs)
+{
+    xml_token_pair_t parent = push_stack(ns, name);
+}
+
+bool xls_xml_context::end_element(xmlns_id_t ns, xml_token_t name)
+{
+    return pop_stack(ns, name);
+}
+
+void xls_xml_context::characters(const pstring& str)
+{
+}
+
 }
