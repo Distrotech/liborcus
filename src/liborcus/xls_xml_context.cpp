@@ -29,7 +29,37 @@
 #include "xls_xml_namespace_types.hpp"
 #include "xls_xml_token_constants.hpp"
 
+#include <iostream>
+
+using namespace std;
+
 namespace orcus {
+
+namespace {
+
+class sheet_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+    pstring m_name;
+public:
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns == NS_xls_xml_ss)
+        {
+            switch (attr.name)
+            {
+                case XML_Name:
+                    m_name = attr.value;
+                break;
+                default:
+                    ;
+            }
+        }
+    }
+
+    pstring get_name() const { return m_name; }
+};
+
+}
 
 xls_xml_context::xls_xml_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
     xml_context_base(session_cxt, tokens),
@@ -66,7 +96,11 @@ void xls_xml_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_a
                 // Do nothing.
             break;
             case XML_Worksheet:
+            {
                 xml_element_expected(parent, NS_xls_xml_ss, XML_Workbook);
+                pstring sheet_name = for_each(attrs.begin(), attrs.end(), sheet_attr_parser()).get_name();
+                cout << "sheet name: " << sheet_name << endl;
+            }
             break;
             case XML_Table:
                 xml_element_expected(parent, NS_xls_xml_ss, XML_Worksheet);
