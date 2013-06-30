@@ -103,6 +103,8 @@ void sax_parser<_Handler,_Config>::parse()
     header();
     blank();
     body();
+
+    assert(m_buffer_pos == 0);
 }
 
 template<typename _Handler, typename _Config>
@@ -187,6 +189,7 @@ void sax_parser<_Handler,_Config>::element_open(const char* begin_pos)
             next();
             elem.end_pos = m_char;
             m_handler.start_element(elem);
+            reset_buffer_pos();
             m_handler.end_element(elem);
 #if ORCUS_DEBUG_SAX_PARSER
             cout << "element_open: ns='" << elem.ns << "', name='" << elem.name << "' (self-closing)" << endl;
@@ -200,6 +203,7 @@ void sax_parser<_Handler,_Config>::element_open(const char* begin_pos)
             elem.end_pos = m_char;
             nest_up();
             m_handler.start_element(elem);
+            reset_buffer_pos();
 #if ORCUS_DEBUG_SAX_PARSER
             cout << "element_open: ns='" << elem.ns << "', name='" << elem.name << "'" << endl;
 #endif
@@ -312,6 +316,7 @@ void sax_parser<_Handler,_Config>::declaration(const char* name_check)
         throw sax::malformed_xml_error("declaration must end with '?>'.");
 
     m_handler.end_declaration(decl_name);
+    reset_buffer_pos();
     next();
 #if ORCUS_DEBUG_SAX_PARSER
     cout << "sax_parser::declaration: end name='" << decl_name << "'" << endl;
@@ -435,13 +440,14 @@ void sax_parser<_Handler,_Config>::characters()
         if (cur_char() == '&')
         {
             // Text span with one or more encoded characters. Parse using cell buffer.
-            m_cell_buf.reset();
-            m_cell_buf.append(p0, m_pos-first);
-            characters_with_encoded_char();
-            if (m_cell_buf.empty())
+            cell_buffer& buf = get_cell_buffer();
+            buf.reset();
+            buf.append(p0, m_pos-first);
+            characters_with_encoded_char(buf);
+            if (buf.empty())
                 m_handler.characters(pstring());
             else
-                m_handler.characters(pstring(m_cell_buf.get(), m_cell_buf.size()));
+                m_handler.characters(pstring(buf.get(), buf.size()));
             return;
         }
     }
@@ -474,7 +480,9 @@ void sax_parser<_Handler,_Config>::attribute()
     }
 
     next_check();
-    value(attr_value, true);
+    if (value(attr_value, true))
+        // Value is stored in a temporary buffer. Push a new buffer.
+        inc_buffer_pos();
 
 #if ORCUS_DEBUG_SAX_PARSER
     os << " value='" << attr_value << "'" << endl;

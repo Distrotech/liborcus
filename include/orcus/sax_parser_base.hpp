@@ -38,6 +38,8 @@
 #include <exception>
 #include <sstream>
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 #define ORCUS_DEBUG_SAX_PARSER 0
 
 #if ORCUS_DEBUG_SAX_PARSER
@@ -99,12 +101,13 @@ struct parser_element
 class ORCUS_DLLPUBLIC parser_base
 {
 protected:
-    cell_buffer m_cell_buf;
+    boost::ptr_vector<cell_buffer> m_cell_buffers;
     const char* m_content;
     const char* m_char;
     const size_t m_size;
     size_t m_pos;
     size_t m_nest_level;
+    size_t m_buffer_pos;
     bool m_root_elem_open:1;
 
 protected:
@@ -125,6 +128,9 @@ protected:
         assert(m_nest_level > 0);
         --m_nest_level;
     }
+
+    void inc_buffer_pos();
+    void reset_buffer_pos() { m_buffer_pos = 0; }
 
     bool has_char() const { return m_pos < m_size; }
 
@@ -179,6 +185,8 @@ protected:
         return *m_char;
     }
 
+    cell_buffer& get_cell_buffer();
+
     void blank();
     void comment();
 
@@ -189,20 +197,23 @@ protected:
 
     void expects_next(const char* p, size_t n);
 
-    void parse_encoded_char();
-    void value_with_encoded_char(pstring& str);
+    void parse_encoded_char(cell_buffer& buf);
+    void value_with_encoded_char(cell_buffer& buf, pstring& str);
 
     /**
      * Parse quoted value.  Note that the retreived string may be stored in
      * the temporary cell buffer if the decode parameter is true. Use the
      * string immediately after this call before the buffer becomes invalid.
+     *
+     * @return true if the value is stored in temporary buffer, false
+     *         otherwise.
      */
-    void value(pstring& str, bool decode);
+    bool value(pstring& str, bool decode);
 
     void name(pstring& str);
     void element_name(parser_element& elem, const char* begin_pos);
     void attribute_name(pstring& attr_ns, pstring& attr_name);
-    void characters_with_encoded_char();
+    void characters_with_encoded_char(cell_buffer& buf);
 };
 
 }}

@@ -77,8 +77,22 @@ parser_base::parser_base(const char* content, size_t size) :
     m_size(size),
     m_pos(0),
     m_nest_level(0),
+    m_buffer_pos(0),
     m_root_elem_open(true)
 {
+    m_cell_buffers.push_back(new cell_buffer);
+}
+
+void parser_base::inc_buffer_pos()
+{
+    ++m_buffer_pos;
+    if (m_buffer_pos == m_cell_buffers.size())
+        m_cell_buffers.push_back(new cell_buffer);
+}
+
+cell_buffer& parser_base::get_cell_buffer()
+{
+    return m_cell_buffers[m_buffer_pos];
 }
 
 void parser_base::blank()
@@ -158,7 +172,7 @@ void parser_base::expects_next(const char* p, size_t n)
     }
 }
 
-void parser_base::parse_encoded_char()
+void parser_base::parse_encoded_char(cell_buffer& buf)
 {
     assert(cur_char() == '&');
     next();
@@ -178,7 +192,7 @@ void parser_base::parse_encoded_char()
 
         char c = decode_xml_encoded_char(p0, n);
         if (c)
-            m_cell_buf.append(&c, 1);
+            buf.append(&c, 1);
 
         // Move to the character past ';' before returning to the parent call.
         next();
@@ -189,7 +203,7 @@ void parser_base::parse_encoded_char()
             cout << "sax_parser::parse_encoded_char: not a known encoding name. Use the original." << endl;
 #endif
             // Unexpected encoding name. Use the original text.
-            m_cell_buf.append(p0, m_char-p0);
+            buf.append(p0, m_char-p0);
         }
 
         return;
@@ -198,10 +212,10 @@ void parser_base::parse_encoded_char()
     throw malformed_xml_error("error parsing encoded character: terminating character is not found.");
 }
 
-void parser_base::value_with_encoded_char(pstring& str)
+void parser_base::value_with_encoded_char(cell_buffer& buf, pstring& str)
 {
     assert(cur_char() == '&');
-    parse_encoded_char();
+    parse_encoded_char(buf);
     assert(cur_char() != ';');
 
     size_t first = m_pos;
@@ -211,9 +225,9 @@ void parser_base::value_with_encoded_char(pstring& str)
         if (cur_char() == '&')
         {
             if (m_pos > first)
-                m_cell_buf.append(m_content+first, m_pos-first);
+                buf.append(m_content+first, m_pos-first);
 
-            parse_encoded_char();
+            parse_encoded_char(buf);
             first = m_pos;
         }
 
@@ -225,17 +239,17 @@ void parser_base::value_with_encoded_char(pstring& str)
     }
 
     if (m_pos > first)
-        m_cell_buf.append(m_content+first, m_pos-first);
+        buf.append(m_content+first, m_pos-first);
 
-    if (!m_cell_buf.empty())
-        str = pstring(m_cell_buf.get(), m_cell_buf.size());
+    if (!buf.empty())
+        str = pstring(buf.get(), buf.size());
 
     // Skip the closing quote.
     assert(cur_char() == '"');
     next();
 }
 
-void parser_base::value(pstring& str, bool decode)
+bool parser_base::value(pstring& str, bool decode)
 {
     char c = cur_char();
     if (c != '"')
@@ -250,10 +264,11 @@ void parser_base::value(pstring& str, bool decode)
         if (decode && c == '&')
         {
             // This value contains one or more encoded characters.
-            m_cell_buf.reset();
-            m_cell_buf.append(p0, m_pos-first);
-            value_with_encoded_char(str);
-            return;
+            cell_buffer& buf = get_cell_buffer();
+            buf.reset();
+            buf.append(p0, m_pos-first);
+            value_with_encoded_char(buf, str);
+            return true;
         }
     }
 
@@ -261,6 +276,8 @@ void parser_base::value(pstring& str, bool decode)
 
     // Skip the closing quote.
     next();
+
+    return false;
 }
 
 void parser_base::name(pstring& str)
@@ -305,10 +322,10 @@ void parser_base::attribute_name(pstring& attr_ns, pstring& attr_name)
     }
 }
 
-void parser_base::characters_with_encoded_char()
+void parser_base::characters_with_encoded_char(cell_buffer& buf)
 {
     assert(cur_char() == '&');
-    parse_encoded_char();
+    parse_encoded_char(buf);
 
     size_t first = m_pos;
 
@@ -317,9 +334,9 @@ void parser_base::characters_with_encoded_char()
         if (cur_char() == '&')
         {
             if (m_pos > first)
-                m_cell_buf.append(m_content+first, m_pos-first);
+                buf.append(m_content+first, m_pos-first);
 
-            parse_encoded_char();
+            parse_encoded_char(buf);
             first = m_pos;
         }
 
@@ -331,7 +348,7 @@ void parser_base::characters_with_encoded_char()
     }
 
     if (m_pos > first)
-        m_cell_buf.append(m_content+first, m_pos-first);
+        buf.append(m_content+first, m_pos-first);
 }
 
 }}
