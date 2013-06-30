@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <elem attr1="1 &amp; 2" attr2="3 &amp; 4" attr3="5 &amp; 6"/>
+</root>
+

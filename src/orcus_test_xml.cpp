@@ -100,6 +100,59 @@ public:
     }
 };
 
+class sax_handler_encoded_attrs
+{
+    struct attr
+    {
+        pstring name;
+        pstring value;
+        attr(const pstring& _name, const pstring& _value) : name(_name), value(_value) {}
+    };
+
+    std::vector<attr> m_attrs;
+
+public:
+    void doctype(const sax::doctype_declaration&) {}
+
+    void start_declaration(const pstring&) {}
+
+    void end_declaration(const pstring&)
+    {
+        m_attrs.clear();
+    }
+
+    void start_element(const sax::parser_element&) {}
+
+    void end_element(const sax::parser_element&) {}
+
+    void characters(const pstring&) {}
+
+    void attribute(const pstring& ns, const pstring& name, const pstring& val)
+    {
+        m_attrs.push_back(attr(name, val));
+    }
+
+    bool check(const vector<string>& expected) const
+    {
+        if (m_attrs.size() != expected.size())
+        {
+            cerr << "unexpected attribute count." << endl;
+            return false;
+        }
+
+        for (size_t i = 0, n = m_attrs.size(); i < n; ++i)
+        {
+            if (m_attrs[i].value != expected[i].c_str())
+            {
+                cerr << "expected attribute value: " << expected[i] << "  actual attribute value: " << m_attrs[i].value << endl;
+                return false;
+            }
+        }
+
+        return true;
+    }
+};
+
 const char* sax_parser_test_dirs[] = {
     SRCDIR"/test/xml/simple/",
     SRCDIR"/test/xml/encoded-char/",
@@ -228,12 +281,33 @@ void test_xml_dtd()
     }
 }
 
+void test_xml_encoded_attrs()
+{
+    const char* filepath = SRCDIR"/test/xml/encoded-attrs/test1.xml";
+
+    string strm;
+    cout << "testing " << filepath << endl;
+    load_file_content(filepath, strm);
+    assert(!strm.empty());
+
+    sax_handler_encoded_attrs hdl;
+    sax_parser<sax_handler_encoded_attrs> parser(&strm[0], strm.size(), hdl);
+    parser.parse();
+
+    vector<string> expected;
+    expected.push_back("1 & 2");
+    expected.push_back("3 & 4");
+    expected.push_back("5 & 6");
+    assert(hdl.check(expected));
+}
+
 int main()
 {
     test_xml_sax_parser();
     test_xml_sax_parser_read_only();
     test_xml_declarations();
     test_xml_dtd();
+    test_xml_encoded_attrs();
 
     return EXIT_SUCCESS;
 }

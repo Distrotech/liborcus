@@ -259,7 +259,7 @@ bool parser_base::value(pstring& str, bool decode)
     size_t first = m_pos;
     const char* p0 = m_char;
 
-    for (;c != '"'; c = next_char_checked())
+    for (; c != '"'; c = next_char_checked())
     {
         if (decode && c == '&')
         {
