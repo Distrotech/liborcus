@@ -33,6 +33,7 @@
 #include "xls_xml_handler.hpp"
 #include "session_context.hpp"
 #include "xls_xml_tokens.hpp"
+#include "xls_xml_namespace_types.hpp"
 
 #include <boost/scoped_ptr.hpp>
 
@@ -58,6 +59,7 @@ struct orcus_xls_xml_impl
 orcus_xls_xml::orcus_xls_xml(spreadsheet::iface::import_factory* factory) :
     mp_impl(new orcus_xls_xml_impl(factory))
 {
+    mp_impl->m_ns_repo.add_predefined_values(NS_xls_xml_all);
 }
 
 orcus_xls_xml::~orcus_xls_xml()

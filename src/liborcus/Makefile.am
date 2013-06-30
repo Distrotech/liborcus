@@ -42,7 +42,9 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	odf_namespace_types.cpp \
 	odf_namespace_types_cpp.inl \
 	gnumeric_namespace_types.hpp \
-	gnumeric_namespace_types.cpp
+	gnumeric_namespace_types.cpp \
+	xls_xml_namespace_types.hpp \
+	xls_xml_namespace_types.cpp
 
 if WITH_XLSX_FILTER
 

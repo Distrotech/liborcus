@@ -277,6 +277,8 @@
 				<F N="../src/liborcus/xls_xml_context.hpp"/>
 				<F N="../src/liborcus/xls_xml_handler.cpp"/>
 				<F N="../src/liborcus/xls_xml_handler.hpp"/>
+				<F N="../src/liborcus/xls_xml_namespace_types.cpp"/>
+				<F N="../src/liborcus/xls_xml_namespace_types.hpp"/>
 				<F N="../src/liborcus/xls_xml_token_constants.hpp"/>
 				<F N="../src/liborcus/xls_xml_tokens.cpp"/>
 				<F N="../src/liborcus/xls_xml_tokens.hpp"/>
