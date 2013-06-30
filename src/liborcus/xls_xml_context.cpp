@@ -26,6 +26,8 @@
  ************************************************************************/
 
 #include "xls_xml_context.hpp"
+#include "xls_xml_namespace_types.hpp"
+#include "xls_xml_token_constants.hpp"
 
 namespace orcus {
 
@@ -56,6 +58,34 @@ void xls_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_con
 void xls_xml_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
+    if (ns == NS_xls_xml_ss)
+    {
+        switch (name)
+        {
+            case XML_Workbook:
+                // Do nothing.
+            break;
+            case XML_Worksheet:
+                xml_element_expected(parent, NS_xls_xml_ss, XML_Workbook);
+            break;
+            case XML_Table:
+                xml_element_expected(parent, NS_xls_xml_ss, XML_Worksheet);
+            break;
+            case XML_Row:
+                xml_element_expected(parent, NS_xls_xml_ss, XML_Table);
+            break;
+            case XML_Cell:
+                xml_element_expected(parent, NS_xls_xml_ss, XML_Row);
+            break;
+            case XML_Data:
+                xml_element_expected(parent, NS_xls_xml_ss, XML_Cell);
+            break;
+            default:
+                warn_unhandled();
+        }
+    }
+    else
+        warn_unhandled();
 }
 
 bool xls_xml_context::end_element(xmlns_id_t ns, xml_token_t name)
