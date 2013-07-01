@@ -37,9 +37,6 @@ using namespace std;
 
 namespace orcus {
 
-xml_map_sax_handler::attr::attr(const pstring& _ns, const pstring& _name, const pstring& _val) :
-    ns(_ns), name(_name), val(_val) {}
-
 xml_map_sax_handler::scope::scope(const pstring& _ns, const pstring& _name) :
     ns(_ns), name(_name) {}
 
@@ -63,7 +60,7 @@ void xml_map_sax_handler::start_element(const sax::parser_element& elem)
     pstring xpath, sheet;
     spreadsheet::row_t row = -1;
     spreadsheet::col_t col = -1;
-    vector<attr>::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
+    vector<sax::parser_attribute>::const_iterator it = m_attrs.begin(), it_end = m_attrs.end();
 
     if (elem.name == "ns")
     {
@@ -72,9 +69,9 @@ void xml_map_sax_handler::start_element(const sax::parser_element& elem)
         for (; it != it_end; ++it)
         {
             if (it->name == "alias")
-                alias = it->val;
+                alias = it->value;
             else if (it->name == "uri")
-                uri = it->val;
+                uri = it->value;
         }
 
         if (!uri.empty())
@@ -85,13 +82,13 @@ void xml_map_sax_handler::start_element(const sax::parser_element& elem)
         for (; it != it_end; ++it)
         {
             if (it->name == "xpath")
-                xpath = it->val;
+                xpath = it->value;
             else if (it->name == "sheet")
-                sheet = it->val;
+                sheet = it->value;
             else if (it->name == "row")
-                row = strtol(it->val.get(), NULL, 10);
+                row = strtol(it->value.get(), NULL, 10);
             else if (it->name == "column")
-                col = strtol(it->val.get(), NULL, 10);
+                col = strtol(it->value.get(), NULL, 10);
         }
 
         m_app.set_cell_link(xpath, sheet, row, col);
@@ -101,11 +98,11 @@ void xml_map_sax_handler::start_element(const sax::parser_element& elem)
         for (; it != it_end; ++it)
         {
             if (it->name == "sheet")
-                sheet = it->val;
+                sheet = it->value;
             else if (it->name == "row")
-                row = strtol(it->val.get(), NULL, 10);
+                row = strtol(it->value.get(), NULL, 10);
             else if (it->name == "column")
-                col = strtol(it->val.get(), NULL, 10);
+                col = strtol(it->value.get(), NULL, 10);
         }
 
         m_app.start_range(sheet, row, col);
@@ -116,7 +113,7 @@ void xml_map_sax_handler::start_element(const sax::parser_element& elem)
         {
             if (it->name == "xpath")
             {
-                xpath = it->val;
+                xpath = it->value;
                 break;
             }
         }
@@ -130,7 +127,7 @@ void xml_map_sax_handler::start_element(const sax::parser_element& elem)
         {
             if (it->name == "name")
             {
-                sheet_name = it->val;
+                sheet_name = it->value;
                 break;
             }
         }
@@ -153,9 +150,9 @@ void xml_map_sax_handler::end_element(const sax::parser_element& elem)
 
 void xml_map_sax_handler::characters(const pstring&) {}
 
-void xml_map_sax_handler::attribute(const pstring& ns, const pstring& name, const pstring& val)
+void xml_map_sax_handler::attribute(const sax::parser_attribute& attr)
 {
-    m_attrs.push_back(attr(ns, name, val));
+    m_attrs.push_back(attr);
 }
 
 void read_map_file(orcus_xml& app, const char* filepath)

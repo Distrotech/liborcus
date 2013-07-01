@@ -102,14 +102,7 @@ public:
 
 class sax_handler_encoded_attrs
 {
-    struct attr
-    {
-        pstring name;
-        pstring value;
-        attr(const pstring& _name, const pstring& _value) : name(_name), value(_value) {}
-    };
-
-    std::vector<attr> m_attrs;
+    std::vector<sax::parser_attribute> m_attrs;
 
 public:
     void doctype(const sax::doctype_declaration&) {}
@@ -127,9 +120,9 @@ public:
 
     void characters(const pstring&) {}
 
-    void attribute(const pstring& ns, const pstring& name, const pstring& val)
+    void attribute(const sax::parser_attribute& attr)
     {
-        m_attrs.push_back(attr(name, val));
+        m_attrs.push_back(attr);
     }
 
     bool check(const vector<string>& expected) const

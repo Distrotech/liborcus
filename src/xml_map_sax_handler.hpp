@@ -43,15 +43,6 @@ class orcus_xml;
  */
 class xml_map_sax_handler
 {
-    struct attr
-    {
-        pstring ns;
-        pstring name;
-        pstring val;
-
-        attr(const pstring& _ns, const pstring& _name, const pstring& _val);
-    };
-
     struct scope
     {
         pstring ns;
@@ -60,7 +51,7 @@ class xml_map_sax_handler
         scope(const pstring& _ns, const pstring& _name);
     };
 
-    std::vector<attr> m_attrs;
+    std::vector<sax::parser_attribute> m_attrs;
     std::vector<scope> m_scopes;
     orcus_xml& m_app;
 
@@ -73,7 +64,7 @@ public:
     void start_element(const sax::parser_element& elem);
     void end_element(const sax::parser_element& elem);
     void characters(const pstring&);
-    void attribute(const pstring& ns, const pstring& name, const pstring& val);
+    void attribute(const sax::parser_attribute& attr);
 };
 
 void read_map_file(orcus_xml& app, const char* filepath);

@@ -463,33 +463,35 @@ void sax_parser<_Handler,_Config>::characters()
 template<typename _Handler, typename _Config>
 void sax_parser<_Handler,_Config>::attribute()
 {
+    sax::parser_attribute attr;
     pstring attr_ns_name, attr_name, attr_value;
-    attribute_name(attr_ns_name, attr_name);
+    attribute_name(attr.ns, attr.name);
 
 #if ORCUS_DEBUG_SAX_PARSER
     std::ostringstream os;
-    os << "sax_parser::attribute: ns='" << attr_ns_name << "', name='" << attr_name << "'";
+    os << "sax_parser::attribute: ns='" << attr.ns << "', name='" << attr.name << "'";
 #endif
 
     char c = cur_char();
     if (c != '=')
     {
         std::ostringstream os;
-        os << "Attribute must begin with 'name=..'. (ns='" << attr_ns_name << "', name='" << attr_name << "')";
+        os << "Attribute must begin with 'name=..'. (ns='" << attr.ns << "', name='" << attr.name << "')";
         throw sax::malformed_xml_error(os.str());
     }
 
     next_check();
-    if (value(attr_value, true))
+    attr.transient = value(attr.value, true);
+    if (attr.transient)
         // Value is stored in a temporary buffer. Push a new buffer.
         inc_buffer_pos();
 
 #if ORCUS_DEBUG_SAX_PARSER
-    os << " value='" << attr_value << "'" << endl;
+    os << " value='" << attr.value << "'" << endl;
     cout << os.str();
 #endif
 
-    m_handler.attribute(attr_ns_name, attr_name, attr_value);
+    m_handler.attribute(attr);
 }
 
 }

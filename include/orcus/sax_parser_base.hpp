@@ -98,6 +98,21 @@ struct parser_element
     const char* end_pos;   // position of the char after the closing brace '>'.
 };
 
+/**
+ * Attribute properties passed by sax_parser to its handler's attribute()
+ * call. When an attribute value is transient, it has been converted due to
+ * presence of encoded character(s) and stored in a temporary buffer. The
+ * handler must assume that the value will not survive beyond the scope of
+ * the callback.
+ */
+struct parser_attribute
+{
+    pstring ns;      // attribute namespace (optional)
+    pstring name;    // attribute name
+    pstring value;   // attribute value
+    bool transient;  // whether or not the attribute value is on a temporary buffer.
+};
+
 class ORCUS_DLLPUBLIC parser_base
 {
 protected:

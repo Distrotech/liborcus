@@ -51,6 +51,7 @@ struct sax_ns_parser_attribute
     pstring ns_alias; // attribute namespace alias
     pstring name;     // attribute name
     pstring value;    // attribute value
+    bool transient;   // whether or not the attribute value is transient.
 };
 
 namespace __sax {
@@ -198,43 +199,44 @@ private:
             m_handler.characters(val);
         }
 
-        void attribute(const pstring& ns, const pstring& name, const pstring& val)
+        void attribute(const sax::parser_attribute& attr)
         {
             if (m_declaration)
             {
                 // XML declaration attribute.  Pass it through to the handler without namespace.
-                m_handler.attribute(name, val);
+                m_handler.attribute(attr.name, attr.value);
                 return;
             }
 
-            if (m_attrs.count(__sax::entity_name(ns, name)) > 0)
+            if (m_attrs.count(__sax::entity_name(attr.ns, attr.name)) > 0)
                 throw sax::malformed_xml_error("You can't define two attributes of the same name in the same element.");
 
-            m_attrs.insert(__sax::entity_name(ns, name));
+            m_attrs.insert(__sax::entity_name(attr.ns, attr.name));
 
-            if (ns.empty() && name == "xmlns")
+            if (attr.ns.empty() && attr.name == "xmlns")
             {
                 // Default namespace
-                m_ns_cxt.push(pstring(), val);
+                m_ns_cxt.push(pstring(), attr.value);
                 m_ns_keys.insert(pstring());
                 return;
             }
 
-            if (ns == "xmlns")
+            if (attr.ns == "xmlns")
             {
                 // Namespace alias
-                if (!name.empty())
+                if (!attr.name.empty())
                 {
-                    m_ns_cxt.push(name, val);
-                    m_ns_keys.insert(name);
+                    m_ns_cxt.push(attr.name, attr.value);
+                    m_ns_keys.insert(attr.name);
                 }
                 return;
             }
 
-            m_attr.ns = m_ns_cxt.get(ns);
-            m_attr.ns_alias = ns;
-            m_attr.name = name;
-            m_attr.value = val;
+            m_attr.ns = m_ns_cxt.get(attr.ns);
+            m_attr.ns_alias = attr.ns;
+            m_attr.name = attr.name;
+            m_attr.value = attr.value;
+            m_attr.transient = attr.transient;
             m_handler.attribute(m_attr);
         }
     };
