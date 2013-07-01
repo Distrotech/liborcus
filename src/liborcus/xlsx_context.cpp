@@ -233,7 +233,7 @@ bool xlsx_shared_strings_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void xlsx_shared_strings_context::characters(const pstring& str)
+void xlsx_shared_strings_context::characters(const pstring& str, bool transient)
 {
     xml_token_pair_t& cur_token = get_current_element();
     if (cur_token.first == NS_ooxml_xlsx && cur_token.second == XML_t)
@@ -696,7 +696,7 @@ bool xlsx_styles_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void xlsx_styles_context::characters(const pstring& /*str*/)
+void xlsx_styles_context::characters(const pstring& /*str*/, bool /*transient*/)
 {
     // not used in the styles.xml part.
 }

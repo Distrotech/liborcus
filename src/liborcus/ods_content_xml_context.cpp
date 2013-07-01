@@ -385,7 +385,7 @@ bool ods_content_xml_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void ods_content_xml_context::characters(const pstring& str)
+void ods_content_xml_context::characters(const pstring& str, bool transient)
 {
 }
 

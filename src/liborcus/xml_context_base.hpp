@@ -62,7 +62,15 @@ public:
      *         otherwise.
      */
     virtual bool end_element(xmlns_id_t ns, xml_token_t name) = 0;
-    virtual void characters(const pstring& str) = 0;
+
+    /**
+     * Called when passing xml content.  When the content value is transient,
+     * the value is not expected to survive beyond the scope of the callback.
+     *
+     * @param str content value.
+     * @param transient whether or not the value is transient.
+     */
+    virtual void characters(const pstring& str, bool transient) = 0;
 
 protected:
     session_context& get_session_context();

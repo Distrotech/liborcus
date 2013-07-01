@@ -106,7 +106,7 @@ bool gnumeric_content_xml_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void gnumeric_content_xml_context::characters(const pstring& str)
+void gnumeric_content_xml_context::characters(const pstring& str, bool transient)
 {
 }
 

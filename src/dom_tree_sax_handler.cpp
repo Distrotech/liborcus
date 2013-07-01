@@ -56,7 +56,7 @@ void dom_tree_sax_handler::end_element(const sax_ns_parser_element& elem)
     m_tree.end_element(elem.ns, elem.name);
 }
 
-void dom_tree_sax_handler::characters(const pstring& val)
+void dom_tree_sax_handler::characters(const pstring& val, bool /*transient*/)
 {
     m_tree.set_characters(val);
 }

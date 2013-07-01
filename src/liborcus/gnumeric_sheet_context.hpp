@@ -64,7 +64,7 @@ public:
 
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
-    virtual void characters(const pstring& str);
+    virtual void characters(const pstring& str, bool transient);
 
 private:
     void start_style_region(const xml_attrs_t& attrs);

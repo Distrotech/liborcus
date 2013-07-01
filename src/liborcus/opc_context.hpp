@@ -55,7 +55,7 @@ public:
 
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t> &attrs);
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
-    virtual void characters(const pstring &str);
+    virtual void characters(const pstring &str, bool transient);
 
     /**
      * Swap stored xml part info with the instance passed as the argument.
@@ -96,7 +96,7 @@ public:
 
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t> &attrs);
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
-    virtual void characters(const pstring &str);
+    virtual void characters(const pstring &str, bool transient);
 
     void init();
     void pop_rels(::std::vector<opc_rel_t>& rels);

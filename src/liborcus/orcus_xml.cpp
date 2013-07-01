@@ -220,7 +220,7 @@ public:
         mp_current_elem = m_map_tree_walker.pop_element(elem.ns, elem.name);
     }
 
-    void characters(const pstring& val)
+    void characters(const pstring& val, bool /*transient*/)
     {
         if (!mp_current_elem)
             return;

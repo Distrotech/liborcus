@@ -106,7 +106,7 @@ void test_column_width()
         orcus::xml_token_t elem = XML_Name;
         orcus::xml_attrs_t attrs;
         context.start_element(ns, elem, attrs);
-        context.characters("test");
+        context.characters("test", false);
         context.end_element(ns, elem);
     }
     {

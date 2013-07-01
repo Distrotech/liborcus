@@ -146,7 +146,7 @@ void test_cell_value()
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "2"));
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ValueType, "40"));
     context.start_element(ns, elem, attrs);
-    context.characters("5");
+    context.characters("5", false);
     context.end_element(ns, elem);
 }
 
@@ -165,7 +165,7 @@ void test_cell_bool()
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "32"));
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ValueType, "20"));
     context.start_element(ns, elem, attrs);
-    context.characters("TRUE");
+    context.characters("TRUE", false);
     context.end_element(ns, elem);
 }
 
@@ -184,7 +184,7 @@ void test_cell_string()
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "321"));
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ValueType, "60"));
     context.start_element(ns, elem, attrs);
-    context.characters("14 char string");
+    context.characters("14 char string", false);
     context.end_element(ns, elem);
 }
 
@@ -205,7 +205,7 @@ void test_shared_formula_with_string()
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ExprID, "2"));
 
     context.start_element(ns, elem, attrs);
-    context.characters("=basicFormulaString");
+    context.characters("=basicFormulaString", false);
     context.end_element(ns, elem);
 }
 
@@ -243,7 +243,7 @@ void test_cell_formula()
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "9"));
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "11"));
     context.start_element(ns, elem, attrs);
-    context.characters("=formula");
+    context.characters("=formula", false);
     context.end_element(ns, elem);
 }
 
@@ -263,7 +263,7 @@ void test_cell_array_formula()
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Rows, "2"));
     attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Cols, "3"));
     context.start_element(ns, elem, attrs);
-    context.characters("=arrayFormula");
+    context.characters("=arrayFormula", false);
     context.end_element(ns, elem);
 }
 

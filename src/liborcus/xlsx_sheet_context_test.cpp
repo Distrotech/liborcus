@@ -87,7 +87,7 @@ void test_cell_value()
     {
         xml_attrs_t val_attrs;
         context.start_element(ns, XML_v, val_attrs);
-        context.characters("5");
+        context.characters("5", false);
         context.end_element(ns, XML_v);
     }
 
@@ -110,7 +110,7 @@ void test_cell_bool()
     {
         xml_attrs_t val_attrs;
         context.start_element(ns, XML_v, val_attrs);
-        context.characters("1");
+        context.characters("1", false);
         context.end_element(ns, XML_v);
     }
 
@@ -134,13 +134,13 @@ void test_array_formula()
         formula_attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_t, "array"));
         formula_attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_ref, "B3:B4"));
         context.start_element(ns, XML_f, formula_attrs);
-        context.characters("A1:A2");
+        context.characters("A1:A2", false);
         context.end_element(ns, XML_f);
     }
     {
         xml_attrs_t val_attrs;
         context.start_element(ns, XML_v, val_attrs);
-        context.characters("5");
+        context.characters("5", false);
         context.end_element(ns, XML_v);
     }
 

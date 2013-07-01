@@ -74,7 +74,7 @@ public:
         m_tree.end_element(elem.ns, elem.name);
     }
 
-    void characters(const pstring& val)
+    void characters(const pstring& val, bool)
     {
         m_tree.set_characters(val);
     }
@@ -118,7 +118,7 @@ public:
 
     void end_element(const sax::parser_element&) {}
 
-    void characters(const pstring&) {}
+    void characters(const pstring&, bool) {}
 
     void attribute(const sax::parser_attribute& attr)
     {

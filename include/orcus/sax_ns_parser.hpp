@@ -194,9 +194,9 @@ private:
             m_scopes.pop_back();
         }
 
-        void characters(const pstring& val)
+        void characters(const pstring& val, bool transient)
         {
-            m_handler.characters(val);
+            m_handler.characters(val, transient);
         }
 
         void attribute(const sax::parser_attribute& attr)

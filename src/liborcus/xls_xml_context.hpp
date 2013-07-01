@@ -30,6 +30,7 @@
 
 #include "xml_context_base.hpp"
 #include "orcus/spreadsheet/types.hpp"
+#include "orcus/string_pool.hpp"
 
 #include <string>
 
@@ -56,18 +57,20 @@ public:
 
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
-    virtual void characters(const pstring& str);
+    virtual void characters(const pstring& str, bool transient);
 
 private:
     void push_cell();
 
 private:
+    string_pool m_pool;
+
     spreadsheet::iface::import_factory* mp_factory;
     spreadsheet::iface::import_sheet* mp_cur_sheet;
     spreadsheet::row_t m_cur_row;
     spreadsheet::col_t m_cur_col;
     cell_type m_cur_cell_type;
-    std::string m_cur_cell_string;
+    std::vector<pstring> m_cur_cell_string;
     double m_cur_cell_value;
 };
 

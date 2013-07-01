@@ -148,7 +148,7 @@ void xml_map_sax_handler::end_element(const sax::parser_element& elem)
     m_scopes.pop_back();
 }
 
-void xml_map_sax_handler::characters(const pstring&) {}
+void xml_map_sax_handler::characters(const pstring&, bool) {}
 
 void xml_map_sax_handler::attribute(const sax::parser_attribute& attr)
 {

@@ -129,9 +129,9 @@ private:
             m_handler.end_element(m_elem);
         }
 
-        void characters(const pstring& val)
+        void characters(const pstring& val, bool transient)
         {
-            m_handler.characters(val);
+            m_handler.characters(val, transient);
         }
 
         void attribute(const pstring& /*name*/, const pstring& /*val*/)

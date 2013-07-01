@@ -215,6 +215,7 @@
 				<F N="../src/liborcus/gnumeric_namespace_types.hpp"/>
 				<F N="../src/liborcus/gnumeric_sheet_context.cpp"/>
 				<F N="../src/liborcus/gnumeric_sheet_context.hpp"/>
+				<F N="../src/liborcus/gnumeric_sheet_context_test.cpp"/>
 				<F N="../src/liborcus/gnumeric_token_constants.hpp"/>
 				<F N="../src/liborcus/gnumeric_token_constants.inl"/>
 				<F N="../src/liborcus/gnumeric_tokens.cpp"/>

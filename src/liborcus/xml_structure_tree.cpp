@@ -208,7 +208,7 @@ public:
         m_stack.pop_back();
     }
 
-    void characters(const pstring&) {}
+    void characters(const pstring&, bool) {}
 
     void attribute(const pstring&, const pstring&)
     {

@@ -263,7 +263,7 @@ bool xls_xml_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void xls_xml_context::characters(const pstring& str)
+void xls_xml_context::characters(const pstring& str, bool transient)
 {
     if (str.empty())
         return;
@@ -275,7 +275,12 @@ void xls_xml_context::characters(const pstring& str)
         switch (m_cur_cell_type)
         {
             case ct_string:
-                m_cur_cell_string += str;
+            {
+                if (transient)
+                    m_cur_cell_string.push_back(m_pool.intern(str).first);
+                else
+                    m_cur_cell_string.push_back(str);
+            }
             break;
             case ct_number:
             {
@@ -305,8 +310,20 @@ void xls_xml_context::push_cell()
             if (m_cur_cell_string.empty())
                 return;
 
-            mp_cur_sheet->set_string(
-                m_cur_row, m_cur_col, ss->append(&m_cur_cell_string[0], m_cur_cell_string.size()));
+            if (m_cur_cell_string.size() == 1)
+            {
+                const pstring& s = m_cur_cell_string.back();
+                mp_cur_sheet->set_string(m_cur_row, m_cur_col, ss->append(&s[0], s.size()));
+            }
+            else
+            {
+                string s;
+                vector<pstring>::const_iterator it = m_cur_cell_string.begin(), it_end = m_cur_cell_string.end();
+                for (; it != it_end; ++it)
+                    s += *it;
+
+                mp_cur_sheet->set_string(m_cur_row, m_cur_col, ss->append(&s[0], s.size()));
+            }
             m_cur_cell_string.clear();
         }
         break;

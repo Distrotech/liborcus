@@ -63,7 +63,7 @@ public:
     void end_declaration(const pstring& name);
     void start_element(const sax::parser_element& elem);
     void end_element(const sax::parser_element& elem);
-    void characters(const pstring&);
+    void characters(const pstring&, bool);
     void attribute(const sax::parser_attribute& attr);
 };
 

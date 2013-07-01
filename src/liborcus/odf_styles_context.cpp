@@ -242,7 +242,7 @@ bool automatic_styles_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void automatic_styles_context::characters(const pstring& str)
+void automatic_styles_context::characters(const pstring& str, bool transient)
 {
 }
 

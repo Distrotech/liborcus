@@ -73,9 +73,9 @@ void xml_stream_handler::end_element(const sax_token_parser_element& elem)
     }
 }
 
-void xml_stream_handler::characters(const pstring& str)
+void xml_stream_handler::characters(const pstring& str, bool transient)
 {
-    get_current_context().characters(str);
+    get_current_context().characters(str, transient);
 }
 
 xml_context_base& xml_stream_handler::get_current_context()

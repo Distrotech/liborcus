@@ -57,7 +57,7 @@ public:
     void end_declaration(const pstring& name);
     void start_element(const sax_ns_parser_element& elem);
     void end_element(const sax_ns_parser_element& elem);
-    void characters(const pstring& val);
+    void characters(const pstring& val, bool transient);
     void attribute(const sax_ns_parser_attribute& attr);
     void attribute(const pstring& name, const pstring& val);
     void dump_compact(std::ostream& os);

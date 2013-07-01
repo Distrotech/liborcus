@@ -178,7 +178,7 @@ public:
         m_attrs.push_back(attr);
     }
 
-    void characters(const pstring&) {}
+    void characters(const pstring&, bool) {}
 
     void start_element(const sax_ns_parser_element& elem)
     {
