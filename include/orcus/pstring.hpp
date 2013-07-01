@@ -108,6 +108,9 @@ inline ::std::ostream& operator<< (::std::ostream& os, const pstring& str)
     return os << str.str();
 }
 
+ORCUS_DLLPUBLIC std::string operator+ (const std::string& left, const pstring& right);
+ORCUS_DLLPUBLIC std::string& operator+= (std::string& left, const pstring& right);
+
 }
 
 #endif

@@ -34,7 +34,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="Data">
-  <Table ss:ExpandedColumnCount="5" ss:ExpandedRowCount="7" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="5" ss:ExpandedRowCount="9" x:FullColumns="1"
    x:FullRows="1">
    <Row>
     <Cell><Data ss:Type="String">Numbers</Data></Cell>
@@ -71,9 +71,22 @@
     <Cell ss:Index="3"><Data ss:Type="Number">1.6</Data></Cell>
     <Cell ss:Index="5"><Data ss:Type="String">F</Data></Cell>
    </Row>
+   <Row ss:Index="9">
+    <Cell><Data ss:Type="String">One</Data></Cell>
+    <Cell><Data ss:Type="String">Two</Data></Cell>
+    <Cell><Data ss:Type="String">Three</Data></Cell>
+    <Cell><Data ss:Type="String">Four</Data></Cell>
+    <Cell><Data ss:Type="String">Five</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>9</ActiveRow>
+    </Pane>
+   </Panes>
    <ProtectObjects>False</ProtectObjects>
    <ProtectScenarios>False</ProtectScenarios>
   </WorksheetOptions>

@@ -128,4 +128,29 @@ pstring pstring::trim() const
     return pstring(p, p_end-p);
 }
 
+std::string operator+ (const std::string& left, const pstring& right)
+{
+    std::string ret = left;
+    if (!right.empty())
+    {
+        const char* p = right.get();
+        const char* p_end = p + right.size();
+        for (; p != p_end; ++p)
+            ret.push_back(*p);
+    }
+    return ret;
+}
+
+std::string& operator+= (std::string& left, const pstring& right)
+{
+    if (!right.empty())
+    {
+        const char* p = right.get();
+        const char* p_end = p + right.size();
+        for (; p != p_end; ++p)
+            left.push_back(*p);
+    }
+    return left;
+}
+
 }

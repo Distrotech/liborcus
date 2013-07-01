@@ -29,6 +29,9 @@
 #define ORCUS_XLS_XML_CONTEXT_HPP
 
 #include "xml_context_base.hpp"
+#include "orcus/spreadsheet/types.hpp"
+
+#include <string>
 
 namespace orcus {
 
@@ -41,9 +44,9 @@ class import_sheet;
 
 class xls_xml_context : public xml_context_base
 {
-    spreadsheet::iface::import_factory* mp_factory;
-
 public:
+    enum cell_type { ct_unknown = 0, ct_string, ct_number };
+
     xls_xml_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory);
     virtual ~xls_xml_context();
 
@@ -54,6 +57,18 @@ public:
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
     virtual void characters(const pstring& str);
+
+private:
+    void push_cell();
+
+private:
+    spreadsheet::iface::import_factory* mp_factory;
+    spreadsheet::iface::import_sheet* mp_cur_sheet;
+    spreadsheet::row_t m_cur_row;
+    spreadsheet::col_t m_cur_col;
+    cell_type m_cur_cell_type;
+    std::string m_cur_cell_string;
+    double m_cur_cell_value;
 };
 
 }
