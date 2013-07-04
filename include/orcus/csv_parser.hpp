@@ -107,10 +107,6 @@ void csv_parser<_Handler>::row()
             m_handler.end_row();
             return;
         }
-#if ORCUS_DEBUG_CSV
-        else
-            cout << c << endl;
-#endif
 
         assert(is_delim(c));
         next();
