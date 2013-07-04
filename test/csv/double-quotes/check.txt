@@ -1,0 +1,6 @@
+data/0/0:string:"\"single literal quote\""
+data/0/1:string:"\"\"double literal quote\"\""
+data/0/2:string:"\"\"\"triple literal quote\"\"\""
+data/1/0:numeric:1
+data/1/1:numeric:2
+data/1/2:numeric:3

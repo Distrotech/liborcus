@@ -284,6 +284,7 @@
 				<F N="../src/liborcus/xls_xml_token_constants.inl"/>
 				<F N="../src/liborcus/xls_xml_tokens.cpp"/>
 				<F N="../src/liborcus/xls_xml_tokens.hpp"/>
+				<F N="../src/liborcus/xls_xml_tokens.inl"/>
 				<F N="../src/liborcus/xlsx_context.cpp"/>
 				<F N="../src/liborcus/xlsx_context.hpp"/>
 				<F N="../src/liborcus/xlsx_handler.cpp"/>

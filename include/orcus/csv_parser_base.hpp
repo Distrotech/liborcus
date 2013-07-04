@@ -85,6 +85,11 @@ protected:
     char cur_char() const;
     char next_char() const;
 
+    /**
+     * This is different from the global 'is_blank' in that it doesn't treat
+     * linefeed and carriage return characters as non-blanks.
+     */
+    bool is_blank(char c) const;
     bool is_delim(char c) const;
     bool is_text_qualifier(char c) const;
 

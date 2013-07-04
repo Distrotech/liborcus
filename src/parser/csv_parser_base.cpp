@@ -62,6 +62,18 @@ char parser_base::next_char() const
     return *(mp_char+1);
 }
 
+bool parser_base::is_blank(char c) const
+{
+    if (c == ' ')
+        return true;
+
+    if (c == '\t')
+        // tab character.
+        return true;
+
+    return false;
+}
+
 bool parser_base::is_delim(char c) const
 {
     return m_config.delimiters.find(c) != std::string::npos;

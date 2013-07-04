@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2012 Kohei Yoshida
+ * Copyright (c) 2011-2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -107,6 +107,10 @@ void csv_parser<_Handler>::row()
             m_handler.end_row();
             return;
         }
+#if ORCUS_DEBUG_CSV
+        else
+            cout << c << endl;
+#endif
 
         assert(is_delim(c));
         next();
@@ -141,7 +145,6 @@ template<typename _Handler>
 void csv_parser<_Handler>::quoted_cell()
 {
 #if ORCUS_DEBUG_CSV
-    using namespace std;
     cout << "--- quoted cell" << endl;
 #endif
     char c = cur_char();
