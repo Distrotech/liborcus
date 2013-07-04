@@ -273,6 +273,27 @@ TESTS += \
 
 endif # WITH_XLSX_FILTER
 
+if WITH_XLS_XML_FILTER
+
+EXTRA_PROGRAMS += orcus-test-xls-xml
+
+# orcus-test-xls-xml
+
+orcus_test_xls_xml_SOURCES = \
+	orcus_test_xls_xml.cpp
+
+orcus_test_xls_xml_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+
+orcus_test_xls_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la -DSRCDIR=\""$(top_srcdir)"\"
+
+TESTS += \
+	 orcus-test-xls-xml
+
+endif # WITH_XLS_XML_FILTER
+
 endif # BUILD_SPREADSHEET_MODEL
 
 distclean-local:
