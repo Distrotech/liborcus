@@ -46,7 +46,8 @@ using namespace std;
 namespace {
 
 const char* dirs[] = {
-    SRCDIR"/test/csv/simple-numbers/"
+    SRCDIR"/test/csv/simple-numbers/",
+    SRCDIR"/test/csv/normal-quotes/"
 };
 
 void test_csv_import()

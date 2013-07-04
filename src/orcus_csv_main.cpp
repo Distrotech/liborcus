@@ -31,6 +31,7 @@
 #include "orcus/spreadsheet/document.hpp"
 
 #include <boost/scoped_ptr.hpp>
+#include <iostream>
 
 using namespace orcus;
 using namespace std;
@@ -45,7 +46,7 @@ int main(int argc, char** argv)
 
     orcus_csv app(fact.get());
     app.read_file(argv[1]);
-    doc->dump();
+    doc->dump_check(cout);
 
     return EXIT_SUCCESS;
 }

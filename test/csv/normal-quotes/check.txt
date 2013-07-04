@@ -1,0 +1,6 @@
+data/0/0:string:"normal quote"
+data/0/1:string:" not quoted"
+data/0/2:string:" \"and other quoted cells\""
+data/1/0:string:"not quoted"
+data/1/1:string:" \"quoted\""
+data/1/2:string:"      and so on...."
