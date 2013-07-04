@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010, 2011 Kohei Yoshida
+ * Copyright (c) 2010-2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -45,7 +45,7 @@
 #include <cstdlib>
 
 #include <mdds/flat_segment_tree.hpp>
-#include <mdds/mixed_type_matrix.hpp>
+#include <mdds/multi_type_matrix.hpp>
 
 #include <ixion/cell.hpp>
 #include <ixion/formula.hpp>
@@ -373,8 +373,8 @@ void sheet::dump() const
     size_t col_count = range.last.column + 1;
     cout << "rows: " << row_count << "  cols: " << col_count << endl;
 
-    typedef mdds::mixed_type_matrix<string, bool> mx_type;
-    mx_type mx(row_count, col_count, mdds::matrix_density_sparse_empty);
+    typedef mdds::multi_type_matrix<mdds::mtm::std_string_trait> mx_type;
+    mx_type mx(row_count, col_count);
 
     // Put all cell values into matrix as string elements first.
     for (size_t row = 0; row < row_count; ++row)
@@ -389,14 +389,14 @@ void sheet::dump() const
                     size_t sindex = cxt.get_string_identifier(pos);
                     const string* p = cxt.get_string(sindex);
                     assert(p);
-                    mx.set_string(row, col, new string(*p));
+                    mx.set(row, col, *p);
                 }
                 break;
                 case ixion::celltype_numeric:
                 {
                     ostringstream os;
                     os << cxt.get_numeric_value(pos) << " [v]";
-                    mx.set_string(row, col, new string(os.str()));
+                    mx.set(row, col, os.str());
                 }
                 break;
                 case ixion::celltype_formula:
@@ -423,7 +423,7 @@ void sheet::dump() const
                         if (res)
                             os << " (" << res->str(mp_impl->m_doc.get_model_context()) << ")";
 
-                        mx.set_string(row, col, new string(os.str()));
+                        mx.set(row, col, os.str());
                     }
                 }
                 break;
@@ -435,18 +435,18 @@ void sheet::dump() const
 
     // Calculate column widths first.
     mx_type::size_pair_type sp = mx.size();
-    vector<size_t> col_widths(sp.second, 0);
+    vector<size_t> col_widths(sp.column, 0);
 
-    for (size_t r = 0; r < sp.first; ++r)
+    for (size_t r = 0; r < sp.row; ++r)
     {
-        for (size_t c = 0; c < sp.second; ++c)
+        for (size_t c = 0; c < sp.column; ++c)
         {
-            if (mx.get_type(r, c) == ::mdds::element_empty)
+            if (mx.get_type(r, c) == mdds::mtm::element_empty)
                 continue;
 
-            const string* p = mx.get_string(r, c);
-            if (col_widths[c] < p->size())
-                col_widths[c] = p->size();
+            const string s = mx.get_string(r, c);
+            if (col_widths[c] < s.size())
+                col_widths[c] = s.size();
         }
     }
 
@@ -472,7 +472,7 @@ void sheet::dump() const
         for (size_t c = 0; c < col_count; ++c)
         {
             size_t cw = col_widths[c]; // column width
-            if (mx.get_type(r, c) == ::mdds::element_empty)
+            if (mx.get_type(r, c) == mdds::mtm::element_empty)
             {
                 for (size_t i = 0; i < cw; ++i)
                     cout << ' ';
@@ -480,9 +480,9 @@ void sheet::dump() const
             }
             else
             {
-                const string* s = mx.get_string(r, c);
-                cout << ' ' << *s;
-                cw -= s->size();
+                const string s = mx.get_string(r, c);
+                cout << ' ' << s;
+                cw -= s.size();
                 for (size_t i = 0; i < cw; ++i)
                     cout << ' ';
                 cout << " |";
