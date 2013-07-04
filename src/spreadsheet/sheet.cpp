@@ -203,7 +203,7 @@ void sheet::set_format(row_t row, col_t col, size_t index)
         pair<cell_format_type::iterator, bool> r =
             mp_impl->m_cell_formats.insert(
                 cell_format_type::value_type(
-                    row, new segment_row_index_type(0, max_col_limit+1, 0)));
+                    col, new segment_row_index_type(0, mp_impl->m_row_size+1, 0)));
 
         if (!r.second)
         {
