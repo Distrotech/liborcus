@@ -500,6 +500,23 @@ void write_cell_position(ostream& os, const pstring& sheet_name, row_t row, col_
     os << sheet_name << '/' << row << '/' << col << ':';
 }
 
+string escape_chars(const string& str)
+{
+    if (str.empty())
+        return str;
+
+    string ret;
+    const char* p = &str[0];
+    const char* p_end = p + str.size();
+    for (; p != p_end; ++p)
+    {
+        if (*p == '"')
+            ret.push_back('\\');
+        ret.push_back(*p);
+    }
+    return ret;
+}
+
 }
 
 void sheet::dump_check(ostream& os, const pstring& sheet_name) const
@@ -526,7 +543,7 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
                     size_t sindex = cxt.get_string_identifier(pos);
                     const string* p = cxt.get_string(sindex);
                     assert(p);
-                    os << "string:\"" << *p << '"' << endl;
+                    os << "string:\"" << escape_chars(*p) << '"' << endl;
                 }
                 break;
                 case ixion::celltype_numeric:
