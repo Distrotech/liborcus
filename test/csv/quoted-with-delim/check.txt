@@ -1,0 +1,2 @@
+data/0/0:string:"This is a single normal quoted cell, and contains a delimiter."
+data/0/1:string:"next cell"

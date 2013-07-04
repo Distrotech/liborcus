@@ -48,7 +48,8 @@ namespace {
 const char* dirs[] = {
     SRCDIR"/test/csv/simple-numbers/",
     SRCDIR"/test/csv/normal-quotes/",
-    SRCDIR"/test/csv/double-quotes/"
+    SRCDIR"/test/csv/double-quotes/",
+    SRCDIR"/test/csv/quoted-with-delim/",
 };
 
 void test_csv_import()
