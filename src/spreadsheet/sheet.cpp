@@ -585,11 +585,10 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
 
 namespace {
 
-template<typename _OSTREAM>
 class html_elem
 {
 public:
-    html_elem(_OSTREAM& strm, const char* name, const char* attr = NULL) :
+    html_elem(ostream& strm, const char* name, const char* attr = NULL) :
         m_strm(strm), m_name(name)
     {
         if (attr)
@@ -604,14 +603,13 @@ public:
     }
 
 private:
-    _OSTREAM& m_strm;
+    ostream& m_strm;
     const char* m_name;
 };
 
-template<typename _OSTREAM>
-void print_formatted_text(_OSTREAM& strm, const string& text, const format_runs_t& formats)
+void print_formatted_text(ostream& strm, const string& text, const format_runs_t& formats)
 {
-    typedef html_elem<_OSTREAM> elem;
+    typedef html_elem elem;
 
     const char* p_span = "span";
 
@@ -701,7 +699,7 @@ void build_style_string(string& str, const import_styles& styles, const xf& fmt)
 
 void sheet::dump_html(const string& filepath) const
 {
-    typedef html_elem<ofstream> elem;
+    typedef html_elem elem;
 
     ofstream file(filepath.c_str());
     if (!file)
@@ -772,7 +770,7 @@ void sheet::dump_html(const string& filepath) const
                         assert(p);
                         const format_runs_t* pformat = sstrings->get_format_runs(sindex);
                         if (pformat)
-                            print_formatted_text<ostringstream>(os, *p, *pformat);
+                            print_formatted_text(os, *p, *pformat);
                         else
                             os << *p;
                     }
