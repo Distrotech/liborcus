@@ -46,7 +46,6 @@ int main(int argc, char** argv)
     orcus_csv app(fact.get());
     app.read_file(argv[1]);
     doc->dump();
-    doc->dump_html("./obj");
 
     return EXIT_SUCCESS;
 }

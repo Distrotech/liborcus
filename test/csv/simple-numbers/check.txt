@@ -1,0 +1,11 @@
+data/0/0:numeric:1
+data/0/1:numeric:2
+data/0/2:numeric:3
+data/0/3:numeric:4
+data/0/4:numeric:5
+data/1/0:numeric:6
+data/1/1:numeric:7
+data/1/2:numeric:8
+data/1/3:numeric:9
+data/1/4:numeric:10
+data/3/0:numeric:11
