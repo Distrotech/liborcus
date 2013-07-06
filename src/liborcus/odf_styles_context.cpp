@@ -30,6 +30,7 @@
 #include "odf_token_constants.hpp"
 
 #include "orcus/measurement.hpp"
+#include "orcus/spreadsheet/import_interface.hpp"
 
 #include <iostream>
 
@@ -108,6 +109,54 @@ public:
     const length_t& get_height() const { return m_height; }
 };
 
+class text_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
+{
+    pstring m_font_name;
+    length_t m_font_size;
+    bool m_bold;
+    bool m_italic;
+
+public:
+    text_prop_attr_parser() : m_bold(false), m_italic(false) {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns == NS_odf_style)
+        {
+            switch (attr.name)
+            {
+                case XML_font_name:
+                    m_font_name = attr.value;
+                break;
+                case XML_font_size:
+                    m_font_size = to_length(attr.value);
+                break;
+                default:
+                    ;
+            }
+        }
+        else if (attr.ns == NS_odf_fo)
+        {
+            switch (attr.name)
+            {
+                case XML_font_style:
+                    m_italic = attr.value == "italic";
+                break;
+                case XML_font_weight:
+                    m_bold = attr.value == "bold";
+                break;
+                default:
+                    ;
+            }
+        }
+    }
+
+    pstring get_font_name() const { return m_font_name; }
+    length_t get_font_size() const { return m_font_size; }
+    bool is_bold() const { return m_bold; }
+    bool is_italic() const { return m_italic; }
+};
+
 }
 
 style_value_converter::style_value_converter()
@@ -121,6 +170,7 @@ style_value_converter::style_value_converter()
         { "table", style_family_table },
         { "table-column", style_family_table_column },
         { "table-row", style_family_table_row },
+        { "table-cell", style_family_table_cell },
         { "text", style_family_text }
     };
 
@@ -140,8 +190,10 @@ odf_style_family style_value_converter::to_style_family(const pstring& val) cons
 }
 
 automatic_styles_context::automatic_styles_context(
-    session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles) :
+    session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles,
+    spreadsheet::iface::import_factory* factory) :
     xml_context_base(session_cxt, tk),
+    mp_factory(factory),
     m_styles(styles)
 {
 }
@@ -211,7 +263,50 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 xml_element_expected(parent, NS_odf_style, XML_style);
             break;
             case XML_text_properties:
+            {
                 xml_element_expected(parent, NS_odf_style, XML_style);
+                spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
+                if (styles)
+                {
+                    text_prop_attr_parser func;
+                    func = std::for_each(attrs.begin(), attrs.end(), func);
+
+                    // Commit the font data.
+                    pstring font_name = func.get_font_name();
+                    if (!font_name.empty())
+                        styles->set_font_name(font_name.get(), font_name.size());
+
+                    length_t font_size = func.get_font_size();
+                    if (font_size.unit == length_unit_point)
+                        styles->set_font_size(font_size.value);
+
+                    if (func.is_bold())
+                        styles->set_font_bold(true);
+
+                    if (func.is_italic())
+                        styles->set_font_italic(true);
+
+                    size_t font_id = styles->commit_font();
+
+                    switch (m_current_style->family)
+                    {
+                        case style_family_table_cell:
+                        {
+                            odf_style::cell* data = m_current_style->cell_data;
+                            data->font = font_id;
+                        }
+                        break;
+                        case style_family_text:
+                        {
+                            odf_style::text* data = m_current_style->text_data;
+                            data->font = font_id;
+                        }
+                        break;
+                        default:
+                            ;
+                    }
+                }
+            }
             break;
             default:
                 warn_unhandled();

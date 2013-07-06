@@ -34,6 +34,7 @@
 
 #include <vector>
 #include <boost/scoped_ptr.hpp>
+#include <boost/unordered_map.hpp>
 
 namespace orcus {
 
@@ -46,6 +47,8 @@ class import_sheet;
 
 class ods_content_xml_context : public xml_context_base
 {
+    typedef boost::unordered_map<pstring, size_t, pstring::hash> name2id_type;
+
 public:
     struct row_attr
     {
@@ -61,6 +64,7 @@ public:
         cell_value_type type;
         double value;
         pstring date_value;
+        pstring style_name;
 
         cell_attr();
     };
@@ -109,6 +113,7 @@ private:
     bool m_has_content;
 
     odf_styles_map_type m_styles; /// map storing all automatic styles by their names.
+    name2id_type m_cell_format_map; /// map of style names to cell format (xf) IDs.
 };
 
 }

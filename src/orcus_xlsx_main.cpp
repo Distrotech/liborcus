@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     orcus_xlsx app(factory.get());
     app.read_file(argv[1]);
     doc->dump();
-//  doc->dump_html("./html");
+    doc->dump_html("./html");
 
     return EXIT_SUCCESS;
 }

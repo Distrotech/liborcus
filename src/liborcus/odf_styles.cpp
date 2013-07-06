@@ -41,6 +41,9 @@ odf_style::odf_style(const pstring& _name, odf_style_family _family) :
         case style_family_table_row:
             row_data = new row;
         break;
+        case style_family_table_cell:
+            cell_data = new cell;
+        break;
         case style_family_table:
             table_data = new table;
         break;
@@ -68,6 +71,9 @@ odf_style::~odf_style()
         break;
         case style_family_table_row:
             delete row_data;
+        break;
+        case style_family_table_cell:
+            delete cell_data;
         break;
         case style_family_table:
             delete table_data;

@@ -152,11 +152,15 @@ public:
         if (attr.ns == NS_odf_office)
             process_ns_office(attr);
     }
+
 private:
     void process_ns_table(const xml_token_attr_t &attr)
     {
         switch (attr.name)
         {
+            case XML_style_name:
+                m_attr.style_name = attr.value;
+            break;
             case XML_number_columns_repeated:
             {
                 const char* end = attr.value.get() + attr.value.size();
@@ -256,7 +260,7 @@ xml_context_base* ods_content_xml_context::create_child_context(xmlns_id_t ns, x
 
     if (ns == NS_odf_office && name == XML_automatic_styles)
     {
-        mp_child.reset(new automatic_styles_context(get_session_context(), get_tokens(), m_styles));
+        mp_child.reset(new automatic_styles_context(get_session_context(), get_tokens(), m_styles, mp_factory));
         return mp_child.get();
     }
 
@@ -285,6 +289,19 @@ void ods_content_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name,
                 break;
                 case style_family_table_row:
                     cout << "row height: " << it->second->row_data->height.print();
+                break;
+                case style_family_table_cell:
+                {
+                    const odf_style::cell& cell = *it->second->cell_data;
+                    cout << "font ID: " << cell.font;
+                    spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
+                    if (styles)
+                    {
+                        styles->set_xf_font(cell.font);
+                        size_t xf_id = styles->commit_cell_xf();
+                        m_cell_format_map.insert(name2id_type::value_type(it->first, xf_id));
+                    }
+                }
                 break;
                 default:
                     ;
@@ -483,6 +500,10 @@ void ods_content_xml_context::start_cell(const xml_attrs_t& attrs)
 
 void ods_content_xml_context::end_cell()
 {
+    name2id_type::const_iterator it = m_cell_format_map.find(m_cell_attr.style_name);
+    if (it != m_cell_format_map.end())
+        m_tables.back()->set_format(m_row, m_col, it->second);
+
     push_cell_value();
 
     ++m_col;

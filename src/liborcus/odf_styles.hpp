@@ -41,6 +41,7 @@ enum odf_style_family
     style_family_unknown = 0,
     style_family_table_column,
     style_family_table_row,
+    style_family_table_cell,
     style_family_table,
     style_family_graphic,
     style_family_paragraph,
@@ -62,6 +63,11 @@ struct odf_style : boost::noncopyable
         length_t height;
     };
 
+    struct cell
+    {
+        size_t font;
+    };
+
     struct table
     {
     };
@@ -76,6 +82,7 @@ struct odf_style : boost::noncopyable
 
     struct text
     {
+        size_t font;
     };
 
     pstring name;
@@ -85,6 +92,7 @@ struct odf_style : boost::noncopyable
         column* column_data;
         row* row_data;
         table* table_data;
+        cell* cell_data;
         graphic* graphic_data;
         paragraph* paragraph_data;
         text* text_data;

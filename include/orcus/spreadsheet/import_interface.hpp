@@ -120,17 +120,10 @@ public:
     virtual void set_number_format(const char* s, size_t n) = 0;
     virtual size_t commit_number_format() = 0;
 
-    // cell style xf
-
-    virtual void set_cell_style_xf_count(size_t n) = 0;
-    virtual size_t commit_cell_style_xf() = 0;
-
-    // cell xf
+    // cell format and cell style format (xf == cell format)
 
     virtual void set_cell_xf_count(size_t n) = 0;
-    virtual size_t commit_cell_xf() = 0;
-
-    // xf (cell format) - used both by cell xf and cell style xf.
+    virtual void set_cell_style_xf_count(size_t n) = 0;
 
     virtual void set_xf_font(size_t index) = 0;
     virtual void set_xf_fill(size_t index) = 0;
@@ -138,6 +131,9 @@ public:
     virtual void set_xf_protection(size_t index) = 0;
     virtual void set_xf_number_format(size_t index) = 0;
     virtual void set_xf_style_xf(size_t index) = 0;
+
+    virtual size_t commit_cell_xf() = 0;
+    virtual size_t commit_cell_style_xf() = 0;
 
     // cell style entry
 

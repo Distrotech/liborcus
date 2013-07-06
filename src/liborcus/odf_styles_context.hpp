@@ -37,6 +37,10 @@
 
 namespace orcus {
 
+namespace spreadsheet { namespace iface {
+    class import_factory;
+}}
+
 class style_value_converter
 {
     typedef boost::unordered_map<pstring, odf_style_family, pstring::hash> style_families_type;
@@ -54,7 +58,8 @@ public:
 class automatic_styles_context : public xml_context_base
 {
 public:
-    automatic_styles_context(session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles);
+    automatic_styles_context(
+        session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles, spreadsheet::iface::import_factory* factory);
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
     virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name);
@@ -64,6 +69,7 @@ public:
     virtual void characters(const pstring& str, bool transient);
 
 private:
+    spreadsheet::iface::import_factory* mp_factory;
     odf_styles_map_type& m_styles;
 
     style_value_converter m_converter;
