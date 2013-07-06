@@ -128,9 +128,6 @@ public:
                 case XML_font_name:
                     m_font_name = attr.value;
                 break;
-                case XML_font_size:
-                    m_font_size = to_length(attr.value);
-                break;
                 default:
                     ;
             }
@@ -139,6 +136,9 @@ public:
         {
             switch (attr.name)
             {
+                case XML_font_size:
+                    m_font_size = to_length(attr.value);
+                break;
                 case XML_font_style:
                     m_italic = attr.value == "italic";
                 break;
