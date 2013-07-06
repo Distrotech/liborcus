@@ -196,20 +196,7 @@ automatic_styles_context::automatic_styles_context(
     mp_factory(factory),
     m_styles(styles)
 {
-    spreadsheet::iface::import_styles* p_styles = mp_factory->get_styles();
-    if (p_styles)
-    {
-        // Set default styles. Default styles must be associated with an index of 0.
-        // Set empty styles for all style types before importing real styles.
-        p_styles->commit_font();
-        p_styles->commit_fill();
-        p_styles->commit_border();
-        p_styles->commit_cell_protection();
-        p_styles->commit_number_format();
-        p_styles->commit_cell_style();
-        p_styles->commit_cell_style_xf();
-        p_styles->commit_cell_xf();
-    }
+    commit_default_styles();
 }
 
 bool automatic_styles_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
@@ -353,6 +340,24 @@ bool automatic_styles_context::end_element(xmlns_id_t ns, xml_token_t name)
 
 void automatic_styles_context::characters(const pstring& str, bool transient)
 {
+}
+
+void automatic_styles_context::commit_default_styles()
+{
+    spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
+    if (!styles)
+        return;
+
+    // Set default styles. Default styles must be associated with an index of 0.
+    // Set empty styles for all style types before importing real styles.
+    styles->commit_font();
+    styles->commit_fill();
+    styles->commit_border();
+    styles->commit_cell_protection();
+    styles->commit_number_format();
+    styles->commit_cell_style();
+    styles->commit_cell_style_xf();
+    styles->commit_cell_xf();
 }
 
 }

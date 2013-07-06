@@ -69,6 +69,9 @@ public:
     virtual void characters(const pstring& str, bool transient);
 
 private:
+    void commit_default_styles();
+
+private:
     spreadsheet::iface::import_factory* mp_factory;
     odf_styles_map_type& m_styles;
 
