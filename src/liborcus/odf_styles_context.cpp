@@ -196,6 +196,20 @@ automatic_styles_context::automatic_styles_context(
     mp_factory(factory),
     m_styles(styles)
 {
+    spreadsheet::iface::import_styles* p_styles = mp_factory->get_styles();
+    if (p_styles)
+    {
+        // Set default styles. Default styles must be associated with an index of 0.
+        // Set empty styles for all style types before importing real styles.
+        p_styles->commit_font();
+        p_styles->commit_fill();
+        p_styles->commit_border();
+        p_styles->commit_cell_protection();
+        p_styles->commit_number_format();
+        p_styles->commit_cell_style();
+        p_styles->commit_cell_style_xf();
+        p_styles->commit_cell_xf();
+    }
 }
 
 bool automatic_styles_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const

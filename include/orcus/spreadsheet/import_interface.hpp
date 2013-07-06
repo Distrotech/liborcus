@@ -80,7 +80,10 @@ public:
 };
 
 /**
- * Interface for styles.
+ * Interface for styles. Note that because the default style must have an
+ * index of 0 in each style category, the caller must set the default styles
+ * first before importing and setting real styles. ID's of styles are
+ * assigned sequentially starting with 0 and upward in each style category.
  */
 class import_styles
 {
