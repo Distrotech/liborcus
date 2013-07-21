@@ -228,10 +228,11 @@ ods_content_xml_context::cell_attr::cell_attr() :
 ods_content_xml_context::ods_content_xml_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
     xml_context_base(session_cxt, tokens),
     mp_factory(factory),
-    m_child_para(session_cxt, tokens, factory->get_shared_strings()),
     m_row(0), m_col(0),
     m_para_index(0),
-    m_has_content(false)
+    m_has_content(false),
+    m_styles(),
+    m_child_para(session_cxt, tokens, factory->get_shared_strings(), m_styles)
 {
 }
 

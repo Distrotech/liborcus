@@ -30,12 +30,12 @@
 
 namespace orcus {
 
-single_attr_getter::single_attr_getter(string_pool& pool, xml_token_t name) :
-    m_pool(pool), m_name(name) {}
+single_attr_getter::single_attr_getter(string_pool& pool, xmlns_id_t ns, xml_token_t name) :
+    m_pool(pool), m_ns(ns), m_name(name) {}
 
 void single_attr_getter::operator() (const xml_token_attr_t& attr)
 {
-    if (attr.name != m_name)
+    if (attr.ns != m_ns || attr.name != m_name)
         return;
 
     m_value = attr.value;

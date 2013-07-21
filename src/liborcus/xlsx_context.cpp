@@ -146,7 +146,7 @@ void xlsx_shared_strings_context::start_element(xmlns_id_t ns, xml_token_t name,
         {
             // font size
             xml_element_expected(parent, NS_ooxml_xlsx, XML_rPr);
-            pstring s = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_val)).get_value();
+            pstring s = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_val)).get_value();
             double point = strtod(s.get(), NULL);
             mp_strings->set_segment_font_size(point);
         }
@@ -159,7 +159,7 @@ void xlsx_shared_strings_context::start_element(xmlns_id_t ns, xml_token_t name,
         {
             // font
             xml_element_expected(parent, NS_ooxml_xlsx, XML_rPr);
-            pstring font = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_val)).get_value();
+            pstring font = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_val)).get_value();
             mp_strings->set_segment_font_name(font.get(), font.size());
         }
         break;
@@ -448,7 +448,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         case XML_fonts:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
-            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_count)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
             size_t font_count = strtoul(ps.get(), NULL, 10);
             mp_styles->set_font_count(font_count);
         }
@@ -467,7 +467,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         case XML_u:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_font);
-            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_val)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_val)).get_value();
             if (ps == "double")
                 mp_styles->set_font_underline(spreadsheet::underline_double);
             else if (ps == "single")
@@ -481,7 +481,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         case XML_sz:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_font);
-            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_val)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_val)).get_value();
             double font_size = strtod(ps.get(), NULL);
             mp_styles->set_font_size(font_size);
         }
@@ -501,7 +501,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         case XML_name:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_font);
-            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_val)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_val)).get_value();
             mp_styles->set_font_name(ps.get(), ps.size());
         }
         break;
@@ -514,7 +514,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         case XML_fills:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
-            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_count)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
             size_t fill_count = strtoul(ps.get(), NULL, 10);
             mp_styles->set_fill_count(fill_count);
         }
@@ -525,7 +525,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         case XML_patternFill:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_fill);
-            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_patternType)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_patternType)).get_value();
             mp_styles->set_fill_pattern_type(ps.get(), ps.size());
         }
         break;
@@ -544,7 +544,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         case XML_borders:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
-            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_count)).get_value();
+            pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
             size_t border_count = strtoul(ps.get(), NULL, 10);
             mp_styles->set_border_count(border_count);
         }
@@ -591,7 +591,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
             pstring ps = for_each(
-                attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_count)).get_value();
+                attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
             size_t n = strtoul(ps.get(), NULL, 10);
             mp_styles->set_cell_style_xf_count(n);
             m_cell_style_xf = true;
@@ -602,7 +602,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             // Collection of un-named cell formats used in the document.
             xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
             pstring ps = for_each(
-                attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_count)).get_value();
+                attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
             size_t n = strtoul(ps.get(), NULL, 10);
             mp_styles->set_cell_xf_count(n);
             m_cell_style_xf = false;
@@ -612,7 +612,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
             pstring ps = for_each(
-                attrs.begin(), attrs.end(), single_attr_getter(m_pool, XML_count)).get_value();
+                attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
             size_t n = strtoul(ps.get(), NULL, 10);
             mp_styles->set_cell_style_count(n);
         }

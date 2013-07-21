@@ -28,8 +28,10 @@
 #include "odf_para_context.hpp"
 #include "odf_token_constants.hpp"
 #include "odf_namespace_types.hpp"
+#include "xml_context_global.hpp"
 
 #include "orcus/spreadsheet/import_interface.hpp"
+#include "orcus/exception.hpp"
 
 #include <iostream>
 #include <cassert>
@@ -38,11 +40,12 @@ using namespace std;
 
 namespace orcus {
 
-text_para_context::text_para_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_shared_strings* ssb) :
+text_para_context::text_para_context(
+    session_context& session_cxt, const tokens& tokens,
+    spreadsheet::iface::import_shared_strings* ssb, odf_styles_map_type& styles) :
     xml_context_base(session_cxt, tokens),
-    mp_sstrings(ssb),
-    m_string_index(0),
-    m_formatted(false)
+    mp_sstrings(ssb), m_styles(styles),
+    m_string_index(0), m_formatted(false)
 {
 }
 
@@ -78,9 +81,14 @@ void text_para_context::start_element(xmlns_id_t ns, xml_token_t name, const xml
                 m_formatted = false;
             break;
             case XML_span:
+            {
                 // text span.
                 xml_element_expected(parent, NS_odf_text, XML_p);
+                pstring style_name =
+                    for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_odf_text, XML_style_name)).get_value();
+                m_span_stack.push_back(style_name);
                 m_formatted = true;
+            }
             break;
             case XML_s:
                 // control character.  ignored for now.
@@ -95,40 +103,54 @@ void text_para_context::start_element(xmlns_id_t ns, xml_token_t name, const xml
 
 bool text_para_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
-    if (ns == NS_odf_text && name == XML_p)
+    if (ns == NS_odf_text)
     {
-        // paragraph
-        if (m_formatted)
+        switch (name)
         {
-            // this paragraph consists of several segments, some of which may
-            // be formatted.
-
-            vector<pstring>::const_iterator itr = m_contents.begin(), itr_end = m_contents.end();
-            for (; itr != itr_end; ++itr)
+            case XML_p:
             {
-                const pstring& ps = *itr;
-                mp_sstrings->append_segment(ps.get(), ps.size());
-            }
-            m_string_index = mp_sstrings->commit_segments();
-        }
-        else if (!m_contents.empty())
-        {
-            // Unformatted simple text paragraph.  We may still get several
-            // segments in presence of control characters separating the
-            // paragraph text.
+                // paragraph
+                if (m_formatted)
+                {
+                    // this paragraph consists of several segments, some of which may
+                    // be formatted.
 
-            vector<pstring>::const_iterator itr = m_contents.begin(), itr_end = m_contents.end();
-            for (; itr != itr_end; ++itr)
-            {
-                const pstring& ps = *itr;
-                mp_sstrings->append_segment(ps.get(), ps.size());
+                    vector<pstring>::const_iterator itr = m_contents.begin(), itr_end = m_contents.end();
+                    for (; itr != itr_end; ++itr)
+                    {
+                        const pstring& ps = *itr;
+                        mp_sstrings->append_segment(ps.get(), ps.size());
+                    }
+                    m_string_index = mp_sstrings->commit_segments();
+                }
+                else if (!m_contents.empty())
+                {
+                    // Unformatted simple text paragraph.  We may still get several
+                    // segments in presence of control characters separating the
+                    // paragraph text.
+
+                    vector<pstring>::const_iterator itr = m_contents.begin(), itr_end = m_contents.end();
+                    for (; itr != itr_end; ++itr)
+                    {
+                        const pstring& ps = *itr;
+                        mp_sstrings->append_segment(ps.get(), ps.size());
+                    }
+                    m_string_index = mp_sstrings->commit_segments();
+                }
             }
-            m_string_index = mp_sstrings->commit_segments();
+            break;
+            case XML_span:
+            {
+                // text span.
+                if (m_span_stack.empty())
+                    throw xml_structure_error("</text:span> encountered without matching opening element.");
+
+                m_span_stack.pop_back();
+            }
+            break;
+            default:
+                ;
         }
-    }
-    else if (ns == NS_odf_text && name == XML_span)
-    {
-        // text span.
     }
     return pop_stack(ns, name);
 }

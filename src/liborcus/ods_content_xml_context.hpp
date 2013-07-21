@@ -101,7 +101,6 @@ private:
     spreadsheet::iface::import_factory* mp_factory;
     std::vector<spreadsheet::iface::import_sheet*> m_tables;
 
-    text_para_context m_child_para;
     boost::scoped_ptr<xml_context_base> mp_child;
 
     row_attr    m_row_attr;
@@ -114,6 +113,8 @@ private:
 
     odf_styles_map_type m_styles; /// map storing all automatic styles by their names.
     name2id_type m_cell_format_map; /// map of style names to cell format (xf) IDs.
+
+    text_para_context m_child_para;
 };
 
 }
