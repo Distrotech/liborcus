@@ -112,9 +112,9 @@ void test_column_width()
     {
         orcus::xml_token_t elem = XML_ColInfo;
         orcus::xml_attrs_t attrs;
-        attrs.push_back(xml_token_attr_t(ns, XML_No, "2"));
-        attrs.push_back(xml_token_attr_t(ns, XML_Unit, "37.3"));
-        attrs.push_back(xml_token_attr_t(ns, XML_Unit, "37.3"));
+        attrs.push_back(xml_token_attr_t(ns, XML_No, "2", false));
+        attrs.push_back(xml_token_attr_t(ns, XML_Unit, "37.3", false));
+        attrs.push_back(xml_token_attr_t(ns, XML_Unit, "37.3", false));
         context.start_element(ns, elem, attrs);
         context.end_element(ns, elem);
     }

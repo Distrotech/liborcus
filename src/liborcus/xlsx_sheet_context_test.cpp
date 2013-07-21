@@ -104,7 +104,7 @@ void test_cell_bool()
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
     orcus::xml_attrs_t attrs;
-    attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_t, "b"));
+    attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_t, "b", false));
     context.start_element(ns, elem, attrs);
 
     {
@@ -131,8 +131,8 @@ void test_array_formula()
 
     {
         xml_attrs_t formula_attrs;
-        formula_attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_t, "array"));
-        formula_attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_ref, "B3:B4"));
+        formula_attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_t, "array", false));
+        formula_attrs.push_back(xml_token_attr_t(NS_ooxml_xlsx, XML_ref, "B3:B4", false));
         context.start_element(ns, XML_f, formula_attrs);
         context.characters("A1:A2", false);
         context.end_element(ns, XML_f);
@@ -157,9 +157,9 @@ void test_hidden_col()
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_col;
     orcus::xml_attrs_t attrs;
-    attrs.push_back(orcus::xml_token_attr_t(ns, XML_min, "2"));
-    attrs.push_back(orcus::xml_token_attr_t(ns, XML_max, "2"));
-    attrs.push_back(orcus::xml_token_attr_t(ns, XML_hidden, "1"));
+    attrs.push_back(orcus::xml_token_attr_t(ns, XML_min, "2", false));
+    attrs.push_back(orcus::xml_token_attr_t(ns, XML_max, "2", false));
+    attrs.push_back(orcus::xml_token_attr_t(ns, XML_hidden, "1", false));
     context.start_element(ns, elem, attrs);
     context.end_element(ns, elem);
 }
@@ -174,8 +174,8 @@ void test_hidden_row()
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_row;
     orcus::xml_attrs_t attrs;
-    attrs.push_back(orcus::xml_token_attr_t(ns, XML_r, "4"));
-    attrs.push_back(orcus::xml_token_attr_t(ns, XML_hidden, "1"));
+    attrs.push_back(orcus::xml_token_attr_t(ns, XML_r, "4", false));
+    attrs.push_back(orcus::xml_token_attr_t(ns, XML_hidden, "1", false));
     context.start_element(ns, elem, attrs);
     context.end_element(ns, elem);
 }

@@ -25,11 +25,13 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_XLSX_CONTEXT_HPP__
-#define __ORCUS_XLSX_CONTEXT_HPP__
+#ifndef ORCUS_XLSX_CONTEXT_HPP
+#define ORCUS_XLSX_CONTEXT_HPP
+
+#include "orcus/spreadsheet/types.hpp"
+#include "orcus/string_pool.hpp"
 
 #include "xml_context_base.hpp"
-#include "orcus/spreadsheet/types.hpp"
 #include "xlsx_types.hpp"
 
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -61,6 +63,7 @@ public:
 
 private:
     spreadsheet::iface::import_shared_strings* mp_strings;
+    string_pool m_pool;
     pstring m_cur_str;
     bool m_in_segments;
 };
@@ -85,6 +88,7 @@ public:
 
 private:
     spreadsheet::iface::import_styles* mp_styles;
+    string_pool m_pool;
     bool m_cell_style_xf;
 };
 

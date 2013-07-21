@@ -142,9 +142,9 @@ void test_cell_value()
     orcus::xmlns_id_t ns = NS_gnumeric_gnm;
     orcus::xml_token_t elem = XML_Cell;
     orcus::xml_attrs_t attrs;
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "1"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "2"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ValueType, "40"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "1", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "2", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ValueType, "40", false));
     context.start_element(ns, elem, attrs);
     context.characters("5", false);
     context.end_element(ns, elem);
@@ -161,9 +161,9 @@ void test_cell_bool()
     orcus::xmlns_id_t ns = NS_gnumeric_gnm;
     orcus::xml_token_t elem = XML_Cell;
     orcus::xml_attrs_t attrs;
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "31"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "32"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ValueType, "20"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "31", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "32", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ValueType, "20", false));
     context.start_element(ns, elem, attrs);
     context.characters("TRUE", false);
     context.end_element(ns, elem);
@@ -180,9 +180,9 @@ void test_cell_string()
     orcus::xmlns_id_t ns = NS_gnumeric_gnm;
     orcus::xml_token_t elem = XML_Cell;
     orcus::xml_attrs_t attrs;
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "10"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "321"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ValueType, "60"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "10", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "321", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ValueType, "60", false));
     context.start_element(ns, elem, attrs);
     context.characters("14 char string", false);
     context.end_element(ns, elem);
@@ -200,9 +200,9 @@ void test_shared_formula_with_string()
     orcus::xml_token_t elem = XML_Cell;
     orcus::xml_attrs_t attrs;
 
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "5"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "15"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ExprID, "2"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "5", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "15", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ExprID, "2", false));
 
     context.start_element(ns, elem, attrs);
     context.characters("=basicFormulaString", false);
@@ -221,9 +221,9 @@ void test_shared_formula_without_string()
     orcus::xml_token_t elem = XML_Cell;
     orcus::xml_attrs_t attrs;
 
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "6"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "16"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ExprID, "3"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "6", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "16", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_ExprID, "3", false));
 
     context.start_element(ns, elem, attrs);
     context.end_element(ns, elem);
@@ -240,8 +240,8 @@ void test_cell_formula()
     orcus::xmlns_id_t ns = NS_gnumeric_gnm;
     orcus::xml_token_t elem = XML_Cell;
     orcus::xml_attrs_t attrs;
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "9"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "11"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "9", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "11", false));
     context.start_element(ns, elem, attrs);
     context.characters("=formula", false);
     context.end_element(ns, elem);
@@ -258,10 +258,10 @@ void test_cell_array_formula()
     orcus::xmlns_id_t ns = NS_gnumeric_gnm;
     orcus::xml_token_t elem = XML_Cell;
     orcus::xml_attrs_t attrs;
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "19"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "111"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Rows, "2"));
-    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Cols, "3"));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Row, "19", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Col, "111", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Rows, "2", false));
+    attrs.push_back(xml_token_attr_t(NS_gnumeric_gnm, XML_Cols, "3", false));
     context.start_element(ns, elem, attrs);
     context.characters("=arrayFormula", false);
     context.end_element(ns, elem);
