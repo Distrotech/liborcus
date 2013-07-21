@@ -26,13 +26,15 @@
  ************************************************************************/
 
 #include "xlsx_context.hpp"
-#include "orcus/global.hpp"
-#include "orcus/tokens.hpp"
 #include "ooxml_global.hpp"
 #include "ooxml_token_constants.hpp"
 #include "ooxml_namespace_types.hpp"
 #include "ooxml_types.hpp"
 #include "ooxml_schemas.hpp"
+#include "xml_context_global.hpp"
+
+#include "orcus/global.hpp"
+#include "orcus/tokens.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
 
 #include <iostream>
@@ -78,30 +80,6 @@ public:
 private:
     size_t m_count;
     size_t m_unique_count;
-};
-
-/**
- * Use this when we need to just get the value of a single attribute.
- */
-class single_attr_getter : public unary_function<xml_token_attr_t, void>
-{
-    string_pool& m_pool;
-    pstring m_value;
-    xml_token_t m_name;
-public:
-    single_attr_getter(string_pool& pool, xml_token_t name) : m_pool(pool), m_name(name) {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.name == m_name)
-        {
-            m_value = attr.value;
-            if (attr.transient)
-                m_value = m_pool.intern(m_value).first;
-        }
-    }
-
-    pstring get_value() const { return m_value; }
 };
 
 }

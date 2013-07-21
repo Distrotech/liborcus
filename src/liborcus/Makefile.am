@@ -26,6 +26,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	tokens.cpp \
 	xml_context_base.hpp \
 	xml_context_base.cpp \
+	xml_context_global.hpp \
+	xml_context_global.cpp \
 	xml_map_tree.hpp \
 	xml_map_tree.cpp \
 	xml_stream_handler.hpp \
