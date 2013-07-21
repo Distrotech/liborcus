@@ -303,6 +303,12 @@ void ods_content_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name,
                     }
                 }
                 break;
+                case style_family_text:
+                {
+                    const odf_style::text& data = *it->second->text_data;
+                    cout << "font ID: " << data.font;
+                }
+                break;
                 default:
                     ;
             }
