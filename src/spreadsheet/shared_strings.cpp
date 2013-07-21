@@ -26,6 +26,7 @@
  ************************************************************************/
 
 #include "orcus/spreadsheet/shared_strings.hpp"
+#include "orcus/spreadsheet/styles.hpp"
 
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
@@ -70,8 +71,8 @@ bool format_run::formatted() const
     return false;
 }
 
-import_shared_strings::import_shared_strings(orcus::string_pool& sp, ixion::model_context& cxt) :
-    m_string_pool(sp), m_cxt(cxt), mp_cur_format_runs(NULL) {}
+import_shared_strings::import_shared_strings(orcus::string_pool& sp, ixion::model_context& cxt, import_styles& styles) :
+    m_string_pool(sp), m_cxt(cxt), m_styles(styles), mp_cur_format_runs(NULL) {}
 
 import_shared_strings::~import_shared_strings()
 {
@@ -99,6 +100,18 @@ const format_runs_t* import_shared_strings::get_format_runs(size_t index) const
     if (itr != m_formats.end())
         return itr->second;
     return NULL;
+}
+
+void import_shared_strings::set_segment_font(size_t font_index)
+{
+    const font* font_data = m_styles.get_font(font_index);
+    if (!font_data)
+        return;
+
+    m_cur_format.bold = font_data->bold;
+    m_cur_format.italic = font_data->italic;
+    m_cur_format.font = font_data->name; // font names are already interned when set.
+    m_cur_format.font_size = font_data->size;
 }
 
 void import_shared_strings::set_segment_bold(bool b)

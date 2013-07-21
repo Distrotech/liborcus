@@ -41,6 +41,7 @@ public:
 
     virtual size_t add(const char* s, size_t n);
 
+    virtual void set_segment_font(size_t font_index);
     virtual void set_segment_bold(bool b);
     virtual void set_segment_italic(bool b);
     virtual void set_segment_font_name(const char* s, size_t n);

@@ -165,9 +165,20 @@ void text_para_context::flush_segment()
 
     m_has_content = true;
 
-    pstring style;
+    const odf_style* style = NULL;
     if (!m_span_stack.empty())
-        style = m_span_stack.back();
+    {
+        pstring style_name = m_span_stack.back();
+        odf_styles_map_type::const_iterator it = m_styles.find(style_name);
+        if (it != m_styles.end())
+            style = it->second;
+    }
+
+    if (style && style->family == style_family_text)
+    {
+        const odf_style::text* data = style->text_data;
+        mp_sstrings->set_segment_font(data->font);
+    }
 
     vector<pstring>::const_iterator it = m_contents.begin(), it_end = m_contents.end();
     for (; it != it_end; ++it)

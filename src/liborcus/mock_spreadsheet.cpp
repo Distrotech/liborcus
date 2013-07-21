@@ -89,6 +89,11 @@ size_t import_shared_strings::add(const char*, size_t)
     return 0;
 }
 
+void import_shared_strings::set_segment_font(size_t)
+{
+    assert(false);
+}
+
 void import_shared_strings::set_segment_bold(bool)
 {
     assert(false);

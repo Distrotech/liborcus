@@ -46,6 +46,8 @@ class string_pool;
 
 namespace spreadsheet {
 
+class import_styles;
+
 struct ORCUS_DLLPUBLIC format_run
 {
     size_t pos;
@@ -77,12 +79,13 @@ public:
     // format runs for all shared strings, mapped by string IDs.
     typedef boost::unordered_map<size_t, format_runs_t*> format_runs_map_type;
 
-    import_shared_strings(orcus::string_pool& sp, ixion::model_context& cxt);
+    import_shared_strings(orcus::string_pool& sp, ixion::model_context& cxt, import_styles& styles);
     virtual ~import_shared_strings();
 
     virtual size_t append(const char* s, size_t n);
     virtual size_t add(const char* s, size_t n);
 
+    virtual void set_segment_font(size_t font_index);
     virtual void set_segment_bold(bool b);
     virtual void set_segment_italic(bool b);
     virtual void set_segment_font_name(const char* s, size_t n);
@@ -97,6 +100,7 @@ public:
 private:
     orcus::string_pool& m_string_pool;
     ixion::model_context& m_cxt;
+    import_styles& m_styles;
 
     /**
      * Container for all format runs of all formatted strings.  Format runs
