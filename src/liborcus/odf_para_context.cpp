@@ -45,7 +45,7 @@ text_para_context::text_para_context(
     spreadsheet::iface::import_shared_strings* ssb, odf_styles_map_type& styles) :
     xml_context_base(session_cxt, tokens),
     mp_sstrings(ssb), m_styles(styles),
-    m_string_index(0), m_formatted(false)
+    m_string_index(0), m_has_content(false)
 {
 }
 
@@ -78,16 +78,16 @@ void text_para_context::start_element(xmlns_id_t ns, xml_token_t name, const xml
             case XML_p:
                 // paragraph
                 xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
-                m_formatted = false;
             break;
             case XML_span:
             {
                 // text span.
                 xml_element_expected(parent, NS_odf_text, XML_p);
+                flush_segment();
                 pstring style_name =
                     for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_odf_text, XML_style_name)).get_value();
                 m_span_stack.push_back(style_name);
-                m_formatted = true;
+
             }
             break;
             case XML_s:
@@ -110,33 +110,8 @@ bool text_para_context::end_element(xmlns_id_t ns, xml_token_t name)
             case XML_p:
             {
                 // paragraph
-                if (m_formatted)
-                {
-                    // this paragraph consists of several segments, some of which may
-                    // be formatted.
-
-                    vector<pstring>::const_iterator itr = m_contents.begin(), itr_end = m_contents.end();
-                    for (; itr != itr_end; ++itr)
-                    {
-                        const pstring& ps = *itr;
-                        mp_sstrings->append_segment(ps.get(), ps.size());
-                    }
-                    m_string_index = mp_sstrings->commit_segments();
-                }
-                else if (!m_contents.empty())
-                {
-                    // Unformatted simple text paragraph.  We may still get several
-                    // segments in presence of control characters separating the
-                    // paragraph text.
-
-                    vector<pstring>::const_iterator itr = m_contents.begin(), itr_end = m_contents.end();
-                    for (; itr != itr_end; ++itr)
-                    {
-                        const pstring& ps = *itr;
-                        mp_sstrings->append_segment(ps.get(), ps.size());
-                    }
-                    m_string_index = mp_sstrings->commit_segments();
-                }
+                flush_segment();
+                m_string_index = mp_sstrings->commit_segments();
             }
             break;
             case XML_span:
@@ -145,6 +120,7 @@ bool text_para_context::end_element(xmlns_id_t ns, xml_token_t name)
                 if (m_span_stack.empty())
                     throw xml_structure_error("</text:span> encountered without matching opening element.");
 
+                flush_segment();
                 m_span_stack.pop_back();
             }
             break;
@@ -166,7 +142,7 @@ void text_para_context::characters(const pstring& str, bool transient)
 void text_para_context::reset()
 {
     m_string_index = 0;
-    m_formatted = false;
+    m_has_content = false;
     m_pool.clear();
     m_contents.clear();
 }
@@ -178,7 +154,29 @@ size_t text_para_context::get_string_index() const
 
 bool text_para_context::empty() const
 {
-    return m_contents.empty();
+    return !m_has_content;
+}
+
+void text_para_context::flush_segment()
+{
+    if (m_contents.empty())
+        // No content to flush.
+        return;
+
+    m_has_content = true;
+
+    pstring style;
+    if (!m_span_stack.empty())
+        style = m_span_stack.back();
+
+    vector<pstring>::const_iterator it = m_contents.begin(), it_end = m_contents.end();
+    for (; it != it_end; ++it)
+    {
+        const pstring& ps = *it;
+        mp_sstrings->append_segment(ps.get(), ps.size());
+    }
+
+    m_contents.clear();
 }
 
 }

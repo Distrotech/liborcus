@@ -65,6 +65,9 @@ public:
     bool empty() const;
 
 private:
+    void flush_segment();
+
+private:
     spreadsheet::iface::import_shared_strings* mp_sstrings;
     odf_styles_map_type& m_styles;
 
@@ -72,7 +75,7 @@ private:
     std::vector<pstring> m_span_stack; /// stack of text spans.
     std::vector<pstring> m_contents;
     size_t m_string_index;
-    bool m_formatted;
+    bool m_has_content;
 };
 
 }
