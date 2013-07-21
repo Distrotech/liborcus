@@ -61,9 +61,17 @@ struct xml_token_attr_t
     xml_token_t name;
     pstring value;
 
+    /**
+     * Whether or not the attribute value is transient. A transient value is
+     * not guaranteed to be valid after the start_element call ends.  A
+     * non-transient value is guaranteed to be valid during the life cycle of
+     * the xml stream it belongs to.
+     */
+    bool transient;
+
     xml_token_attr_t() : ns(XMLNS_UNKNOWN_ID), name(XML_UNKNOWN_TOKEN) {}
-    xml_token_attr_t(xmlns_id_t _ns, xml_token_t _name, const pstring& _value) :
-        ns(_ns), name(_name), value(_value) {}
+    xml_token_attr_t(xmlns_id_t _ns, xml_token_t _name, const pstring& _value, bool _transient) :
+        ns(_ns), name(_name), value(_value), transient(_transient) {}
 };
 
 // Other types

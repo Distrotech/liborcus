@@ -141,7 +141,9 @@ private:
 
         void attribute(const sax_ns_parser_attribute& attr)
         {
-            m_elem.attrs.push_back(xml_token_attr_t(attr.ns, tokenize(attr.name), attr.value));
+            m_elem.attrs.push_back(
+               xml_token_attr_t(
+                  attr.ns, tokenize(attr.name), attr.value, attr.transient));
         }
 
     private:
