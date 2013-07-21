@@ -25,11 +25,12 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_PARACONTEXT_HPP__
-#define __ORCUS_PARACONTEXT_HPP__
+#ifndef ORCUS_PARACONTEXT_HPP
+#define ORCUS_PARACONTEXT_HPP
 
 #include "xml_context_base.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/string_pool.hpp"
 
 #include <vector>
 
@@ -61,7 +62,8 @@ public:
 
 private:
     spreadsheet::iface::import_shared_strings* mp_sstrings;
-    ::std::vector<pstring> m_contents;
+    string_pool m_pool;
+    std::vector<pstring> m_contents;
     size_t m_string_index;
     bool m_formatted;
 };

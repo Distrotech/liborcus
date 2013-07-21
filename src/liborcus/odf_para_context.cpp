@@ -135,13 +135,17 @@ bool text_para_context::end_element(xmlns_id_t ns, xml_token_t name)
 
 void text_para_context::characters(const pstring& str, bool transient)
 {
-    m_contents.push_back(str);
+    if (transient)
+        m_contents.push_back(m_pool.intern(str).first);
+    else
+        m_contents.push_back(str);
 }
 
 void text_para_context::reset()
 {
     m_string_index = 0;
     m_formatted = false;
+    m_pool.clear();
     m_contents.clear();
 }
 
