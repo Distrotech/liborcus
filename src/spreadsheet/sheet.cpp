@@ -621,7 +621,7 @@ void print_formatted_text(ostream& strm, const string& text, const format_runs_t
         if (pos < run.pos)
         {
             // flush unformatted text.
-            strm << text;
+            strm << string(&text[pos], run.pos-pos);
             pos = run.pos;
         }
 
@@ -631,8 +631,13 @@ void print_formatted_text(ostream& strm, const string& text, const format_runs_t
         string style = "";
         if (run.bold)
             style += "font-weight: bold;";
+        else
+            style += "font-weight: normal;";
+
         if (run.italic)
             style += "font-style: italic;";
+        else
+            style += "font-style: normal;";
 
         if (!run.font.empty())
             style += "font-family: " + run.font.str() + ";";
