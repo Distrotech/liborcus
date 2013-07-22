@@ -96,6 +96,8 @@ public:
 
     void set_row_hidden(row_t row, bool hidden);
 
+    size_t get_string_identifier(row_t row, col_t col) const;
+
     row_t row_size() const;
     col_t col_size() const;
 

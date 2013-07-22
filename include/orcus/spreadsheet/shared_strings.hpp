@@ -95,6 +95,8 @@ public:
 
     const format_runs_t* get_format_runs(size_t index) const;
 
+    const std::string* get_string(size_t index) const;
+
     void dump() const;
 
 private:

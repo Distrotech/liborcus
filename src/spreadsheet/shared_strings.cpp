@@ -102,6 +102,11 @@ const format_runs_t* import_shared_strings::get_format_runs(size_t index) const
     return NULL;
 }
 
+const string* import_shared_strings::get_string(size_t index) const
+{
+    return m_cxt.get_string(index);
+}
+
 void import_shared_strings::set_segment_font(size_t font_index)
 {
     const font* font_data = m_styles.get_font(font_index);

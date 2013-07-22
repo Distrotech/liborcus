@@ -32,6 +32,7 @@
 #include "orcus/spreadsheet/factory.hpp"
 #include "orcus/spreadsheet/document.hpp"
 #include "orcus/spreadsheet/sheet.hpp"
+#include "orcus/spreadsheet/shared_strings.hpp"
 
 #include <cstdlib>
 #include <cassert>
@@ -114,11 +115,55 @@ void test_ods_import_column_widths_row_heights()
     assert(rh == 2592); // 1.8 in
 }
 
+void test_ods_import_formatted_text()
+{
+    const char* filepath = SRCDIR"/test/ods/formatted-text/bold-and-italic.ods";
+    document doc;
+    import_factory factory(&doc);
+    orcus_ods app(&factory);
+    app.read_file(filepath);
+
+    assert(doc.sheet_size() > 0);
+    spreadsheet::sheet* sh = doc.get_sheet(0);
+    assert(sh);
+
+    const import_shared_strings* ss = doc.get_shared_strings();
+    assert(ss);
+
+    // A1 is unformatted
+    size_t str_id = sh->get_string_identifier(0,0);
+    const string* str = ss->get_string(str_id);
+    assert(str && *str == "Normal Text");
+
+    // A2 is all bold.
+    str_id = sh->get_string_identifier(1,0);
+    str = ss->get_string(str_id);
+    assert(str && *str == "Bold Text");
+
+    // A3 is all italic.
+    str_id = sh->get_string_identifier(2,0);
+    str = ss->get_string(str_id);
+    assert(str && *str == "Italic Text");
+
+    // A4 is all bolid and italic.
+    str_id = sh->get_string_identifier(3,0);
+    str = ss->get_string(str_id);
+    assert(str && *str == "Bold and Italic Text");
+
+    // A5 has mixed format runs.
+    str_id = sh->get_string_identifier(4,0);
+    str = ss->get_string(str_id);
+    assert(str && *str == "Bold and Italic mixed");
+
+    // TODO: add test for bold and italic format positions.
+}
+
 }
 
 int main()
 {
     test_ods_import_cell_values();
     test_ods_import_column_widths_row_heights();
+    test_ods_import_formatted_text();
     return EXIT_SUCCESS;
 }

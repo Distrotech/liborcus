@@ -345,6 +345,12 @@ void sheet::set_row_hidden(row_t row, bool hidden)
         mp_impl->m_row_hidden.insert(mp_impl->m_row_hidden_pos, row, row+1, hidden).first;
 }
 
+size_t sheet::get_string_identifier(row_t row, col_t col) const
+{
+    const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
+    return cxt.get_string_identifier(ixion::abs_address_t(mp_impl->m_sheet, row, col));
+}
+
 row_t sheet::row_size() const
 {
     return mp_impl->m_row_size;
