@@ -33,6 +33,7 @@
 #include "orcus/spreadsheet/document.hpp"
 #include "orcus/spreadsheet/sheet.hpp"
 #include "orcus/spreadsheet/shared_strings.hpp"
+#include "orcus/spreadsheet/styles.hpp"
 
 #include <cstdlib>
 #include <cassert>
@@ -40,9 +41,13 @@
 #include <iostream>
 #include <sstream>
 
+#include <mdds/flat_segment_tree.hpp>
+
 using namespace orcus;
 using namespace orcus::spreadsheet;
 using namespace std;
+
+typedef mdds::flat_segment_tree<size_t,bool> bool_segment_type;
 
 namespace {
 
@@ -130,32 +135,127 @@ void test_ods_import_formatted_text()
     const import_shared_strings* ss = doc.get_shared_strings();
     assert(ss);
 
+    const import_styles* styles = doc.get_styles();
+    assert(styles);
+
     // A1 is unformatted
     size_t str_id = sh->get_string_identifier(0,0);
     const string* str = ss->get_string(str_id);
     assert(str && *str == "Normal Text");
+    size_t xfid = sh->get_cell_format(0,0);
+    assert(xfid == 0); // ID of 0 represents default format.
+    const format_runs_t* fmt = ss->get_format_runs(str_id);
+    assert(!fmt); // The string should be unformatted.
 
-    // A2 is all bold.
+    // A2 is all bold via cell format.
     str_id = sh->get_string_identifier(1,0);
     str = ss->get_string(str_id);
     assert(str && *str == "Bold Text");
+    xfid = sh->get_cell_format(1,0);
+    const cell_format* xf = styles->get_cell_format(xfid);
+    assert(xf);
+    const font* font_data = styles->get_font(xf->font);
+    assert(font_data && font_data->bold && !font_data->italic);
+    fmt = ss->get_format_runs(str_id);
+    assert(!fmt); // This string should be unformatted.
 
     // A3 is all italic.
     str_id = sh->get_string_identifier(2,0);
     str = ss->get_string(str_id);
     assert(str && *str == "Italic Text");
+    xfid = sh->get_cell_format(2,0);
+    xf = styles->get_cell_format(xfid);
+    assert(xf);
+    font_data = styles->get_font(xf->font);
+    assert(font_data && !font_data->bold && font_data->italic);
+    fmt = ss->get_format_runs(str_id);
+    assert(!fmt); // This string should be unformatted.
 
     // A4 is all bolid and italic.
     str_id = sh->get_string_identifier(3,0);
     str = ss->get_string(str_id);
     assert(str && *str == "Bold and Italic Text");
+    xfid = sh->get_cell_format(3,0);
+    xf = styles->get_cell_format(xfid);
+    assert(xf);
+    font_data = styles->get_font(xf->font);
+    assert(font_data && font_data->bold && font_data->italic);
+    fmt = ss->get_format_runs(str_id);
+    assert(!fmt); // This string should be unformatted.
 
     // A5 has mixed format runs.
     str_id = sh->get_string_identifier(4,0);
     str = ss->get_string(str_id);
     assert(str && *str == "Bold and Italic mixed");
+    xfid = sh->get_cell_format(4,0);
+    xf = styles->get_cell_format(xfid);
+    assert(xf);
+    font_data = styles->get_font(xf->font);
+    fmt = ss->get_format_runs(str_id);
+    assert(fmt); // This string should be formatted.
 
-    // TODO: add test for bold and italic format positions.
+    {
+        // Check the bold format segment.
+        bool_segment_type bold_runs(0, str->size(), font_data->bold);
+        for (size_t i = 0, n = fmt->size(); i < n; ++i)
+        {
+            format_run run = fmt->at(i);
+            bold_runs.insert_back(run.pos, run.pos+run.size, run.bold);
+        }
+
+        bold_runs.build_tree();
+        bool is_bold = false;
+        size_t start_pos, end_pos;
+
+        // The first four letters 'Bold' should be bold.
+        bool good = bold_runs.search_tree(0, is_bold, &start_pos, &end_pos);
+        assert(good);
+        assert(is_bold);
+        assert(start_pos == 0);
+        assert(end_pos == 4);
+
+        // The rest should be non-bold.
+        good = bold_runs.search_tree(4, is_bold, &start_pos, &end_pos);
+        assert(good);
+        assert(!is_bold);
+        assert(start_pos == 4);
+        assert(end_pos == str->size());
+    }
+
+    {
+        // Check the italic format segment.
+        bool_segment_type italic_runs(0, str->size(), font_data->italic);
+        for (size_t i = 0, n = fmt->size(); i < n; ++i)
+        {
+            format_run run = fmt->at(i);
+            italic_runs.insert_back(run.pos, run.pos+run.size, run.italic);
+        }
+
+        italic_runs.build_tree();
+        bool it_italic = false;
+        size_t start_pos, end_pos;
+
+        // The first 9 letters 'Bold and ' should not be italic.
+        bool good = italic_runs.search_tree(0, it_italic, &start_pos, &end_pos);
+        assert(good);
+        assert(!it_italic);
+        assert(start_pos == 0);
+        assert(end_pos == 9);
+
+        // The next 6 letters 'Italic' should be italic.
+        good = italic_runs.search_tree(9, it_italic, &start_pos, &end_pos);
+        assert(good);
+        assert(it_italic);
+        assert(start_pos == 9);
+        assert(end_pos == 15);
+
+        // The rest should be non-italic.
+        good = italic_runs.search_tree(15, it_italic, &start_pos, &end_pos);
+        assert(good);
+        assert(!it_italic);
+        assert(start_pos == 15);
+        assert(end_pos == str->size());
+    }
 }
 
 }

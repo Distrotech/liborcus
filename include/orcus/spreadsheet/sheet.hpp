@@ -107,7 +107,9 @@ public:
     void dump_check(std::ostream& os, const pstring& sheet_name) const;
     void dump_html(const ::std::string& filepath) const;
 
-private:
+    /**
+     * Get the cell format ID of specified cell.
+     */
     size_t get_cell_format(row_t row, col_t col) const;
 
 private:

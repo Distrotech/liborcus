@@ -673,7 +673,7 @@ void print_formatted_text(ostream& strm, const string& text, const format_runs_t
     }
 }
 
-void build_style_string(string& str, const import_styles& styles, const xf& fmt)
+void build_style_string(string& str, const import_styles& styles, const cell_format& fmt)
 {
     ostringstream os;
     if (fmt.font)
@@ -755,7 +755,7 @@ void sheet::dump_html(const string& filepath) const
                 {
                     // Apply cell format.
                     import_styles* p_styles = mp_impl->m_doc.get_styles();
-                    const xf* fmt = p_styles->get_cell_xf(xf_id);
+                    const cell_format* fmt = p_styles->get_cell_format(xf_id);
                     if (fmt)
                         build_style_string(style, *p_styles, *fmt);
                 }

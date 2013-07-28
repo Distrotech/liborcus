@@ -119,7 +119,7 @@ struct ORCUS_DLLPUBLIC number_format
 /**
  * Cell format attributes
  */
-struct ORCUS_DLLPUBLIC xf
+struct ORCUS_DLLPUBLIC cell_format
 {
     size_t font;            /// font ID
     size_t fill;            /// fill ID
@@ -133,7 +133,7 @@ struct ORCUS_DLLPUBLIC xf
     bool apply_border:1;
     bool apply_alignment:1;
 
-    xf();
+    cell_format();
     void reset();
 };
 
@@ -199,7 +199,7 @@ public:
     virtual size_t commit_cell_style();
 
     const font* get_font(size_t index) const;
-    const xf* get_cell_xf(size_t index) const;
+    const cell_format* get_cell_format(size_t index) const;
     const fill* get_fill(size_t index) const;
 
 private:
@@ -210,7 +210,7 @@ private:
     border m_cur_border;
     protection m_cur_protection;
     number_format m_cur_number_format;
-    xf m_cur_cell_format;
+    cell_format m_cur_cell_format;
     cell_style m_cur_cell_style;
 
     ::std::vector<font> m_fonts;
@@ -218,8 +218,8 @@ private:
     ::std::vector<border> m_borders;
     ::std::vector<protection> m_protections;
     ::std::vector<number_format> m_number_formats;
-    ::std::vector<xf> m_cell_style_formats;
-    ::std::vector<xf> m_cell_formats;
+    ::std::vector<cell_format> m_cell_style_formats;
+    ::std::vector<cell_format> m_cell_formats;
     ::std::vector<cell_style> m_cell_styles;
 };
 

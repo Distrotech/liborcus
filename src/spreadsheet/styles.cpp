@@ -100,7 +100,7 @@ void number_format::reset()
     *this = number_format();
 }
 
-xf::xf() :
+cell_format::cell_format() :
     font(0),
     fill(0),
     border(0),
@@ -115,9 +115,9 @@ xf::xf() :
 {
 }
 
-void xf::reset()
+void cell_format::reset()
 {
-    *this = xf();
+    *this = cell_format();
 }
 
 cell_style::cell_style() :
@@ -362,7 +362,7 @@ const font* import_styles::get_font(size_t index) const
     return &m_fonts[index];
 }
 
-const xf* import_styles::get_cell_xf(size_t index) const
+const cell_format* import_styles::get_cell_format(size_t index) const
 {
     if (index >= m_cell_formats.size())
         return NULL;
