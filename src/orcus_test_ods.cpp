@@ -208,14 +208,14 @@ void test_ods_import_formatted_text()
         size_t start_pos, end_pos;
 
         // The first four letters 'Bold' should be bold.
-        bool good = bold_runs.search_tree(0, is_bold, &start_pos, &end_pos);
+        bool good = bold_runs.search_tree(0, is_bold, &start_pos, &end_pos).second;
         assert(good);
         assert(is_bold);
         assert(start_pos == 0);
         assert(end_pos == 4);
 
         // The rest should be non-bold.
-        good = bold_runs.search_tree(4, is_bold, &start_pos, &end_pos);
+        good = bold_runs.search_tree(4, is_bold, &start_pos, &end_pos).second;
         assert(good);
         assert(!is_bold);
         assert(start_pos == 4);
@@ -236,21 +236,21 @@ void test_ods_import_formatted_text()
         size_t start_pos, end_pos;
 
         // The first 9 letters 'Bold and ' should not be italic.
-        bool good = italic_runs.search_tree(0, it_italic, &start_pos, &end_pos);
+        bool good = italic_runs.search_tree(0, it_italic, &start_pos, &end_pos).second;
         assert(good);
         assert(!it_italic);
         assert(start_pos == 0);
         assert(end_pos == 9);
 
         // The next 6 letters 'Italic' should be italic.
-        good = italic_runs.search_tree(9, it_italic, &start_pos, &end_pos);
+        good = italic_runs.search_tree(9, it_italic, &start_pos, &end_pos).second;
         assert(good);
         assert(it_italic);
         assert(start_pos == 9);
         assert(end_pos == 15);
 
         // The rest should be non-italic.
-        good = italic_runs.search_tree(15, it_italic, &start_pos, &end_pos);
+        good = italic_runs.search_tree(15, it_italic, &start_pos, &end_pos).second;
         assert(good);
         assert(!it_italic);
         assert(start_pos == 15);

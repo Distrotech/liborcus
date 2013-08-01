@@ -245,7 +245,9 @@ orcus_test_ods_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 
-orcus_test_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la -DSRCDIR=\""$(top_srcdir)"\"
+orcus_test_ods_CPPFLAGS = \
+	-I$(top_builddir)/lib/liborcus/liborcus.la -DSRCDIR=\""$(top_srcdir)"\" \
+	 $(MDDS_CFLAGS)
 
 TESTS += orcus-test-ods
 
