@@ -35,13 +35,30 @@
 #define ODS_ENABLED 0
 #endif
 
+#ifdef __ORCUS_XLSX
+#define XLSX_ENABLED 1
+#else
+#define XLSX_ENABLED 0
+#endif
+
+#ifdef __ORCUS_GNUMERIC
+#define GNUMERIC_ENABLED 1
+#else
+#define GNUMERIC_ENABLED 0
+#endif
+
+#ifdef __ORCUS_XLS_XML
+#define XLS_XML_ENABLED 1
+#else
+#define XLS_XML_ENABLED 0
+#endif
+
 using namespace std;
 
 namespace orcus {
 
 format_t detect(const unsigned char* buffer, size_t length)
 {
-    cout << "ods enabled: " << ODS_ENABLED << endl;
     return format_unknown;
 }
 
