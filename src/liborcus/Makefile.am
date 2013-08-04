@@ -4,7 +4,8 @@ INCLUDES = -I$(top_srcdir)/include -I./include
 EXTRA_PROGRAMS = \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-structure-tree \
-	liborcus-test-common
+	liborcus-test-common \
+	liborcus-test-format-detection
 
 TESTS =
 
@@ -17,6 +18,7 @@ endif
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	dom_tree.cpp \
+	format_detection.cpp \
 	global.cpp \
 	spreadsheet_interface.cpp \
 	orcus_css.cpp \
@@ -50,6 +52,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 
 if WITH_XLSX_FILTER
 
+AM_CPPFLAGS += -D__ORCUS_XLSX
 EXTRA_PROGRAMS += \
 	orcus-xlsx-sheet-context-test
 
@@ -116,6 +119,8 @@ endif # WITH_XLSX_FILTER
 
 if WITH_XLS_XML_FILTER
 
+AM_CPPFLAGS += -D__ORCUS_XLS_XML
+
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	xls_xml_tokens.hpp \
 	xls_xml_tokens.inl \
@@ -131,6 +136,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 endif # WITH_XLS_XML_FILTER
 
 if WITH_ODS_FILTER
+
+AM_CPPFLAGS += -D__ORCUS_ODS
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	session_context.hpp \
@@ -154,6 +161,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 endif # WITH_ODS_FILTER
 
 if WITH_GNUMERIC_FILTER
+
+AM_CPPFLAGS += -D__ORCUS_GNUMERIC
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	session_context.hpp \
@@ -262,10 +271,19 @@ liborcus_test_common_SOURCES = \
 liborcus_test_common_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la
 
+# liborcus-test-format-detection
+
+liborcus_test_format_detection_SOURCES = \
+	format_detection_test.cpp
+
+liborcus_test_format_detection_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la
+
 TESTS += \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-structure-tree \
-	liborcus-test-common
+	liborcus-test-common \
+	liborcus-test-format-detection
 
 distclean-local:
 	rm -rf $(TESTS)

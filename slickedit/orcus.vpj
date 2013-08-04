@@ -173,6 +173,7 @@
 				<F N="../include/orcus/dom_tree.hpp"/>
 				<F N="../include/orcus/env.hpp"/>
 				<F N="../include/orcus/exception.hpp"/>
+				<F N="../include/orcus/format_detection.hpp"/>
 				<F N="../include/orcus/global.hpp"/>
 				<F N="../include/orcus/measurement.hpp"/>
 				<F N="../include/orcus/orcus_csv.hpp"/>
@@ -201,6 +202,8 @@
 			<Folder Name="liborcus">
 				<F N="../src/liborcus/common_test.cpp"/>
 				<F N="../src/liborcus/dom_tree.cpp"/>
+				<F N="../src/liborcus/format_detection.cpp"/>
+				<F N="../src/liborcus/format_detection_test.cpp"/>
 				<F N="../src/liborcus/global.cpp"/>
 				<F N="../src/liborcus/gnumeric_cell_context.cpp"/>
 				<F N="../src/liborcus/gnumeric_cell_context.hpp"/>

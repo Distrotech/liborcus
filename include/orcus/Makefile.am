@@ -10,6 +10,7 @@ liborcus_HEADERS = \
 	dom_tree.hpp \
 	env.hpp \
 	exception.hpp \
+	format_detection.hpp \
 	global.hpp \
 	measurement.hpp \
 	orcus_csv.hpp \
