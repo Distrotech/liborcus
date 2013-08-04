@@ -53,12 +53,21 @@
 #define XLS_XML_ENABLED 0
 #endif
 
+#if ODS_ENABLED
+#include "orcus/orcus_ods.hpp"
+#endif
+
 using namespace std;
 
 namespace orcus {
 
 format_t detect(const unsigned char* buffer, size_t length)
 {
+#if ODS_ENABLED
+    if (orcus_ods::detect(buffer, length))
+        return format_ods;
+#endif
+
     return format_unknown;
 }
 

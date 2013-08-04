@@ -15,6 +15,8 @@ else
 AM_CPPFLAGS = -D__ORCUS_BUILDING_DLL=1
 endif
 
+AM_CPPFLAGS += -DSRCDIR=\""$(top_srcdir)"\"
+
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	dom_tree.cpp \

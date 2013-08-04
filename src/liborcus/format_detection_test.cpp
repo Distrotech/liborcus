@@ -26,15 +26,36 @@
  ************************************************************************/
 
 #include "orcus/format_detection.hpp"
+#include "orcus/stream.hpp"
 
 #include <cassert>
 #include <iostream>
+#include <string>
 
 using namespace orcus;
 using namespace std;
 
+void test_detect_formats()
+{
+    struct {
+        const char* path; format_t format;
+    } tests[] = {
+        { SRCDIR"/test/ods/raw-values-1/input.ods", format_ods }
+    };
+
+    size_t n = sizeof(tests[0]) / sizeof(tests);
+    for (size_t i = 0; i < n; ++i)
+    {
+        string strm;
+        load_file_content(tests[i].path, strm);
+        assert(!strm.empty());
+        format_t detected = detect(reinterpret_cast<const unsigned char*>(&strm[0]), strm.size());
+        assert(detected == tests[i].format);
+    }
+}
+
 int main()
 {
-    detect(0, 0);
+    test_detect_formats();
     return EXIT_SUCCESS;
 }

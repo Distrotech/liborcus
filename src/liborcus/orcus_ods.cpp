@@ -103,6 +103,11 @@ void orcus_ods::read_content_xml(const unsigned char* p, size_t size)
     parser.parse();
 }
 
+bool orcus_ods::detect(const unsigned char* blob, size_t size)
+{
+    return true;
+}
+
 void orcus_ods::read_file(const char* fpath)
 {
     cout << "reading " << fpath << endl;
