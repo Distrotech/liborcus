@@ -105,7 +105,7 @@ void orcus_ods::read_content_xml(const unsigned char* p, size_t size)
 
 bool orcus_ods::detect(const unsigned char* blob, size_t size)
 {
-    return true;
+    return false;
 }
 
 void orcus_ods::read_file(const char* fpath)

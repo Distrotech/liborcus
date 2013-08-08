@@ -42,7 +42,8 @@ if WITH_TOOLS
 bin_PROGRAMS += \
 	orcus-zip-dump \
 	orcus-xml-dump \
-	orcus-mso-encryption
+	orcus-mso-encryption \
+	orcus-detect
 
 # orcus-zip-dump
 
@@ -78,6 +79,17 @@ orcus_mso_encryption_LDADD = \
 	$(BOOST_SYSTEM_LIB)
 
 orcus_mso_encryption_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+
+#----------------------------------------------------------------------------
+
+# orcus-detect
+
+orcus_detect_SOURCES = orcus_detect_main.cpp
+orcus_detect_LDADD = \
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la
+
+orcus_detect_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
 #----------------------------------------------------------------------------
 
