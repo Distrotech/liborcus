@@ -45,6 +45,10 @@ public:
     virtual void read(unsigned char* buffer, size_t length) const = 0;
 };
 
+/**
+ * Zip archive based on file descriptor. The caller needs to provide the
+ * file path to the zip archive.
+ */
 class ORCUS_DLLPUBLIC zip_archive_stream_fd : public zip_archive_stream
 {
     FILE* m_stream;
@@ -54,6 +58,26 @@ class ORCUS_DLLPUBLIC zip_archive_stream_fd : public zip_archive_stream
 public:
     zip_archive_stream_fd(const char* filepath);
     virtual ~zip_archive_stream_fd();
+
+    virtual size_t size() const;
+    virtual size_t tell() const;
+    virtual void seek(size_t pos);
+    virtual void read(unsigned char* buffer, size_t length) const;
+};
+
+/**
+ * Zip archive whose content is already loaded onto memory.
+ */
+class ORCUS_DLLPUBLIC zip_archive_stream_blob : public zip_archive_stream
+{
+    const unsigned char* m_blob;
+    const unsigned char* m_cur;
+    size_t m_size;
+
+    zip_archive_stream_blob(); // disabled
+
+public:
+    zip_archive_stream_blob(const unsigned char* blob, size_t size);
 
     virtual size_t size() const;
     virtual size_t tell() const;

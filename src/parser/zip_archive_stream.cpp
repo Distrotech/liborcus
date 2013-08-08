@@ -29,6 +29,7 @@
 #include "orcus/zip_archive.hpp"
 
 #include <sstream>
+#include <cstring>
 
 #ifdef _WIN32
 #define fseeko _fseeki64
@@ -87,6 +88,35 @@ void zip_archive_stream_fd::seek(size_t pos)
         os << "failed to set seek position to " << pos << ".";
         throw zip_error(os.str());
     }
+}
+
+
+zip_archive_stream_blob::zip_archive_stream_blob(const unsigned char* blob, size_t size) :
+    m_blob(blob), m_cur(blob), m_size(size) {}
+
+size_t zip_archive_stream_blob::size() const
+{
+    return m_size;
+}
+
+size_t zip_archive_stream_blob::tell() const
+{
+    return std::distance(m_blob, m_cur);
+}
+
+void zip_archive_stream_blob::seek(size_t pos)
+{
+    m_cur = m_blob + pos;
+}
+
+void zip_archive_stream_blob::read(unsigned char* buffer, size_t length) const
+{
+    // First, make sure we have enough blob to satisfy the requested stream length.
+    size_t length_available = m_size - tell();
+    if (length_available < length)
+        throw zip_error("There is not enough stream left to fill requested length.");
+
+    memcpy(buffer, m_cur, length);
 }
 
 }
