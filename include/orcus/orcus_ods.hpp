@@ -52,7 +52,7 @@ public:
     void read_file(const char* fpath);
 
 private:
-    void list_content(const zip_archive& archive) const;
+    static void list_content(const zip_archive& archive);
     void read_content(const zip_archive& archive);
     void read_content_xml(const unsigned char* p, size_t size);
 

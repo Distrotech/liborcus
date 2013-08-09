@@ -67,7 +67,7 @@ orcus_ods::~orcus_ods()
     delete mp_impl;
 }
 
-void orcus_ods::list_content(const zip_archive& archive) const
+void orcus_ods::list_content(const zip_archive& archive)
 {
     size_t num = archive.get_file_entry_count();
     cout << "number of files this archive contains: " << num << endl;
@@ -105,7 +105,37 @@ void orcus_ods::read_content_xml(const unsigned char* p, size_t size)
 
 bool orcus_ods::detect(const unsigned char* blob, size_t size)
 {
-    return false;
+    zip_archive_stream_blob stream(blob, size);
+    zip_archive archive(&stream);
+    try
+    {
+        archive.load();
+    }
+    catch (const zip_error&)
+    {
+        // Not a valid zip archive.
+        return false;
+    }
+
+    vector<unsigned char> buf;
+    if (!archive.read_file_entry("mimetype", buf))
+        // Failed to read 'mimetype' entry.
+        return false;
+
+    if (buf.empty())
+        // mimetype is empty.
+        return false;
+
+    const char* mimetype = "application/vnd.oasis.opendocument.spreadsheet";
+    size_t n = strlen(mimetype);
+    if (buf.size() < n)
+        return false;
+
+    if (strncmp(mimetype, reinterpret_cast<const char*>(&buf[0]), n))
+        // The mimetype content differs.
+        return false;
+
+    return true;
 }
 
 void orcus_ods::read_file(const char* fpath)
