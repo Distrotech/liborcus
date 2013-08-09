@@ -56,6 +56,9 @@
 #if ODS_ENABLED
 #include "orcus/orcus_ods.hpp"
 #endif
+#if XLSX_ENABLED
+#include "orcus/orcus_xlsx.hpp"
+#endif
 
 using namespace std;
 
@@ -66,6 +69,10 @@ format_t detect(const unsigned char* buffer, size_t length)
 #if ODS_ENABLED
     if (orcus_ods::detect(buffer, length))
         return format_ods;
+#endif
+#if XLSX_ENABLED
+    if (orcus_xlsx::detect(buffer, length))
+        return format_xlsx;
 #endif
 
     return format_unknown;

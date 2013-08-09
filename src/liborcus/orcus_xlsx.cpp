@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010, 2011 Kohei Yoshida
+ * Copyright (c) 2010-2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -42,6 +42,7 @@
 #include "opc_reader.hpp"
 #include "ooxml_namespace_types.hpp"
 #include "session_context.hpp"
+#include "opc_context.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -127,6 +128,52 @@ orcus_xlsx::orcus_xlsx(spreadsheet::iface::import_factory* factory) :
 orcus_xlsx::~orcus_xlsx()
 {
     delete mp_impl;
+}
+
+bool orcus_xlsx::detect(const unsigned char* blob, size_t size)
+{
+    zip_archive_stream_blob stream(blob, size);
+    zip_archive archive(&stream);
+    try
+    {
+        archive.load();
+    }
+    catch (const zip_error&)
+    {
+        // Not a valid zip archive.
+        return false;
+    }
+
+    // Find and parse [Content_Types].xml which is required for OPC package.
+    vector<unsigned char> buf;
+    if (!archive.read_file_entry("[Content_Types].xml", buf))
+        // Failed to read 'app.xml' entry.
+        return false;
+
+    if (buf.empty())
+        return false;
+
+    xmlns_repository ns_repo;
+    ns_repo.add_predefined_values(NS_opc_all);
+    session_context session_cxt;
+    xml_stream_parser parser(ns_repo, opc_tokens, reinterpret_cast<const char*>(&buf[0]), buf.size(), "[Content_Types].xml");
+
+    xml_simple_stream_handler handler(new opc_content_types_context(session_cxt, opc_tokens));
+    parser.set_handler(&handler);
+    parser.parse();
+
+    opc_content_types_context& context =
+        static_cast<opc_content_types_context&>(handler.get_context());
+
+    std::vector<xml_part_t> parts;
+    context.pop_parts(parts);
+
+    if (parts.empty())
+        return false;
+
+    // See if we can find the workbook stream.
+    xml_part_t workbook_part("/xl/workbook.xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml");
+    return std::find(parts.begin(), parts.end(), workbook_part) != parts.end();
 }
 
 void orcus_xlsx::read_file(const char* fpath)
