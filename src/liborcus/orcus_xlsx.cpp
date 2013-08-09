@@ -147,7 +147,7 @@ bool orcus_xlsx::detect(const unsigned char* blob, size_t size)
     // Find and parse [Content_Types].xml which is required for OPC package.
     vector<unsigned char> buf;
     if (!archive.read_file_entry("[Content_Types].xml", buf))
-        // Failed to read 'app.xml' entry.
+        // Failed to read the contnet types entry.
         return false;
 
     if (buf.empty())
