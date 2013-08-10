@@ -59,6 +59,9 @@
 #if XLSX_ENABLED
 #include "orcus/orcus_xlsx.hpp"
 #endif
+#if GNUMERIC_ENABLED
+#include "orcus/orcus_gnumeric.hpp"
+#endif
 
 using namespace std;
 
@@ -73,6 +76,10 @@ format_t detect(const unsigned char* buffer, size_t length)
 #if XLSX_ENABLED
     if (orcus_xlsx::detect(buffer, length))
         return format_xlsx;
+#endif
+#if GNUMERIC_ENABLED
+    if (orcus_gnumeric::detect(buffer, length))
+        return format_gnumeric;
 #endif
 
     return format_unknown;

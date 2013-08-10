@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2010-2012 Kohei Yoshida
+ * Copyright (c) 2010-2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -51,6 +51,24 @@ using namespace std;
 
 namespace orcus {
 
+namespace {
+
+class gzfile_scope
+{
+    gzFile m_file;
+public:
+    gzfile_scope(const char* fpath) : m_file(gzopen(fpath, "rb")) {}
+    ~gzfile_scope()
+    {
+        if (m_file)
+            gzclose(m_file);
+    }
+
+    gzFile get() { return m_file; }
+};
+
+}
+
 struct orcus_gnumeric_impl
 {
     xmlns_repository m_ns_repo;
@@ -81,11 +99,18 @@ void orcus_gnumeric::read_content_xml(const char* p, size_t size)
     parser.parse();
 }
 
+bool orcus_gnumeric::detect(const unsigned char* buffer, size_t size)
+{
+    // TODO: detect gnumeric format that's already in memory.
+    return false;
+}
+
 void orcus_gnumeric::read_file(const char *fpath)
 {
     cout << "reading " << fpath << endl;
 
-    gzFile file = gzopen(fpath, "rb");
+    gzfile_scope file_scope(fpath);
+    gzFile file = file_scope.get();
 
     if (!file)
         return;
@@ -120,8 +145,6 @@ void orcus_gnumeric::read_file(const char *fpath)
     read_content_xml(file_content.c_str(), file_content.length());
 
     mp_impl->mp_factory->finalize();
-
-    gzclose(file);
 }
 
 }

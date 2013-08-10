@@ -192,6 +192,7 @@
 			<F N="../external/include/ixion/thread.hpp"/>
 			<F N="../external/include/ixion/types.hpp"/>
 			<F N="../external/include/mdds/compat/unique_ptr.hpp"/>
+			<F N="/usr/include/zlib.h"/>
 		</Folder>
 		<Folder
 			Name="Resource Files"
