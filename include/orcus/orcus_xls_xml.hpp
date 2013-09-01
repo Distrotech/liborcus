@@ -46,6 +46,8 @@ public:
     orcus_xls_xml(spreadsheet::iface::import_factory* factory);
     ~orcus_xls_xml();
 
+    static bool detect(const unsigned char* blob, size_t size);
+
     void read_file(const char* fpath);
 
 private:

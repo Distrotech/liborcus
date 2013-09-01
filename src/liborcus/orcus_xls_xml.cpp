@@ -31,6 +31,7 @@
 
 #include "xml_stream_parser.hpp"
 #include "xls_xml_handler.hpp"
+#include "xls_xml_detection_handler.hpp"
 #include "session_context.hpp"
 #include "xls_xml_tokens.hpp"
 #include "xls_xml_namespace_types.hpp"
@@ -65,6 +66,17 @@ orcus_xls_xml::orcus_xls_xml(spreadsheet::iface::import_factory* factory) :
 orcus_xls_xml::~orcus_xls_xml()
 {
     delete mp_impl;
+}
+
+bool orcus_xls_xml::detect(const unsigned char* buffer, size_t size)
+{
+    xmlns_repository ns_repo;
+    ns_repo.add_predefined_values(NS_xls_xml_all);
+    xml_stream_parser parser(ns_repo, xls_xml_tokens, reinterpret_cast<const char*>(buffer), size, "content");
+
+    session_context cxt;
+    xls_xml_detection_handler handler(cxt, xls_xml_tokens);
+    return false;
 }
 
 void orcus_xls_xml::read_file(const char* fpath)

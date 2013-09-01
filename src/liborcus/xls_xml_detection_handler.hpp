@@ -25,20 +25,26 @@
  *
  ************************************************************************/
 
-#include "xls_xml_handler.hpp"
-#include "xls_xml_context.hpp"
+#ifndef ORCUS_XLS_XML_DETECTION_HANDLER_HPP
+#define ORCUS_XLS_XML_DETECTION_HANDLER_HPP
+
+#include "xml_stream_handler.hpp"
 
 namespace orcus {
 
-xls_xml_handler::xls_xml_handler(
-    session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
-    xml_stream_handler(new xls_xml_context(session_cxt, tokens, factory))
+class tokens;
+struct session_context;
+
+class xls_xml_detection_handler : public xml_stream_handler
 {
+public:
+    xls_xml_detection_handler(session_context& session_cxt, const tokens& tokens);
+    virtual ~xls_xml_detection_handler();
+
+    virtual void start_document();
+    virtual void end_document();
+};
+
 }
 
-xls_xml_handler::~xls_xml_handler() {}
-
-void xls_xml_handler::start_document() {}
-void xls_xml_handler::end_document() {}
-
-}
+#endif
