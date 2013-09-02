@@ -44,6 +44,8 @@
 #include <string>
 
 #include <boost/scoped_ptr.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
 
 using namespace std;
 
@@ -101,7 +103,26 @@ void orcus_gnumeric::read_content_xml(const char* p, size_t size)
 
 bool orcus_gnumeric::detect(const unsigned char* buffer, size_t size)
 {
-    // TODO: detect gnumeric format that's already in memory.
+    // Detect gnumeric format that's already in memory.
+
+    try
+    {
+        // First, decompress the gzipped stream.
+        vector<char> decompressed;
+        boost::iostreams::filtering_ostream os;
+        os.push(boost::iostreams::gzip_decompressor());
+        os.push(boost::iostreams::back_inserter(decompressed));
+        boost::iostreams::write(os, reinterpret_cast<const char*>(buffer), size);
+        os.flush();
+
+        for (size_t i = 0; i < decompressed.size(); ++i)
+            cout << decompressed[i];
+        cout << endl;
+
+        // TODO: parse this xml stream for detection.
+    }
+    catch (const std::exception&) {}
+
     return false;
 }
 

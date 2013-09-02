@@ -75,7 +75,6 @@ AC_SUBST(ORCUS_API_VERSION)
 
 BOOST_REQUIRE([1.36])
 BOOST_SYSTEM
-BOOST_IOSTREAMS
 
 # ==============
 # Werror support
@@ -167,6 +166,10 @@ AM_CONDITIONAL([WITH_XLSX_FILTER], [test "x$with_xlsx_filter" != "xno"])
 AM_CONDITIONAL([WITH_XLS_XML_FILTER], [test "x$with_xls_xml_filter" != "xno"])
 AM_CONDITIONAL([WITH_GNUMERIC_FILTER], [test "x$with_gnumeric_filter" != "xno"])
 AM_CONDITIONAL([WITH_TOOLS], [test "x$with_tools" != "xno"])
+
+AS_IF([test "x$with_gnumeric_filter" != "xno"], [
+        BOOST_IOSTREAMS
+])
 
 # ============
 # mdds support
