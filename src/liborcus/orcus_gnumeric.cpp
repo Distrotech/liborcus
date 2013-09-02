@@ -27,6 +27,7 @@
 
 #include "orcus/orcus_gnumeric.hpp"
 #include "orcus/xml_namespace.hpp"
+#include "orcus/stream.hpp"
 
 #include "xml_stream_parser.hpp"
 #include "gnumeric_handler.hpp"
@@ -55,19 +56,26 @@ namespace orcus {
 
 namespace {
 
-class gzfile_scope
+bool decompress_gzip(const char* buffer, size_t size, string& decompressed)
 {
-    gzFile m_file;
-public:
-    gzfile_scope(const char* fpath) : m_file(gzopen(fpath, "rb")) {}
-    ~gzfile_scope()
+    string buf;
+
+    try
     {
-        if (m_file)
-            gzclose(m_file);
+        boost::iostreams::filtering_ostream os;
+        os.push(boost::iostreams::gzip_decompressor());
+        os.push(boost::iostreams::back_inserter(buf));
+        boost::iostreams::write(os, buffer, size);
+        os.flush();
+    }
+    catch (const exception&)
+    {
+        return false;
     }
 
-    gzFile get() { return m_file; }
-};
+    buf.swap(decompressed);
+    return true;
+}
 
 }
 
@@ -105,23 +113,15 @@ bool orcus_gnumeric::detect(const unsigned char* buffer, size_t size)
 {
     // Detect gnumeric format that's already in memory.
 
-    try
-    {
-        // First, decompress the gzipped stream.
-        vector<char> decompressed;
-        boost::iostreams::filtering_ostream os;
-        os.push(boost::iostreams::gzip_decompressor());
-        os.push(boost::iostreams::back_inserter(decompressed));
-        boost::iostreams::write(os, reinterpret_cast<const char*>(buffer), size);
-        os.flush();
+    string decompressed;
+    if (!decompress_gzip(reinterpret_cast<const char*>(buffer), size, decompressed))
+        return false;
 
-        for (size_t i = 0; i < decompressed.size(); ++i)
-            cout << decompressed[i];
-        cout << endl;
+    for (size_t i = 0; i < decompressed.size(); ++i)
+        cout << decompressed[i];
+    cout << endl;
 
-        // TODO: parse this xml stream for detection.
-    }
-    catch (const std::exception&) {}
+    // TODO: parse this xml stream for detection.
 
     return false;
 }
@@ -130,38 +130,14 @@ void orcus_gnumeric::read_file(const char *fpath)
 {
     cout << "reading " << fpath << endl;
 
-    gzfile_scope file_scope(fpath);
-    gzFile file = file_scope.get();
-
-    if (!file)
+    string strm;
+    load_file_content(fpath, strm);
+    if (strm.empty())
         return;
 
-    std::string file_content;
-
-    while (true)
-    {
-        char buffer[BUFFER_LENGTH];
-        int read_characters = gzread(file, buffer, BUFFER_LENGTH);
-        if (read_characters < 0)
-        {
-            std::cout << "Read error" << std::endl;
-            break;
-        }
-
-        file_content.append(buffer, read_characters);
-        if (read_characters < BUFFER_LENGTH)
-        {
-            if (gzeof(file))
-                break;
-            else
-            {
-                const char *error;
-                int err;
-                error = gzerror(file, &err);
-                std::cout << "error: " << error << std::endl;
-            }
-        }
-    }
+    string file_content;
+    if (!decompress_gzip(&strm[0], strm.size(), file_content))
+        return;
 
     read_content_xml(file_content.c_str(), file_content.length());
 
