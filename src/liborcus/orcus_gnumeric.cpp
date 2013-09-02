@@ -44,8 +44,6 @@
 
 using namespace std;
 
-#define BUFFER_LENGTH 0x2000
-
 namespace orcus {
 
 namespace {
