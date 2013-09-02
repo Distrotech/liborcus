@@ -22,6 +22,7 @@ m4_define([orcus_api_version], [orcus_major_version.orcus_minor_api_version])
 # =============
 AC_INIT([liborcus],[orcus_version])
 AC_CONFIG_MACRO_DIR([m4])
+m4_pattern_allow([^BOOST_])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.11 foreign dist-bzip2 dist-xz])
 AM_SILENT_RULES([yes])
@@ -59,29 +60,6 @@ AC_FUNC_STRTOD
 AC_CHECK_FUNCS([gettimeofday])
 AC_DEFINE([_REENTRANT], [], [Enable reentrant.])
 AC_DEFINE([BOOST_ALL_NO_LIB], [], [Disable boost's evil autolink.])
-AX_BOOST_BASE
-
-# ===========================================================
-# Determine if we are going to need to link with Boost.System
-# ===========================================================
-dnl This seems to be necessary since boost 1.50 (1.48 does not need it,
-dnl 1.49 is untested). The macro BOOST_THREAD_DONT_USE_SYSTEM mentioned
-dnl in documentation has no effect.
-AC_MSG_CHECKING([if we need to link with Boost.System])
-AC_LANG_PUSH([C++])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-@%:@include <boost/version.hpp>
-]], [[
-#if BOOST_VERSION >= 105000
-#   error yes, we need to link with Boost.System
-#endif
-]])],[
-        AC_MSG_RESULT([no])
-    ],[
-        AC_MSG_RESULT([yes])
-        AX_BOOST_SYSTEM
-    ])
-AC_LANG_POP([C++])
 
 # ======================
 # Set required ixion api
@@ -94,6 +72,10 @@ AC_SUBST(IXION_REQUIRED_API_VERSION)
 # =============
 ORCUS_API_VERSION=orcus_api_version
 AC_SUBST(ORCUS_API_VERSION)
+
+BOOST_REQUIRE([1.36])
+BOOST_SYSTEM
+BOOST_IOSTREAMS
 
 # ==============
 # Werror support
