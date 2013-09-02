@@ -41,7 +41,8 @@ void test_detect_formats()
         const char* path; format_t format;
     } tests[] = {
         { SRCDIR"/test/ods/raw-values-1/input.ods", format_ods },
-        { SRCDIR"/test/xlsx/raw-values-1/input.xlsx", format_xlsx }
+        { SRCDIR"/test/xlsx/raw-values-1/input.xlsx", format_xlsx },
+        { SRCDIR"/test/xls-xml/basic/input.xml", format_xls_xml }
     };
 
     size_t n = sizeof(tests[0]) / sizeof(tests);

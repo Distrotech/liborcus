@@ -76,6 +76,17 @@ bool orcus_xls_xml::detect(const unsigned char* buffer, size_t size)
 
     session_context cxt;
     xls_xml_detection_handler handler(cxt, xls_xml_tokens);
+    parser.set_handler(&handler);
+    try
+    {
+        parser.parse();
+    }
+    catch (const xls_xml_detection_result& res)
+    {
+        return res.get_result();
+    }
+    catch (...) {}
+
     return false;
 }
 

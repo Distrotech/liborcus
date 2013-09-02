@@ -35,6 +35,16 @@ namespace orcus {
 class tokens;
 struct session_context;
 
+class xls_xml_detection_result
+{
+    bool m_result;
+
+public:
+    xls_xml_detection_result(bool result);
+
+    bool get_result() const;
+};
+
 class xls_xml_detection_handler : public xml_stream_handler
 {
 public:
