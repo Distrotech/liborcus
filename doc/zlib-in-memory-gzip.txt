@@ -4,3 +4,5 @@ of gzip format.
 http://www.experts-exchange.com/Programming/System/Windows__Programming/A_3189-In-Memory-Compression-and-Decompression-Using-ZLIB.html
 
 http://www.gzip.org/zlib/zlib_faq.html#faq20
+
+http://stackoverflow.com/questions/16682719/uncompress-data-in-memory-using-boost-gzip-decompressor
