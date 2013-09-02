@@ -35,13 +35,7 @@
 #include "gnumeric_namespace_types.hpp"
 #include "session_context.hpp"
 
-#include <zlib.h>
-
-#include <cstdlib>
 #include <iostream>
-#include <fstream>
-#include <vector>
-#include <sstream>
 #include <string>
 
 #include <boost/scoped_ptr.hpp>
