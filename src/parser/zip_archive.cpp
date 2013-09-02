@@ -533,7 +533,7 @@ size_t zip_archive_impl::seek_central_dir()
     // Read stream backward and try to find the magic number.
 
     size_t read_end_pos = m_stream_size;
-    while (true)
+    while (read_end_pos)
     {
         if (read_end_pos < buf.size())
             // Last segment to read.
