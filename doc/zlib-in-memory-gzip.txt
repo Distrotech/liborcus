@@ -1,0 +1,6 @@
+Some notes on future implementation of in-memory compression and decompression
+of gzip format.
+
+http://www.experts-exchange.com/Programming/System/Windows__Programming/A_3189-In-Memory-Compression-and-Decompression-Using-ZLIB.html
+
+http://www.gzip.org/zlib/zlib_faq.html#faq20
