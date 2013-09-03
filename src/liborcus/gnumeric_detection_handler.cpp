@@ -56,6 +56,24 @@ public:
                 case XML_Workbook:
                     xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
                 break;
+                case XML_Version:
+                case XML_Attributes:
+                case XML_Calculation:
+                case XML_SheetNameIndex:
+                case XML_Geometry:
+                case XML_Sheets:
+                    xml_element_expected(parent, NS_gnumeric_gnm, XML_Workbook);
+                break;
+                case XML_Attribute:
+                    xml_element_expected(parent, NS_gnumeric_gnm, XML_Attributes);
+                break;
+                case XML_SheetName:
+                    xml_element_expected(parent, NS_gnumeric_gnm, XML_SheetNameIndex);
+                break;
+                case XML_Sheet:
+                    xml_element_expected(parent, NS_gnumeric_gnm, XML_Sheets);
+                    throw detection_result(true);
+                break;
                 default:
                     ;
             }
