@@ -35,6 +35,10 @@ namespace orcus {
 
 namespace {
 
+/**
+ * Check the xml structure up to the first <gnm:Sheet> element. If all the
+ * structure check passes up to that point, we call it "detected".
+ */
 class gnumeric_detection_context : public xml_context_base
 {
 public:
