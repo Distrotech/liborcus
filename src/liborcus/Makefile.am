@@ -26,6 +26,8 @@ AM_CPPFLAGS += -DSRCDIR=\""$(top_srcdir)"\"
 
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
+	detection_result.hpp \
+	detection_result.cpp \
 	dom_tree.cpp \
 	format_detection.cpp \
 	global.cpp \
@@ -179,6 +181,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	session_context.hpp \
 	gnumeric_cell_context.hpp \
 	gnumeric_context.hpp \
+	gnumeric_detection_handler.hpp \
+	gnumeric_detection_handler.cpp \
 	gnumeric_handler.hpp \
 	gnumeric_helper.hpp \
 	gnumeric_sheet_context.hpp \

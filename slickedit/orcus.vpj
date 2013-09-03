@@ -201,6 +201,8 @@
 		<Folder Name="../src">
 			<Folder Name="liborcus">
 				<F N="../src/liborcus/common_test.cpp"/>
+				<F N="../src/liborcus/detection_result.cpp"/>
+				<F N="../src/liborcus/detection_result.hpp"/>
 				<F N="../src/liborcus/dom_tree.cpp"/>
 				<F N="../src/liborcus/format_detection.cpp"/>
 				<F N="../src/liborcus/format_detection_test.cpp"/>
@@ -210,6 +212,8 @@
 				<F N="../src/liborcus/gnumeric_cell_context_test.cpp"/>
 				<F N="../src/liborcus/gnumeric_context.cpp"/>
 				<F N="../src/liborcus/gnumeric_context.hpp"/>
+				<F N="../src/liborcus/gnumeric_detection_handler.cpp"/>
+				<F N="../src/liborcus/gnumeric_detection_handler.hpp"/>
 				<F N="../src/liborcus/gnumeric_handler.cpp"/>
 				<F N="../src/liborcus/gnumeric_handler.hpp"/>
 				<F N="../src/liborcus/gnumeric_helper.cpp"/>

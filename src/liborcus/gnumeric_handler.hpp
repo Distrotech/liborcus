@@ -29,10 +29,6 @@
 #define __ORCUS_GNUMERICHANDLER_HPP__
 
 #include "xml_stream_handler.hpp"
-#include "xml_context_base.hpp"
-
-#include <string>
-#include <vector>
 
 namespace orcus {
 

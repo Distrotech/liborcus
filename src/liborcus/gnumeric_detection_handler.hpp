@@ -25,21 +25,21 @@
  *
  ************************************************************************/
 
-#ifndef ORCUS_XLS_XML_DETECTION_HANDLER_HPP
-#define ORCUS_XLS_XML_DETECTION_HANDLER_HPP
+#ifndef ORCUS_GNUMERIC_DETECTION_HANDLER_HPP
+#define ORCUS_GNUMERIC_DETECTION_HANDLER_HPP
 
 #include "xml_stream_handler.hpp"
 
 namespace orcus {
 
-class tokens;
 struct session_context;
+class tokens;
 
-class xls_xml_detection_handler : public xml_stream_handler
+class gnumeric_detection_handler : public xml_stream_handler
 {
 public:
-    xls_xml_detection_handler(session_context& session_cxt, const tokens& tokens);
-    virtual ~xls_xml_detection_handler();
+    gnumeric_detection_handler(session_context& session_cxt, const tokens& tokens);
+    virtual ~gnumeric_detection_handler();
 
     virtual void start_document();
     virtual void end_document();

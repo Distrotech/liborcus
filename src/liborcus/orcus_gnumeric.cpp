@@ -33,7 +33,9 @@
 #include "gnumeric_handler.hpp"
 #include "gnumeric_tokens.hpp"
 #include "gnumeric_namespace_types.hpp"
+#include "gnumeric_detection_handler.hpp"
 #include "session_context.hpp"
+#include "detection_result.hpp"
 
 #include <iostream>
 #include <string>
@@ -109,11 +111,28 @@ bool orcus_gnumeric::detect(const unsigned char* buffer, size_t size)
     if (!decompress_gzip(reinterpret_cast<const char*>(buffer), size, decompressed))
         return false;
 
+
     for (size_t i = 0; i < decompressed.size(); ++i)
         cout << decompressed[i];
     cout << endl;
 
-    // TODO: parse this xml stream for detection.
+    // Parse this xml stream for detection.
+    xmlns_repository ns_repo;
+    ns_repo.add_predefined_values(NS_gnumeric_all);
+    session_context cxt;
+    xml_stream_parser parser(ns_repo, gnumeric_tokens, reinterpret_cast<const char*>(buffer), size, "content");
+    gnumeric_detection_handler handler(cxt, gnumeric_tokens);
+    parser.set_handler(&handler);
+
+    try
+    {
+        parser.parse();
+    }
+    catch (const detection_result& res)
+    {
+        return res.get_result();
+    }
+    catch (...) {}
 
     return false;
 }

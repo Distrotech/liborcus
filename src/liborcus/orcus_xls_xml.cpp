@@ -35,6 +35,7 @@
 #include "session_context.hpp"
 #include "xls_xml_tokens.hpp"
 #include "xls_xml_namespace_types.hpp"
+#include "detection_result.hpp"
 
 #include <boost/scoped_ptr.hpp>
 
@@ -81,7 +82,7 @@ bool orcus_xls_xml::detect(const unsigned char* buffer, size_t size)
     {
         parser.parse();
     }
-    catch (const xls_xml_detection_result& res)
+    catch (const detection_result& res)
     {
         return res.get_result();
     }

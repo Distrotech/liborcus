@@ -29,6 +29,7 @@
 #include "xls_xml_token_constants.hpp"
 #include "xls_xml_namespace_types.hpp"
 #include "xml_context_base.hpp"
+#include "detection_result.hpp"
 
 namespace orcus {
 
@@ -71,7 +72,7 @@ public:
                     xml_element_expected(parent, NS_xls_xml_ss, XML_Workbook);
 
                     // All good. Let's call it detected.
-                    throw xls_xml_detection_result(true);
+                    throw detection_result(true);
                 }
                 break;
                 case XML_Style:
@@ -120,13 +121,6 @@ public:
     }
 };
 
-}
-
-xls_xml_detection_result::xls_xml_detection_result(bool result) : m_result(result) {}
-
-bool xls_xml_detection_result::get_result() const
-{
-    return m_result;
 }
 
 xls_xml_detection_handler::xls_xml_detection_handler(

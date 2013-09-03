@@ -25,24 +25,19 @@
  *
  ************************************************************************/
 
-#ifndef ORCUS_XLS_XML_DETECTION_HANDLER_HPP
-#define ORCUS_XLS_XML_DETECTION_HANDLER_HPP
-
-#include "xml_stream_handler.hpp"
+#ifndef ORCUS_DETECTION_RESULT_HPP
+#define ORCUS_DETECTION_RESULT_HPP
 
 namespace orcus {
 
-class tokens;
-struct session_context;
-
-class xls_xml_detection_handler : public xml_stream_handler
+class detection_result
 {
-public:
-    xls_xml_detection_handler(session_context& session_cxt, const tokens& tokens);
-    virtual ~xls_xml_detection_handler();
+    bool m_result;
 
-    virtual void start_document();
-    virtual void end_document();
+public:
+    detection_result(bool result);
+
+    bool get_result() const;
 };
 
 }
