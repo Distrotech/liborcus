@@ -41,7 +41,7 @@ const char* help_program =
 "The FILE must specify a path to an existing ODF spreadsheet file.";
 
 const char* help_output =
-"Output file path.";
+"Output directory path.";
 
 const char* help_output_format =
 "Specify the format of output file.  Supported format types are: "
@@ -93,23 +93,44 @@ int main(int argc, char** argv)
         return EXIT_SUCCESS;
     }
 
-    string infile, outfile, outformat;
+    string infile, outdir, outformat;
 
     if (vm.count("input"))
         infile = vm["input"].as<string>();
 
     if (vm.count("output"))
-        outfile = vm["output"].as<string>();
+        outdir = vm["output"].as<string>();
 
     if (vm.count("output-format"))
         outformat = vm["output-format"].as<string>();
+
+    if (infile.empty())
+    {
+        cerr << "No input file." << endl;
+        return EXIT_FAILURE;
+    }
+
+    if (outdir.empty())
+    {
+        cerr << "No output directory." << endl;
+        return EXIT_FAILURE;
+    }
+
+    if (outformat.empty())
+    {
+        cerr << "No output format specified.  Choose either 'flat' or 'html'." << endl;
+        return EXIT_FAILURE;
+    }
 
     boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
     boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
     orcus_ods app(fact.get());
     app.read_file(infile.c_str());
-    doc->dump();
-    doc->dump_html("./html");
+
+    if (outformat == "flat")
+        doc->dump();
+    else if (outformat == "html")
+        doc->dump_html(outdir);
 
     return EXIT_SUCCESS;
 }
