@@ -42,6 +42,7 @@
 #include <ixion/model_context.hpp>
 
 #include <iostream>
+#include <fstream>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
@@ -61,8 +62,11 @@ struct sheet_item : private boost::noncopyable
     sheet   data;
     sheet_item(document& doc, const pstring& _name, sheet_t sheet_index, row_t row_size, col_t col_size);
 
-    struct printer : public ::std::unary_function<sheet_item, void>
+    class flat_printer : public ::std::unary_function<sheet_item, void>
     {
+        const std::string& m_outdir;
+    public:
+        flat_printer(const std::string& outdir);
         void operator() (const sheet_item& item) const;
     };
 
@@ -86,11 +90,22 @@ struct sheet_item : private boost::noncopyable
 sheet_item::sheet_item(document& doc, const pstring& _name, sheet_t sheet_index, row_t row_size, col_t col_size) :
     name(_name), data(doc, sheet_index, row_size, col_size) {}
 
-void sheet_item::printer::operator() (const sheet_item& item) const
+sheet_item::flat_printer::flat_printer(const string& outdir) : m_outdir(outdir) {}
+
+void sheet_item::flat_printer::operator() (const sheet_item& item) const
 {
-    cout << "---" << endl;
-    cout << "Sheet name: " << item.name << endl;
-    item.data.dump();
+    string this_file = m_outdir + '/' + item.name.str() + ".txt";
+
+    ofstream file(this_file.c_str());
+    if (!file)
+    {
+        cerr << "failed to create file: " << this_file << endl;
+        return;
+    }
+
+    file << "---" << endl;
+    file << "Sheet name: " << item.name << endl;
+    item.data.dump_flat(file);
 }
 
 sheet_item::check_printer::check_printer(std::ostream& os) : m_os(os) {}
@@ -277,7 +292,7 @@ void document::clear()
     mp_impl = new document_impl(*this);
 }
 
-void document::dump() const
+void document::dump_flat(const string& outdir) const
 {
     cout << "----------------------------------------------------------------------" << endl;
     cout << "  Document content summary" << endl;
@@ -285,7 +300,7 @@ void document::dump() const
     mp_impl->mp_strings->dump();
 
     cout << "number of sheets: " << mp_impl->m_sheets.size() << endl;
-    for_each(mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), sheet_item::printer());
+    for_each(mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), sheet_item::flat_printer(outdir));
 }
 
 void document::dump_check(ostream& os) const

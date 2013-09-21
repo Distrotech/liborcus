@@ -367,7 +367,7 @@ void sheet::finalize()
     mp_impl->m_row_heights.build_tree();
 }
 
-void sheet::dump() const
+void sheet::dump_flat(std::ostream& os) const
 {
     const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     ixion::abs_range_t range = cxt.get_data_range(mp_impl->m_sheet);
@@ -400,9 +400,9 @@ void sheet::dump() const
                 break;
                 case ixion::celltype_numeric:
                 {
-                    ostringstream os;
-                    os << cxt.get_numeric_value(pos) << " [v]";
-                    mx.set(row, col, os.str());
+                    ostringstream os2;
+                    os2 << cxt.get_numeric_value(pos) << " [v]";
+                    mx.set(row, col, os2.str());
                 }
                 break;
                 case ixion::celltype_formula:
@@ -419,17 +419,17 @@ void sheet::dump() const
 
                     if (t)
                     {
-                        ostringstream os;
+                        ostringstream os2;
                         string formula;
                         ixion::print_formula_tokens(
                            mp_impl->m_doc.get_model_context(), pos, *t, formula);
-                        os << formula;
+                        os2 << formula;
 
                         const ixion::formula_result* res = cell->get_result_cache();
                         if (res)
-                            os << " (" << res->str(mp_impl->m_doc.get_model_context()) << ")";
+                            os2 << " (" << res->str(mp_impl->m_doc.get_model_context()) << ")";
 
-                        mx.set(row, col, os.str());
+                        mx.set(row, col, os2.str());
                     }
                 }
                 break;
@@ -457,45 +457,45 @@ void sheet::dump() const
     }
 
     // Create a row separator string;
-    ostringstream os;
-    os << '+';
+    ostringstream os2;
+    os2 << '+';
     for (size_t i = 0; i < col_widths.size(); ++i)
     {
-        os << '-';
+        os2 << '-';
         size_t cw = col_widths[i];
         for (size_t i = 0; i < cw; ++i)
-            os << '-';
-        os << "-+";
+            os2 << '-';
+        os2 << "-+";
     }
 
-    string sep = os.str();
+    string sep = os2.str();
 
     // Now print to stdout.
-    cout << sep << endl;
+    os << sep << endl;
     for (size_t r = 0; r < row_count; ++r)
     {
-        cout << "|";
+        os << "|";
         for (size_t c = 0; c < col_count; ++c)
         {
             size_t cw = col_widths[c]; // column width
             if (mx.get_type(r, c) == mdds::mtm::element_empty)
             {
                 for (size_t i = 0; i < cw; ++i)
-                    cout << ' ';
-                cout << "  |";
+                    os << ' ';
+                os << "  |";
             }
             else
             {
                 const string s = mx.get_string(r, c);
-                cout << ' ' << s;
+                os << ' ' << s;
                 cw -= s.size();
                 for (size_t i = 0; i < cw; ++i)
-                    cout << ' ';
-                cout << " |";
+                    os << ' ';
+                os << " |";
             }
         }
-        cout << endl;
-        cout << sep << endl;
+        os << endl;
+        os << sep << endl;
     }
 }
 

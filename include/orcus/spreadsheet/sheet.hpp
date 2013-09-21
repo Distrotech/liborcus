@@ -103,7 +103,7 @@ public:
 
     void finalize();
 
-    void dump() const;
+    void dump_flat(std::ostream& os) const;
     void dump_check(std::ostream& os, const pstring& sheet_name) const;
     void dump_html(const ::std::string& filepath) const;
 

@@ -141,7 +141,7 @@ int main(int argc, char** argv)
     app.read_file(infile.c_str());
 
     if (outformat == "flat")
-        doc->dump();
+        doc->dump_flat(outdir);
     else if (outformat == "html")
         doc->dump_html(outdir);
 

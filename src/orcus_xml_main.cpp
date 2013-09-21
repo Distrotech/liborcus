@@ -119,7 +119,7 @@ int main(int argc, char** argv)
     switch (mode)
     {
         case dump_document:
-            doc->dump();
+            doc->dump_flat("./flat");
         break;
         case transform_xml:
         {

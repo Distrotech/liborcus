@@ -52,8 +52,8 @@ int main(int argc, char** argv)
     {
         std::cout << "Caught Exception: " << e.what() << std::endl;
     }
-    doc->dump();
-    doc->dump_html("./obj");
+    doc->dump_flat("./flat");
+    doc->dump_html("./html");
 
     return EXIT_SUCCESS;
 }

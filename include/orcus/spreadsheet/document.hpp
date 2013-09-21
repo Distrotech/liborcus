@@ -90,9 +90,9 @@ public:
     void clear();
 
     /**
-     * Dump document content to stdout for debugging.
+     * Dump document content to specified output directory.
      */
-    void dump() const;
+    void dump_flat(const std::string& outdir) const;
 
     /**
      * Dump document content to stdout in the special format used for content
