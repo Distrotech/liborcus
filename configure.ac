@@ -75,7 +75,6 @@ AC_SUBST(ORCUS_API_VERSION)
 
 BOOST_REQUIRE([1.36])
 BOOST_SYSTEM
-BOOST_PROGRAM_OPTIONS
 
 # ==============
 # Werror support
@@ -170,6 +169,10 @@ AM_CONDITIONAL([WITH_TOOLS], [test "x$with_tools" != "xno"])
 
 AS_IF([test "x$with_gnumeric_filter" != "xno"], [
         BOOST_IOSTREAMS
+])
+
+AS_IF([test "x$with_tools" != "xno"], [
+        BOOST_PROGRAM_OPTIONS
 ])
 
 # ============
