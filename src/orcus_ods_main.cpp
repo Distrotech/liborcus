@@ -31,18 +31,83 @@
 #include "orcus/spreadsheet/factory.hpp"
 
 #include <boost/scoped_ptr.hpp>
+#include <boost/program_options.hpp>
+#include <vector>
 
+namespace {
+
+const char* help_program =
+"Usage: orcus-ods [options] FILE\n\n"
+"The FILE must specify a path to an existing ODF spreadsheet file.";
+
+const char* help_output =
+"Output file path.";
+
+const char* help_output_format =
+"Specify the format of output file.  Supported format types are: "
+"1) flat text format (flat), or 2) HTML format (html).";
+
+}
+
+using namespace std;
 using namespace orcus;
 
 int main(int argc, char** argv)
 {
-    if (argc != 2)
+    namespace po = boost::program_options;
+
+    po::options_description desc("Allowed options");
+    desc.add_options()
+        ("help,h", "Print this help.")
+        ("output,o", po::value<string>(), help_output)
+        ("output-format,f", po::value<string>(), help_output_format);
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+        ("input", po::value<string>(), "input file");
+
+    po::options_description cmd_opt;
+    cmd_opt.add(desc).add(hidden);
+
+    po::positional_options_description po_desc;
+    po_desc.add("input", -1);
+
+    po::variables_map vm;
+    try
+    {
+        po::store(
+            po::command_line_parser(argc, argv).options(cmd_opt).positional(po_desc).run(), vm);
+        po::notify(vm);
+    }
+    catch (const exception& e)
+    {
+        // Unknown options.
+        cout << e.what() << endl;
+        cout << desc;
         return EXIT_FAILURE;
+    }
+
+    if (vm.count("help"))
+    {
+        cout << help_program << endl << endl << desc;
+        return EXIT_SUCCESS;
+    }
+
+    string infile, outfile, outformat;
+
+    if (vm.count("input"))
+        infile = vm["input"].as<string>();
+
+    if (vm.count("output"))
+        outfile = vm["output"].as<string>();
+
+    if (vm.count("output-format"))
+        outformat = vm["output-format"].as<string>();
 
     boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
     boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
     orcus_ods app(fact.get());
-    app.read_file(argv[1]);
+    app.read_file(infile.c_str());
     doc->dump();
     doc->dump_html("./html");
 
