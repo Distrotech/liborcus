@@ -173,6 +173,7 @@ AS_IF([test "x$with_gnumeric_filter" != "xno"], [
 
 AS_IF([test "x$with_tools" != "xno"], [
         BOOST_PROGRAM_OPTIONS
+        BOOST_FILESYSTEM
 ])
 
 # ============
