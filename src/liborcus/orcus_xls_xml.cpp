@@ -91,14 +91,14 @@ bool orcus_xls_xml::detect(const unsigned char* buffer, size_t size)
     return false;
 }
 
-void orcus_xls_xml::read_file(const char* fpath)
+void orcus_xls_xml::read_file(const string& filepath)
 {
 #if ORCUS_DEBUG_XLS_XML_FILTER
-    cout << "reading " << fpath << endl;
+    cout << "reading " << filepath << endl;
 #endif
 
     string strm;
-    load_file_content(fpath, strm);
+    load_file_content(filepath.c_str(), strm);
     if (strm.empty())
         return;
 
@@ -107,6 +107,12 @@ void orcus_xls_xml::read_file(const char* fpath)
         new xls_xml_handler(mp_impl->m_cxt, xls_xml_tokens, mp_impl->mp_factory));
     parser.set_handler(handler.get());
     parser.parse();
+}
+
+const char* orcus_xls_xml::get_name() const
+{
+    static const char* name = "xls-xml";
+    return name;
 }
 
 }

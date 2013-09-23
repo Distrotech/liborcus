@@ -80,14 +80,19 @@ private:
 
 orcus_csv::orcus_csv(spreadsheet::iface::import_factory* factory) : mp_factory(factory) {}
 
-void orcus_csv::read_file(const char* filepath)
+void orcus_csv::read_file(const string& filepath)
 {
-    cout << "reading " << filepath << endl;
     string strm;
-    load_file_content(filepath, strm);
+    load_file_content(filepath.c_str(), strm);
     parse(strm);
 
     mp_factory->finalize();
+}
+
+const char* orcus_csv::get_name() const
+{
+    static const char* name = "csv";
+    return name;
 }
 
 void orcus_csv::parse(const string& strm)

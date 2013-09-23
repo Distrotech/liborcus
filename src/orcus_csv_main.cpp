@@ -26,28 +26,25 @@
  ************************************************************************/
 
 #include "orcus/orcus_csv.hpp"
-#include "orcus/pstring.hpp"
-#include "orcus/spreadsheet/factory.hpp"
 #include "orcus/spreadsheet/document.hpp"
+#include "orcus/spreadsheet/factory.hpp"
 
+#include "orcus_filter_global.hpp"
+
+#include <cstdlib>
 #include <boost/scoped_ptr.hpp>
-#include <iostream>
 
-using namespace orcus;
 using namespace std;
+using namespace orcus;
 
 int main(int argc, char** argv)
 {
-    if (argc != 2)
-        return EXIT_FAILURE;
-
     boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
     boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
-
     orcus_csv app(fact.get());
-    app.read_file(argv[1]);
-//  doc->dump();
-    doc->dump_check(cout);
+
+    if (parse_import_filter_args(app, *doc, argc, argv))
+        return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }

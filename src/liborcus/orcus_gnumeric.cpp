@@ -27,6 +27,7 @@
 
 #include "orcus/orcus_gnumeric.hpp"
 #include "orcus/xml_namespace.hpp"
+#include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/stream.hpp"
 
 #include "xml_stream_parser.hpp"
@@ -36,6 +37,8 @@
 #include "gnumeric_detection_handler.hpp"
 #include "session_context.hpp"
 #include "detection_result.hpp"
+
+#define ORCUS_DEBUG_GNUMERIC 0
 
 #include <iostream>
 #include <string>
@@ -135,12 +138,14 @@ bool orcus_gnumeric::detect(const unsigned char* buffer, size_t size)
     return false;
 }
 
-void orcus_gnumeric::read_file(const char *fpath)
+void orcus_gnumeric::read_file(const string& filepath)
 {
-    cout << "reading " << fpath << endl;
+#if ORCUS_DEBUG_GNUMERIC
+    cout << "reading " << filepath << endl;
+#endif
 
     string strm;
-    load_file_content(fpath, strm);
+    load_file_content(filepath.c_str(), strm);
     if (strm.empty())
         return;
 
@@ -151,6 +156,12 @@ void orcus_gnumeric::read_file(const char *fpath)
     read_content_xml(file_content.c_str(), file_content.length());
 
     mp_impl->mp_factory->finalize();
+}
+
+const char* orcus_gnumeric::get_name() const
+{
+    static const char* name = "gnumeric";
+    return name;
 }
 
 }

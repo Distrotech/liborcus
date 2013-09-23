@@ -103,6 +103,8 @@ bin_PROGRAMS += \
 # orcus-csv
 
 orcus_csv_SOURCES = \
+	orcus_filter_global.hpp \
+	orcus_filter_global.cpp \
 	orcus_csv_main.cpp
 
 orcus_csv_LDADD = \
@@ -184,6 +186,8 @@ bin_PROGRAMS += \
 # orcus-xls-xml
 
 orcus_xls_xml_SOURCES = \
+	orcus_filter_global.hpp \
+	orcus_filter_global.cpp \
 	orcus_xls_xml_main.cpp
 
 orcus_xls_xml_LDADD = \
@@ -205,6 +209,8 @@ bin_PROGRAMS += \
 # orcus-gnumeric
 
 orcus_gnumeric_SOURCES = \
+	orcus_filter_global.hpp \
+	orcus_filter_global.cpp \
 	orcus_gnumeric_main.cpp
 
 orcus_gnumeric_LDADD = \

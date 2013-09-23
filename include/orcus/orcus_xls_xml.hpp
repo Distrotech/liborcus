@@ -28,8 +28,7 @@
 #ifndef ORCUS_ORCUS_XLS_XML_HPP
 #define ORCUS_ORCUS_XLS_XML_HPP
 
-#include "orcus/spreadsheet/import_interface.hpp"
-#include "orcus/env.hpp"
+#include "interface.hpp"
 
 namespace orcus {
 
@@ -37,7 +36,7 @@ namespace spreadsheet { namespace iface { class import_factory; }}
 
 struct orcus_xls_xml_impl;
 
-class ORCUS_DLLPUBLIC orcus_xls_xml
+class ORCUS_DLLPUBLIC orcus_xls_xml : public iface::import_filter
 {
     orcus_xls_xml(const orcus_xls_xml&); // disabled
     orcus_xls_xml& operator= (const orcus_xls_xml&); // disabled
@@ -48,7 +47,8 @@ public:
 
     static bool detect(const unsigned char* blob, size_t size);
 
-    void read_file(const char* fpath);
+    virtual void read_file(const std::string& filepath);
+    virtual const char* get_name() const;
 
 private:
     orcus_xls_xml_impl* mp_impl;

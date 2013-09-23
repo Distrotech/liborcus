@@ -28,10 +28,7 @@
 #ifndef ORCUS_ORCUS_GNUMERIC_HPP
 #define ORCUS_ORCUS_GNUMERIC_HPP
 
-#include "orcus/spreadsheet/import_interface.hpp"
-#include "orcus/env.hpp"
-
-#include <boost/noncopyable.hpp>
+#include "interface.hpp"
 
 namespace orcus {
 
@@ -39,7 +36,7 @@ namespace spreadsheet { namespace iface { class import_factory; }}
 
 struct orcus_gnumeric_impl;
 
-class ORCUS_DLLPUBLIC orcus_gnumeric
+class ORCUS_DLLPUBLIC orcus_gnumeric : public iface::import_filter
 {
     orcus_gnumeric(const orcus_gnumeric&); // disabled
 public:
@@ -48,7 +45,8 @@ public:
 
     static bool detect(const unsigned char* blob, size_t size);
 
-    void read_file(const char* fpath);
+    virtual void read_file(const std::string& filepath);
+    virtual const char* get_name() const;
 
 private:
     void read_content_xml(const char* p, size_t size);

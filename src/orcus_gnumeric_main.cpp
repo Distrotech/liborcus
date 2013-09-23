@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2012 Kohei Yoshida
+ * Copyright (c) 2011-2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -26,11 +26,10 @@
  ************************************************************************/
 
 #include "orcus/orcus_gnumeric.hpp"
-#include "orcus/spreadsheet/document.hpp"
 #include "orcus/spreadsheet/factory.hpp"
-#include "orcus/pstring.hpp"
+#include "orcus/spreadsheet/document.hpp"
 
-#include <iostream>
+#include "orcus_filter_global.hpp"
 
 #include <boost/scoped_ptr.hpp>
 
@@ -38,22 +37,12 @@ using namespace orcus;
 
 int main(int argc, char** argv)
 {
-    if (argc != 2)
-        return EXIT_FAILURE;
-
     boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
     boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
     orcus_gnumeric app(fact.get());
-    try
-    {
-        app.read_file(argv[1]);
-    }
-    catch(const std::exception& e)
-    {
-        std::cout << "Caught Exception: " << e.what() << std::endl;
-    }
-    doc->dump_flat("./flat");
-    doc->dump_html("./html");
+
+    if (parse_import_filter_args(app, *doc, argc, argv))
+        return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }

@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2012 Kohei Yoshida
+ * Copyright (c) 2011-2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,12 +25,10 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_ORCUS_CSV_HPP__
-#define __ORCUS_ORCUS_CSV_HPP__
+#ifndef ORCUS_ORCUS_CSV_HPP
+#define ORCUS_ORCUS_CSV_HPP
 
-#include "env.hpp"
-
-#include <string>
+#include "interface.hpp"
 
 namespace orcus {
 
@@ -38,14 +36,16 @@ namespace spreadsheet { namespace iface {
     class import_factory;
 }}
 
-class ORCUS_DLLPUBLIC orcus_csv
+class ORCUS_DLLPUBLIC orcus_csv : public iface::import_filter
 {
     orcus_csv(const orcus_csv&); // disabled
     orcus_csv& operator=(const orcus_csv&); // disabled
 
 public:
     orcus_csv(spreadsheet::iface::import_factory* factory);
-    void read_file(const char* filepath);
+
+    virtual void read_file(const std::string& filepath);
+    virtual const char* get_name() const;
 
 private:
     void parse(const std::string& strm);
