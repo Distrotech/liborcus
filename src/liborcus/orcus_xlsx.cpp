@@ -176,10 +176,16 @@ bool orcus_xlsx::detect(const unsigned char* blob, size_t size)
     return std::find(parts.begin(), parts.end(), workbook_part) != parts.end();
 }
 
-void orcus_xlsx::read_file(const char* fpath)
+void orcus_xlsx::read_file(const string& filepath)
 {
-    mp_impl->m_opc_reader.read_file(fpath);
+    mp_impl->m_opc_reader.read_file(filepath.c_str());
     mp_impl->mp_factory->finalize();
+}
+
+const char* orcus_xlsx::get_name() const
+{
+    static const char* name = "xlsx";
+    return name;
 }
 
 void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)

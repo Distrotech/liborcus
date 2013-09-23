@@ -161,6 +161,8 @@ bin_PROGRAMS += \
 # orcus-xlsx
 
 orcus_xlsx_SOURCES = \
+	orcus_filter_global.hpp \
+	orcus_filter_global.cpp \
 	orcus_xlsx_main.cpp
 
 orcus_xlsx_LDADD = \

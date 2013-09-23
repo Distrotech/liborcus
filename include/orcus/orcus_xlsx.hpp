@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2012 Kohei Yoshida
+ * Copyright (c) 2011-2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,12 +25,10 @@
  *
  ************************************************************************/
 
-#ifndef __ORCUS_ORCUS_XLSX_HPP__
-#define __ORCUS_ORCUS_XLSX_HPP__
+#ifndef ORCUS_ORCUS_XLSX_HPP
+#define ORCUS_ORCUS_XLSX_HPP
 
-#include "env.hpp"
-
-#include <string>
+#include "interface.hpp"
 
 namespace orcus {
 
@@ -40,7 +38,7 @@ struct xlsx_rel_sheet_info;
 struct orcus_xlsx_impl;
 class xlsx_opc_handler;
 
-class ORCUS_DLLPUBLIC orcus_xlsx
+class ORCUS_DLLPUBLIC orcus_xlsx : public iface::import_filter
 {
     friend class xlsx_opc_handler;
 
@@ -53,7 +51,8 @@ public:
 
     static bool detect(const unsigned char* blob, size_t size);
 
-    void read_file(const char* fpath);
+    virtual void read_file(const std::string& filepath);
+    virtual const char* get_name() const;
 
 private:
 

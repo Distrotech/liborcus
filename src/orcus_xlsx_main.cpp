@@ -26,9 +26,10 @@
  ************************************************************************/
 
 #include "orcus/orcus_xlsx.hpp"
-#include "orcus/pstring.hpp"
 #include "orcus/spreadsheet/factory.hpp"
 #include "orcus/spreadsheet/document.hpp"
+
+#include "orcus_filter_global.hpp"
 
 #include <boost/scoped_ptr.hpp>
 
@@ -36,15 +37,12 @@ using namespace orcus;
 
 int main(int argc, char** argv)
 {
-    if (argc != 2)
-        return EXIT_FAILURE;
+    boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
+    boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
+    orcus_xlsx app(fact.get());
 
-    ::boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-    ::boost::scoped_ptr<spreadsheet::import_factory> factory(new spreadsheet::import_factory(doc.get()));
-    orcus_xlsx app(factory.get());
-    app.read_file(argv[1]);
-    doc->dump_flat("./flat");
-    doc->dump_html("./html");
+    if (parse_import_filter_args(app, *doc, argc, argv))
+        return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }
