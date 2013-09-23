@@ -175,6 +175,7 @@
 				<F N="../include/orcus/exception.hpp"/>
 				<F N="../include/orcus/format_detection.hpp"/>
 				<F N="../include/orcus/global.hpp"/>
+				<F N="../include/orcus/interface.hpp"/>
 				<F N="../include/orcus/measurement.hpp"/>
 				<F N="../include/orcus/orcus_csv.hpp"/>
 				<F N="../include/orcus/orcus_gnumeric.hpp"/>
@@ -228,6 +229,7 @@
 				<F N="../src/liborcus/gnumeric_tokens.cpp"/>
 				<F N="../src/liborcus/gnumeric_tokens.hpp"/>
 				<F N="../src/liborcus/gnumeric_tokens.inl"/>
+				<F N="../src/liborcus/interface.cpp"/>
 				<F N="../src/liborcus/measurement.cpp"/>
 				<F N="../src/liborcus/mock_spreadsheet.cpp"/>
 				<F N="../src/liborcus/mock_spreadsheet.hpp"/>
@@ -355,6 +357,8 @@
 			<F N="../src/dom_tree_sax_handler.hpp"/>
 			<F N="../src/orcus_csv_main.cpp"/>
 			<F N="../src/orcus_detect_main.cpp"/>
+			<F N="../src/orcus_filter_global.cpp"/>
+			<F N="../src/orcus_filter_global.hpp"/>
 			<F N="../src/orcus_gnumeric_main.cpp"/>
 			<F N="../src/orcus_mso_encryption.cpp"/>
 			<F N="../src/orcus_ods_main.cpp"/>

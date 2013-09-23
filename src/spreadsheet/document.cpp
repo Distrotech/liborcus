@@ -308,9 +308,9 @@ void document::dump_check(ostream& os) const
     for_each(mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), sheet_item::check_printer(os));
 }
 
-void document::dump_html(const string& filepath) const
+void document::dump_html(const string& outdir) const
 {
-    for_each(mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), sheet_item::html_printer(filepath));
+    for_each(mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), sheet_item::html_printer(outdir));
 }
 
 sheet_t document::get_sheet_index(const pstring& name) const

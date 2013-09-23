@@ -138,10 +138,9 @@ bool orcus_ods::detect(const unsigned char* blob, size_t size)
     return true;
 }
 
-void orcus_ods::read_file(const char* fpath)
+void orcus_ods::read_file(const string& filepath)
 {
-    cout << "reading " << fpath << endl;
-    zip_archive_stream_fd stream(fpath);
+    zip_archive_stream_fd stream(filepath.c_str());
     zip_archive archive(&stream);
     archive.load();
     list_content(archive);

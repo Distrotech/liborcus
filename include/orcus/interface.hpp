@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- * Copyright (c) 2011-2012 Kohei Yoshida
+ * Copyright (c) 2013 Kohei Yoshida
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,26 +25,30 @@
  *
  ************************************************************************/
 
-#include "orcus/orcus_ods.hpp"
-#include "orcus/spreadsheet/document.hpp"
-#include "orcus/spreadsheet/factory.hpp"
+#ifndef ORCUS_INTERFACE_HPP
+#define ORCUS_INTERFACE_HPP
 
-#include "orcus_filter_global.hpp"
+#include "env.hpp"
 
-#include <cstdlib>
-#include <boost/scoped_ptr.hpp>
+#include <string>
 
-using namespace std;
-using namespace orcus;
+namespace orcus { namespace iface {
 
-int main(int argc, char** argv)
+class ORCUS_DLLPUBLIC import_filter
 {
-    boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-    boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
-    orcus_ods app(fact.get());
+public:
+    virtual ~import_filter();
+    virtual void read_file(const std::string& filepath) = 0;
+};
 
-    if (parse_args(&app, doc.get(), argc, argv))
-        return EXIT_FAILURE;
+class ORCUS_DLLPUBLIC document_dumper
+{
+public:
+    virtual ~document_dumper();
+    virtual void dump_flat(const std::string& outdir) const = 0;
+    virtual void dump_html(const std::string& outdir) const = 0;
+};
 
-    return EXIT_SUCCESS;
-}
+}}
+
+#endif

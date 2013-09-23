@@ -30,6 +30,7 @@
 
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/env.hpp"
+#include "interface.hpp"
 
 namespace orcus {
 
@@ -38,7 +39,7 @@ namespace spreadsheet { namespace iface { class import_factory; }}
 struct orcus_ods_impl;
 class zip_archive;
 
-class ORCUS_DLLPUBLIC orcus_ods
+class ORCUS_DLLPUBLIC orcus_ods : public iface::import_filter
 {
     orcus_ods(const orcus_ods&); // disabled
     orcus_ods& operator= (const orcus_ods&); // disabled
@@ -49,7 +50,7 @@ public:
 
     static bool detect(const unsigned char* blob, size_t size);
 
-    void read_file(const char* fpath);
+    virtual void read_file(const std::string& filepath);
 
 private:
     static void list_content(const zip_archive& archive);

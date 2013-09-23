@@ -137,6 +137,8 @@ bin_PROGRAMS += \
 # orcus-ods
 
 orcus_ods_SOURCES = \
+	orcus_filter_global.hpp \
+	orcus_filter_global.cpp \
 	orcus_ods_main.cpp
 
 orcus_ods_LDADD = \

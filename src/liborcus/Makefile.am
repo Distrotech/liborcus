@@ -31,6 +31,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	dom_tree.cpp \
 	format_detection.cpp \
 	global.cpp \
+	interface.cpp \
 	spreadsheet_interface.cpp \
 	orcus_css.cpp \
 	orcus_csv.cpp \

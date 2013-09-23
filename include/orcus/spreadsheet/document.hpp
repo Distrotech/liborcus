@@ -29,6 +29,7 @@
 #define __ORCUS_SPREADSHEET_DOCUMENT_HPP__
 
 #include "orcus/env.hpp"
+#include "orcus/interface.hpp"
 #include "orcus/spreadsheet/types.hpp"
 
 #include <ostream>
@@ -55,7 +56,7 @@ struct document_impl;
  * Internal document representation used only for testing the filters.  It
  * uses ixion's model_context implementation to store raw cell values.
  */
-class ORCUS_DLLPUBLIC document
+class ORCUS_DLLPUBLIC document : public orcus::iface::document_dumper
 {
     friend class sheet;
 
@@ -92,13 +93,7 @@ public:
     /**
      * Dump document content to specified output directory.
      */
-    void dump_flat(const std::string& outdir) const;
-
-    /**
-     * Dump document content to stdout in the special format used for content
-     * verification during unit test.
-     */
-    void dump_check(std::ostream& os) const;
+    virtual void dump_flat(const std::string& outdir) const;
 
     /**
      * File name should not contain an extension.  The final name will be
@@ -106,7 +101,13 @@ public:
      *
      * @param filename base file name
      */
-    void dump_html(const ::std::string& filename) const;
+    virtual void dump_html(const ::std::string& outdir) const;
+
+    /**
+     * Dump document content to stdout in the special format used for content
+     * verification during unit test.
+     */
+    void dump_check(std::ostream& os) const;
 
     sheet_t get_sheet_index(const pstring& name) const;
     pstring get_sheet_name(sheet_t sheet_pos) const;
