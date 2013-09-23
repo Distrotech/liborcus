@@ -37,7 +37,8 @@ class document_dumper;
 
 }
 
-bool parse_args(iface::import_filter* app, iface::document_dumper* doc, int argc, char** argv);
+bool parse_import_filter_args(
+    iface::import_filter& app, iface::document_dumper& doc, int argc, char** argv);
 
 }
 

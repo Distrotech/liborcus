@@ -26,8 +26,8 @@
  ************************************************************************/
 
 #include "orcus_filter_global.hpp"
-#include "orcus/orcus_ods.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/interface.hpp"
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
@@ -41,8 +41,7 @@ namespace orcus {
 namespace {
 
 const char* help_program =
-"Usage: orcus-ods [options] FILE\n\n"
-"The FILE must specify a path to an existing ODF spreadsheet file.";
+"The FILE must specify a path to an existing file.";
 
 const char* help_output =
 "Output directory path.";
@@ -53,7 +52,8 @@ const char* help_output_format =
 
 }
 
-bool parse_args(iface::import_filter* app, iface::document_dumper* doc, int argc, char** argv)
+bool parse_import_filter_args(
+    iface::import_filter& app, iface::document_dumper& doc, int argc, char** argv)
 {
     namespace po = boost::program_options;
     namespace fs = boost::filesystem;
@@ -91,6 +91,7 @@ bool parse_args(iface::import_filter* app, iface::document_dumper* doc, int argc
 
     if (vm.count("help"))
     {
+        cout << "Usage: orcus-" << app.get_name() << " [options] FILE" << endl << endl;
         cout << help_program << endl << endl << desc;
         return true;
     }
@@ -135,12 +136,12 @@ bool parse_args(iface::import_filter* app, iface::document_dumper* doc, int argc
     else
         fs::create_directory(outdir);
 
-    app->read_file(infile);
+    app.read_file(infile);
 
     if (outformat == "flat")
-        doc->dump_flat(outdir);
+        doc.dump_flat(outdir);
     else if (outformat == "html")
-        doc->dump_html(outdir);
+        doc.dump_html(outdir);
 
     return true;
 }

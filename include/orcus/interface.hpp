@@ -39,6 +39,7 @@ class ORCUS_DLLPUBLIC import_filter
 public:
     virtual ~import_filter();
     virtual void read_file(const std::string& filepath) = 0;
+    virtual const char* get_name() const = 0;
 };
 
 class ORCUS_DLLPUBLIC document_dumper

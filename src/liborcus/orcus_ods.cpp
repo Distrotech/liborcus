@@ -149,4 +149,10 @@ void orcus_ods::read_file(const string& filepath)
     mp_impl->mp_factory->finalize();
 }
 
+const char* orcus_ods::get_name() const
+{
+    static const char* name = "ods";
+    return name;
+}
+
 }

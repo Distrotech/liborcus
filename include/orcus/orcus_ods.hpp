@@ -51,6 +51,7 @@ public:
     static bool detect(const unsigned char* blob, size_t size);
 
     virtual void read_file(const std::string& filepath);
+    virtual const char* get_name() const;
 
 private:
     static void list_content(const zip_archive& archive);

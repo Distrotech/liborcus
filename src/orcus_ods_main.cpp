@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
     orcus_ods app(fact.get());
 
-    if (parse_args(&app, doc.get(), argc, argv))
+    if (parse_import_filter_args(app, *doc, argc, argv))
         return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
