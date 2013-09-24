@@ -12,6 +12,7 @@ liborcus_HEADERS = \
 	exception.hpp \
 	format_detection.hpp \
 	global.hpp \
+	interface.hpp \
 	measurement.hpp \
 	orcus_csv.hpp \
 	orcus_xml.hpp \
