@@ -215,6 +215,19 @@ double convert_centimeter(double value, length_unit_t unit_to)
     throw general_error("convert_centimeter: unsupported unit of measurement.");
 }
 
+double convert_twip(double value, length_unit_t unit_to)
+{
+    switch (unit_to)
+    {
+        case length_unit_inch:
+            // twips to inches : 1 twip = 1/1440 inches
+            return value / 1440.0;
+        default:
+            ;
+    }
+    throw general_error("convert_twip: unsupported unit of measurement.");
+}
+
 /**
  * Since Excel's column width is based on the maximum digit width of font
  * used as the "Normal" style font, it's impossible to convert it accurately
@@ -241,6 +254,8 @@ double convert(double value, length_unit_t unit_from, length_unit_t unit_to)
             return convert_inch(value, unit_to);
         case length_unit_centimeter:
             return convert_centimeter(value, unit_to);
+        case length_unit_twip:
+            return convert_twip(value, unit_to);
         case length_unit_xlsx_column_digit:
             return convert_xlsx_column_digit(value, unit_to);
         default:

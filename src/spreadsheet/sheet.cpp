@@ -14,6 +14,7 @@
 
 #include "orcus/global.hpp"
 #include "orcus/exception.hpp"
+#include "orcus/measurement.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -704,10 +705,16 @@ void sheet::dump_html(const string& filepath) const
     const char* p_tr    = "tr";
     const char* p_td    = "td";
     const char* p_table_attrs      = "border:1px solid rgb(220,220,220); border-collapse:collapse; ";
-    const char* p_empty_cell_attrs = "border:1px solid rgb(220,220,220); color:white; ";
+    const char* p_empty_cell_attrs = "color:white; ";
 
     const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     ixion::abs_range_t range = cxt.get_data_range(mp_impl->m_sheet);
+
+    if (!mp_impl->m_col_widths.is_tree_valid())
+        mp_impl->m_col_widths.build_tree();
+
+    if (!mp_impl->m_row_heights.is_tree_valid())
+        mp_impl->m_row_heights.build_tree();
 
     {
         elem root(file, p_html);
@@ -731,6 +738,23 @@ void sheet::dump_html(const string& filepath) const
 
                 size_t xf_id = get_cell_format(row, col);
                 string style = p_table_attrs;
+
+                if (row == 0)
+                {
+                    // Set the column width.
+                    col_width_t cw;
+                    if (mp_impl->m_col_widths.search_tree(col, cw).second)
+                    {
+                        // Convert width from twip to inches.
+                        if (cw == default_column_width)
+                            cw = 1440;
+                        double val = orcus::convert(cw, length_unit_twip, length_unit_inch);
+                        ostringstream os_style;
+                        os_style << "width: " << val << "in;";
+                        style += os_style.str();
+                    }
+                }
+
                 if (xf_id)
                 {
                     // Apply cell format.
@@ -743,7 +767,6 @@ void sheet::dump_html(const string& filepath) const
                 ixion::celltype_t ct = cxt.get_celltype(pos);
                 if (ct == ixion::celltype_empty)
                 {
-                    string style;
                     style += p_empty_cell_attrs;
                     elem td(file, p_td, style.c_str());
                     file << '-'; // empty cell.
