@@ -1,3 +1,9 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 #include "mock_spreadsheet.hpp"
 #include "ooxml_namespace_types.hpp"
 #include "ooxml_tokens.hpp"
@@ -191,3 +197,4 @@ int main()
     test_hidden_row();
     return 0;
 }
+/* vim:set shiftwidth=4 softtabstop=4 expandtab: */
