@@ -766,7 +766,27 @@ void sheet::dump_html(const string& filepath) const
         col_t col_count = range.last.column + 1;
         for (row_t row = 0; row < row_count; ++row)
         {
-            elem tr(file, p_tr);
+            // Set the row height.
+            string row_style;
+            row_height_t rh;
+            if (mp_impl->m_row_heights.search_tree(row, rh).second)
+            {
+                // Convert height from twip to inches.
+                if (rh != default_row_height)
+                {
+                    string style;
+                    double val = orcus::convert(rh, length_unit_twip, length_unit_inch);
+                    ostringstream os_style;
+                    os_style << "height: " << val << "in;";
+                    row_style += os_style.str();
+                }
+            }
+
+            const char* style_str = NULL;
+            if (!row_style.empty())
+                style_str = row_style.c_str();
+            elem tr(file, p_tr, style_str);
+
             for (col_t col = 0; col < col_count; ++col)
             {
                 ixion::abs_address_t pos(mp_impl->m_sheet,row,col);
@@ -808,7 +828,7 @@ void sheet::dump_html(const string& filepath) const
                     continue;
                 }
 
-                const char* style_str = NULL;
+                style_str = NULL;
                 if (!style.empty())
                     style_str = style.c_str();
                 elem td(file, p_td, style_str);
