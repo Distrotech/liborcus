@@ -572,16 +572,35 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
 
 namespace {
 
+const char* css_style_global =
+"table, td { "
+    "border : 1px solid rgb(220,220,220); "
+    "border-collapse : collapse; "
+"}\n"
+
+"td { "
+    "width : 1in; "
+"}\n"
+
+"td.empty { "
+    "color : white; "
+"}\n";
+
 class html_elem
 {
 public:
-    html_elem(ostream& strm, const char* name, const char* attr = NULL) :
+    html_elem(ostream& strm, const char* name, const char* style = NULL, const char* style_class = NULL) :
         m_strm(strm), m_name(name)
     {
-        if (attr)
-            m_strm << '<' << m_name << " style=\"" << attr << "\">";
-        else
-            m_strm << '<' << m_name << '>';
+        m_strm << '<' << m_name;
+
+        if (style)
+            m_strm << " style=\"" << style << "\"";
+
+        if (style_class)
+            m_strm << " class=\"" << style_class << "\"";
+
+        m_strm << '>';
     }
 
     ~html_elem()
@@ -701,11 +720,12 @@ void sheet::dump_html(const string& filepath) const
     }
 
     const char* p_html  = "html";
+    const char* p_head = "head";
+    const char* p_body = "body";
+    const char* p_style = "style";
     const char* p_table = "table";
     const char* p_tr    = "tr";
     const char* p_td    = "td";
-    const char* p_table_attrs      = "border:1px solid rgb(220,220,220); border-collapse:collapse; ";
-    const char* p_empty_cell_attrs = "color:white; ";
 
     const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     ixion::abs_range_t range = cxt.get_data_range(mp_impl->m_sheet);
@@ -719,105 +739,120 @@ void sheet::dump_html(const string& filepath) const
     {
         elem root(file, p_html);
 
-        if (!range.valid())
-            // Sheet is empty.  Nothing to print.
-            return;
-
-        const import_shared_strings* sstrings = mp_impl->m_doc.get_shared_strings();
-
-        elem table(file, p_table, p_table_attrs);
-
-        row_t row_count = range.last.row + 1;
-        col_t col_count = range.last.column + 1;
-        for (row_t row = 0; row < row_count; ++row)
         {
-            elem tr(file, p_tr, p_table_attrs);
-            for (col_t col = 0; col < col_count; ++col)
+            elem elem_head(file, p_head);
             {
-                ixion::abs_address_t pos(mp_impl->m_sheet,row,col);
+                elem elem_style(file, p_style);
+                file << css_style_global;
+            }
+        }
 
-                size_t xf_id = get_cell_format(row, col);
-                string style = p_table_attrs;
+        {
+            elem elem_body(file, p_body);
 
-                if (row == 0)
+            if (!range.valid())
+                // Sheet is empty.  Nothing to print.
+                return;
+
+            const import_shared_strings* sstrings = mp_impl->m_doc.get_shared_strings();
+
+            elem table(file, p_table, NULL);
+
+            row_t row_count = range.last.row + 1;
+            col_t col_count = range.last.column + 1;
+            for (row_t row = 0; row < row_count; ++row)
+            {
+                elem tr(file, p_tr, NULL);
+                for (col_t col = 0; col < col_count; ++col)
                 {
-                    // Set the column width.
-                    col_width_t cw;
-                    if (mp_impl->m_col_widths.search_tree(col, cw).second)
+                    ixion::abs_address_t pos(mp_impl->m_sheet,row,col);
+
+                    size_t xf_id = get_cell_format(row, col);
+                    string style;
+
+                    if (row == 0)
                     {
-                        // Convert width from twip to inches.
-                        if (cw == default_column_width)
-                            cw = 1440;
-                        double val = orcus::convert(cw, length_unit_twip, length_unit_inch);
-                        ostringstream os_style;
-                        os_style << "width: " << val << "in;";
-                        style += os_style.str();
-                    }
-                }
-
-                if (xf_id)
-                {
-                    // Apply cell format.
-                    import_styles* p_styles = mp_impl->m_doc.get_styles();
-                    const cell_format* fmt = p_styles->get_cell_format(xf_id);
-                    if (fmt)
-                        build_style_string(style, *p_styles, *fmt);
-                }
-
-                ixion::celltype_t ct = cxt.get_celltype(pos);
-                if (ct == ixion::celltype_empty)
-                {
-                    style += p_empty_cell_attrs;
-                    elem td(file, p_td, style.c_str());
-                    file << '-'; // empty cell.
-                    continue;
-                }
-
-                elem td(file, p_td, style.c_str());
-                ostringstream os;
-                switch (ct)
-                {
-                    case ixion::celltype_string:
-                    {
-                        size_t sindex = cxt.get_string_identifier(pos);
-                        const string* p = cxt.get_string(sindex);
-                        assert(p);
-                        const format_runs_t* pformat = sstrings->get_format_runs(sindex);
-                        if (pformat)
-                            print_formatted_text(os, *p, *pformat);
-                        else
-                            os << *p;
-                    }
-                    break;
-                    case ixion::celltype_numeric:
-                        os << cxt.get_numeric_value(pos);
-                    break;
-                    case ixion::celltype_formula:
-                    {
-                        // print the formula and the formula result.
-                        const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
-                        assert(cell);
-                        size_t index = cell->get_identifier();
-                        const ixion::formula_tokens_t* t = cxt.get_formula_tokens(mp_impl->m_sheet, index);
-                        if (t)
+                        // Set the column width.
+                        col_width_t cw;
+                        if (mp_impl->m_col_widths.search_tree(col, cw).second)
                         {
-                            ostringstream os;
-                            string formula;
-                            ixion::print_formula_tokens(
-                                mp_impl->m_doc.get_model_context(), pos, *t, formula);
-                            os << formula;
-
-                            const ixion::formula_result* res = cell->get_result_cache();
-                            if (res)
-                                os << " (" << res->str(mp_impl->m_doc.get_model_context()) << ")";
+                            // Convert width from twip to inches.
+                            if (cw != default_column_width)
+                            {
+                                double val = orcus::convert(cw, length_unit_twip, length_unit_inch);
+                                ostringstream os_style;
+                                os_style << "width: " << val << "in;";
+                                style += os_style.str();
+                            }
                         }
                     }
-                    break;
-                    default:
-                        ;
-                }
 
-                file << os.str();
+                    if (xf_id)
+                    {
+                        // Apply cell format.
+                        import_styles* p_styles = mp_impl->m_doc.get_styles();
+                        const cell_format* fmt = p_styles->get_cell_format(xf_id);
+                        if (fmt)
+                            build_style_string(style, *p_styles, *fmt);
+                    }
+
+                    ixion::celltype_t ct = cxt.get_celltype(pos);
+                    if (ct == ixion::celltype_empty)
+                    {
+                        elem td(file, p_td, style.c_str(), "empty");
+                        file << '-'; // empty cell.
+                        continue;
+                    }
+
+                    const char* style_str = NULL;
+                    if (!style.empty())
+                        style_str = style.c_str();
+                    elem td(file, p_td, style_str);
+                    ostringstream os;
+                    switch (ct)
+                    {
+                        case ixion::celltype_string:
+                        {
+                            size_t sindex = cxt.get_string_identifier(pos);
+                            const string* p = cxt.get_string(sindex);
+                            assert(p);
+                            const format_runs_t* pformat = sstrings->get_format_runs(sindex);
+                            if (pformat)
+                                print_formatted_text(os, *p, *pformat);
+                            else
+                                os << *p;
+                        }
+                        break;
+                        case ixion::celltype_numeric:
+                            os << cxt.get_numeric_value(pos);
+                        break;
+                        case ixion::celltype_formula:
+                        {
+                            // print the formula and the formula result.
+                            const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
+                            assert(cell);
+                            size_t index = cell->get_identifier();
+                            const ixion::formula_tokens_t* t = cxt.get_formula_tokens(mp_impl->m_sheet, index);
+                            if (t)
+                            {
+                                ostringstream os;
+                                string formula;
+                                ixion::print_formula_tokens(
+                                    mp_impl->m_doc.get_model_context(), pos, *t, formula);
+                                os << formula;
+
+                                const ixion::formula_result* res = cell->get_result_cache();
+                                if (res)
+                                    os << " (" << res->str(mp_impl->m_doc.get_model_context()) << ")";
+                            }
+                        }
+                        break;
+                        default:
+                            ;
+                    }
+
+                    file << os.str();
+                }
             }
         }
     }
