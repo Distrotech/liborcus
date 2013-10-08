@@ -57,6 +57,7 @@ public:
 
     virtual void set_border_count(size_t n);
     virtual void set_border_style(orcus::spreadsheet::border_direction_t dir, const char* s, size_t n);
+    virtual void set_border_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
     virtual size_t commit_border();
 
     // cell protection

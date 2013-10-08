@@ -673,20 +673,57 @@ void print_formatted_text(ostream& strm, const string& text, const format_runs_t
     }
 }
 
+void build_rgb_color(ostringstream& os, const color& color_value)
+{
+    // Special colors.
+    if (color_value.alpha == 255 && color_value.red == 0 && color_value.green == 0 && color_value.blue == 0)
+    {
+        os << "black";
+        return;
+    }
+
+    if (color_value.alpha == 255 && color_value.red == 255 && color_value.green == 0 && color_value.blue == 0)
+    {
+        os << "red";
+        return;
+    }
+
+    if (color_value.alpha == 255 && color_value.red == 0 && color_value.green == 255 && color_value.blue == 0)
+    {
+        os << "green";
+        return;
+    }
+
+    if (color_value.alpha == 255 && color_value.red == 0 && color_value.green == 0 && color_value.blue == 255)
+    {
+        os << "blue";
+        return;
+    }
+
+    os << "rgb("
+        << static_cast<short>(color_value.red) << ","
+        << static_cast<short>(color_value.green) << ","
+        << static_cast<short>(color_value.blue) << ")";
+}
+
 void build_border_style(ostringstream& os, const char* style_name, const border_attrs& attrs)
 {
+    os << style_name << ": ";
     if (attrs.style == "thin")
     {
-        os << style_name << ": solid 1px black;";
+        os << "solid 1px ";
     }
     else if (attrs.style == "medium")
     {
-        os << style_name << ": solid 2px black;";
+        os << "solid 2px ";
     }
     else if (attrs.style == "thick")
     {
-        os << style_name << ": solid 3px black;";
+        os << "solid 3px ";
     }
+
+    build_rgb_color(os, attrs.border_color);
+    os << "; ";
 }
 
 void build_style_string(string& str, const import_styles& styles, const cell_format& fmt)

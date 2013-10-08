@@ -24,6 +24,7 @@ ORCUS_DLLPUBLIC extern const row_height_t default_row_height;
 
 enum border_direction_t
 {
+    border_direction_unknown = 0,
     border_top,
     border_bottom,
     border_left,

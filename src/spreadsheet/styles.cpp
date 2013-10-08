@@ -180,6 +180,37 @@ size_t import_styles::commit_fill()
     return m_fills.size() - 1;
 }
 
+namespace {
+
+border_attrs* get_border_attrs(border& cur_border, border_direction_t dir)
+{
+    border_attrs* p = NULL;
+    switch (dir)
+    {
+        case border_top:
+            p = &cur_border.top;
+        break;
+        case border_bottom:
+            p = &cur_border.bottom;
+        break;
+        case border_left:
+            p = &cur_border.left;
+        break;
+        case border_right:
+            p = &cur_border.right;
+        break;
+        case border_diagonal:
+            p = &cur_border.diagonal;
+        break;
+        default:
+            ;
+    }
+
+    return p;
+}
+
+}
+
 void import_styles::set_border_count(size_t n)
 {
     m_borders.reserve(n);
@@ -187,28 +218,17 @@ void import_styles::set_border_count(size_t n)
 
 void import_styles::set_border_style(border_direction_t dir, const char* s, size_t n)
 {
-    border_attrs* p = NULL;
-    switch (dir)
-    {
-        case border_top:
-            p = &m_cur_border.top;
-        break;
-        case border_bottom:
-            p = &m_cur_border.bottom;
-        break;
-        case border_left:
-            p = &m_cur_border.left;
-        break;
-        case border_right:
-            p = &m_cur_border.right;
-        break;
-        case border_diagonal:
-            p = &m_cur_border.diagonal;
-        break;
-    }
-
+    border_attrs* p = get_border_attrs(m_cur_border, dir);
     if (p)
         p->style = m_string_pool.intern(s, n).first;
+}
+
+void import_styles::set_border_color(
+    border_direction_t dir, color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
+{
+    border_attrs* p = get_border_attrs(m_cur_border, dir);
+    if (p)
+        p->border_color = color(alpha, red, green, blue);
 }
 
 size_t import_styles::commit_border()

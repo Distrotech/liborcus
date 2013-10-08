@@ -58,6 +58,7 @@ struct ORCUS_DLLPUBLIC fill
 struct ORCUS_DLLPUBLIC border_attrs
 {
     pstring style;
+    color border_color;
 
     border_attrs();
     void reset();
@@ -150,6 +151,8 @@ public:
 
     virtual void set_border_count(size_t n);
     virtual void set_border_style(border_direction_t dir, const char* s, size_t n);
+    virtual void set_border_color(
+        border_direction_t dir, color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
     virtual size_t commit_border();
 
     virtual void set_cell_hidden(bool b);
