@@ -673,6 +673,22 @@ void print_formatted_text(ostream& strm, const string& text, const format_runs_t
     }
 }
 
+void build_border_style(ostringstream& os, const char* style_name, const border_attrs& attrs)
+{
+    if (attrs.style == "thin")
+    {
+        os << style_name << ": solid 1px black;";
+    }
+    else if (attrs.style == "medium")
+    {
+        os << style_name << ": solid 2px black;";
+    }
+    else if (attrs.style == "thick")
+    {
+        os << style_name << ": solid 3px black;";
+    }
+}
+
 void build_style_string(string& str, const import_styles& styles, const cell_format& fmt)
 {
     ostringstream os;
@@ -703,6 +719,19 @@ void build_style_string(string& str, const import_styles& styles, const cell_for
             }
         }
     }
+
+    if (fmt.border)
+    {
+        const border* p = styles.get_border(fmt.border);
+        if (p)
+        {
+            build_border_style(os, "border-top", p->top);
+            build_border_style(os, "border-bottom", p->bottom);
+            build_border_style(os, "border-left", p->left);
+            build_border_style(os, "border-right", p->right);
+        }
+    }
+
     str += os.str();
 }
 

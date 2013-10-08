@@ -358,5 +358,13 @@ const fill* import_styles::get_fill(size_t index) const
     return &m_fills[index];
 }
 
+const border* import_styles::get_border(size_t index) const
+{
+    if (index >= m_borders.size())
+        return NULL;
+
+    return &m_borders[index];
+}
+
 }}
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

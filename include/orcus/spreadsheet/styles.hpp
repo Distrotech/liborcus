@@ -181,6 +181,7 @@ public:
     const font* get_font(size_t index) const;
     const cell_format* get_cell_format(size_t index) const;
     const fill* get_fill(size_t index) const;
+    const border* get_border(size_t index) const;
 
 private:
     string_pool& m_string_pool;
