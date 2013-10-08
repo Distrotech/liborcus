@@ -146,6 +146,13 @@ double to_double(const char* p, const char* p_end, const char** p_parse_ended)
     return val;
 }
 
+double to_double(const pstring& s)
+{
+    const char* p = s.get();
+    const char* p_end = p + s.size();
+    return to_double(p, p_end, NULL);
+}
+
 long to_long(const char* p, const char* p_end, const char** p_parse_ended)
 {
     long val = parse_integer(p, p_end);
@@ -153,6 +160,13 @@ long to_long(const char* p, const char* p_end, const char** p_parse_ended)
         *p_parse_ended = p;
 
     return val;
+}
+
+long to_long(const pstring& s)
+{
+    const char* p = s.get();
+    const char* p_end = p + s.size();
+    return to_long(p, p_end, NULL);
 }
 
 length_t to_length(const pstring& str)
