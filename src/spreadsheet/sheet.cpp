@@ -574,8 +574,12 @@ namespace {
 
 const char* css_style_global =
 "table, td { "
-    "border : 1px solid rgb(220,220,220); "
-    "border-collapse : collapse; "
+    "border : 1px solid rgb(230,230,230); "
+    "border-collapse : separate; "
+"}\n"
+
+"table { "
+    "border-spacing : 0px; "
 "}\n"
 
 "td { "
@@ -720,6 +724,57 @@ void build_border_style(ostringstream& os, const char* style_name, const border_
     else if (attrs.style == "thick")
     {
         os << "solid 3px ";
+    }
+    else if (attrs.style == "hair")
+    {
+        os << "solid 0.5px ";
+    }
+    else if (attrs.style == "dotted")
+    {
+        os << "dotted 1px ";
+    }
+    else if (attrs.style == "dashed")
+    {
+        os << "dashed 1px ";
+    }
+    else if (attrs.style == "double")
+    {
+        os << "3px double ";
+    }
+    else if (attrs.style == "dashDot")
+    {
+        // CSS doesn't support dash-dot.
+        os << "dashed 1px ";
+    }
+    else if (attrs.style == "dashDotDot")
+    {
+        // CSS doesn't support dash-dot-dot.
+        os << "dashed 1px ";
+    }
+    else if (attrs.style == "mediumDashed")
+    {
+        os << "dashed 2px ";
+    }
+    else if (attrs.style == "mediumDashDot")
+    {
+        // CSS doesn't support dash-dot.
+        os << "dashed 2px ";
+    }
+    else if (attrs.style == "mediumDashDotDot")
+    {
+        // CSS doesn't support dash-dot-dot.
+        os << "dashed 2px ";
+    }
+    else if (attrs.style == "slantDashDot")
+    {
+        // CSS doesn't support dash-dot.
+        os << "dashed 2px ";
+    }
+    else
+    {
+        // When all else fails...
+        cout << "unknown border type: " << attrs.style << endl;
+        os << "solid 1px ";
     }
 
     build_rgb_color(os, attrs.border_color);
