@@ -773,7 +773,6 @@ void build_border_style(ostringstream& os, const char* style_name, const border_
     else
     {
         // When all else fails...
-        cout << "unknown border type: " << attrs.style << endl;
         os << "solid 1px ";
     }
 
