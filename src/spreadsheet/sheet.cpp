@@ -574,8 +574,7 @@ namespace {
 
 const char* css_style_global =
 "table, td { "
-    "border : 1px solid rgb(230,230,230); "
-    "border-collapse : separate; "
+    "border-collapse : collapse; "
 "}\n"
 
 "table { "
