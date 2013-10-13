@@ -218,7 +218,11 @@ void xlsx_shared_strings_context::characters(const pstring& str, bool transient)
 {
     xml_token_pair_t& cur_token = get_current_element();
     if (cur_token.first == NS_ooxml_xlsx && cur_token.second == XML_t)
+    {
         m_cur_str = str;
+        if (transient)
+            m_cur_str = m_pool.intern(m_cur_str).first;
+    }
 }
 
 // ============================================================================

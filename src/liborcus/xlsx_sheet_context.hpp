@@ -10,6 +10,7 @@
 
 #include "xml_context_base.hpp"
 #include "orcus/spreadsheet/types.hpp"
+#include "orcus/string_pool.hpp"
 
 namespace orcus {
 
@@ -50,6 +51,7 @@ private:
 
 private:
     spreadsheet::iface::import_sheet* mp_sheet; /// sheet model instance for the loaded document.
+    string_pool m_pool;
     spreadsheet::row_t m_cur_row;
     spreadsheet::col_t m_cur_col;
     cell_type    m_cur_cell_type;
