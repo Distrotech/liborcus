@@ -89,7 +89,7 @@ const string* import_shared_strings::get_string(size_t index) const
 
 void import_shared_strings::set_segment_font(size_t font_index)
 {
-    const font* font_data = m_styles.get_font(font_index);
+    const font_t* font_data = m_styles.get_font(font_index);
     if (!font_data)
         return;
 

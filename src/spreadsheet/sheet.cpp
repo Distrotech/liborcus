@@ -676,7 +676,7 @@ void print_formatted_text(ostream& strm, const string& text, const format_runs_t
     }
 }
 
-void build_rgb_color(ostringstream& os, const color& color_value)
+void build_rgb_color(ostringstream& os, const color_t& color_value)
 {
     // Special colors.
     if (color_value.alpha == 255 && color_value.red == 0 && color_value.green == 0 && color_value.blue == 0)
@@ -709,7 +709,7 @@ void build_rgb_color(ostringstream& os, const color& color_value)
         << static_cast<short>(color_value.blue) << ")";
 }
 
-void build_border_style(ostringstream& os, const char* style_name, const border_attrs& attrs)
+void build_border_style(ostringstream& os, const char* style_name, const border_attrs_t& attrs)
 {
     os << style_name << ": ";
     if (attrs.style == "thin")
@@ -779,12 +779,12 @@ void build_border_style(ostringstream& os, const char* style_name, const border_
     os << "; ";
 }
 
-void build_style_string(string& str, const import_styles& styles, const cell_format& fmt)
+void build_style_string(string& str, const import_styles& styles, const cell_format_t& fmt)
 {
     ostringstream os;
     if (fmt.font)
     {
-        const font* p = styles.get_font(fmt.font);
+        const font_t* p = styles.get_font(fmt.font);
         if (p)
         {
             if (!p->name.empty())
@@ -799,12 +799,12 @@ void build_style_string(string& str, const import_styles& styles, const cell_for
     }
     if (fmt.fill)
     {
-        const fill* p = styles.get_fill(fmt.fill);
+        const fill_t* p = styles.get_fill(fmt.fill);
         if (p)
         {
             if (p->pattern_type == "solid")
             {
-                const color& r = p->fg_color;
+                const color_t& r = p->fg_color;
                 os << "background-color: rgb(" << r.red << "," << r.green << "," << r.blue << ");";
             }
         }
@@ -812,7 +812,7 @@ void build_style_string(string& str, const import_styles& styles, const cell_for
 
     if (fmt.border)
     {
-        const border* p = styles.get_border(fmt.border);
+        const border_t* p = styles.get_border(fmt.border);
         if (p)
         {
             build_border_style(os, "border-top", p->top);
@@ -934,7 +934,7 @@ void sheet::dump_html(const string& filepath) const
                 {
                     // Apply cell format.
                     import_styles* p_styles = mp_impl->m_doc.get_styles();
-                    const cell_format* fmt = p_styles->get_cell_format(xf_id);
+                    const cell_format_t* fmt = p_styles->get_cell_format(xf_id);
                     if (fmt)
                         build_style_string(style, *p_styles, *fmt);
                 }

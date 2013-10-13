@@ -132,9 +132,9 @@ void test_ods_import_formatted_text()
     str = ss->get_string(str_id);
     assert(str && *str == "Bold Text");
     xfid = sh->get_cell_format(1,0);
-    const cell_format* xf = styles->get_cell_format(xfid);
+    const cell_format_t* xf = styles->get_cell_format(xfid);
     assert(xf);
-    const font* font_data = styles->get_font(xf->font);
+    const font_t* font_data = styles->get_font(xf->font);
     assert(font_data && font_data->bold && !font_data->italic);
     fmt = ss->get_format_runs(str_id);
     assert(!fmt); // This string should be unformatted.

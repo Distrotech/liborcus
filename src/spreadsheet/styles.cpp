@@ -12,75 +12,80 @@
 
 namespace orcus { namespace spreadsheet {
 
-font::font() :
+font_t::font_t() :
     size(0.0), bold(false),
     italic(false), underline(underline_none)
 {
 }
 
-void font::reset()
+void font_t::reset()
 {
-    *this = font();
+    *this = font_t();
 }
 
-color::color() :
+color_t::color_t() :
     alpha(0), red(0), green(0), blue(0)
 {
 }
 
-color::color(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue) :
+color_t::color_t(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue) :
     alpha(_alpha), red(_red), green(_green), blue(_blue)
 {
 }
 
-void color::reset()
+void color_t::reset()
 {
-    *this = color();
+    *this = color_t();
 }
 
-fill::fill()
-{
-}
-
-void fill::reset()
-{
-    *this = fill();
-}
-
-border_attrs::border_attrs()
+fill_t::fill_t()
 {
 }
 
-void border_attrs::reset()
+void fill_t::reset()
 {
-    *this = border_attrs();
+    *this = fill_t();
 }
 
-border::border()
+border_attrs_t::border_attrs_t()
 {
 }
 
-void border::reset()
+void border_attrs_t::reset()
 {
-    *this = border();
+    *this = border_attrs_t();
 }
 
-protection::protection() :
+border_t::border_t()
+{
+}
+
+void border_t::reset()
+{
+    *this = border_t();
+}
+
+protection_t::protection_t() :
     locked(false), hidden(false)
 {
 }
 
-void protection::reset()
+void protection_t::reset()
 {
-    *this = protection();
+    *this = protection_t();
 }
 
-void number_format::reset()
+void number_format_t::reset()
 {
-    *this = number_format();
+    *this = number_format_t();
 }
 
-cell_format::cell_format() :
+bool number_format_t::operator== (const number_format_t& r) const
+{
+    return format_string == r.format_string;
+}
+
+cell_format_t::cell_format_t() :
     font(0),
     fill(0),
     border(0),
@@ -95,19 +100,19 @@ cell_format::cell_format() :
 {
 }
 
-void cell_format::reset()
+void cell_format_t::reset()
 {
-    *this = cell_format();
+    *this = cell_format_t();
 }
 
-cell_style::cell_style() :
+cell_style_t::cell_style_t() :
     xf(0), builtin(0)
 {
 }
 
-void cell_style::reset()
+void cell_style_t::reset()
 {
-    *this = cell_style();
+    *this = cell_style_t();
 }
 
 import_styles::import_styles(string_pool& sp) : m_string_pool(sp) {}
@@ -165,12 +170,12 @@ void import_styles::set_fill_pattern_type(const char* s, size_t n)
 
 void import_styles::set_fill_fg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
 {
-    m_cur_fill.fg_color = color(alpha, red, green, blue);
+    m_cur_fill.fg_color = color_t(alpha, red, green, blue);
 }
 
 void import_styles::set_fill_bg_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
 {
-    m_cur_fill.bg_color = color(alpha, red, green, blue);
+    m_cur_fill.bg_color = color_t(alpha, red, green, blue);
 }
 
 size_t import_styles::commit_fill()
@@ -182,9 +187,9 @@ size_t import_styles::commit_fill()
 
 namespace {
 
-border_attrs* get_border_attrs(border& cur_border, border_direction_t dir)
+border_attrs_t* get_border_attrs(border_t& cur_border, border_direction_t dir)
 {
-    border_attrs* p = NULL;
+    border_attrs_t* p = NULL;
     switch (dir)
     {
         case border_top:
@@ -218,7 +223,7 @@ void import_styles::set_border_count(size_t n)
 
 void import_styles::set_border_style(border_direction_t dir, const char* s, size_t n)
 {
-    border_attrs* p = get_border_attrs(m_cur_border, dir);
+    border_attrs_t* p = get_border_attrs(m_cur_border, dir);
     if (p)
         p->style = m_string_pool.intern(s, n).first;
 }
@@ -226,9 +231,9 @@ void import_styles::set_border_style(border_direction_t dir, const char* s, size
 void import_styles::set_border_color(
     border_direction_t dir, color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
 {
-    border_attrs* p = get_border_attrs(m_cur_border, dir);
+    border_attrs_t* p = get_border_attrs(m_cur_border, dir);
     if (p)
-        p->border_color = color(alpha, red, green, blue);
+        p->border_color = color_t(alpha, red, green, blue);
 }
 
 size_t import_styles::commit_border()
@@ -262,7 +267,7 @@ void import_styles::set_number_format(const char* s, size_t n)
 
 size_t import_styles::commit_number_format()
 {
-    std::vector<number_format>::iterator itr = std::find(m_number_formats.begin(), m_number_formats.end(), m_cur_number_format);
+    std::vector<number_format_t>::iterator itr = std::find(m_number_formats.begin(), m_number_formats.end(), m_cur_number_format);
     if(itr != m_number_formats.end())
     {
         m_cur_number_format.reset();
@@ -354,7 +359,7 @@ size_t import_styles::commit_cell_style()
     return m_cell_styles.size() - 1;
 }
 
-const font* import_styles::get_font(size_t index) const
+const font_t* import_styles::get_font(size_t index) const
 {
     if (index >= m_fonts.size())
         return NULL;
@@ -362,7 +367,7 @@ const font* import_styles::get_font(size_t index) const
     return &m_fonts[index];
 }
 
-const cell_format* import_styles::get_cell_format(size_t index) const
+const cell_format_t* import_styles::get_cell_format(size_t index) const
 {
     if (index >= m_cell_formats.size())
         return NULL;
@@ -370,7 +375,7 @@ const cell_format* import_styles::get_cell_format(size_t index) const
     return &m_cell_formats[index];
 }
 
-const fill* import_styles::get_fill(size_t index) const
+const fill_t* import_styles::get_fill(size_t index) const
 {
     if (index >= m_fills.size())
         return NULL;
@@ -378,7 +383,7 @@ const fill* import_styles::get_fill(size_t index) const
     return &m_fills[index];
 }
 
-const border* import_styles::get_border(size_t index) const
+const border_t* import_styles::get_border(size_t index) const
 {
     if (index >= m_borders.size())
         return NULL;

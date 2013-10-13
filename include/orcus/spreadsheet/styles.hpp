@@ -20,7 +20,20 @@ class string_pool;
 
 namespace spreadsheet {
 
-struct ORCUS_DLLPUBLIC font
+struct ORCUS_DLLPUBLIC color_t
+{
+    color_elem_t alpha;
+    color_elem_t red;
+    color_elem_t green;
+    color_elem_t blue;
+
+    color_t();
+    color_t(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue);
+
+    void reset();
+};
+
+struct ORCUS_DLLPUBLIC font_t
 {
     pstring name;
     double size;
@@ -28,79 +41,62 @@ struct ORCUS_DLLPUBLIC font
     bool italic:1;
     underline_t underline;
 
-    font();
+    font_t();
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC color
-{
-    color_elem_t alpha;
-    color_elem_t red;
-    color_elem_t green;
-    color_elem_t blue;
-
-    color();
-    color(color_elem_t _alpha, color_elem_t _red, color_elem_t _green, color_elem_t _blue);
-
-    void reset();
-};
-
-struct ORCUS_DLLPUBLIC fill
+struct ORCUS_DLLPUBLIC fill_t
 {
     pstring pattern_type;
-    color fg_color;
-    color bg_color;
+    color_t fg_color;
+    color_t bg_color;
 
-    fill();
+    fill_t();
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC border_attrs
+struct ORCUS_DLLPUBLIC border_attrs_t
 {
     pstring style;
-    color border_color;
+    color_t border_color;
 
-    border_attrs();
+    border_attrs_t();
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC border
+struct ORCUS_DLLPUBLIC border_t
 {
-    border_attrs top;
-    border_attrs bottom;
-    border_attrs left;
-    border_attrs right;
-    border_attrs diagonal;
+    border_attrs_t top;
+    border_attrs_t bottom;
+    border_attrs_t left;
+    border_attrs_t right;
+    border_attrs_t diagonal;
 
-    border();
+    border_t();
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC protection
+struct ORCUS_DLLPUBLIC protection_t
 {
     bool locked;
     bool hidden;
 
-    protection();
+    protection_t();
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC number_format
+struct ORCUS_DLLPUBLIC number_format_t
 {
     pstring format_string;
 
     void reset();
-
-    bool operator==(const number_format& r)
-    {
-        return format_string == r.format_string;
-    }
+    bool operator== (const number_format_t& r) const;
 };
 
 /**
  * Cell format attributes
  */
-struct ORCUS_DLLPUBLIC cell_format
+struct ORCUS_DLLPUBLIC cell_format_t
 {
     size_t font;            /// font ID
     size_t fill;            /// fill ID
@@ -114,17 +110,17 @@ struct ORCUS_DLLPUBLIC cell_format
     bool apply_border:1;
     bool apply_alignment:1;
 
-    cell_format();
+    cell_format_t();
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC cell_style
+struct ORCUS_DLLPUBLIC cell_style_t
 {
     pstring name;
     size_t xf;
     size_t builtin;
 
-    cell_style();
+    cell_style_t();
     void reset();
 };
 
@@ -181,30 +177,30 @@ public:
     virtual void set_cell_style_builtin(size_t index);
     virtual size_t commit_cell_style();
 
-    const font* get_font(size_t index) const;
-    const cell_format* get_cell_format(size_t index) const;
-    const fill* get_fill(size_t index) const;
-    const border* get_border(size_t index) const;
+    const font_t* get_font(size_t index) const;
+    const cell_format_t* get_cell_format(size_t index) const;
+    const fill_t* get_fill(size_t index) const;
+    const border_t* get_border(size_t index) const;
 
 private:
     string_pool& m_string_pool;
 
-    font m_cur_font;
-    fill m_cur_fill;
-    border m_cur_border;
-    protection m_cur_protection;
-    number_format m_cur_number_format;
-    cell_format m_cur_cell_format;
-    cell_style m_cur_cell_style;
+    font_t m_cur_font;
+    fill_t m_cur_fill;
+    border_t m_cur_border;
+    protection_t m_cur_protection;
+    number_format_t m_cur_number_format;
+    cell_format_t m_cur_cell_format;
+    cell_style_t m_cur_cell_style;
 
-    ::std::vector<font> m_fonts;
-    ::std::vector<fill> m_fills;
-    ::std::vector<border> m_borders;
-    ::std::vector<protection> m_protections;
-    ::std::vector<number_format> m_number_formats;
-    ::std::vector<cell_format> m_cell_style_formats;
-    ::std::vector<cell_format> m_cell_formats;
-    ::std::vector<cell_style> m_cell_styles;
+    ::std::vector<font_t> m_fonts;
+    ::std::vector<fill_t> m_fills;
+    ::std::vector<border_t> m_borders;
+    ::std::vector<protection_t> m_protections;
+    ::std::vector<number_format_t> m_number_formats;
+    ::std::vector<cell_format_t> m_cell_style_formats;
+    ::std::vector<cell_format_t> m_cell_formats;
+    ::std::vector<cell_style_t> m_cell_styles;
 };
 
 }}
