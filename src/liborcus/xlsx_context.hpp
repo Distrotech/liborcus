@@ -68,6 +68,7 @@ public:
 
 private:
     void start_border_color(const xml_attrs_t& attrs);
+    void start_font_color(const xml_attrs_t& attrs);
 
 private:
     spreadsheet::iface::import_styles* mp_styles;

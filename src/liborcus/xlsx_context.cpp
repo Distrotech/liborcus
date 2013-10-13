@@ -80,6 +80,28 @@ private:
     size_t m_unique_count;
 };
 
+class color_attr_parser : unary_function<xml_token_attr_t, void>
+{
+    pstring m_rgb;
+public:
+    void operator() (const xml_token_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_rgb:
+                m_rgb = attr.value;
+            break;
+            case XML_theme:
+                // TODO : handle this.
+            break;
+            default:
+                ;
+        }
+    }
+
+    pstring get_rgb() const { return m_rgb; }
+};
+
 }
 
 xlsx_shared_strings_context::xlsx_shared_strings_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_shared_strings* strings) :
@@ -150,8 +172,19 @@ void xlsx_shared_strings_context::start_element(xmlns_id_t ns, xml_token_t name,
         }
         break;
         case XML_color:
-            // data bar color
+        {
+            // font color
             xml_element_expected(parent, NS_ooxml_xlsx, XML_rPr);
+            color_attr_parser func;
+            func = for_each(attrs.begin(), attrs.end(), func);
+
+            spreadsheet::color_elem_t alpha;
+            spreadsheet::color_elem_t red;
+            spreadsheet::color_elem_t green;
+            spreadsheet::color_elem_t blue;
+            if (to_rgb(func.get_rgb(), alpha, red, green, blue))
+                mp_strings->set_segment_font_color(alpha, red, green, blue);
+        }
         break;
         case XML_rFont:
         {
@@ -495,6 +528,8 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
                         // This color is for a border.
                         start_border_color(attrs);
                     break;
+                    case XML_font:
+                        start_font_color(attrs);
                     default:
                         ;
                 }
@@ -703,6 +738,19 @@ void xlsx_styles_context::start_border_color(const xml_attrs_t& attrs)
     spreadsheet::color_elem_t blue;
     if (to_rgb(ps, alpha, red, green, blue))
         mp_styles->set_border_color(m_cur_border_dir, alpha, red, green, blue);
+}
+
+void xlsx_styles_context::start_font_color(const xml_attrs_t& attrs)
+{
+    color_attr_parser func;
+    func = for_each(attrs.begin(), attrs.end(), func);
+
+    spreadsheet::color_elem_t alpha;
+    spreadsheet::color_elem_t red;
+    spreadsheet::color_elem_t green;
+    spreadsheet::color_elem_t blue;
+    if (to_rgb(func.get_rgb(), alpha, red, green, blue))
+        mp_styles->set_font_color(alpha, red, green, blue);
 }
 
 }

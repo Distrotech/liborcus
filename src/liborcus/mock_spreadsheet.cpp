@@ -94,6 +94,11 @@ void import_shared_strings::set_segment_font_size(double)
     assert(false);
 }
 
+void import_shared_strings::set_segment_font_color(color_elem_t, color_elem_t, color_elem_t, color_elem_t)
+{
+    assert(false);
+}
+
 void import_shared_strings::append_segment(const char*, size_t)
 {
     assert(false);

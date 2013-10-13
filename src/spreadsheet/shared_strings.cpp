@@ -35,6 +35,7 @@ void format_run::reset()
     font_size = 0;
     bold = false;
     italic = false;
+    color = color_t();
 }
 
 bool format_run::formatted() const
@@ -97,6 +98,7 @@ void import_shared_strings::set_segment_font(size_t font_index)
     m_cur_format.italic = font_data->italic;
     m_cur_format.font = font_data->name; // font names are already interned when set.
     m_cur_format.font_size = font_data->size;
+    m_cur_format.color = font_data->color;
 }
 
 void import_shared_strings::set_segment_bold(bool b)
@@ -117,6 +119,12 @@ void import_shared_strings::set_segment_font_name(const char* s, size_t n)
 void import_shared_strings::set_segment_font_size(double point)
 {
     m_cur_format.font_size = point;
+}
+
+void import_shared_strings::set_segment_font_color(
+    color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
+{
+    m_cur_format.color = color_t(alpha, red, green, blue);
 }
 
 void import_shared_strings::append_segment(const char* s, size_t n)

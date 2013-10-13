@@ -572,6 +572,39 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
 
 namespace {
 
+void build_rgb_color(ostringstream& os, const color_t& color_value)
+{
+    // Special colors.
+    if (color_value.alpha == 255 && color_value.red == 0 && color_value.green == 0 && color_value.blue == 0)
+    {
+        os << "black";
+        return;
+    }
+
+    if (color_value.alpha == 255 && color_value.red == 255 && color_value.green == 0 && color_value.blue == 0)
+    {
+        os << "red";
+        return;
+    }
+
+    if (color_value.alpha == 255 && color_value.red == 0 && color_value.green == 255 && color_value.blue == 0)
+    {
+        os << "green";
+        return;
+    }
+
+    if (color_value.alpha == 255 && color_value.red == 0 && color_value.green == 0 && color_value.blue == 255)
+    {
+        os << "blue";
+        return;
+    }
+
+    os << "rgb("
+        << static_cast<short>(color_value.red) << ","
+        << static_cast<short>(color_value.green) << ","
+        << static_cast<short>(color_value.blue) << ")";
+}
+
 const char* css_style_global =
 "table, td { "
     "border-collapse : collapse; "
@@ -658,6 +691,16 @@ void print_formatted_text(ostream& strm, const string& text, const format_runs_t
             style += os.str();
         }
 
+        const color_t& col = run.color;
+        if (col.red || col.green || col.blue)
+        {
+            ostringstream os;
+            os << "color: ";
+            build_rgb_color(os, col);
+            os << ";";
+            style += os.str();
+        }
+
         if (style.empty())
             strm << string(&text[pos], run.size);
         else
@@ -674,39 +717,6 @@ void print_formatted_text(ostream& strm, const string& text, const format_runs_t
         // flush the remaining unformatted text.
         strm << string(&text[pos], text.size() - pos);
     }
-}
-
-void build_rgb_color(ostringstream& os, const color_t& color_value)
-{
-    // Special colors.
-    if (color_value.alpha == 255 && color_value.red == 0 && color_value.green == 0 && color_value.blue == 0)
-    {
-        os << "black";
-        return;
-    }
-
-    if (color_value.alpha == 255 && color_value.red == 255 && color_value.green == 0 && color_value.blue == 0)
-    {
-        os << "red";
-        return;
-    }
-
-    if (color_value.alpha == 255 && color_value.red == 0 && color_value.green == 255 && color_value.blue == 0)
-    {
-        os << "green";
-        return;
-    }
-
-    if (color_value.alpha == 255 && color_value.red == 0 && color_value.green == 0 && color_value.blue == 255)
-    {
-        os << "blue";
-        return;
-    }
-
-    os << "rgb("
-        << static_cast<short>(color_value.red) << ","
-        << static_cast<short>(color_value.green) << ","
-        << static_cast<short>(color_value.blue) << ")";
 }
 
 void build_border_style(ostringstream& os, const char* style_name, const border_attrs_t& attrs)
@@ -795,6 +805,14 @@ void build_style_string(string& str, const import_styles& styles, const cell_for
                 os << "font-weight: bold;";
             if (p->italic)
                 os << "font-style: italic;";
+
+            const color_t& r = p->color;
+            if (r.red || r.green || r.blue)
+            {
+                os << "color: ";
+                build_rgb_color(os, r);
+                os << ";";
+            }
         }
     }
     if (fmt.fill)

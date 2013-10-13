@@ -40,6 +40,7 @@ struct ORCUS_DLLPUBLIC font_t
     bool bold:1;
     bool italic:1;
     underline_t underline;
+    color_t color;
 
     font_t();
     void reset();
@@ -137,6 +138,7 @@ public:
     virtual void set_font_name(const char* s, size_t n);
     virtual void set_font_size(double point);
     virtual void set_font_underline(underline_t e);
+    virtual void set_font_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
     virtual size_t commit_font();
 
     virtual void set_fill_count(size_t n);

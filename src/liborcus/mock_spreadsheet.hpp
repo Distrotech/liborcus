@@ -26,6 +26,7 @@ public:
     virtual void set_segment_italic(bool b);
     virtual void set_segment_font_name(const char* s, size_t n);
     virtual void set_segment_font_size(double point);
+    virtual void set_segment_font_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
     virtual void append_segment(const char* s, size_t n);
     virtual size_t commit_segments();
 };
