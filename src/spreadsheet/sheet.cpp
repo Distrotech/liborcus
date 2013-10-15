@@ -379,9 +379,7 @@ void sheet::dump_flat(std::ostream& os) const
                 case ixion::celltype_string:
                 {
                     size_t sindex = cxt.get_string_identifier(pos);
-                    cout << "(sheet=" << pos.sheet << ",col=" << pos.column << ",row=" << pos.row << ") : string id = " << sindex << endl;
                     const string* p = cxt.get_string(sindex);
-                    cout << "  string = " << *p << endl;
                     assert(p);
                     mx.set(row, col, *p);
                 }
