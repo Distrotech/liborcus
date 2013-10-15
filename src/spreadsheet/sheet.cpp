@@ -37,12 +37,15 @@
 #include <ixion/model_context.hpp>
 
 #include <boost/unordered_map.hpp>
+#include <boost/noncopyable.hpp>
 
 #define ORCUS_DEBUG_SHEET 0
 
 using namespace std;
 
 namespace orcus { namespace spreadsheet {
+
+namespace {
 
 typedef mdds::flat_segment_tree<row_t, size_t>  segment_row_index_type;
 typedef boost::unordered_map<col_t, segment_row_index_type*> cell_format_type;
@@ -55,7 +58,9 @@ typedef mdds::flat_segment_tree<row_t, row_height_t> row_heights_store_type;
 typedef mdds::flat_segment_tree<col_t, bool> col_hidden_store_type;
 typedef mdds::flat_segment_tree<row_t, bool> row_hidden_store_type;
 
-struct sheet_impl
+}
+
+struct sheet_impl : boost::noncopyable
 {
     document& m_doc;
     sheet_properties m_sheet_props; /// sheet properties import interface.
@@ -358,7 +363,7 @@ void sheet::dump_flat(std::ostream& os) const
 
     size_t row_count = range.last.row + 1;
     size_t col_count = range.last.column + 1;
-    cout << "rows: " << row_count << "  cols: " << col_count << endl;
+    os << "rows: " << row_count << "  cols: " << col_count << endl;
 
     typedef mdds::multi_type_matrix<mdds::mtm::std_string_trait> mx_type;
     mx_type mx(row_count, col_count);
@@ -374,7 +379,9 @@ void sheet::dump_flat(std::ostream& os) const
                 case ixion::celltype_string:
                 {
                     size_t sindex = cxt.get_string_identifier(pos);
+                    cout << "(sheet=" << pos.sheet << ",col=" << pos.column << ",row=" << pos.row << ") : string id = " << sindex << endl;
                     const string* p = cxt.get_string(sindex);
+                    cout << "  string = " << *p << endl;
                     assert(p);
                     mx.set(row, col, *p);
                 }

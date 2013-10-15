@@ -280,6 +280,7 @@
 				<F N="../src/liborcus/orcus_xls_xml.cpp"/>
 				<F N="../src/liborcus/orcus_xlsx.cpp"/>
 				<F N="../src/liborcus/orcus_xml.cpp"/>
+				<F N="../src/liborcus/session_context.cpp"/>
 				<F N="../src/liborcus/session_context.hpp"/>
 				<F N="../src/liborcus/spreadsheet_interface.cpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>
@@ -300,6 +301,8 @@
 				<F N="../src/liborcus/xlsx_context.hpp"/>
 				<F N="../src/liborcus/xlsx_handler.cpp"/>
 				<F N="../src/liborcus/xlsx_handler.hpp"/>
+				<F N="../src/liborcus/xlsx_session_data.cpp"/>
+				<F N="../src/liborcus/xlsx_session_data.hpp"/>
 				<F N="../src/liborcus/xlsx_sheet_context.cpp"/>
 				<F N="../src/liborcus/xlsx_sheet_context.hpp"/>
 				<F N="../src/liborcus/xlsx_sheet_context_test.cpp"/>

@@ -21,7 +21,7 @@
 #include "xml_simple_stream_handler.hpp"
 #include "opc_reader.hpp"
 #include "ooxml_namespace_types.hpp"
-#include "session_context.hpp"
+#include "xlsx_session_data.hpp"
 #include "opc_context.hpp"
 
 #include <cstdlib>
@@ -95,7 +95,10 @@ struct orcus_xlsx_impl
     opc_reader m_opc_reader;
 
     orcus_xlsx_impl(spreadsheet::iface::import_factory* factory, orcus_xlsx& parent) :
-        mp_factory(factory), m_opc_handler(parent), m_opc_reader(m_ns_repo, m_cxt, m_opc_handler) {}
+        mp_factory(factory), m_opc_handler(parent), m_opc_reader(m_ns_repo, m_cxt, m_opc_handler)
+    {
+        m_cxt.mp_data.reset(new xlsx_session_data);
+    }
 };
 
 orcus_xlsx::orcus_xlsx(spreadsheet::iface::import_factory* factory) :

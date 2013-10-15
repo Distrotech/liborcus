@@ -496,7 +496,8 @@ void xlsx_sheet_context::end_element_cell()
             case cell_type_string:
             {
                 // string cell
-                size_t str_id = strtoul(m_cur_value.get(), NULL, 10);
+                size_t str_id = to_long(m_cur_value);
+                cout << "string id: " << str_id << " (col=" << m_cur_col << ",row=" << m_cur_row << ")" << endl;
                 mp_sheet->set_string(m_cur_row, m_cur_col, str_id);
             }
             break;

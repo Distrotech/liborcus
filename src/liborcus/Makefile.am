@@ -60,7 +60,9 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	gnumeric_namespace_types.hpp \
 	gnumeric_namespace_types.cpp \
 	xls_xml_namespace_types.hpp \
-	xls_xml_namespace_types.cpp
+	xls_xml_namespace_types.cpp \
+	session_context.hpp \
+	session_context.cpp
 
 if WITH_XLSX_FILTER
 
@@ -69,7 +71,6 @@ EXTRA_PROGRAMS += \
 	orcus-xlsx-sheet-context-test
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
-	session_context.hpp \
 	ooxml_content_types.cpp \
 	ooxml_content_types.hpp \
 	ooxml_global.cpp \
@@ -95,6 +96,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	xlsx_context.hpp \
 	xlsx_handler.cpp \
 	xlsx_handler.hpp \
+	xlsx_session_data.hpp \
+	xlsx_session_data.cpp \
 	xlsx_sheet_context.cpp \
 	xlsx_sheet_context.hpp \
 	xlsx_types.hpp \
@@ -104,6 +107,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 # orcus-xlsx-sheet-context-test
 
 orcus_xlsx_sheet_context_test_SOURCES = \
+	xlsx_session_data.cpp \
+	session_context.cpp \
 	xlsx_sheet_context_test.cpp \
 	xlsx_sheet_context.cpp \
 	ooxml_global.cpp \
@@ -154,7 +159,6 @@ if WITH_ODS_FILTER
 AM_CPPFLAGS += -D__ORCUS_ODS
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
-	session_context.hpp \
 	odf_para_context.hpp \
 	odf_para_context.cpp \
 	odf_styles.hpp \
@@ -179,7 +183,6 @@ if WITH_GNUMERIC_FILTER
 AM_CPPFLAGS += -D__ORCUS_GNUMERIC
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
-	session_context.hpp \
 	gnumeric_cell_context.hpp \
 	gnumeric_context.hpp \
 	gnumeric_detection_handler.hpp \
@@ -212,6 +215,7 @@ EXTRA_PROGRAMS += \
 	orcus-gnumeric-sheet-context-test
 
 gnumeric_cell_context_test_SOURCES = \
+	session_context.cpp \
 	gnumeric_cell_context_test.cpp \
 	gnumeric_cell_context.cpp \
 	xml_context_base.cpp \
@@ -233,6 +237,7 @@ TESTS += gnumeric-cell-context-test
 # orcus-gnumeric-sheet-context-test
 
 orcus_gnumeric_sheet_context_test_SOURCES = \
+	session_context.cpp \
 	gnumeric_sheet_context_test.cpp \
 	gnumeric_sheet_context.cpp \
 	gnumeric_cell_context.cpp \

@@ -10,11 +10,27 @@
 
 #include "orcus/string_pool.hpp"
 
+#include <boost/noncopyable.hpp>
+#include <boost/scoped_ptr.hpp>
+
 namespace orcus {
 
-struct session_context
+struct session_context : boost::noncopyable
 {
     string_pool m_string_pool;
+
+    /**
+     * Derive from this class in case the filter needs to store its own
+     * session data.
+     */
+    struct custom_data
+    {
+        virtual ~custom_data() = 0;
+    };
+
+    boost::scoped_ptr<custom_data> mp_data;
+
+    ~session_context();
 };
 
 }
