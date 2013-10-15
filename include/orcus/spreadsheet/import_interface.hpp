@@ -366,6 +366,16 @@ public:
     virtual import_sheet* get_sheet(const char* sheet_name, size_t sheet_name_length) = 0;
 
     /**
+     * Retrieve sheet instance by specified numerical sheet index.
+     *
+     * @param sheet_index sheet index
+     *
+     * @return pointer to the sheet instance, or NULL if no sheet instance
+     *         exists at specified sheet index position.
+     */
+    virtual import_sheet* get_sheet(orcus::spreadsheet::sheet_t sheet_index) = 0;
+
+    /**
      * This method is called at the end of import, to give the implementor a
      * chance to perform post-processing if necessary.
      */

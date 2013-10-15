@@ -13,6 +13,7 @@
 #include "session_context.hpp"
 
 #include "orcus/global.hpp"
+#include "orcus/measurement.hpp"
 
 using namespace std;
 
@@ -33,7 +34,7 @@ public:
         {
             const pstring& val = attr.value;
             if (!val.empty())
-                m_sheet.id = strtoul(val.str().c_str(), NULL, 10);
+                m_sheet.id = to_long(val);
         }
         else if (attr.ns == NS_ooxml_r && attr.name == XML_id)
         {

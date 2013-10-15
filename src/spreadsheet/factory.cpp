@@ -44,6 +44,11 @@ iface::import_sheet* import_factory::get_sheet(const char* sheet_name, size_t sh
     return mp_document->get_sheet(pstring(sheet_name, sheet_name_length));
 }
 
+iface::import_sheet* import_factory::get_sheet(sheet_t sheet_index)
+{
+    return mp_document->get_sheet(sheet_index);
+}
+
 void import_factory::finalize()
 {
     mp_document->finalize();

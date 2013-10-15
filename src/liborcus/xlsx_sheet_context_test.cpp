@@ -10,7 +10,7 @@
 #include "ooxml_schemas.hpp"
 #include "xlsx_sheet_context.hpp"
 #include "ooxml_token_constants.hpp"
-#include "session_context.hpp"
+#include "xlsx_session_data.hpp"
 #include "orcus/types.hpp"
 
 using namespace orcus;
@@ -81,9 +81,9 @@ private:
 void test_cell_value()
 {
     mock_sheet sheet;
-    session_context cxt;
+    session_context cxt(new xlsx_session_data);
 
-    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, &sheet);
+    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, 0, &sheet);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
@@ -103,9 +103,9 @@ void test_cell_value()
 void test_cell_bool()
 {
     mock_sheet sheet;
-    session_context cxt;
+    session_context cxt(new xlsx_session_data);
 
-    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, &sheet);
+    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, 0, &sheet);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
@@ -126,9 +126,9 @@ void test_cell_bool()
 void test_array_formula()
 {
     mock_sheet sheet;
-    session_context cxt;
+    session_context cxt(new xlsx_session_data);
 
-    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, &sheet);
+    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, 0, &sheet);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
@@ -156,9 +156,9 @@ void test_array_formula()
 void test_hidden_col()
 {
     mock_sheet2 sheet;
-    session_context cxt;
+    session_context cxt(new xlsx_session_data);
 
-    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, &sheet);
+    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, 0, &sheet);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_col;
@@ -173,9 +173,9 @@ void test_hidden_col()
 void test_hidden_row()
 {
     mock_sheet2 sheet;
-    session_context cxt;
+    session_context cxt(new xlsx_session_data);
 
-    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, &sheet);
+    orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, 0, &sheet);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_row;

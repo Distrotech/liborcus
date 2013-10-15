@@ -11,6 +11,9 @@ namespace orcus {
 
 session_context::custom_data::~custom_data() {}
 
+session_context::session_context() : mp_data(NULL) {}
+session_context::session_context(custom_data* data) : mp_data(data) {}
+
 session_context::~session_context()
 {
     mp_data.reset();

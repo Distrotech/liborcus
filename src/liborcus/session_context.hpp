@@ -30,6 +30,8 @@ struct session_context : boost::noncopyable
 
     boost::scoped_ptr<custom_data> mp_data;
 
+    session_context();
+    session_context(custom_data* data);
     ~session_context();
 };
 

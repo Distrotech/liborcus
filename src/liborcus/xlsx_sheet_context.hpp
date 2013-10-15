@@ -35,7 +35,9 @@ public:
         cell_type_inline_string
     };
 
-    xlsx_sheet_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_sheet* import_sheet);
+    xlsx_sheet_context(
+        session_context& session_cxt, const tokens& tokens,
+        spreadsheet::sheet_t sheet_id, spreadsheet::iface::import_sheet* import_sheet);
     virtual ~xlsx_sheet_context();
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
@@ -52,6 +54,7 @@ private:
 private:
     spreadsheet::iface::import_sheet* mp_sheet; /// sheet model instance for the loaded document.
     string_pool m_pool;
+    spreadsheet::sheet_t m_sheet_id; /// ID of this sheet.
     spreadsheet::row_t m_cur_row;
     spreadsheet::col_t m_cur_col;
     cell_type    m_cur_cell_type;

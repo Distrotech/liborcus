@@ -95,10 +95,10 @@ struct orcus_xlsx_impl
     opc_reader m_opc_reader;
 
     orcus_xlsx_impl(spreadsheet::iface::import_factory* factory, orcus_xlsx& parent) :
-        mp_factory(factory), m_opc_handler(parent), m_opc_reader(m_ns_repo, m_cxt, m_opc_handler)
-    {
-        m_cxt.mp_data.reset(new xlsx_session_data);
-    }
+        m_cxt(new xlsx_session_data),
+        mp_factory(factory),
+        m_opc_handler(parent),
+        m_opc_reader(m_ns_repo, m_cxt, m_opc_handler) {}
 };
 
 orcus_xlsx::orcus_xlsx(spreadsheet::iface::import_factory* factory) :
@@ -162,6 +162,59 @@ bool orcus_xlsx::detect(const unsigned char* blob, size_t size)
 void orcus_xlsx::read_file(const string& filepath)
 {
     mp_impl->m_opc_reader.read_file(filepath.c_str());
+
+    // Formulas need to be inserted to the document after the shared string
+    // table get imported, because tokenization of formulas may add new shared
+    // string instances.
+
+    xlsx_session_data& sdata = static_cast<xlsx_session_data&>(*mp_impl->m_cxt.mp_data);
+    {
+        // Insert shared formulas.
+        xlsx_session_data::shared_formulas_type::iterator it = sdata.m_shared_formulas.begin(), it_end = sdata.m_shared_formulas.end();
+        for (; it != it_end; ++it)
+        {
+            xlsx_session_data::shared_formula& sf = *it;
+            spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->get_sheet(sf.sheet);
+            if (!sheet)
+                continue;
+
+            if (sf.master)
+            {
+                sheet->set_shared_formula(
+                    sf.row, sf.column, orcus::spreadsheet::xlsx_2007, sf.identifier,
+                    &sf.formula[0], sf.formula.size(), &sf.range[0], sf.range.size());
+            }
+            else
+            {
+                sheet->set_shared_formula(sf.row, sf.column, sf.identifier);
+            }
+        }
+    }
+
+    {
+        // Insert regular (non-shared) formulas.
+        xlsx_session_data::formulas_type::iterator it = sdata.m_formulas.begin(), it_end = sdata.m_formulas.end();
+        for (; it != it_end; ++it)
+        {
+            xlsx_session_data::formula& f = *it;
+            spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->get_sheet(f.sheet);
+            if (!sheet)
+                continue;
+
+            if (f.array)
+            {
+                sheet->set_array_formula(
+                    f.row, f.column, spreadsheet::xlsx_2007, &f.exp[0],
+                    f.exp.size(), &f.range[0], f.range.size());
+            }
+            else
+            {
+                sheet->set_formula(
+                    f.row, f.column, orcus::spreadsheet::xlsx_2007, &f.exp[0], f.exp.size());
+            }
+        }
+    }
+
     mp_impl->mp_factory->finalize();
 }
 
@@ -202,6 +255,10 @@ void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
 
 void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, const xlsx_rel_sheet_info* data)
 {
+    if (!data || !data->id)
+        // Sheet ID must not be 0.
+        return;
+
     cout << "---" << endl;
     string filepath = dir_path + file_name;
     cout << "read_sheet: file path = " << filepath << endl;
@@ -213,16 +270,13 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, con
     if (buffer.empty())
         return;
 
-    if (data)
-    {
-        cout << "relationship sheet data: " << endl;
-        cout << "  sheet name: " << data->name << "  sheet ID: " << data->id << endl;
-    }
+    cout << "relationship sheet data: " << endl;
+    cout << "  sheet name: " << data->name << "  sheet ID: " << data->id << endl;
 
     xml_stream_parser parser(mp_impl->m_ns_repo, ooxml_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), file_name);
     spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->append_sheet(data->name.get(), data->name.size());
-    ::boost::scoped_ptr<xlsx_sheet_xml_handler> handler(new xlsx_sheet_xml_handler(mp_impl->m_cxt, ooxml_tokens, sheet));
-    parser.set_handler(handler.get());
+    xlsx_sheet_xml_handler handler(mp_impl->m_cxt, ooxml_tokens, data->id-1, sheet);
+    parser.set_handler(&handler);
     parser.parse();
 
     mp_impl->m_opc_reader.check_relation_part(file_name, NULL);

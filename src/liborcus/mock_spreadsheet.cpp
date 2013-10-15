@@ -49,6 +49,12 @@ orcus::spreadsheet::iface::import_sheet* import_factory::get_sheet(const char*, 
     return NULL;
 }
 
+orcus::spreadsheet::iface::import_sheet* import_factory::get_sheet(orcus::spreadsheet::sheet_t)
+{
+    assert(false);
+    return NULL;
+}
+
 void import_factory::finalize() {}
 
 // import_shared_strings

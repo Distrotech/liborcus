@@ -6,6 +6,7 @@
  */
 
 #include "xlsx_sheet_context.hpp"
+#include "xlsx_session_data.hpp"
 #include "ooxml_global.hpp"
 #include "ooxml_schemas.hpp"
 #include "ooxml_token_constants.hpp"
@@ -263,9 +264,11 @@ public:
 
 }
 
-xlsx_sheet_context::xlsx_sheet_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_sheet* sheet) :
+xlsx_sheet_context::xlsx_sheet_context(
+    session_context& session_cxt, const tokens& tokens, spreadsheet::sheet_t sheet_id, spreadsheet::iface::import_sheet* sheet) :
     xml_context_base(session_cxt, tokens),
     mp_sheet(sheet),
+    m_sheet_id(sheet_id),
     m_cur_row(-1),
     m_cur_col(-1),
     m_cur_cell_type(cell_type_value),
@@ -458,36 +461,40 @@ void xlsx_sheet_context::characters(const pstring& str, bool transient)
 
 void xlsx_sheet_context::end_element_cell()
 {
+    session_context& cxt = get_session_context();
+    xlsx_session_data& session_data = static_cast<xlsx_session_data&>(*cxt.mp_data);
+
     if (!m_cur_formula_str.empty())
     {
         if (m_cur_formula_type == "shared" && m_cur_shared_formula_id >= 0)
         {
             // shared formula expression
-            mp_sheet->set_shared_formula(
-                m_cur_row, m_cur_col, spreadsheet::xlsx_2007, m_cur_shared_formula_id,
-                m_cur_formula_str.get(), m_cur_formula_str.size(),
-                m_cur_formula_ref.get(), m_cur_formula_ref.size());
+            session_data.m_shared_formulas.push_back(
+                new xlsx_session_data::shared_formula(
+                    m_sheet_id, m_cur_row, m_cur_col, m_cur_shared_formula_id,
+                    m_cur_formula_str.str(), m_cur_formula_ref.str()));
         }
         else if (m_cur_formula_type == "array")
         {
             // array formula expression
-            mp_sheet->set_array_formula(
-                m_cur_row, m_cur_col, spreadsheet::xlsx_2007,
-                m_cur_formula_str.get(), m_cur_formula_str.size(),
-                m_cur_formula_ref.get(), m_cur_formula_ref.size());
+            session_data.m_formulas.push_back(
+                new xlsx_session_data::formula(
+                    m_sheet_id, m_cur_row, m_cur_col, m_cur_formula_str.str(), m_cur_formula_ref.str()));
         }
         else
         {
             // normal (non-shared) formula expression
-            mp_sheet->set_formula(
-                m_cur_row, m_cur_col, spreadsheet::xlsx_2007, m_cur_formula_str.get(),
-                m_cur_formula_str.size());
+            session_data.m_formulas.push_back(
+                new xlsx_session_data::formula(
+                    m_sheet_id, m_cur_row, m_cur_col, m_cur_formula_str.str()));
         }
     }
     else if (m_cur_formula_type == "shared" && m_cur_shared_formula_id >= 0)
     {
         // shared formula without formula expression
-        mp_sheet->set_shared_formula(m_cur_row, m_cur_col, m_cur_shared_formula_id);
+        session_data.m_shared_formulas.push_back(
+            new xlsx_session_data::shared_formula(
+                m_sheet_id, m_cur_row, m_cur_col, m_cur_shared_formula_id));
     }
     else if (!m_cur_value.empty())
     {
@@ -497,7 +504,6 @@ void xlsx_sheet_context::end_element_cell()
             {
                 // string cell
                 size_t str_id = to_long(m_cur_value);
-                cout << "string id: " << str_id << " (col=" << m_cur_col << ",row=" << m_cur_row << ")" << endl;
                 mp_sheet->set_string(m_cur_row, m_cur_col, str_id);
             }
             break;
