@@ -553,7 +553,12 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
                     const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
                     assert(cell);
                     size_t index = cell->get_identifier();
-                    const ixion::formula_tokens_t* t = cxt.get_formula_tokens(mp_impl->m_sheet, index);
+                    const ixion::formula_tokens_t* t = NULL;
+                    if (cell->is_shared())
+                        t = cxt.get_shared_formula_tokens(mp_impl->m_sheet, index);
+                    else
+                        t = cxt.get_formula_tokens(mp_impl->m_sheet, index);
+
                     if (t)
                     {
                         string formula;
@@ -998,10 +1003,14 @@ void sheet::dump_html(const string& filepath) const
                         const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
                         assert(cell);
                         size_t index = cell->get_identifier();
-                        const ixion::formula_tokens_t* t = cxt.get_formula_tokens(mp_impl->m_sheet, index);
+                        const ixion::formula_tokens_t* t = NULL;
+                        if (cell->is_shared())
+                            t = cxt.get_shared_formula_tokens(mp_impl->m_sheet, index);
+                        else
+                            t = cxt.get_formula_tokens(mp_impl->m_sheet, index);
+
                         if (t)
                         {
-                            ostringstream os;
                             string formula;
                             ixion::print_formula_tokens(
                                 mp_impl->m_doc.get_model_context(), pos, *t, formula);
