@@ -36,6 +36,8 @@ public:
 
 private:
 
+    void set_formulas_to_doc();
+
     void read_workbook(const std::string& dir_path, const std::string& file_name);
 
     /**

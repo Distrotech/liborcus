@@ -166,54 +166,7 @@ void orcus_xlsx::read_file(const string& filepath)
     // Formulas need to be inserted to the document after the shared string
     // table get imported, because tokenization of formulas may add new shared
     // string instances.
-
-    xlsx_session_data& sdata = static_cast<xlsx_session_data&>(*mp_impl->m_cxt.mp_data);
-    {
-        // Insert shared formulas.
-        xlsx_session_data::shared_formulas_type::iterator it = sdata.m_shared_formulas.begin(), it_end = sdata.m_shared_formulas.end();
-        for (; it != it_end; ++it)
-        {
-            xlsx_session_data::shared_formula& sf = *it;
-            spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->get_sheet(sf.sheet);
-            if (!sheet)
-                continue;
-
-            if (sf.master)
-            {
-                sheet->set_shared_formula(
-                    sf.row, sf.column, orcus::spreadsheet::xlsx_2007, sf.identifier,
-                    &sf.formula[0], sf.formula.size(), &sf.range[0], sf.range.size());
-            }
-            else
-            {
-                sheet->set_shared_formula(sf.row, sf.column, sf.identifier);
-            }
-        }
-    }
-
-    {
-        // Insert regular (non-shared) formulas.
-        xlsx_session_data::formulas_type::iterator it = sdata.m_formulas.begin(), it_end = sdata.m_formulas.end();
-        for (; it != it_end; ++it)
-        {
-            xlsx_session_data::formula& f = *it;
-            spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->get_sheet(f.sheet);
-            if (!sheet)
-                continue;
-
-            if (f.array)
-            {
-                sheet->set_array_formula(
-                    f.row, f.column, spreadsheet::xlsx_2007, &f.exp[0],
-                    f.exp.size(), &f.range[0], f.range.size());
-            }
-            else
-            {
-                sheet->set_formula(
-                    f.row, f.column, orcus::spreadsheet::xlsx_2007, &f.exp[0], f.exp.size());
-            }
-        }
-    }
+    set_formulas_to_doc();
 
     mp_impl->mp_factory->finalize();
 }
@@ -222,6 +175,54 @@ const char* orcus_xlsx::get_name() const
 {
     static const char* name = "xlsx";
     return name;
+}
+
+void orcus_xlsx::set_formulas_to_doc()
+{
+    xlsx_session_data& sdata = static_cast<xlsx_session_data&>(*mp_impl->m_cxt.mp_data);
+
+    // Insert shared formulas first.
+    xlsx_session_data::shared_formulas_type::iterator its = sdata.m_shared_formulas.begin(), its_end = sdata.m_shared_formulas.end();
+    for (; its != its_end; ++its)
+    {
+        xlsx_session_data::shared_formula& sf = *its;
+        spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->get_sheet(sf.sheet);
+        if (!sheet)
+            continue;
+
+        if (sf.master)
+        {
+            sheet->set_shared_formula(
+                sf.row, sf.column, orcus::spreadsheet::xlsx_2007, sf.identifier,
+                &sf.formula[0], sf.formula.size(), &sf.range[0], sf.range.size());
+        }
+        else
+        {
+            sheet->set_shared_formula(sf.row, sf.column, sf.identifier);
+        }
+    }
+
+    // Insert regular (non-shared) formulas.
+    xlsx_session_data::formulas_type::iterator it = sdata.m_formulas.begin(), it_end = sdata.m_formulas.end();
+    for (; it != it_end; ++it)
+    {
+        xlsx_session_data::formula& f = *it;
+        spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->get_sheet(f.sheet);
+        if (!sheet)
+            continue;
+
+        if (f.array)
+        {
+            sheet->set_array_formula(
+                f.row, f.column, spreadsheet::xlsx_2007, &f.exp[0],
+                f.exp.size(), &f.range[0], f.range.size());
+        }
+        else
+        {
+            sheet->set_formula(
+                f.row, f.column, orcus::spreadsheet::xlsx_2007, &f.exp[0], f.exp.size());
+        }
+    }
 }
 
 void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
