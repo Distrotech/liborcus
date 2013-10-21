@@ -789,11 +789,6 @@ void build_border_style(ostringstream& os, const char* style_name, const border_
         // CSS doesn't support dash-dot.
         os << "dashed 2px ";
     }
-    else
-    {
-        // When all else fails...
-        os << "solid 1px ";
-    }
 
     build_rgb_color(os, attrs.border_color);
     os << "; ";
