@@ -515,6 +515,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             allowed.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_bottom));
             allowed.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_left));
             allowed.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_right));
+            allowed.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_mruColors));
             xml_element_expected(parent, allowed);
 
             if (parent.first == NS_ooxml_xlsx)
