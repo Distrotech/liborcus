@@ -106,6 +106,8 @@ public:
     virtual void set_row_height(orcus::spreadsheet::row_t row, double height, orcus::length_unit_t unit);
 
     virtual void set_row_hidden(orcus::spreadsheet::row_t row, bool hidden);
+
+    virtual void set_merge_cell_range(const char* p_ref, size_t p_ref_len);
 };
 
 /**

@@ -142,6 +142,11 @@ void import_sheet_properties::set_row_hidden(row_t, bool)
     assert(false);
 }
 
+void import_sheet_properties::set_merge_cell_range(const char*, size_t)
+{
+    assert(false);
+}
+
 // import_sheet
 
 import_sheet::~import_sheet()
