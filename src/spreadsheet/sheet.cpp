@@ -113,6 +113,20 @@ struct sheet_impl : boost::noncopyable
         for_each(m_merge_range.begin(), m_merge_range.end(),
                  map_object_deleter<col_merge_size_type>());
     }
+
+    const merge_size* get_merge_size(row_t row, col_t col) const
+    {
+        col_merge_size_type::const_iterator it_col = m_merge_range.find(col);
+        if (it_col == m_merge_range.end())
+            return NULL;
+
+        merge_size_type& col_merge_sizes = *it_col->second;
+        merge_size_type::const_iterator it_row = col_merge_sizes.find(row);
+        if (it_row == col_merge_sizes.end())
+            return NULL;
+
+        return &it_row->second;
+    }
 };
 
 const row_t sheet::max_row_limit = 1048575;
@@ -681,6 +695,16 @@ const char* css_style_global =
 class html_elem
 {
 public:
+    struct attr
+    {
+        string name;
+        string value;
+
+        attr(const string& _name, const string& _value) : name(_name), value(_value) {}
+    };
+
+    typedef vector<attr> attrs_type;
+
     html_elem(ostream& strm, const char* name, const char* style = NULL, const char* style_class = NULL) :
         m_strm(strm), m_name(name)
     {
@@ -691,6 +715,18 @@ public:
 
         if (style_class)
             m_strm << " class=\"" << style_class << "\"";
+
+        m_strm << '>';
+    }
+
+    html_elem(ostream& strm, const char* name, const attrs_type& attrs) :
+        m_strm(strm), m_name(name)
+    {
+        m_strm << '<' << m_name;
+
+        attrs_type::const_iterator it = attrs.begin(), it_end = attrs.end();
+        for (; it != it_end; ++it)
+            m_strm << " " << it->name << "=\"" << it->value << "\"";
 
         m_strm << '>';
     }
@@ -910,6 +946,27 @@ void dump_html_head(ostream& os)
     }
 }
 
+void build_html_elem_attributes(html_elem::attrs_type& attrs, const string& style, const merge_size* p_merge_size)
+{
+    attrs.push_back(html_elem::attr("style", style));
+    if (p_merge_size)
+    {
+        if (p_merge_size->width > 1)
+        {
+            ostringstream os2;
+            os2 << p_merge_size->width;
+            attrs.push_back(html_elem::attr("colspan", os2.str()));
+        }
+
+        if (p_merge_size->height > 1)
+        {
+            ostringstream os2;
+            os2 << p_merge_size->height;
+            attrs.push_back(html_elem::attr("rowspan", os2.str()));
+        }
+    }
+}
+
 }
 
 void sheet::dump_html(const string& filepath) const
@@ -981,6 +1038,7 @@ void sheet::dump_html(const string& filepath) const
             {
                 ixion::abs_address_t pos(mp_impl->m_sheet,row,col);
 
+                const merge_size* p_merge_size = mp_impl->get_merge_size(row, col);
                 size_t xf_id = get_cell_format(row, col);
                 string style;
 
@@ -1013,15 +1071,18 @@ void sheet::dump_html(const string& filepath) const
                 ixion::celltype_t ct = cxt.get_celltype(pos);
                 if (ct == ixion::celltype_empty)
                 {
-                    elem td(file, p_td, style.c_str(), "empty");
+                    html_elem::attrs_type attrs;
+                    build_html_elem_attributes(attrs, style, p_merge_size);
+                    attrs.push_back(html_elem::attr("class", "empty"));
+                    elem td(file, p_td, attrs);
                     file << '-'; // empty cell.
                     continue;
                 }
 
-                style_str = NULL;
-                if (!style.empty())
-                    style_str = style.c_str();
-                elem td(file, p_td, style_str);
+                html_elem::attrs_type attrs;
+                build_html_elem_attributes(attrs, style, p_merge_size);
+                elem td(file, p_td, attrs);
+
                 ostringstream os;
                 switch (ct)
                 {
