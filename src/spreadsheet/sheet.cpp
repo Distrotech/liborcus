@@ -828,7 +828,9 @@ void build_style_string(string& str, const import_styles& styles, const cell_for
             if (p->pattern_type == "solid")
             {
                 const color_t& r = p->fg_color;
-                os << "background-color: rgb(" << r.red << "," << r.green << "," << r.blue << ");";
+                os << "background-color: ";
+                build_rgb_color(os, r);
+                os << ";";
             }
         }
     }
