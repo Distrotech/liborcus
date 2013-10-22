@@ -144,6 +144,15 @@ public:
     virtual void set_row_height(orcus::spreadsheet::row_t row, double height, orcus::length_unit_t unit) = 0;
 
     virtual void set_row_hidden(orcus::spreadsheet::row_t row, bool hidden) = 0;
+
+    /**
+     * Specify merged cell range.  The range is given in a 2-dimensional
+     * A1-style reference.
+     *
+     * @param p_ref pointer to the first character of reference string.
+     * @param p_ref_len length of reference string.
+     */
+    virtual void set_merge_cell_range(const char* p_ref, size_t p_ref_len) = 0;
 };
 
 /**

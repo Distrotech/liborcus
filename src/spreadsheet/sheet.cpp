@@ -47,6 +47,18 @@ namespace orcus { namespace spreadsheet {
 
 namespace {
 
+struct merge_size
+{
+    col_t width;
+    row_t height;
+
+    merge_size(col_t _width, row_t _height) :
+        width(_width), height(_height) {}
+};
+
+typedef boost::unordered_map<row_t, merge_size> merge_size_type;
+typedef boost::unordered_map<col_t, merge_size_type*> col_merge_size_type;
+
 typedef mdds::flat_segment_tree<row_t, size_t>  segment_row_index_type;
 typedef boost::unordered_map<col_t, segment_row_index_type*> cell_format_type;
 
@@ -75,6 +87,8 @@ struct sheet_impl : boost::noncopyable
     col_hidden_store_type::const_iterator m_col_hidden_pos;
     row_hidden_store_type::const_iterator m_row_hidden_pos;
 
+    col_merge_size_type m_merge_range; /// 2-dimensional merged cell ranges;
+
     cell_format_type m_cell_formats;
     row_t m_row_size;
     col_t m_col_size;
@@ -96,6 +110,8 @@ struct sheet_impl : boost::noncopyable
     {
         for_each(m_cell_formats.begin(), m_cell_formats.end(),
                  map_object_deleter<cell_format_type>());
+        for_each(m_merge_range.begin(), m_merge_range.end(),
+                 map_object_deleter<col_merge_size_type>());
     }
 };
 
@@ -329,6 +345,36 @@ void sheet::set_row_hidden(row_t row, bool hidden)
 {
     mp_impl->m_row_hidden_pos =
         mp_impl->m_row_hidden.insert(mp_impl->m_row_hidden_pos, row, row+1, hidden).first;
+}
+
+void sheet::set_merge_cell_range(const char* p_ref, size_t p_ref_len)
+{
+    // A1 style without '$' signs.
+    ixion::formula_name_resolver_a1 resolver;
+    ixion::formula_name_type res = resolver.resolve(p_ref, p_ref_len, ixion::abs_address_t());
+    if (res.type != ixion::formula_name_type::range_reference)
+        return;
+
+    col_merge_size_type::iterator it_col = mp_impl->m_merge_range.find(res.range.first.col);
+    if (it_col == mp_impl->m_merge_range.end())
+    {
+        unique_ptr<merge_size_type> p(new merge_size_type);
+        pair<col_merge_size_type::iterator, bool> r =
+            mp_impl->m_merge_range.insert(
+                col_merge_size_type::value_type(res.range.first.col, p.get()));
+
+        if (!r.second)
+            // Insertion failed.
+            return;
+
+        p.release();
+        it_col = r.first;
+    }
+
+    merge_size_type& col_data = *it_col->second;
+    merge_size sz(res.range.last.col-res.range.first.col+1, res.range.last.row-res.range.first.row+1);
+    col_data.insert(
+        merge_size_type::value_type(res.range.first.row, sz));
 }
 
 size_t sheet::get_string_identifier(row_t row, col_t col) const

@@ -11,6 +11,7 @@
 #include "ooxml_schemas.hpp"
 #include "ooxml_token_constants.hpp"
 #include "ooxml_namespace_types.hpp"
+#include "xml_context_global.hpp"
 #include "orcus/exception.hpp"
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
@@ -334,6 +335,23 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
         break;
         case XML_dimension:
             xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
+        break;
+        case XML_mergeCells:
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
+        break;
+        case XML_mergeCell:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_mergeCells);
+
+            spreadsheet::iface::import_sheet_properties* sheet_props = mp_sheet->get_sheet_properties();
+            if (sheet_props)
+            {
+                // ref contains merged range in A1 reference style.
+                pstring ref = for_each(
+                    attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_ref)).get_value();
+                sheet_props->set_merge_cell_range(ref.get(), ref.size());
+            }
+        }
         break;
         case XML_pageMargins:
             xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);

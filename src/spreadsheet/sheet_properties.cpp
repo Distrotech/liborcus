@@ -53,5 +53,11 @@ void sheet_properties::set_row_hidden(row_t row, bool hidden)
     mp_impl->m_sheet.set_row_hidden(row, hidden);
 }
 
+void sheet_properties::set_merge_cell_range(const char* p_ref, size_t p_ref_len)
+{
+    mp_impl->m_sheet.set_merge_cell_range(p_ref, p_ref_len);
+}
+
 }}
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
