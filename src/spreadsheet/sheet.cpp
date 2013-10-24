@@ -56,8 +56,13 @@ struct merge_size
         width(_width), height(_height) {}
 };
 
+// Merged cell data stored in sheet.
 typedef boost::unordered_map<row_t, merge_size> merge_size_type;
 typedef boost::unordered_map<col_t, merge_size_type*> col_merge_size_type;
+
+// Overlapped cells per row, used when rendering sheet content.
+typedef mdds::flat_segment_tree<col_t, bool> overlapped_col_index_type;
+typedef boost::unordered_map<row_t, overlapped_col_index_type*> overlapped_cells_type;
 
 typedef mdds::flat_segment_tree<row_t, size_t>  segment_row_index_type;
 typedef boost::unordered_map<col_t, segment_row_index_type*> cell_format_type;
@@ -69,6 +74,14 @@ typedef mdds::flat_segment_tree<row_t, row_height_t> row_heights_store_type;
 // hidden information
 typedef mdds::flat_segment_tree<col_t, bool> col_hidden_store_type;
 typedef mdds::flat_segment_tree<row_t, bool> row_hidden_store_type;
+
+struct overlapped_cells_tree_builder : std::unary_function<overlapped_cells_type::value_type, void>
+{
+    void operator() (overlapped_cells_type::value_type& node)
+    {
+        node.second->build_tree();
+    }
+};
 
 }
 
@@ -87,7 +100,8 @@ struct sheet_impl : boost::noncopyable
     col_hidden_store_type::const_iterator m_col_hidden_pos;
     row_hidden_store_type::const_iterator m_row_hidden_pos;
 
-    col_merge_size_type m_merge_range; /// 2-dimensional merged cell ranges;
+    col_merge_size_type m_merge_ranges; /// 2-dimensional merged cell ranges;
+    overlapped_cells_type m_overlapped_ranges;
 
     cell_format_type m_cell_formats;
     row_t m_row_size;
@@ -110,14 +124,16 @@ struct sheet_impl : boost::noncopyable
     {
         for_each(m_cell_formats.begin(), m_cell_formats.end(),
                  map_object_deleter<cell_format_type>());
-        for_each(m_merge_range.begin(), m_merge_range.end(),
+        for_each(m_merge_ranges.begin(), m_merge_ranges.end(),
                  map_object_deleter<col_merge_size_type>());
+
+        clear_overlapped_ranges();
     }
 
     const merge_size* get_merge_size(row_t row, col_t col) const
     {
-        col_merge_size_type::const_iterator it_col = m_merge_range.find(col);
-        if (it_col == m_merge_range.end())
+        col_merge_size_type::const_iterator it_col = m_merge_ranges.find(col);
+        if (it_col == m_merge_ranges.end())
             return NULL;
 
         merge_size_type& col_merge_sizes = *it_col->second;
@@ -126,6 +142,67 @@ struct sheet_impl : boost::noncopyable
             return NULL;
 
         return &it_row->second;
+    }
+
+    const overlapped_col_index_type* get_overlapped_ranges(row_t row) const
+    {
+        overlapped_cells_type::const_iterator it = m_overlapped_ranges.find(row);
+        if (it == m_overlapped_ranges.end())
+            return NULL;
+
+        return it->second;
+    }
+
+    void clear_overlapped_ranges()
+    {
+        for_each(m_overlapped_ranges.begin(), m_overlapped_ranges.end(),
+                 map_object_deleter<overlapped_cells_type>());
+        m_overlapped_ranges.clear();
+    }
+
+    void update_overlapped_ranges()
+    {
+        clear_overlapped_ranges();
+
+        col_merge_size_type::const_iterator it_col = m_merge_ranges.begin(), it_col_end = m_merge_ranges.end();
+        for (; it_col != it_col_end; ++it_col)
+        {
+            col_t col = it_col->first;
+            const merge_size_type& data = *it_col->second;
+            merge_size_type::const_iterator it = data.begin(), it_end = data.end();
+            for (; it != it_end; ++it)
+            {
+                row_t row = it->first;
+                const merge_size& item = it->second;
+                for (row_t i = 0; i < item.height; ++i, ++row)
+                {
+                    // Get the container for this row.
+                    overlapped_cells_type::iterator it_cont = m_overlapped_ranges.find(row);
+                    if (it_cont == m_overlapped_ranges.end())
+                    {
+                        unique_ptr<overlapped_col_index_type> p(new overlapped_col_index_type(0, m_col_size, false));
+                        std::pair<overlapped_cells_type::iterator, bool> r =
+                            m_overlapped_ranges.insert(overlapped_cells_type::value_type(row, p.get()));
+
+                        if (!r.second)
+                        {
+                            // Insertion failed.
+                            return;
+                        }
+
+                        p.release();
+                        it_cont = r.first;
+                    }
+
+                    overlapped_col_index_type& cont = *it_cont->second;
+                    cont.insert_back(col, col+item.width, true);
+                }
+            }
+        }
+
+        // Build trees.
+        for_each(m_overlapped_ranges.begin(), m_overlapped_ranges.end(),
+                 overlapped_cells_tree_builder());
     }
 };
 
@@ -369,12 +446,12 @@ void sheet::set_merge_cell_range(const char* p_ref, size_t p_ref_len)
     if (res.type != ixion::formula_name_type::range_reference)
         return;
 
-    col_merge_size_type::iterator it_col = mp_impl->m_merge_range.find(res.range.first.col);
-    if (it_col == mp_impl->m_merge_range.end())
+    col_merge_size_type::iterator it_col = mp_impl->m_merge_ranges.find(res.range.first.col);
+    if (it_col == mp_impl->m_merge_ranges.end())
     {
         unique_ptr<merge_size_type> p(new merge_size_type);
         pair<col_merge_size_type::iterator, bool> r =
-            mp_impl->m_merge_range.insert(
+            mp_impl->m_merge_ranges.insert(
                 col_merge_size_type::value_type(res.range.first.col, p.get()));
 
         if (!r.second)
@@ -411,6 +488,7 @@ void sheet::finalize()
 {
     mp_impl->m_col_widths.build_tree();
     mp_impl->m_row_heights.build_tree();
+    mp_impl->update_overlapped_ranges();
 }
 
 void sheet::dump_flat(std::ostream& os) const
@@ -1034,11 +1112,25 @@ void sheet::dump_html(const string& filepath) const
                 style_str = row_style.c_str();
             elem tr(file, p_tr, style_str);
 
+            const overlapped_col_index_type* p_overlapped = mp_impl->get_overlapped_ranges(row);
+
             for (col_t col = 0; col < col_count; ++col)
             {
                 ixion::abs_address_t pos(mp_impl->m_sheet,row,col);
 
                 const merge_size* p_merge_size = mp_impl->get_merge_size(row, col);
+                if (!p_merge_size && p_overlapped)
+                {
+                    // Check if this cell is overlapped by a merged cell.
+                    bool overlapped = false;
+                    col_t last_col;
+                    if (p_overlapped->search_tree(col, overlapped, NULL, &last_col).second && overlapped)
+                    {
+                        // Skip all overlapped cells on this row.
+                        col = last_col - 1;
+                        continue;
+                    }
+                }
                 size_t xf_id = get_cell_format(row, col);
                 string style;
 
@@ -1154,4 +1246,5 @@ size_t sheet::get_cell_format(row_t row, col_t col) const
 }
 
 }}
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
