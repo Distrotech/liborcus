@@ -293,16 +293,18 @@ void sheet::set_format(row_t row, col_t col, size_t index)
     cell_format_type::iterator itr = mp_impl->m_cell_formats.find(col);
     if (itr == mp_impl->m_cell_formats.end())
     {
+        unique_ptr<segment_row_index_type> p(new segment_row_index_type(0, mp_impl->m_row_size+1, 0));
+
         pair<cell_format_type::iterator, bool> r =
-            mp_impl->m_cell_formats.insert(
-                cell_format_type::value_type(
-                    col, new segment_row_index_type(0, mp_impl->m_row_size+1, 0)));
+            mp_impl->m_cell_formats.insert(cell_format_type::value_type(col, p.get()));
 
         if (!r.second)
         {
             cerr << "insertion of new cell format container failed!" << endl;
             return;
         }
+
+        p.release();
         itr = r.first;
     }
 
