@@ -119,6 +119,8 @@ public:
     virtual void set_xf_protection(size_t index) = 0;
     virtual void set_xf_number_format(size_t index) = 0;
     virtual void set_xf_style_xf(size_t index) = 0;
+    virtual void set_xf_apply_alignment(bool b) = 0;
+    virtual void set_xf_horizontal_alignment(orcus::spreadsheet::hor_alignment_t align) = 0;
 
     virtual size_t commit_cell_xf() = 0;
     virtual size_t commit_cell_style_xf() = 0;

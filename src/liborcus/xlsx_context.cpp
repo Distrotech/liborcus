@@ -360,6 +360,12 @@ public:
             break;
             case XML_applyNumberFormat:
             break;
+            case XML_applyAlignment:
+            {
+                bool b = to_long(attr.value) != 0;
+                m_styles.set_xf_apply_alignment(b);
+            }
+            break;
         }
     }
 };
@@ -426,6 +432,38 @@ public:
             }
             break;
         }
+    }
+};
+
+class cell_alignment_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+    spreadsheet::hor_alignment_t m_hor_align;
+
+public:
+    cell_alignment_attr_parser() : m_hor_align(spreadsheet::hor_alignment_unknown) {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_horizontal:
+            {
+                if (attr.value == "center")
+                    m_hor_align = spreadsheet::hor_alignment_center;
+                else if (attr.value == "right")
+                    m_hor_align = spreadsheet::hor_alignment_right;
+                else if (attr.value == "left")
+                    m_hor_align = spreadsheet::hor_alignment_left;
+            }
+            break;
+            default:
+                ;
+        }
+    }
+
+    spreadsheet::hor_alignment_t get_hor_align() const
+    {
+        return m_hor_align;
     }
 };
 
@@ -684,6 +722,14 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_xf);
             for_each(attrs.begin(), attrs.end(), cell_protection_attr_parser(*mp_styles));
+        }
+        break;
+        case XML_alignment:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_xf);
+            cell_alignment_attr_parser func;
+            func = for_each(attrs.begin(), attrs.end(), func);
+            mp_styles->set_xf_horizontal_alignment(func.get_hor_align());
         }
         break;
         default:

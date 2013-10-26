@@ -1009,6 +1009,26 @@ void build_style_string(string& str, const import_styles& styles, const cell_for
         }
     }
 
+    if (fmt.apply_alignment)
+    {
+        os << "text-align: ";
+        switch (fmt.hor_align)
+        {
+            case hor_alignment_left:
+                os << "left";
+            break;
+            case hor_alignment_center:
+                os << "center";
+            break;
+            case hor_alignment_right:
+                os << "right";
+            break;
+            default:
+                ;
+        }
+        os << ";";
+    }
+
     str += os.str();
 }
 

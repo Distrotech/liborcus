@@ -93,6 +93,7 @@ cell_format_t::cell_format_t() :
     protection(0),
     number_format(0),
     style_xf(0),
+    hor_align(hor_alignment_unknown),
     apply_num_format(false),
     apply_font(false),
     apply_fill(false),
@@ -336,6 +337,16 @@ void import_styles::set_xf_number_format(size_t index)
 void import_styles::set_xf_style_xf(size_t index)
 {
     m_cur_cell_format.style_xf = index;
+}
+
+void import_styles::set_xf_apply_alignment(bool b)
+{
+    m_cur_cell_format.apply_alignment = b;
+}
+
+void import_styles::set_xf_horizontal_alignment(orcus::spreadsheet::hor_alignment_t align)
+{
+    m_cur_cell_format.hor_align = align;
 }
 
 void import_styles::set_cell_style_count(size_t n)

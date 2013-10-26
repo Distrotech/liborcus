@@ -105,6 +105,7 @@ struct ORCUS_DLLPUBLIC cell_format_t
     size_t protection;      /// protection ID
     size_t number_format;   /// number format ID
     size_t style_xf;        /// style XF ID (used only for cell format)
+    hor_alignment_t hor_align;
     bool apply_num_format:1;
     bool apply_font:1;
     bool apply_fill:1;
@@ -172,6 +173,8 @@ public:
     virtual void set_xf_protection(size_t index);
     virtual void set_xf_number_format(size_t index);
     virtual void set_xf_style_xf(size_t index);
+    virtual void set_xf_apply_alignment(bool b);
+    virtual void set_xf_horizontal_alignment(orcus::spreadsheet::hor_alignment_t align);
 
     virtual void set_cell_style_count(size_t n);
     virtual void set_cell_style_name(const char* s, size_t n);
