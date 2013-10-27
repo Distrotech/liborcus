@@ -28,7 +28,7 @@ const char* help_output =
 
 const char* help_output_format =
 "Specify the format of output file.  Supported format types are: "
-"1) flat text format (flat), or 2) HTML format (html).";
+"1) flat text format (flat), 2) HTML format (html), or 3) no output (none).";
 
 }
 
@@ -101,7 +101,7 @@ bool parse_import_filter_args(
 
     if (outformat.empty())
     {
-        cerr << "No output format specified.  Choose either 'flat' or 'html'." << endl;
+        cerr << "No output format specified.  Choose either 'flat', 'html' or 'none'." << endl;
         return false;
     }
 
@@ -122,6 +122,15 @@ bool parse_import_filter_args(
         doc.dump_flat(outdir);
     else if (outformat == "html")
         doc.dump_html(outdir);
+    else if (outformat == "none")
+    {
+        // Do nothing.
+    }
+    else
+    {
+        // Do nothing, but warning about unknown output format type.
+        cerr << "Unknown output format type '" << outformat << "'. No output files have been generated." << endl;
+    }
 
     return true;
 }
