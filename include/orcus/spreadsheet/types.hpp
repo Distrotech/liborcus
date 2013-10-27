@@ -54,7 +54,7 @@ enum hor_alignment_t
     hor_alignment_unknown = 0,
     hor_alignment_left,
     hor_alignment_center,
-    hor_alignment_right
+    hor_alignment_right,
     hor_alignment_justified,
     hor_alignment_distributed,
     hor_alignment_filled
@@ -65,7 +65,7 @@ enum ver_alignment_t
     ver_alignment_unknown = 0,
     ver_alignment_top,
     ver_alignment_middle,
-    ver_alignment_bottom
+    ver_alignment_bottom,
     ver_alignment_justified,
     ver_alignment_distributed
 };
