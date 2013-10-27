@@ -86,6 +86,7 @@ public:
     virtual void set_xf_style_xf(size_t index);
     virtual void set_xf_apply_alignment(bool b);
     virtual void set_xf_horizontal_alignment(orcus::spreadsheet::hor_alignment_t align);
+    virtual void set_xf_vertical_alignment(orcus::spreadsheet::ver_alignment_t align);
 
     // cell style entry
 

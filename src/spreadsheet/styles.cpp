@@ -94,6 +94,7 @@ cell_format_t::cell_format_t() :
     number_format(0),
     style_xf(0),
     hor_align(hor_alignment_unknown),
+    ver_align(ver_alignment_unknown),
     apply_num_format(false),
     apply_font(false),
     apply_fill(false),
@@ -347,6 +348,11 @@ void import_styles::set_xf_apply_alignment(bool b)
 void import_styles::set_xf_horizontal_alignment(orcus::spreadsheet::hor_alignment_t align)
 {
     m_cur_cell_format.hor_align = align;
+}
+
+void import_styles::set_xf_vertical_alignment(orcus::spreadsheet::ver_alignment_t align)
+{
+    m_cur_cell_format.ver_align = align;
 }
 
 void import_styles::set_cell_style_count(size_t n)

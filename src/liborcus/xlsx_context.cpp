@@ -438,9 +438,13 @@ public:
 class cell_alignment_attr_parser : public unary_function<xml_token_attr_t, void>
 {
     spreadsheet::hor_alignment_t m_hor_align;
+    spreadsheet::ver_alignment_t m_ver_align;
 
 public:
-    cell_alignment_attr_parser() : m_hor_align(spreadsheet::hor_alignment_unknown) {}
+    cell_alignment_attr_parser() :
+        m_hor_align(spreadsheet::hor_alignment_unknown),
+        m_ver_align(spreadsheet::ver_alignment_bottom) // 'bottom' is the default if no vertical alignment is given.
+    {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -456,6 +460,16 @@ public:
                     m_hor_align = spreadsheet::hor_alignment_left;
             }
             break;
+            case XML_vertical:
+            {
+                if (attr.value == "top")
+                    m_ver_align = spreadsheet::ver_alignment_top;
+                else if (attr.value == "center")
+                    m_ver_align = spreadsheet::ver_alignment_center;
+                else if (attr.value == "bottom")
+                    m_ver_align = spreadsheet::ver_alignment_bottom;
+            }
+            break;
             default:
                 ;
         }
@@ -464,6 +478,11 @@ public:
     spreadsheet::hor_alignment_t get_hor_align() const
     {
         return m_hor_align;
+    }
+
+    spreadsheet::ver_alignment_t get_ver_align() const
+    {
+        return m_ver_align;
     }
 };
 
@@ -730,6 +749,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             cell_alignment_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
             mp_styles->set_xf_horizontal_alignment(func.get_hor_align());
+            mp_styles->set_xf_vertical_alignment(func.get_ver_align());
         }
         break;
         default:
