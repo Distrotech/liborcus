@@ -1039,7 +1039,7 @@ void build_style_string(string& str, const import_styles& styles, const cell_for
                 case ver_alignment_top:
                     os << "top";
                 break;
-                case ver_alignment_center:
+                case ver_alignment_middle:
                     os << "middle";
                 break;
                 case ver_alignment_bottom:

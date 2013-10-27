@@ -64,7 +64,7 @@ enum ver_alignment_t
 {
     ver_alignment_unknown = 0,
     ver_alignment_top,
-    ver_alignment_center,
+    ver_alignment_middle,
     ver_alignment_bottom,
     ver_alignment_justified,
     ver_alignment_distributed

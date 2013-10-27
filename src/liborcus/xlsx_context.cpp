@@ -465,7 +465,7 @@ public:
                 if (attr.value == "top")
                     m_ver_align = spreadsheet::ver_alignment_top;
                 else if (attr.value == "center")
-                    m_ver_align = spreadsheet::ver_alignment_center;
+                    m_ver_align = spreadsheet::ver_alignment_middle;
                 else if (attr.value == "bottom")
                     m_ver_align = spreadsheet::ver_alignment_bottom;
             }
