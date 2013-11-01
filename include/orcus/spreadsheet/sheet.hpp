@@ -78,6 +78,8 @@ public:
 
     void set_merge_cell_range(const char* p_ref, size_t p_ref_len);
 
+    void set_data_table(const data_table_t& param);
+
     size_t get_string_identifier(row_t row, col_t col) const;
 
     row_t row_size() const;

@@ -58,6 +58,11 @@ void sheet_properties::set_merge_cell_range(const char* p_ref, size_t p_ref_len)
     mp_impl->m_sheet.set_merge_cell_range(p_ref, p_ref_len);
 }
 
+void sheet_properties::set_data_table(const data_table_t& param)
+{
+    mp_impl->m_sheet.set_data_table(param);
+}
+
 }}
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

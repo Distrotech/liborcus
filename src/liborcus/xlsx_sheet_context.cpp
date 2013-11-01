@@ -163,7 +163,7 @@ public:
             break;
             case XML_s:
                 // cell style
-                m_xf = strtoul(attr.value.get(), NULL, 10);
+                m_xf = to_long(attr.value);
             break;
         }
     }
@@ -236,33 +236,71 @@ private:
 
 class formula_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
-    pstring m_type;
-    pstring m_ref;
-    int m_shared_index;
-public:
-    formula_attr_parser() : m_shared_index(-1) {}
+    xlsx_sheet_context::formula m_attrs;
 
+public:
     void operator() (const xml_token_attr_t& attr)
     {
         switch (attr.name)
         {
             case XML_t:
-                m_type = attr.value;
+            {
+                if (attr.value == "shared")
+                    m_attrs.type = spreadsheet::formula_shared;
+                else if (attr.value == "array")
+                    m_attrs.type = spreadsheet::formula_array;
+                else if (attr.value == "dataTable")
+                    m_attrs.type = spreadsheet::formula_data_table;
+            }
             break;
             case XML_ref:
-                m_ref = attr.value;
+                m_attrs.ref = attr.value;
             break;
             case XML_si:
-                m_shared_index = strtoul(attr.value.get(), NULL, 10);
+                m_attrs.shared_id = to_long(attr.value);
             break;
+            case XML_dt2D:
+                m_attrs.data_table_2d = to_long(attr.value) != 0;
+            break;
+            case XML_dtr:
+                m_attrs.data_table_row_based = to_long(attr.value) != 0;
+            break;
+            case XML_del1:
+                m_attrs.data_table_ref1_deleted = to_long(attr.value) != 0;
+            break;
+            case XML_del2:
+                m_attrs.data_table_ref2_deleted = to_long(attr.value) != 0;
+            break;
+            case XML_r1:
+                m_attrs.data_table_ref1 = attr.value;
+            break;
+            case XML_r2:
+                m_attrs.data_table_ref2 = attr.value;
+            break;
+            default:
+                ;
         }
     }
 
-    pstring get_type() const { return m_type; }
-    pstring get_ref() const { return m_ref; }
-    int get_shared_index() const { return m_shared_index; }
+    xlsx_sheet_context::formula get_attrs() const { return m_attrs; }
 };
 
+}
+
+xlsx_sheet_context::formula::formula() :
+    type(spreadsheet::formula_normal),
+    str(), ref(),
+    data_table_ref1(),
+    data_table_ref2(),
+    shared_id(-1),
+    data_table_2d(false),
+    data_table_row_based(false),
+    data_table_ref1_deleted(false),
+    data_table_ref2_deleted(false) {}
+
+void xlsx_sheet_context::formula::reset()
+{
+    *this = formula();
 }
 
 xlsx_sheet_context::xlsx_sheet_context(
@@ -273,8 +311,7 @@ xlsx_sheet_context::xlsx_sheet_context(
     m_cur_row(-1),
     m_cur_col(-1),
     m_cur_cell_type(cell_type_value),
-    m_cur_cell_xf(0),
-    m_cur_shared_formula_id(-1)
+    m_cur_cell_xf(0)
 {
 }
 
@@ -422,9 +459,7 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             xml_element_expected(parent, NS_ooxml_xlsx, XML_c);
             formula_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
-            m_cur_formula_type = func.get_type();
-            m_cur_formula_ref = func.get_ref();
-            m_cur_shared_formula_id = func.get_shared_index();
+            m_cur_formula = func.get_attrs();
         }
         break;
         case XML_v:
@@ -448,9 +483,9 @@ bool xlsx_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
 #if 0
             cout << "cell: row=" << m_cur_row << "; col=" << m_cur_col << "; ";
 
-            if (m_cur_shared_formula_id >= 0)
+            if (m_cur_formula.shared_id >= 0)
             {
-                cout << "shared formula: index = " << m_cur_shared_formula_id;
+                cout << "shared formula: index = " << m_cur_formula.shared_id;
                 if (!m_cur_str.empty())
                     cout << "; " << m_cur_str;
                 cout << endl;
@@ -459,7 +494,7 @@ bool xlsx_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
                 cout << "formula: " << m_cur_str << endl;
 #endif
 
-            m_cur_formula_str = m_cur_str;
+            m_cur_formula.str = m_cur_str;
         }
         case XML_v:
             m_cur_value = m_cur_str;
@@ -482,66 +517,69 @@ void xlsx_sheet_context::end_element_cell()
     session_context& cxt = get_session_context();
     xlsx_session_data& session_data = static_cast<xlsx_session_data&>(*cxt.mp_data);
 
-    if (!m_cur_formula_str.empty())
+    if (!m_cur_formula.str.empty())
     {
-        if (m_cur_formula_type == "shared" && m_cur_shared_formula_id >= 0)
+        if (m_cur_formula.type == spreadsheet::formula_shared && m_cur_formula.shared_id >= 0)
         {
             // shared formula expression
             session_data.m_shared_formulas.push_back(
                 new xlsx_session_data::shared_formula(
-                    m_sheet_id, m_cur_row, m_cur_col, m_cur_shared_formula_id,
-                    m_cur_formula_str.str(), m_cur_formula_ref.str()));
+                    m_sheet_id, m_cur_row, m_cur_col, m_cur_formula.shared_id,
+                    m_cur_formula.str.str(), m_cur_formula.ref.str()));
         }
-        else if (m_cur_formula_type == "array")
+        else if (m_cur_formula.type == spreadsheet::formula_array)
         {
             // array formula expression
             session_data.m_formulas.push_back(
                 new xlsx_session_data::formula(
-                    m_sheet_id, m_cur_row, m_cur_col, m_cur_formula_str.str(), m_cur_formula_ref.str()));
+                    m_sheet_id, m_cur_row, m_cur_col, m_cur_formula.str.str(), m_cur_formula.ref.str()));
         }
         else
         {
             // normal (non-shared) formula expression
             session_data.m_formulas.push_back(
                 new xlsx_session_data::formula(
-                    m_sheet_id, m_cur_row, m_cur_col, m_cur_formula_str.str()));
+                    m_sheet_id, m_cur_row, m_cur_col, m_cur_formula.str.str()));
         }
     }
-    else if (m_cur_formula_type == "shared" && m_cur_shared_formula_id >= 0)
+    else if (m_cur_formula.type == spreadsheet::formula_shared && m_cur_formula.shared_id >= 0)
     {
         // shared formula without formula expression
         session_data.m_shared_formulas.push_back(
             new xlsx_session_data::shared_formula(
-                m_sheet_id, m_cur_row, m_cur_col, m_cur_shared_formula_id));
+                m_sheet_id, m_cur_row, m_cur_col, m_cur_formula.shared_id));
+    }
+    else if (m_cur_formula.type == spreadsheet::formula_data_table)
+    {
+        spreadsheet::iface::import_sheet_properties* prop = mp_sheet->get_sheet_properties();
+        if (prop)
+        {
+            // Import data table.
+            spreadsheet::data_table_t param;
+            param.range = m_cur_formula.ref.get();
+            param.range_length = m_cur_formula.ref.size();
+            param.ref1 = m_cur_formula.data_table_ref1.get();
+            param.ref1_length = m_cur_formula.data_table_ref1.size();
+            param.ref1_deleted = m_cur_formula.data_table_ref1_deleted;
+            param.ref2 = m_cur_formula.data_table_ref2.get();
+            param.ref2_length = m_cur_formula.data_table_ref2.size();
+            param.ref2_deleted = m_cur_formula.data_table_ref2_deleted;
+
+            if (m_cur_formula.data_table_2d)
+                param.type = spreadsheet::data_table_both;
+            else if (m_cur_formula.data_table_row_based)
+                param.type = spreadsheet::data_table_row;
+            else
+                param.type = spreadsheet::data_table_column;
+
+            prop->set_data_table(param);
+        }
+
+        push_raw_cell_value();
     }
     else if (!m_cur_value.empty())
     {
-        switch (m_cur_cell_type)
-        {
-            case cell_type_string:
-            {
-                // string cell
-                size_t str_id = to_long(m_cur_value);
-                mp_sheet->set_string(m_cur_row, m_cur_col, str_id);
-            }
-            break;
-            case cell_type_value:
-            {
-                // value cell
-                double val = strtod(m_cur_value.get(), NULL);
-                mp_sheet->set_value(m_cur_row, m_cur_col, val);
-            }
-            break;
-            case cell_type_boolean:
-            {
-                // boolean cell
-                bool val = strtoul(m_cur_value.get(), NULL, 10) != 0;
-                mp_sheet->set_bool(m_cur_row, m_cur_col, val);
-            }
-            break;
-            default:
-                warn("unhanlded cell content type");
-        }
+        push_raw_cell_value();
     }
 
     if (m_cur_cell_xf)
@@ -549,11 +587,42 @@ void xlsx_sheet_context::end_element_cell()
 
     // reset cell related parameters.
     m_cur_value.clear();
-    m_cur_formula_type.clear();
-    m_cur_formula_ref.clear();
-    m_cur_formula_str.clear();
-    m_cur_shared_formula_id = -1;
+    m_cur_formula.reset();
+}
+
+void xlsx_sheet_context::push_raw_cell_value()
+{
+    if (m_cur_value.empty())
+        return;
+
+    switch (m_cur_cell_type)
+    {
+        case cell_type_string:
+        {
+            // string cell
+            size_t str_id = to_long(m_cur_value);
+            mp_sheet->set_string(m_cur_row, m_cur_col, str_id);
+        }
+        break;
+        case cell_type_value:
+        {
+            // value cell
+            double val = to_double(m_cur_value);
+            mp_sheet->set_value(m_cur_row, m_cur_col, val);
+        }
+        break;
+        case cell_type_boolean:
+        {
+            // boolean cell
+            bool val = to_long(m_cur_value) != 0;
+            mp_sheet->set_bool(m_cur_row, m_cur_col, val);
+        }
+        break;
+        default:
+            warn("unhanlded cell content type");
+    }
 }
 
 }
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

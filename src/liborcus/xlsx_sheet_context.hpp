@@ -35,6 +35,23 @@ public:
         cell_type_inline_string
     };
 
+    struct formula
+    {
+        spreadsheet::formula_t type;
+        pstring str; /// formula expression string
+        pstring ref; /// formula reference
+        pstring data_table_ref1;
+        pstring data_table_ref2;
+        int shared_id;
+        bool data_table_2d:1;
+        bool data_table_row_based:1;
+        bool data_table_ref1_deleted:1;
+        bool data_table_ref2_deleted:1;
+        formula();
+
+        void reset();
+    };
+
     xlsx_sheet_context(
         session_context& session_cxt, const tokens& tokens,
         spreadsheet::sheet_t sheet_id, spreadsheet::iface::import_sheet* import_sheet);
@@ -50,6 +67,7 @@ public:
 
 private:
     void end_element_cell();
+    void push_raw_cell_value();
 
 private:
     spreadsheet::iface::import_sheet* mp_sheet; /// sheet model instance for the loaded document.
@@ -61,10 +79,7 @@ private:
     size_t       m_cur_cell_xf;
     pstring      m_cur_str;
     pstring      m_cur_value;
-    pstring      m_cur_formula_type;
-    pstring      m_cur_formula_ref;
-    pstring      m_cur_formula_str;
-    int          m_cur_shared_formula_id; /// 0-based shared formula index.
+    formula m_cur_formula;
 };
 
 }

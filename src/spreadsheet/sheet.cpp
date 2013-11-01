@@ -470,6 +470,11 @@ void sheet::set_merge_cell_range(const char* p_ref, size_t p_ref_len)
         merge_size_type::value_type(res.range.first.row, sz));
 }
 
+void sheet::set_data_table(const data_table_t& /*param*/)
+{
+    // TODO : implement it.
+}
+
 size_t sheet::get_string_identifier(row_t row, col_t col) const
 {
     const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();

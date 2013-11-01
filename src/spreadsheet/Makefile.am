@@ -16,7 +16,6 @@ liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_SOURCES = \
 	sheet.cpp \
 	sheet_properties.cpp \
 	styles.cpp \
-	types.cpp \
 	global_settings.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS = $(COMMON_CPPFLAGS)

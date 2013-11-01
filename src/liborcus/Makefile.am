@@ -62,7 +62,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	xls_xml_namespace_types.hpp \
 	xls_xml_namespace_types.cpp \
 	session_context.hpp \
-	session_context.cpp
+	session_context.cpp \
+	spreadsheet_types.cpp
 
 if WITH_XLSX_FILTER
 

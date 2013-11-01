@@ -9,6 +9,7 @@
 #define ORCUS_SPREADSHEET_GLOBAL_HPP
 
 #include "../env.hpp"
+#include <cstdlib>
 
 namespace orcus { namespace spreadsheet {
 
@@ -40,6 +41,14 @@ enum formula_grammar_t
     gnumeric
 };
 
+enum formula_t
+{
+    formula_array,
+    formula_data_table,
+    formula_normal,
+    formula_shared
+};
+
 enum underline_t
 {
     underline_none,
@@ -68,6 +77,30 @@ enum ver_alignment_t
     ver_alignment_bottom,
     ver_alignment_justified,
     ver_alignment_distributed
+};
+
+enum data_table_type_t
+{
+    data_table_column,
+    data_table_row,
+    data_table_both
+};
+
+struct ORCUS_DLLPUBLIC data_table_t
+{
+    data_table_type_t type;
+
+    const char* range;
+    size_t range_length;
+    const char* ref1;
+    size_t ref1_length;
+    const char* ref2;
+    size_t ref2_length;
+
+    bool ref1_deleted:1;
+    bool ref2_deleted:1;
+
+    data_table_t();
 };
 
 }}

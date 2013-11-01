@@ -156,6 +156,8 @@ public:
      * @param p_ref_len length of reference string.
      */
     virtual void set_merge_cell_range(const char* p_ref, size_t p_ref_len) = 0;
+
+    virtual void set_data_table(const orcus::spreadsheet::data_table_t& data) = 0;
 };
 
 /**

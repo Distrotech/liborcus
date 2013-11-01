@@ -283,6 +283,7 @@
 				<F N="../src/liborcus/session_context.cpp"/>
 				<F N="../src/liborcus/session_context.hpp"/>
 				<F N="../src/liborcus/spreadsheet_interface.cpp"/>
+				<F N="../src/liborcus/spreadsheet_types.cpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>
 				<F N="../src/liborcus/xls_xml_context.cpp"/>
 				<F N="../src/liborcus/xls_xml_context.hpp"/>
@@ -354,7 +355,6 @@
 				<F N="../src/spreadsheet/sheet.cpp"/>
 				<F N="../src/spreadsheet/sheet_properties.cpp"/>
 				<F N="../src/spreadsheet/styles.cpp"/>
-				<F N="../src/spreadsheet/types.cpp"/>
 			</Folder>
 			<F N="../src/dom_tree_sax_handler.cpp"/>
 			<F N="../src/dom_tree_sax_handler.hpp"/>
