@@ -92,8 +92,7 @@ public:
             case XML_r:
             {
                 // row index
-                m_row = static_cast<spreadsheet::row_t>(
-                    strtoul(attr.value.str().c_str(), NULL, 10));
+                m_row = static_cast<spreadsheet::row_t>(to_long(attr.value));
                 if (!m_row)
                     throw xml_structure_error("row number can never be zero!");
 
@@ -103,15 +102,11 @@ public:
             break;
             case XML_ht:
             {
-                const pstring& s = attr.value;
-                m_height.value = to_double(s.get(), s.get()+s.size(), NULL);
+                m_height.value = to_double(attr.value);
                 m_height.unit = length_unit_point;
             }
             case XML_hidden:
-            {
-                const pstring& s = attr.value;
-                m_hidden = to_long(s.get(), s.get() + s.size());
-            }
+                m_hidden = to_long(attr.value) != 0;
             break;
             default:
                 ;
