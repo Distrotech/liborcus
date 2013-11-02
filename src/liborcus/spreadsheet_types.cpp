@@ -21,5 +21,9 @@ data_table_t::data_table_t() :
     ref2(NULL), ref2_length(0),
     ref1_deleted(false), ref2_deleted(false) {}
 
+auto_filter_t::auto_filter_t() :
+    range(NULL), range_length(0) {}
+
 }}
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

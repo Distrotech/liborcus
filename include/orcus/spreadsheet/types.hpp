@@ -111,6 +111,17 @@ struct ORCUS_DLLPUBLIC data_table_t
     data_table_t();
 };
 
+/**
+ * Properties of an auto filter range.
+ */
+struct ORCUS_DLLPUBLIC auto_filter_t
+{
+    const char* range;
+    size_t range_length;
+
+    auto_filter_t();
+};
+
 }}
 
 #endif

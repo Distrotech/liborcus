@@ -458,6 +458,23 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
         case XML_v:
             xml_element_expected(parent, NS_ooxml_xlsx, XML_c);
         break;
+        case XML_autoFilter:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
+            pstring ref = for_each(
+                attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_ref)).get_value();
+            cout << "autofilter range: " << ref << endl;
+        }
+        break;
+        case XML_filterColumn:
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_autoFilter);
+        break;
+        case XML_filters:
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_filterColumn);
+        break;
+        case XML_filter:
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_filters);
+        break;
         default:
             warn_unhandled();
     }
