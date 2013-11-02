@@ -61,6 +61,7 @@ public:
             const char*, size_t, row_t, col_t);
     virtual void set_array_formula(row_t, col_t, formula_grammar_t,
             const char*, size_t, const char*, size_t);
+    virtual void set_data_table(const data_table_t& param);
 
     // Export methods
 
@@ -77,8 +78,6 @@ public:
     void set_row_hidden(row_t row, bool hidden);
 
     void set_merge_cell_range(const char* p_ref, size_t p_ref_len);
-
-    void set_data_table(const data_table_t& param);
 
     size_t get_string_identifier(row_t row, col_t col) const;
 

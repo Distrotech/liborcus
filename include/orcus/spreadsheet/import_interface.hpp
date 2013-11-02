@@ -156,8 +156,6 @@ public:
      * @param p_ref_len length of reference string.
      */
     virtual void set_merge_cell_range(const char* p_ref, size_t p_ref_len) = 0;
-
-    virtual void set_data_table(const orcus::spreadsheet::data_table_t& data) = 0;
 };
 
 /**
@@ -327,6 +325,13 @@ public:
     virtual void set_array_formula(
         orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, orcus::spreadsheet::formula_grammar_t grammar,
         const char* p, size_t n, const char* p_range, size_t n_range) = 0;
+
+    /**
+     * Set a data table instance.
+     *
+     * @param data properties of a data table instance.
+     */
+    virtual void set_data_table(const orcus::spreadsheet::data_table_t& data) = 0;
 };
 
 class import_global_settings

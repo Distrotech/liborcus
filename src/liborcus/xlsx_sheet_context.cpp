@@ -551,29 +551,25 @@ void xlsx_sheet_context::end_element_cell()
     }
     else if (m_cur_formula.type == spreadsheet::formula_data_table)
     {
-        spreadsheet::iface::import_sheet_properties* prop = mp_sheet->get_sheet_properties();
-        if (prop)
-        {
-            // Import data table.
-            spreadsheet::data_table_t param;
-            param.range = m_cur_formula.ref.get();
-            param.range_length = m_cur_formula.ref.size();
-            param.ref1 = m_cur_formula.data_table_ref1.get();
-            param.ref1_length = m_cur_formula.data_table_ref1.size();
-            param.ref1_deleted = m_cur_formula.data_table_ref1_deleted;
-            param.ref2 = m_cur_formula.data_table_ref2.get();
-            param.ref2_length = m_cur_formula.data_table_ref2.size();
-            param.ref2_deleted = m_cur_formula.data_table_ref2_deleted;
+        // Import data table.
+        spreadsheet::data_table_t param;
+        param.range = m_cur_formula.ref.get();
+        param.range_length = m_cur_formula.ref.size();
+        param.ref1 = m_cur_formula.data_table_ref1.get();
+        param.ref1_length = m_cur_formula.data_table_ref1.size();
+        param.ref1_deleted = m_cur_formula.data_table_ref1_deleted;
+        param.ref2 = m_cur_formula.data_table_ref2.get();
+        param.ref2_length = m_cur_formula.data_table_ref2.size();
+        param.ref2_deleted = m_cur_formula.data_table_ref2_deleted;
 
-            if (m_cur_formula.data_table_2d)
-                param.type = spreadsheet::data_table_both;
-            else if (m_cur_formula.data_table_row_based)
-                param.type = spreadsheet::data_table_row;
-            else
-                param.type = spreadsheet::data_table_column;
+        if (m_cur_formula.data_table_2d)
+            param.type = spreadsheet::data_table_both;
+        else if (m_cur_formula.data_table_row_based)
+            param.type = spreadsheet::data_table_row;
+        else
+            param.type = spreadsheet::data_table_column;
 
-            prop->set_data_table(param);
-        }
+        mp_sheet->set_data_table(param);
 
         push_raw_cell_value();
     }

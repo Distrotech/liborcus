@@ -79,6 +79,11 @@ enum ver_alignment_t
     ver_alignment_distributed
 };
 
+/**
+ * Type of data table.  A data table can be either of a single-variable
+ * column, a single-variable row, or a double-variable type that uses both
+ * column and row input cells.
+ */
 enum data_table_type_t
 {
     data_table_column,
@@ -86,6 +91,9 @@ enum data_table_type_t
     data_table_both
 };
 
+/**
+ * Properties of a data table.
+ */
 struct ORCUS_DLLPUBLIC data_table_t
 {
     data_table_type_t type;
