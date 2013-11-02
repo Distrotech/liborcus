@@ -352,8 +352,6 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             xml_element_expected(parent, NS_ooxml_xlsx, XML_cols);
             col_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
-            cout << "column: min=" << func.get_min() << " max=" << func.get_max() <<
-                " width=" << func.get_width() << " custom=" << func.is_custom_width() << endl;
 
             spreadsheet::iface::import_sheet_properties* sheet_props = mp_sheet->get_sheet_properties();
             if (sheet_props)
@@ -479,23 +477,8 @@ bool xlsx_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
             end_element_cell();
         break;
         case XML_f:
-        {
-#if 0
-            cout << "cell: row=" << m_cur_row << "; col=" << m_cur_col << "; ";
-
-            if (m_cur_formula.shared_id >= 0)
-            {
-                cout << "shared formula: index = " << m_cur_formula.shared_id;
-                if (!m_cur_str.empty())
-                    cout << "; " << m_cur_str;
-                cout << endl;
-            }
-            else
-                cout << "formula: " << m_cur_str << endl;
-#endif
-
             m_cur_formula.str = m_cur_str;
-        }
+        break;
         case XML_v:
             m_cur_value = m_cur_str;
         break;
