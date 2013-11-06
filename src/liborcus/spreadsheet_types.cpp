@@ -14,13 +14,6 @@ namespace orcus { namespace spreadsheet {
 const col_width_t default_column_width = std::numeric_limits<col_width_t>::max();
 const row_height_t default_row_height = std::numeric_limits<row_height_t>::max();
 
-data_table_t::data_table_t() :
-    type(data_table_column),
-    range(NULL), range_length(0),
-    ref1(NULL), ref1_length(0),
-    ref2(NULL), ref2_length(0),
-    ref1_deleted(false), ref2_deleted(false) {}
-
 }}
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

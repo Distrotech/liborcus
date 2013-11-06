@@ -91,26 +91,6 @@ enum data_table_type_t
     data_table_both
 };
 
-/**
- * Properties of a data table.
- */
-struct ORCUS_DLLPUBLIC data_table_t
-{
-    data_table_type_t type;
-
-    const char* range;
-    size_t range_length;
-    const char* ref1;
-    size_t ref1_length;
-    const char* ref2;
-    size_t ref2_length;
-
-    bool ref1_deleted:1;
-    bool ref2_deleted:1;
-
-    data_table_t();
-};
-
 }}
 
 #endif
