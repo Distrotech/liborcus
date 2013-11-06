@@ -16,9 +16,16 @@ import_styles::~import_styles() {}
 
 import_sheet_properties::~import_sheet_properties() {}
 
+import_data_table::~import_data_table() {}
+
 import_sheet::~import_sheet() {}
 
 import_sheet_properties* import_sheet::get_sheet_properties()
+{
+    return NULL;
+}
+
+import_data_table* import_sheet::get_data_table()
 {
     return NULL;
 }
@@ -32,4 +39,5 @@ export_sheet::~export_sheet() {}
 export_factory::~export_factory() {}
 
 }}}
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

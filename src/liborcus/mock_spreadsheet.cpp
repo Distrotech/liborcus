@@ -222,10 +222,5 @@ void import_sheet::set_formula_result(row_t, col_t, const char*, size_t)
     assert(false);
 }
 
-void import_sheet::set_data_table(const orcus::spreadsheet::data_table_t&)
-{
-    assert(false);
-}
-
 }}}
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

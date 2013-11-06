@@ -547,24 +547,38 @@ void xlsx_sheet_context::end_element_cell()
     else if (m_cur_formula.type == spreadsheet::formula_data_table)
     {
         // Import data table.
-        spreadsheet::data_table_t param;
-        param.range = m_cur_formula.ref.get();
-        param.range_length = m_cur_formula.ref.size();
-        param.ref1 = m_cur_formula.data_table_ref1.get();
-        param.ref1_length = m_cur_formula.data_table_ref1.size();
-        param.ref1_deleted = m_cur_formula.data_table_ref1_deleted;
-        param.ref2 = m_cur_formula.data_table_ref2.get();
-        param.ref2_length = m_cur_formula.data_table_ref2.size();
-        param.ref2_deleted = m_cur_formula.data_table_ref2_deleted;
-
-        if (m_cur_formula.data_table_2d)
-            param.type = spreadsheet::data_table_both;
-        else if (m_cur_formula.data_table_row_based)
-            param.type = spreadsheet::data_table_row;
-        else
-            param.type = spreadsheet::data_table_column;
-
-        mp_sheet->set_data_table(param);
+        spreadsheet::iface::import_data_table* dt = mp_sheet->get_data_table();
+        if (dt)
+        {
+            if (m_cur_formula.data_table_2d)
+            {
+                dt->set_type(spreadsheet::data_table_both);
+                dt->set_range(m_cur_formula.ref.get(), m_cur_formula.ref.size());
+                dt->set_first_reference(
+                    m_cur_formula.data_table_ref1.get(), m_cur_formula.data_table_ref1.size(),
+                    m_cur_formula.data_table_ref1_deleted);
+                dt->set_second_reference(
+                    m_cur_formula.data_table_ref2.get(), m_cur_formula.data_table_ref2.size(),
+                    m_cur_formula.data_table_ref2_deleted);
+            }
+            else if (m_cur_formula.data_table_row_based)
+            {
+                dt->set_type(spreadsheet::data_table_row);
+                dt->set_range(m_cur_formula.ref.get(), m_cur_formula.ref.size());
+                dt->set_first_reference(
+                    m_cur_formula.data_table_ref1.get(), m_cur_formula.data_table_ref1.size(),
+                    m_cur_formula.data_table_ref1_deleted);
+            }
+            else
+            {
+                dt->set_type(spreadsheet::data_table_column);
+                dt->set_range(m_cur_formula.ref.get(), m_cur_formula.ref.size());
+                dt->set_first_reference(
+                    m_cur_formula.data_table_ref1.get(), m_cur_formula.data_table_ref1.size(),
+                    m_cur_formula.data_table_ref1_deleted);
+            }
+            dt->commit();
+        }
 
         push_raw_cell_value();
     }

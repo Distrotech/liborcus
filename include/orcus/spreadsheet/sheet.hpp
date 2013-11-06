@@ -41,6 +41,7 @@ public:
     // Import methods
 
     virtual iface::import_sheet_properties* get_sheet_properties();
+    virtual iface::import_data_table* get_data_table();
 
     virtual void set_auto(row_t row, col_t col, const char* p, size_t n);
     virtual void set_string(row_t row, col_t col, size_t sindex);
@@ -61,7 +62,6 @@ public:
             const char*, size_t, row_t, col_t);
     virtual void set_array_formula(row_t, col_t, formula_grammar_t,
             const char*, size_t, const char*, size_t);
-    virtual void set_data_table(const data_table_t& param);
 
     // Export methods
 

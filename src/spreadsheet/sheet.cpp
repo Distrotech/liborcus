@@ -10,6 +10,7 @@
 #include "orcus/spreadsheet/styles.hpp"
 #include "orcus/spreadsheet/shared_strings.hpp"
 #include "orcus/spreadsheet/sheet_properties.hpp"
+#include "orcus/spreadsheet/data_table.hpp"
 #include "orcus/spreadsheet/document.hpp"
 
 #include "orcus/global.hpp"
@@ -89,6 +90,7 @@ struct sheet_impl : boost::noncopyable
 {
     document& m_doc;
     sheet_properties m_sheet_props; /// sheet properties import interface.
+    data_table m_data_table; /// data table import interface.
 
     mutable col_widths_store_type m_col_widths;
     mutable row_heights_store_type m_row_heights;
@@ -109,7 +111,7 @@ struct sheet_impl : boost::noncopyable
     const sheet_t m_sheet; /// sheet ID
 
     sheet_impl(document& doc, sheet& sh, sheet_t sheet_index, row_t row_size, col_t col_size) :
-        m_doc(doc), m_sheet_props(doc, sh),
+        m_doc(doc), m_sheet_props(doc, sh), m_data_table(sh),
         m_col_widths(0, col_size, default_column_width),
         m_row_heights(0, row_size, default_row_height),
         m_col_width_pos(m_col_widths.begin()),
@@ -220,6 +222,11 @@ sheet::~sheet()
 iface::import_sheet_properties* sheet::get_sheet_properties()
 {
     return &mp_impl->m_sheet_props;
+}
+
+iface::import_data_table* sheet::get_data_table()
+{
+    return &mp_impl->m_data_table;
 }
 
 void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
@@ -468,11 +475,6 @@ void sheet::set_merge_cell_range(const char* p_ref, size_t p_ref_len)
     merge_size sz(res.range.last.col-res.range.first.col+1, res.range.last.row-res.range.first.row+1);
     col_data.insert(
         merge_size_type::value_type(res.range.first.row, sz));
-}
-
-void sheet::set_data_table(const data_table_t& /*param*/)
-{
-    // TODO : implement it.
 }
 
 size_t sheet::get_string_identifier(row_t row, col_t col) const

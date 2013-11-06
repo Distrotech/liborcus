@@ -154,6 +154,7 @@
 					<F N="../include/orcus/mso/encryption_info.hpp"/>
 				</Folder>
 				<Folder Name="spreadsheet">
+					<F N="../include/orcus/spreadsheet/data_table.hpp"/>
 					<F N="../include/orcus/spreadsheet/document.hpp"/>
 					<F N="../include/orcus/spreadsheet/export_interface.hpp"/>
 					<F N="../include/orcus/spreadsheet/factory.hpp"/>
@@ -348,6 +349,7 @@
 				<F N="../src/parser/zip_archive_stream.cpp"/>
 			</Folder>
 			<Folder Name="spreadsheet">
+				<F N="../src/spreadsheet/data_table.cpp"/>
 				<F N="../src/spreadsheet/document.cpp"/>
 				<F N="../src/spreadsheet/factory.cpp"/>
 				<F N="../src/spreadsheet/global_settings.cpp"/>

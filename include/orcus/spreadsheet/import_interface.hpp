@@ -152,10 +152,29 @@ public:
      * Specify merged cell range.  The range is given in a 2-dimensional
      * A1-style reference.
      *
-     * @param p_ref pointer to the first character of reference string.
-     * @param p_ref_len length of reference string.
+     * @param p_range pointer to the first character of reference string.
+     * @param n_range length of reference string.
      */
-    virtual void set_merge_cell_range(const char* p_ref, size_t p_ref_len) = 0;
+    virtual void set_merge_cell_range(const char* p_range, size_t n_range) = 0;
+};
+
+/**
+ * Interface for importing data tables.
+ */
+class import_data_table
+{
+public:
+    ORCUS_DLLPUBLIC virtual ~import_data_table() = 0;
+
+    virtual void set_type(orcus::spreadsheet::data_table_type_t type) = 0;
+
+    virtual void set_range(const char* p_range, size_t n_range) = 0;
+
+    virtual void set_first_reference(const char* p_ref, size_t n_ref, bool deleted) = 0;
+
+    virtual void set_second_reference(const char* p_ref, size_t n_ref, bool deleted) = 0;
+
+    virtual void commit() = 0;
 };
 
 /**
@@ -167,6 +186,16 @@ public:
     virtual ~import_sheet() = 0;
 
     virtual import_sheet_properties* get_sheet_properties();
+
+    /**
+     * Get an interface for importing data tables.  Note that the implementor
+     * may decide not to support this feature in which case this method
+     * returns NULL.  The implementor is responsible for managing the life
+     * cycle of the returned interface object.
+     *
+     * @return pointer to the data table interface object.
+     */
+    virtual import_data_table* get_data_table();
 
     /**
      * Set raw string value to a cell and have the implementation
@@ -325,13 +354,6 @@ public:
     virtual void set_array_formula(
         orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, orcus::spreadsheet::formula_grammar_t grammar,
         const char* p, size_t n, const char* p_range, size_t n_range) = 0;
-
-    /**
-     * Set a data table instance.
-     *
-     * @param data properties of a data table instance.
-     */
-    virtual void set_data_table(const orcus::spreadsheet::data_table_t& data) = 0;
 };
 
 class import_global_settings

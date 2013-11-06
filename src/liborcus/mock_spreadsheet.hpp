@@ -158,8 +158,6 @@ public:
 
     virtual void set_array_formula(row_t, col_t, formula_grammar_t,
             const char*, size_t, const char*, size_t);
-
-    virtual void set_data_table(const orcus::spreadsheet::data_table_t&);
 };
 
 class import_factory : public orcus::spreadsheet::iface::import_factory
