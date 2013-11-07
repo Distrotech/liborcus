@@ -461,19 +461,46 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
         case XML_autoFilter:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
-            pstring ref = for_each(
-                attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_ref)).get_value();
-            cout << "autofilter range: " << ref << endl;
+            spreadsheet::iface::import_auto_filter* af = mp_sheet->get_auto_filter();
+            if (af)
+            {
+                pstring ref = for_each(
+                    attrs.begin(), attrs.end(),
+                    single_attr_getter(m_pool, NS_ooxml_xlsx, XML_ref)).get_value();
+                af->set_range(ref.get(), ref.size());
+            }
         }
         break;
         case XML_filterColumn:
+        {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_autoFilter);
+            spreadsheet::iface::import_auto_filter* af = mp_sheet->get_auto_filter();
+            if (af)
+            {
+                pstring colid = for_each(
+                    attrs.begin(), attrs.end(),
+                    single_attr_getter(m_pool, NS_ooxml_xlsx, XML_colId)).get_value();
+                spreadsheet::col_t col = to_long(colid);
+                af->set_column(col);
+            }
+        }
         break;
         case XML_filters:
             xml_element_expected(parent, NS_ooxml_xlsx, XML_filterColumn);
         break;
         case XML_filter:
+        {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_filters);
+            spreadsheet::iface::import_auto_filter* af = mp_sheet->get_auto_filter();
+            if (af)
+            {
+                pstring val = for_each(
+                    attrs.begin(), attrs.end(),
+                    single_attr_getter(m_pool, NS_ooxml_xlsx, XML_val)).get_value();
+                if (!val.empty())
+                    af->append_column_match_value(val.get(), val.size());
+            }
+        }
         break;
         default:
             warn_unhandled();
@@ -494,6 +521,22 @@ bool xlsx_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
         case XML_v:
             m_cur_value = m_cur_str;
         break;
+        case XML_autoFilter:
+        {
+            spreadsheet::iface::import_auto_filter* af = mp_sheet->get_auto_filter();
+            if (af)
+                af->commit();
+        }
+        break;
+        case XML_filterColumn:
+        {
+            spreadsheet::iface::import_auto_filter* af = mp_sheet->get_auto_filter();
+            if (af)
+                af->commit_column();
+        }
+        break;
+        default:
+            ;
     }
 
     m_cur_str.clear();

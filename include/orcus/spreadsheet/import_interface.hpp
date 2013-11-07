@@ -177,6 +177,48 @@ public:
     virtual void commit() = 0;
 };
 
+class import_auto_filter
+{
+public:
+    ORCUS_DLLPUBLIC virtual ~import_auto_filter() = 0;
+
+    /**
+     * Specify the range where the auto filter is applied.  The range
+     * is given in a 2-dimensional A1-style reference.
+     *
+     * @param p_ref pointer to the first character of range string.
+     * @param n_ref length of range string.
+     */
+    virtual void set_range(const char* p_ref, size_t n_ref) = 0;
+
+    /**
+     * Specify the column position of a filter. The position is relative to
+     * the first column in the auto filter range.
+     *
+     * @param col 0-based column position of a filter relative to the first
+     *            column.
+     */
+    virtual void set_column(orcus::spreadsheet::col_t col) = 0;
+
+    /**
+     * Add a match value to the current column filter.
+     *
+     * @param p pointer to the first character of match value.
+     * @param n length of match value.
+     */
+    virtual void append_column_match_value(const char* p, size_t n) = 0;
+
+    /**
+     * Commit current column filter to the current auto filter.
+     */
+    virtual void commit_column() = 0;
+
+    /**
+     * Commit current auto filter to the model.
+     */
+    virtual void commit() = 0;
+};
+
 /**
  * Interface for sheet.
  */
@@ -196,6 +238,13 @@ public:
      * @return pointer to the data table interface object.
      */
     virtual import_data_table* get_data_table();
+
+    /**
+     * Get an interface for importing auto filter ranges.
+     *
+     * @return pointer to the auto filter interface object.
+     */
+    virtual import_auto_filter* get_auto_filter();
 
     /**
      * Set raw string value to a cell and have the implementation

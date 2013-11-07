@@ -18,6 +18,8 @@ import_sheet_properties::~import_sheet_properties() {}
 
 import_data_table::~import_data_table() {}
 
+import_auto_filter::~import_auto_filter() {}
+
 import_sheet::~import_sheet() {}
 
 import_sheet_properties* import_sheet::get_sheet_properties()
@@ -26,6 +28,11 @@ import_sheet_properties* import_sheet::get_sheet_properties()
 }
 
 import_data_table* import_sheet::get_data_table()
+{
+    return NULL;
+}
+
+import_auto_filter* import_sheet::get_auto_filter()
 {
     return NULL;
 }
