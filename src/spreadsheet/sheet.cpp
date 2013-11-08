@@ -734,7 +734,7 @@ size_t sheet::get_cell_format(row_t row, col_t col) const
         con.build_tree();
 
     size_t index;
-    if (!con.search_tree(col, index))
+    if (!con.search_tree(col, index).second)
         return 0;
 
     return index;
