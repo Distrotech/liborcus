@@ -88,8 +88,10 @@ struct ORCUS_DLLPUBLIC protection_t
 
 struct ORCUS_DLLPUBLIC number_format_t
 {
+    size_t identifier;
     pstring format_string;
 
+    number_format_t();
     void reset();
     bool operator== (const number_format_t& r) const;
 };
@@ -159,7 +161,9 @@ public:
     virtual void set_cell_locked(bool b);
     virtual size_t commit_cell_protection();
 
-    virtual void set_number_format(const char* s, size_t n);
+    virtual void set_number_format_count(size_t n);
+    virtual void set_number_format_identifier(size_t id);
+    virtual void set_number_format_code(const char* s, size_t n);
     virtual size_t commit_number_format();
 
     virtual void set_cell_style_xf_count(size_t n);

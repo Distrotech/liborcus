@@ -752,6 +752,22 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             mp_styles->set_xf_vertical_alignment(func.get_ver_align());
         }
         break;
+        case XML_numFmts:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
+            pstring val =
+                for_each(
+                    attrs.begin(), attrs.end(),
+                    single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
+            size_t n = to_long(val);
+            mp_styles->set_number_format_count(n);
+        }
+        break;
+        case XML_numFmt:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_numFmts);
+        }
+        break;
         default:
             warn_unhandled();
     }

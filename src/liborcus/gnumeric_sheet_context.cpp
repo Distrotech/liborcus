@@ -165,7 +165,7 @@ public:
             {
                 if (attr.value != "General")
                 {
-                    m_styles.set_number_format(attr.value.get(), attr.value.size());
+                    m_styles.set_number_format_code(attr.value.get(), attr.value.size());
                     size_t index = m_styles.commit_number_format();
                     m_styles.set_xf_number_format(index);
                 }

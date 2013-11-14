@@ -105,7 +105,9 @@ public:
     virtual size_t commit_cell_protection() = 0;
 
     // number format
-    virtual void set_number_format(const char* s, size_t n) = 0;
+    virtual void set_number_format_count(size_t n) = 0;
+    virtual void set_number_format_identifier(size_t id) = 0;
+    virtual void set_number_format_code(const char* s, size_t n) = 0;
     virtual size_t commit_number_format() = 0;
 
     // cell format and cell style format (xf == cell format)

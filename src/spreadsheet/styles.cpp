@@ -76,6 +76,8 @@ void protection_t::reset()
     *this = protection_t();
 }
 
+number_format_t::number_format_t() : identifier(0) {}
+
 void number_format_t::reset()
 {
     *this = number_format_t();
@@ -268,22 +270,26 @@ size_t import_styles::commit_cell_protection()
     return m_protections.size() - 1;
 }
 
-void import_styles::set_number_format(const char* s, size_t n)
+void import_styles::set_number_format_count(size_t n)
+{
+    m_number_formats.reserve(n);
+}
+
+void import_styles::set_number_format_identifier(size_t id)
+{
+    m_cur_number_format.identifier = id;
+}
+
+void import_styles::set_number_format_code(const char* s, size_t n)
 {
     m_cur_number_format.format_string = pstring(s, n);
 }
 
 size_t import_styles::commit_number_format()
 {
-    std::vector<number_format_t>::iterator itr = std::find(m_number_formats.begin(), m_number_formats.end(), m_cur_number_format);
-    if(itr != m_number_formats.end())
-    {
-        m_cur_number_format.reset();
-        return std::distance(m_number_formats.begin(), itr);
-    }
-
     m_number_formats.push_back(m_cur_number_format);
-    return m_number_formats.size () - 1;
+    m_cur_number_format.reset();
+    return m_number_formats.size() - 1;
 }
 
 void import_styles::set_cell_style_xf_count(size_t n)
