@@ -16,6 +16,7 @@ liborcus_HEADERS = \
 	measurement.hpp \
 	orcus_csv.hpp \
 	orcus_xml.hpp \
+	parser_global.hpp \
 	pstring.hpp \
 	sax_parser.hpp \
 	sax_parser_base.hpp \
