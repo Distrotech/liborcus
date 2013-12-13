@@ -23,7 +23,7 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 
 liborcus_parser_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 liborcus_parser_@ORCUS_API_VERSION@_la_LIBADD = \
-						$(BOOST_SYSTEM_LIB) \
+						$(BOOST_SYSTEM_LIBS) \
 						$(ZLIB_LIBS)
 
 EXTRA_PROGRAMS = \
