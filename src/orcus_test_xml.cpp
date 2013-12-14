@@ -140,9 +140,8 @@ const char* sax_parser_parse_only_test_dirs[] = {
     SRCDIR"/test/xml/parse-only/rss/"
 };
 
-sax_handler* parse_file(xmlns_context& cxt, const char* filepath)
+sax_handler* parse_file(xmlns_context& cxt, const char* filepath, string &strm)
 {
-    string strm;
     cout << "testing " << filepath << endl;
     load_file_content(filepath, strm);
     assert(!strm.empty());
@@ -159,6 +158,7 @@ sax_handler* parse_file(xmlns_context& cxt, const char* filepath)
 
 void test_xml_sax_parser()
 {
+    string strm;
     size_t n = sizeof(sax_parser_test_dirs)/sizeof(sax_parser_test_dirs[0]);
     for (size_t i = 0; i < n; ++i)
     {
@@ -169,7 +169,7 @@ void test_xml_sax_parser()
 
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();
-        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file.c_str()));
+        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file.c_str(), strm));
 
         // Get the compact form of the content.
         ostringstream os;
@@ -191,6 +191,7 @@ void test_xml_sax_parser()
 
 void test_xml_sax_parser_read_only()
 {
+    string strm;
     size_t n = sizeof(sax_parser_parse_only_test_dirs)/sizeof(sax_parser_parse_only_test_dirs[0]);
     for (size_t i = 0; i < n; ++i)
     {
@@ -201,16 +202,17 @@ void test_xml_sax_parser_read_only()
 
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();
-        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file.c_str()));
+        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file.c_str(), strm));
     }
 }
 
 void test_xml_declarations()
 {
+    string strm;
     const char* file_path = SRCDIR"/test/xml/custom-decl-1/input.xml";
     xmlns_repository repo;
     xmlns_context cxt = repo.create_context();
-    boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file_path));
+    boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file_path, strm));
 
     const dom_tree& dom = hdl->get_dom();
 
@@ -235,21 +237,23 @@ void test_xml_dtd()
           "html", "-//W3C//DTD XHTML 1.0 Transitional//EN", "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" }
     };
 
+    string strm;
     xmlns_repository repo;
-
     size_t n = sizeof(tests)/sizeof(tests[0]);
+
     for (size_t i = 0; i < n; ++i)
     {
-        const char* file_path = tests[0].file_path;
+        const char* file_path = tests[i].file_path;
+        string strm;
         xmlns_context cxt = repo.create_context();
-        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file_path));
+        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file_path, strm));
         const sax::doctype_declaration& dtd = hdl->get_dtd();
-        assert(dtd.keyword == tests[0].keyword);
-        assert(dtd.root_element == tests[0].root_element);
-        assert(dtd.fpi == tests[0].fpi);
-        if (tests[0].uri)
+        assert(dtd.keyword == tests[i].keyword);
+        assert(dtd.root_element == tests[i].root_element);
+        assert(dtd.fpi == tests[i].fpi);
+        if (tests[i].uri)
         {
-            assert(dtd.uri == tests[0].uri);
+            assert(dtd.uri == tests[i].uri);
         }
     }
 }
