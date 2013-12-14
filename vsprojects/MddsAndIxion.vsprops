@@ -11,11 +11,11 @@
 	/>
 	<UserMacro
 		Name="MDDS_DIR"
-		Value="C:\Users\Kohei\Workspace\multidimalgorithm\"
+		Value="C:\Users\Kohei Yoshida\Workspace\multidimalgorithm\"
 	/>
 	<UserMacro
 		Name="IXION_DIR"
-		Value="C:\Users\Kohei\Workspace\ixion"
+		Value="C:\Users\Kohei Yoshida\Workspace\ixion"
 	/>
 	<UserMacro
 		Name="IXION_LIB"

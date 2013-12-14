@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="orcus-ods"
 	ProjectGUID="{C19DCAC9-0C83-484C-86CA-29733628C391}"
 	RootNamespace="orcusods"
@@ -168,6 +168,10 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath="..\..\src\orcus_filter_global.cpp"
+				>
+			</File>
 			<File
 				RelativePath="..\..\src\orcus_ods_main.cpp"
 				>

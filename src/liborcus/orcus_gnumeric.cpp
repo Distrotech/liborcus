@@ -19,6 +19,7 @@
 #include "detection_result.hpp"
 
 #define ORCUS_DEBUG_GNUMERIC 0
+#define BOOST_IOSTREAMS_NO_LIB 1
 
 #include <iostream>
 #include <string>

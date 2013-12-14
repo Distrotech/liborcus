@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\DefaultConfig.vsprops;.\zLib.vsprops"
+			InheritedPropertySheets=".\DefaultConfig.vsprops;.\zLib.vsprops;.\BoostIostreamsLib.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -93,7 +93,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\DefaultConfig.vsprops;.\zLib.vsprops"
+			InheritedPropertySheets=".\DefaultConfig.vsprops;.\zLib.vsprops;.\BoostIostreamsLib.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -182,6 +182,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\liborcus\detection_result.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\liborcus\dom_tree.cpp"
 				>
 			</File>
@@ -191,6 +195,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\liborcus\global.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\liborcus\interface.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\liborcus\measurement.cpp"
 				>
 			</File>
 			<File
@@ -218,11 +230,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\parser\pstring.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\parser\sax_parser_global.cpp"
+				RelativePath="..\..\src\liborcus\session_context.cpp"
 				>
 			</File>
 			<File
@@ -230,11 +238,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\parser\stream.cpp"
+				RelativePath="..\..\src\liborcus\spreadsheet_types.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\parser\string_pool.cpp"
+				RelativePath="..\..\src\parser\stream.cpp"
 				>
 			</File>
 			<File
@@ -247,6 +255,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\liborcus\xml_context_base.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\liborcus\xml_context_global.cpp"
 				>
 			</File>
 			<File
@@ -290,6 +302,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\liborcus\gnumeric_context.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\gnumeric_detection_handler.cpp"
 					>
 				</File>
 				<File
@@ -472,10 +488,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\orcus\sax_parser_global.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\orcus\sax_token_parser.hpp"
 				>
 			</File>
@@ -567,6 +579,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\liborcus\odf_styles.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\liborcus\odf_styles_context.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\liborcus\odf_token_constants.hpp"
 					>
 				</File>
@@ -635,6 +655,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\liborcus\xlsx_session_data.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\liborcus\xlsx_sheet_context.hpp"
 					>
 				</File>
@@ -644,6 +668,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\liborcus\xlsx_workbook_context.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="spreadsheet"
+				>
+				<File
+					RelativePath="..\..\include\orcus\spreadsheet\types.hpp"
 					>
 				</File>
 			</Filter>

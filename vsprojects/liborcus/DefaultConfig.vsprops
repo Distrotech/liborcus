@@ -12,4 +12,12 @@
 		Name="VCLinkerTool"
 		AdditionalLibraryDirectories="$(BOOST_LIB_DIR)"
 	/>
+	<UserMacro
+		Name="BOOST_INCLUDE_DIR"
+		Value="C:\dev\boost_1_47_0"
+	/>
+	<UserMacro
+		Name="BOOST_LIB_DIR"
+		Value="C:\dev\boost_1_47_0\stage\lib"
+	/>
 </VisualStudioPropertySheet>

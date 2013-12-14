@@ -112,8 +112,8 @@ struct sheet_impl : boost::noncopyable
 
     sheet_impl(document& doc, sheet& sh, sheet_t sheet_index, row_t row_size, col_t col_size) :
         m_doc(doc), m_sheet_props(doc, sh), m_data_table(sh),
-        m_col_widths(0, col_size, default_column_width),
-        m_row_heights(0, row_size, default_row_height),
+        m_col_widths(0, col_size, get_default_column_width()),
+        m_row_heights(0, row_size, get_default_row_height()),
         m_col_width_pos(m_col_widths.begin()),
         m_row_height_pos(m_row_heights.begin()),
         m_col_hidden(0, col_size, false),
@@ -1149,7 +1149,7 @@ void sheet::dump_html(const string& filepath) const
             if (mp_impl->m_row_heights.search_tree(row, rh).second)
             {
                 // Convert height from twip to inches.
-                if (rh != default_row_height)
+                if (rh != get_default_row_height())
                 {
                     string style;
                     double val = orcus::convert(rh, length_unit_twip, length_unit_inch);
@@ -1193,7 +1193,7 @@ void sheet::dump_html(const string& filepath) const
                     if (mp_impl->m_col_widths.search_tree(col, cw).second)
                     {
                         // Convert width from twip to inches.
-                        if (cw != default_column_width)
+                        if (cw != get_default_column_width())
                         {
                             double val = orcus::convert(cw, length_unit_twip, length_unit_inch);
                             ostringstream os_style;

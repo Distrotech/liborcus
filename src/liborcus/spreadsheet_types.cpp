@@ -11,8 +11,15 @@
 
 namespace orcus { namespace spreadsheet {
 
-const col_width_t default_column_width = std::numeric_limits<col_width_t>::max();
-const row_height_t default_row_height = std::numeric_limits<row_height_t>::max();
+col_width_t get_default_column_width()
+{
+    return std::numeric_limits<col_width_t>::max();
+}
+
+row_height_t get_default_row_height()
+{
+    return std::numeric_limits<row_height_t>::max();
+}
 
 }}
 

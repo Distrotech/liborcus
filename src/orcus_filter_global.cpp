@@ -12,6 +12,7 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 using namespace orcus;

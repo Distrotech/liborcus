@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef ORCUS_SPREADSHEET_GLOBAL_HPP
-#define ORCUS_SPREADSHEET_GLOBAL_HPP
+#ifndef ORCUS_SPREADSHEET_TYPES_HPP
+#define ORCUS_SPREADSHEET_TYPES_HPP
 
 #include "../env.hpp"
 #include <cstdlib>
@@ -20,8 +20,8 @@ typedef unsigned char color_elem_t;
 typedef unsigned short col_width_t;
 typedef unsigned short row_height_t;
 
-ORCUS_DLLPUBLIC extern const col_width_t default_column_width;
-ORCUS_DLLPUBLIC extern const row_height_t default_row_height;
+ORCUS_DLLPUBLIC col_width_t get_default_column_width();
+ORCUS_DLLPUBLIC row_height_t get_default_row_height();
 
 enum border_direction_t
 {

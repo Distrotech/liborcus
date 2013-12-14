@@ -12,4 +12,12 @@
 		Name="VCLinkerTool"
 		AdditionalLibraryDirectories="$(ZLIB_LIB_DIR)"
 	/>
+	<UserMacro
+		Name="ZLIB_INCLUDE_DIR"
+		Value="C:\dev\installed\include"
+	/>
+	<UserMacro
+		Name="ZLIB_LIB_DIR"
+		Value="C:\dev\installed\lib"
+	/>
 </VisualStudioPropertySheet>

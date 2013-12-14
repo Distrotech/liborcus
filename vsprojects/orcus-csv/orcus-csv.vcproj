@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="orcus-csv"
 	ProjectGUID="{4B0605D9-32D0-43FB-BD73-A1B8C2AF9A40}"
 	RootNamespace="orcuscsv"
@@ -169,6 +169,10 @@
 			>
 			<File
 				RelativePath="..\..\src\orcus_csv_main.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orcus_filter_global.cpp"
 				>
 			</File>
 		</Filter>

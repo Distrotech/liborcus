@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="BoostIostreamsLib"
+	>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalDependencies="$(BOOST_IOSTREAMS_LIB)"
+		AdditionalLibraryDirectories=""
+	/>
+	<UserMacro
+		Name="BOOST_IOSTREAMS_LIB"
+		Value="libboost_iostreams-vc90-mt-1_47.lib"
+	/>
+</VisualStudioPropertySheet>
