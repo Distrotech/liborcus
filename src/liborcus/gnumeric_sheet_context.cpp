@@ -257,6 +257,53 @@ private:
 
 };
 
+class gnumeric_autofilter_attr_parser : public std::unary_function<xml_token_attr_t, void>
+{
+public:
+    gnumeric_autofilter_attr_parser(spreadsheet::iface::import_auto_filter& auto_filter):
+        m_auto_filter(auto_filter) {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        switch(attr.name)
+        {
+            case XML_Area:
+                m_auto_filter.set_range(attr.value.get(), attr.value.size());
+            break;
+            default:
+                ;
+        }
+    }
+
+private:
+    spreadsheet::iface::import_auto_filter& m_auto_filter;
+};
+
+class gnumeric_autofilter_field_attr_parser : public std::unary_function<xml_token_attr_t, void>
+{
+public:
+    gnumeric_autofilter_field_attr_parser(spreadsheet::iface::import_auto_filter& auto_filter):
+        m_auto_filter(auto_filter) {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        switch(attr.name)
+        {
+            case XML_Index:
+            {
+                spreadsheet::col_t col = atoi(attr.value.get());                
+                m_auto_filter.set_column(col);
+            }
+            break;
+            default:
+                ;
+        }
+    }
+
+private:
+    spreadsheet::iface::import_auto_filter& m_auto_filter;
+};
+
 }
 
 
@@ -300,6 +347,7 @@ void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, cons
     push_stack(ns, name);
     if (ns == NS_gnumeric_gnm)
     {
+        xml_token_pair_t parent = get_parent_element();
         switch (name)
         {
             case XML_Font:
@@ -316,6 +364,22 @@ void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, cons
             break;
             case XML_RowInfo:
                 start_row(attrs);
+            break;
+            case XML_Filters:
+                // don't need any special handling
+            break;
+            case XML_Filter:
+            {
+                std::for_each(attrs.begin(), attrs.end(),
+                        gnumeric_autofilter_attr_parser(
+                            *mp_sheet->get_auto_filter()));
+            }
+            break;
+            case XML_Field:
+                assert(parent.first == NS_gnumeric_gnm && parent.second == XML_Filter);
+                std::for_each(attrs.begin(), attrs.end(),
+                        gnumeric_autofilter_field_attr_parser(
+                            *mp_sheet->get_auto_filter()));
             break;
             default:
                 ;
@@ -343,6 +407,12 @@ bool gnumeric_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
             break;
             case XML_Style:
                 end_style();
+            break;
+            case XML_Filter:
+                mp_sheet->get_auto_filter()->commit();
+            break;
+            case XML_Field:
+                mp_sheet->get_auto_filter()->commit_column();
             break;
             default:
                 ;
