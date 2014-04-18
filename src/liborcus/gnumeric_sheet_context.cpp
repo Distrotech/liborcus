@@ -170,6 +170,36 @@ public:
                     m_styles.set_xf_number_format(index);
                 }
             }
+            case XML_HAlign:
+            {
+                orcus::spreadsheet::hor_alignment_t hor_alignment = orcus::spreadsheet::hor_alignment_unknown;
+                if (attr.value == "GNM_HALIGN_CENTER")
+                    hor_alignment = orcus::spreadsheet::hor_alignment_center;
+                else if (attr.value == "GNM_HALIGN_RIGHT")
+                    hor_alignment = orcus::spreadsheet::hor_alignment_right;
+                else if (attr.value == "GNM_HALIGN_LEFT")
+                    hor_alignment = orcus::spreadsheet::hor_alignment_left;
+
+                if (hor_alignment != orcus::spreadsheet::hor_alignment_unknown)
+                    m_styles.set_xf_apply_alignment(true);
+                m_styles.set_xf_horizontal_alignment(hor_alignment);
+            }
+            break;
+            case XML_VAlign:
+            {
+                orcus::spreadsheet::ver_alignment_t ver_alignment = orcus::spreadsheet::ver_alignment_unknown;
+                if (attr.value == "GNM_VALIGN_BOTTOM")
+                    ver_alignment = orcus::spreadsheet::ver_alignment_bottom;
+                else if (attr.value == "GNM_VALIGN_TOP")
+                    ver_alignment = orcus::spreadsheet::ver_alignment_top;
+                else if (attr.value == "GNM_VALIGN_CENTER")
+                    ver_alignment = orcus::spreadsheet::ver_alignment_middle;
+
+                if (ver_alignment != orcus::spreadsheet::ver_alignment_unknown)
+                    m_styles.set_xf_apply_alignment(true);
+                m_styles.set_xf_vertical_alignment(ver_alignment);
+            }
+            break;
         }
     }
 
