@@ -17,8 +17,6 @@
 
 namespace orcus {
 
-class string_pool;
-
 /**
  * This string class does not store any char arrays, but it only stores the
  * position of the first char in the memory, and the size of the char array.
