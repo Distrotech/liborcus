@@ -179,6 +179,12 @@ public:
                     hor_alignment = orcus::spreadsheet::hor_alignment_right;
                 else if (attr.value == "GNM_HALIGN_LEFT")
                     hor_alignment = orcus::spreadsheet::hor_alignment_left;
+                else if (attr.value == "GNM_HALIGN_JUSTIFY")
+                    hor_alignment = orcus::spreadsheet::hor_alignment_justified;
+                else if (attr.value == "GNM_HALIGN_DISTRIBUTED")
+                    hor_alignment = orcus::spreadsheet::hor_alignment_distributed;
+                else if (attr.value == "GNM_HALIGN_FILL")
+                    hor_alignment = orcus::spreadsheet::hor_alignment_filled;
 
                 if (hor_alignment != orcus::spreadsheet::hor_alignment_unknown)
                     m_styles.set_xf_apply_alignment(true);
@@ -194,6 +200,10 @@ public:
                     ver_alignment = orcus::spreadsheet::ver_alignment_top;
                 else if (attr.value == "GNM_VALIGN_CENTER")
                     ver_alignment = orcus::spreadsheet::ver_alignment_middle;
+                else if (attr.value == "GNM_VALIGN_JUSTIFY")
+                    ver_alignment = orcus::spreadsheet::ver_alignment_justified;
+                else if (attr.value == "GNM_VALIGN_DISTRIBUTED")
+                    ver_alignment = orcus::spreadsheet::ver_alignment_distributed;
 
                 if (ver_alignment != orcus::spreadsheet::ver_alignment_unknown)
                     m_styles.set_xf_apply_alignment(true);
