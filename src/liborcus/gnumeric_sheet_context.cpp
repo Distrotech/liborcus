@@ -319,11 +319,32 @@ private:
     spreadsheet::iface::import_auto_filter& m_auto_filter;
 };
 
+enum gnumeric_filter_field_op_t
+{
+    filter_equal,
+    filter_greaterThan,
+    filter_lessThan,
+    filter_greaterThanEqual,
+    filter_lessThanEqual,
+    filter_notEqual,
+    filter_op_invalid
+};
+
+enum gnumeric_filter_field_type_t
+{
+    filter_expr,
+    filter_blanks,
+    filter_nonblanks,
+    filter_type_invalid
+};
+
 class gnumeric_autofilter_field_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
 public:
     gnumeric_autofilter_field_attr_parser(spreadsheet::iface::import_auto_filter& auto_filter):
-        m_auto_filter(auto_filter) {}
+        m_auto_filter(auto_filter),
+        m_filter_field_type(filter_type_invalid),
+        m_filter_op(filter_op_invalid) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -335,13 +356,85 @@ public:
                 m_auto_filter.set_column(col);
             }
             break;
+            case XML_Type:
+            {
+                if (attr.value == "expr")
+                    m_filter_field_type = filter_expr;
+                else if (attr.value == "blanks")
+                    m_filter_field_type = filter_blanks;
+                else if (attr.value == "nonblanks")
+                    m_filter_field_type = filter_nonblanks;
+            }
+            break;
+            case XML_Op0:
+            {
+                if (attr.value == "eq")
+                    m_filter_op = filter_equal;
+                else if (attr.value == "gt")
+                    m_filter_op = filter_greaterThan;
+                else if (attr.value == "lt")
+                    m_filter_op = filter_lessThan;
+                else if (attr.value == "gte")
+                    m_filter_op = filter_greaterThanEqual;
+                else if (attr.value == "lte")
+                    m_filter_op = filter_lessThanEqual;
+                else if (attr.value == "ne")
+                    m_filter_op = filter_notEqual;
+            }
+            break;
+            case XML_Value0:
+            {
+                m_filter_value_type = attr.value;
+            }
+            break;
+            case XML_ValueType0:
+            {
+                m_filter_value = attr.value;
+            }
+            break;
             default:
                 ;
         }
     }
 
+    void finalize_filter_import()
+    {
+        switch (m_filter_field_type)
+        {
+            case filter_expr:
+                import_expr();
+                break;
+            case filter_type_invalid:
+                break;
+            default:
+                break;
+        }
+    }
+
 private:
+
+    void import_expr()
+    {
+        // only equal supported in API yet
+        if (m_filter_op != filter_equal)
+            return;
+
+        // import condition for integer (30), double(40) and string (60)
+        if (m_filter_value_type == "30" ||
+                m_filter_value_type == "40" ||
+                m_filter_value_type == "60" )
+        {
+            m_auto_filter.append_column_match_value(m_filter_value.get(), m_filter_value.size());
+        }
+    }
+
     spreadsheet::iface::import_auto_filter& m_auto_filter;
+
+    gnumeric_filter_field_type_t m_filter_field_type;
+    gnumeric_filter_field_op_t m_filter_op;
+
+    pstring m_filter_value_type;
+    pstring m_filter_value;
 };
 
 }
@@ -418,9 +511,11 @@ void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, cons
             {
                 xml_token_pair_t parent = get_parent_element();
                 assert(parent.first == NS_gnumeric_gnm && parent.second == XML_Filter);
-                std::for_each(attrs.begin(), attrs.end(),
-                        gnumeric_autofilter_field_attr_parser(
-                            *mp_sheet->get_auto_filter()));
+                gnumeric_autofilter_field_attr_parser parser =
+                    std::for_each(attrs.begin(), attrs.end(),
+                            gnumeric_autofilter_field_attr_parser(
+                                *mp_sheet->get_auto_filter()));
+                parser.finalize_filter_import();
             }
             break;
             default:
