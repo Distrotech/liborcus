@@ -377,7 +377,6 @@ void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, cons
     push_stack(ns, name);
     if (ns == NS_gnumeric_gnm)
     {
-        xml_token_pair_t parent = get_parent_element();
         switch (name)
         {
             case XML_Font:
@@ -406,10 +405,13 @@ void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, cons
             }
             break;
             case XML_Field:
+            {
+                xml_token_pair_t parent = get_parent_element();
                 assert(parent.first == NS_gnumeric_gnm && parent.second == XML_Filter);
                 std::for_each(attrs.begin(), attrs.end(),
                         gnumeric_autofilter_field_attr_parser(
                             *mp_sheet->get_auto_filter()));
+            }
             break;
             default:
                 ;
