@@ -20,7 +20,8 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 
 liborcus_parser_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 liborcus_parser_@ORCUS_API_VERSION@_la_LIBADD = \
-	 $(ZLIB_LIBS)
+	$(BOOST_SYSTEM_LIB) \
+	$(ZLIB_LIBS)
 
 EXTRA_PROGRAMS = \
 	parser-test-string-pool \
