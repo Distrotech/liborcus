@@ -12,8 +12,6 @@
 
 #include "xml_map_sax_handler.hpp"
 
-#include <boost/scoped_ptr.hpp>
-
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -88,19 +86,19 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-    boost::scoped_ptr<spreadsheet::import_factory> import_fact(new spreadsheet::import_factory(doc.get()));
-    boost::scoped_ptr<spreadsheet::export_factory> export_fact(new spreadsheet::export_factory(doc.get()));
+    spreadsheet::document doc;
+    spreadsheet::import_factory import_fact(&doc);
+    spreadsheet::export_factory export_fact(&doc);
 
     xmlns_repository repo;
-    orcus_xml app(repo, import_fact.get(), export_fact.get());
+    orcus_xml app(repo, &import_fact, &export_fact);
     read_map_file(app, argv[2]);
     app.read_file(argv[3]);
 
     switch (mode)
     {
         case dump_document:
-            doc->dump_flat("./flat");
+            doc.dump_flat("./flat");
         break;
         case transform_xml:
         {
@@ -119,7 +117,7 @@ int main(int argc, char** argv)
         {
             if (argc <= 4)
             {
-                doc->dump_check(cout);
+                doc.dump_check(cout);
                 break;
             }
 
@@ -130,7 +128,7 @@ int main(int argc, char** argv)
                 return EXIT_FAILURE;
             }
 
-            doc->dump_check(file);
+            doc.dump_check(file);
         }
         break;
         default:
