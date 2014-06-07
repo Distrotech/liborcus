@@ -176,6 +176,13 @@ private:
             // TODO : Handle cases where a formula doesn't have a prefix.
         }
 
+        // Formula needs to begin with '='.
+        if (formula.empty() || formula[0] != '=')
+            return;
+
+        // Remove the '='.
+        formula = pstring(formula.get()+1, formula.size()-1);
+
         if (prefix == "of")
         {
             // ODF formula.  No action needed.
@@ -564,27 +571,43 @@ void ods_content_xml_context::end_cell()
 
 void ods_content_xml_context::push_cell_value()
 {
+    spreadsheet::iface::import_sheet* sheet = m_tables.back();
     bool has_formula = !m_cell_attr.formula.empty();
     if (has_formula)
     {
-        cout << "formula: " << m_cell_attr.formula << endl;
+        sheet->set_formula(
+            m_row, m_col, m_cell_attr.formula_grammar,
+            m_cell_attr.formula.get(), m_cell_attr.formula.size());
 
-        // TODO : push formula to the model.
+        // Set formula result.
+        switch (m_cell_attr.type)
+        {
+            case vt_float:
+                sheet->set_formula_result(m_row, m_col, m_cell_attr.value);
+            break;
+            case vt_string:
+                // TODO : pass string result here.  We need to decide whether
+                // to pass a string ID or a raw string.
+            break;
+            default:
+                ;
+        }
+        return;
     }
 
     switch (m_cell_attr.type)
     {
         case vt_float:
-            m_tables.back()->set_value(m_row, m_col, m_cell_attr.value);
+            sheet->set_value(m_row, m_col, m_cell_attr.value);
         break;
         case vt_string:
             if (m_has_content)
-                m_tables.back()->set_string(m_row, m_col, m_para_index);
+                sheet->set_string(m_row, m_col, m_para_index);
         break;
         case vt_date:
         {
             date_time_t val = to_date_time(m_cell_attr.date_value);
-            m_tables.back()->set_date_time(
+            sheet->set_date_time(
                 m_row, m_col, val.year, val.month, val.day, val.hour, val.minute, val.second);
         }
         break;

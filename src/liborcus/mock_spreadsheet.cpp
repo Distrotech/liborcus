@@ -217,6 +217,11 @@ void import_sheet::set_array_formula(
     assert(false);
 }
 
+void import_sheet::set_formula_result(row_t, col_t, double value)
+{
+    assert(false);
+}
+
 void import_sheet::set_formula_result(row_t, col_t, const char*, size_t)
 {
     assert(false);

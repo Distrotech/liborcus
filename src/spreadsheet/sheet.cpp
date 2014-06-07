@@ -371,6 +371,10 @@ void sheet::set_array_formula(
 {
 }
 
+void sheet::set_formula_result(row_t row, col_t col, double value)
+{
+}
+
 void sheet::set_formula_result(row_t row, col_t col, const char* p, size_t n)
 {
 }
