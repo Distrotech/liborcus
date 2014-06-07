@@ -41,7 +41,8 @@ void test_xlsx_import()
         // Read the input.xlsx document.
         path.append("input.xlsx");
         boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-        orcus_xlsx app(new spreadsheet::import_factory(doc.get()));
+        spreadsheet::import_factory factory(doc.get());
+        orcus_xlsx app(&factory);
         app.read_file(path.c_str());
 
         // Dump the content of the model.

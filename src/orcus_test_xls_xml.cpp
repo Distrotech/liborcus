@@ -40,7 +40,8 @@ void test_xls_xml_import()
         // Read the input.xml document.
         path.append("input.xml");
         boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-        orcus_xls_xml app(new spreadsheet::import_factory(doc.get()));
+        spreadsheet::import_factory factory(doc.get());
+        orcus_xls_xml app(&factory);
         app.read_file(path.c_str());
 
         // Dump the content of the model.

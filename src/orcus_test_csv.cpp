@@ -43,7 +43,8 @@ void test_csv_import()
         // Read the input.csv document.
         path.append("input.csv");
         boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-        orcus_csv app(new spreadsheet::import_factory(doc.get()));
+        spreadsheet::import_factory factory(doc.get());
+        orcus_csv app(&factory);
         app.read_file(path.c_str());
 
         // Dump the content of the model.
