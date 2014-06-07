@@ -15,14 +15,21 @@ namespace orcus { namespace spreadsheet {
 
 class document;
 
+struct import_global_settings_impl;
+
 class ORCUS_DLLPUBLIC import_global_settings : public spreadsheet::iface::import_global_settings
 {
-    spreadsheet::document& m_doc;
+    import_global_settings_impl* mp_impl;
 
 public:
-    import_global_settings(spreadsheet::document& doc);
+    import_global_settings(document& doc);
+    virtual ~import_global_settings();
 
     virtual void set_origin_date(int year, int month, int day);
+
+    virtual void set_default_formula_grammar(orcus::spreadsheet::formula_grammar_t grammar);
+
+    virtual orcus::spreadsheet::formula_grammar_t get_default_formula_grammar() const;
 };
 
 }}

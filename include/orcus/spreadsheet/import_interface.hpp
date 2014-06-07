@@ -425,6 +425,23 @@ public:
      * @param day 1-based value representing day, varying from 1 through 31.
      */
     virtual void set_origin_date(int year, int month, int day) = 0;
+
+    /**
+     * Set formula grammar to be used globally when parsing formulas if the
+     * grammar is not specified.  This grammar will also be used when parsing
+     * range strings associated with shared formula ranges and array formula
+     * ranges.
+     *
+     * @param grammar default formula grammar
+     */
+    virtual void set_default_formula_grammar(orcus::spreadsheet::formula_grammar_t grammar) = 0;
+
+    /**
+     * Get current default formula grammar.
+     *
+     * @return current default formula grammar.
+     */
+    virtual orcus::spreadsheet::formula_grammar_t get_default_formula_grammar() const = 0;
 };
 
 /**
