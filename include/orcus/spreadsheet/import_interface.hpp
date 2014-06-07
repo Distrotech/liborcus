@@ -415,6 +415,15 @@ class import_global_settings
 public:
     ORCUS_DLLPUBLIC virtual ~import_global_settings() = 0;
 
+    /**
+     * Set the date that is to be represented by a value of 0.  All date
+     * values will be internally represented relative to this date afterward.
+     *
+     * @param year 1-based value representing year
+     * @param month 1-based value representing month, varying from 1 through
+     *              12.
+     * @param day 1-based value representing day, varying from 1 through 31.
+     */
     virtual void set_origin_date(int year, int month, int day) = 0;
 };
 
