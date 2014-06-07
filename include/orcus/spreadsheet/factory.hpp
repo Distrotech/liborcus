@@ -16,6 +16,8 @@ namespace orcus { namespace spreadsheet {
 
 class document;
 
+struct import_factory_impl;
+
 class ORCUS_DLLPUBLIC import_factory : public iface::import_factory
 {
 public:
@@ -31,9 +33,7 @@ public:
     virtual void finalize();
 
 private:
-    document* mp_document;
-    row_t m_default_row_size;
-    col_t m_default_col_size;
+    import_factory_impl* mp_impl;
 };
 
 class ORCUS_DLLPUBLIC export_factory : public iface::export_factory

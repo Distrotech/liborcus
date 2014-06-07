@@ -15,44 +15,60 @@
 
 namespace orcus { namespace spreadsheet {
 
-import_factory::import_factory(document* doc, row_t row_size, col_t col_size) :
-    mp_document(doc), m_default_row_size(row_size), m_default_col_size(col_size) {}
+struct import_factory_impl
+{
+    document* mp_doc;
+    row_t m_default_row_size;
+    col_t m_default_col_size;
 
-import_factory::~import_factory() {}
+    import_factory_impl(document* doc, row_t row_size, col_t col_size) :
+        mp_doc(doc),
+        m_default_row_size(row_size),
+        m_default_col_size(col_size) {}
+};
+
+import_factory::import_factory(document* doc, row_t row_size, col_t col_size) :
+    mp_impl(new import_factory_impl(doc, row_size, col_size)) {}
+
+import_factory::~import_factory()
+{
+    delete mp_impl;
+}
 
 iface::import_global_settings* import_factory::get_global_settings()
 {
-    return mp_document->get_global_settings();
+    return mp_impl->mp_doc->get_global_settings();
 }
 
 iface::import_shared_strings* import_factory::get_shared_strings()
 {
-    return mp_document->get_shared_strings();
+    return mp_impl->mp_doc->get_shared_strings();
 }
 
 iface::import_styles* import_factory::get_styles()
 {
-    return mp_document->get_styles();
+    return mp_impl->mp_doc->get_styles();
 }
 
 iface::import_sheet* import_factory::append_sheet(const char* sheet_name, size_t sheet_name_length)
 {
-    return mp_document->append_sheet(pstring(sheet_name, sheet_name_length), m_default_row_size, m_default_col_size);
+    return mp_impl->mp_doc->append_sheet(
+        pstring(sheet_name, sheet_name_length), mp_impl->m_default_row_size, mp_impl->m_default_col_size);
 }
 
 iface::import_sheet* import_factory::get_sheet(const char* sheet_name, size_t sheet_name_length)
 {
-    return mp_document->get_sheet(pstring(sheet_name, sheet_name_length));
+    return mp_impl->mp_doc->get_sheet(pstring(sheet_name, sheet_name_length));
 }
 
 iface::import_sheet* import_factory::get_sheet(sheet_t sheet_index)
 {
-    return mp_document->get_sheet(sheet_index);
+    return mp_impl->mp_doc->get_sheet(sheet_index);
 }
 
 void import_factory::finalize()
 {
-    mp_document->finalize();
+    mp_impl->mp_doc->finalize();
 }
 
 export_factory::export_factory(document* doc) : mp_document(doc) {}
