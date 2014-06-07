@@ -21,10 +21,13 @@ struct import_factory_impl
     row_t m_default_row_size;
     col_t m_default_col_size;
 
+    import_global_settings m_global_settings;
+
     import_factory_impl(document& doc, row_t row_size, col_t col_size) :
         m_doc(doc),
         m_default_row_size(row_size),
-        m_default_col_size(col_size) {}
+        m_default_col_size(col_size),
+        m_global_settings(doc) {}
 };
 
 import_factory::import_factory(document& doc, row_t row_size, col_t col_size) :
@@ -37,7 +40,7 @@ import_factory::~import_factory()
 
 iface::import_global_settings* import_factory::get_global_settings()
 {
-    return mp_impl->m_doc.get_global_settings();
+    return &mp_impl->m_global_settings;
 }
 
 iface::import_shared_strings* import_factory::get_shared_strings()

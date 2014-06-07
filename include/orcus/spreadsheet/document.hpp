@@ -47,9 +47,6 @@ public:
     document();
     ~document();
 
-    import_global_settings* get_global_settings();
-    const import_global_settings* get_global_settings() const;
-
     import_shared_strings* get_shared_strings();
     const import_shared_strings* get_shared_strings() const;
 

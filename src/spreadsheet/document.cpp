@@ -126,14 +126,12 @@ struct document_impl
     ixion::model_context m_context;
     date_time_t m_origin_date;
     boost::ptr_vector<sheet_item> m_sheets;
-    import_global_settings* mp_settings;
     import_styles* mp_styles;
     import_shared_strings* mp_strings;
     ixion::dirty_formula_cells_t m_dirty_cells;
 
     document_impl(document& doc) :
         m_doc(doc),
-        mp_settings(new import_global_settings(m_doc)),
         mp_styles(new import_styles(m_string_pool)),
         mp_strings(new import_shared_strings(m_string_pool, m_context, *mp_styles))
     {
@@ -143,7 +141,6 @@ struct document_impl
     {
         delete mp_strings;
         delete mp_styles;
-        delete mp_settings;
     }
 };
 
@@ -153,16 +150,6 @@ document::document() :
 document::~document()
 {
     delete mp_impl;
-}
-
-import_global_settings* document::get_global_settings()
-{
-    return mp_impl->mp_settings;
-}
-
-const import_global_settings* document::get_global_settings() const
-{
-    return mp_impl->mp_settings;
 }
 
 import_shared_strings* document::get_shared_strings()
