@@ -71,13 +71,24 @@ void import_factory::finalize()
     mp_impl->m_doc.finalize();
 }
 
-export_factory::export_factory(document* doc) : mp_document(doc) {}
+struct export_factory_impl
+{
+    document& m_doc;
 
-export_factory::~export_factory() {}
+    export_factory_impl(document& doc) : m_doc(doc) {}
+};
+
+export_factory::export_factory(document& doc) :
+    mp_impl(new export_factory_impl(doc)) {}
+
+export_factory::~export_factory()
+{
+    delete mp_impl;
+}
 
 const iface::export_sheet* export_factory::get_sheet(const char* sheet_name, size_t sheet_name_length) const
 {
-    return mp_document->get_sheet(pstring(sheet_name, sheet_name_length));
+    return mp_impl->m_doc.get_sheet(pstring(sheet_name, sheet_name_length));
 }
 
 }}

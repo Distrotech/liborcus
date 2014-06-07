@@ -80,7 +80,7 @@ void test_mapped_xml_import()
 
         spreadsheet::document doc;
         spreadsheet::import_factory import_fact(doc);
-        spreadsheet::export_factory export_fact(&doc);
+        spreadsheet::export_factory export_fact(doc);
 
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();

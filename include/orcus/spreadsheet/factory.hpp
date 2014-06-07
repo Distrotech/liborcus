@@ -36,15 +36,18 @@ private:
     import_factory_impl* mp_impl;
 };
 
+struct export_factory_impl;
+
 class ORCUS_DLLPUBLIC export_factory : public iface::export_factory
 {
 public:
-    export_factory(document* doc);
+    export_factory(document& doc);
     virtual ~export_factory();
 
     virtual const iface::export_sheet* get_sheet(const char* sheet_name, size_t sheet_name_length) const;
 
 private:
+    export_factory_impl* mp_impl;
     document* mp_document;
 };
 
