@@ -209,19 +209,19 @@ void gnumeric_cell_context::end_cell()
         }
         break;
         case cell_type_formula:
-            mp_sheet->set_formula(row, col, spreadsheet::gnumeric, chars.get(), chars.size());
+            mp_sheet->set_formula(row, col, spreadsheet::formula_grammar_gnumeric, chars.get(), chars.size());
         break;
         case cell_type_shared_formula:
         {
             if (chars.empty())
                 mp_sheet->set_shared_formula(row, col, mp_cell_data->shared_formula_id);
             else
-                mp_sheet->set_shared_formula(row, col, spreadsheet::gnumeric, mp_cell_data->shared_formula_id, chars.get(), chars.size());
+                mp_sheet->set_shared_formula(row, col, spreadsheet::formula_grammar_gnumeric, mp_cell_data->shared_formula_id, chars.get(), chars.size());
         }
         break;
         case cell_type_array:
         {
-            mp_sheet->set_array_formula(row, col, spreadsheet::gnumeric,
+            mp_sheet->set_array_formula(row, col, spreadsheet::formula_grammar_gnumeric,
                     chars.get(), chars.size(), mp_cell_data->array_rows, mp_cell_data->array_cols);
         }
         break;

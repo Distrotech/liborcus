@@ -265,7 +265,7 @@ ods_content_xml_context::cell_attr::cell_attr() :
     number_columns_repeated(1),
     type(vt_unknown),
     value(0.0),
-    formula_grammar(spreadsheet::ods)
+    formula_grammar(spreadsheet::formula_grammar_ods)
 {
 }
 

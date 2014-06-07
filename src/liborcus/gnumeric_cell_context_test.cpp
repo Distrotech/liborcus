@@ -61,7 +61,7 @@ public:
         assert(id == 2);
         assert(col == 15);
         assert(row == 5);
-        assert(grammar == spreadsheet::gnumeric);
+        assert(grammar == spreadsheet::formula_grammar_gnumeric);
         assert(string(s, n) == "=basicFormulaString");
     }
 
@@ -70,7 +70,7 @@ public:
     {
         assert(row == 9);
         assert(col == 11);
-        assert(grammar == gnumeric);
+        assert(grammar == formula_grammar_gnumeric);
         assert(string(s, n) == "=formula");
     }
 
@@ -79,7 +79,7 @@ public:
     {
         assert(row == 19);
         assert(col == 111);
-        assert(grammar == gnumeric);
+        assert(grammar == formula_grammar_gnumeric);
         assert(string(s, n) == "=arrayFormula");
         assert(rows == 2);
         assert(cols == 3);

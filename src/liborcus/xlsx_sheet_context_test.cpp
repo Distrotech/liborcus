@@ -43,7 +43,7 @@ public:
     {
         assert(row == -1);
         assert(col == 0);
-        assert(grammar == xlsx_2007);
+        assert(grammar == formula_grammar_xlsx_2007);
         assert(string(s, n) == "A1:A2");
         assert(string(s_range, n_range) == "B3:B4");
     }

@@ -35,10 +35,11 @@ enum border_direction_t
 
 enum formula_grammar_t
 {
-    xlsx_2007,
-    xlsx_2010,
-    ods,
-    gnumeric
+    formula_grammar_unknown = 0,
+    formula_grammar_xlsx_2007,
+    formula_grammar_xlsx_2010,
+    formula_grammar_ods,
+    formula_grammar_gnumeric
 };
 
 enum formula_t
