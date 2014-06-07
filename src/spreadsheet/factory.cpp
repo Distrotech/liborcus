@@ -11,6 +11,7 @@
 #include "orcus/spreadsheet/styles.hpp"
 #include "orcus/spreadsheet/sheet.hpp"
 #include "orcus/spreadsheet/document.hpp"
+#include "orcus/spreadsheet/global_settings.hpp"
 
 namespace orcus { namespace spreadsheet {
 
@@ -21,7 +22,7 @@ import_factory::~import_factory() {}
 
 iface::import_global_settings* import_factory::get_global_settings()
 {
-    return NULL;
+    return mp_document->get_global_settings();
 }
 
 iface::import_shared_strings* import_factory::get_shared_strings()
