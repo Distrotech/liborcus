@@ -48,7 +48,6 @@ public:
 
 private:
     export_factory_impl* mp_impl;
-    document* mp_document;
 };
 
 }}
