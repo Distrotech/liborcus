@@ -11,6 +11,7 @@
 #include "xml_context_base.hpp"
 #include "odf_para_context.hpp"
 #include "odf_styles.hpp"
+#include "orcus/spreadsheet/types.hpp"
 
 #include <vector>
 #include <boost/scoped_ptr.hpp>
@@ -45,6 +46,9 @@ public:
         double value;
         pstring date_value;
         pstring style_name;
+
+        pstring formula;
+        spreadsheet::formula_grammar_t formula_grammar;
 
         cell_attr();
     };
@@ -84,7 +88,7 @@ private:
     boost::scoped_ptr<xml_context_base> mp_child;
 
     row_attr    m_row_attr;
-    cell_attr   m_cell_attr;
+    cell_attr   m_cell_attr; /// attributes of current cell.
 
     int m_row;
     int m_col;
