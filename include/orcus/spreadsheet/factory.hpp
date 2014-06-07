@@ -21,7 +21,7 @@ struct import_factory_impl;
 class ORCUS_DLLPUBLIC import_factory : public iface::import_factory
 {
 public:
-    import_factory(document* doc, row_t row_size = 1048576, col_t col_size = 1024);
+    import_factory(document& doc, row_t row_size = 1048576, col_t col_size = 1024);
     virtual ~import_factory();
 
     virtual iface::import_global_settings* get_global_settings();

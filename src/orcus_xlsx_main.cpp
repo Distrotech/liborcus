@@ -16,7 +16,7 @@ using namespace orcus;
 int main(int argc, char** argv)
 {
     spreadsheet::document doc;
-    spreadsheet::import_factory fact(&doc);
+    spreadsheet::import_factory fact(doc);
     orcus_xlsx app(&fact);
 
     if (parse_import_filter_args(app, doc, argc, argv))

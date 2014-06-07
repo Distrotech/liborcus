@@ -46,7 +46,7 @@ void test_ods_import_cell_values()
         // Read the input.ods document.
         path.append("input.ods");
         spreadsheet::document doc;
-        spreadsheet::import_factory factory(&doc);
+        spreadsheet::import_factory factory(doc);
         orcus_ods app(&factory);
         app.read_file(path.c_str());
 
@@ -73,7 +73,7 @@ void test_ods_import_column_widths_row_heights()
 {
     const char* filepath = SRCDIR"/test/ods/column-width-row-height/input.ods";
     document doc;
-    import_factory factory(&doc);
+    import_factory factory(doc);
     orcus_ods app(&factory);
     app.read_file(filepath);
 
@@ -104,7 +104,7 @@ void test_ods_import_formatted_text()
 {
     const char* filepath = SRCDIR"/test/ods/formatted-text/bold-and-italic.ods";
     document doc;
-    import_factory factory(&doc);
+    import_factory factory(doc);
     orcus_ods app(&factory);
     app.read_file(filepath);
 

@@ -78,21 +78,21 @@ void test_mapped_xml_import()
         cout << "reading " << data_file << endl;
         load_file_content(data_file.c_str(), strm);
 
-        boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-        boost::scoped_ptr<spreadsheet::import_factory> import_fact(new spreadsheet::import_factory(doc.get()));
-        boost::scoped_ptr<spreadsheet::export_factory> export_fact(new spreadsheet::export_factory(doc.get()));
+        spreadsheet::document doc;
+        spreadsheet::import_factory import_fact(doc);
+        spreadsheet::export_factory export_fact(&doc);
 
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();
 
         // Parse the map file to define map rules, and parse the data file.
-        orcus_xml app(repo, import_fact.get(), export_fact.get());
+        orcus_xml app(repo, &import_fact, &export_fact);
         read_map_file(app, map_file.c_str());
         app.read_file(data_file.c_str());
 
         // Check the content of the document against static check file.
         ostringstream os;
-        doc->dump_check(os);
+        doc.dump_check(os);
         string loaded = os.str();
         load_file_content(check_file.c_str(), strm);
 

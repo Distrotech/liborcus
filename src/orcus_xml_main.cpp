@@ -87,7 +87,7 @@ int main(int argc, char** argv)
     }
 
     spreadsheet::document doc;
-    spreadsheet::import_factory import_fact(&doc);
+    spreadsheet::import_factory import_fact(doc);
     spreadsheet::export_factory export_fact(&doc);
 
     xmlns_repository repo;

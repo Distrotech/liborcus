@@ -42,14 +42,14 @@ void test_csv_import()
 
         // Read the input.csv document.
         path.append("input.csv");
-        boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-        spreadsheet::import_factory factory(doc.get());
+        spreadsheet::document doc;
+        spreadsheet::import_factory factory(doc);
         orcus_csv app(&factory);
         app.read_file(path.c_str());
 
         // Dump the content of the model.
         ostringstream os;
-        doc->dump_check(os);
+        doc.dump_check(os);
         string check = os.str();
 
         // Check that against known control.

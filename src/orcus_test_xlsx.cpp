@@ -12,8 +12,6 @@
 #include "orcus/spreadsheet/factory.hpp"
 #include "orcus/spreadsheet/document.hpp"
 
-#include <boost/scoped_ptr.hpp>
-
 #include <cstdlib>
 #include <cassert>
 #include <string>
@@ -40,14 +38,14 @@ void test_xlsx_import()
 
         // Read the input.xlsx document.
         path.append("input.xlsx");
-        boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-        spreadsheet::import_factory factory(doc.get());
+        spreadsheet::document doc;
+        spreadsheet::import_factory factory(doc);
         orcus_xlsx app(&factory);
         app.read_file(path.c_str());
 
         // Dump the content of the model.
         ostringstream os;
-        doc->dump_check(os);
+        doc.dump_check(os);
         string check = os.str();
 
         // Check that against known control.

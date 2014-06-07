@@ -11,17 +11,15 @@
 
 #include "orcus_filter_global.hpp"
 
-#include <boost/scoped_ptr.hpp>
-
 using namespace orcus;
 
 int main(int argc, char** argv)
 {
-    boost::scoped_ptr<spreadsheet::document> doc(new spreadsheet::document);
-    boost::scoped_ptr<spreadsheet::import_factory> fact(new spreadsheet::import_factory(doc.get()));
-    orcus_gnumeric app(fact.get());
+    spreadsheet::document doc;
+    spreadsheet::import_factory fact(doc);
+    orcus_gnumeric app(&fact);
 
-    if (parse_import_filter_args(app, *doc, argc, argv))
+    if (parse_import_filter_args(app, doc, argc, argv))
         return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
