@@ -322,10 +322,14 @@ void sheet::set_format(row_t row, col_t col, size_t index)
 void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
                         const char* p, size_t n)
 {
+    const ixion::formula_name_resolver* resolver = mp_impl->m_doc.get_formula_name_resolver();
+    if (!resolver)
+        return;
+
     // Tokenize the formula string and store it.
     ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
-    cxt.set_formula_cell(pos, p, n);
+    cxt.set_formula_cell(pos, p, n, *resolver);
     ixion::register_formula_cell(cxt, pos);
     mp_impl->m_doc.insert_dirty_cell(pos);
 }
@@ -334,9 +338,13 @@ void sheet::set_shared_formula(
     row_t row, col_t col, formula_grammar_t grammar, size_t sindex,
     const char* p_formula, size_t n_formula, const char* p_range, size_t n_range)
 {
+    const ixion::formula_name_resolver* resolver = mp_impl->m_doc.get_formula_name_resolver();
+    if (!resolver)
+        return;
+
     ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
-    cxt.set_shared_formula(pos, sindex, p_formula, n_formula, p_range, n_range);
+    cxt.set_shared_formula(pos, sindex, p_formula, n_formula, p_range, n_range, *resolver);
     set_shared_formula(row, col, sindex);
 }
 
@@ -344,9 +352,13 @@ void sheet::set_shared_formula(
     row_t row, col_t col, formula_grammar_t grammar, size_t sindex,
     const char* p_formula, size_t n_formula)
 {
+    const ixion::formula_name_resolver* resolver = mp_impl->m_doc.get_formula_name_resolver();
+    if (!resolver)
+        return;
+
     ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
-    cxt.set_shared_formula(pos, sindex, p_formula, n_formula);
+    cxt.set_shared_formula(pos, sindex, p_formula, n_formula, *resolver);
     set_shared_formula(row, col, sindex);
 }
 
