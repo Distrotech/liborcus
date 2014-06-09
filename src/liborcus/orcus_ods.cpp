@@ -124,6 +124,11 @@ void orcus_ods::read_file(const string& filepath)
     zip_archive archive(&stream);
     archive.load();
     list_content(archive);
+
+    spreadsheet::iface::import_global_settings* gs = mp_impl->mp_factory->get_global_settings();
+    if (gs)
+        gs->set_default_formula_grammar(spreadsheet::formula_grammar_ods);
+
     read_content(archive);
 
     mp_impl->mp_factory->finalize();
