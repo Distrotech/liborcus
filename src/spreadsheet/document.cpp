@@ -20,10 +20,12 @@
 #include <ixion/formula_result.hpp>
 #include <ixion/matrix.hpp>
 #include <ixion/model_context.hpp>
+#include <ixion/formula_name_resolver.hpp>
 
 #include <iostream>
 #include <fstream>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/scoped_ptr.hpp>
 
 using namespace std;
 
@@ -130,10 +132,15 @@ struct document_impl
     import_shared_strings* mp_strings;
     ixion::dirty_formula_cells_t m_dirty_cells;
 
+    boost::scoped_ptr<ixion::formula_name_resolver> mp_name_resolver;
+    formula_grammar_t m_grammar;
+
     document_impl(document& doc) :
         m_doc(doc),
         mp_styles(new import_styles(m_string_pool)),
-        mp_strings(new import_shared_strings(m_string_pool, m_context, *mp_styles))
+        mp_strings(new import_shared_strings(m_string_pool, m_context, *mp_styles)),
+        mp_name_resolver(ixion::formula_name_resolver::get(ixion::formula_name_resolver_excel_a1, &m_context)),
+        m_grammar(formula_grammar_xlsx_2007)
     {
     }
 
@@ -315,6 +322,46 @@ void document::set_origin_date(int year, int month, int day)
     mp_impl->m_origin_date.year = year;
     mp_impl->m_origin_date.month = month;
     mp_impl->m_origin_date.day = day;
+}
+
+void document::set_formula_grammar(formula_grammar_t grammar)
+{
+    if (mp_impl->m_grammar == grammar)
+        return;
+
+    mp_impl->m_grammar = grammar;
+    switch (mp_impl->m_grammar)
+    {
+        case formula_grammar_xlsx_2007:
+        case formula_grammar_xlsx_2010:
+            mp_impl->mp_name_resolver.reset(
+                ixion::formula_name_resolver::get(
+                    ixion::formula_name_resolver_excel_a1, &mp_impl->m_context));
+        break;
+        case formula_grammar_ods:
+            mp_impl->mp_name_resolver.reset(
+                ixion::formula_name_resolver::get(
+                    ixion::formula_name_resolver_odff, &mp_impl->m_context));
+        break;
+        case formula_grammar_gnumeric:
+            // TODO : Use Excel A1 name resolver for now.
+            mp_impl->mp_name_resolver.reset(
+                ixion::formula_name_resolver::get(
+                    ixion::formula_name_resolver_excel_a1, &mp_impl->m_context));
+        break;
+        default:
+            mp_impl->mp_name_resolver.reset();
+    }
+}
+
+formula_grammar_t document::get_formula_grammar() const
+{
+    return mp_impl->m_grammar;
+}
+
+const ixion::formula_name_resolver* document::get_formula_name_resolver() const
+{
+    return mp_impl->mp_name_resolver.get();
 }
 
 void document::insert_dirty_cell(const ixion::abs_address_t& pos)

@@ -454,8 +454,11 @@ void sheet::set_row_hidden(row_t row, bool hidden)
 void sheet::set_merge_cell_range(const char* p_ref, size_t p_ref_len)
 {
     // A1 style without '$' signs.
-    ixion::formula_name_resolver_a1 resolver;
-    ixion::formula_name_type res = resolver.resolve(p_ref, p_ref_len, ixion::abs_address_t());
+    const ixion::formula_name_resolver* resolver = mp_impl->m_doc.get_formula_name_resolver();
+    if (!resolver)
+        return;
+
+    ixion::formula_name_type res = resolver->resolve(p_ref, p_ref_len, ixion::abs_address_t());
     if (res.type != ixion::formula_name_type::range_reference)
         return;
 
@@ -512,6 +515,8 @@ void sheet::dump_flat(std::ostream& os) const
         // Sheet is empty.  Nothing to print.
         return;
 
+    const ixion::formula_name_resolver* resolver = mp_impl->m_doc.get_formula_name_resolver();
+
     size_t row_count = range.last.row + 1;
     size_t col_count = range.last.column + 1;
     os << "rows: " << row_count << "  cols: " << col_count << endl;
@@ -558,8 +563,14 @@ void sheet::dump_flat(std::ostream& os) const
                     {
                         ostringstream os2;
                         string formula;
-                        ixion::print_formula_tokens(
-                           mp_impl->m_doc.get_model_context(), pos, *t, formula);
+                        if (resolver)
+                        {
+                            ixion::print_formula_tokens(
+                               mp_impl->m_doc.get_model_context(), pos, *resolver, *t, formula);
+                        }
+                        else
+                            formula = "???";
+
                         os2 << formula;
 
                         const ixion::formula_result* res = cell->get_result_cache();
@@ -670,6 +681,8 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
         // Sheet is empty.  Nothing to print.
         return;
 
+    const ixion::formula_name_resolver* resolver = mp_impl->m_doc.get_formula_name_resolver();
+
     size_t row_count = range.last.row + 1;
     size_t col_count = range.last.column + 1;
 
@@ -713,8 +726,14 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
                     if (t)
                     {
                         string formula;
-                        ixion::print_formula_tokens(
-                            mp_impl->m_doc.get_model_context(), pos, *t, formula);
+                        if (resolver)
+                        {
+                            ixion::print_formula_tokens(
+                                mp_impl->m_doc.get_model_context(), pos, *resolver, *t, formula);
+                        }
+                        else
+                            formula = "???";
+
                         os << ':' << formula;
 
                         const ixion::formula_result* res = cell->get_result_cache();
@@ -1139,6 +1158,7 @@ void sheet::dump_html(const string& filepath) const
             // Sheet is empty.  Nothing to print.
             return;
 
+        const ixion::formula_name_resolver* resolver = mp_impl->m_doc.get_formula_name_resolver();
         const import_shared_strings* sstrings = mp_impl->m_doc.get_shared_strings();
 
         elem table(file, p_table);
@@ -1264,8 +1284,14 @@ void sheet::dump_html(const string& filepath) const
                         if (t)
                         {
                             string formula;
-                            ixion::print_formula_tokens(
-                                mp_impl->m_doc.get_model_context(), pos, *t, formula);
+                            if (resolver)
+                            {
+                                ixion::print_formula_tokens(
+                                    mp_impl->m_doc.get_model_context(), pos, *resolver, *t, formula);
+                            }
+                            else
+                                formula = "???";
+
                             os << formula;
 
                             const ixion::formula_result* res = cell->get_result_cache();

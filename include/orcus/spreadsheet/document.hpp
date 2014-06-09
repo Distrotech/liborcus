@@ -15,8 +15,11 @@
 #include <ostream>
 
 namespace ixion {
-    class model_context;
-    struct abs_address_t;
+
+class formula_name_resolver;
+class model_context;
+struct abs_address_t;
+
 }
 
 namespace orcus {
@@ -92,6 +95,10 @@ public:
     size_t sheet_size() const;
 
     void set_origin_date(int year, int month, int day);
+    void set_formula_grammar(formula_grammar_t grammar);
+    formula_grammar_t get_formula_grammar() const;
+
+    const ixion::formula_name_resolver* get_formula_name_resolver() const;
 
     ixion::model_context& get_model_context();
     const ixion::model_context& get_model_context() const;

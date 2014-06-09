@@ -14,10 +14,7 @@ struct import_global_settings_impl
 {
     document& m_doc;
 
-    formula_grammar_t m_default_grammar;
-
-    import_global_settings_impl(document& doc) :
-        m_doc(doc), m_default_grammar(formula_grammar_unknown) {}
+    import_global_settings_impl(document& doc) : m_doc(doc) {}
 };
 
 import_global_settings::import_global_settings(spreadsheet::document& doc) :
@@ -35,12 +32,12 @@ void import_global_settings::set_origin_date(int year, int month, int day)
 
 void import_global_settings::set_default_formula_grammar(formula_grammar_t grammar)
 {
-    mp_impl->m_default_grammar = grammar;
+    mp_impl->m_doc.set_formula_grammar(grammar);
 }
 
 formula_grammar_t import_global_settings::get_default_formula_grammar() const
 {
-    return mp_impl->m_default_grammar;
+    return mp_impl->m_doc.get_formula_grammar();
 }
 
 }}
