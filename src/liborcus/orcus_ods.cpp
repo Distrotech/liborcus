@@ -122,13 +122,22 @@ void orcus_ods::read_file(const string& filepath)
     archive.load();
     list_content(archive);
 
+    spreadsheet::formula_grammar_t old_grammar = spreadsheet::formula_grammar_unknown;
+
     spreadsheet::iface::import_global_settings* gs = mp_impl->mp_factory->get_global_settings();
     if (gs)
+    {
+        old_grammar = gs->get_default_formula_grammar();
         gs->set_default_formula_grammar(spreadsheet::formula_grammar_ods);
+    }
 
     read_content(archive);
 
     mp_impl->mp_factory->finalize();
+
+    if (gs)
+        // This grammar will be used
+        gs->set_default_formula_grammar(old_grammar);
 }
 
 const char* orcus_ods::get_name() const
