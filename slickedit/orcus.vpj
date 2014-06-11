@@ -253,6 +253,8 @@
 				<F N="../src/liborcus/ods_content_xml_context.hpp"/>
 				<F N="../src/liborcus/ods_content_xml_handler.cpp"/>
 				<F N="../src/liborcus/ods_content_xml_handler.hpp"/>
+				<F N="../src/liborcus/ods_session_data.cpp"/>
+				<F N="../src/liborcus/ods_session_data.hpp"/>
 				<F N="../src/liborcus/ooxml_content_types.cpp"/>
 				<F N="../src/liborcus/ooxml_content_types.hpp"/>
 				<F N="../src/liborcus/ooxml_global.cpp"/>

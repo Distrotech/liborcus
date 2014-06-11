@@ -12,6 +12,7 @@
 
 #include "xml_stream_parser.hpp"
 #include "ods_content_xml_handler.hpp"
+#include "ods_session_data.hpp"
 #include "odf_tokens.hpp"
 #include "odf_namespace_types.hpp"
 #include "session_context.hpp"
@@ -31,7 +32,7 @@ struct orcus_ods_impl
     spreadsheet::iface::import_factory* mp_factory;
 
     orcus_ods_impl(spreadsheet::iface::import_factory* im_factory) :
-        mp_factory(im_factory) {}
+        m_cxt(new ods_session_data), mp_factory(im_factory) {}
 };
 
 orcus_ods::orcus_ods(spreadsheet::iface::import_factory* factory) :
