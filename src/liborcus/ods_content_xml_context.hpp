@@ -81,6 +81,8 @@ private:
 
     void push_cell_value();
 
+    void end_spreadsheet();
+
 private:
     spreadsheet::iface::import_factory* mp_factory;
     std::vector<spreadsheet::iface::import_sheet*> m_tables;

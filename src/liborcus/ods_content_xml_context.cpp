@@ -10,6 +10,7 @@
 #include "odf_namespace_types.hpp"
 #include "odf_styles_context.hpp"
 #include "session_context.hpp"
+#include "ods_session_data.hpp"
 
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
@@ -423,6 +424,7 @@ bool ods_content_xml_context::end_element(xmlns_id_t ns, xml_token_t name)
             case XML_body:
             break;
             case XML_spreadsheet:
+                end_spreadsheet();
             break;
             default:
                 ;
@@ -575,15 +577,22 @@ void ods_content_xml_context::push_cell_value()
     bool has_formula = !m_cell_attr.formula.empty();
     if (has_formula)
     {
-        sheet->set_formula(
-            m_row, m_col, m_cell_attr.formula_grammar,
-            m_cell_attr.formula.get(), m_cell_attr.formula.size());
+        ods_session_data& ods_data =
+            static_cast<ods_session_data&>(*get_session_context().mp_data);
+        ods_data.m_formulas.push_back(
+            new ods_session_data::formula(
+                m_tables.size()-1, m_row, m_col, m_cell_attr.formula_grammar, m_cell_attr.formula));
 
-        // Set formula result.
+        ods_session_data::formula& formula_data = ods_data.m_formulas.back();
+
+        // Store formula result.
         switch (m_cell_attr.type)
         {
             case vt_float:
-                sheet->set_formula_result(m_row, m_col, m_cell_attr.value);
+            {
+                formula_data.result.type = orcus::ods_session_data::rt_numeric;
+                formula_data.result.numeric_value = m_cell_attr.value;
+            }
             break;
             case vt_string:
                 // TODO : pass string result here.  We need to decide whether
@@ -614,6 +623,44 @@ void ods_content_xml_context::push_cell_value()
         default:
             ;
     }
+}
+
+void ods_content_xml_context::end_spreadsheet()
+{
+    ods_session_data& ods_data =
+        static_cast<ods_session_data&>(*get_session_context().mp_data);
+
+    // Push all formula cells.  Formula cells needs to be processed after all
+    // the sheet data have been imported, else 3D reference would fail to
+    // resolve.
+    ods_session_data::formulas_type::iterator it = ods_data.m_formulas.begin(), ite = ods_data.m_formulas.end();
+    for (; it != ite; ++it)
+    {
+        ods_session_data::formula& data = *it;
+        if (data.sheet < 0 || static_cast<size_t>(data.sheet) >= m_tables.size())
+            // Invalid sheet index.
+            continue;
+
+        spreadsheet::iface::import_sheet* sheet = m_tables[data.sheet];
+        sheet->set_formula(
+            data.row, data.column, data.grammar,
+            data.exp.get(), data.exp.size());
+
+        switch (data.result.type)
+        {
+            case ods_session_data::rt_numeric:
+                sheet->set_formula_result(data.row, data.column, data.result.numeric_value);
+            break;
+            case ods_session_data::rt_string:
+            case ods_session_data::rt_error:
+            case ods_session_data::rt_none:
+            default:
+                ;
+        }
+    }
+
+    // Clear the formula buffer.
+    ods_data.m_formulas.clear();
 }
 
 }

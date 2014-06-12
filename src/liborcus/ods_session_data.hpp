@@ -10,10 +10,44 @@
 
 #include "session_context.hpp"
 
+#include "orcus/spreadsheet/types.hpp"
+
 namespace orcus {
 
 struct ods_session_data : public session_context::custom_data
 {
+    enum formula_result_type { rt_none, rt_numeric, rt_string, rt_error };
+
+    struct formula_result
+    {
+        formula_result_type type;
+        double numeric_value;
+        pstring string_value;
+
+        formula_result();
+    };
+
+    struct formula
+    {
+        spreadsheet::sheet_t sheet;
+        spreadsheet::row_t   row;
+        spreadsheet::col_t   column;
+
+        spreadsheet::formula_grammar_t grammar;
+        pstring exp;
+
+
+        formula_result result;
+
+        formula(
+            spreadsheet::sheet_t _sheet, spreadsheet::row_t _row, spreadsheet::col_t _col,
+            spreadsheet::formula_grammar_t _grammar, const pstring& _exp);
+    };
+
+    typedef boost::ptr_vector<formula> formulas_type;
+
+    formulas_type m_formulas;
+
     virtual ~ods_session_data();
 };
 

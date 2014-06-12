@@ -9,6 +9,13 @@
 
 namespace orcus {
 
+ods_session_data::formula_result::formula_result() : type(rt_none) {}
+
+ods_session_data::formula::formula(
+    spreadsheet::sheet_t _sheet, spreadsheet::row_t _row, spreadsheet::col_t _col,
+    spreadsheet::formula_grammar_t _grammar, const pstring& _exp) :
+    sheet(_sheet), row(_row), column(_col), grammar(_grammar), exp(_exp) {}
+
 ods_session_data::~ods_session_data() {}
 
 }
