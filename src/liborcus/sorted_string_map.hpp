@@ -12,6 +12,13 @@
 
 namespace orcus {
 
+/**
+ * This class provides a very fast way to map string keys to arbitrary
+ * values, much faster than using hash table map such as unordered_map.
+ *
+ * The caller needs to define a static array of entries whose keys are
+ * already sorted alphabetically in ascending order.
+ */
 template<typename _ValueT>
 class sorted_string_map
 {
