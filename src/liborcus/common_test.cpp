@@ -14,6 +14,8 @@
 #include "orcus/global.hpp"
 #include "orcus/measurement.hpp"
 
+#include "sorted_string_map.hpp"
+
 using namespace std;
 using namespace orcus;
 
@@ -180,12 +182,49 @@ void test_string2long_conversion()
     }
 }
 
+enum name_type {
+    name_none = 0,
+    name_andy,
+    name_bruce,
+    name_charlie,
+    name_david
+};
+
+void test_sorted_string_map()
+{
+    typedef orcus::sorted_string_map<name_type> map_type;
+
+    map_type::entry entries[] =
+    {
+        { "andy", name_andy },
+        { "andy1", name_andy },
+        { "andy13", name_andy },
+        { "bruce", name_bruce },
+        { "charlie", name_charlie },
+        { "david", name_david },
+    };
+
+    size_t entry_count = sizeof(entries)/sizeof(entries[0]);
+    map_type names(entries, entry_count, name_none);
+    for (size_t i = 0; i < entry_count; ++i)
+    {
+        bool res = names.find(entries[i].key, strlen(entries[i].key)) == entries[i].value;
+        assert(res);
+    }
+
+    // Try invalid keys.
+    assert(names.find("foo", 3) == name_none);
+    assert(names.find("andy133", 7) == name_none);
+}
+
 int main()
 {
     test_date_time_conversion();
     test_measurement_conversion();
     test_string2number_conversion();
     test_string2long_conversion();
+    test_sorted_string_map();
+
     return EXIT_SUCCESS;
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
