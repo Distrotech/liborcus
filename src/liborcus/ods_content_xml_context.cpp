@@ -11,6 +11,7 @@
 #include "odf_styles_context.hpp"
 #include "session_context.hpp"
 #include "ods_session_data.hpp"
+#include "sorted_string_map.hpp"
 
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
@@ -25,6 +26,27 @@ using namespace std;
 namespace orcus {
 
 namespace {
+
+typedef sorted_string_map<ods_content_xml_context::cell_value_type> cell_value_map_type;
+
+// Keys must be sorted.
+cell_value_map_type::entry cell_value_entries[] = {
+    { "date",   ods_content_xml_context::vt_date },
+    { "float",  ods_content_xml_context::vt_float },
+    { "string", ods_content_xml_context::vt_string }
+};
+
+const cell_value_map_type& get_cell_value_map()
+{
+    static cell_value_map_type cv_map(
+        cell_value_entries,
+        sizeof(cell_value_entries)/sizeof(cell_value_entries[0]),
+        ods_content_xml_context::vt_unknown);
+
+    return cv_map;
+}
+
+
 
 class null_date_attr_parser : public unary_function<xml_token_attr_t, void>
 {
@@ -233,12 +255,8 @@ private:
             break;
             case XML_value_type:
             {
-                if (!std::strncmp(attr.value.get(), "float", 5))
-                    m_attr.type = ods_content_xml_context::vt_float;
-                else if (!std::strncmp(attr.value.get(), "string", 6))
-                    m_attr.type = ods_content_xml_context::vt_string;
-                else if (!std::strncmp(attr.value.get(), "date", 4))
-                    m_attr.type = ods_content_xml_context::vt_date;
+                const cell_value_map_type& cv_map = get_cell_value_map();
+                m_attr.type = cv_map.find(attr.value.get(), attr.value.size());
             }
             break;
             case XML_date_value:

@@ -26,6 +26,9 @@ public:
     typedef _ValueT value_type;
     typedef size_t size_type;
 
+    /**
+     * String value used as a key must be null-terminated.
+     */
     struct entry
     {
         const char* key;
@@ -38,10 +41,10 @@ public:
         m_entry_size(entry_size),
         m_entry_end(m_entries+m_entry_size) {}
 
-    value_type find(const char* input) const
+    value_type find(const char* input, size_type len) const
     {
         const entry* p = m_entries;
-        size_t pos = 0;
+        size_type pos = 0;
         for (; p != m_entry_end; ++p)
         {
             const char* key = p->key;
@@ -52,7 +55,7 @@ public:
                     break;
             }
 
-            if (input[pos] == 0 && key[pos] == 0)
+            if (pos == len && key[pos] == 0)
             {
                 // Match found!
                 return p->value;

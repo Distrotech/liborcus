@@ -9,6 +9,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <cstring>
 
 #include <boost/unordered_map.hpp>
 
@@ -89,7 +90,7 @@ void init_hash_map(hashmap_type& hm)
 
 void run(map_type& sm, const char* input)
 {
-    name_type type = sm.find(input);
+    name_type type = sm.find(input, strlen(input));
 }
 
 void run_hash(hashmap_type& hm, const char* input)
