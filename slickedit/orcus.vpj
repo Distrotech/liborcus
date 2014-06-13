@@ -285,6 +285,7 @@
 				<F N="../src/liborcus/orcus_xml.cpp"/>
 				<F N="../src/liborcus/session_context.cpp"/>
 				<F N="../src/liborcus/session_context.hpp"/>
+				<F N="../src/liborcus/sorted_string_map.hpp"/>
 				<F N="../src/liborcus/spreadsheet_interface.cpp"/>
 				<F N="../src/liborcus/spreadsheet_types.cpp"/>
 				<F N="../src/liborcus/tokens.cpp"/>
