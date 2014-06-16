@@ -33,6 +33,7 @@ namespace {
 
 const char* dirs[] = {
     SRCDIR"/test/ods/raw-values-1/",
+    SRCDIR"/test/ods/formula-1/",
 };
 
 void test_ods_import_cell_values()

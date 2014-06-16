@@ -1,0 +1,5 @@
+Formula/0/0:formula:1*2:2
+Formula/1/0:formula:12/3:4
+Formula/2/0:formula:AVERAGE(A1:A2):3
+Formula/3/0:formula:SUM(A1:A3):9
+
