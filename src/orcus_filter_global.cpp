@@ -18,6 +18,9 @@
 using namespace std;
 using namespace orcus;
 
+namespace po = boost::program_options;
+namespace fs = boost::filesystem;
+
 namespace orcus {
 
 namespace {
@@ -37,12 +40,32 @@ const char* help_dump_check =
 
 }
 
+bool handle_dump_check(
+    iface::import_filter& app, iface::document_dumper& doc, const string& infile, const string& outfile)
+{
+    if (outfile.empty())
+    {
+        // Dump to stdout when no output file is specified.
+        app.read_file(infile);
+        doc.dump_check(cout);
+        return true;
+    }
+
+    if (fs::exists(outfile) && fs::is_directory(outfile))
+    {
+        cerr << "A directory named '" << outfile << "' already exists." << endl;
+        return false;
+    }
+
+    ofstream file(outfile.c_str());
+    app.read_file(infile);
+    doc.dump_check(file);
+    return true;
+}
+
 bool parse_import_filter_args(
     iface::import_filter& app, iface::document_dumper& doc, int argc, char** argv)
 {
-    namespace po = boost::program_options;
-    namespace fs = boost::filesystem;
-
     po::options_description desc("Allowed options");
     desc.add_options()
         ("help,h", "Print this help.")
@@ -102,24 +125,7 @@ bool parse_import_filter_args(
     if (vm.count("dump-check"))
     {
         // 'outdir' is used as the output file path in this mode.
-        if (outdir.empty())
-        {
-            // Dump to stdout when no output file is specified.
-            app.read_file(infile);
-            doc.dump_check(cout);
-            return true;
-        }
-
-        if (fs::exists(outdir) && fs::is_directory(outdir))
-        {
-            cerr << "A directory named '" << outdir << "' already exists." << endl;
-            return false;
-        }
-
-        ofstream file(outdir.c_str());
-        app.read_file(infile);
-        doc.dump_check(file);
-        return true;
+        return handle_dump_check(app, doc, infile, outdir);
     }
 
     if (outdir.empty())
