@@ -28,6 +28,7 @@ public:
     virtual ~document_dumper();
     virtual void dump_flat(const std::string& outdir) const = 0;
     virtual void dump_html(const std::string& outdir) const = 0;
+    virtual void dump_check(std::ostream& os) const = 0;
 };
 
 }}

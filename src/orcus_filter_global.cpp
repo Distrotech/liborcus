@@ -13,6 +13,7 @@
 #include <boost/filesystem.hpp>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 using namespace orcus;
@@ -25,11 +26,14 @@ const char* help_program =
 "The FILE must specify a path to an existing file.";
 
 const char* help_output =
-"Output directory path.";
+"Output directory path, or output file when --dump-check option is selected.";
 
 const char* help_output_format =
 "Specify the format of output file.  Supported format types are: "
 "1) flat text format (flat), 2) HTML format (html), or 3) no output (none).";
+
+const char* help_dump_check =
+"Dump the the content to stdout in a special format used for content verification in unit tests.";
 
 }
 
@@ -42,6 +46,7 @@ bool parse_import_filter_args(
     po::options_description desc("Allowed options");
     desc.add_options()
         ("help,h", "Print this help.")
+        ("dump-check", help_dump_check)
         ("output,o", po::value<string>(), help_output)
         ("output-format,f", po::value<string>(), help_output_format);
 
@@ -92,6 +97,29 @@ bool parse_import_filter_args(
     {
         cerr << "No input file." << endl;
         return false;
+    }
+
+    if (vm.count("dump-check"))
+    {
+        // 'outdir' is used as the output file path in this mode.
+        if (outdir.empty())
+        {
+            // Dump to stdout when no output file is specified.
+            app.read_file(infile);
+            doc.dump_check(cout);
+            return true;
+        }
+
+        if (fs::exists(outdir) && fs::is_directory(outdir))
+        {
+            cerr << "A directory named '" << outdir << "' already exists." << endl;
+            return false;
+        }
+
+        ofstream file(outdir.c_str());
+        app.read_file(infile);
+        doc.dump_check(file);
+        return true;
     }
 
     if (outdir.empty())

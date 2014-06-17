@@ -87,7 +87,7 @@ public:
      * Dump document content to stdout in the special format used for content
      * verification during unit test.
      */
-    void dump_check(std::ostream& os) const;
+    virtual void dump_check(std::ostream& os) const;
 
     sheet_t get_sheet_index(const pstring& name) const;
     pstring get_sheet_name(sheet_t sheet_pos) const;
