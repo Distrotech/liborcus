@@ -33,7 +33,7 @@ class ods_content_xml_context : public xml_context_base
 public:
     struct row_attr
     {
-        int number_rows_repeated;
+        long number_rows_repeated;
         row_attr();
     };
 
@@ -41,7 +41,7 @@ public:
 
     struct cell_attr
     {
-        int number_columns_repeated;
+        long number_columns_repeated;
         cell_value_type type;
         double value;
         pstring date_value;

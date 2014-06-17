@@ -106,7 +106,7 @@ public:
 
 class row_attr_parser : public unary_function<xml_token_attr_t, void>
 {
-    int m_number_rows_repeated;
+    long m_number_rows_repeated;
     pstring m_style_name;
 
 public:
@@ -119,12 +119,7 @@ public:
             switch (attr.name)
             {
                 case XML_number_rows_repeated:
-                {
-                    char* endptr;
-                    long val = strtol(attr.value.str().c_str(), &endptr, 10);
-                    if (endptr != attr.value.str())
-                        m_number_rows_repeated = val;
-                }
+                    m_number_rows_repeated = to_long(attr.value);
                 break;
                 case XML_style_name:
                     m_style_name = attr.value;
@@ -133,7 +128,7 @@ public:
         }
     }
 
-    int get_number_rows_repeated() const { return m_number_rows_repeated; }
+    long get_number_rows_repeated() const { return m_number_rows_repeated; }
     const pstring& get_style_name() const { return m_style_name; }
 };
 
@@ -224,13 +219,7 @@ private:
                 m_attr.style_name = attr.value;
             break;
             case XML_number_columns_repeated:
-            {
-                const char* end = attr.value.get() + attr.value.size();
-                char* endptr;
-                long val = strtol(attr.value.get(), &endptr, 10);
-                if (endptr == end)
-                    m_attr.number_columns_repeated = static_cast<int>(val);
-            }
+                m_attr.number_columns_repeated = to_long(attr.value);
             break;
             case XML_formula:
                 process_formula(attr.value, attr.transient);
