@@ -29,7 +29,7 @@ const char* help_program =
 "The FILE must specify a path to an existing file.";
 
 const char* help_output =
-"Output directory path, or output file when --dump-check option is selected.";
+"Output directory path, or output file when --dump-check option is used.";
 
 const char* help_output_format =
 "Specify the format of output file.  Supported format types are: "
