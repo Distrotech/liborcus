@@ -20,6 +20,7 @@ schema_t SCH_od_rels_theme                = "http://schemas.openxmlformats.org/o
 schema_t SCH_od_rels_worksheet            = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet";
 schema_t SCH_od_rels_extended_props       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties";
 schema_t SCH_od_rels_office_doc           = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
+schema_t SCH_od_rels_table                = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table";
 schema_t SCH_xlsx_main                    = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
 
 
@@ -37,6 +38,7 @@ schema_t schs[] = {
     SCH_od_rels_worksheet,
     SCH_od_rels_extended_props,
     SCH_od_rels_office_doc,
+    SCH_od_rels_table,
     SCH_xlsx_main,
     NULL
 };

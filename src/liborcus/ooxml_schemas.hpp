@@ -23,6 +23,7 @@ extern schema_t SCH_od_rels_theme;
 extern schema_t SCH_od_rels_worksheet;
 extern schema_t SCH_od_rels_extended_props;
 extern schema_t SCH_od_rels_office_doc;
+extern schema_t SCH_od_rels_table;
 extern schema_t SCH_xlsx_main;
 
 /**
