@@ -53,6 +53,8 @@ private:
 
     void read_styles(const std::string& dir_path, const std::string& file_name);
 
+    void read_table(const std::string& dir_path, const std::string& file_name);
+
 private:
     orcus_xlsx_impl* mp_impl;
 };

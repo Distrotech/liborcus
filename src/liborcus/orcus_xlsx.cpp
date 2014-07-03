@@ -81,6 +81,11 @@ public:
             m_parent.read_styles(dir_path, file_name);
             return true;
         }
+        else if (type == SCH_od_rels_table)
+        {
+            m_parent.read_table(dir_path, file_name);
+            return true;
+        }
 
         return false;
     }
@@ -330,6 +335,25 @@ void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
 //          static_cast<xlsx_styles_context&>(handler->get_context());
     parser.set_handler(handler.get());
     parser.parse();
+}
+
+void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file_name)
+{
+    cout << "---" << endl;
+    string filepath = dir_path + file_name;
+    cout << "read_table: file path = " << filepath << endl;
+
+    vector<unsigned char> buffer;
+    if (!mp_impl->m_opc_reader.open_zip_stream(filepath, buffer))
+    {
+        cerr << "failed to open zip stream: " << filepath << endl;
+        return;
+    }
+
+    if (buffer.empty())
+        return;
+
+    // Parse the stream.
 }
 
 }
