@@ -85,6 +85,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	ooxml_tokens.hpp \
 	ooxml_tokens.inl \
 	ooxml_types.hpp \
+	ooxml_types.cpp \
 	opc_context.cpp \
 	opc_context.hpp \
 	opc_reader.cpp \

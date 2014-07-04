@@ -91,10 +91,9 @@ void xlsx_workbook_context::start_element(xmlns_id_t ns, xml_token_t name, const
             xml_element_expected(parent, NS_ooxml_xlsx, XML_sheets);
             workbook_sheet_attr_parser func(&get_session_context());
             func = for_each(attrs.begin(), attrs.end(), func);
-            m_sheets.push_back(new xlsx_rel_sheet_info(func.get_sheet()));
-            const xlsx_rel_sheet_info& info = m_sheets.back();
-            m_sheet_info.insert(
-                opc_rel_extras_t::value_type(func.get_rid(), &info));
+            m_sheet_info.data.insert(
+                opc_rel_extras_t::map_type::value_type(
+                    func.get_rid(), new xlsx_rel_sheet_info(func.get_sheet())));
         }
         break;
         default:

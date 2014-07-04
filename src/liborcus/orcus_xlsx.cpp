@@ -255,7 +255,7 @@ void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
         static_cast<xlsx_workbook_context&>(handler->get_context());
     opc_rel_extras_t sheet_data;
     context.pop_sheet_info(sheet_data);
-    for_each(sheet_data.begin(), sheet_data.end(), print_sheet_info());
+    for_each(sheet_data.data.begin(), sheet_data.data.end(), print_sheet_info());
 
     mp_impl->m_opc_reader.check_relation_part(file_name, &sheet_data);
 }

@@ -46,10 +46,17 @@ struct opc_rel_extra
     virtual ~opc_rel_extra() = 0;
 };
 
-inline opc_rel_extra::~opc_rel_extra() {}
+struct opc_rel_extras_t
+{
+    typedef boost::unordered_map<pstring, const opc_rel_extra*, pstring::hash> map_type;
 
-typedef boost::unordered_map<pstring, const opc_rel_extra*, pstring::hash>
-    opc_rel_extras_t;
+    map_type data;
+
+    opc_rel_extras_t();
+    ~opc_rel_extras_t();
+
+    void swap(opc_rel_extras_t& other);
+};
 
 }
 

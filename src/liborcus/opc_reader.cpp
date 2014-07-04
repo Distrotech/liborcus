@@ -50,9 +50,9 @@ struct process_opc_rel : public unary_function<void, opc_rel_t>
         const opc_rel_extra* data = NULL;
         if (m_extras)
         {
-            opc_rel_extras_t::const_iterator itr = m_extras->find(v.rid);
-            if (itr != m_extras->end())
-                data = itr->second;
+            opc_rel_extras_t::map_type::const_iterator it = m_extras->data.find(v.rid);
+            if (it != m_extras->data.end())
+                data = it->second;
         }
         m_parent.read_part(v.target, v.type, data);
     }

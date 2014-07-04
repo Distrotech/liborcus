@@ -13,7 +13,6 @@
 #include "xlsx_types.hpp"
 
 #include <boost/unordered_map.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
 
@@ -41,7 +40,6 @@ public:
 
 private:
     opc_rel_extras_t m_sheet_info;
-    ::boost::ptr_vector<xlsx_rel_sheet_info> m_sheets;
 };
 
 }
