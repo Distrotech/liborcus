@@ -5,13 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_OOXML_TYPES_HPP__
-#define __ORCUS_OOXML_TYPES_HPP__
+#ifndef ORCUS_OOXML_TYPES_HPP
+#define ORCUS_OOXML_TYPES_HPP
 
 #include "orcus/pstring.hpp"
 
 #include <iostream>
 #include <boost/unordered_map.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace orcus {
 
@@ -46,7 +47,7 @@ struct opc_rel_extra
     virtual ~opc_rel_extra() = 0;
 };
 
-struct opc_rel_extras_t
+struct opc_rel_extras_t : boost::noncopyable
 {
     typedef boost::unordered_map<pstring, const opc_rel_extra*, pstring::hash> map_type;
 
