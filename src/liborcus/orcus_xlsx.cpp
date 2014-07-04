@@ -23,6 +23,7 @@
 #include "ooxml_namespace_types.hpp"
 #include "xlsx_session_data.hpp"
 #include "opc_context.hpp"
+#include "ooxml_global.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -232,7 +233,7 @@ void orcus_xlsx::set_formulas_to_doc()
 
 void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
 {
-    string filepath = dir_path + file_name;
+    string filepath = resolve_file_path(dir_path, file_name);
     cout << "read_workbook: file path = " << filepath << endl;
 
     vector<unsigned char> buffer;
@@ -266,7 +267,7 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, con
         return;
 
     cout << "---" << endl;
-    string filepath = dir_path + file_name;
+    string filepath = resolve_file_path(dir_path, file_name);
     cout << "read_sheet: file path = " << filepath << endl;
 
     vector<unsigned char> buffer;
@@ -291,7 +292,7 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, con
 void orcus_xlsx::read_shared_strings(const string& dir_path, const string& file_name)
 {
     cout << "---" << endl;
-    string filepath = dir_path + file_name;
+    string filepath = resolve_file_path(dir_path, file_name);
     cout << "read_shared_strings: file path = " << filepath << endl;
 
     vector<unsigned char> buffer;
@@ -312,7 +313,7 @@ void orcus_xlsx::read_shared_strings(const string& dir_path, const string& file_
 void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
 {
     cout << "---" << endl;
-    string filepath = dir_path + file_name;
+    string filepath = resolve_file_path(dir_path, file_name);
     cout << "read_styles: file path = " << filepath << endl;
 
     spreadsheet::iface::import_styles* styles = mp_impl->mp_factory->get_styles();
@@ -340,7 +341,7 @@ void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
 void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file_name)
 {
     cout << "---" << endl;
-    string filepath = dir_path + file_name;
+    string filepath = resolve_file_path(dir_path, file_name);
     cout << "read_table: file path = " << filepath << endl;
 
     vector<unsigned char> buffer;
@@ -353,7 +354,7 @@ void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file
     if (buffer.empty())
         return;
 
-    // Parse the stream.
+    // TODO: Parse the stream.
 }
 
 }
