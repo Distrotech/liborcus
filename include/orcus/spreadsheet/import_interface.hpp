@@ -454,24 +454,24 @@ public:
  * inside it and have the document instance manage the life cycles of
  * various objects it creates.
  */
-class import_factory
+class ORCUS_DLLPUBLIC import_factory
 {
 public:
-    ORCUS_DLLPUBLIC virtual ~import_factory() = 0;
+    virtual ~import_factory() = 0;
 
-    virtual import_global_settings* get_global_settings() = 0;
+    virtual import_global_settings* get_global_settings();
 
     /**
      * @return pointer to the shared strings instance. It may return NULL if
      *         the client app doesn't support shared strings.
      */
-    virtual import_shared_strings* get_shared_strings() = 0;
+    virtual import_shared_strings* get_shared_strings();
 
     /**
      * @return pointer to the styles instance. It may return NULL if the
      *         client app doesn't support styles.
      */
-    virtual import_styles* get_styles() = 0;
+    virtual import_styles* get_styles();
 
     /**
      * @return pointer to the sheet instance. It may return NULL if the client

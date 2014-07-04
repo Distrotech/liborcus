@@ -41,6 +41,21 @@ import_global_settings::~import_global_settings() {}
 
 import_factory::~import_factory() {}
 
+import_global_settings* import_factory::get_global_settings()
+{
+    return NULL;
+}
+
+import_shared_strings* import_factory::get_shared_strings()
+{
+    return NULL;
+}
+
+import_styles* import_factory::get_styles()
+{
+    return NULL;
+}
+
 export_sheet::~export_sheet() {}
 
 export_factory::~export_factory() {}

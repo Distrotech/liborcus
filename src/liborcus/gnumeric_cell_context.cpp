@@ -204,6 +204,9 @@ void gnumeric_cell_context::end_cell()
         case cell_type_string:
         {
             spreadsheet::iface::import_shared_strings* shared_strings = mp_factory->get_shared_strings();
+            if (!shared_strings)
+                break;
+
             size_t id = shared_strings->add(chars.get(), chars.size());
             mp_sheet->set_string(row, col, id);
         }
