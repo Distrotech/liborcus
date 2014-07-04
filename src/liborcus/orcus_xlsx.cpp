@@ -283,10 +283,12 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, con
 
     xml_stream_parser parser(mp_impl->m_ns_repo, ooxml_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), file_name);
     spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->append_sheet(data->name.get(), data->name.size());
-    xlsx_sheet_xml_handler handler(mp_impl->m_cxt, ooxml_tokens, data->id-1, sheet);
-    parser.set_handler(&handler);
+    boost::scoped_ptr<xlsx_sheet_xml_handler> handler(
+        new xlsx_sheet_xml_handler(mp_impl->m_cxt, ooxml_tokens, data->id-1, sheet));
+    parser.set_handler(handler.get());
     parser.parse();
 
+    handler.reset();
     mp_impl->m_opc_reader.check_relation_part(file_name, NULL);
 }
 
