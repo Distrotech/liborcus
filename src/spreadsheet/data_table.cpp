@@ -17,6 +17,10 @@ struct data_table_impl
 };
 
 data_table::data_table(sheet& sh) : mp_impl(new data_table_impl(sh)) {}
+data_table::~data_table()
+{
+    delete mp_impl;
+}
 
 void data_table::set_type(orcus::spreadsheet::data_table_type_t type)
 {

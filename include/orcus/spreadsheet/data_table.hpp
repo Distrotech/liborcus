@@ -21,6 +21,7 @@ class data_table : public iface::import_data_table
 
 public:
     data_table(sheet& sh);
+    ~data_table();
 
     virtual void set_type(data_table_type_t type);
 
