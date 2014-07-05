@@ -118,6 +118,7 @@ orcus_xlsx_sheet_context_test_SOURCES = \
 	session_context.cpp \
 	xlsx_sheet_context_test.cpp \
 	xlsx_sheet_context.cpp \
+	xlsx_autofilter_context.cpp \
 	ooxml_global.cpp \
 	ooxml_namespace_types.cpp \
 	ooxml_tokens.cpp \
