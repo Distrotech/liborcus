@@ -10,6 +10,8 @@
 
 #include "xml_context_base.hpp"
 
+#include <boost/scoped_ptr.hpp>
+
 namespace orcus {
 
 class xlsx_table_context : public xml_context_base
@@ -25,6 +27,9 @@ public:
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs);
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
     virtual void characters(const pstring& str, bool transient);
+
+private:
+    boost::scoped_ptr<xml_context_base> mp_child;
 };
 
 }
