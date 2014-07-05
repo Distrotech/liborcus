@@ -429,8 +429,8 @@ public:
     /**
      * Set formula grammar to be used globally when parsing formulas if the
      * grammar is not specified.  This grammar will also be used when parsing
-     * range strings associated with shared formula ranges and array formula
-     * ranges.
+     * range strings associated with shared formula ranges, array formula
+     * ranges, autofilter ranges etc.
      *
      * @param grammar default formula grammar
      */
