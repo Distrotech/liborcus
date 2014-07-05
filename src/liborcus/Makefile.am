@@ -103,6 +103,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	xlsx_session_data.cpp \
 	xlsx_sheet_context.cpp \
 	xlsx_sheet_context.hpp \
+	xlsx_table_context.cpp \
+	xlsx_table_context.hpp \
 	xlsx_types.hpp \
 	xlsx_workbook_context.cpp \
 	xlsx_workbook_context.hpp

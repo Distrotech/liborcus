@@ -335,8 +335,6 @@ void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
         new xml_simple_stream_handler(
             new xlsx_styles_context(mp_impl->m_cxt, ooxml_tokens, mp_impl->mp_factory->get_styles())));
-//      xlsx_styles_context& context =
-//          static_cast<xlsx_styles_context&>(handler->get_context());
     parser.set_handler(handler.get());
     parser.parse();
 }
@@ -357,7 +355,12 @@ void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file
     if (buffer.empty())
         return;
 
-    // TODO: Parse the stream.
+    xml_stream_parser parser(mp_impl->m_ns_repo, ooxml_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), file_name);
+    boost::scoped_ptr<xlsx_table_xml_handler> handler(new xlsx_table_xml_handler(mp_impl->m_cxt, ooxml_tokens));
+    parser.set_handler(handler.get());
+    parser.parse();
+
+    handler.reset();
 }
 
 }

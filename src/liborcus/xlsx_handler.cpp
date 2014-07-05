@@ -8,6 +8,7 @@
 #include "xlsx_handler.hpp"
 #include "xlsx_context.hpp"
 #include "xlsx_sheet_context.hpp"
+#include "xlsx_table_context.hpp"
 
 #include <iostream>
 
@@ -34,5 +35,20 @@ void xlsx_sheet_xml_handler::end_document()
 {
 }
 
+xlsx_table_xml_handler::xlsx_table_xml_handler(
+    session_context& session_cxt, const tokens& tokens) :
+    xml_stream_handler(new xlsx_table_context(session_cxt, tokens))
+{
 }
+
+void xlsx_table_xml_handler::start_document()
+{
+}
+
+void xlsx_table_xml_handler::end_document()
+{
+}
+
+}
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
