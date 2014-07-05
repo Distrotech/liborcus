@@ -5,12 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_XLSX_SHEET_CONTEXT_HPP__
-#define __ORCUS_XLSX_SHEET_CONTEXT_HPP__
+#ifndef ORCUS_XLSX_SHEET_CONTEXT_HPP
+#define ORCUS_XLSX_SHEET_CONTEXT_HPP
 
 #include "xml_context_base.hpp"
 #include "orcus/spreadsheet/types.hpp"
 #include "orcus/string_pool.hpp"
+
+#include <boost/scoped_ptr.hpp>
 
 namespace orcus {
 
@@ -70,6 +72,8 @@ private:
     void push_raw_cell_value();
 
 private:
+    boost::scoped_ptr<xml_context_base> mp_child;
+
     spreadsheet::iface::import_sheet* mp_sheet; /// sheet model instance for the loaded document.
     string_pool m_pool;
     spreadsheet::sheet_t m_sheet_id; /// ID of this sheet.
