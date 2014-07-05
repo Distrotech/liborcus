@@ -33,6 +33,18 @@ public:
     pstring get_value() const;
 };
 
+class single_long_attr_getter : public std::unary_function<xml_token_attr_t, void>
+{
+    long m_value;
+    xmlns_id_t m_ns;
+    xml_token_t m_name;
+
+public:
+    single_long_attr_getter(xmlns_id_t ns, xml_token_t name);
+    void operator() (const xml_token_attr_t& attr);
+    long get_value() const;
+};
+
 }
 
 #endif
