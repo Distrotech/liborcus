@@ -107,6 +107,11 @@ void xlsx_autofilter_context::characters(const pstring& /*str*/, bool /*transien
 {
 }
 
+const pstring& xlsx_autofilter_context::get_ref_range() const
+{
+    return m_ref_range;
+}
+
 const xlsx_autofilter_context::column_filters_type& xlsx_autofilter_context::get_column_filters() const
 {
     return m_column_filters;

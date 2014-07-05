@@ -34,6 +34,7 @@ public:
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
     virtual void characters(const pstring& str, bool transient);
 
+    const pstring& get_ref_range() const;
     const column_filters_type& get_column_filters() const;
 
 private:
