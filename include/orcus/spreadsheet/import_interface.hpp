@@ -222,6 +222,18 @@ public:
 };
 
 /**
+ * Interface for table.  A table is a range within a sheet that consists of
+ * one or more data columns with a header row that contains their labels.
+ */
+class ORCUS_DLLPUBLIC import_table
+{
+public:
+    virtual ~import_table() = 0;
+
+    virtual import_auto_filter* get_auto_filter();
+};
+
+/**
  * Interface for sheet.
  */
 class ORCUS_DLLPUBLIC import_sheet
@@ -232,9 +244,9 @@ public:
     virtual import_sheet_properties* get_sheet_properties();
 
     /**
-     * Get an interface for importing data tables.  Note that the implementor
+     * Get an interface for importing data tables.  Note that the implementer
      * may decide not to support this feature in which case this method
-     * returns NULL.  The implementor is responsible for managing the life
+     * returns NULL.  The implementer is responsible for managing the life
      * cycle of the returned interface object.
      *
      * @return pointer to the data table interface object.
@@ -247,6 +259,15 @@ public:
      * @return pointer to the auto filter interface object.
      */
     virtual import_auto_filter* get_auto_filter();
+
+    /**
+     * Get an interface for importing tables.  The implementer is responsible
+     * for managing the life cycle of the returned interface object.
+     *
+     * @return pointer to the table interface object, or NULL if the
+     *         implementer doesn't support importing of tables.
+     */
+    virtual import_table* get_table();
 
     /**
      * Set raw string value to a cell and have the implementation
