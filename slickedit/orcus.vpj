@@ -164,6 +164,7 @@
 					<F N="../include/orcus/spreadsheet/sheet.hpp"/>
 					<F N="../include/orcus/spreadsheet/sheet_properties.hpp"/>
 					<F N="../include/orcus/spreadsheet/styles.hpp"/>
+					<F N="../include/orcus/spreadsheet/table.hpp"/>
 					<F N="../include/orcus/spreadsheet/types.hpp"/>
 				</Folder>
 				<F N="../include/orcus/base64.hpp"/>

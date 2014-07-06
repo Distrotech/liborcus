@@ -11,6 +11,7 @@
 #include "orcus/spreadsheet/shared_strings.hpp"
 #include "orcus/spreadsheet/sheet_properties.hpp"
 #include "orcus/spreadsheet/data_table.hpp"
+#include "orcus/spreadsheet/table.hpp"
 #include "orcus/spreadsheet/document.hpp"
 
 #include "orcus/global.hpp"
@@ -91,6 +92,7 @@ struct sheet_impl : boost::noncopyable
     document& m_doc;
     sheet_properties m_sheet_props; /// sheet properties import interface.
     data_table m_data_table; /// data table import interface.
+    table m_table; // table import interface.
 
     mutable col_widths_store_type m_col_widths;
     mutable row_heights_store_type m_row_heights;
@@ -227,6 +229,11 @@ iface::import_sheet_properties* sheet::get_sheet_properties()
 iface::import_data_table* sheet::get_data_table()
 {
     return &mp_impl->m_data_table;
+}
+
+iface::import_table* sheet::get_table()
+{
+    return &mp_impl->m_table;
 }
 
 void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
