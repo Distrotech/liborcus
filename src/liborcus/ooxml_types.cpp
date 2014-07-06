@@ -7,6 +7,8 @@
 
 #include "ooxml_types.hpp"
 
+#include "orcus/global.hpp"
+
 namespace orcus {
 
 opc_rel_extra::~opc_rel_extra() {}
@@ -14,9 +16,7 @@ opc_rel_extra::~opc_rel_extra() {}
 opc_rel_extras_t::opc_rel_extras_t() {}
 opc_rel_extras_t::~opc_rel_extras_t()
 {
-    map_type::iterator it = data.begin(), it_end = data.end();
-    for (; it != it_end; ++it)
-        delete it->second;
+    std::for_each(data.begin(), data.end(), map_object_deleter<map_type>());
 }
 
 void opc_rel_extras_t::swap(opc_rel_extras_t& other)
