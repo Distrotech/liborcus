@@ -35,9 +35,16 @@ void xlsx_sheet_xml_handler::end_document()
 {
 }
 
+void xlsx_sheet_xml_handler::pop_rel_extras(opc_rel_extras_t& other)
+{
+    xlsx_sheet_context& cxt = static_cast<xlsx_sheet_context&>(get_root_context());
+    cxt.pop_rel_extras(other);
+}
+
 xlsx_table_xml_handler::xlsx_table_xml_handler(
-    session_context& session_cxt, const tokens& tokens) :
-    xml_stream_handler(new xlsx_table_context(session_cxt, tokens))
+    session_context& session_cxt, const tokens& tokens,
+    spreadsheet::iface::import_table* table) :
+    xml_stream_handler(new xlsx_table_context(session_cxt, tokens, table))
 {
 }
 

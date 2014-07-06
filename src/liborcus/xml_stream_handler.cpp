@@ -66,5 +66,10 @@ xml_context_base& xml_stream_handler::get_current_context()
     return *m_context_stack.back();
 }
 
+xml_context_base& xml_stream_handler::get_root_context()
+{
+    return *mp_root_context;
+}
+
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

@@ -9,6 +9,8 @@
 #define ORCUS_XLSX_SHEET_CONTEXT_HPP
 
 #include "xml_context_base.hpp"
+#include "ooxml_types.hpp"
+
 #include "orcus/spreadsheet/types.hpp"
 #include "orcus/string_pool.hpp"
 
@@ -67,6 +69,8 @@ public:
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
     virtual void characters(const pstring& str, bool transient);
 
+    void pop_rel_extras(opc_rel_extras_t& other);
+
 private:
     void end_element_cell();
     void push_raw_cell_value();
@@ -84,6 +88,11 @@ private:
     pstring      m_cur_str;
     pstring      m_cur_value;
     formula m_cur_formula;
+
+    /**
+     * Extra data to pass on to subsequent parts via relations.
+     */
+    opc_rel_extras_t m_rel_extras;
 };
 
 }

@@ -38,7 +38,7 @@ public:
 
 protected:
     xml_context_base& get_current_context();
-
+    xml_context_base& get_root_context();
 };
 
 }

@@ -42,15 +42,15 @@ private:
 
 struct process_opc_rel : public unary_function<void, opc_rel_t>
 {
-    process_opc_rel(opc_reader& parent, const opc_rel_extras_t* extras) :
+    process_opc_rel(opc_reader& parent, opc_rel_extras_t* extras) :
         m_parent(parent), m_extras(extras) {}
 
-    void operator() (const opc_rel_t& v)
+    void operator() (opc_rel_t& v)
     {
-        const opc_rel_extra* data = NULL;
+        opc_rel_extra* data = NULL;
         if (m_extras)
         {
-            opc_rel_extras_t::map_type::const_iterator it = m_extras->data.find(v.rid);
+            opc_rel_extras_t::map_type::iterator it = m_extras->data.find(v.rid);
             if (it != m_extras->data.end())
                 data = it->second;
         }
@@ -58,7 +58,7 @@ struct process_opc_rel : public unary_function<void, opc_rel_t>
     }
 private:
     opc_reader& m_parent;
-    const opc_rel_extras_t* m_extras;
+    opc_rel_extras_t* m_extras;
 };
 
 }
@@ -94,7 +94,7 @@ bool opc_reader::open_zip_stream(const string& path, vector<unsigned char>& buf)
     return m_archive->read_file_entry(path.c_str(), buf);
 }
 
-void opc_reader::read_part(const pstring& path, const schema_t type, const opc_rel_extra* data)
+void opc_reader::read_part(const pstring& path, const schema_t type, opc_rel_extra* data)
 {
     assert(!m_dir_stack.empty());
 
@@ -160,7 +160,7 @@ void opc_reader::read_part(const pstring& path, const schema_t type, const opc_r
     }
 }
 
-void opc_reader::check_relation_part(const std::string& file_name, const opc_rel_extras_t* extra)
+void opc_reader::check_relation_part(const std::string& file_name, opc_rel_extras_t* extra)
 {
     // Read the relationship file associated with this file, located at
     // _rels/<file name>.rels.

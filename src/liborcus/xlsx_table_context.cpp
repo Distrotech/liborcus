@@ -16,8 +16,9 @@ using namespace std;
 
 namespace orcus {
 
-xlsx_table_context::xlsx_table_context(session_context& session_cxt, const tokens& tokens) :
-    xml_context_base(session_cxt, tokens) {}
+xlsx_table_context::xlsx_table_context(
+    session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_table* table) :
+    xml_context_base(session_cxt, tokens), mp_table(table) {}
 
 xlsx_table_context::~xlsx_table_context() {}
 

@@ -61,7 +61,7 @@ public:
     virtual ~xlsx_opc_handler() {}
 
     virtual bool handle_part(
-        schema_t type, const std::string& dir_path, const std::string& file_name, const opc_rel_extra* data)
+        schema_t type, const std::string& dir_path, const std::string& file_name, opc_rel_extra* data)
     {
         if (type == SCH_od_rels_office_doc)
         {
@@ -70,7 +70,7 @@ public:
         }
         else if (type == SCH_od_rels_worksheet)
         {
-            m_parent.read_sheet(dir_path, file_name, static_cast<const xlsx_rel_sheet_info*>(data));
+            m_parent.read_sheet(dir_path, file_name, static_cast<xlsx_rel_sheet_info*>(data));
             return true;
         }
         else if (type == SCH_od_rels_shared_strings)
@@ -85,7 +85,7 @@ public:
         }
         else if (type == SCH_od_rels_table)
         {
-            m_parent.read_table(dir_path, file_name);
+            m_parent.read_table(dir_path, file_name, static_cast<xlsx_rel_table_info*>(data));
             return true;
         }
 
@@ -262,7 +262,7 @@ void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
     mp_impl->m_opc_reader.check_relation_part(file_name, &sheet_data);
 }
 
-void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, const xlsx_rel_sheet_info* data)
+void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, xlsx_rel_sheet_info* data)
 {
     if (!data || !data->id)
         // Sheet ID must not be 0.
@@ -292,8 +292,10 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, con
     parser.set_handler(handler.get());
     parser.parse();
 
+    opc_rel_extras_t table_info;
+    handler->pop_rel_extras(table_info);
     handler.reset();
-    mp_impl->m_opc_reader.check_relation_part(file_name, NULL);
+    mp_impl->m_opc_reader.check_relation_part(file_name, &table_info);
 }
 
 void orcus_xlsx::read_shared_strings(const string& dir_path, const string& file_name)
@@ -343,8 +345,15 @@ void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
     parser.parse();
 }
 
-void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file_name)
+void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file_name, xlsx_rel_table_info* data)
 {
+    if (!data || !data->sheet_interface)
+        return;
+
+    spreadsheet::iface::import_table* table = data->sheet_interface->get_table();
+    if (!table)
+        return;
+
     cout << "---" << endl;
     string filepath = resolve_file_path(dir_path, file_name);
     cout << "read_table: file path = " << filepath << endl;
@@ -359,8 +368,10 @@ void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file
     if (buffer.empty())
         return;
 
+    boost::scoped_ptr<xlsx_table_xml_handler> handler(
+        new xlsx_table_xml_handler(mp_impl->m_cxt, ooxml_tokens, table));
+
     xml_stream_parser parser(mp_impl->m_ns_repo, ooxml_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), file_name);
-    boost::scoped_ptr<xlsx_table_xml_handler> handler(new xlsx_table_xml_handler(mp_impl->m_cxt, ooxml_tokens));
     parser.set_handler(handler.get());
     parser.parse();
 

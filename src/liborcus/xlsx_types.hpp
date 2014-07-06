@@ -12,6 +12,12 @@
 
 namespace orcus {
 
+namespace spreadsheet { namespace iface {
+
+class import_sheet;
+
+}}
+
 struct xlsx_rel_sheet_info : public opc_rel_extra
 {
     pstring name;
@@ -20,6 +26,15 @@ struct xlsx_rel_sheet_info : public opc_rel_extra
     xlsx_rel_sheet_info() : id(0) {}
 
     virtual ~xlsx_rel_sheet_info() {}
+};
+
+struct xlsx_rel_table_info : public opc_rel_extra
+{
+    spreadsheet::iface::import_sheet* sheet_interface;
+
+    xlsx_rel_table_info() : sheet_interface(NULL) {}
+
+    virtual ~xlsx_rel_table_info() {}
 };
 
 }

@@ -56,7 +56,7 @@ public:
          * @return true if handled, false if not handled.
          */
         virtual bool handle_part(
-            schema_t type, const std::string& dir_path, const std::string& file_name, const opc_rel_extra* data) = 0;
+            schema_t type, const std::string& dir_path, const std::string& file_name, opc_rel_extra* data) = 0;
     };
 
     opc_reader(xmlns_repository& ns_repo, session_context& session_cxt, part_handler& handler);
@@ -71,7 +71,7 @@ public:
      * @param path the path to the xml part.
      * @param type schema type.
      */
-    void read_part(const pstring& path, const schema_t type, const opc_rel_extra* data);
+    void read_part(const pstring& path, const schema_t type, opc_rel_extra* data);
 
     /**
      * Check if a relation file exists for a given xml part, and if it does,
@@ -81,7 +81,7 @@ public:
      * @param extras optional extra data file for client code to pass on to
      *               the next xml part(s).
      */
-    void check_relation_part(const std::string& file_name, const opc_rel_extras_t* extras);
+    void check_relation_part(const std::string& file_name, opc_rel_extras_t* extras);
 
 private:
 

@@ -14,10 +14,17 @@
 
 namespace orcus {
 
+namespace spreadsheet { namespace iface {
+
+class import_table;
+
+}}
+
 class xlsx_table_context : public xml_context_base
 {
 public:
-    xlsx_table_context(session_context& session_cxt, const tokens& tokens);
+    xlsx_table_context(
+        session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_table* table);
     virtual ~xlsx_table_context();
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
@@ -29,6 +36,7 @@ public:
     virtual void characters(const pstring& str, bool transient);
 
 private:
+    spreadsheet::iface::import_table* mp_table;
     boost::scoped_ptr<xml_context_base> mp_child;
 };
 

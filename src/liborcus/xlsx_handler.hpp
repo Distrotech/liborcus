@@ -19,10 +19,12 @@
 namespace orcus {
 
 struct session_context;
+struct opc_rel_extras_t;
 
 namespace spreadsheet { namespace iface {
 
 class import_sheet;
+class import_table;
 
 }}
 
@@ -37,12 +39,16 @@ public:
 
     virtual void start_document();
     virtual void end_document();
+
+    void pop_rel_extras(opc_rel_extras_t& other);
 };
 
 class xlsx_table_xml_handler : public xml_stream_handler
 {
 public:
-    xlsx_table_xml_handler(session_context& cxt, const tokens& tokens);
+    xlsx_table_xml_handler(
+        session_context& cxt, const tokens& tokens, spreadsheet::iface::import_table* table);
+
     virtual void start_document();
     virtual void end_document();
 };

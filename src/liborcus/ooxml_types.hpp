@@ -49,8 +49,12 @@ struct opc_rel_extra
 
 struct opc_rel_extras_t : boost::noncopyable
 {
-    typedef boost::unordered_map<pstring, const opc_rel_extra*, pstring::hash> map_type;
+    typedef boost::unordered_map<pstring, opc_rel_extra*, pstring::hash> map_type;
 
+    /**
+     * Key is a textual relation ID, while the value is an arbitrary data
+     * associated with the relation ID.
+     */
     map_type data;
 
     opc_rel_extras_t();

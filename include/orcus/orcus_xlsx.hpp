@@ -15,6 +15,7 @@ namespace orcus {
 namespace spreadsheet { namespace iface { class import_factory; }}
 
 struct xlsx_rel_sheet_info;
+struct xlsx_rel_table_info;
 struct orcus_xlsx_impl;
 class xlsx_opc_handler;
 
@@ -43,7 +44,7 @@ private:
     /**
      * Parse a sheet xml part that contains data stored in a single sheet.
      */
-    void read_sheet(const std::string& dir_path, const std::string& file_name, const xlsx_rel_sheet_info* data);
+    void read_sheet(const std::string& dir_path, const std::string& file_name, xlsx_rel_sheet_info* data);
 
     /**
      * Parse sharedStrings.xml part that contains a list of strings referenced
@@ -53,7 +54,7 @@ private:
 
     void read_styles(const std::string& dir_path, const std::string& file_name);
 
-    void read_table(const std::string& dir_path, const std::string& file_name);
+    void read_table(const std::string& dir_path, const std::string& file_name, xlsx_rel_table_info* data);
 
 private:
     orcus_xlsx_impl* mp_impl;

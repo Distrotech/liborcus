@@ -8,6 +8,7 @@
 #include "xlsx_sheet_context.hpp"
 #include "xlsx_autofilter_context.hpp"
 #include "xlsx_session_data.hpp"
+#include "xlsx_types.hpp"
 #include "ooxml_global.hpp"
 #include "ooxml_schemas.hpp"
 #include "ooxml_token_constants.hpp"
@@ -499,6 +500,23 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
         case XML_v:
             xml_element_expected(parent, NS_ooxml_xlsx, XML_c);
         break;
+        case XML_tableParts:
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
+        break;
+        case XML_tablePart:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_tableParts);
+
+            // The rid string must be pooled to the session context's string
+            // pool as it is used long after thet sheet context is deleted.
+            single_attr_getter func(get_session_context().m_string_pool, NS_ooxml_r, XML_id);
+            pstring rid = for_each(attrs.begin(), attrs.end(), func).get_value();
+
+            unique_ptr<xlsx_rel_table_info> p(new xlsx_rel_table_info);
+            p->sheet_interface = mp_sheet;
+            m_rel_extras.data.insert(opc_rel_extras_t::map_type::value_type(rid, p.release()));
+        }
+        break;
         default:
             warn_unhandled();
     }
@@ -652,6 +670,11 @@ void xlsx_sheet_context::push_raw_cell_value()
         default:
             warn("unhanlded cell content type");
     }
+}
+
+void xlsx_sheet_context::pop_rel_extras(opc_rel_extras_t& other)
+{
+    m_rel_extras.swap(other);
 }
 
 }
