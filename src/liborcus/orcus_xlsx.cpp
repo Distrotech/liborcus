@@ -10,6 +10,7 @@
 #include "orcus/xml_namespace.hpp"
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
+#include "orcus/exception.hpp"
 
 #include "xlsx_types.hpp"
 #include "xlsx_handler.hpp"
@@ -281,8 +282,11 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, con
     cout << "relationship sheet data: " << endl;
     cout << "  sheet name: " << data->name << "  sheet ID: " << data->id << endl;
 
-    xml_stream_parser parser(mp_impl->m_ns_repo, ooxml_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), file_name);
     spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->append_sheet(data->name.get(), data->name.size());
+    if (!sheet)
+        throw general_error("orcus_xlsx::read_sheet: failed to append sheet.");
+
+    xml_stream_parser parser(mp_impl->m_ns_repo, ooxml_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), file_name);
     boost::scoped_ptr<xlsx_sheet_xml_handler> handler(
         new xlsx_sheet_xml_handler(mp_impl->m_cxt, ooxml_tokens, data->id-1, sheet));
     parser.set_handler(handler.get());
