@@ -122,6 +122,7 @@ orcus_xlsx_sheet_context_test_SOURCES = \
 	ooxml_global.cpp \
 	ooxml_namespace_types.cpp \
 	ooxml_tokens.cpp \
+	ooxml_types.cpp \
 	ooxml_schemas.cpp \
 	xml_context_base.cpp \
 	xml_context_global.cpp \
