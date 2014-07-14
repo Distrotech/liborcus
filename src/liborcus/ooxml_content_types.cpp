@@ -26,6 +26,9 @@ const content_type_t CT_ooxml_xlsx_sheet_main       = "application/vnd.openxmlfo
 const content_type_t CT_ooxml_xlsx_styles           = "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml";
 const content_type_t CT_ooxml_xlsx_table            = "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml";
 const content_type_t CT_ooxml_xlsx_worksheet        = "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
+const content_type_t CT_ooxml_xlsx_usernames        = "application/vnd.openxmlformats-officedocument.spreadsheetml.userNames+xml";
+const content_type_t CT_ooxml_xlsx_rev_headers      = "application/vnd.openxmlformats-officedocument.spreadsheetml.revisionHeaders+xml";
+const content_type_t CT_ooxml_xlsx_rev_log          = "application/vnd.openxmlformats-officedocument.spreadsheetml.revisionLog+xml";
 const content_type_t CT_ooxml_theme                 = "application/vnd.openxmlformats-officedocument.theme+xml";
 const content_type_t CT_opc_core_properties         = "application/vnd.openxmlformats-package.core-properties+xml";
 const content_type_t CT_opc_relationships           = "application/vnd.openxmlformats-package.relationships+xml";
@@ -51,6 +54,9 @@ content_type_t cts[] = {
     CT_ooxml_xlsx_styles,
     CT_ooxml_xlsx_table,
     CT_ooxml_xlsx_worksheet,
+    CT_ooxml_xlsx_usernames,
+    CT_ooxml_xlsx_rev_headers,
+    CT_ooxml_xlsx_rev_log,
     CT_ooxml_theme,
     CT_opc_core_properties,
     CT_opc_relationships,
