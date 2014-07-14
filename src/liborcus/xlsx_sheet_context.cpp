@@ -426,7 +426,12 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
         }
         break;
         case XML_pageMargins:
-            xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
+        {
+            xml_elem_stack_t elems;
+            elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_worksheet));
+            elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_customSheetView));
+            xml_element_expected(parent, elems);
+        }
         break;
         case XML_sheetViews:
             xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
@@ -435,7 +440,12 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             xml_element_expected(parent, NS_ooxml_xlsx, XML_sheetViews);
         break;
         case XML_selection:
-            xml_element_expected(parent, NS_ooxml_xlsx, XML_sheetView);
+        {
+            xml_elem_stack_t elems;
+            elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_sheetView));
+            elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_customSheetView));
+            xml_element_expected(parent, elems);
+        }
         break;
         case XML_sheetData:
             xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
