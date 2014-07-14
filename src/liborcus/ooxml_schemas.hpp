@@ -15,11 +15,14 @@ namespace orcus {
 extern schema_t SCH_opc_content_types;
 extern schema_t SCH_opc_rels;
 extern schema_t SCH_opc_rels_metadata_core_props;
+extern schema_t SCH_od_rels_calc_chain;
 extern schema_t SCH_od_rels_connections;
 extern schema_t SCH_od_rels_printer_settings;
+extern schema_t SCH_od_rels_rev_headers;
 extern schema_t SCH_od_rels_shared_strings;
 extern schema_t SCH_od_rels_styles;
 extern schema_t SCH_od_rels_theme;
+extern schema_t SCH_od_rels_usernames;
 extern schema_t SCH_od_rels_worksheet;
 extern schema_t SCH_od_rels_extended_props;
 extern schema_t SCH_od_rels_office_doc;
