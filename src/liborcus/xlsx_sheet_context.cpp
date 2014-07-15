@@ -133,14 +133,14 @@ class cell_attr_parser : public std::unary_function<xml_token_attr_t, void>
         address(spreadsheet::row_t _row, spreadsheet::col_t _col) : row(_row), col(_col) {}
     };
 
-    xlsx_sheet_context::cell_type m_type;
+    xlsx_cell_t m_type;
     address m_address;
     size_t m_xf;
     bool m_contains_address;
 
 public:
     cell_attr_parser() :
-        m_type(xlsx_sheet_context::cell_type_value),
+        m_type(xlsx_ct_numeric),
         m_address(0,0),
         m_xf(0),
         m_contains_address(false) {}
@@ -156,7 +156,7 @@ public:
             break;
             case XML_t:
                 // cell type
-                m_type = to_cell_type(attr.value);
+                m_type = to_xlsx_cell_type(attr.value);
             break;
             case XML_s:
                 // cell style
@@ -165,7 +165,7 @@ public:
         }
     }
 
-    xlsx_sheet_context::cell_type get_cell_type() const { return m_type; }
+    xlsx_cell_t get_cell_type() const { return m_type; }
 
     spreadsheet::row_t get_row() const { return m_address.row; }
     spreadsheet::col_t get_col() const { return m_address.col; }
@@ -173,25 +173,6 @@ public:
     bool contains_address() const { return m_contains_address; }
 
 private:
-    xlsx_sheet_context::cell_type to_cell_type(const pstring& s) const
-    {
-        xlsx_sheet_context::cell_type t = xlsx_sheet_context::cell_type_value;
-        if (s == "s")
-            t = xlsx_sheet_context::cell_type_string;
-        else if (s == "str")
-            // formula string
-            t = xlsx_sheet_context::cell_type_formula_string;
-        else if (s == "b")
-            // boolean
-            t = xlsx_sheet_context::cell_type_boolean;
-        else if (s == "e")
-            // error
-            t = xlsx_sheet_context::cell_type_error;
-        else if (s == "inlineStr")
-            t = xlsx_sheet_context::cell_type_inline_string;
-
-        return t;
-    }
 
     address to_cell_address(const pstring& s) const
     {
@@ -307,7 +288,7 @@ xlsx_sheet_context::xlsx_sheet_context(
     m_sheet_id(sheet_id),
     m_cur_row(-1),
     m_cur_col(-1),
-    m_cur_cell_type(cell_type_value),
+    m_cur_cell_type(xlsx_ct_numeric),
     m_cur_cell_xf(0)
 {
 }
@@ -656,21 +637,21 @@ void xlsx_sheet_context::push_raw_cell_value()
 
     switch (m_cur_cell_type)
     {
-        case cell_type_string:
+        case xlsx_ct_shared_string:
         {
             // string cell
             size_t str_id = to_long(m_cur_value);
             mp_sheet->set_string(m_cur_row, m_cur_col, str_id);
         }
         break;
-        case cell_type_value:
+        case xlsx_ct_numeric:
         {
             // value cell
             double val = to_double(m_cur_value);
             mp_sheet->set_value(m_cur_row, m_cur_col, val);
         }
         break;
-        case cell_type_boolean:
+        case xlsx_ct_boolean:
         {
             // boolean cell
             bool val = to_long(m_cur_value) != 0;

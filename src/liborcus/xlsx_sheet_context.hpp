@@ -10,6 +10,7 @@
 
 #include "xml_context_base.hpp"
 #include "ooxml_types.hpp"
+#include "xlsx_types.hpp"
 
 #include "orcus/spreadsheet/types.hpp"
 #include "orcus/string_pool.hpp"
@@ -30,14 +31,6 @@ namespace spreadsheet { namespace iface {
 class xlsx_sheet_context : public xml_context_base
 {
 public:
-    enum cell_type {
-        cell_type_string,
-        cell_type_formula_string,
-        cell_type_value,
-        cell_type_boolean,
-        cell_type_error,
-        cell_type_inline_string
-    };
 
     struct formula
     {
@@ -83,7 +76,7 @@ private:
     spreadsheet::sheet_t m_sheet_id; /// ID of this sheet.
     spreadsheet::row_t m_cur_row;
     spreadsheet::col_t m_cur_col;
-    cell_type    m_cur_cell_type;
+    xlsx_cell_t m_cur_cell_type;
     size_t       m_cur_cell_xf;
     pstring      m_cur_str;
     pstring      m_cur_value;
