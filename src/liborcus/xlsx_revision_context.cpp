@@ -464,16 +464,36 @@ void xlsx_revlog_context::start_element(xmlns_id_t ns, xml_token_t name, const v
             }
             break;
             case XML_f:
-                xml_element_expected(parent, NS_ooxml_xlsx, XML_nc);
+            {
+                xml_elem_stack_t elems;
+                elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_oc));
+                elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_nc));
+                xml_element_expected(parent, elems);
+            }
             break;
             case XML_v:
-                xml_element_expected(parent, NS_ooxml_xlsx, XML_nc);
+            {
+                xml_elem_stack_t elems;
+                elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_oc));
+                elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_nc));
+                xml_element_expected(parent, elems);
+            }
             break;
             case XML_is:
-                xml_element_expected(parent, NS_ooxml_xlsx, XML_nc);
+            {
+                xml_elem_stack_t elems;
+                elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_oc));
+                elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_nc));
+                xml_element_expected(parent, elems);
+            }
             break;
             case XML_t:
-                xml_element_expected(parent, NS_ooxml_xlsx, XML_is);
+            {
+                xml_elem_stack_t elems;
+                elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_is));
+                elems.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_r));
+                xml_element_expected(parent, elems);
+            }
             break;
             default:
                 warn_unhandled();
