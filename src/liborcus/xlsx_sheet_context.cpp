@@ -28,7 +28,7 @@ namespace orcus {
 
 namespace {
 
-class col_attr_parser : public std::unary_function<void, xml_token_attr_t>
+class col_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
     long m_min;
     long m_max;
@@ -79,7 +79,7 @@ public:
     bool is_hidden() const { return m_hidden; }
 };
 
-class row_attr_parser : public std::unary_function<void, xml_token_attr_t>
+class row_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
     spreadsheet::row_t m_row;
     length_t m_height;

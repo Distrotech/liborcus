@@ -8,6 +8,7 @@
 #include "orcus/types.hpp"
 
 #include <limits>
+#include <sstream>
 
 namespace orcus {
 
@@ -17,4 +18,16 @@ const xml_token_t XML_UNKNOWN_TOKEN = 0;
 const size_t index_not_found = std::numeric_limits<size_t>::max();
 const size_t unspecified = std::numeric_limits<size_t>::max()-1;
 
-}/* vim:set shiftwidth=4 softtabstop=4 expandtab: */
+date_time_t::date_time_t() :
+    year(0), month(0), day(0), hour(0), minute(0), second(0.0) {}
+
+std::string date_time_t::to_string() const
+{
+    std::ostringstream os;
+    os << year << "-" << month << "-" << day << "T" << hour << ":" << minute << ":" << second;
+    return os.str();
+}
+
+}
+
+/* vim:set shiftwidth=4 softtabstop=4 expandtab: */

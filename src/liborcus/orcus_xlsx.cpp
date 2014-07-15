@@ -124,6 +124,7 @@ orcus_xlsx::orcus_xlsx(spreadsheet::iface::import_factory* factory) :
 {
     mp_impl->m_ns_repo.add_predefined_values(NS_ooxml_all);
     mp_impl->m_ns_repo.add_predefined_values(NS_opc_all);
+    mp_impl->m_ns_repo.add_predefined_values(NS_misc_all);
 }
 
 orcus_xlsx::~orcus_xlsx()

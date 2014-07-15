@@ -15,6 +15,8 @@ const xmlns_id_t NS_ooxml_xlsx = "http://schemas.openxmlformats.org/spreadsheetm
 const xmlns_id_t NS_opc_ct  = "http://schemas.openxmlformats.org/package/2006/content-types";
 const xmlns_id_t NS_opc_rel = "http://schemas.openxmlformats.org/package/2006/relationships";
 
+const xmlns_id_t NS_mc = "http://schemas.openxmlformats.org/markup-compatibility/2006";
+
 namespace {
 
 xmlns_id_t ooxml_ns[] = {
@@ -29,11 +31,16 @@ xmlns_id_t opc_ns[] = {
     NULL
 };
 
+xmlns_id_t misc_ns[] = {
+    NS_mc,
+    NULL
+};
+
 }
 
 const xmlns_id_t* NS_ooxml_all = ooxml_ns;
 const xmlns_id_t* NS_opc_all = opc_ns;
-
+const xmlns_id_t* NS_misc_all = misc_ns;
 
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

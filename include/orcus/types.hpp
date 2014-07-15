@@ -69,7 +69,7 @@ enum length_unit_t
     // TODO: Add more.
 };
 
-struct date_time_t
+struct ORCUS_DLLPUBLIC date_time_t
 {
     int year;
     int month;
@@ -78,7 +78,9 @@ struct date_time_t
     int minute;
     double second;
 
-    date_time_t() : year(0), month(0), day(0), hour(0), minute(0), second(0.0) {}
+    date_time_t();
+
+    std::string to_string() const;
 };
 
 typedef ::std::vector<xml_token_attr_t> xml_attrs_t;

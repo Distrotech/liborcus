@@ -14,6 +14,7 @@ namespace orcus {
 
 class xlsx_revheaders_context : public xml_context_base
 {
+    std::vector<long> m_cur_sheet_ids; /// current sheet ID's.
 public:
     xlsx_revheaders_context(session_context& session_cxt, const tokens& tokens);
     virtual ~xlsx_revheaders_context();
