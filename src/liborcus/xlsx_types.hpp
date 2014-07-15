@@ -37,7 +37,7 @@ struct xlsx_rel_table_info : public opc_rel_extra
     virtual ~xlsx_rel_table_info() {}
 };
 
-enum xlsx_cell_type
+enum xlsx_cell_t
 {
     xlsx_ct_unknown = 0,
     xlsx_ct_boolean,
@@ -48,9 +48,22 @@ enum xlsx_cell_type
     xlsx_ct_formula_string,
 };
 
-xlsx_cell_type to_xlsx_cell_type(const pstring& s);
+xlsx_cell_t to_xlsx_cell_type(const pstring& s);
 
-pstring to_string(xlsx_cell_type type);
+pstring to_string(xlsx_cell_t type);
+
+enum xlsx_rev_row_column_action_t
+{
+    xlsx_rev_rca_unknown = 0,
+    xlsx_rev_rca_delete_column,
+    xlsx_rev_rca_delete_row,
+    xlsx_rev_rca_insert_column,
+    xlsx_rev_rca_insert_row
+};
+
+xlsx_rev_row_column_action_t to_xlsx_rev_row_column_action_type(const pstring& s);
+
+pstring to_string(xlsx_rev_row_column_action_t type);
 
 }
 

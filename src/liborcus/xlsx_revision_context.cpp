@@ -268,16 +268,65 @@ public:
     }
 };
 
+class rrc_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+    long m_revision_id;
+    long m_sheet_id;
+
+    pstring m_ref;
+    xlsx_rev_row_column_action_t m_action_type;
+
+    bool m_end_of_list;
+
+public:
+    rrc_attr_parser() : m_revision_id(-1), m_sheet_id(-1), m_end_of_list(false) {}
+
+    long get_revision_id() const { return m_revision_id; }
+    long get_sheet_id() const { return m_sheet_id; }
+    bool is_end_of_list() const { return m_end_of_list; }
+    pstring get_ref() const { return m_ref; }
+    xlsx_rev_row_column_action_t get_action_type() const { return m_action_type; }
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        switch (attr.name)
+        {
+            case XML_rId:
+                // revision ID
+                m_revision_id = to_long(attr.value);
+            break;
+            case XML_sId:
+                // sheet ID
+                m_sheet_id = to_long(attr.value);
+            break;
+            case XML_eol:
+                m_end_of_list = to_long(attr.value) > 0;
+            break;
+            case XML_ref:
+                if (!attr.transient)
+                    m_ref = attr.value;
+            case XML_action:
+                m_action_type = to_xlsx_rev_row_column_action_type(attr.value);
+            break;
+            default:
+                ;
+        }
+    }
+};
+
 class cell_data_attr_parser : public unary_function<xml_token_attr_t, void>
 {
     pstring m_ref;
-    xlsx_cell_type m_type;
+    xlsx_cell_t m_type;
 
 public:
     cell_data_attr_parser() : m_type(xlsx_ct_numeric) {}
 
     pstring get_ref() const { return m_ref; }
-    xlsx_cell_type get_cell_type() const { return m_type; }
+    xlsx_cell_t get_cell_type() const { return m_type; }
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -378,8 +427,17 @@ void xlsx_revlog_context::start_element(xmlns_id_t ns, xml_token_t name, const v
                 xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
             break;
             case XML_rrc:
+            {
                 // revision row column insert delete
                 xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+                rrc_attr_parser func;
+                func = for_each(attrs.begin(), attrs.end(), func);
+                cout << "* revision id: " << func.get_revision_id() << "  type: row column insert delete" << endl;
+                cout << "  - sheet index: " << func.get_sheet_id() << endl;
+                cout << "  - action type: " << to_string(func.get_action_type()) << endl;
+                cout << "  - range: " << func.get_ref() << endl;
+                cout << "  - end of list: " << (func.is_end_of_list() ? "true":"false") << endl;
+            }
             break;
             case XML_rsnm:
                 // revision sheet name
