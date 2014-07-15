@@ -140,17 +140,17 @@ xlsx_revheaders_context::xlsx_revheaders_context(session_context& session_cxt, c
 
 xlsx_revheaders_context::~xlsx_revheaders_context() {}
 
-bool xlsx_revheaders_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
+bool xlsx_revheaders_context::can_handle_element(xmlns_id_t /*ns*/, xml_token_t /*name*/) const
 {
     return true;
 }
 
-xml_context_base* xlsx_revheaders_context::create_child_context(xmlns_id_t ns, xml_token_t name)
+xml_context_base* xlsx_revheaders_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
     return NULL;
 }
 
-void xlsx_revheaders_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+void xlsx_revheaders_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
 {
 }
 
@@ -230,7 +230,7 @@ bool xlsx_revheaders_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void xlsx_revheaders_context::characters(const pstring& str, bool transient)
+void xlsx_revheaders_context::characters(const pstring& /*str*/, bool /*transient*/)
 {
 }
 
@@ -239,25 +239,91 @@ xlsx_revlog_context::xlsx_revlog_context(session_context& session_cxt, const tok
 
 xlsx_revlog_context::~xlsx_revlog_context() {}
 
-bool xlsx_revlog_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
+bool xlsx_revlog_context::can_handle_element(xmlns_id_t /*ns*/, xml_token_t /*name*/) const
 {
     return true;
 }
 
-xml_context_base* xlsx_revlog_context::create_child_context(xmlns_id_t ns, xml_token_t name)
+xml_context_base* xlsx_revlog_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
     return NULL;
 }
 
-void xlsx_revlog_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+void xlsx_revlog_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
 {
 }
 
 void xlsx_revlog_context::start_element(xmlns_id_t ns, xml_token_t name, const vector<xml_token_attr_t>& attrs)
 {
-    /*xml_token_pair_t parent =*/ push_stack(ns, name);
+    xml_token_pair_t parent = push_stack(ns, name);
 
-    warn_unhandled();
+    if (ns == NS_ooxml_xlsx)
+    {
+        switch (name)
+        {
+            case XML_revisions:
+                xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
+            break;
+            case XML_raf:
+                // revision auto format
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            break;
+            case XML_rcc:
+            {
+                // revision cell change
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            }
+            break;
+            case XML_rcft:
+                // revision merge conflict
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            break;
+            case XML_rcmt:
+                // revision cell comment
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            break;
+            case XML_rcv:
+                // revision custom view
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            break;
+            case XML_rdn:
+                // revision defined name
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            break;
+            case XML_rfmt:
+                // revision format
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            break;
+            case XML_ris:
+                // revision insert sheet
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            break;
+            case XML_rm:
+                // revision cell move
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            break;
+            case XML_rqt:
+                // revision query table
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            break;
+            case XML_rrc:
+                // revision row column insert delete
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            break;
+            case XML_rsnm:
+                // revision sheet name
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+            break;
+            case XML_nc:
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_rcc);
+            break;
+            case XML_v:
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_nc);
+            break;
+            default:
+                warn_unhandled();
+        }
+    }
 }
 
 bool xlsx_revlog_context::end_element(xmlns_id_t ns, xml_token_t name)
