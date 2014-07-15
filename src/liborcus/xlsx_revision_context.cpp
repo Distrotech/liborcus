@@ -180,8 +180,14 @@ void xlsx_revheaders_context::start_element(xmlns_id_t ns, xml_token_t name, con
                 cout << "* revision header (guid:" << func.get_guid() << ")" << endl;
                 cout << "  - timestamp: " << func.get_date_time().to_string() << endl;
                 cout << "  - user name: " << func.get_username() << endl;
-                cout << "  - revision range: " << func.get_min_revid() << "-" << func.get_max_revid() << endl;
-                cout << "  - next available sheet: " << (func.get_next_sheet_id()-1) << endl;
+
+                if (func.get_min_revid() != -1 && func.get_max_revid() != -1)
+                    cout << "  - revision range: " << func.get_min_revid() << "-" << func.get_max_revid() << endl;
+
+                long next_sheet = func.get_next_sheet_id();
+                if (next_sheet != -1)
+                    cout << "  - next available sheet: " << (next_sheet - 1) << endl;
+
                 cout << "  - revision log rid: " << func.get_rid() << endl;
                 // TODO : Intern the rid here when passing it to the revision log stream.
             }
