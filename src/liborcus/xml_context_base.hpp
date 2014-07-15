@@ -16,6 +16,7 @@ namespace orcus {
 
 struct session_context;
 class tokens;
+class xmlns_context;
 
 typedef ::std::pair<xmlns_id_t, xml_token_t> xml_token_pair_t;
 typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
@@ -52,6 +53,8 @@ public:
      */
     virtual void characters(const pstring& str, bool transient) = 0;
 
+    void set_ns_context(const xmlns_context* p);
+
 protected:
     session_context& get_session_context();
     const tokens& get_tokens() const;
@@ -82,6 +85,7 @@ protected:
         const xml_token_pair_t& elem, const xml_elem_stack_t& expected_elems);
 
 private:
+    const xmlns_context* mp_ns_cxt;
     session_context& m_session_cxt;
     const tokens& m_tokens;
     xml_elem_stack_t m_stack;

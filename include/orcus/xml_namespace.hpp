@@ -92,6 +92,18 @@ public:
     xmlns_id_t get(const pstring& key) const;
     size_t get_index(xmlns_id_t ns_id) const;
     std::string get_short_name(xmlns_id_t ns_id) const;
+
+    /**
+     * Get an alias currently associated with a given namespace identifier.
+     *
+     * @param ns_id namespace identifier.
+     *
+     * @return alias name currently associted with the given namespace
+     *         identifier, or an empty string if the given namespace is
+     *         currently not associated with any aliases.
+     */
+    pstring get_alias(xmlns_id_t ns_id) const;
+
     void get_all_namespaces(std::vector<xmlns_id_t>& nslist) const;
 
     void dump(std::ostream& os) const;

@@ -17,9 +17,11 @@
 namespace orcus {
 
 class xml_context_base;
+class xmlns_context;
 
 class xml_stream_handler
 {
+    const xmlns_context* mp_ns_cxt;
     xml_context_base* mp_root_context;
     typedef std::vector<xml_context_base*> context_stack_type;
     context_stack_type m_context_stack;
@@ -35,6 +37,8 @@ public:
     virtual void start_element(const sax_token_parser_element& elem);
     virtual void end_element(const sax_token_parser_element& elem);
     virtual void characters(const pstring& str, bool transient);
+
+    void set_ns_context(const xmlns_context* p);
 
 protected:
     xml_context_base& get_current_context();

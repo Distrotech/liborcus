@@ -13,6 +13,7 @@
 namespace orcus {
 
 xml_stream_handler::xml_stream_handler(xml_context_base* root_context) :
+    mp_ns_cxt(NULL),
     mp_root_context(root_context)
 {
     m_context_stack.push_back(root_context);
@@ -27,7 +28,10 @@ void xml_stream_handler::start_element(const sax_token_parser_element& elem)
 {
     xml_context_base& cur = get_current_context();
     if (!cur.can_handle_element(elem.ns, elem.name))
+    {
         m_context_stack.push_back(cur.create_child_context(elem.ns, elem.name));
+        m_context_stack.back()->set_ns_context(mp_ns_cxt);
+    }
 
     get_current_context().start_element(elem.ns, elem.name, elem.attrs);
 }
@@ -56,6 +60,13 @@ void xml_stream_handler::end_element(const sax_token_parser_element& elem)
 void xml_stream_handler::characters(const pstring& str, bool transient)
 {
     get_current_context().characters(str, transient);
+}
+
+void xml_stream_handler::set_ns_context(const xmlns_context* p)
+{
+    mp_ns_cxt = p;
+    if (!m_context_stack.empty())
+        m_context_stack.back()->set_ns_context(p);
 }
 
 xml_context_base& xml_stream_handler::get_current_context()

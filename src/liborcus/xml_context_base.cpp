@@ -18,7 +18,7 @@ namespace orcus {
 
 namespace {
 
-void print_stack(const tokens& tokens, const xml_elem_stack_t& elem_stack)
+void print_stack(const tokens& tokens, const xml_elem_stack_t& elem_stack, const xmlns_context* ns_cxt)
 {
     cerr << "[ ";
     xml_elem_stack_t::const_iterator itr, itr_beg = elem_stack.begin(), itr_end = elem_stack.end();
@@ -26,7 +26,19 @@ void print_stack(const tokens& tokens, const xml_elem_stack_t& elem_stack)
     {
         if (itr != itr_beg)
             cerr << " -> ";
-        cerr << itr->first << ":" << tokens.get_token_name(itr->second);
+
+        xmlns_id_t ns = itr->first;
+        pstring alias;
+        if (ns_cxt)
+        {
+            alias = ns_cxt->get_alias(ns);
+            if (!alias.empty())
+                cerr << alias << ":";
+        }
+        else
+            cerr << ns << ":";
+
+        cerr << tokens.get_token_name(itr->second);
     }
     cerr << " ]";
 }
@@ -34,10 +46,15 @@ void print_stack(const tokens& tokens, const xml_elem_stack_t& elem_stack)
 }
 
 xml_context_base::xml_context_base(session_context& session_cxt, const tokens& tokens) :
-    m_session_cxt(session_cxt), m_tokens(tokens) {}
+    mp_ns_cxt(NULL), m_session_cxt(session_cxt), m_tokens(tokens) {}
 
 xml_context_base::~xml_context_base()
 {
+}
+
+void xml_context_base::set_ns_context(const xmlns_context* p)
+{
+    mp_ns_cxt = p;
 }
 
 session_context& xml_context_base::get_session_context()
@@ -101,14 +118,14 @@ const xml_token_pair_t& xml_context_base::get_parent_element() const
 void xml_context_base::warn_unhandled() const
 {
     cerr << "warning: unhandled element ";
-    print_stack(m_tokens, m_stack);
+    print_stack(m_tokens, m_stack, mp_ns_cxt);
     cerr << endl;
 }
 
 void xml_context_base::warn_unexpected() const
 {
     cerr << "warning: unexpected element ";
-    print_stack(m_tokens, m_stack);
+    print_stack(m_tokens, m_stack, mp_ns_cxt);
     cerr << endl;
 }
 

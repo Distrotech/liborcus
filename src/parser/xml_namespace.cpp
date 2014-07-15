@@ -308,6 +308,22 @@ string xmlns_context::get_short_name(xmlns_id_t ns_id) const
     return mp_impl->m_repo.get_short_name(ns_id);
 }
 
+pstring xmlns_context::get_alias(xmlns_id_t ns_id) const
+{
+    alias_map_type::const_iterator it = mp_impl->m_map.begin(), it_end = mp_impl->m_map.end();
+    for (; it != it_end; ++it)
+    {
+        const xmlns_list_type& lst = it->second;
+        if (lst.empty())
+            continue;
+
+        if (lst.back() == ns_id)
+            return it->first;
+    }
+
+    return pstring();
+}
+
 namespace {
 
 #if ORCUS_DEBUG_XML_NAMESPACE
