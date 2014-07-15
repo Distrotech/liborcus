@@ -16,6 +16,7 @@
 #include "xlsx_handler.hpp"
 #include "xlsx_context.hpp"
 #include "xlsx_workbook_context.hpp"
+#include "xlsx_revheaders_context.hpp"
 #include "ooxml_tokens.hpp"
 
 #include "xml_stream_parser.hpp"
@@ -86,6 +87,11 @@ public:
         else if (type == SCH_od_rels_table)
         {
             m_parent.read_table(dir_path, file_name, static_cast<xlsx_rel_table_info*>(data));
+            return true;
+        }
+        else if (type == SCH_od_rels_rev_headers)
+        {
+            m_parent.read_rev_headers(dir_path, file_name);
             return true;
         }
 
@@ -376,6 +382,33 @@ void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file
     parser.parse();
 
     handler.reset();
+}
+
+void orcus_xlsx::read_rev_headers(const std::string& dir_path, const std::string& file_name)
+{
+    cout << "---" << endl;
+    string filepath = resolve_file_path(dir_path, file_name);
+    cout << "read_rev_headers: file path = " << filepath << endl;
+
+    vector<unsigned char> buffer;
+    if (!mp_impl->m_opc_reader.open_zip_stream(filepath, buffer))
+    {
+        cerr << "failed to open zip stream: " << filepath << endl;
+        return;
+    }
+
+    if (buffer.empty())
+        return;
+
+    xml_stream_parser parser(mp_impl->m_ns_repo, ooxml_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), file_name);
+    boost::scoped_ptr<xml_simple_stream_handler> handler(
+        new xml_simple_stream_handler(
+            new xlsx_revheaders_context(mp_impl->m_cxt, ooxml_tokens)));
+    parser.set_handler(handler.get());
+    parser.parse();
+
+    handler.reset();
+    mp_impl->m_opc_reader.check_relation_part(file_name, NULL);
 }
 
 }

@@ -101,6 +101,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	xlsx_handler.hpp \
 	xlsx_session_data.hpp \
 	xlsx_session_data.cpp \
+	xlsx_revheaders_context.cpp \
+	xlsx_revheaders_context.hpp \
 	xlsx_sheet_context.cpp \
 	xlsx_sheet_context.hpp \
 	xlsx_table_context.cpp \

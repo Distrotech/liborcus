@@ -56,6 +56,8 @@ private:
 
     void read_table(const std::string& dir_path, const std::string& file_name, xlsx_rel_table_info* data);
 
+    void read_rev_headers(const std::string& dir_path, const std::string& file_name);
+
 private:
     orcus_xlsx_impl* mp_impl;
 };
