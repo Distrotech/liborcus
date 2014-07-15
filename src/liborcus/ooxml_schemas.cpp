@@ -17,6 +17,7 @@ schema_t SCH_od_rels_calc_chain           = "http://schemas.openxmlformats.org/o
 schema_t SCH_od_rels_connections          = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/connections";
 schema_t SCH_od_rels_printer_settings     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/printerSettings";
 schema_t SCH_od_rels_rev_headers          = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/revisionHeaders";
+schema_t SCH_od_rels_rev_log              = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/revisionLog";
 schema_t SCH_od_rels_shared_strings       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings";
 schema_t SCH_od_rels_styles               = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles";
 schema_t SCH_od_rels_theme                = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme";
@@ -39,6 +40,7 @@ schema_t schs[] = {
     SCH_od_rels_connections,
     SCH_od_rels_printer_settings,
     SCH_od_rels_rev_headers,
+    SCH_od_rels_rev_log,
     SCH_od_rels_shared_strings,
     SCH_od_rels_styles,
     SCH_od_rels_theme,

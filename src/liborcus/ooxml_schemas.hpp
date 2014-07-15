@@ -20,6 +20,7 @@ extern schema_t SCH_od_rels_calc_chain;
 extern schema_t SCH_od_rels_connections;
 extern schema_t SCH_od_rels_printer_settings;
 extern schema_t SCH_od_rels_rev_headers;
+extern schema_t SCH_od_rels_rev_log;
 extern schema_t SCH_od_rels_shared_strings;
 extern schema_t SCH_od_rels_styles;
 extern schema_t SCH_od_rels_theme;

@@ -44,6 +44,39 @@ void xlsx_revheaders_context::characters(const pstring& str, bool transient)
 {
 }
 
+xlsx_revlog_context::xlsx_revlog_context(session_context& session_cxt, const tokens& tokens) :
+    xml_context_base(session_cxt, tokens) {}
+
+xlsx_revlog_context::~xlsx_revlog_context() {}
+
+bool xlsx_revlog_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
+{
+    return true;
+}
+
+xml_context_base* xlsx_revlog_context::create_child_context(xmlns_id_t ns, xml_token_t name)
+{
+    return NULL;
+}
+
+void xlsx_revlog_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+{
+}
+
+void xlsx_revlog_context::start_element(xmlns_id_t ns, xml_token_t name, const vector<xml_token_attr_t>& attrs)
+{
+    /*xml_token_pair_t parent =*/ push_stack(ns, name);
+}
+
+bool xlsx_revlog_context::end_element(xmlns_id_t ns, xml_token_t name)
+{
+    return pop_stack(ns, name);
+}
+
+void xlsx_revlog_context::characters(const pstring& str, bool transient)
+{
+}
+
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
