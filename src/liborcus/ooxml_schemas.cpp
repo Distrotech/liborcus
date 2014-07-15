@@ -9,6 +9,7 @@
 
 namespace orcus {
 
+schema_t SCH_mc                           = "http://schemas.openxmlformats.org/markup-compatibility/2006";
 schema_t SCH_opc_content_types            = "http://schemas.openxmlformats.org/package/2006/content-types";
 schema_t SCH_opc_rels                     = "http://schemas.openxmlformats.org/package/2006/relationships";
 schema_t SCH_opc_rels_metadata_core_props = "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties";
@@ -25,10 +26,12 @@ schema_t SCH_od_rels_extended_props       = "http://schemas.openxmlformats.org/o
 schema_t SCH_od_rels_office_doc           = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
 schema_t SCH_od_rels_table                = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table";
 schema_t SCH_xlsx_main                    = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+schema_t SCH_mso_x14ac                    = "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac";
 
 namespace {
 
 schema_t schs[] = {
+    SCH_mc,
     SCH_opc_content_types,
     SCH_opc_rels,
     SCH_opc_rels_metadata_core_props,
@@ -45,6 +48,7 @@ schema_t schs[] = {
     SCH_od_rels_office_doc,
     SCH_od_rels_table,
     SCH_xlsx_main,
+    SCH_mso_x14ac,
     NULL
 };
 

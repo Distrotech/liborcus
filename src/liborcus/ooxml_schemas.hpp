@@ -12,6 +12,7 @@
 
 namespace orcus {
 
+extern schema_t SCH_mc;
 extern schema_t SCH_opc_content_types;
 extern schema_t SCH_opc_rels;
 extern schema_t SCH_opc_rels_metadata_core_props;
@@ -28,6 +29,7 @@ extern schema_t SCH_od_rels_extended_props;
 extern schema_t SCH_od_rels_office_doc;
 extern schema_t SCH_od_rels_table;
 extern schema_t SCH_xlsx_main;
+extern schema_t SCH_mso_x14ac;
 
 /**
  * Null-terminated array of all schema types.
