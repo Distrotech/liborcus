@@ -9,6 +9,7 @@
 #define ORCUS_XLSX_REVHEADERS_CONTEXT_HPP
 
 #include "xml_context_base.hpp"
+#include "xlsx_types.hpp"
 
 namespace orcus {
 
@@ -29,6 +30,12 @@ public:
 
 class xlsx_revlog_context : public xml_context_base
 {
+    double m_cur_value;
+    pstring m_cur_string;
+    xlsx_cell_type m_cur_cell_type;
+
+    bool m_cur_formula;
+
 public:
     xlsx_revlog_context(session_context& session_cxt, const tokens& tokens);
     virtual ~xlsx_revlog_context();

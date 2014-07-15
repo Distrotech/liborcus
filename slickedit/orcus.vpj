@@ -319,6 +319,7 @@
 				<F N="../src/liborcus/xlsx_sheet_context_test.cpp"/>
 				<F N="../src/liborcus/xlsx_table_context.cpp"/>
 				<F N="../src/liborcus/xlsx_table_context.hpp"/>
+				<F N="../src/liborcus/xlsx_types.cpp"/>
 				<F N="../src/liborcus/xlsx_types.hpp"/>
 				<F N="../src/liborcus/xlsx_workbook_context.cpp"/>
 				<F N="../src/liborcus/xlsx_workbook_context.hpp"/>

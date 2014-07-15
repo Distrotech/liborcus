@@ -37,6 +37,21 @@ struct xlsx_rel_table_info : public opc_rel_extra
     virtual ~xlsx_rel_table_info() {}
 };
 
+enum xlsx_cell_type
+{
+    xlsx_ct_unknown = 0,
+    xlsx_ct_boolean,
+    xlsx_ct_error,
+    xlsx_ct_numeric,
+    xlsx_ct_inline_string,
+    xlsx_ct_shared_string,
+    xlsx_ct_formula_string,
+};
+
+xlsx_cell_type to_xlsx_cell_type(const pstring& s);
+
+pstring to_string(xlsx_cell_type type);
+
 }
 
 #endif

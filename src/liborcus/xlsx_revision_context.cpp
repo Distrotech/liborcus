@@ -234,6 +234,72 @@ void xlsx_revheaders_context::characters(const pstring& /*str*/, bool /*transien
 {
 }
 
+namespace {
+
+class rcc_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+    long m_revision_id;
+    long m_sheet_id;
+
+public:
+    rcc_attr_parser() : m_revision_id(-1), m_sheet_id(-1) {}
+
+    long get_revision_id() const { return m_revision_id; }
+    long get_sheet_id() const { return m_sheet_id; }
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        switch (attr.name)
+        {
+            case XML_rId:
+                // revision ID
+                m_revision_id = to_long(attr.value);
+            break;
+            case XML_sId:
+                // sheet ID
+                m_sheet_id = to_long(attr.value);
+            break;
+            default:
+                ;
+        }
+    }
+};
+
+class cell_data_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+    pstring m_ref;
+    xlsx_cell_type m_type;
+
+public:
+    cell_data_attr_parser() : m_type(xlsx_ct_numeric) {}
+
+    pstring get_ref() const { return m_ref; }
+    xlsx_cell_type get_cell_type() const { return m_type; }
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        switch (attr.name)
+        {
+            case XML_r:
+                if (!attr.transient)
+                    m_ref = attr.value;
+            break;
+            case XML_t:
+                m_type = to_xlsx_cell_type(attr.value);
+            default:
+                ;
+        }
+    }
+};
+
+}
+
 xlsx_revlog_context::xlsx_revlog_context(session_context& session_cxt, const tokens& tokens) :
     xml_context_base(session_cxt, tokens) {}
 
@@ -272,6 +338,11 @@ void xlsx_revlog_context::start_element(xmlns_id_t ns, xml_token_t name, const v
             {
                 // revision cell change
                 xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
+                rcc_attr_parser func;
+                func = for_each(attrs.begin(), attrs.end(), func);
+                cout << "* revision id: " << func.get_revision_id() << "  type: cell change" << endl;
+                cout << "  - sheet index: " << func.get_sheet_id() << endl;
+                m_cur_cell_type = xlsx_ct_unknown;
             }
             break;
             case XML_rcft:
@@ -314,11 +385,37 @@ void xlsx_revlog_context::start_element(xmlns_id_t ns, xml_token_t name, const v
                 // revision sheet name
                 xml_element_expected(parent, NS_ooxml_xlsx, XML_revisions);
             break;
-            case XML_nc:
+            case XML_oc:
+                // old cell data
                 xml_element_expected(parent, NS_ooxml_xlsx, XML_rcc);
+            break;
+            case XML_nc:
+            {
+                // new cell data
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_rcc);
+                cell_data_attr_parser func;
+                func = for_each(attrs.begin(), attrs.end(), func);
+                m_cur_cell_type = func.get_cell_type();
+
+                m_cur_formula = false;
+                m_cur_value = 0.0;
+                m_cur_string.clear();
+
+                cout << "  - new cell position: " << func.get_ref() << endl;
+                cout << "  - new cell type: " << to_string(m_cur_cell_type) << endl;
+            }
+            break;
+            case XML_f:
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_nc);
             break;
             case XML_v:
                 xml_element_expected(parent, NS_ooxml_xlsx, XML_nc);
+            break;
+            case XML_is:
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_nc);
+            break;
+            case XML_t:
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_is);
             break;
             default:
                 warn_unhandled();
@@ -328,11 +425,65 @@ void xlsx_revlog_context::start_element(xmlns_id_t ns, xml_token_t name, const v
 
 bool xlsx_revlog_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
+    if (ns == NS_ooxml_xlsx)
+    {
+        switch (name)
+        {
+            case XML_nc:
+            {
+                cout << "  - new cell value: ";
+                switch (m_cur_cell_type)
+                {
+                    case xlsx_ct_boolean:
+                        if (m_cur_value != 0.0)
+                            cout << "true";
+                        else
+                            cout << "false";
+                    break;
+                    case xlsx_ct_numeric:
+                        if (m_cur_formula)
+                            cout << m_cur_string;
+                        else
+                            cout << m_cur_value;
+                    break;
+                    case xlsx_ct_inline_string:
+                        cout << m_cur_string;
+                    break;
+                    default:
+                        ;
+                }
+                cout << endl;
+            }
+            break;
+            default:
+                ;
+        }
+    }
     return pop_stack(ns, name);
 }
 
 void xlsx_revlog_context::characters(const pstring& str, bool transient)
 {
+    const xml_token_pair_t& elem = get_current_element();
+    if (elem.first == NS_ooxml_xlsx)
+    {
+        switch (elem.second)
+        {
+            case XML_v:
+                m_cur_value = to_double(str);
+            break;
+            case XML_f:
+                m_cur_formula = true;
+                // fall through to get the string.
+            case XML_t:
+                m_cur_string = str;
+                if (transient)
+                    m_cur_string = get_session_context().m_string_pool.intern(m_cur_string).first;
+            break;
+            default:
+                ;
+        }
+    }
 }
 
 }

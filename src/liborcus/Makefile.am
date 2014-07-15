@@ -110,6 +110,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	xlsx_autofilter_context.cpp \
 	xlsx_autofilter_context.hpp \
 	xlsx_types.hpp \
+	xlsx_types.cpp \
 	xlsx_workbook_context.cpp \
 	xlsx_workbook_context.hpp
 

@@ -46,8 +46,6 @@ const cell_value_map_type& get_cell_value_map()
     return cv_map;
 }
 
-
-
 class null_date_attr_parser : public unary_function<xml_token_attr_t, void>
 {
 public:
