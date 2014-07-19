@@ -65,7 +65,8 @@ private:
 
 opc_reader::part_handler::~part_handler() {}
 
-opc_reader::opc_reader(xmlns_repository& ns_repo, session_context& cxt, part_handler& handler) :
+opc_reader::opc_reader(const iface::config& opt, xmlns_repository& ns_repo, session_context& cxt, part_handler& handler) :
+    m_config(opt),
     m_ns_repo(ns_repo),
     m_session_cxt(cxt),
     m_handler(handler),

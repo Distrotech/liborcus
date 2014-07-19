@@ -116,7 +116,7 @@ struct orcus_xlsx_impl
         m_cxt(new xlsx_session_data),
         mp_factory(factory),
         m_opc_handler(parent),
-        m_opc_reader(m_ns_repo, m_cxt, m_opc_handler) {}
+        m_opc_reader(parent.get_config(), m_ns_repo, m_cxt, m_opc_handler) {}
 };
 
 orcus_xlsx::orcus_xlsx(spreadsheet::iface::import_factory* factory) :
