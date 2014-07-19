@@ -359,7 +359,8 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
     {
         case XML_worksheet:
         {
-            print_attrs(get_tokens(), attrs);
+            if (get_config().debug)
+                print_attrs(get_tokens(), attrs);
         }
         break;
         case XML_cols:

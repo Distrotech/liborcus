@@ -178,7 +178,9 @@ void opc_reader::check_relation_part(const std::string& file_name, opc_rel_extra
     read_relations(rels_file_name.c_str(), rels);
     m_dir_stack.pop_back();
 
-    for_each(rels.begin(), rels.end(), print_opc_rel());
+    if (m_config.debug)
+        for_each(rels.begin(), rels.end(), print_opc_rel());
+
     for_each(rels.begin(), rels.end(), process_opc_rel(*this, extra));
 }
 

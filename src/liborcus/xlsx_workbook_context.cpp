@@ -80,7 +80,8 @@ void xlsx_workbook_context::start_element(xmlns_id_t ns, xml_token_t name, const
         case XML_workbook:
         {
             xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
-            print_attrs(get_tokens(), attrs);
+            if (get_config().debug)
+                print_attrs(get_tokens(), attrs);
         }
         break;
         case XML_sheets:

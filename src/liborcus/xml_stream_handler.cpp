@@ -69,6 +69,13 @@ void xml_stream_handler::set_ns_context(const xmlns_context* p)
         m_context_stack.back()->set_ns_context(p);
 }
 
+void xml_stream_handler::set_config(const config& opt)
+{
+    m_config = opt;
+    if (!m_context_stack.empty())
+        m_context_stack.back()->set_config(m_config);
+}
+
 xml_context_base& xml_stream_handler::get_current_context()
 {
     if (m_context_stack.empty())

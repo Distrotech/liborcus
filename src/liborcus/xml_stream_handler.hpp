@@ -5,10 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_XML_STREAM_HANDLER_HPP__
-#define __ORCUS_XML_STREAM_HANDLER_HPP__
+#ifndef ORCUS_XML_STREAM_HANDLER_HPP
+#define ORCUS_XML_STREAM_HANDLER_HPP
 
 #include "orcus/sax_token_parser.hpp"
+#include "orcus/config.hpp"
 
 #include <cstdlib>
 #include <string>
@@ -21,6 +22,7 @@ class xmlns_context;
 
 class xml_stream_handler
 {
+    config m_config;
     const xmlns_context* mp_ns_cxt;
     xml_context_base* mp_root_context;
     typedef std::vector<xml_context_base*> context_stack_type;
@@ -39,6 +41,7 @@ public:
     virtual void characters(const pstring& str, bool transient);
 
     void set_ns_context(const xmlns_context* p);
+    void set_config(const config& opt);
 
 protected:
     xml_context_base& get_current_context();

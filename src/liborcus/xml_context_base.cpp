@@ -56,6 +56,11 @@ void xml_context_base::set_ns_context(const xmlns_context* p)
     mp_ns_cxt = p;
 }
 
+void xml_context_base::set_config(const config& opt)
+{
+    m_config = opt;
+}
+
 session_context& xml_context_base::get_session_context()
 {
     return m_session_cxt;
@@ -116,6 +121,9 @@ const xml_token_pair_t& xml_context_base::get_parent_element() const
 
 void xml_context_base::warn_unhandled() const
 {
+    if (!m_config.debug)
+        return;
+
     cerr << "warning: unhandled element ";
     print_stack(m_tokens, m_stack, mp_ns_cxt);
     cerr << endl;
@@ -123,6 +131,9 @@ void xml_context_base::warn_unhandled() const
 
 void xml_context_base::warn_unexpected() const
 {
+    if (!m_config.debug)
+        return;
+
     cerr << "warning: unexpected element ";
     print_stack(m_tokens, m_stack, mp_ns_cxt);
     cerr << endl;
@@ -130,6 +141,9 @@ void xml_context_base::warn_unexpected() const
 
 void xml_context_base::warn(const char* msg) const
 {
+    if (!m_config.debug)
+        return;
+
     cerr << "warning: " << msg << endl;
 }
 
@@ -171,6 +185,11 @@ void xml_context_base::xml_element_expected(
     os << "unexpected element encountered: " << elem.first << ":" << m_tokens.get_token_name(elem.second);
     throw xml_structure_error(os.str());
 #endif
+}
+
+const config& xml_context_base::get_config() const
+{
+    return m_config;
 }
 
 }

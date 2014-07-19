@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_XMLCONTEXT_HPP__
-#define __ORCUS_XMLCONTEXT_HPP__
+#ifndef ORCUS_XML_CONTEXT_BASE_HPP
+#define ORCUS_XML_CONTEXT_BASE_HPP
 
 #include "xml_stream_handler.hpp"
 
@@ -55,6 +55,8 @@ public:
 
     void set_ns_context(const xmlns_context* p);
 
+    void set_config(const config& opt);
+
 protected:
     session_context& get_session_context();
     const tokens& get_tokens() const;
@@ -84,7 +86,10 @@ protected:
     void xml_element_expected(
         const xml_token_pair_t& elem, const xml_elem_stack_t& expected_elems);
 
+    const config& get_config() const;
+
 private:
+    config m_config;
     const xmlns_context* mp_ns_cxt;
     session_context& m_session_cxt;
     const tokens& m_tokens;

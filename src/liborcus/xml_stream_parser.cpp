@@ -60,7 +60,10 @@ void xml_stream_parser::set_handler(xml_stream_handler* handler)
 {
     mp_handler = handler;
     if (mp_handler)
+    {
         mp_handler->set_ns_context(&m_ns_cxt);
+        mp_handler->set_config(m_config);
+    }
 }
 
 xml_stream_handler* xml_stream_parser::get_handler() const

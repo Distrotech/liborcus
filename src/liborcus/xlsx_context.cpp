@@ -132,7 +132,8 @@ void xlsx_shared_strings_context::start_element(xmlns_id_t ns, xml_token_t name,
         {
             // root element for the shared string part.
             xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
-            print_attrs(get_tokens(), attrs);
+            if (get_config().debug)
+                print_attrs(get_tokens(), attrs);
 
             shared_strings_root_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
@@ -519,7 +520,8 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         {
             // root element
             xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
-            print_attrs(get_tokens(), attrs);
+            if (get_config().debug)
+                print_attrs(get_tokens(), attrs);
         }
         break;
         case XML_fonts:

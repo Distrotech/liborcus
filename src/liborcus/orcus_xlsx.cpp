@@ -250,7 +250,8 @@ void orcus_xlsx::set_formulas_to_doc()
 void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
 {
     string filepath = resolve_file_path(dir_path, file_name);
-    cout << "read_workbook: file path = " << filepath << endl;
+    if (get_config().debug)
+        cout << "read_workbook: file path = " << filepath << endl;
 
     vector<unsigned char> buffer;
     if (!mp_impl->m_opc_reader.open_zip_stream(filepath, buffer))
