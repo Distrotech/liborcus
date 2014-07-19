@@ -268,7 +268,8 @@ void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
         static_cast<xlsx_workbook_context&>(handler->get_context());
     opc_rel_extras_t sheet_data;
     context.pop_sheet_info(sheet_data);
-    for_each(sheet_data.data.begin(), sheet_data.data.end(), print_sheet_info());
+    if (get_config().debug)
+        for_each(sheet_data.data.begin(), sheet_data.data.end(), print_sheet_info());
 
     handler.reset();
     mp_impl->m_opc_reader.check_relation_part(file_name, &sheet_data);
@@ -280,9 +281,12 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, xls
         // Sheet ID must not be 0.
         return;
 
-    cout << "---" << endl;
     string filepath = resolve_file_path(dir_path, file_name);
-    cout << "read_sheet: file path = " << filepath << endl;
+    if (get_config().debug)
+    {
+        cout << "---" << endl;
+        cout << "read_sheet: file path = " << filepath << endl;
+    }
 
     vector<unsigned char> buffer;
     if (!mp_impl->m_opc_reader.open_zip_stream(filepath, buffer))
@@ -291,8 +295,11 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, xls
     if (buffer.empty())
         return;
 
-    cout << "relationship sheet data: " << endl;
-    cout << "  sheet name: " << data->name << "  sheet ID: " << data->id << endl;
+    if (get_config().debug)
+    {
+        cout << "relationship sheet data: " << endl;
+        cout << "  sheet name: " << data->name << "  sheet ID: " << data->id << endl;
+    }
 
     spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->append_sheet(data->name.get(), data->name.size());
     if (!sheet)
@@ -312,9 +319,12 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, xls
 
 void orcus_xlsx::read_shared_strings(const string& dir_path, const string& file_name)
 {
-    cout << "---" << endl;
     string filepath = resolve_file_path(dir_path, file_name);
-    cout << "read_shared_strings: file path = " << filepath << endl;
+    if (get_config().debug)
+    {
+        cout << "---" << endl;
+        cout << "read_shared_strings: file path = " << filepath << endl;
+    }
 
     vector<unsigned char> buffer;
     if (!mp_impl->m_opc_reader.open_zip_stream(filepath, buffer))
@@ -333,9 +343,12 @@ void orcus_xlsx::read_shared_strings(const string& dir_path, const string& file_
 
 void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
 {
-    cout << "---" << endl;
     string filepath = resolve_file_path(dir_path, file_name);
-    cout << "read_styles: file path = " << filepath << endl;
+    if (get_config().debug)
+    {
+        cout << "---" << endl;
+        cout << "read_styles: file path = " << filepath << endl;
+    }
 
     spreadsheet::iface::import_styles* styles = mp_impl->mp_factory->get_styles();
     if (!styles)
@@ -366,9 +379,12 @@ void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file
     if (!table)
         return;
 
-    cout << "---" << endl;
     string filepath = resolve_file_path(dir_path, file_name);
-    cout << "read_table: file path = " << filepath << endl;
+    if (get_config().debug)
+    {
+        cout << "---" << endl;
+        cout << "read_table: file path = " << filepath << endl;
+    }
 
     vector<unsigned char> buffer;
     if (!mp_impl->m_opc_reader.open_zip_stream(filepath, buffer))
@@ -392,9 +408,12 @@ void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file
 
 void orcus_xlsx::read_rev_headers(const std::string& dir_path, const std::string& file_name)
 {
-    cout << "---" << endl;
     string filepath = resolve_file_path(dir_path, file_name);
-    cout << "read_rev_headers: file path = " << filepath << endl;
+    if (get_config().debug)
+    {
+        cout << "---" << endl;
+        cout << "read_rev_headers: file path = " << filepath << endl;
+    }
 
     vector<unsigned char> buffer;
     if (!mp_impl->m_opc_reader.open_zip_stream(filepath, buffer))
@@ -419,9 +438,12 @@ void orcus_xlsx::read_rev_headers(const std::string& dir_path, const std::string
 
 void orcus_xlsx::read_rev_log(const std::string& dir_path, const std::string& file_name)
 {
-    cout << "---" << endl;
     string filepath = resolve_file_path(dir_path, file_name);
-    cout << "read_rev_log: file path = " << filepath << endl;
+    if (get_config().debug)
+    {
+        cout << "---" << endl;
+        cout << "read_rev_log: file path = " << filepath << endl;
+    }
 
     vector<unsigned char> buffer;
     if (!mp_impl->m_opc_reader.open_zip_stream(filepath, buffer))
