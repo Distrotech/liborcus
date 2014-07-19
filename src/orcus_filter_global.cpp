@@ -38,6 +38,9 @@ const char* help_output_format =
 const char* help_dump_check =
 "Dump the the content to stdout in a special format used for content verification in unit tests.";
 
+const char* help_debug =
+"Turn on a debug mode to generate run-time debug output.";
+
 }
 
 bool handle_dump_check(
@@ -69,6 +72,7 @@ bool parse_import_filter_args(
     po::options_description desc("Allowed options");
     desc.add_options()
         ("help,h", "Print this help.")
+        ("debug,d", help_debug)
         ("dump-check", help_dump_check)
         ("output,o", po::value<string>(), help_output)
         ("output-format,f", po::value<string>(), help_output_format);
@@ -115,6 +119,10 @@ bool parse_import_filter_args(
 
     if (vm.count("output-format"))
         outformat = vm["output-format"].as<string>();
+
+    iface::config opt;
+    opt.debug = vm.count("debug") > 0;
+    app.set_config(opt);
 
     if (infile.empty())
     {

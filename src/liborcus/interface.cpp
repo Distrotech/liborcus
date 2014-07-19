@@ -9,7 +9,29 @@
 
 namespace orcus { namespace iface {
 
-import_filter::~import_filter() {}
+config::config() : debug(false) {}
+
+struct import_filter::impl
+{
+    config m_config;
+};
+
+import_filter::import_filter() : mp_impl(new impl) {}
+
+import_filter::~import_filter()
+{
+    delete mp_impl;
+}
+
+void import_filter::set_config(const config& v)
+{
+    mp_impl->m_config = v;
+}
+
+const config& import_filter::get_config() const
+{
+    return mp_impl->m_config;
+}
 
 document_dumper::~document_dumper() {}
 

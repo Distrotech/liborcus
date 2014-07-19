@@ -14,12 +14,26 @@
 
 namespace orcus { namespace iface {
 
+struct ORCUS_DLLPUBLIC config
+{
+    bool debug;
+
+    config();
+};
+
 class ORCUS_DLLPUBLIC import_filter
 {
+    struct impl;
+    impl* mp_impl;
+
 public:
+    import_filter();
     virtual ~import_filter();
     virtual void read_file(const std::string& filepath) = 0;
     virtual const char* get_name() const = 0;
+
+    void set_config(const config& v);
+    const config& get_config() const;
 };
 
 class ORCUS_DLLPUBLIC document_dumper
