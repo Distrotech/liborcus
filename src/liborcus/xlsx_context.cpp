@@ -138,7 +138,8 @@ void xlsx_shared_strings_context::start_element(xmlns_id_t ns, xml_token_t name,
             shared_strings_root_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
 
-            cout << "count: " << func.get_count() << "  unique count: " << func.get_unique_count() << endl;
+            if (get_config().debug)
+                cout << "count: " << func.get_count() << "  unique count: " << func.get_unique_count() << endl;
         }
         break;
         case XML_si:
