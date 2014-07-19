@@ -12,6 +12,8 @@
 #include "opc_context.hpp"
 #include "ooxml_tokens.hpp"
 
+#include "orcus/interface.hpp"
+
 #include <iostream>
 #include <boost/scoped_ptr.hpp>
 
@@ -74,7 +76,8 @@ opc_reader::opc_reader(const iface::config& opt, xmlns_repository& ns_repo, sess
 
 void opc_reader::read_file(const char* fpath)
 {
-    cout << "reading " << fpath << endl;
+    if (m_config.debug)
+        cout << "reading " << fpath << endl;
 
     m_archive_stream.reset(new zip_archive_stream_fd(fpath));
     m_archive.reset(new zip_archive(m_archive_stream.get()));
@@ -83,7 +86,8 @@ void opc_reader::read_file(const char* fpath)
 
     m_dir_stack.push_back(string()); // push root directory.
 
-    list_content();
+    if (m_config.debug)
+        list_content();
     read_content();
 
     m_archive.reset();
@@ -141,8 +145,11 @@ void opc_reader::read_part(const pstring& path, const schema_t type, opc_rel_ext
 
         if (!m_handler.handle_part(type, get_current_dir(), file_name, data))
         {
-            cout << "---" << endl;
-            cout << "unhandled relationship type: " << type << endl;
+            if (m_config.debug)
+            {
+                cout << "---" << endl;
+                cout << "unhandled relationship type: " << type << endl;
+            }
         }
     }
 
@@ -195,8 +202,11 @@ void opc_reader::read_content()
     // [Content_Types].xml
 
     read_content_types();
-    for_each(m_parts.begin(), m_parts.end(), print_xml_content_types("part name"));
-    for_each(m_ext_defaults.begin(), m_ext_defaults.end(), print_xml_content_types("extension default"));
+    if (m_config.debug)
+    {
+        for_each(m_parts.begin(), m_parts.end(), print_xml_content_types("part name"));
+        for_each(m_ext_defaults.begin(), m_ext_defaults.end(), print_xml_content_types("extension default"));
+    }
 
     // _rels/.rels
 
@@ -205,7 +215,8 @@ void opc_reader::read_content()
     read_relations(".rels", rels);
     m_dir_stack.pop_back();
 
-    for_each(rels.begin(), rels.end(), print_opc_rel());
+    if (m_config.debug)
+        for_each(rels.begin(), rels.end(), print_opc_rel());
     for_each(rels.begin(), rels.end(), process_opc_rel(*this, NULL));
 }
 
@@ -234,7 +245,8 @@ void opc_reader::read_content_types()
 void opc_reader::read_relations(const char* path, vector<opc_rel_t>& rels)
 {
     string filepath = get_current_dir() + path;
-    cout << "file path: " << filepath << endl;
+    if (m_config.debug)
+        cout << "file path: " << filepath << endl;
 
     vector<unsigned char> buffer;
     if (!open_zip_stream(filepath, buffer))
