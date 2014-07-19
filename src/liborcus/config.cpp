@@ -9,7 +9,7 @@
 
 namespace orcus {
 
-config::config() : debug(false) {}
+config::config() : debug(false), structure_check(true) {}
 
 }
 

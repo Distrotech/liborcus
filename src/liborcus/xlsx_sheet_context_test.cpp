@@ -12,6 +12,7 @@
 #include "ooxml_token_constants.hpp"
 #include "xlsx_session_data.hpp"
 #include "orcus/types.hpp"
+#include "orcus/config.hpp"
 
 using namespace orcus;
 using namespace std;
@@ -82,8 +83,11 @@ void test_cell_value()
 {
     mock_sheet sheet;
     session_context cxt(new xlsx_session_data);
+    config opt;
+    opt.structure_check = false;
 
     orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, 0, &sheet);
+    context.set_config(opt);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
@@ -104,8 +108,11 @@ void test_cell_bool()
 {
     mock_sheet sheet;
     session_context cxt(new xlsx_session_data);
+    config opt;
+    opt.structure_check = false;
 
     orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, 0, &sheet);
+    context.set_config(opt);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
@@ -127,8 +134,11 @@ void test_array_formula()
 {
     mock_sheet sheet;
     session_context cxt(new xlsx_session_data);
+    config opt;
+    opt.structure_check = false;
 
     orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, 0, &sheet);
+    context.set_config(opt);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_c;
@@ -157,8 +167,11 @@ void test_hidden_col()
 {
     mock_sheet2 sheet;
     session_context cxt(new xlsx_session_data);
+    config opt;
+    opt.structure_check = false;
 
     orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, 0, &sheet);
+    context.set_config(opt);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_col;
@@ -174,8 +187,11 @@ void test_hidden_row()
 {
     mock_sheet2 sheet;
     session_context cxt(new xlsx_session_data);
+    config opt;
+    opt.structure_check = false;
 
     orcus::xlsx_sheet_context context(cxt, orcus::ooxml_tokens, 0, &sheet);
+    context.set_config(opt);
 
     orcus::xmlns_id_t ns = NS_ooxml_xlsx;
     orcus::xml_token_t elem = XML_row;

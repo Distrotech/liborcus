@@ -151,7 +151,9 @@ void xml_context_base::xml_element_expected(
     const xml_token_pair_t& elem, xmlns_id_t ns, xml_token_t name,
     const string* error)
 {
-#ifndef NO_XML_EXPECTED
+    if (!m_config.structure_check)
+        return;
+
     if (elem.first == ns && elem.second == name)
         // This is an expected element.  Good.
         return;
@@ -166,13 +168,14 @@ void xml_context_base::xml_element_expected(
     os << "element '" << ns << ":" << m_tokens.get_token_name(name) << "' expected, but '";
     os << elem.first << ":" << m_tokens.get_token_name(elem.second) << "' encountered.";
     throw xml_structure_error(os.str());
-#endif
 }
 
 void xml_context_base::xml_element_expected(
     const xml_token_pair_t& elem, const xml_elem_stack_t& expected_elems)
 {
-#ifndef NO_XML_EXPECTED
+    if (!m_config.structure_check)
+        return;
+
     xml_elem_stack_t::const_iterator itr = expected_elems.begin(), itr_end = expected_elems.end();
     for (; itr != itr_end; ++itr)
     {
@@ -184,7 +187,6 @@ void xml_context_base::xml_element_expected(
     ostringstream os;
     os << "unexpected element encountered: " << elem.first << ":" << m_tokens.get_token_name(elem.second);
     throw xml_structure_error(os.str());
-#endif
 }
 
 const config& xml_context_base::get_config() const

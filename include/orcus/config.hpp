@@ -15,6 +15,7 @@ namespace orcus {
 struct ORCUS_DLLPUBLIC config
 {
     bool debug;
+    bool structure_check;
 
     config();
 };
