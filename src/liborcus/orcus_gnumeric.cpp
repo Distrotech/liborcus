@@ -80,7 +80,7 @@ orcus_gnumeric::~orcus_gnumeric()
 
 void orcus_gnumeric::read_content_xml(const char* p, size_t size)
 {
-    xml_stream_parser parser(mp_impl->m_ns_repo, gnumeric_tokens, p, size, "content.xml");
+    xml_stream_parser parser(mp_impl->m_ns_repo, gnumeric_tokens, p, size);
     ::boost::scoped_ptr<gnumeric_content_xml_handler> handler(
         new gnumeric_content_xml_handler(mp_impl->m_cxt, gnumeric_tokens, mp_impl->mp_factory));
     parser.set_handler(handler.get());
@@ -102,7 +102,7 @@ bool orcus_gnumeric::detect(const unsigned char* buffer, size_t size)
     xmlns_repository ns_repo;
     ns_repo.add_predefined_values(NS_gnumeric_all);
     session_context cxt;
-    xml_stream_parser parser(ns_repo, gnumeric_tokens, &decompressed[0], decompressed.size(), "content");
+    xml_stream_parser parser(ns_repo, gnumeric_tokens, &decompressed[0], decompressed.size());
     gnumeric_detection_handler handler(cxt, gnumeric_tokens);
     parser.set_handler(&handler);
 

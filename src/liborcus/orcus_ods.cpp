@@ -75,7 +75,7 @@ void orcus_ods::read_content(const zip_archive& archive)
 
 void orcus_ods::read_content_xml(const unsigned char* p, size_t size)
 {
-    xml_stream_parser parser(mp_impl->m_ns_repo, odf_tokens, reinterpret_cast<const char*>(p), size, "content.xml");
+    xml_stream_parser parser(mp_impl->m_ns_repo, odf_tokens, reinterpret_cast<const char*>(p), size);
     ods_content_xml_handler handler(mp_impl->m_cxt, odf_tokens, mp_impl->mp_factory);
     parser.set_handler(&handler);
     parser.parse();

@@ -53,7 +53,7 @@ bool orcus_xls_xml::detect(const unsigned char* buffer, size_t size)
 {
     xmlns_repository ns_repo;
     ns_repo.add_predefined_values(NS_xls_xml_all);
-    xml_stream_parser parser(ns_repo, xls_xml_tokens, reinterpret_cast<const char*>(buffer), size, "content");
+    xml_stream_parser parser(ns_repo, xls_xml_tokens, reinterpret_cast<const char*>(buffer), size);
 
     session_context cxt;
     xls_xml_detection_handler handler(cxt, xls_xml_tokens);
@@ -82,7 +82,7 @@ void orcus_xls_xml::read_file(const string& filepath)
     if (strm.empty())
         return;
 
-    xml_stream_parser parser(mp_impl->m_ns_repo, xls_xml_tokens, &strm[0], strm.size(), "content");
+    xml_stream_parser parser(mp_impl->m_ns_repo, xls_xml_tokens, &strm[0], strm.size());
     boost::scoped_ptr<xls_xml_handler> handler(
         new xls_xml_handler(mp_impl->m_cxt, xls_xml_tokens, mp_impl->mp_factory));
     parser.set_handler(handler.get());

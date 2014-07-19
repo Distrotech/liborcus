@@ -37,7 +37,8 @@ public:
         ::std::string m_msg;
     };
 
-    xml_stream_parser(xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size, const ::std::string& name);
+    xml_stream_parser(
+        xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size);
     ~xml_stream_parser();
 
     void parse();
@@ -53,7 +54,6 @@ private:
     xml_stream_handler* mp_handler;
     const char* m_content;
     size_t m_size;
-    ::std::string m_name;  // stream name
 };
 
 }

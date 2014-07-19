@@ -230,7 +230,7 @@ void opc_reader::read_content_types()
     if (buffer.empty())
         return;
 
-    xml_stream_parser parser(m_ns_repo, opc_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), "[Content_Types].xml");
+    xml_stream_parser parser(m_ns_repo, opc_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size());
     ::boost::scoped_ptr<xml_simple_stream_handler> handler(
         new xml_simple_stream_handler(new opc_content_types_context(m_session_cxt, opc_tokens)));
     parser.set_handler(handler.get());
@@ -255,7 +255,7 @@ void opc_reader::read_relations(const char* path, vector<opc_rel_t>& rels)
     if (buffer.empty())
         return;
 
-    xml_stream_parser parser(m_ns_repo, opc_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size(), filepath);
+    xml_stream_parser parser(m_ns_repo, opc_tokens, reinterpret_cast<const char*>(&buffer[0]), buffer.size());
 
     opc_relations_context& context =
         static_cast<opc_relations_context&>(m_opc_rel_handler.get_context());
