@@ -61,6 +61,12 @@ void xml_context_base::set_config(const config& opt)
     m_config = opt;
 }
 
+void xml_context_base::transfer_common(const xml_context_base& parent)
+{
+    m_config = parent.m_config;
+    mp_ns_cxt = parent.mp_ns_cxt;
+}
+
 session_context& xml_context_base::get_session_context()
 {
     return m_session_cxt;

@@ -57,6 +57,8 @@ public:
 
     void set_config(const config& opt);
 
+    void transfer_common(const xml_context_base& parent);
+
 protected:
     session_context& get_session_context();
     const tokens& get_tokens() const;

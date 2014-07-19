@@ -465,6 +465,7 @@ xml_context_base* gnumeric_sheet_context::create_child_context(xmlns_id_t ns, xm
     if (ns == NS_gnumeric_gnm && name == XML_Cells)
     {
         mp_child.reset(new gnumeric_cell_context(get_session_context(), get_tokens(), mp_factory, mp_sheet));
+        mp_child->transfer_common(*this);
         return mp_child.get();
     }
 
