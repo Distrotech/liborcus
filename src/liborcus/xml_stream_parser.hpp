@@ -16,6 +16,8 @@
 
 namespace orcus {
 
+namespace iface { struct config; }
+
 class xml_stream_handler;
 class tokens;
 
@@ -38,6 +40,7 @@ public:
     };
 
     xml_stream_parser(
+        const iface::config& opt,
         xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size);
     ~xml_stream_parser();
 
@@ -49,6 +52,7 @@ public:
 private:
     xml_stream_parser(); // disabled
 
+    const iface::config& m_config;
     xmlns_context m_ns_cxt;
     const tokens& m_tokens;
     xml_stream_handler* mp_handler;
