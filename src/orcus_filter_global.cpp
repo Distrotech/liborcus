@@ -128,15 +128,22 @@ bool parse_import_filter_args(
         return handle_dump_check(app, doc, infile, outdir);
     }
 
-    if (outdir.empty())
-    {
-        cerr << "No output directory." << endl;
-        return false;
-    }
-
     if (outformat.empty())
     {
         cerr << "No output format specified.  Choose either 'flat', 'html' or 'none'." << endl;
+        return false;
+    }
+
+    if (outformat == "none")
+    {
+        // When "none" format is specified, just read the input file and exit.
+        app.read_file(infile);
+        return true;
+    }
+
+    if (outdir.empty())
+    {
+        cerr << "No output directory." << endl;
         return false;
     }
 
@@ -157,10 +164,6 @@ bool parse_import_filter_args(
         doc.dump_flat(outdir);
     else if (outformat == "html")
         doc.dump_html(outdir);
-    else if (outformat == "none")
-    {
-        // Do nothing.
-    }
     else
     {
         // Do nothing, but warning about unknown output format type.
