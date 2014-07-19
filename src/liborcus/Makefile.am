@@ -26,6 +26,7 @@ AM_CPPFLAGS += -DSRCDIR=\""$(top_srcdir)"\"
 
 lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
+	config.cpp \
 	detection_result.hpp \
 	detection_result.cpp \
 	dom_tree.cpp \

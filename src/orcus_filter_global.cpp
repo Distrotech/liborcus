@@ -7,6 +7,7 @@
 
 #include "orcus_filter_global.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/config.hpp"
 #include "orcus/interface.hpp"
 
 #include <boost/program_options.hpp>
@@ -120,7 +121,7 @@ bool parse_import_filter_args(
     if (vm.count("output-format"))
         outformat = vm["output-format"].as<string>();
 
-    iface::config opt;
+    config opt;
     opt.debug = vm.count("debug") > 0;
     app.set_config(opt);
 

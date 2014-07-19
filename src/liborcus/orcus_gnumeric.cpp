@@ -9,6 +9,7 @@
 #include "orcus/xml_namespace.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/stream.hpp"
+#include "orcus/config.hpp"
 
 #include "xml_stream_parser.hpp"
 #include "gnumeric_handler.hpp"
@@ -99,7 +100,7 @@ bool orcus_gnumeric::detect(const unsigned char* buffer, size_t size)
         return false;
 
     // Parse this xml stream for detection.
-    iface::config opt;
+    config opt;
     xmlns_repository ns_repo;
     ns_repo.add_predefined_values(NS_gnumeric_all);
     session_context cxt;

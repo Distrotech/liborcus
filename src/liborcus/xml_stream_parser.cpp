@@ -32,7 +32,7 @@ const char* xml_stream_parser::parse_error::what() const throw()
 }
 
 xml_stream_parser::xml_stream_parser(
-    const iface::config& opt,
+    const config& opt,
     xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size) :
     m_config(opt),
     m_ns_cxt(ns_repo.create_context()),

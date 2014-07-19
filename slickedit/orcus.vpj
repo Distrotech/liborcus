@@ -169,6 +169,7 @@
 				</Folder>
 				<F N="../include/orcus/base64.hpp"/>
 				<F N="../include/orcus/cell_buffer.hpp"/>
+				<F N="../include/orcus/config.hpp"/>
 				<F N="../include/orcus/css_parser.hpp"/>
 				<F N="../include/orcus/csv_parser.hpp"/>
 				<F N="../include/orcus/csv_parser_base.hpp"/>
@@ -204,6 +205,7 @@
 		<Folder Name="../src">
 			<Folder Name="liborcus">
 				<F N="../src/liborcus/common_test.cpp"/>
+				<F N="../src/liborcus/config.cpp"/>
 				<F N="../src/liborcus/detection_result.cpp"/>
 				<F N="../src/liborcus/detection_result.hpp"/>
 				<F N="../src/liborcus/dom_tree.cpp"/>

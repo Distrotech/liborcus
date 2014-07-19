@@ -6,14 +6,13 @@
  */
 
 #include "orcus/interface.hpp"
+#include "orcus/config.hpp"
 
 namespace orcus { namespace iface {
 
-config::config() : debug(false) {}
-
 struct import_filter::impl
 {
-    config m_config;
+    orcus::config m_config;
 };
 
 import_filter::import_filter() : mp_impl(new impl) {}

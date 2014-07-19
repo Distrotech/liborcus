@@ -12,14 +12,11 @@
 
 #include <string>
 
-namespace orcus { namespace iface {
+namespace orcus {
 
-struct ORCUS_DLLPUBLIC config
-{
-    bool debug;
+struct config;
 
-    config();
-};
+namespace iface {
 
 class ORCUS_DLLPUBLIC import_filter
 {
@@ -32,8 +29,8 @@ public:
     virtual void read_file(const std::string& filepath) = 0;
     virtual const char* get_name() const = 0;
 
-    void set_config(const config& v);
-    const config& get_config() const;
+    void set_config(const orcus::config& v);
+    const orcus::config& get_config() const;
 };
 
 class ORCUS_DLLPUBLIC document_dumper

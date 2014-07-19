@@ -11,6 +11,7 @@
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/exception.hpp"
+#include "orcus/config.hpp"
 
 #include "xlsx_types.hpp"
 #include "xlsx_handler.hpp"
@@ -155,7 +156,7 @@ bool orcus_xlsx::detect(const unsigned char* blob, size_t size)
     if (buf.empty())
         return false;
 
-    iface::config opt;
+    config opt;
     xmlns_repository ns_repo;
     ns_repo.add_predefined_values(NS_opc_all);
     session_context session_cxt;

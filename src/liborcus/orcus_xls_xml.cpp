@@ -8,6 +8,7 @@
 #include "orcus/orcus_xls_xml.hpp"
 #include "orcus/stream.hpp"
 #include "orcus/xml_namespace.hpp"
+#include "orcus/config.hpp"
 
 #include "xml_stream_parser.hpp"
 #include "xls_xml_handler.hpp"
@@ -51,7 +52,7 @@ orcus_xls_xml::~orcus_xls_xml()
 
 bool orcus_xls_xml::detect(const unsigned char* buffer, size_t size)
 {
-    iface::config opt;
+    config opt;
     xmlns_repository ns_repo;
     ns_repo.add_predefined_values(NS_xls_xml_all);
     xml_stream_parser parser(opt, ns_repo, xls_xml_tokens, reinterpret_cast<const char*>(buffer), size);
