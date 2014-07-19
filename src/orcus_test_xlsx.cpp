@@ -28,6 +28,11 @@ const char* dirs[] = {
     SRCDIR"/test/xlsx/empty-shared-strings/",
 };
 
+/**
+ * Semi-automated import test that goes through all specified directories,
+ * and in each directory, reads the input.xlsx file, dumps its output and
+ * checks it against the check.txt content.
+ */
 void test_xlsx_import()
 {
     size_t n = sizeof(dirs)/sizeof(dirs[0]);
@@ -62,11 +67,23 @@ void test_xlsx_import()
     }
 }
 
+void test_xlsx_table_autofilter()
+{
+    string path(SRCDIR"/test/xlsx/table/autofilter.xlsx");
+    spreadsheet::document doc;
+    spreadsheet::import_factory factory(doc);
+    orcus_xlsx app(&factory);
+    app.read_file(path.c_str());
+
+    // TODO : Test the autofilter content.
+}
+
 }
 
 int main()
 {
     test_xlsx_import();
+    test_xlsx_table_autofilter();
     return EXIT_SUCCESS;
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
