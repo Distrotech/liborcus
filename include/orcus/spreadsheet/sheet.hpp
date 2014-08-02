@@ -22,6 +22,7 @@ namespace spreadsheet {
 
 class document;
 struct sheet_impl;
+struct auto_filter_t;
 
 /**
  * This class represents a single sheet instance in the internal document
@@ -43,6 +44,7 @@ public:
     virtual iface::import_sheet_properties* get_sheet_properties();
     virtual iface::import_data_table* get_data_table();
     virtual iface::import_table* get_table();
+    virtual iface::import_auto_filter* get_auto_filter();
 
     virtual void set_auto(row_t row, col_t col, const char* p, size_t n);
     virtual void set_string(row_t row, col_t col, size_t sindex);
@@ -82,6 +84,9 @@ public:
     void set_merge_cell_range(const char* p_ref, size_t p_ref_len);
 
     size_t get_string_identifier(row_t row, col_t col) const;
+
+    auto_filter_t* get_auto_filter_data();
+    void set_auto_filter_data(auto_filter_t* p);
 
     row_t row_size() const;
     col_t col_size() const;

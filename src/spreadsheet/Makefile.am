@@ -10,6 +10,7 @@ endif
 
 lib_LTLIBRARIES = liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_SOURCES = \
+	auto_filter.cpp \
 	data_table.cpp \
 	document.cpp \
 	factory.cpp \

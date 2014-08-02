@@ -189,6 +189,11 @@ const ixion::model_context& document::get_model_context() const
     return mp_impl->m_context;
 }
 
+string_pool& document::get_string_pool()
+{
+    return mp_impl->m_string_pool;
+}
+
 namespace {
 
 struct sheet_finalizer : unary_function<sheet_item, void>

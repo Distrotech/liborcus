@@ -154,6 +154,7 @@
 					<F N="../include/orcus/mso/encryption_info.hpp"/>
 				</Folder>
 				<Folder Name="spreadsheet">
+					<F N="../include/orcus/spreadsheet/auto_filter.hpp"/>
 					<F N="../include/orcus/spreadsheet/data_table.hpp"/>
 					<F N="../include/orcus/spreadsheet/document.hpp"/>
 					<F N="../include/orcus/spreadsheet/export_interface.hpp"/>

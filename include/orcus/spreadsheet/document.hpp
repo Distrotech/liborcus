@@ -25,6 +25,7 @@ struct abs_address_t;
 namespace orcus {
 
 class pstring;
+class string_pool;
 
 namespace spreadsheet {
 
@@ -102,6 +103,8 @@ public:
 
     ixion::model_context& get_model_context();
     const ixion::model_context& get_model_context() const;
+
+    string_pool& get_string_pool();
 
     void finalize();
 

@@ -13,10 +13,12 @@
 #include "orcus/spreadsheet/data_table.hpp"
 #include "orcus/spreadsheet/table.hpp"
 #include "orcus/spreadsheet/document.hpp"
+#include "orcus/spreadsheet/auto_filter.hpp"
 
 #include "orcus/global.hpp"
 #include "orcus/exception.hpp"
 #include "orcus/measurement.hpp"
+#include "orcus/string_pool.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -37,6 +39,7 @@
 #include <ixion/formula_tokens.hpp>
 #include <ixion/matrix.hpp>
 #include <ixion/model_context.hpp>
+#include <ixion/address.hpp>
 
 #include <boost/unordered_map.hpp>
 #include <boost/noncopyable.hpp>
@@ -85,14 +88,103 @@ struct overlapped_cells_tree_builder : std::unary_function<overlapped_cells_type
     }
 };
 
+class sheet_auto_filter : public orcus::spreadsheet::iface::import_auto_filter
+{
+    sheet& m_sheet;
+    orcus::string_pool& m_string_pool;
+    const ixion::formula_name_resolver* mp_resolver;
+    orcus::unique_ptr<auto_filter_t> mp_data;
+    col_t m_cur_col;
+    auto_filter_column_t m_cur_col_data;
+
+public:
+    sheet_auto_filter(sheet& sh, orcus::string_pool& sp) :
+        m_sheet(sh),
+        m_string_pool(sp),
+        mp_resolver(NULL),
+        m_cur_col(-1) {}
+
+    void set_resolver(const ixion::formula_name_resolver* resolver)
+    {
+        mp_resolver = resolver;
+    }
+
+    virtual void set_range(const char* p_ref, size_t n_ref)
+    {
+        mp_data.reset(new auto_filter_t);
+
+        if (!mp_resolver)
+            return;
+
+        ixion::abs_address_t pos(0,0,0);
+        ixion::formula_name_type res = mp_resolver->resolve(p_ref, n_ref, pos);
+        switch (res.type)
+        {
+            case ixion::formula_name_type::cell_reference:
+                // Single cell reference.
+                mp_data->range.first = ixion::to_address(res.address).to_abs(pos);
+                mp_data->range.last = mp_data->range.first;
+            break;
+            case ixion::formula_name_type::range_reference:
+                // Range reference.
+                mp_data->range = ixion::to_range(res.range).to_abs(pos);
+            break;
+            default:
+                ; // Unsupported range.  Leave it invalid.
+        }
+    }
+
+    virtual void set_column(orcus::spreadsheet::col_t col)
+    {
+        m_cur_col = col;
+    }
+
+    virtual void append_column_match_value(const char* p, size_t n)
+    {
+        // The string pool belongs to the document.
+        pstring s = m_string_pool.intern(p, n).first;
+        m_cur_col_data.match_values.push_back(s);
+    }
+
+    virtual void commit_column()
+    {
+        if (!mp_data)
+            return;
+
+        if (m_cur_col < 0)
+            // Invalid column index.
+            return;
+
+        typedef auto_filter_t::columns_type col_type;
+        col_type::iterator it = mp_data->columns.lower_bound(m_cur_col);
+        if (it == mp_data->columns.end() || mp_data->columns.key_comp()(m_cur_col, it->first))
+        {
+            // Insert a new entry for this column.
+            mp_data->columns.insert(
+                it, col_type::value_type(m_cur_col, m_cur_col_data));
+        }
+        else
+            // Update the existing column data.
+            it->second = m_cur_col_data;
+
+        m_cur_col_data.reset();
+    }
+
+    virtual void commit()
+    {
+        m_sheet.set_auto_filter_data(mp_data.release());
+    }
+};
+
 }
 
 struct sheet_impl : boost::noncopyable
 {
     document& m_doc;
-    sheet_properties m_sheet_props; /// sheet properties import interface.
-    data_table m_data_table; /// data table import interface.
-    table m_table; // table import interface.
+    sheet_properties m_sheet_props;     /// sheet properties import interface.
+    data_table m_data_table;            /// data table import interface.
+    sheet_auto_filter m_auto_filter;    /// auto filter import interface.
+    table m_table;                      /// table import interface.
 
     mutable col_widths_store_type m_col_widths;
     mutable row_heights_store_type m_row_heights;
@@ -104,8 +196,10 @@ struct sheet_impl : boost::noncopyable
     col_hidden_store_type::const_iterator m_col_hidden_pos;
     row_hidden_store_type::const_iterator m_row_hidden_pos;
 
-    col_merge_size_type m_merge_ranges; /// 2-dimensional merged cell ranges;
+    col_merge_size_type m_merge_ranges; /// 2-dimensional merged cell ranges.
     overlapped_cells_type m_overlapped_ranges;
+
+    orcus::unique_ptr<auto_filter_t> mp_auto_filter_data;
 
     cell_format_type m_cell_formats;
     row_t m_row_size;
@@ -113,7 +207,9 @@ struct sheet_impl : boost::noncopyable
     const sheet_t m_sheet; /// sheet ID
 
     sheet_impl(document& doc, sheet& sh, sheet_t sheet_index, row_t row_size, col_t col_size) :
-        m_doc(doc), m_sheet_props(doc, sh), m_data_table(sh),
+        m_doc(doc),
+        m_sheet_props(doc, sh), m_data_table(sh),
+        m_auto_filter(sh, doc.get_string_pool()),
         m_col_widths(0, col_size, get_default_column_width()),
         m_row_heights(0, row_size, get_default_row_height()),
         m_col_width_pos(m_col_widths.begin()),
@@ -234,6 +330,12 @@ iface::import_data_table* sheet::get_data_table()
 iface::import_table* sheet::get_table()
 {
     return &mp_impl->m_table;
+}
+
+iface::import_auto_filter* sheet::get_auto_filter()
+{
+    mp_impl->m_auto_filter.set_resolver(mp_impl->m_doc.get_formula_name_resolver());
+    return &mp_impl->m_auto_filter;
 }
 
 void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
@@ -507,6 +609,16 @@ size_t sheet::get_string_identifier(row_t row, col_t col) const
 {
     const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     return cxt.get_string_identifier(ixion::abs_address_t(mp_impl->m_sheet, row, col));
+}
+
+auto_filter_t* sheet::get_auto_filter_data()
+{
+    return mp_impl->mp_auto_filter_data.get();
+}
+
+void sheet::set_auto_filter_data(auto_filter_t* p)
+{
+    mp_impl->mp_auto_filter_data.reset(p);
 }
 
 row_t sheet::row_size() const
