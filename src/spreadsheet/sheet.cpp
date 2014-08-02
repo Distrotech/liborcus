@@ -143,7 +143,7 @@ public:
     {
         // The string pool belongs to the document.
         pstring s = m_string_pool.intern(p, n).first;
-        m_cur_col_data.match_values.push_back(s);
+        m_cur_col_data.match_values.insert(s);
     }
 
     virtual void commit_column()
@@ -612,6 +612,11 @@ size_t sheet::get_string_identifier(row_t row, col_t col) const
 }
 
 auto_filter_t* sheet::get_auto_filter_data()
+{
+    return mp_impl->mp_auto_filter_data.get();
+}
+
+const auto_filter_t* sheet::get_auto_filter_data() const
 {
     return mp_impl->mp_auto_filter_data.get();
 }

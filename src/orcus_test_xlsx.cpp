@@ -11,6 +11,8 @@
 #include "orcus/stream.hpp"
 #include "orcus/spreadsheet/factory.hpp"
 #include "orcus/spreadsheet/document.hpp"
+#include "orcus/spreadsheet/sheet.hpp"
+#include "orcus/spreadsheet/auto_filter.hpp"
 
 #include <cstdlib>
 #include <cassert>
@@ -19,6 +21,7 @@
 #include <sstream>
 
 using namespace orcus;
+using namespace orcus::spreadsheet;
 using namespace std;
 
 namespace {
@@ -70,12 +73,35 @@ void test_xlsx_import()
 void test_xlsx_table_autofilter()
 {
     string path(SRCDIR"/test/xlsx/table/autofilter.xlsx");
-    spreadsheet::document doc;
-    spreadsheet::import_factory factory(doc);
+    document doc;
+    import_factory factory(doc);
     orcus_xlsx app(&factory);
     app.read_file(path.c_str());
 
-    // TODO : Test the autofilter content.
+    const sheet* sh = doc.get_sheet(0);
+    assert(sh);
+    const auto_filter_t* af = sh->get_auto_filter_data();
+    assert(af);
+
+    // Autofilter is over B2:C11.
+    assert(af->range.first.column == 1);
+    assert(af->range.first.row == 1);
+    assert(af->range.last.column == 2);
+    assert(af->range.last.row == 10);
+
+    // Check the match values of the 1st column filter criterion.
+    auto_filter_t::columns_type::const_iterator it = af->columns.find(0);
+    assert(it != af->columns.end());
+
+    const auto_filter_column_t* afc = &it->second;
+    assert(afc->match_values.count("A") > 0);
+    assert(afc->match_values.count("C") > 0);
+
+    // And the 2nd column.
+    it = af->columns.find(1);
+    assert(it != af->columns.end());
+    afc = &it->second;
+    assert(afc->match_values.count("1") > 0);
 }
 
 }

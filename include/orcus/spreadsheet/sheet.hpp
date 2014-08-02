@@ -86,6 +86,7 @@ public:
     size_t get_string_identifier(row_t row, col_t col) const;
 
     auto_filter_t* get_auto_filter_data();
+    const auto_filter_t* get_auto_filter_data() const;
     void set_auto_filter_data(auto_filter_t* p);
 
     row_t row_size() const;

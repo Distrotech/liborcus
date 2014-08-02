@@ -12,8 +12,9 @@
 #include "orcus/pstring.hpp"
 #include "../env.hpp"
 
-#include <vector>
 #include <map>
+
+#include <boost/unordered_set.hpp>
 
 #include <ixion/address.hpp>
 
@@ -21,7 +22,8 @@ namespace orcus { namespace spreadsheet {
 
 struct ORCUS_DLLPUBLIC auto_filter_column_t
 {
-    std::vector<pstring> match_values;
+    typedef boost::unordered_set<pstring, pstring::hash> match_values_type;
+    match_values_type match_values;
 
     void reset();
 };

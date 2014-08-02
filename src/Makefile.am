@@ -301,10 +301,13 @@ EXTRA_PROGRAMS += \
 orcus_test_xlsx_SOURCES = \
 	orcus_test_xlsx.cpp
 
+orcus_test_xlsx_CXXFLAGS = @LIBIXION_CFLAGS@
+
 orcus_test_xlsx_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+	@LIBIXION_LIBS@
 
 orcus_test_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la -DSRCDIR=\""$(top_srcdir)"\"
 
