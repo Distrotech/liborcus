@@ -155,7 +155,6 @@
 				</Folder>
 				<Folder Name="spreadsheet">
 					<F N="../include/orcus/spreadsheet/auto_filter.hpp"/>
-					<F N="../include/orcus/spreadsheet/data_table.hpp"/>
 					<F N="../include/orcus/spreadsheet/document.hpp"/>
 					<F N="../include/orcus/spreadsheet/export_interface.hpp"/>
 					<F N="../include/orcus/spreadsheet/factory.hpp"/>
@@ -358,13 +357,16 @@
 				<F N="../src/parser/string_pool.cpp"/>
 				<F N="../src/parser/string_pool_test.cpp"/>
 				<F N="../src/parser/types.cpp"/>
+				<F N="../src/parser/win_stdint.h"/>
 				<F N="../src/parser/xml_namespace.cpp"/>
 				<F N="../src/parser/xml_namespace_test.cpp"/>
 				<F N="../src/parser/zip_archive.cpp"/>
 				<F N="../src/parser/zip_archive_stream.cpp"/>
 			</Folder>
 			<Folder Name="spreadsheet">
+				<F N="../src/spreadsheet/auto_filter.cpp"/>
 				<F N="../src/spreadsheet/data_table.cpp"/>
+				<F N="../src/spreadsheet/data_table.hpp"/>
 				<F N="../src/spreadsheet/document.cpp"/>
 				<F N="../src/spreadsheet/factory.cpp"/>
 				<F N="../src/spreadsheet/global_settings.cpp"/>
@@ -372,6 +374,7 @@
 				<F N="../src/spreadsheet/sheet.cpp"/>
 				<F N="../src/spreadsheet/sheet_properties.cpp"/>
 				<F N="../src/spreadsheet/styles.cpp"/>
+				<F N="../src/spreadsheet/table.cpp"/>
 			</Folder>
 			<F N="../src/dom_tree_sax_handler.cpp"/>
 			<F N="../src/dom_tree_sax_handler.hpp"/>
