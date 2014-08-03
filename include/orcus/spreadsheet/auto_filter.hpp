@@ -20,6 +20,9 @@
 
 namespace orcus { namespace spreadsheet {
 
+/**
+ * Data for a single column inside autofilter range.
+ */
 struct ORCUS_DLLPUBLIC auto_filter_column_t
 {
     typedef boost::unordered_set<pstring, pstring::hash> match_values_type;
@@ -28,6 +31,10 @@ struct ORCUS_DLLPUBLIC auto_filter_column_t
     void reset();
 };
 
+/**
+ * Data for a single autofilter entry.  An autofilter can belong to either a
+ * sheet or a table.
+ */
 struct ORCUS_DLLPUBLIC auto_filter_t
 {
     typedef std::map<col_t, auto_filter_column_t> columns_type;
