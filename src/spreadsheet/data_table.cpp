@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "orcus/spreadsheet/data_table.hpp"
+#include "data_table.hpp"
 
 namespace orcus { namespace spreadsheet {
 

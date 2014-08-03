@@ -10,7 +10,6 @@
 #include "orcus/spreadsheet/styles.hpp"
 #include "orcus/spreadsheet/shared_strings.hpp"
 #include "orcus/spreadsheet/sheet_properties.hpp"
-#include "orcus/spreadsheet/data_table.hpp"
 #include "orcus/spreadsheet/table.hpp"
 #include "orcus/spreadsheet/document.hpp"
 #include "orcus/spreadsheet/auto_filter.hpp"
@@ -19,6 +18,8 @@
 #include "orcus/exception.hpp"
 #include "orcus/measurement.hpp"
 #include "orcus/string_pool.hpp"
+
+#include "data_table.hpp"
 
 #include <iostream>
 #include <fstream>
