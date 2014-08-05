@@ -164,7 +164,6 @@
 					<F N="../include/orcus/spreadsheet/sheet.hpp"/>
 					<F N="../include/orcus/spreadsheet/sheet_properties.hpp"/>
 					<F N="../include/orcus/spreadsheet/styles.hpp"/>
-					<F N="../include/orcus/spreadsheet/table.hpp"/>
 					<F N="../include/orcus/spreadsheet/types.hpp"/>
 				</Folder>
 				<F N="../include/orcus/base64.hpp"/>
@@ -375,6 +374,7 @@
 				<F N="../src/spreadsheet/sheet_properties.cpp"/>
 				<F N="../src/spreadsheet/styles.cpp"/>
 				<F N="../src/spreadsheet/table.cpp"/>
+				<F N="../src/spreadsheet/table.hpp"/>
 			</Folder>
 			<F N="../src/dom_tree_sax_handler.cpp"/>
 			<F N="../src/dom_tree_sax_handler.hpp"/>

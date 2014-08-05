@@ -8,7 +8,7 @@
 #ifndef ORCUS_SPREADSHEET_TABLE_HPP
 #define ORCUS_SPREADSHEET_TABLE_HPP
 
-#include "import_interface.hpp"
+#include "orcus/spreadsheet/import_interface.hpp"
 
 namespace orcus { namespace spreadsheet {
 
