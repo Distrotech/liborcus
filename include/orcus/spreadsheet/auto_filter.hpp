@@ -48,6 +48,57 @@ struct ORCUS_DLLPUBLIC auto_filter_t
     void reset();
 };
 
+/**
+ * Single column entry in table.
+ */
+struct ORCUS_DLLPUBLIC table_column_t
+{
+    pstring name;
+    pstring totals_row_label;
+    totals_row_function_t totals_row_function;
+};
+
+/**
+ * Table style information.
+ */
+struct ORCUS_DLLPUBLIC table_style_t
+{
+    pstring name;
+
+    bool show_first_column:1;
+    bool show_last_column:1;
+    bool show_row_stripes:1;
+    bool show_column_stripes:1;
+
+    table_style_t();
+
+    void reset();
+};
+
+/**
+ * Single table entry.  A table is a range in a spreadsheet that represents
+ * a single set of data that can be used as a data source.
+ */
+struct ORCUS_DLLPUBLIC table_t
+{
+    typedef std::vector<table_column_t> columns_type;
+
+    pstring name;
+    pstring display_name;
+
+    ixion::abs_range_t range;
+
+    size_t totals_row_count;
+
+    auto_filter_t filter;
+    columns_type columns;
+    table_style_t style;
+
+    table_t();
+
+    void reset();
+};
+
 }}
 
 #endif

@@ -22,6 +22,34 @@ void auto_filter_t::reset()
     columns.clear();
 }
 
+table_style_t::table_style_t() :
+    show_first_column(false),
+    show_last_column(false),
+    show_row_stripes(false),
+    show_column_stripes(false) {}
+
+void table_style_t::reset()
+{
+    name.clear();
+    show_first_column = false;
+    show_last_column = false;
+    show_row_stripes = false;
+    show_column_stripes = false;
+}
+
+table_t::table_t() : range(ixion::abs_range_t::invalid), totals_row_count(0) {}
+
+void table_t::reset()
+{
+    name.clear();
+    display_name.clear();
+    range = ixion::abs_range_t(ixion::abs_range_t::invalid);
+    totals_row_count = 0;
+    filter.reset();
+    columns.clear();
+    style.reset();
+}
+
 }}
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
