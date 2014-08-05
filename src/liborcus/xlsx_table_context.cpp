@@ -9,12 +9,74 @@
 #include "xlsx_autofilter_context.hpp"
 #include "ooxml_namespace_types.hpp"
 #include "ooxml_token_constants.hpp"
+#include "session_context.hpp"
+#include "xml_context_global.hpp"
+
+#include "orcus/measurement.hpp"
 
 #include <iostream>
 
 using namespace std;
 
 namespace orcus {
+
+namespace {
+
+class table_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+    string_pool* m_pool;
+
+    long m_id;
+    long m_totals_row_count;
+
+    pstring m_name;
+    pstring m_display_name;
+    pstring m_ref;
+
+public:
+    table_attr_parser(string_pool* pool) : m_pool(pool), m_id(-1), m_totals_row_count(-1) {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        switch (attr.name)
+        {
+            case XML_id:
+                m_id = to_long(attr.value);
+            break;
+            case XML_totalsRowCount:
+                m_totals_row_count = to_long(attr.value);
+            break;
+            case XML_name:
+                m_name = attr.value;
+                if (attr.transient)
+                    m_name = m_pool->intern(m_name).first;
+            break;
+            case XML_displayName:
+                m_display_name = attr.value;
+                if (attr.transient)
+                    m_display_name = m_pool->intern(m_display_name).first;
+            break;
+            case XML_ref:
+                m_ref = attr.value;
+                if (attr.transient)
+                    m_ref = m_pool->intern(m_ref).first;
+            break;
+            default:
+                ;
+        }
+    }
+
+    long get_id() const { return m_id; }
+    long get_totals_row_count() const { return m_totals_row_count; }
+    pstring get_name() const { return m_name; }
+    pstring get_display_name() const { return m_display_name; }
+    pstring get_ref() const { return m_ref; }
+};
+
+}
 
 xlsx_table_context::xlsx_table_context(
     session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_table* table) :
@@ -79,7 +141,38 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
     switch (name)
     {
         case XML_table:
+        {
             xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
+            table_attr_parser func(&get_session_context().m_string_pool);
+            func = for_each(attrs.begin(), attrs.end(), func);
+
+            cout << "* table (range=" << func.get_ref() << "; id=" << func.get_id()
+                 << "; name=" << func.get_name() << "; display name="
+                 << func.get_display_name() << ")" << endl;
+            cout << "  * totals row count: " << func.get_totals_row_count() << endl;
+        }
+        break;
+        case XML_tableColumns:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_table);
+            single_long_attr_getter func(NS_ooxml_xlsx, XML_count);
+            long column_count = for_each(attrs.begin(), attrs.end(), func).get_value();
+            cout << "  * column count: " << column_count << endl;
+        }
+        break;
+        case XML_tableColumn:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_tableColumns);
+
+            // TODO : handle this.
+        }
+        break;
+        case XML_tableStyleInfo:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_table);
+
+            // TODO : handle this.
+        }
         break;
         default:
             warn_unhandled();
