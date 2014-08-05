@@ -5,14 +5,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_SPREADSHEET_IMPORT_INTERFACE_HPP__
-#define __ORCUS_SPREADSHEET_IMPORT_INTERFACE_HPP__
+#ifndef ORCUS_SPREADSHEET_IMPORT_INTERFACE_HPP
+#define ORCUS_SPREADSHEET_IMPORT_INTERFACE_HPP
 
 #include <cstdlib>
 
 #include "types.hpp"
 #include "../types.hpp"
 #include "../env.hpp"
+
+// NB: This header must not depend on ixion, as it needs to be usable for
+// those clients that provide their own formula engine.  Other headers in
+// the orcus::spreadsheet namespace may depend on ixion.
 
 namespace orcus { namespace spreadsheet { namespace iface {
 
@@ -547,4 +551,5 @@ public:
 }}}
 
 #endif
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
