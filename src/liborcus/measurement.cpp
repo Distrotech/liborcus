@@ -169,6 +169,26 @@ long to_long(const pstring& s)
     return to_long(p, p_end, NULL);
 }
 
+bool to_bool(const pstring& s)
+{
+    size_t n = s.size();
+    if (n == 1)
+        // Any single char other than '0' is true.
+        return *s.get() != '0';
+
+    if (n == 4)
+    {
+        // Check against 'true'.
+        const char* p = s.get();
+        if (*p++ != 't' || *p++ != 'r' || *p++ != 'u' || *p != 'e')
+            return false;
+
+        return true;
+    }
+
+    return false;
+}
+
 length_t to_length(const pstring& str)
 {
     length_t ret;

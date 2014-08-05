@@ -32,6 +32,7 @@ ORCUS_DLLPUBLIC double to_double(const char* p, const char* p_end, const char** 
 ORCUS_DLLPUBLIC double to_double(const pstring& s);
 ORCUS_DLLPUBLIC long to_long(const char* p, const char* p_end, const char** p_parse_ended = NULL);
 ORCUS_DLLPUBLIC long to_long(const pstring& s);
+ORCUS_DLLPUBLIC bool to_bool(const pstring& s);
 
 /**
  * Parse a string value containing a part representing a numerical value
