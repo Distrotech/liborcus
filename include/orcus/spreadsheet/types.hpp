@@ -109,6 +109,12 @@ enum totals_row_function_t
     totals_row_function_custom
 };
 
+/**
+ * Convert a string representation of a totals row function name to its
+ * equivalent enum value.
+ */
+ORCUS_DLLPUBLIC totals_row_function_t to_totals_row_function_enum(const char* p, size_t n);
+
 }}
 
 #endif

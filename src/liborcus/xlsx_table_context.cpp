@@ -76,6 +76,55 @@ public:
     pstring get_ref() const { return m_ref; }
 };
 
+class table_column_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+    string_pool* m_pool;
+
+    long m_id;
+    pstring m_name;
+    pstring m_totals_row_label;
+    spreadsheet::totals_row_function_t m_totals_row_func;
+
+public:
+    table_column_attr_parser(string_pool* pool) :
+        m_pool(pool), m_id(-1), m_totals_row_func(spreadsheet::totals_row_function_none) {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        switch (attr.name)
+        {
+            case XML_id:
+                m_id = to_long(attr.value);
+            break;
+            case XML_name:
+                m_name = attr.value;
+                if (attr.transient)
+                    m_name = m_pool->intern(m_name).first;
+            break;
+            case XML_totalsRowLabel:
+                m_totals_row_label = attr.value;
+                if (attr.transient)
+                    m_totals_row_label = m_pool->intern(m_totals_row_label).first;
+            break;
+            case XML_totalsRowFunction:
+                m_totals_row_func =
+                    spreadsheet::to_totals_row_function_enum(
+                        attr.value.get(), attr.value.size());
+            break;
+            default:
+                ;
+        }
+    }
+
+    long get_id() const { return m_id; }
+    pstring get_name() const { return m_name; }
+    pstring get_totals_row_label() const { return m_totals_row_label; }
+    spreadsheet::totals_row_function_t get_totals_row_function() const { return m_totals_row_func; }
+};
+
 }
 
 xlsx_table_context::xlsx_table_context(
@@ -163,8 +212,11 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
         case XML_tableColumn:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_tableColumns);
-
-            // TODO : handle this.
+            table_column_attr_parser func(&get_session_context().m_string_pool);
+            func = for_each(attrs.begin(), attrs.end(), func);
+            cout << "  * table column (id=" << func.get_id() << "; name=" << func.get_name() << ")" << endl;
+            cout << "    * totals row label: " << func.get_totals_row_label() << endl;
+            cout << "    * totals func: " << func.get_totals_row_function() << endl;
         }
         break;
         case XML_tableStyleInfo:
