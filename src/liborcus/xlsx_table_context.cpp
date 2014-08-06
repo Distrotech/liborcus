@@ -226,6 +226,8 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
     if (ns != NS_ooxml_xlsx)
         return;
 
+    pstring str;
+
     switch (name)
     {
         case XML_table:
@@ -238,6 +240,15 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
                  << "; name=" << func.get_name() << "; display name="
                  << func.get_display_name() << ")" << endl;
             cout << "  * totals row count: " << func.get_totals_row_count() << endl;
+
+            m_table.set_identifier(func.get_id());
+            str = func.get_ref();
+            m_table.set_range(str.get(), str.size());
+            str = func.get_name();
+            m_table.set_name(str.get(), str.size());
+            str = func.get_display_name();
+            m_table.set_display_name(str.get(), str.size());
+            m_table.set_totals_row_count(func.get_totals_row_count());
         }
         break;
         case XML_tableColumns:
@@ -246,6 +257,8 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             single_long_attr_getter func(NS_ooxml_xlsx, XML_count);
             long column_count = for_each(attrs.begin(), attrs.end(), func).get_value();
             cout << "  * column count: " << column_count << endl;
+
+            m_table.set_column_count(column_count);
         }
         break;
         case XML_tableColumn:
@@ -256,6 +269,13 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             cout << "  * table column (id=" << func.get_id() << "; name=" << func.get_name() << ")" << endl;
             cout << "    * totals row label: " << func.get_totals_row_label() << endl;
             cout << "    * totals func: " << func.get_totals_row_function() << endl;
+
+            m_table.set_column_identifier(func.get_id());
+            str = func.get_name();
+            m_table.set_column_name(str.get(), str.size());
+            str = func.get_totals_row_label();
+            m_table.set_column_totals_row_label(str.get(), str.size());
+            m_table.set_column_totals_row_function(func.get_totals_row_function());
         }
         break;
         case XML_tableStyleInfo:
@@ -268,6 +288,8 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             cout << "    * show last column: " << func.show_last_col() << endl;
             cout << "    * show row stripes: " << func.show_row_stripes() << endl;
             cout << "    * show column stripes: " << func.show_col_stripes() << endl;
+
+            // TODO : We need to design an interface for this.
         }
         break;
         default:
@@ -278,6 +300,21 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
 
 bool xlsx_table_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
+    if (ns == NS_ooxml_xlsx)
+    {
+        switch (name)
+        {
+            case XML_table:
+                m_table.commit();
+            break;
+            case XML_tableColumn:
+                m_table.commit_column();
+            break;
+            default:
+                ;
+        }
+    }
+
     return pop_stack(ns, name);
 }
 
