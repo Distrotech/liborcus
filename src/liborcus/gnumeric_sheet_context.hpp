@@ -19,6 +19,7 @@ namespace spreadsheet { namespace iface {
 
 class import_factory;
 class import_sheet;
+class import_auto_filter;
 
 }}
 
@@ -62,13 +63,14 @@ private:
     spreadsheet::iface::import_factory* mp_factory;
 
     spreadsheet::iface::import_sheet* mp_sheet;
+    spreadsheet::iface::import_auto_filter* mp_auto_filter;
 
     boost::scoped_ptr<xml_context_base> mp_child;
     boost::scoped_ptr<gnumeric_style_region> mp_region_data;
 
     /**
-    * Used for temporary storage of characters
-    */
+     * Used for temporary storage of characters
+     */
     pstring chars;
 };
 

@@ -105,6 +105,14 @@ public:
         mp_resolver(NULL),
         m_cur_col(-1) {}
 
+    void reset()
+    {
+        mp_resolver = NULL;
+        mp_data.reset(new auto_filter_t);
+        m_cur_col = -1;
+        m_cur_col_data.reset();
+    }
+
     void set_resolver(const ixion::formula_name_resolver* resolver)
     {
         mp_resolver = resolver;
@@ -112,8 +120,6 @@ public:
 
     virtual void set_range(const char* p_ref, size_t n_ref)
     {
-        mp_data.reset(new auto_filter_t);
-
         if (!mp_resolver)
             return;
 
@@ -325,16 +331,19 @@ iface::import_sheet_properties* sheet::get_sheet_properties()
 
 iface::import_data_table* sheet::get_data_table()
 {
+    mp_impl->m_data_table.reset();
     return &mp_impl->m_data_table;
 }
 
 iface::import_table* sheet::get_table()
 {
+    mp_impl->m_table.reset();
     return &mp_impl->m_table;
 }
 
 iface::import_auto_filter* sheet::get_auto_filter()
 {
+    mp_impl->m_auto_filter.reset();
     mp_impl->m_auto_filter.set_resolver(mp_impl->m_doc.get_formula_name_resolver());
     return &mp_impl->m_auto_filter;
 }

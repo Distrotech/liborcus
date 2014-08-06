@@ -22,6 +22,10 @@ data_table::~data_table()
     delete mp_impl;
 }
 
+void data_table::reset()
+{
+}
+
 void data_table::set_type(orcus::spreadsheet::data_table_type_t type)
 {
 }

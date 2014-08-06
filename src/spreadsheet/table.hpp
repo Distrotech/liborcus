@@ -32,6 +32,8 @@ public:
     virtual void commit_column();
 
     virtual void commit();
+
+    void reset();
 };
 
 }}

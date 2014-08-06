@@ -444,7 +444,8 @@ gnumeric_sheet_context::gnumeric_sheet_context(
     session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
     xml_context_base(session_cxt, tokens),
     mp_factory(factory),
-    mp_sheet(0)
+    mp_sheet(NULL),
+    mp_auto_filter(NULL)
 {
 }
 
@@ -503,20 +504,27 @@ void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, cons
             break;
             case XML_Filter:
             {
-                std::for_each(attrs.begin(), attrs.end(),
-                        gnumeric_autofilter_attr_parser(
-                            *mp_sheet->get_auto_filter()));
+                mp_auto_filter = mp_sheet->get_auto_filter();
+                if (mp_auto_filter)
+                {
+                    std::for_each(attrs.begin(), attrs.end(),
+                            gnumeric_autofilter_attr_parser(
+                                *mp_auto_filter));
+                }
             }
             break;
             case XML_Field:
             {
                 xml_token_pair_t parent = get_parent_element();
                 assert(parent.first == NS_gnumeric_gnm && parent.second == XML_Filter);
-                gnumeric_autofilter_field_attr_parser parser =
-                    std::for_each(attrs.begin(), attrs.end(),
-                            gnumeric_autofilter_field_attr_parser(
-                                *mp_sheet->get_auto_filter()));
-                parser.finalize_filter_import();
+                if (mp_auto_filter)
+                {
+                    gnumeric_autofilter_field_attr_parser parser =
+                        std::for_each(attrs.begin(), attrs.end(),
+                                gnumeric_autofilter_field_attr_parser(
+                                    *mp_auto_filter));
+                    parser.finalize_filter_import();
+                }
             }
             break;
             default:
@@ -547,10 +555,12 @@ bool gnumeric_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
                 end_style();
             break;
             case XML_Filter:
-                mp_sheet->get_auto_filter()->commit();
+                if (mp_auto_filter)
+                    mp_auto_filter->commit();
             break;
             case XML_Field:
-                mp_sheet->get_auto_filter()->commit_column();
+                if (mp_auto_filter)
+                    mp_auto_filter->commit_column();
             break;
             default:
                 ;

@@ -273,12 +273,18 @@ public:
      * returns NULL.  The implementer is responsible for managing the life
      * cycle of the returned interface object.
      *
+     * The implementor should also initialize the internal state of the
+     * temporary data table object when this method is called.
+     *
      * @return pointer to the data table interface object.
      */
     virtual import_data_table* get_data_table();
 
     /**
      * Get an interface for importing auto filter ranges.
+     *
+     * The implementor should also initialize the internal state of the
+     * temporary auto filter object when this method is called.
      *
      * @return pointer to the auto filter interface object.
      */
@@ -287,6 +293,9 @@ public:
     /**
      * Get an interface for importing tables.  The implementer is responsible
      * for managing the life cycle of the returned interface object.
+     *
+     * The implementor should also initialize the internal state of the
+     * temporary table object when this method is called.
      *
      * @return pointer to the table interface object, or NULL if the
      *         implementer doesn't support importing of tables.

@@ -23,6 +23,8 @@ public:
     data_table(sheet& sh);
     ~data_table();
 
+    void reset();
+
     virtual void set_type(data_table_type_t type);
 
     virtual void set_range(const char* p_range, size_t n_range);
