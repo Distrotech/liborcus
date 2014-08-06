@@ -389,6 +389,7 @@ void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file
 
     spreadsheet::iface::import_table* table = data->sheet_interface->get_table();
     if (!table)
+        // Client code doesn't support tables. No point going further.
         return;
 
     string filepath = resolve_file_path(dir_path, file_name);
@@ -409,7 +410,7 @@ void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file
         return;
 
     boost::scoped_ptr<xlsx_table_xml_handler> handler(
-        new xlsx_table_xml_handler(mp_impl->m_cxt, ooxml_tokens, table));
+        new xlsx_table_xml_handler(mp_impl->m_cxt, ooxml_tokens, *table));
 
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,

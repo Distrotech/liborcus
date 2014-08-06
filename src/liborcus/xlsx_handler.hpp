@@ -47,7 +47,7 @@ class xlsx_table_xml_handler : public xml_stream_handler
 {
 public:
     xlsx_table_xml_handler(
-        session_context& cxt, const tokens& tokens, spreadsheet::iface::import_table* table);
+        session_context& cxt, const tokens& tokens, spreadsheet::iface::import_table& table);
 
     virtual void start_document();
     virtual void end_document();

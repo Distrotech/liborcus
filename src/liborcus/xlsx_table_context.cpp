@@ -182,8 +182,8 @@ public:
 }
 
 xlsx_table_context::xlsx_table_context(
-    session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_table* table) :
-    xml_context_base(session_cxt, tokens), mp_table(table) {}
+    session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_table& table) :
+    xml_context_base(session_cxt, tokens), m_table(table) {}
 
 xlsx_table_context::~xlsx_table_context() {}
 
