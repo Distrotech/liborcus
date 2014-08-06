@@ -11,6 +11,7 @@
 #include "orcus/spreadsheet/sheet.hpp"
 #include "orcus/spreadsheet/shared_strings.hpp"
 #include "orcus/spreadsheet/styles.hpp"
+#include "orcus/spreadsheet/auto_filter.hpp"
 
 #include "orcus/pstring.hpp"
 #include "orcus/types.hpp"
@@ -25,6 +26,7 @@
 #include <iostream>
 #include <fstream>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/scoped_ptr.hpp>
 
 using namespace std;
@@ -68,6 +70,8 @@ struct sheet_item : private boost::noncopyable
         const ::std::string& m_filepath;
     };
 };
+
+typedef boost::ptr_map<pstring, table_t> table_store_type;
 
 sheet_item::sheet_item(document& doc, const pstring& _name, sheet_t sheet_index, row_t row_size, col_t col_size) :
     name(_name), data(doc, sheet_index, row_size, col_size) {}
@@ -135,6 +139,8 @@ struct document_impl
     boost::scoped_ptr<ixion::formula_name_resolver> mp_name_resolver;
     formula_grammar_t m_grammar;
 
+    table_store_type m_tables;
+
     document_impl(document& doc) :
         m_doc(doc),
         mp_styles(new import_styles(m_string_pool)),
@@ -192,6 +198,15 @@ const ixion::model_context& document::get_model_context() const
 string_pool& document::get_string_pool()
 {
     return mp_impl->m_string_pool;
+}
+
+void document::insert_table(table_t* p)
+{
+    if (!p)
+        return;
+
+    pstring name = p->name;
+    mp_impl->m_tables.insert(name, p);
 }
 
 namespace {

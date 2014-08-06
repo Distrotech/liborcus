@@ -53,9 +53,14 @@ struct ORCUS_DLLPUBLIC auto_filter_t
  */
 struct ORCUS_DLLPUBLIC table_column_t
 {
+    size_t identifier;
     pstring name;
     pstring totals_row_label;
     totals_row_function_t totals_row_function;
+
+    table_column_t();
+
+    void reset();
 };
 
 /**
@@ -82,6 +87,8 @@ struct ORCUS_DLLPUBLIC table_style_t
 struct ORCUS_DLLPUBLIC table_t
 {
     typedef std::vector<table_column_t> columns_type;
+
+    size_t identifier;
 
     pstring name;
     pstring display_name;

@@ -12,9 +12,18 @@
 
 namespace orcus { namespace spreadsheet {
 
+class document;
+class sheet;
+struct table_impl;
+
 class table : public iface::import_table
 {
+    table_impl* mp_impl;
+
 public:
+    table(document& doc, sheet& sh);
+    ~table();
+
     virtual iface::import_auto_filter* get_auto_filter();
 
     virtual void set_range(const char* p_ref, size_t n_ref);

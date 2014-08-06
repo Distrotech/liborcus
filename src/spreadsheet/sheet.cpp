@@ -20,6 +20,7 @@
 
 #include "data_table.hpp"
 #include "table.hpp"
+#include "formula_global.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -123,22 +124,7 @@ public:
         if (!mp_resolver)
             return;
 
-        ixion::abs_address_t pos(0,0,0);
-        ixion::formula_name_type res = mp_resolver->resolve(p_ref, n_ref, pos);
-        switch (res.type)
-        {
-            case ixion::formula_name_type::cell_reference:
-                // Single cell reference.
-                mp_data->range.first = ixion::to_address(res.address).to_abs(pos);
-                mp_data->range.last = mp_data->range.first;
-            break;
-            case ixion::formula_name_type::range_reference:
-                // Range reference.
-                mp_data->range = ixion::to_range(res.range).to_abs(pos);
-            break;
-            default:
-                ; // Unsupported range.  Leave it invalid.
-        }
+        mp_data->range = to_abs_range(*mp_resolver, p_ref, n_ref);
     }
 
     virtual void set_column(orcus::spreadsheet::col_t col)
@@ -217,6 +203,7 @@ struct sheet_impl : boost::noncopyable
         m_doc(doc),
         m_sheet_props(doc, sh), m_data_table(sh),
         m_auto_filter(sh, doc.get_string_pool()),
+        m_table(doc, sh),
         m_col_widths(0, col_size, get_default_column_width()),
         m_row_heights(0, row_size, get_default_row_height()),
         m_col_width_pos(m_col_widths.begin()),
@@ -644,6 +631,11 @@ row_t sheet::row_size() const
 col_t sheet::col_size() const
 {
     return mp_impl->m_col_size;
+}
+
+sheet_t sheet::get_index() const
+{
+    return mp_impl->m_sheet;
 }
 
 void sheet::finalize()

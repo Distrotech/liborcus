@@ -34,6 +34,7 @@ class import_shared_strings;
 class import_styles;
 class sheet;
 
+struct table_t;
 struct document_impl;
 
 /**
@@ -105,6 +106,16 @@ public:
     const ixion::model_context& get_model_context() const;
 
     string_pool& get_string_pool();
+
+    /**
+     * Insert a new table object into the document.  The document will take
+     * ownership of the inserted object after the call.  The object will get
+     * inserted only when there is no pre-existing table object of the same
+     * name.  The object not being inserted will be deleted.
+     *
+     * @param p table object to insert.
+     */
+    void insert_table(table_t* p);
 
     void finalize();
 

@@ -91,6 +91,7 @@ public:
 
     row_t row_size() const;
     col_t col_size() const;
+    sheet_t get_index() const;
 
     void finalize();
 

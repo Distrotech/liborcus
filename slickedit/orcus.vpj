@@ -368,6 +368,8 @@
 				<F N="../src/spreadsheet/data_table.hpp"/>
 				<F N="../src/spreadsheet/document.cpp"/>
 				<F N="../src/spreadsheet/factory.cpp"/>
+				<F N="../src/spreadsheet/formula_global.cpp"/>
+				<F N="../src/spreadsheet/formula_global.hpp"/>
 				<F N="../src/spreadsheet/global_settings.cpp"/>
 				<F N="../src/spreadsheet/shared_strings.cpp"/>
 				<F N="../src/spreadsheet/sheet.cpp"/>

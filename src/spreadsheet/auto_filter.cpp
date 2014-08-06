@@ -22,6 +22,16 @@ void auto_filter_t::reset()
     columns.clear();
 }
 
+table_column_t::table_column_t() : identifier(0), totals_row_function(totals_row_function_none) {}
+
+void table_column_t::reset()
+{
+    identifier = 0;
+    name.clear();
+    totals_row_label.clear();
+    totals_row_function = totals_row_function_none;
+}
+
 table_style_t::table_style_t() :
     show_first_column(false),
     show_last_column(false),
@@ -37,10 +47,11 @@ void table_style_t::reset()
     show_column_stripes = false;
 }
 
-table_t::table_t() : range(ixion::abs_range_t::invalid), totals_row_count(0) {}
+table_t::table_t() : identifier(0), range(ixion::abs_range_t::invalid), totals_row_count(0) {}
 
 void table_t::reset()
 {
+    identifier = 0;
     name.clear();
     display_name.clear();
     range = ixion::abs_range_t(ixion::abs_range_t::invalid);
