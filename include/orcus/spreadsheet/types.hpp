@@ -11,6 +11,8 @@
 #include "../env.hpp"
 #include <cstdlib>
 
+// NB: This header should only use primitive data types and enums.
+
 namespace orcus { namespace spreadsheet {
 
 typedef int row_t;
