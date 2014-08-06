@@ -13,6 +13,7 @@
 #include "xml_context_global.hpp"
 
 #include "orcus/measurement.hpp"
+#include "orcus/spreadsheet/import_interface.hpp"
 
 #include <iostream>
 
@@ -210,28 +211,12 @@ void xlsx_table_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_
 {
     if (ns == NS_ooxml_xlsx && name == XML_autoFilter)
     {
+        spreadsheet::iface::import_auto_filter* af = m_table.get_auto_filter();
+        if (!af)
+            return;
+
         const xlsx_autofilter_context& cxt = static_cast<const xlsx_autofilter_context&>(*child);
-        const pstring& ref_range = cxt.get_ref_range();
-        const xlsx_autofilter_context::column_filters_type& filters = cxt.get_column_filters();
-
-        // TODO : Push autofilter data to the model.
-
-        cout << "* autofilter (range=" << ref_range << ")" << endl;
-
-        xlsx_autofilter_context::column_filters_type::const_iterator it = filters.begin(), it_end = filters.end();
-        for (; it != it_end; ++it)
-        {
-            spreadsheet::col_t col = it->first;
-            const xlsx_autofilter_context::match_values_type& mv = it->second;
-
-            cout << "  * column id: " << col << endl;
-            xlsx_autofilter_context::match_values_type::const_iterator itmv = mv.begin(), itmv_end = mv.end();
-            for (; itmv != itmv_end; ++itmv)
-            {
-                const pstring& v = *itmv;
-                cout << "    * match: " << v << endl;
-            }
-        }
+        cxt.push_to_model(*af);
     }
 }
 

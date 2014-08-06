@@ -17,6 +17,12 @@
 
 namespace orcus {
 
+namespace spreadsheet { namespace iface {
+
+class import_auto_filter;
+
+}}
+
 class xlsx_autofilter_context : public xml_context_base
 {
 public:
@@ -34,8 +40,7 @@ public:
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
     virtual void characters(const pstring& str, bool transient);
 
-    const pstring& get_ref_range() const;
-    const column_filters_type& get_column_filters() const;
+    void push_to_model(spreadsheet::iface::import_auto_filter& af) const;
 
 private:
     string_pool m_pool;

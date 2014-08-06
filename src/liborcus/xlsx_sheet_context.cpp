@@ -328,27 +328,7 @@ void xlsx_sheet_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_
             return;
 
         const xlsx_autofilter_context& cxt = static_cast<const xlsx_autofilter_context&>(*child);
-        const pstring& ref_range = cxt.get_ref_range();
-        const xlsx_autofilter_context::column_filters_type& filters = cxt.get_column_filters();
-
-        af->set_range(ref_range.get(), ref_range.size());
-
-        xlsx_autofilter_context::column_filters_type::const_iterator it = filters.begin(), it_end = filters.end();
-        for (; it != it_end; ++it)
-        {
-            spreadsheet::col_t col = it->first;
-            const xlsx_autofilter_context::match_values_type& mv = it->second;
-
-            af->set_column(col);
-            xlsx_autofilter_context::match_values_type::const_iterator itmv = mv.begin(), itmv_end = mv.end();
-            for (; itmv != itmv_end; ++itmv)
-            {
-                const pstring& v = *itmv;
-                af->append_column_match_value(v.get(), v.size());
-            }
-            af->commit_column();
-        }
-        af->commit();
+        cxt.push_to_model(*af);
     }
 }
 

@@ -10,6 +10,8 @@
 #include "ooxml_namespace_types.hpp"
 #include "ooxml_token_constants.hpp"
 
+#include "orcus/spreadsheet/import_interface.hpp"
+
 #include <iostream>
 
 using namespace std;
@@ -107,14 +109,26 @@ void xlsx_autofilter_context::characters(const pstring& /*str*/, bool /*transien
 {
 }
 
-const pstring& xlsx_autofilter_context::get_ref_range() const
+void xlsx_autofilter_context::push_to_model(spreadsheet::iface::import_auto_filter& af) const
 {
-    return m_ref_range;
-}
+    af.set_range(m_ref_range.get(), m_ref_range.size());
 
-const xlsx_autofilter_context::column_filters_type& xlsx_autofilter_context::get_column_filters() const
-{
-    return m_column_filters;
+    column_filters_type::const_iterator it = m_column_filters.begin(), it_end = m_column_filters.end();
+    for (; it != it_end; ++it)
+    {
+        spreadsheet::col_t col = it->first;
+        const xlsx_autofilter_context::match_values_type& mv = it->second;
+
+        af.set_column(col);
+        xlsx_autofilter_context::match_values_type::const_iterator itmv = mv.begin(), itmv_end = mv.end();
+        for (; itmv != itmv_end; ++itmv)
+        {
+            const pstring& v = *itmv;
+            af.append_column_match_value(v.get(), v.size());
+        }
+        af.commit_column();
+    }
+    af.commit();
 }
 
 }
