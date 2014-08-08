@@ -20,6 +20,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <ixion/address.hpp>
+
 using namespace orcus;
 using namespace orcus::spreadsheet;
 using namespace std;
@@ -104,12 +106,56 @@ void test_xlsx_table_autofilter()
     assert(afc->match_values.count("1") > 0);
 }
 
+void test_xlsx_table()
+{
+    string path(SRCDIR"/test/xlsx/table/table-1.xlsx");
+    document doc;
+    import_factory factory(doc);
+    orcus_xlsx app(&factory);
+    app.read_file(path.c_str());
+
+    pstring name("Table1");
+    const table_t* p = doc.get_table(name);
+    assert(p);
+    assert(p->identifier == 1);
+    assert(p->name == name);
+    assert(p->display_name == name);
+    assert(p->totals_row_count == 1);
+
+    // Table range is C3:D9.
+    ixion::abs_range_t range;
+    range.first.column = 2;
+    range.first.row = 2;
+    range.first.sheet = 0;
+    range.last.column = 3;
+    range.last.row = 8;
+    range.last.sheet = 0;
+    assert(p->range == range);
+
+#if 0
+    const auto_filter_t& filter = p->filter;
+
+    // Auto filter range is C3:D8.
+    range.last.row = 7;
+    assert(filter.range == range);
+
+    assert(filter.columns.size() == 1);
+    const auto_filter_column_t& afc = filter.columns.begin()->second;
+    assert(afc.match_values.size() == 4);
+    assert(afc.match_values.count("A") > 0);
+    assert(afc.match_values.count("C") > 0);
+    assert(afc.match_values.count("D") > 0);
+    assert(afc.match_values.count("E") > 0);
+#endif
+}
+
 }
 
 int main()
 {
     test_xlsx_import();
     test_xlsx_table_autofilter();
+    test_xlsx_table();
     return EXIT_SUCCESS;
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

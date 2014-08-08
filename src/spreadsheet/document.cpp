@@ -209,6 +209,12 @@ void document::insert_table(table_t* p)
     mp_impl->m_tables.insert(name, p);
 }
 
+const table_t* document::get_table(const pstring& name) const
+{
+    table_store_type::const_iterator it = mp_impl->m_tables.find(name);
+    return it == mp_impl->m_tables.end() ? NULL : it->second;
+}
+
 namespace {
 
 struct sheet_finalizer : unary_function<sheet_item, void>

@@ -117,6 +117,8 @@ public:
      */
     void insert_table(table_t* p);
 
+    const table_t* get_table(const pstring& name) const;
+
     void finalize();
 
 private:
