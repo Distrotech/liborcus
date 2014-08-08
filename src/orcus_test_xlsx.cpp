@@ -132,6 +132,23 @@ void test_xlsx_table()
     range.last.sheet = 0;
     assert(p->range == range);
 
+    // Table1 has 2 table columns.
+    assert(p->columns.size() == 2);
+
+    const table_column_t* tcol = &p->columns[0];
+    assert(tcol);
+    assert(tcol->identifier == 1);
+    assert(tcol->name == "Category");
+    assert(tcol->totals_row_label == "Total");
+    assert(tcol->totals_row_function == totals_row_function_none);
+
+    tcol = &p->columns[1];
+    assert(tcol);
+    assert(tcol->identifier == 2);
+    assert(tcol->name == "Value");
+    assert(tcol->totals_row_label.empty());
+    assert(tcol->totals_row_function == totals_row_function_sum);
+
 #if 0
     const auto_filter_t& filter = p->filter;
 
