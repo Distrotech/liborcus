@@ -149,7 +149,6 @@ void test_xlsx_table()
     assert(tcol->totals_row_label.empty());
     assert(tcol->totals_row_function == totals_row_function_sum);
 
-#if 0
     const auto_filter_t& filter = p->filter;
 
     // Auto filter range is C3:D8.
@@ -163,7 +162,6 @@ void test_xlsx_table()
     assert(afc.match_values.count("C") > 0);
     assert(afc.match_values.count("D") > 0);
     assert(afc.match_values.count("E") > 0);
-#endif
 }
 
 }

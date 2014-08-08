@@ -46,6 +46,7 @@ struct ORCUS_DLLPUBLIC auto_filter_t
     auto_filter_t();
 
     void reset();
+    void swap(auto_filter_t& r);
 };
 
 /**

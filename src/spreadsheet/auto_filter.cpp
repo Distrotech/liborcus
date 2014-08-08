@@ -22,6 +22,14 @@ void auto_filter_t::reset()
     columns.clear();
 }
 
+void auto_filter_t::swap(auto_filter_t& r)
+{
+    range = r.range;
+    r.range = ixion::abs_range_t();
+
+    columns.swap(r.columns);
+}
+
 table_column_t::table_column_t() : identifier(0), totals_row_function(totals_row_function_none) {}
 
 void table_column_t::reset()
