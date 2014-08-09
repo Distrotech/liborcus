@@ -254,6 +254,12 @@ public:
     virtual void set_column_totals_row_function(orcus::spreadsheet::totals_row_function_t func) = 0;
     virtual void commit_column() = 0;
 
+    virtual void set_style_name(const char* p, size_t n) = 0;
+    virtual void set_style_show_first_column(bool b) = 0;
+    virtual void set_style_show_last_column(bool b) = 0;
+    virtual void set_style_show_row_stripes(bool b) = 0;
+    virtual void set_style_show_column_stripes(bool b) = 0;
+
     virtual void commit() = 0;
 };
 

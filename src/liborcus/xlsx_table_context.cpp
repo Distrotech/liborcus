@@ -128,56 +128,52 @@ public:
 
 class table_style_info_attr_parser : public unary_function<xml_token_attr_t, void>
 {
-    string_pool* m_pool;
-
-    pstring m_name;
-    bool m_show_first_col:1;
-    bool m_show_last_col:1;
-    bool m_show_row_stripes:1;
-    bool m_show_col_stripes:1;
+    spreadsheet::iface::import_table* mp_table;
+    bool m_debug;
 
 public:
-    table_style_info_attr_parser(string_pool* pool) :
-        m_pool(pool),
-        m_show_first_col(false),
-        m_show_last_col(false),
-        m_show_row_stripes(false),
-        m_show_col_stripes(false) {}
+    table_style_info_attr_parser(spreadsheet::iface::import_table* table, bool debug) :
+        mp_table(table), m_debug(debug) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
         if (attr.ns != NS_ooxml_xlsx)
             return;
 
+        bool b = false;
+
         switch (attr.name)
         {
             case XML_name:
-                m_name = attr.value;
-                if (attr.transient)
-                    m_name = m_pool->intern(m_name).first;
+                mp_table->set_style_name(attr.value.get(), attr.value.size());
+                if (m_debug)
+                    cout << "  * table style info (name=" << attr.value << ")" << endl;
             break;
             case XML_showFirstColumn:
-                m_show_first_col = to_bool(attr.value);
+                b = to_bool(attr.value);
+                mp_table->set_style_show_first_column(b);
+                if (m_debug)
+                    cout << "    * show first column: " << b << endl;
             break;
             case XML_showLastColumn:
-                m_show_last_col = to_bool(attr.value);
+                b = to_bool(attr.value);
+                mp_table->set_style_show_last_column(b);
+                cout << "    * show last column: " << b << endl;
             break;
             case XML_showRowStripes:
-                m_show_row_stripes = to_bool(attr.value);
+                b = to_bool(attr.value);
+                mp_table->set_style_show_row_stripes(b);
+                cout << "    * show row stripes: " << b << endl;
             break;
             case XML_showColumnStripes:
-                m_show_col_stripes = to_bool(attr.value);
+                b = to_bool(attr.value);
+                mp_table->set_style_show_column_stripes(b);
+                cout << "    * show column stripes: " << b << endl;
             break;
             default:
                 ;
         }
     }
-
-    pstring get_name() const { return m_name; }
-    bool show_first_col() const { return m_show_first_col; }
-    bool show_last_col() const { return m_show_last_col; }
-    bool show_row_stripes() const { return m_show_row_stripes; }
-    bool show_col_stripes() const { return m_show_col_stripes; }
 };
 
 }
@@ -288,18 +284,8 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
         case XML_tableStyleInfo:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_table);
-            table_style_info_attr_parser func(&get_session_context().m_string_pool);
-            func = for_each(attrs.begin(), attrs.end(), func);
-            if (get_config().debug)
-            {
-                cout << "  * table style info (name=" << func.get_name() << ")" << endl;
-                cout << "    * show first column: " << func.show_first_col() << endl;
-                cout << "    * show last column: " << func.show_last_col() << endl;
-                cout << "    * show row stripes: " << func.show_row_stripes() << endl;
-                cout << "    * show column stripes: " << func.show_col_stripes() << endl;
-            }
-
-            // TODO : We need to design an interface for this.
+            table_style_info_attr_parser func(&m_table, get_config().debug);
+            for_each(attrs.begin(), attrs.end(), func);
         }
         break;
         default:

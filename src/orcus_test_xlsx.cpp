@@ -162,6 +162,14 @@ void test_xlsx_table()
     assert(afc.match_values.count("C") > 0);
     assert(afc.match_values.count("D") > 0);
     assert(afc.match_values.count("E") > 0);
+
+    // Check table style.
+    const table_style_t& style = p->style;
+    assert(style.name == "TableStyleLight9");
+    assert(style.show_first_column == false);
+    assert(style.show_last_column == false);
+    assert(style.show_row_stripes == true);
+    assert(style.show_column_stripes == false);
 }
 
 }

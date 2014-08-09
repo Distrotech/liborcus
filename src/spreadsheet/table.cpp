@@ -178,6 +178,37 @@ void table::commit_column()
     mp_impl->m_column.reset();
 }
 
+void table::set_style_name(const char* p, size_t n)
+{
+    table_style_t& style = mp_impl->mp_data->style;
+    string_pool& sp = mp_impl->m_doc.get_string_pool();
+    style.name = sp.intern(p, n).first;
+}
+
+void table::set_style_show_first_column(bool b)
+{
+    table_style_t& style = mp_impl->mp_data->style;
+    style.show_first_column = b;
+}
+
+void table::set_style_show_last_column(bool b)
+{
+    table_style_t& style = mp_impl->mp_data->style;
+    style.show_last_column = b;
+}
+
+void table::set_style_show_row_stripes(bool b)
+{
+    table_style_t& style = mp_impl->mp_data->style;
+    style.show_row_stripes = b;
+}
+
+void table::set_style_show_column_stripes(bool b)
+{
+    table_style_t& style = mp_impl->mp_data->style;
+    style.show_column_stripes = b;
+}
+
 void table::commit()
 {
     mp_impl->m_doc.insert_table(mp_impl->mp_data.release());

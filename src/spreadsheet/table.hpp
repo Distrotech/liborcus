@@ -40,6 +40,12 @@ public:
     virtual void set_column_totals_row_function(orcus::spreadsheet::totals_row_function_t func);
     virtual void commit_column();
 
+    virtual void set_style_name(const char* p, size_t n);
+    virtual void set_style_show_first_column(bool b);
+    virtual void set_style_show_last_column(bool b);
+    virtual void set_style_show_row_stripes(bool b);
+    virtual void set_style_show_column_stripes(bool b);
+
     virtual void commit();
 
     void reset();
