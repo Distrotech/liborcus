@@ -29,6 +29,7 @@ struct ORCUS_DLLPUBLIC auto_filter_column_t
     match_values_type match_values;
 
     void reset();
+    void swap(auto_filter_column_t& r);
 };
 
 /**
@@ -47,6 +48,16 @@ struct ORCUS_DLLPUBLIC auto_filter_t
 
     void reset();
     void swap(auto_filter_t& r);
+
+    /**
+     * Set column data to specified column index.  The data may not contain
+     * the original data after the call when overwriting it with an existing
+     * data previously associated with the same column index.
+     *
+     * @param col column index to associate the data to.
+     * @param data column data.
+     */
+    void commit_column(col_t col, auto_filter_column_t& data);
 };
 
 /**

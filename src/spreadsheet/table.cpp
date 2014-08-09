@@ -69,22 +69,7 @@ public:
 
     virtual void commit_column()
     {
-        if (m_cur_col < 0)
-            // Invalid column index.
-            return;
-
-        typedef auto_filter_t::columns_type col_type;
-        col_type::iterator it = m_filter_data.columns.lower_bound(m_cur_col);
-        if (it == m_filter_data.columns.end() || m_filter_data.columns.key_comp()(m_cur_col, it->first))
-        {
-            // Insert a new entry for this column.
-            m_filter_data.columns.insert(
-                it, col_type::value_type(m_cur_col, m_cur_col_data));
-        }
-        else
-            // Update the existing column data.
-            it->second = m_cur_col_data;
-
+        m_filter_data.commit_column(m_cur_col, m_cur_col_data);
         m_cur_col_data.reset();
     }
 

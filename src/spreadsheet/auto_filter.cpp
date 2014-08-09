@@ -14,6 +14,11 @@ void auto_filter_column_t::reset()
     match_values.clear();
 }
 
+void auto_filter_column_t::swap(auto_filter_column_t& r)
+{
+    match_values.swap(r.match_values);
+}
+
 auto_filter_t::auto_filter_t() : range(ixion::abs_range_t::invalid) {}
 
 void auto_filter_t::reset()
@@ -28,6 +33,23 @@ void auto_filter_t::swap(auto_filter_t& r)
     r.range = ixion::abs_range_t();
 
     columns.swap(r.columns);
+}
+
+void auto_filter_t::commit_column(col_t col, auto_filter_column_t& data)
+{
+    if (col < 0)
+        // Invalid column index.  Nothing happens.
+        return;
+
+    columns_type::iterator it = columns.lower_bound(col);
+    if (it == columns.end() || columns.key_comp()(col, it->first))
+    {
+        // Insert a new entry for this column.
+        columns.insert(it, columns_type::value_type(col, data));
+    }
+    else
+        // Swap with the existing column data.
+        it->second.swap(data);
 }
 
 table_column_t::table_column_t() : identifier(0), totals_row_function(totals_row_function_none) {}
