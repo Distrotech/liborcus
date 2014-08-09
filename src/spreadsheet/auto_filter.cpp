@@ -29,9 +29,7 @@ void auto_filter_t::reset()
 
 void auto_filter_t::swap(auto_filter_t& r)
 {
-    range = r.range;
-    r.range = ixion::abs_range_t();
-
+    std::swap(range, r.range);
     columns.swap(r.columns);
 }
 
