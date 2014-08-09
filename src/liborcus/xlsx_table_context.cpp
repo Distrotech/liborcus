@@ -158,17 +158,20 @@ public:
             case XML_showLastColumn:
                 b = to_bool(attr.value);
                 mp_table->set_style_show_last_column(b);
-                cout << "    * show last column: " << b << endl;
+                if (m_debug)
+                    cout << "    * show last column: " << b << endl;
             break;
             case XML_showRowStripes:
                 b = to_bool(attr.value);
                 mp_table->set_style_show_row_stripes(b);
-                cout << "    * show row stripes: " << b << endl;
+                if (m_debug)
+                    cout << "    * show row stripes: " << b << endl;
             break;
             case XML_showColumnStripes:
                 b = to_bool(attr.value);
                 mp_table->set_style_show_column_stripes(b);
-                cout << "    * show column stripes: " << b << endl;
+                if (m_debug)
+                    cout << "    * show column stripes: " << b << endl;
             break;
             default:
                 ;
