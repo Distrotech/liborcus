@@ -236,10 +236,13 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             table_attr_parser func(&get_session_context().m_string_pool);
             func = for_each(attrs.begin(), attrs.end(), func);
 
-            cout << "* table (range=" << func.get_ref() << "; id=" << func.get_id()
-                 << "; name=" << func.get_name() << "; display name="
-                 << func.get_display_name() << ")" << endl;
-            cout << "  * totals row count: " << func.get_totals_row_count() << endl;
+            if (get_config().debug)
+            {
+                cout << "* table (range=" << func.get_ref() << "; id=" << func.get_id()
+                     << "; name=" << func.get_name() << "; display name="
+                     << func.get_display_name() << ")" << endl;
+                cout << "  * totals row count: " << func.get_totals_row_count() << endl;
+            }
 
             m_table.set_identifier(func.get_id());
             str = func.get_ref();
@@ -256,7 +259,8 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             xml_element_expected(parent, NS_ooxml_xlsx, XML_table);
             single_long_attr_getter func(NS_ooxml_xlsx, XML_count);
             long column_count = for_each(attrs.begin(), attrs.end(), func).get_value();
-            cout << "  * column count: " << column_count << endl;
+            if (get_config().debug)
+                cout << "  * column count: " << column_count << endl;
 
             m_table.set_column_count(column_count);
         }
@@ -266,9 +270,12 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             xml_element_expected(parent, NS_ooxml_xlsx, XML_tableColumns);
             table_column_attr_parser func(&get_session_context().m_string_pool);
             func = for_each(attrs.begin(), attrs.end(), func);
-            cout << "  * table column (id=" << func.get_id() << "; name=" << func.get_name() << ")" << endl;
-            cout << "    * totals row label: " << func.get_totals_row_label() << endl;
-            cout << "    * totals func: " << func.get_totals_row_function() << endl;
+            if (get_config().debug)
+            {
+                cout << "  * table column (id=" << func.get_id() << "; name=" << func.get_name() << ")" << endl;
+                cout << "    * totals row label: " << func.get_totals_row_label() << endl;
+                cout << "    * totals func: " << func.get_totals_row_function() << endl;
+            }
 
             m_table.set_column_identifier(func.get_id());
             str = func.get_name();
@@ -283,11 +290,14 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             xml_element_expected(parent, NS_ooxml_xlsx, XML_table);
             table_style_info_attr_parser func(&get_session_context().m_string_pool);
             func = for_each(attrs.begin(), attrs.end(), func);
-            cout << "  * table style info (name=" << func.get_name() << ")" << endl;
-            cout << "    * show first column: " << func.show_first_col() << endl;
-            cout << "    * show last column: " << func.show_last_col() << endl;
-            cout << "    * show row stripes: " << func.show_row_stripes() << endl;
-            cout << "    * show column stripes: " << func.show_col_stripes() << endl;
+            if (get_config().debug)
+            {
+                cout << "  * table style info (name=" << func.get_name() << ")" << endl;
+                cout << "    * show first column: " << func.show_first_col() << endl;
+                cout << "    * show last column: " << func.show_last_col() << endl;
+                cout << "    * show row stripes: " << func.show_row_stripes() << endl;
+                cout << "    * show column stripes: " << func.show_col_stripes() << endl;
+            }
 
             // TODO : We need to design an interface for this.
         }
