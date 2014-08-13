@@ -49,9 +49,20 @@ void encode_to_base64(const std::vector<char>& input, string& encoded)
     if (input.empty())
         return;
 
-    string _encoded(to_base64(input.begin()), to_base64(input.end()));
-    size_t pad_size = (3 - input.size() % 3) % 3;
-    _encoded.append(pad_size, '=');
+    std::vector<char> inp = input;
+    size_t pad_size = (3 - inp.size() % 3) % 3;
+    inp.resize(inp.size() + pad_size);
+
+    string _encoded(to_base64(inp.begin()), to_base64(inp.end()));
+
+    string::reverse_iterator it = _encoded.rbegin();
+    for (size_t i = 0; i < pad_size; ++i, ++it)
+    {
+        // 'A' is a base64 encoding of '\0'
+        // replace them with padding charachters '='
+        if (*it == 'A')
+            *it = '=';
+    }
 
     encoded.swap(_encoded);
 }
