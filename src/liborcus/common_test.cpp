@@ -196,12 +196,12 @@ void test_sorted_string_map()
 
     map_type::entry entries[] =
     {
-        { "andy", name_andy },
-        { "andy1", name_andy },
-        { "andy13", name_andy },
-        { "bruce", name_bruce },
-        { "charlie", name_charlie },
-        { "david", name_david },
+        { ORCUS_ASCII("andy"), name_andy },
+        { ORCUS_ASCII("andy1"), name_andy },
+        { ORCUS_ASCII("andy13"), name_andy },
+        { ORCUS_ASCII("bruce"), name_bruce },
+        { ORCUS_ASCII("charlie"), name_charlie },
+        { ORCUS_ASCII("david"), name_david },
     };
 
     size_t entry_count = sizeof(entries)/sizeof(entries[0]);

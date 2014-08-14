@@ -31,9 +31,9 @@ typedef sorted_string_map<ods_content_xml_context::cell_value_type> cell_value_m
 
 // Keys must be sorted.
 cell_value_map_type::entry cell_value_entries[] = {
-    { "date",   ods_content_xml_context::vt_date },
-    { "float",  ods_content_xml_context::vt_float },
-    { "string", ods_content_xml_context::vt_string }
+    { ORCUS_ASCII("date"),   ods_content_xml_context::vt_date },
+    { ORCUS_ASCII("float"),  ods_content_xml_context::vt_float },
+    { ORCUS_ASCII("string"), ods_content_xml_context::vt_string }
 };
 
 const cell_value_map_type& get_cell_value_map()

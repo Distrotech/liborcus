@@ -14,6 +14,8 @@
 #include <functional>
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
+#define ORCUS_ASCII(literal) literal, sizeof(literal)-1
+
 namespace orcus {
 
 class tokens;

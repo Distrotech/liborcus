@@ -6,6 +6,7 @@
  */
 
 #include "orcus/spreadsheet/types.hpp"
+#include "orcus/global.hpp"
 #include "sorted_string_map.hpp"
 
 #include <limits>
@@ -19,16 +20,16 @@ typedef orcus::sorted_string_map<totals_row_function_t> trf_map_type;
 // Keys must be sorted.
 trf_map_type::entry trf_entries[] =
 {
-    { "average", totals_row_function_average },
-    { "count", totals_row_function_count },
-    { "countNums", totals_row_function_count_numbers },
-    { "custom", totals_row_function_custom },
-    { "max", totals_row_function_maximum },
-    { "min", totals_row_function_minimum },
-    { "none", totals_row_function_none },
-    { "stdDev", totals_row_function_standard_deviation },
-    { "sum", totals_row_function_sum },
-    { "var", totals_row_function_variance },
+    { ORCUS_ASCII("average"), totals_row_function_average },
+    { ORCUS_ASCII("count"), totals_row_function_count },
+    { ORCUS_ASCII("countNums"), totals_row_function_count_numbers },
+    { ORCUS_ASCII("custom"), totals_row_function_custom },
+    { ORCUS_ASCII("max"), totals_row_function_maximum },
+    { ORCUS_ASCII("min"), totals_row_function_minimum },
+    { ORCUS_ASCII("none"), totals_row_function_none },
+    { ORCUS_ASCII("stdDev"), totals_row_function_standard_deviation },
+    { ORCUS_ASCII("sum"), totals_row_function_sum },
+    { ORCUS_ASCII("var"), totals_row_function_variance },
 };
 
 const trf_map_type& get_trf_map()

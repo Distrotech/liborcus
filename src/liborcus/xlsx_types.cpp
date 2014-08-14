@@ -8,6 +8,8 @@
 #include "xlsx_types.hpp"
 #include "sorted_string_map.hpp"
 
+#include "orcus/global.hpp"
+
 namespace orcus {
 
 namespace {
@@ -18,12 +20,12 @@ typedef sorted_string_map<xlsx_cell_t> map_type;
 
 // Keys must be sorted.
 map_type::entry cell_type_entries[] = {
-    { "b", xlsx_ct_boolean },
-    { "e", xlsx_ct_error },
-    { "inlineStr", xlsx_ct_inline_string },
-    { "n", xlsx_ct_numeric },
-    { "s", xlsx_ct_shared_string },
-    { "str", xlsx_ct_formula_string }
+    { ORCUS_ASCII("b"), xlsx_ct_boolean },
+    { ORCUS_ASCII("e"), xlsx_ct_error },
+    { ORCUS_ASCII("inlineStr"), xlsx_ct_inline_string },
+    { ORCUS_ASCII("n"), xlsx_ct_numeric },
+    { ORCUS_ASCII("s"), xlsx_ct_shared_string },
+    { ORCUS_ASCII("str"), xlsx_ct_formula_string }
 };
 
 }
@@ -66,10 +68,10 @@ typedef sorted_string_map<xlsx_rev_row_column_action_t> rca_map_type;
 
 // Keys must be sorted.
 rca_map_type::entry rca_entries[] = {
-    { "deleteCol", xlsx_rev_rca_delete_column },
-    { "deleteRow", xlsx_rev_rca_delete_row    },
-    { "insertCol", xlsx_rev_rca_insert_column },
-    { "insertRow", xlsx_rev_rca_insert_row    }
+    { ORCUS_ASCII("deleteCol"), xlsx_rev_rca_delete_column },
+    { ORCUS_ASCII("deleteRow"), xlsx_rev_rca_delete_row    },
+    { ORCUS_ASCII("insertCol"), xlsx_rev_rca_insert_column },
+    { ORCUS_ASCII("insertRow"), xlsx_rev_rca_insert_row    }
 };
 
 }
