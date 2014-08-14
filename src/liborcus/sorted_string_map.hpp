@@ -48,7 +48,7 @@ public:
         for (; p != m_entry_end; ++p)
         {
             const char* key = p->key;
-            for (; input[pos] && key[pos]; ++pos)
+            for (; pos < len && key[pos]; ++pos)
             {
                 if (input[pos] != key[pos])
                     // Move to the next entry.
