@@ -47,7 +47,7 @@ public:
         {
             const char* key = p->key;
             size_type keylen = p->keylen;
-            for (; pos < len && pos < keylen && key[pos]; ++pos)
+            for (; pos < len && pos < keylen; ++pos)
             {
                 if (input[pos] != key[pos])
                     // Move to the next entry.
