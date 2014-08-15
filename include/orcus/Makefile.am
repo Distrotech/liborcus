@@ -42,7 +42,8 @@ endif # WITH_ODS_FILTER
 if WITH_XLSX_FILTER
 
 liborcus_HEADERS += \
-	orcus_xlsx.hpp
+	orcus_xlsx.hpp \
+	orcus_import_xlsx.hpp
 
 endif # WITH_XLSX_FILTER
 

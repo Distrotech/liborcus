@@ -96,6 +96,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	opc_token_constants.inl \
 	opc_tokens.inl \
 	orcus_xlsx.cpp \
+	orcus_import_xlsx.cpp \
 	xlsx_context.cpp \
 	xlsx_context.hpp \
 	xlsx_handler.cpp \
