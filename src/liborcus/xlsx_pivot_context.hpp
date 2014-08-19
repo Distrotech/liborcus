@@ -12,6 +12,10 @@
 
 namespace orcus {
 
+/**
+ * Base context for pivotCacheDefinition[n].xml part, which defines the
+ * structure of a pivot cache.
+ */
 class xlsx_pivot_cache_def_context : public xml_context_base
 {
 public:
