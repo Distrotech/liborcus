@@ -90,6 +90,16 @@ public:
             m_parent.read_table(dir_path, file_name, static_cast<xlsx_rel_table_info*>(data));
             return true;
         }
+        else if (type == SCH_od_rels_pivot_cache_def)
+        {
+            m_parent.read_pivot_cache(dir_path, file_name);
+            return true;
+        }
+        else if (type == SCH_od_rels_pivot_table)
+        {
+            m_parent.read_pivot_table(dir_path, file_name);
+            return true;
+        }
         else if (type == SCH_od_rels_rev_headers)
         {
             m_parent.read_rev_headers(dir_path, file_name);
@@ -419,6 +429,30 @@ void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file
     parser.parse();
 
     handler.reset();
+}
+
+void orcus_xlsx::read_pivot_cache(const std::string& dir_path, const std::string& file_name)
+{
+    string filepath = resolve_file_path(dir_path, file_name);
+    if (get_config().debug)
+    {
+        cout << "---" << endl;
+        cout << "read_pivot_cache: file path = " << filepath << endl;
+    }
+
+    // TODO : parse pivot cache xml parts.
+}
+
+void orcus_xlsx::read_pivot_table(const std::string& dir_path, const std::string& file_name)
+{
+    string filepath = resolve_file_path(dir_path, file_name);
+    if (get_config().debug)
+    {
+        cout << "---" << endl;
+        cout << "read_pivot_table: file path = " << filepath << endl;
+    }
+
+    // TODO : parse pivot table xml parts.
 }
 
 void orcus_xlsx::read_rev_headers(const std::string& dir_path, const std::string& file_name)
