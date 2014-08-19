@@ -56,7 +56,9 @@ private:
 
     void read_table(const std::string& dir_path, const std::string& file_name, xlsx_rel_table_info* data);
 
-    void read_pivot_cache(const std::string& dir_path, const std::string& file_name);
+    void read_pivot_cache_def(const std::string& dir_path, const std::string& file_name);
+
+    void read_pivot_cache_rec(const std::string& dir_path, const std::string& file_name);
 
     void read_pivot_table(const std::string& dir_path, const std::string& file_name);
 

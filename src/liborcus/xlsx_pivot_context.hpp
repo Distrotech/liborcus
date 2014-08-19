@@ -12,10 +12,23 @@
 
 namespace orcus {
 
-class xlsx_pivot_cache_context : public xml_context_base
+class xlsx_pivot_cache_def_context : public xml_context_base
 {
 public:
-    xlsx_pivot_cache_context(session_context& cxt, const tokens& tokens);
+    xlsx_pivot_cache_def_context(session_context& cxt, const tokens& tokens);
+
+    virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
+    virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name);
+    virtual void end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child);
+    virtual void start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t>& attrs);
+    virtual bool end_element(xmlns_id_t ns, xml_token_t name);
+    virtual void characters(const pstring& str, bool transient);
+};
+
+class xlsx_pivot_cache_rec_context : public xml_context_base
+{
+public:
+    xlsx_pivot_cache_rec_context(session_context& cxt, const tokens& tokens);
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
     virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name);

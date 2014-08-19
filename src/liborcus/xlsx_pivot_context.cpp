@@ -9,35 +9,67 @@
 
 namespace orcus {
 
-xlsx_pivot_cache_context::xlsx_pivot_cache_context(session_context& cxt, const tokens& tokens) :
+xlsx_pivot_cache_def_context::xlsx_pivot_cache_def_context(session_context& cxt, const tokens& tokens) :
     xml_context_base(cxt, tokens) {}
 
-bool xlsx_pivot_cache_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
+bool xlsx_pivot_cache_def_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
 {
     return true;
 }
 
-xml_context_base* xlsx_pivot_cache_context::create_child_context(xmlns_id_t ns, xml_token_t name)
+xml_context_base* xlsx_pivot_cache_def_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     return NULL;
 }
 
-void xlsx_pivot_cache_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+void xlsx_pivot_cache_def_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
 {
 }
 
-void xlsx_pivot_cache_context::start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t>& attrs)
+void xlsx_pivot_cache_def_context::start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t>& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
     warn_unhandled();
 }
 
-bool xlsx_pivot_cache_context::end_element(xmlns_id_t ns, xml_token_t name)
+bool xlsx_pivot_cache_def_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
     return pop_stack(ns, name);
 }
 
-void xlsx_pivot_cache_context::characters(const pstring& str, bool transient)
+void xlsx_pivot_cache_def_context::characters(const pstring& str, bool transient)
+{
+}
+
+xlsx_pivot_cache_rec_context::xlsx_pivot_cache_rec_context(session_context& cxt, const tokens& tokens) :
+    xml_context_base(cxt, tokens) {}
+
+bool xlsx_pivot_cache_rec_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
+{
+    return true;
+}
+
+xml_context_base* xlsx_pivot_cache_rec_context::create_child_context(xmlns_id_t ns, xml_token_t name)
+{
+    return NULL;
+}
+
+void xlsx_pivot_cache_rec_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+{
+}
+
+void xlsx_pivot_cache_rec_context::start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t>& attrs)
+{
+    xml_token_pair_t parent = push_stack(ns, name);
+    warn_unhandled();
+}
+
+bool xlsx_pivot_cache_rec_context::end_element(xmlns_id_t ns, xml_token_t name)
+{
+    return pop_stack(ns, name);
+}
+
+void xlsx_pivot_cache_rec_context::characters(const pstring& str, bool transient)
 {
 }
 

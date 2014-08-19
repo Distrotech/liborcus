@@ -92,7 +92,12 @@ public:
         }
         else if (type == SCH_od_rels_pivot_cache_def)
         {
-            m_parent.read_pivot_cache(dir_path, file_name);
+            m_parent.read_pivot_cache_def(dir_path, file_name);
+            return true;
+        }
+        else if (type == SCH_od_rels_pivot_cache_rec)
+        {
+            m_parent.read_pivot_cache_rec(dir_path, file_name);
             return true;
         }
         else if (type == SCH_od_rels_pivot_table)
@@ -431,13 +436,13 @@ void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file
     handler.reset();
 }
 
-void orcus_xlsx::read_pivot_cache(const std::string& dir_path, const std::string& file_name)
+void orcus_xlsx::read_pivot_cache_def(const std::string& dir_path, const std::string& file_name)
 {
     string filepath = resolve_file_path(dir_path, file_name);
     if (get_config().debug)
     {
         cout << "---" << endl;
-        cout << "read_pivot_cache: file path = " << filepath << endl;
+        cout << "read_pivot_cache_def: file path = " << filepath << endl;
     }
 
     vector<unsigned char> buffer;
@@ -450,8 +455,8 @@ void orcus_xlsx::read_pivot_cache(const std::string& dir_path, const std::string
     if (buffer.empty())
         return;
 
-    boost::scoped_ptr<xlsx_pivot_cache_xml_handler> handler(
-        new xlsx_pivot_cache_xml_handler(mp_impl->m_cxt, ooxml_tokens));
+    boost::scoped_ptr<xlsx_pivot_cache_def_xml_handler> handler(
+        new xlsx_pivot_cache_def_xml_handler(mp_impl->m_cxt, ooxml_tokens));
 
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,
@@ -461,6 +466,37 @@ void orcus_xlsx::read_pivot_cache(const std::string& dir_path, const std::string
 
     handler.reset();
     mp_impl->m_opc_reader.check_relation_part(file_name, NULL);
+}
+
+void orcus_xlsx::read_pivot_cache_rec(const std::string& dir_path, const std::string& file_name)
+{
+    string filepath = resolve_file_path(dir_path, file_name);
+    if (get_config().debug)
+    {
+        cout << "---" << endl;
+        cout << "read_pivot_cache_rec: file path = " << filepath << endl;
+    }
+
+    vector<unsigned char> buffer;
+    if (!mp_impl->m_opc_reader.open_zip_stream(filepath, buffer))
+    {
+        cerr << "failed to open zip stream: " << filepath << endl;
+        return;
+    }
+
+    if (buffer.empty())
+        return;
+
+    boost::scoped_ptr<xlsx_pivot_cache_rec_xml_handler> handler(
+        new xlsx_pivot_cache_rec_xml_handler(mp_impl->m_cxt, ooxml_tokens));
+
+    xml_stream_parser parser(
+        get_config(), mp_impl->m_ns_repo, ooxml_tokens,
+        reinterpret_cast<const char*>(&buffer[0]), buffer.size());
+    parser.set_handler(handler.get());
+    parser.parse();
+
+    handler.reset();
 }
 
 void orcus_xlsx::read_pivot_table(const std::string& dir_path, const std::string& file_name)
