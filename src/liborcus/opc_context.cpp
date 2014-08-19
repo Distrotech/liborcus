@@ -170,8 +170,8 @@ namespace {
 class rel_attr_parser : public unary_function<void, xml_token_attr_t>
 {
 public:
-    rel_attr_parser(session_context* cxt, const opc_relations_context::schema_cache_type* cache) :
-        m_cxt(cxt), mp_schema_cache(cache) {}
+    rel_attr_parser(session_context* cxt, const opc_relations_context::schema_cache_type* cache, const config* conf) :
+        m_cxt(cxt), mp_schema_cache(cache), mp_config(conf) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -201,7 +201,8 @@ private:
             mp_schema_cache->find(p);
         if (itr == mp_schema_cache->end())
         {
-            cout << "unknown schema: " << p << endl;
+            if (mp_config->debug)
+                cout << "unknown schema: " << p << endl;
             return NULL;
         }
         const pstring& val = *itr;
@@ -211,6 +212,7 @@ private:
 private:
     session_context* m_cxt;
     const opc_relations_context::schema_cache_type* mp_schema_cache;
+    const config* mp_config;
     opc_rel_t m_rel;
 };
 
@@ -278,7 +280,7 @@ void opc_relations_context::start_element(xmlns_id_t ns, xml_token_t name, const
         break;
         case XML_Relationship:
         {
-            rel_attr_parser func(&get_session_context(), &m_schema_cache);
+            rel_attr_parser func(&get_session_context(), &m_schema_cache, &get_config());
             xml_element_expected(parent, NS_opc_rel, XML_Relationships);
             func = for_each(attrs.begin(), attrs.end(), func);
             const opc_rel_t& rel = func.get_rel();
