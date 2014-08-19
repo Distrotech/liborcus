@@ -19,6 +19,7 @@
 #include <string>
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/unordered_set.hpp>
 
 namespace orcus {
 
@@ -35,6 +36,7 @@ struct opc_rel_extra;
 class opc_reader : boost::noncopyable
 {
     typedef std::vector<std::string> dir_stack_type;
+    typedef boost::unordered_set<std::string> part_set_type;
 
 public:
     /**
@@ -108,6 +110,7 @@ private:
     std::vector<xml_part_t> m_parts;
     std::vector<xml_part_t> m_ext_defaults;
     dir_stack_type m_dir_stack;
+    part_set_type m_handled_parts;
 };
 
 }

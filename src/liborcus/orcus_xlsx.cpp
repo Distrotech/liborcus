@@ -460,6 +460,7 @@ void orcus_xlsx::read_pivot_cache(const std::string& dir_path, const std::string
     parser.parse();
 
     handler.reset();
+    mp_impl->m_opc_reader.check_relation_part(file_name, NULL);
 }
 
 void orcus_xlsx::read_pivot_table(const std::string& dir_path, const std::string& file_name)
@@ -491,11 +492,7 @@ void orcus_xlsx::read_pivot_table(const std::string& dir_path, const std::string
     parser.parse();
 
     handler.reset();
-
-    // NB: a pivot table part has a relation file pointing to the pivot cache
-    // definition part it depends on.  But we will not follow its relation
-    // since the same cache definition part is read from the workbook xml
-    // part.
+    mp_impl->m_opc_reader.check_relation_part(file_name, NULL);
 }
 
 void orcus_xlsx::read_rev_headers(const std::string& dir_path, const std::string& file_name)

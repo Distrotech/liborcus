@@ -142,14 +142,26 @@ void opc_reader::read_part(const pstring& path, const schema_t type, opc_rel_ext
     {
         // This is a file.
         string file_name(p_name, name_len);
+        string cur_dir = get_current_dir();
+        string full_path = resolve_file_path(cur_dir, file_name);
 
-        if (!m_handler.handle_part(type, get_current_dir(), file_name, data))
+        if (m_handled_parts.count(full_path) > 0)
         {
+            // This part has been previously read.  Let's not read it twice.
             if (m_config.debug)
             {
                 cout << "---" << endl;
-                cout << "unhandled relationship type: " << type << endl;
+                cout << "skipping previously read part: " << full_path << endl;
             }
+        }
+        else if (m_handler.handle_part(type, cur_dir, file_name, data))
+        {
+            m_handled_parts.insert(full_path);
+        }
+        else if (m_config.debug)
+        {
+            cout << "---" << endl;
+            cout << "unhandled relationship type: " << type << endl;
         }
     }
 
@@ -248,9 +260,9 @@ void opc_reader::read_content_types()
 
 void opc_reader::read_relations(const char* path, vector<opc_rel_t>& rels)
 {
-    string filepath = get_current_dir() + path;
+    string filepath = resolve_file_path(get_current_dir(), path);
     if (m_config.debug)
-        cout << "file path: " << filepath << endl;
+        cout << "relation file path: " << filepath << endl;
 
     vector<unsigned char> buffer;
     if (!open_zip_stream(filepath, buffer))
