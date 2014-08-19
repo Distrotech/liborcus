@@ -340,6 +340,102 @@ void xlsx_pivot_cache_rec_context::characters(const pstring& /*str*/, bool /*tra
 {
 }
 
+namespace {
+
+class pivot_table_def_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+public:
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        long v = 0;
+        bool b = false;
+        switch (attr.name)
+        {
+            case XML_name:
+                cout << "name: " << attr.value << endl;
+            break;
+            case XML_cacheId:
+                v = to_long(attr.value);
+                cout << "cache ID: " << v << endl;
+            break;
+            case XML_applyNumberFormats:
+                b = to_bool(attr.value);
+                cout << "apply number formats: " << b << endl;
+            break;
+            case XML_applyBorderFormats:
+                b = to_bool(attr.value);
+                cout << "apply border formats: " << b << endl;
+            break;
+            case XML_applyFontFormats:
+                b = to_bool(attr.value);
+                cout << "apply font formats: " << b << endl;
+            break;
+            case XML_applyPatternFormats:
+                b = to_bool(attr.value);
+                cout << "apply pattern formats: " << b << endl;
+            break;
+            case XML_applyAlignmentFormats:
+                b = to_bool(attr.value);
+                cout << "apply alignment formats: " << b << endl;
+            break;
+            case XML_applyWidthHeightFormats:
+                b = to_bool(attr.value);
+                cout << "apply width/height formats: " << b << endl;
+            break;
+            case XML_dataCaption:
+                cout << "data caption: " << attr.value << endl;
+            break;
+            case XML_updatedVersion:
+                v = to_long(attr.value);
+                cout << "updated version: " << v << endl;
+            break;
+            case XML_minRefreshableVersion:
+                v = to_long(attr.value);
+                cout << "minimum refreshable version: " << v << endl;
+            break;
+            case XML_showCalcMbrs:
+                b = to_bool(attr.value);
+                cout << "show calc members (?): " << b << endl;
+            break;
+            case XML_useAutoFormatting:
+                b = to_bool(attr.value);
+                cout << "use auto formatting: " << b << endl;
+            break;
+            case XML_itemPrintTitles:
+                b = to_bool(attr.value);
+                cout << "item print titles (?): " << b << endl;
+            break;
+            case XML_createdVersion:
+                v = to_long(attr.value);
+                cout << "created version: " << v << endl;
+            break;
+            case XML_indent:
+                b = to_bool(attr.value);
+                cout << "indent: " << b << endl;
+            break;
+            case XML_outline:
+                b = to_bool(attr.value);
+                cout << "outline: " << b << endl;
+            break;
+            case XML_outlineData:
+                b = to_bool(attr.value);
+                cout << "outline data: " << b << endl;
+            break;
+            case XML_multipleFieldFilters:
+                b = to_bool(attr.value);
+                cout << "multiple field filters: " << b << endl;
+            break;
+            default:
+                ;
+        }
+    }
+};
+
+}
+
 xlsx_pivot_table_context::xlsx_pivot_table_context(session_context& cxt, const tokens& tokens) :
     xml_context_base(cxt, tokens) {}
 
@@ -360,7 +456,22 @@ void xlsx_pivot_table_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t 
 void xlsx_pivot_table_context::start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t>& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
-    warn_unhandled();
+    if (ns == NS_ooxml_xlsx)
+    {
+        switch (name)
+        {
+            case XML_pivotTableDefinition:
+            {
+                xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
+                cout << "---" << endl;
+                pivot_table_def_attr_parser func;
+                for_each(attrs.begin(), attrs.end(), func);
+            }
+            break;
+            default:
+                warn_unhandled();
+        }
+    }
 }
 
 bool xlsx_pivot_table_context::end_element(xmlns_id_t ns, xml_token_t name)
