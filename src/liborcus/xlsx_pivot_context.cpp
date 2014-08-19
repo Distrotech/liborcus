@@ -211,6 +211,8 @@ void xlsx_pivot_cache_def_context::start_element(xmlns_id_t ns, xml_token_t name
         case XML_pivotCacheDefinition:
         {
             xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
+            cout << "---" << endl;
+            cout << "pivot cache definition" << endl;
             cache_def_attr_parser func;
             for_each(attrs.begin(), attrs.end(), func);
         }
@@ -292,7 +294,41 @@ void xlsx_pivot_cache_rec_context::end_child_context(xmlns_id_t /*ns*/, xml_toke
 void xlsx_pivot_cache_rec_context::start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t>& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
-    warn_unhandled();
+
+    if (ns != NS_ooxml_xlsx)
+        return;
+
+    switch (name)
+    {
+        case XML_pivotCacheRecords:
+        {
+            xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
+            long count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
+            cout << "---" << endl;
+            cout << "pivot cache record (count: " << count << ")" << endl;
+        }
+        break;
+        case XML_r:
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotCacheRecords);
+            cout << "* record" << endl;
+        break;
+        case XML_x:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_r);
+            long v = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_v);
+            cout << "  * x = " << v << endl;
+        }
+        break;
+        case XML_n:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_r);
+            double val = single_double_attr_getter::get(attrs, NS_ooxml_xlsx, XML_v);
+            cout << "  * n = " << val << endl;
+        }
+        break;
+        default:
+            warn_unhandled();
+    }
 }
 
 bool xlsx_pivot_cache_rec_context::end_element(xmlns_id_t ns, xml_token_t name)

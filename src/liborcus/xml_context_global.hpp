@@ -49,6 +49,20 @@ public:
     static long get(const std::vector<xml_token_attr_t>& attrs, xmlns_id_t ns, xml_token_t name);
 };
 
+class single_double_attr_getter : public std::unary_function<xml_token_attr_t, void>
+{
+    double m_value;
+    xmlns_id_t m_ns;
+    xml_token_t m_name;
+
+public:
+    single_double_attr_getter(xmlns_id_t ns, xml_token_t name);
+    void operator() (const xml_token_attr_t& attr);
+    double get_value() const;
+
+    static double get(const std::vector<xml_token_attr_t>& attrs, xmlns_id_t ns, xml_token_t name);
+};
+
 }
 
 #endif
