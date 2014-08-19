@@ -29,6 +29,10 @@ public:
     virtual void characters(const pstring& str, bool transient);
 };
 
+/**
+ * Context for pivotCacheRecords[n].xml part, which contains the records in
+ * a pivot cache.
+ */
 class xlsx_pivot_cache_rec_context : public xml_context_base
 {
 public:
@@ -42,6 +46,10 @@ public:
     virtual void characters(const pstring& str, bool transient);
 };
 
+/**
+ * Context for pivotTable[n].xml part which defines the structure of a pivot
+ * table model.
+ */
 class xlsx_pivot_table_context : public xml_context_base
 {
 public:
