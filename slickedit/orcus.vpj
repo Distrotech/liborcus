@@ -181,6 +181,7 @@
 				<F N="../include/orcus/measurement.hpp"/>
 				<F N="../include/orcus/orcus_csv.hpp"/>
 				<F N="../include/orcus/orcus_gnumeric.hpp"/>
+				<F N="../include/orcus/orcus_import_xlsx.hpp"/>
 				<F N="../include/orcus/orcus_ods.hpp"/>
 				<F N="../include/orcus/orcus_xls_xml.hpp"/>
 				<F N="../include/orcus/orcus_xlsx.hpp"/>
@@ -282,6 +283,7 @@
 				<F N="../src/liborcus/orcus_css.cpp"/>
 				<F N="../src/liborcus/orcus_csv.cpp"/>
 				<F N="../src/liborcus/orcus_gnumeric.cpp"/>
+				<F N="../src/liborcus/orcus_import_xlsx.cpp"/>
 				<F N="../src/liborcus/orcus_ods.cpp"/>
 				<F N="../src/liborcus/orcus_xls_xml.cpp"/>
 				<F N="../src/liborcus/orcus_xlsx.cpp"/>

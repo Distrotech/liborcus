@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef ORCUS_ORCUS_XLSX_HPP
-#define ORCUS_ORCUS_XLSX_HPP
+#ifndef ORCUS_ORCUS_IMPORT_XLSX_HPP
+#define ORCUS_ORCUS_IMPORT_XLSX_HPP
 
 #include "interface.hpp"
 
