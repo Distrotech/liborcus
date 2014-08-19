@@ -313,6 +313,8 @@
 				<F N="../src/liborcus/xlsx_context.hpp"/>
 				<F N="../src/liborcus/xlsx_handler.cpp"/>
 				<F N="../src/liborcus/xlsx_handler.hpp"/>
+				<F N="../src/liborcus/xlsx_pivot_context.cpp"/>
+				<F N="../src/liborcus/xlsx_pivot_context.hpp"/>
 				<F N="../src/liborcus/xlsx_revision_context.cpp"/>
 				<F N="../src/liborcus/xlsx_revision_context.hpp"/>
 				<F N="../src/liborcus/xlsx_session_data.cpp"/>

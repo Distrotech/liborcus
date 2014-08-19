@@ -24,6 +24,14 @@ xml_stream_handler::~xml_stream_handler()
     delete mp_root_context;
 }
 
+void xml_stream_handler::start_document()
+{
+}
+
+void xml_stream_handler::end_document()
+{
+}
+
 void xml_stream_handler::start_element(const sax_token_parser_element& elem)
 {
     xml_context_base& cur = get_current_context();

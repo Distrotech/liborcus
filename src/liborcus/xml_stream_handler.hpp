@@ -33,8 +33,8 @@ public:
     xml_stream_handler(xml_context_base* root_context);
     virtual ~xml_stream_handler() = 0;
 
-    virtual void start_document() = 0;
-    virtual void end_document() = 0;
+    virtual void start_document();
+    virtual void end_document();
 
     virtual void start_element(const sax_token_parser_element& elem);
     virtual void end_element(const sax_token_parser_element& elem);

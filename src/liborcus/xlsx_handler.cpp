@@ -9,6 +9,7 @@
 #include "xlsx_context.hpp"
 #include "xlsx_sheet_context.hpp"
 #include "xlsx_table_context.hpp"
+#include "xlsx_pivot_context.hpp"
 
 #include <iostream>
 
@@ -27,14 +28,6 @@ xlsx_sheet_xml_handler::~xlsx_sheet_xml_handler()
 {
 }
 
-void xlsx_sheet_xml_handler::start_document()
-{
-}
-
-void xlsx_sheet_xml_handler::end_document()
-{
-}
-
 void xlsx_sheet_xml_handler::pop_rel_extras(opc_rel_extras_t& other)
 {
     xlsx_sheet_context& cxt = static_cast<xlsx_sheet_context&>(get_root_context());
@@ -48,11 +41,9 @@ xlsx_table_xml_handler::xlsx_table_xml_handler(
 {
 }
 
-void xlsx_table_xml_handler::start_document()
-{
-}
-
-void xlsx_table_xml_handler::end_document()
+xlsx_pivot_table_xml_handler::xlsx_pivot_table_xml_handler(
+    session_context& cxt, const tokens& tokens) :
+    xml_stream_handler(new xlsx_pivot_table_context(cxt, tokens))
 {
 }
 

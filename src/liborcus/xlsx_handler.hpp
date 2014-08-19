@@ -37,9 +37,6 @@ public:
 
     virtual ~xlsx_sheet_xml_handler();
 
-    virtual void start_document();
-    virtual void end_document();
-
     void pop_rel_extras(opc_rel_extras_t& other);
 };
 
@@ -48,9 +45,12 @@ class xlsx_table_xml_handler : public xml_stream_handler
 public:
     xlsx_table_xml_handler(
         session_context& cxt, const tokens& tokens, spreadsheet::iface::import_table& table);
+};
 
-    virtual void start_document();
-    virtual void end_document();
+class xlsx_pivot_table_xml_handler : public xml_stream_handler
+{
+public:
+    xlsx_pivot_table_xml_handler(session_context& cxt, const tokens& tokens);
 };
 
 }
