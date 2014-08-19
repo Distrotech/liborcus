@@ -41,11 +41,13 @@ xlsx_table_xml_handler::xlsx_table_xml_handler(
 {
 }
 
+xlsx_pivot_cache_xml_handler::xlsx_pivot_cache_xml_handler(
+    session_context& cxt, const tokens& tokens) :
+    xml_stream_handler(new xlsx_pivot_cache_context(cxt, tokens)) {}
+
 xlsx_pivot_table_xml_handler::xlsx_pivot_table_xml_handler(
     session_context& cxt, const tokens& tokens) :
-    xml_stream_handler(new xlsx_pivot_table_context(cxt, tokens))
-{
-}
+    xml_stream_handler(new xlsx_pivot_cache_context(cxt, tokens)) {}
 
 }
 

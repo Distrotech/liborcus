@@ -440,7 +440,26 @@ void orcus_xlsx::read_pivot_cache(const std::string& dir_path, const std::string
         cout << "read_pivot_cache: file path = " << filepath << endl;
     }
 
-    // TODO : parse pivot cache xml parts.
+    vector<unsigned char> buffer;
+    if (!mp_impl->m_opc_reader.open_zip_stream(filepath, buffer))
+    {
+        cerr << "failed to open zip stream: " << filepath << endl;
+        return;
+    }
+
+    if (buffer.empty())
+        return;
+
+    boost::scoped_ptr<xlsx_pivot_cache_xml_handler> handler(
+        new xlsx_pivot_cache_xml_handler(mp_impl->m_cxt, ooxml_tokens));
+
+    xml_stream_parser parser(
+        get_config(), mp_impl->m_ns_repo, ooxml_tokens,
+        reinterpret_cast<const char*>(&buffer[0]), buffer.size());
+    parser.set_handler(handler.get());
+    parser.parse();
+
+    handler.reset();
 }
 
 void orcus_xlsx::read_pivot_table(const std::string& dir_path, const std::string& file_name)
@@ -472,6 +491,11 @@ void orcus_xlsx::read_pivot_table(const std::string& dir_path, const std::string
     parser.parse();
 
     handler.reset();
+
+    // NB: a pivot table part has a relation file pointing to the pivot cache
+    // definition part it depends on.  But we will not follow its relation
+    // since the same cache definition part is read from the workbook xml
+    // part.
 }
 
 void orcus_xlsx::read_rev_headers(const std::string& dir_path, const std::string& file_name)

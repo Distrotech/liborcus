@@ -47,6 +47,12 @@ public:
         session_context& cxt, const tokens& tokens, spreadsheet::iface::import_table& table);
 };
 
+class xlsx_pivot_cache_xml_handler : public xml_stream_handler
+{
+public:
+    xlsx_pivot_cache_xml_handler(session_context& cxt, const tokens& tokens);
+};
+
 class xlsx_pivot_table_xml_handler : public xml_stream_handler
 {
 public:
