@@ -416,6 +416,14 @@ public:
                 b = to_bool(attr.value);
                 cout << "indent: " << b << endl;
             break;
+            case XML_compact:
+                b = to_bool(attr.value);
+                cout << "compact: " << b << endl;
+            break;
+            case XML_compactData:
+                b = to_bool(attr.value);
+                cout << "compact data: " << b << endl;
+            break;
             case XML_outline:
                 b = to_bool(attr.value);
                 cout << "outline: " << b << endl;
@@ -423,6 +431,10 @@ public:
             case XML_outlineData:
                 b = to_bool(attr.value);
                 cout << "outline data: " << b << endl;
+            break;
+            case XML_gridDropZones:
+                b = to_bool(attr.value);
+                cout << "grid drop zones: " << b << endl;
             break;
             case XML_multipleFieldFilters:
                 b = to_bool(attr.value);
@@ -478,6 +490,18 @@ public:
         {
             case XML_axis:
                 cout << "  * axis: " << attr.value << endl;
+            break;
+            case XML_compact:
+            {
+                bool b = to_bool(attr.value);
+                cout << "  * compact: " << b << endl;
+            }
+            break;
+            case XML_outline:
+            {
+                bool b = to_bool(attr.value);
+                cout << "  * outline: " << b << endl;
+            }
             break;
             case XML_showAll:
             {
