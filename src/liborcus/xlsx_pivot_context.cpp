@@ -485,6 +485,12 @@ public:
                 cout << "  * show all: " << b << endl;
             }
             break;
+            case XML_dataField:
+            {
+                bool b = to_bool(attr.value);
+                cout << "  * data field: " << b << endl;
+            }
+            break;
             default:
                 ;
         }
