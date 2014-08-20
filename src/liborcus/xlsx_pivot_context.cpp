@@ -434,6 +434,209 @@ public:
     }
 };
 
+class location_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+public:
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        long v = -1;
+        switch (attr.name)
+        {
+            case XML_ref:
+                cout << "ref: " << attr.value << endl;
+            break;
+            case XML_firstHeaderRow:
+                v = to_long(attr.value);
+                cout << "first header row: " << v << endl;
+            break;
+            case XML_firstDataRow:
+                v = to_long(attr.value);
+                cout << "first data row: " << v << endl;
+            break;
+            case XML_firstDataCol:
+                v = to_long(attr.value);
+                cout << "first data column: " << v << endl;
+            break;
+            default:
+                ;
+        }
+    }
+};
+
+class pivot_field_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+public:
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        switch (attr.name)
+        {
+            case XML_axis:
+                cout << "  * axis: " << attr.value << endl;
+            break;
+            case XML_showAll:
+            {
+                bool b = to_bool(attr.value);
+                cout << "  * show all: " << b << endl;
+            }
+            break;
+            default:
+                ;
+        }
+    }
+};
+
+class data_field_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+public:
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        switch (attr.name)
+        {
+            case XML_name:
+            {
+                cout << "  * name = " << attr.value << endl;
+            }
+            break;
+            case XML_fld:
+            {
+                long fld = to_long(attr.value);
+                cout << "  * field = " << fld << endl;
+            }
+            break;
+            case XML_baseField:
+            {
+                long fld = to_long(attr.value);
+                cout << "  * base field = " << fld << endl;
+            }
+            break;
+            case XML_baseItem:
+            {
+                long fld = to_long(attr.value);
+                cout << "  * base item = " << fld << endl;
+            }
+            break;
+            default:
+                ;
+        }
+    }
+};
+
+class item_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+public:
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        switch (attr.name)
+        {
+            case XML_x:
+            {
+                long idx = to_long(attr.value);
+                cout << "    * x = " << idx << endl;
+            }
+            break;
+            case XML_t:
+            {
+                cout << "    * type = " << attr.value << endl;
+            }
+            break;
+            default:
+                ;
+        }
+    }
+};
+
+class i_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+public:
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        switch (attr.name)
+        {
+            case XML_t:
+            {
+                cout << "  * type = " << attr.value << endl;
+            }
+            break;
+            default:
+                ;
+        }
+    }
+};
+
+class pt_style_info_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+    bool m_first;
+
+    void sep()
+    {
+        if (m_first)
+            m_first = false;
+        else
+            cout << ";";
+    }
+
+public:
+    pt_style_info_attr_parser() : m_first(true) {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        bool b = false;
+        switch (attr.name)
+        {
+            case XML_name:
+                sep();
+                cout << " name='" << attr.value << "'";
+            break;
+            case XML_showRowHeaders:
+                b = to_bool(attr.value);
+                sep();
+                cout << " show row headers=" << b;
+            break;
+            case XML_showColHeaders:
+                b = to_bool(attr.value);
+                sep();
+                cout << " show column headers=" << b;
+            break;
+            case XML_showRowStripes:
+                b = to_bool(attr.value);
+                sep();
+                cout << " show row stripes=" << b;
+            break;
+            case XML_showColStripes:
+                b = to_bool(attr.value);
+                sep();
+                cout << " show column stripes=" << b;
+            break;
+            case XML_showLastColumn:
+                b = to_bool(attr.value);
+                sep();
+                cout << " show last column=" << b;
+            break;
+            default:
+                ;
+        }
+    }
+};
+
+
 }
 
 xlsx_pivot_table_context::xlsx_pivot_table_context(session_context& cxt, const tokens& tokens) :
@@ -466,6 +669,132 @@ void xlsx_pivot_table_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 cout << "---" << endl;
                 pivot_table_def_attr_parser func;
                 for_each(attrs.begin(), attrs.end(), func);
+            }
+            break;
+            case XML_location:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotTableDefinition);
+                location_attr_parser func;
+                for_each(attrs.begin(), attrs.end(), func);
+            }
+            break;
+            case XML_pivotFields:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotTableDefinition);
+                size_t count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
+                cout << "field count: " << count << endl;
+            }
+            break;
+            case XML_pivotField:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotFields);
+                cout << "---" << endl;
+                pivot_field_attr_parser func;
+                for_each(attrs.begin(), attrs.end(), func);
+            }
+            break;
+            case XML_items:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotField);
+                size_t count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
+                cout << "  * item count: " << count << endl;
+            }
+            break;
+            case XML_item:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_items);
+                item_attr_parser func;
+                for_each(attrs.begin(), attrs.end(), func);
+            }
+            break;
+            case XML_rowFields:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotTableDefinition);
+                size_t count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
+                cout << "---" << endl;
+                cout << "row field count: " << count << endl;
+            }
+            break;
+            case XML_colFields:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotTableDefinition);
+                size_t count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
+                cout << "---" << endl;
+                cout << "column field count: " << count << endl;
+            }
+            break;
+            case XML_field:
+            {
+                xml_elem_stack_t expected;
+                expected.reserve(3);
+                expected.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_rowFields));
+                expected.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_colFields));
+                xml_element_expected(parent, expected);
+
+                size_t idx = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_x);
+                cout << "  * x = " << idx << endl;
+            }
+            break;
+            case XML_dataFields:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotTableDefinition);
+                size_t count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
+                cout << "---" << endl;
+                cout << "data field count: " << count << endl;
+            }
+            break;
+            case XML_dataField:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_dataFields);
+                data_field_attr_parser func;
+                for_each(attrs.begin(), attrs.end(), func);
+            }
+            break;
+            case XML_rowItems:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotTableDefinition);
+                size_t count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
+                cout << "---" << endl;
+                cout << "row item count: " << count << endl;
+            }
+            break;
+            case XML_colItems:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotTableDefinition);
+                size_t count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
+                cout << "---" << endl;
+                cout << "column item count: " << count << endl;
+            }
+            break;
+            case XML_i:
+            {
+                xml_elem_stack_t expected;
+                expected.reserve(2);
+                expected.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_rowItems));
+                expected.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_colItems));
+                xml_element_expected(parent, expected);
+
+                i_attr_parser func;
+                for_each(attrs.begin(), attrs.end(), func);
+            }
+            break;
+            case XML_x:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_i);
+                long idx = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_v);
+                if (idx >= 0)
+                    cout << "  * v = " << idx << endl;
+                else
+                    cout << "  * v not set" << endl;
+            }
+            break;
+            case XML_pivotTableStyleInfo:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotTableDefinition);
+                pt_style_info_attr_parser func;
+                cout << "  * style info:";
+                for_each(attrs.begin(), attrs.end(), func);
+                cout << endl;
             }
             break;
             default:
