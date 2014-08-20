@@ -548,12 +548,16 @@ public:
         {
             case XML_x:
             {
+                // field item index as defined in the pivot cache.
                 long idx = to_long(attr.value);
                 cout << "    * x = " << idx << endl;
             }
             break;
             case XML_t:
             {
+                // When the <item> element has attribute 't', it's subtotal or
+                // some sort of function item.  See 3.18.45 ST_ItemType
+                // (PivotItem Type) for possible values.
                 cout << "    * type = " << attr.value << endl;
             }
             break;
@@ -686,6 +690,8 @@ void xlsx_pivot_table_context::start_element(xmlns_id_t ns, xml_token_t name, co
             break;
             case XML_pivotFields:
             {
+                // pivotFields and its child elements represent the visual
+                // appearances of the fields inside pivot table.
                 xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotTableDefinition);
                 size_t count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
                 cout << "field count: " << count << endl;
@@ -737,6 +743,7 @@ void xlsx_pivot_table_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 expected.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_colFields));
                 xml_element_expected(parent, expected);
 
+                // Index into the list of pivotField collection.
                 size_t idx = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_x);
                 cout << "  * x = " << idx << endl;
             }
