@@ -9,6 +9,7 @@
 #include "ooxml_namespace_types.hpp"
 #include "ooxml_token_constants.hpp"
 #include "xml_context_global.hpp"
+#include "session_context.hpp"
 
 #include "orcus/measurement.hpp"
 
@@ -312,6 +313,10 @@ void xlsx_pivot_cache_rec_context::start_element(xmlns_id_t ns, xml_token_t name
             xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotCacheRecords);
             cout << "* record" << endl;
         break;
+        case XML_s:
+            // direct string item rather than an index to pivot cache field?
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_r);
+            cout << "  * s = '" << single_attr_getter::get(attrs, get_session_context().m_string_pool, NS_ooxml_xlsx, XML_v) << "'" << endl;
         case XML_x:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_r);
