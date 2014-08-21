@@ -591,6 +591,55 @@ public:
     }
 };
 
+class page_field_attr_parser : public unary_function<xml_token_attr_t, void>
+{
+    bool m_first;
+
+    void sep()
+    {
+        if (m_first)
+            m_first = false;
+        else
+            cout << ";";
+    }
+
+public:
+    page_field_attr_parser() : m_first(true) {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns != NS_ooxml_xlsx)
+            return;
+
+        switch (attr.name)
+        {
+            case XML_fld:
+            {
+                sep();
+                long fld = to_long(attr.value);
+                cout << " field = " << fld;
+            }
+            break;
+            case XML_item:
+            {
+                sep();
+                long item = to_long(attr.value);
+                cout << " item = " << item;
+            }
+            break;
+            case XML_hier:
+            {
+                sep();
+                long hier = to_long(attr.value);
+                cout << " hier = " << hier;
+            }
+            break;
+            default:
+                ;
+        }
+    }
+};
+
 /**
  * Attributes for the <i> element, which represents a single row under
  * <rowItems> structure.
@@ -786,6 +835,15 @@ void xlsx_pivot_table_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 size_t count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
                 cout << "---" << endl;
                 cout << "page field count: " << count << endl;
+            }
+            break;
+            case XML_pageField:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pageFields);
+                page_field_attr_parser func;
+                cout << "  * page field:";
+                for_each(attrs.begin(), attrs.end(), func);
+                cout << endl;
             }
             break;
             case XML_field:
