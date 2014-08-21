@@ -638,21 +638,22 @@ public:
             {
                 sep();
                 long fld = to_long(attr.value);
-                cout << " field = " << fld;
+                cout << " field index = " << fld;
             }
             break;
             case XML_item:
             {
                 sep();
                 long item = to_long(attr.value);
-                cout << " item = " << item;
+                cout << " item index = " << item;
             }
             break;
             case XML_hier:
             {
                 sep();
                 long hier = to_long(attr.value);
-                cout << " hier = " << hier;
+                // -1 if not applicable.
+                cout << " OLAP hierarchy index = " << hier;
             }
             break;
             default:
