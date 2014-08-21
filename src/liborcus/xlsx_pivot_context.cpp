@@ -591,6 +591,10 @@ public:
     }
 };
 
+/**
+ * Attributes for the <i> element, which represents a single row under
+ * <rowItems> structure.
+ */
 class i_attr_parser : public unary_function<xml_token_attr_t, void>
 {
 public:
@@ -603,7 +607,24 @@ public:
         {
             case XML_t:
             {
+                // total or subtotal function type.
                 cout << "  * type = " << attr.value << endl;
+            }
+            break;
+            case XML_r:
+            {
+                // "repeated item count" which basically is the number of
+                // blank cells that occur after the preivous non-empty cell on
+                // the same row (in the classic layout mode).
+                long v = to_long(attr.value);
+                cout << "  * repeat item count = " << v << endl;
+            }
+            break;
+            case XML_i:
+            {
+                // zero-based data field index in case of multiple data fields.
+                long v = to_long(attr.value);
+                cout << "  * data field index = " << v << endl;
             }
             break;
             default:
@@ -759,6 +780,14 @@ void xlsx_pivot_table_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 cout << "column field count: " << count << endl;
             }
             break;
+            case XML_pageFields:
+            {
+                xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotTableDefinition);
+                size_t count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
+                cout << "---" << endl;
+                cout << "page field count: " << count << endl;
+            }
+            break;
             case XML_field:
             {
                 xml_elem_stack_t expected;
@@ -789,6 +818,9 @@ void xlsx_pivot_table_context::start_element(xmlns_id_t ns, xml_token_t name, co
             break;
             case XML_rowItems:
             {
+                // <rowItems> structure describes the displayed content of
+                // cells in the row field area.  Each <i> child element
+                // represents a single row.
                 xml_element_expected(parent, NS_ooxml_xlsx, XML_pivotTableDefinition);
                 size_t count = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_count);
                 cout << "---" << endl;
