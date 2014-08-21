@@ -875,7 +875,11 @@ void xlsx_pivot_table_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 expected.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_colFields));
                 xml_element_expected(parent, expected);
 
-                // Index into the list of pivotField collection.
+                // Index into the list of <pivotField> collection which is
+                // given earlier under the <pivotFields> element.  The value
+                // of -2 represents a special field that displays the list of
+                // data fields when the pivot table contains more than one
+                // data field.
                 long idx = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_x);
                 cout << "  * x = " << idx << endl;
             }
