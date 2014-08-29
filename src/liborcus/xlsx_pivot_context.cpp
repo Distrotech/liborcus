@@ -575,6 +575,11 @@ public:
                 cout << " base item = " << fld;
             }
             break;
+            case XML_subtotal:
+            {
+                sep();
+                cout << " subtotal = " << attr.value;
+            }
             default:
                 ;
         }
