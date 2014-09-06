@@ -170,7 +170,7 @@ void adjust_row_range(ixion::abs_range_t& range, const table_t& tab, ixion::tabl
 
     if (data)
     {
-        --range.first.row;
+        ++range.first.row;
 
         if (totals)
         {
