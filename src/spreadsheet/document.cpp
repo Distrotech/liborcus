@@ -305,7 +305,18 @@ public:
         ixion::string_id_t table, ixion::string_id_t column_first, ixion::string_id_t column_last,
         ixion::table_areas_t areas) const
     {
-        return ixion::abs_range_t();
+        pstring tab_name = get_string(table);
+        if (tab_name.empty())
+            // no table name given.
+            return ixion::abs_range_t(ixion::abs_range_t::invalid);
+
+        table_store_type::const_iterator it = m_tables.find(tab_name);
+        if (it == m_tables.end())
+            // no table by this name found.
+            return ixion::abs_range_t(ixion::abs_range_t::invalid);
+
+        const table_t* tab = it->second;
+        return get_range_from_table(*tab, column_first, column_last, areas);
     }
 };
 
