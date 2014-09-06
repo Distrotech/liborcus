@@ -189,6 +189,9 @@
 			<F N="../external/include/ixion/session_handler.hpp"/>
 			<F N="../external/include/ixion/interface/session_handler.hpp"/>
 			<F N="../external/include/ixion/hash_container/set.hpp"/>
+			<F N="../external/include/ixion/table.hpp"/>
+			<F N="../external/include/ixion/interface/table.hpp"/>
+			<F N="../external/include/ixion/interface/table_handler.hpp"/>
 			<F N="../external/include/ixion/thread.hpp"/>
 			<F N="../external/include/ixion/types.hpp"/>
 			<F N="../external/include/mdds/compat/unique_ptr.hpp"/>

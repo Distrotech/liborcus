@@ -22,6 +22,7 @@
 #include <ixion/matrix.hpp>
 #include <ixion/model_context.hpp>
 #include <ixion/formula_name_resolver.hpp>
+#include <ixion/interface/table_handler.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -122,6 +123,192 @@ public:
     }
 };
 
+class find_column_by_name : std::unary_function<table_column_t, bool>
+{
+    const pstring& m_name;
+public:
+    find_column_by_name(const pstring& name) : m_name(name) {}
+
+    bool operator() (const table_column_t& col) const
+    {
+        return col.name == m_name;
+    }
+};
+
+void adjust_row_range(ixion::abs_range_t& range, const table_t& tab, ixion::table_areas_t areas)
+{
+    bool headers = (areas & ixion::table_area_headers);
+    bool data    = (areas & ixion::table_area_data);
+    bool totals  = (areas & ixion::table_area_totals);
+
+    if (headers)
+    {
+        if (data)
+        {
+            if (totals)
+            {
+                // All areas.
+                return;
+            }
+
+            // Headers + data
+            range.last.row -= tab.totals_row_count;
+            return;
+        }
+
+        if (totals)
+        {
+            // Header + total is invalid.
+            range = ixion::abs_range_t(ixion::abs_range_t::invalid);
+            return;
+        }
+
+        // Headers only.
+        range.last.row = range.first.row;
+        return;
+    }
+
+    if (data)
+    {
+        --range.first.row;
+
+        if (totals)
+        {
+            // Data + total
+            return;
+        }
+
+        // Data only
+        range.last.row -= tab.totals_row_count;
+        return;
+    }
+
+    if (totals)
+    {
+        // Total only
+        if (!tab.totals_row_count)
+        {
+            // This table has not total rows.  Return empty range.
+            range = ixion::abs_range_t();
+            return;
+        }
+
+        range.first.row = range.last.row - tab.totals_row_count - 1;
+        return;
+    }
+
+    // Empty range.
+    range = ixion::abs_range_t();
+}
+
+class table_handler : public ixion::iface::table_handler
+{
+    const ixion::model_context& m_context;
+    const table_store_type& m_tables;
+
+    const table_t* find_table(const ixion::abs_address_t& pos) const
+    {
+        table_store_type::const_iterator it = m_tables.begin(), it_end = m_tables.end();
+        for (; it != it_end; ++it)
+        {
+            const table_t* p = it->second;
+            if (p->range.contains(pos))
+                return p;
+        }
+
+        return NULL;
+    }
+
+    pstring get_string(ixion::string_id_t sid) const
+    {
+        if (sid == ixion::empty_string_id)
+            return pstring();
+
+        const std::string* p = m_context.get_string(sid);
+        if (!p || p->empty())
+            return pstring();
+
+        return pstring(&(*p)[0], p->size());
+    }
+
+    col_t find_column(const table_t& tab, const pstring& name, size_t offset) const
+    {
+        if (offset >= tab.columns.size())
+            return -1;
+
+        table_t::columns_type::const_iterator it_beg = tab.columns.begin();
+        table_t::columns_type::const_iterator it_end = tab.columns.end();
+
+        std::advance(it_beg, offset);
+        table_t::columns_type::const_iterator it =
+            std::find_if(it_beg, it_end, find_column_by_name(name));
+
+        if (it == it_end)
+            // not found.
+            return -1;
+
+        size_t dist = std::distance(tab.columns.begin(), it);
+        return tab.range.first.column + dist;
+    }
+
+    ixion::abs_range_t get_range_from_table(
+        const table_t& tab, ixion::string_id_t column_first, ixion::string_id_t column_last,
+        ixion::table_areas_t areas) const
+    {
+        if (column_first != ixion::empty_string_id)
+        {
+            pstring col1_name = get_string(column_first);
+            if (col1_name.empty())
+                return ixion::abs_range_t(ixion::abs_range_t::invalid);
+
+            col_t col1_index = find_column(tab, col1_name, 0);
+            if (column_last != ixion::empty_string_id)
+            {
+                pstring col2_name = get_string(column_last);
+
+                // column range table reference.
+                col_t col2_index = find_column(tab, col2_name, col1_index);
+                ixion::abs_range_t range = tab.range;
+                range.first.column = col1_index;
+                range.last.column = col2_index;
+                adjust_row_range(range, tab, areas);
+                return range;
+            }
+
+            // single column table reference.
+            ixion::abs_range_t range = tab.range;
+            range.first.column = range.last.column = col1_index;
+            adjust_row_range(range, tab, areas);
+            return range;
+        }
+
+        return ixion::abs_range_t();
+    }
+
+public:
+    table_handler(const ixion::model_context& cxt, const table_store_type& tables) :
+        m_context(cxt), m_tables(tables) {}
+
+    virtual ixion::abs_range_t get_range(
+        const ixion::abs_address_t& pos, ixion::string_id_t column_first, ixion::string_id_t column_last,
+        ixion::table_areas_t areas) const
+    {
+        const table_t* tab = find_table(pos);
+        if (!tab)
+            return ixion::abs_range_t(ixion::abs_range_t::invalid);
+
+        return get_range_from_table(*tab, column_first, column_last, areas);
+
+    }
+
+    virtual ixion::abs_range_t get_range(
+        ixion::string_id_t table, ixion::string_id_t column_first, ixion::string_id_t column_last,
+        ixion::table_areas_t areas) const
+    {
+        return ixion::abs_range_t();
+    }
+};
+
 }
 
 struct document_impl
@@ -140,14 +327,17 @@ struct document_impl
     formula_grammar_t m_grammar;
 
     table_store_type m_tables;
+    table_handler m_table_handler;
 
     document_impl(document& doc) :
         m_doc(doc),
         mp_styles(new import_styles(m_string_pool)),
         mp_strings(new import_shared_strings(m_string_pool, m_context, *mp_styles)),
         mp_name_resolver(ixion::formula_name_resolver::get(ixion::formula_name_resolver_excel_a1, &m_context)),
-        m_grammar(formula_grammar_xlsx_2007)
+        m_grammar(formula_grammar_xlsx_2007),
+        m_table_handler(m_context, m_tables)
     {
+        m_context.set_table_handler(&m_table_handler);
     }
 
     ~document_impl()
