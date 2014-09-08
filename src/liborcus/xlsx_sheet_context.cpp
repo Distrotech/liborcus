@@ -105,6 +105,7 @@ public:
                 m_height.value = to_double(attr.value);
                 m_height.unit = length_unit_point;
             }
+            break;
             case XML_hidden:
                 m_hidden = to_long(attr.value) != 0;
             break;
