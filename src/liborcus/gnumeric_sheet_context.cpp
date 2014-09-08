@@ -170,6 +170,7 @@ public:
                     m_styles.set_xf_number_format(index);
                 }
             }
+            break;
             case XML_HAlign:
             {
                 orcus::spreadsheet::hor_alignment_t hor_alignment = orcus::spreadsheet::hor_alignment_unknown;
