@@ -314,6 +314,7 @@ public:
             case XML_ref:
                 if (!attr.transient)
                     m_ref = attr.value;
+            break;
             case XML_action:
                 m_action_type = to_xlsx_rev_row_column_action_type(attr.value);
             break;
