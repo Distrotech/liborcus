@@ -317,6 +317,7 @@ void xlsx_pivot_cache_rec_context::start_element(xmlns_id_t ns, xml_token_t name
             // direct string item rather than an index to pivot cache field?
             xml_element_expected(parent, NS_ooxml_xlsx, XML_r);
             cout << "  * s = '" << single_attr_getter::get(attrs, get_session_context().m_string_pool, NS_ooxml_xlsx, XML_v) << "'" << endl;
+        break;
         case XML_x:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_r);
