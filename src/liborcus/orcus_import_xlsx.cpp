@@ -43,8 +43,9 @@ void import_xlsx::read_table(const char* p, size_t n, spreadsheet::iface::import
     ns_repo.add_predefined_values(NS_opc_all);
     ns_repo.add_predefined_values(NS_misc_all);
 
+    orcus::config config;
     xml_stream_parser parser(
-        orcus::config(), ns_repo, ooxml_tokens,
+        config, ns_repo, ooxml_tokens,
         p, n);
     parser.set_handler(handler.get());
     parser.parse();
