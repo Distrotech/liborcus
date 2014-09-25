@@ -141,7 +141,8 @@ xls_xml_context::xls_xml_context(session_context& session_cxt, const tokens& tok
     xml_context_base(session_cxt, tokens),
     mp_factory(factory),
     mp_cur_sheet(NULL),
-    m_cur_row(0), m_cur_col(0), m_cur_cell_type(ct_unknown)
+    m_cur_row(0), m_cur_col(0), m_cur_cell_type(ct_unknown),
+    m_cur_cell_value(std::numeric_limits<double>::quiet_NaN())
 {
 }
 
