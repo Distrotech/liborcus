@@ -358,7 +358,11 @@ public:
 }
 
 xlsx_revlog_context::xlsx_revlog_context(session_context& session_cxt, const tokens& tokens) :
-    xml_context_base(session_cxt, tokens) {}
+    xml_context_base(session_cxt, tokens),
+    m_cur_value(std::numeric_limits<double>::quiet_NaN()),
+    m_cur_cell_type(xlsx_ct_unknown), m_cur_formula(false)
+{
+}
 
 xlsx_revlog_context::~xlsx_revlog_context() {}
 
