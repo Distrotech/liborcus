@@ -285,7 +285,8 @@ class rrc_attr_parser : public unary_function<xml_token_attr_t, void>
     bool m_end_of_list;
 
 public:
-    rrc_attr_parser() : m_revision_id(-1), m_sheet_id(-1), m_end_of_list(false) {}
+    rrc_attr_parser() : m_revision_id(-1), m_sheet_id(-1),
+        m_action_type(xlsx_rev_rca_unknown), m_end_of_list(false) {}
 
     long get_revision_id() const { return m_revision_id; }
     long get_sheet_id() const { return m_sheet_id; }
