@@ -9,7 +9,8 @@
 
 namespace orcus {
 
-ods_session_data::formula_result::formula_result() : type(rt_none) {}
+ods_session_data::formula_result::formula_result() :
+    type(rt_none), numeric_value(std::numeric_limits<double>::quiet_NaN()) {}
 
 ods_session_data::formula::formula(
     spreadsheet::sheet_t _sheet, spreadsheet::row_t _row, spreadsheet::col_t _col,
