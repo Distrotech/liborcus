@@ -9,6 +9,8 @@
 #include "orcus/string_pool.hpp"
 #include "orcus/pstring.hpp"
 
+#include <iostream>
+
 using namespace std;
 using namespace orcus;
 
