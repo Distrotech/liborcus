@@ -5,6 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <iostream>
+
 #include "orcus/string_pool.hpp"
 #include "orcus/pstring.hpp"
 
