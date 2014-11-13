@@ -15,7 +15,7 @@ namespace orcus { namespace mso {
 
 struct encryption_info_reader_impl;
 
-class ORCUS_DLLPUBLIC encryption_info_reader
+class ORCUS_MSO_DLLPUBLIC encryption_info_reader
 {
     encryption_info_reader(const encryption_info_reader&); // disabled
     encryption_info_reader& operator= (const encryption_info_reader&); // disabled

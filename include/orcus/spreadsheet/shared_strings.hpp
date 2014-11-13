@@ -29,7 +29,7 @@ namespace spreadsheet {
 
 class import_styles;
 
-struct ORCUS_DLLPUBLIC format_run
+struct ORCUS_SPM_DLLPUBLIC format_run
 {
     size_t pos;
     size_t size;

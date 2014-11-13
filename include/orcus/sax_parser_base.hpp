@@ -30,7 +30,7 @@ using std::endl;
 
 namespace orcus { namespace sax {
 
-class ORCUS_DLLPUBLIC malformed_xml_error : public std::exception
+class ORCUS_PSR_DLLPUBLIC malformed_xml_error : public std::exception
 {
     std::string m_msg;
 public:
@@ -64,7 +64,7 @@ struct doctype_declaration
  * @return single character that corresponds with the encoded name.  '\0' is
  *         returned if decoding fails.
  */
-ORCUS_DLLPUBLIC char decode_xml_encoded_char(const char* p, size_t n);
+ORCUS_PSR_DLLPUBLIC char decode_xml_encoded_char(const char* p, size_t n);
 
 /**
  * Element properties passed by sax_parser to its handler's open_element()
@@ -93,7 +93,7 @@ struct parser_attribute
     bool transient;  // whether or not the attribute value is on a temporary buffer.
 };
 
-class ORCUS_DLLPUBLIC parser_base
+class ORCUS_PSR_DLLPUBLIC parser_base
 {
 protected:
     boost::ptr_vector<cell_buffer> m_cell_buffers;

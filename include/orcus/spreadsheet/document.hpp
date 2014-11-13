@@ -41,7 +41,7 @@ struct document_impl;
  * Internal document representation used only for testing the filters.  It
  * uses ixion's model_context implementation to store raw cell values.
  */
-class ORCUS_DLLPUBLIC document : public orcus::iface::document_dumper
+class ORCUS_SPM_DLLPUBLIC document : public orcus::iface::document_dumper
 {
     friend class sheet;
 

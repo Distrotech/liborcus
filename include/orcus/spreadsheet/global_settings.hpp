@@ -17,7 +17,7 @@ class document;
 
 struct import_global_settings_impl;
 
-class ORCUS_DLLPUBLIC import_global_settings : public spreadsheet::iface::import_global_settings
+class ORCUS_SPM_DLLPUBLIC import_global_settings : public spreadsheet::iface::import_global_settings
 {
     import_global_settings_impl* mp_impl;
 

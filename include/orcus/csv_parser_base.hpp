@@ -29,7 +29,7 @@ using std::endl;
 
 namespace orcus { namespace csv {
 
-struct ORCUS_DLLPUBLIC parser_config
+struct ORCUS_PSR_DLLPUBLIC parser_config
 {
     std::string delimiters;
     char text_qualifier;
@@ -38,7 +38,7 @@ struct ORCUS_DLLPUBLIC parser_config
     parser_config();
 };
 
-class ORCUS_DLLPUBLIC parse_error : public std::exception
+class ORCUS_PSR_DLLPUBLIC parse_error : public std::exception
 {
     std::string m_msg;
 public:
@@ -47,7 +47,7 @@ public:
     virtual const char* what() const throw();
 };
 
-class ORCUS_DLLPUBLIC parser_base
+class ORCUS_PSR_DLLPUBLIC parser_base
 {
 protected:
     const csv::parser_config& m_config;

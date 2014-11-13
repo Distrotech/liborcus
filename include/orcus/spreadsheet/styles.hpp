@@ -20,7 +20,7 @@ class string_pool;
 
 namespace spreadsheet {
 
-struct ORCUS_DLLPUBLIC color_t
+struct ORCUS_SPM_DLLPUBLIC color_t
 {
     color_elem_t alpha;
     color_elem_t red;
@@ -33,7 +33,7 @@ struct ORCUS_DLLPUBLIC color_t
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC font_t
+struct ORCUS_SPM_DLLPUBLIC font_t
 {
     pstring name;
     double size;
@@ -46,7 +46,7 @@ struct ORCUS_DLLPUBLIC font_t
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC fill_t
+struct ORCUS_SPM_DLLPUBLIC fill_t
 {
     pstring pattern_type;
     color_t fg_color;
@@ -56,7 +56,7 @@ struct ORCUS_DLLPUBLIC fill_t
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC border_attrs_t
+struct ORCUS_SPM_DLLPUBLIC border_attrs_t
 {
     pstring style;
     color_t border_color;
@@ -65,7 +65,7 @@ struct ORCUS_DLLPUBLIC border_attrs_t
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC border_t
+struct ORCUS_SPM_DLLPUBLIC border_t
 {
     border_attrs_t top;
     border_attrs_t bottom;
@@ -77,7 +77,7 @@ struct ORCUS_DLLPUBLIC border_t
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC protection_t
+struct ORCUS_SPM_DLLPUBLIC protection_t
 {
     bool locked;
     bool hidden;
@@ -86,7 +86,7 @@ struct ORCUS_DLLPUBLIC protection_t
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC number_format_t
+struct ORCUS_SPM_DLLPUBLIC number_format_t
 {
     size_t identifier;
     pstring format_string;
@@ -99,7 +99,7 @@ struct ORCUS_DLLPUBLIC number_format_t
 /**
  * Cell format attributes
  */
-struct ORCUS_DLLPUBLIC cell_format_t
+struct ORCUS_SPM_DLLPUBLIC cell_format_t
 {
     size_t font;            /// font ID
     size_t fill;            /// fill ID
@@ -119,7 +119,7 @@ struct ORCUS_DLLPUBLIC cell_format_t
     void reset();
 };
 
-struct ORCUS_DLLPUBLIC cell_style_t
+struct ORCUS_SPM_DLLPUBLIC cell_style_t
 {
     pstring name;
     size_t xf;
@@ -129,7 +129,7 @@ struct ORCUS_DLLPUBLIC cell_style_t
     void reset();
 };
 
-class ORCUS_DLLPUBLIC import_styles : public iface::import_styles
+class ORCUS_SPM_DLLPUBLIC import_styles : public iface::import_styles
 {
 public:
 

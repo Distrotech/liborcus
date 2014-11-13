@@ -18,7 +18,7 @@ class document;
 
 struct import_factory_impl;
 
-class ORCUS_DLLPUBLIC import_factory : public iface::import_factory
+class ORCUS_SPM_DLLPUBLIC import_factory : public iface::import_factory
 {
 public:
     import_factory(document& doc, row_t row_size = 1048576, col_t col_size = 1024);
@@ -38,7 +38,7 @@ private:
 
 struct export_factory_impl;
 
-class ORCUS_DLLPUBLIC export_factory : public iface::export_factory
+class ORCUS_SPM_DLLPUBLIC export_factory : public iface::export_factory
 {
 public:
     export_factory(document& doc);

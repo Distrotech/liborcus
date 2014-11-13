@@ -28,7 +28,7 @@ struct auto_filter_t;
  * This class represents a single sheet instance in the internal document
  * model.
  */
-class ORCUS_DLLPUBLIC sheet : public iface::import_sheet, public iface::export_sheet
+class ORCUS_SPM_DLLPUBLIC sheet : public iface::import_sheet, public iface::export_sheet
 {
     friend struct sheet_impl;
 

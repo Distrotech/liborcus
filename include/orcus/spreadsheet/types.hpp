@@ -22,8 +22,8 @@ typedef unsigned char color_elem_t;
 typedef unsigned short col_width_t;
 typedef unsigned short row_height_t;
 
-ORCUS_DLLPUBLIC col_width_t get_default_column_width();
-ORCUS_DLLPUBLIC row_height_t get_default_row_height();
+ORCUS_SPM_DLLPUBLIC col_width_t get_default_column_width();
+ORCUS_SPM_DLLPUBLIC row_height_t get_default_row_height();
 
 enum border_direction_t
 {
@@ -115,7 +115,7 @@ enum totals_row_function_t
  * Convert a string representation of a totals row function name to its
  * equivalent enum value.
  */
-ORCUS_DLLPUBLIC totals_row_function_t to_totals_row_function_enum(const char* p, size_t n);
+ORCUS_SPM_DLLPUBLIC totals_row_function_t to_totals_row_function_enum(const char* p, size_t n);
 
 }}
 

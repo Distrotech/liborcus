@@ -23,7 +23,7 @@ namespace orcus { namespace spreadsheet {
 /**
  * Data for a single column inside autofilter range.
  */
-struct ORCUS_DLLPUBLIC auto_filter_column_t
+struct ORCUS_SPM_DLLPUBLIC auto_filter_column_t
 {
     typedef boost::unordered_set<pstring, pstring::hash> match_values_type;
     match_values_type match_values;
@@ -36,7 +36,7 @@ struct ORCUS_DLLPUBLIC auto_filter_column_t
  * Data for a single autofilter entry.  An autofilter can belong to either a
  * sheet or a table.
  */
-struct ORCUS_DLLPUBLIC auto_filter_t
+struct ORCUS_SPM_DLLPUBLIC auto_filter_t
 {
     typedef std::map<col_t, auto_filter_column_t> columns_type;
 
@@ -63,7 +63,7 @@ struct ORCUS_DLLPUBLIC auto_filter_t
 /**
  * Single column entry in table.
  */
-struct ORCUS_DLLPUBLIC table_column_t
+struct ORCUS_SPM_DLLPUBLIC table_column_t
 {
     size_t identifier;
     pstring name;
@@ -78,7 +78,7 @@ struct ORCUS_DLLPUBLIC table_column_t
 /**
  * Table style information.
  */
-struct ORCUS_DLLPUBLIC table_style_t
+struct ORCUS_SPM_DLLPUBLIC table_style_t
 {
     pstring name;
 
@@ -96,7 +96,7 @@ struct ORCUS_DLLPUBLIC table_style_t
  * Single table entry.  A table is a range in a spreadsheet that represents
  * a single set of data that can be used as a data source.
  */
-struct ORCUS_DLLPUBLIC table_t
+struct ORCUS_SPM_DLLPUBLIC table_t
 {
     typedef std::vector<table_column_t> columns_type;
 
