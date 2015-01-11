@@ -563,6 +563,8 @@ bool gnumeric_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
                 if (mp_auto_filter)
                     mp_auto_filter->commit_column();
             break;
+            case XML_StyleRegion:
+                end_style_region();
             default:
                 ;
         }
