@@ -28,16 +28,17 @@ std::vector<pstring> split_string(pstring str, char sep)
         if (str[i] == sep)
         {
             ret.push_back( pstring( start, len ) );
-            len = 0;
 
             // if not at the end move the start string
             if (i < n-1)
                 start = start + len + 1;
 
+            len = 0;
         }
         else
             ++len;
     }
+    ret.push_back( pstring( start, len ) );
 
     return ret;
 }
