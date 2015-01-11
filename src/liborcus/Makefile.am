@@ -232,7 +232,8 @@ liborcus_@ORCUS_API_VERSION@_la_LIBADD += \
 
 EXTRA_PROGRAMS += \
 	gnumeric-cell-context-test \
-	orcus-gnumeric-sheet-context-test
+	orcus-gnumeric-sheet-context-test \
+	orcus-gnumeric-helper-test
 
 gnumeric_cell_context_test_SOURCES = \
 	session_context.cpp \
@@ -277,6 +278,18 @@ orcus_gnumeric_sheet_context_test_LDADD = \
 orcus_gnumeric_sheet_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
 TESTS += orcus-gnumeric-sheet-context-test
+
+# orcus-gnumeric-helper-test
+
+orcus_gnumeric_helper_test_SOURCES = \
+	gnumeric_helper_test.cpp
+
+orcus_gnumeric_helper_test_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la
+
+orcus_gnumeric_helper_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+
+TESTS += orcus-gnumeric-helper-test
 
 endif # WITH_GNUMERIC_FILTER
 
