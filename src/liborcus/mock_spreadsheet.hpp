@@ -135,6 +135,9 @@ public:
 
     virtual void set_format(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, size_t xf_index);
 
+    virtual void set_format_range(orcus::spreadsheet::row_t row_start, orcus::spreadsheet::col_t col_start,
+            orcus::spreadsheet::row_t row_end, orcus::spreadsheet::col_t col_end, size_t xf_index);
+
     virtual void set_formula(
         orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, orcus::spreadsheet::formula_grammar_t grammar,
          const char* p, size_t n);

@@ -52,6 +52,7 @@ public:
     virtual void set_bool(row_t row, col_t col, bool value);
     virtual void set_date_time(row_t row, col_t col, int year, int month, int day, int hour, int minute, double second);
     virtual void set_format(row_t row, col_t col, size_t index);
+    virtual void set_format_range(row_t row_start, col_t col_start, row_t row_end, col_t col_end, size_t index);
     virtual void set_formula(row_t row, col_t col, formula_grammar_t grammar, const char* p, size_t n);
     virtual void set_shared_formula(
         row_t row, col_t col, formula_grammar_t grammar, size_t sindex,
