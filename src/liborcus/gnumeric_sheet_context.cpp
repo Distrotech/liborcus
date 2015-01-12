@@ -118,10 +118,11 @@ private:
 class gnumeric_style_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
 public:
-    gnumeric_style_attr_parser(spreadsheet::iface::import_styles& styles) :
+    gnumeric_style_attr_parser(spreadsheet::iface::import_styles& styles, gnumeric_style_region& region) :
         m_styles(styles),
         m_fill(false),
-        m_protection(false) {}
+        m_protection(false),
+        m_region(region) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -134,6 +135,10 @@ public:
                 m_styles.set_fill_fg_color(0, red, green, blue);
 
                 m_fill = true;
+
+                m_region.front_color.red = red;
+                m_region.front_color.blue = blue;
+                m_region.front_color.green = green;
             }
             break;
             case XML_Back:
@@ -229,6 +234,8 @@ private:
 
     bool m_fill;
     bool m_protection;
+
+    gnumeric_style_region& m_region;
 };
 
 class gnumeric_col_row_info : public std::unary_function<xml_token_attr_t, void>
@@ -615,7 +622,7 @@ void gnumeric_sheet_context::start_row(const xml_attrs_t& attrs)
 
 void gnumeric_sheet_context::start_style(const xml_attrs_t& attrs)
 {
-    const gnumeric_style_attr_parser& attr_parser = for_each(attrs.begin(), attrs.end(), gnumeric_style_attr_parser(*mp_factory->get_styles()));
+    const gnumeric_style_attr_parser& attr_parser = for_each(attrs.begin(), attrs.end(), gnumeric_style_attr_parser(*mp_factory->get_styles(), *mp_region_data));
     spreadsheet::iface::import_styles& styles = *mp_factory->get_styles();
     if (attr_parser.is_fill_set())
     {
@@ -643,6 +650,8 @@ void gnumeric_sheet_context::end_table()
 void gnumeric_sheet_context::end_font()
 {
     spreadsheet::iface::import_styles& styles = *mp_factory->get_styles();
+    styles.set_font_color(0, mp_region_data->front_color.red,
+            mp_region_data->front_color.green, mp_region_data->front_color.blue);
     styles.set_font_name(chars.get(), chars.size());
     size_t font_id = styles.commit_font();
     styles.set_xf_font(font_id);

@@ -23,12 +23,26 @@ class import_auto_filter;
 
 }}
 
+struct gnumeric_color
+{
+    spreadsheet::color_elem_t red;
+    spreadsheet::color_elem_t green;
+    spreadsheet::color_elem_t blue;
+
+    gnumeric_color():
+        red(0),
+        green(0),
+        blue(0) {}
+};
+
 struct gnumeric_style_region
 {
     spreadsheet::row_t start_row;
     spreadsheet::row_t end_row;
     spreadsheet::col_t start_col;
     spreadsheet::col_t end_col;
+
+    gnumeric_color front_color;
 
     size_t xf_id;
 };
