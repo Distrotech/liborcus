@@ -11,7 +11,6 @@
 #include "odf_styles_context.hpp"
 #include "session_context.hpp"
 #include "ods_session_data.hpp"
-#include "sorted_string_map.hpp"
 
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
@@ -21,13 +20,15 @@
 #include <algorithm>
 #include <cstring>
 
+#include <mdds/sorted_string_map.hpp>
+
 using namespace std;
 
 namespace orcus {
 
 namespace {
 
-typedef sorted_string_map<ods_content_xml_context::cell_value_type> cell_value_map_type;
+typedef mdds::sorted_string_map<ods_content_xml_context::cell_value_type> cell_value_map_type;
 
 // Keys must be sorted.
 cell_value_map_type::entry cell_value_entries[] = {

@@ -6,9 +6,10 @@
  */
 
 #include "xlsx_types.hpp"
-#include "sorted_string_map.hpp"
 
 #include "orcus/global.hpp"
+
+#include <mdds/sorted_string_map.hpp>
 
 namespace orcus {
 
@@ -16,7 +17,7 @@ namespace {
 
 const char* str_unknown = "unknown";
 
-typedef sorted_string_map<xlsx_cell_t> map_type;
+typedef mdds::sorted_string_map<xlsx_cell_t> map_type;
 
 // Keys must be sorted.
 map_type::entry cell_type_entries[] = {
@@ -64,7 +65,7 @@ pstring to_string(xlsx_cell_t type)
 
 namespace {
 
-typedef sorted_string_map<xlsx_rev_row_column_action_t> rca_map_type;
+typedef mdds::sorted_string_map<xlsx_rev_row_column_action_t> rca_map_type;
 
 // Keys must be sorted.
 rca_map_type::entry rca_entries[] = {

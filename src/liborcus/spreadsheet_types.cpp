@@ -7,15 +7,16 @@
 
 #include "orcus/spreadsheet/types.hpp"
 #include "orcus/global.hpp"
-#include "sorted_string_map.hpp"
 
 #include <limits>
+
+#include <mdds/sorted_string_map.hpp>
 
 namespace orcus { namespace spreadsheet {
 
 namespace {
 
-typedef orcus::sorted_string_map<totals_row_function_t> trf_map_type;
+typedef mdds::sorted_string_map<totals_row_function_t> trf_map_type;
 
 // Keys must be sorted.
 trf_map_type::entry trf_entries[] =
