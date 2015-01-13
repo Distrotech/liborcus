@@ -367,8 +367,8 @@ public:
     virtual void set_format(orcus::spreadsheet::row_t row, orcus::spreadsheet::col_t col, size_t xf_index) = 0;
 
     /**
-     * Set cell format to specified cell range.  The cell format is referred to by
-     * the xf (cell format) index in the styles table.
+     * Set cell format to specified cell range.  The cell format is referred
+     * to by the xf (cell format) index in the styles table.
      *
      * @param row_start start row ID
      * @param col_start start column ID
@@ -376,8 +376,8 @@ public:
      * @param col_end end column ID
      * @param index 0-based xf (cell format) index
      */
-    virtual void set_format_range(orcus::spreadsheet::row_t row_start, orcus::spreadsheet::col_t col_start,
-            orcus::spreadsheet::row_t row_end, orcus::spreadsheet::col_t col_end, size_t xf_index) = 0;
+    virtual void set_format(orcus::spreadsheet::row_t row_start, orcus::spreadsheet::col_t col_start,
+        orcus::spreadsheet::row_t row_end, orcus::spreadsheet::col_t col_end, size_t xf_index) = 0;
 
     /**
      * Set normal, non-shared formula expression to specified cell.

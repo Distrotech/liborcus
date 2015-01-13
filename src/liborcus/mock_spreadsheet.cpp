@@ -183,7 +183,7 @@ void import_sheet::set_format(row_t, col_t, size_t)
     assert(false);
 }
 
-void import_sheet::set_format_range(row_t, col_t, row_t, col_t, size_t)
+void import_sheet::set_format(row_t, col_t, row_t, col_t, size_t)
 {
     assert(false);
 }

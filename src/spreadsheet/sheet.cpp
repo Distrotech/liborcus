@@ -410,7 +410,7 @@ void sheet::set_format(row_t row, col_t col, size_t index)
     con.insert_back(row, row+1, index);
 }
 
-void sheet::set_format_range(row_t row_start, col_t col_start, row_t row_end, col_t col_end, size_t index)
+void sheet::set_format(row_t row_start, col_t col_start, row_t row_end, col_t col_end, size_t index)
 {
     for (col_t col = col_start; col <= col_end; ++col)
     {

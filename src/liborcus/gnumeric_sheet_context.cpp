@@ -666,7 +666,7 @@ void gnumeric_sheet_context::end_style()
 
 void gnumeric_sheet_context::end_style_region()
 {
-    mp_sheet->set_format_range(mp_region_data->start_row, mp_region_data->start_col,
+    mp_sheet->set_format(mp_region_data->start_row, mp_region_data->start_col,
             mp_region_data->end_row, mp_region_data->end_col, mp_region_data->xf_id);
     mp_region_data.reset();
 }
