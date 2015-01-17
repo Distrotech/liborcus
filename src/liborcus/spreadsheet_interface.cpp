@@ -22,6 +22,8 @@ import_auto_filter::~import_auto_filter() {}
 
 import_table::~import_table() {}
 
+import_conditional_format::~import_conditional_format() {}
+
 import_auto_filter* import_table::get_auto_filter()
 {
     return NULL;
@@ -45,6 +47,11 @@ import_auto_filter* import_sheet::get_auto_filter()
 }
 
 import_table* import_sheet::get_table()
+{
+    return NULL;
+}
+
+import_conditional_format* import_sheet::get_conditional_format()
 {
     return NULL;
 }

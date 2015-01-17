@@ -487,7 +487,7 @@ void gnumeric_sheet_context::end_child_context(xmlns_id_t ns, xml_token_t name, 
 
 void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs)
 {
-    push_stack(ns, name);
+    xml_token_pair_t parent = push_stack(ns, name);
     if (ns == NS_gnumeric_gnm)
     {
         switch (name)
@@ -496,7 +496,14 @@ void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, cons
                 start_font(attrs);
             break;
             case XML_Style:
-                start_style(attrs);
+                if (parent.second == XML_Condition)
+                {
+                    // start conditional style
+                }
+                else
+                {
+                    start_style(attrs);
+                }
             break;
             case XML_StyleRegion:
                 start_style_region(attrs);
@@ -523,7 +530,6 @@ void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, cons
             break;
             case XML_Field:
             {
-                xml_token_pair_t parent = get_parent_element();
                 assert(parent.first == NS_gnumeric_gnm && parent.second == XML_Filter);
                 if (mp_auto_filter)
                 {
@@ -545,11 +551,11 @@ bool gnumeric_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
     if (ns == NS_gnumeric_gnm)
     {
+        xml_token_pair_t parent = get_parent_element();
         switch(name)
         {
             case XML_Name:
             {
-                xml_token_pair_t parent = get_parent_element();
                 if(parent.first == NS_gnumeric_gnm && parent.second == XML_Sheet)
                     end_table();
                 else
@@ -560,7 +566,14 @@ bool gnumeric_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
                 end_font();
             break;
             case XML_Style:
-                end_style();
+                if (parent.second == XML_Condition)
+                {
+                    // conditional format style
+                }
+                else
+                {
+                    end_style();
+                }
             break;
             case XML_Filter:
                 if (mp_auto_filter)

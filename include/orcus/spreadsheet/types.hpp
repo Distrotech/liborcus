@@ -111,6 +111,81 @@ enum totals_row_function_t
     totals_row_function_custom
 };
 
+enum conditional_format_t
+{
+    conditional_format_unknown = 0,
+    conditional_format_condition,
+    conditional_format_date,
+    conditional_format_formula,
+    conditional_format_colorscale,
+    conditional_format_databar,
+    conditional_format_iconset
+};
+
+enum condition_operator_t
+{
+    condition_operator_unknown = 0,
+    condition_operator_equal,
+    condition_operator_less,
+    condition_operator_greater,
+    condition_operator_greater_equal,
+    condition_operator_less_equal,
+    condition_operator_not_equal,
+    condition_operator_between,
+    condition_operator_not_between,
+    condition_operator_duplicate,
+    condition_operator_unique,
+    condition_operator_top_n,
+    condition_operator_bottom_n,
+    condition_operator_above_averag,
+    condition_operator_below_average,
+    condition_operator_above_equal_average,
+    condition_operator_below_equal_average,
+    condition_operator_contains_error,
+    condition_operator_contains_no_error,
+    condition_operator_begins_with,
+    condition_operator_ends_with,
+    condition_operator_contains,
+    condition_operator_not_contains,
+    condition_operator_expression
+};
+
+enum condition_type_t
+{
+    condition_type_unknown = 0,
+    condition_type_value,
+    condition_type_auto,
+    condition_type_max,
+    condition_type_min,
+    condition_type_formula,
+    condition_type_percent,
+    condition_type_percentile
+};
+
+enum condition_date_type
+{
+    condition_date_today,
+    condition_date_yesterday,
+    condition_date_tomorrow,
+    condition_date_last_7_days,
+    condition_date_this_week,
+    condition_date_next_week,
+    condition_date_last_week,
+    condition_date_this_month,
+    condition_date_next_month,
+    condition_date_last_month,
+    condition_date_this_year,
+    condition_date_next_year,
+    condition_date_last_year,
+};
+
+enum databar_axis_t
+{
+    databar_axis_none = 0,
+    databar_axis_middle,
+    databar_axis_automatic
+};
+
 /**
  * Convert a string representation of a totals row function name to its
  * equivalent enum value.

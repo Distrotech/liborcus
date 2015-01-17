@@ -226,6 +226,101 @@ public:
 };
 
 /**
+ * This is an optional interface to import conditional formatting.
+ * A conditional format consists of:
+ *  * a range
+ *  * several entrys
+ *
+ *  ** An entry consits of:
+ *      * a type
+ *      * a few properties depending on the type (optional)
+ *      ** zero or more conditions depending on the type
+ *
+ *      ** A condition consists of:
+ *          * a formula/value/string
+ *          * a color (optional)
+ */
+class import_conditional_format
+{
+public:
+    ORCUS_DLLPUBLIC virtual ~import_conditional_format();
+
+    /**
+     * Sets the color of the current condition.
+     * only valid for type == databar or type == colorscale
+     */
+    virtual void set_color(color_elem_t alpha, color_elem_t red,
+            color_elem_t green, color_elem_t blue) = 0;
+
+    /**
+     * Sets the formula, value or string of the current condition.
+     */
+    virtual void set_formula(const char* p, size_t n) = 0;
+
+    /**
+     * Sets the type for the formula, value or string of the current condition.
+     * Only valid for type = iconset, databar or colorscale
+     */
+    virtual void set_condition_type(orcus::spreadsheet::condition_type_t type) = 0;
+
+    /**
+     * Only valid for type = date
+     */
+    virtual void set_date(orcus::spreadsheet::condition_date_type date) = 0;
+
+    /**
+     * commits the current condition to the current entry.
+     */
+    virtual void commit_condition() = 0;
+
+    /**
+     * Name of the icons to use in the current entry.
+     * only valid for type = iconset
+     */
+    virtual void set_icon_name(const char* p, size_t n) = 0;
+
+    /**
+     * Use a gradient for the current entry.
+     * only valid for type == databar
+     */
+    virtual void set_databar_gradient(bool gradient) = 0;
+
+    /**
+     * Position of the 0 axis in the current entry
+     * only valid for type == databar
+     */
+    virtual void set_databar_axis(orcus::spreadsheet::databar_axis_t axis) = 0;
+
+    /**
+     * Don't show the value in the cell.
+     * only valid for type = databar, iconset, colorscale
+     */
+    virtual void set_show_value(bool show) = 0;
+
+    /**
+     * TODO: In OOXML the style is stored as dxf and in ODF as named style.
+     */
+    virtual void set_xf_id(size_t xf) = 0;
+
+    /**
+     * Sets the current operation used for the current entry.
+     * only valid for type == condition
+     */
+    virtual void set_operator(orcus::spreadsheet::condition_operator_t condition_type) = 0;
+
+    virtual void set_type(orcus::spreadsheet::conditional_format_t type) = 0;
+
+    virtual void commit_entry() = 0;
+
+    virtual void set_range(const char* p, size_t n) = 0;
+
+    virtual void set_range(orcus::spreadsheet::row_t row_start, orcus::spreadsheet::col_t col_start,
+            orcus::spreadsheet::row_t row_end, orcus::spreadsheet::col_t col_end) = 0;
+
+    virtual void commit_format() = 0;
+};
+
+/**
  * Interface for table.  A table is a range within a sheet that consists of
  * one or more data columns with a header row that contains their labels.
  */
@@ -307,6 +402,15 @@ public:
      *         implementer doesn't support importing of tables.
      */
     virtual import_table* get_table();
+
+    /**
+     * get an interface for importing conditional formats. The implementer is responsible
+     * for managing the life cycle of the returned interface object.
+     *
+     * @return pointer to the conditional format interface object, or NULL
+     *          if the implementer doesn't support importing conditional formats.
+     */
+    virtual import_conditional_format* get_conditional_format();
 
     /**
      * Set raw string value to a cell and have the implementation
