@@ -243,7 +243,7 @@ public:
 class import_conditional_format
 {
 public:
-    ORCUS_DLLPUBLIC virtual ~import_conditional_format();
+    ORCUS_DLLPUBLIC virtual ~import_conditional_format() = 0;
 
     /**
      * Sets the color of the current condition.

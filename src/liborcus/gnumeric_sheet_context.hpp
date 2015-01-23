@@ -43,6 +43,15 @@ struct gnumeric_style_region
     spreadsheet::col_t end_col;
 
     size_t xf_id;
+    bool contains_conditional_format;
+
+    gnumeric_style_region():
+        start_row(0),
+        end_row(0),
+        start_col(0),
+        end_col(0),
+        xf_id(0),
+        contains_conditional_format(false) {}
 };
 
 class gnumeric_sheet_context : public xml_context_base
@@ -65,11 +74,14 @@ private:
     void start_font(const xml_attrs_t& attrs);
     void start_col(const xml_attrs_t& attrs);
     void start_row(const xml_attrs_t& attrs);
+    void start_condition(const xml_attrs_t& attrs);
 
     void end_table();
-    void end_style();
+    void end_style(bool conditional_format);
     void end_font();
     void end_style_region();
+    void end_condition();
+    void end_expression();
 
 private:
     spreadsheet::iface::import_factory* mp_factory;

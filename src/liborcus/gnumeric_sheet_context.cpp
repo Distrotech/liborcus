@@ -238,6 +238,84 @@ private:
     gnumeric_color& m_front_color;
 };
 
+spreadsheet::condition_operator_t get_condition_operator(int val)
+{
+    switch(val)
+    {
+        case 0:
+            return spreadsheet::condition_operator_between;
+        case 1:
+            return spreadsheet::condition_operator_not_between;
+        case 2:
+            return spreadsheet::condition_operator_equal;
+        case 3:
+            return spreadsheet::condition_operator_not_equal;
+        case 4:
+            return spreadsheet::condition_operator_greater;
+        case 5:
+            return spreadsheet::condition_operator_less;
+        case 6:
+            return spreadsheet::condition_operator_greater_equal;
+        case 7:
+            return spreadsheet::condition_operator_less_equal;
+        case 8:
+            return spreadsheet::condition_operator_expression;
+        case 9:
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+            break;
+        case 16:
+            return spreadsheet::condition_operator_contains;
+        case 17:
+            return spreadsheet::condition_operator_not_contains;
+        case 18:
+            return spreadsheet::condition_operator_begins_with;
+        case 19:
+            break;
+        case 20:
+            return spreadsheet::condition_operator_ends_with;
+        case 21:
+            break;
+        case 22:
+            return spreadsheet::condition_operator_contains_error;
+        case 23:
+            return spreadsheet::condition_operator_contains_no_error;
+        default:
+            break;
+    }
+    return orcus::spreadsheet::condition_operator_unknown;
+}
+
+class gnumeric_condition_attr_parser : public std::unary_function<xml_token_attr_t, void>
+{
+public:
+    gnumeric_condition_attr_parser(spreadsheet::iface::import_conditional_format* cond_format):
+        m_cond_format(cond_format) {}
+
+    void operator()(const xml_token_attr_t& attr)
+    {
+        switch(attr.name)
+        {
+            case XML_Operator:
+            {
+                int val = atoi(attr.value.get());
+                spreadsheet::condition_operator_t op = get_condition_operator(val);
+                m_cond_format->set_operator(op);
+            }
+            break;
+            default:
+            break;
+        }
+    }
+
+private:
+    spreadsheet::iface::import_conditional_format* m_cond_format;
+};
+
 class gnumeric_col_row_info : public std::unary_function<xml_token_attr_t, void>
 {
 public:
@@ -496,14 +574,7 @@ void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, cons
                 start_font(attrs);
             break;
             case XML_Style:
-                if (parent.second == XML_Condition)
-                {
-                    // start conditional style
-                }
-                else
-                {
-                    start_style(attrs);
-                }
+                start_style(attrs);
             break;
             case XML_StyleRegion:
                 start_style_region(attrs);
@@ -541,6 +612,19 @@ void gnumeric_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, cons
                 }
             }
             break;
+            case XML_Condition:
+            {
+                if (!mp_region_data->contains_conditional_format)
+                {
+                    mp_region_data->contains_conditional_format = true;
+                    end_style(false);
+                }
+                start_condition(attrs);
+            }
+            break;
+            case XML_Expression0:
+            case XML_Expression1:
+            break;
             default:
                 ;
         }
@@ -551,11 +635,11 @@ bool gnumeric_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
     if (ns == NS_gnumeric_gnm)
     {
-        xml_token_pair_t parent = get_parent_element();
         switch(name)
         {
             case XML_Name:
             {
+                xml_token_pair_t parent = get_parent_element();
                 if(parent.first == NS_gnumeric_gnm && parent.second == XML_Sheet)
                     end_table();
                 else
@@ -566,14 +650,23 @@ bool gnumeric_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
                 end_font();
             break;
             case XML_Style:
+            {
+                xml_token_pair_t parent = get_parent_element();
                 if (parent.second == XML_Condition)
                 {
-                    // conditional format style
+                    end_style(true);
                 }
                 else
                 {
-                    end_style();
+                    // The conditional format entry contains a mandatory style element
+                    // Therefore when we have a conditional format the end_style method
+                    // is already called in start_element of the XML_Condition case.
+                    if (!mp_region_data->contains_conditional_format)
+                    {
+                        end_style(false);
+                    }
                 }
+            }
             break;
             case XML_Filter:
                 if (mp_auto_filter)
@@ -585,6 +678,14 @@ bool gnumeric_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
             break;
             case XML_StyleRegion:
                 end_style_region();
+            break;
+            case XML_Condition:
+                end_condition();
+            break;
+            case XML_Expression0:
+            case XML_Expression1:
+                end_expression();
+            break;
             default:
                 ;
         }
@@ -655,6 +756,16 @@ void gnumeric_sheet_context::start_style_region(const xml_attrs_t& attrs)
     for_each(attrs.begin(), attrs.end(), gnumeric_style_region_attr_parser(*mp_region_data));
 }
 
+void gnumeric_sheet_context::start_condition(const xml_attrs_t& attrs)
+{
+    spreadsheet::iface::import_conditional_format* cond_format =
+        mp_sheet->get_conditional_format();
+    if (cond_format)
+    {
+        for_each(attrs.begin(), attrs.end(), gnumeric_condition_attr_parser(cond_format));
+    }
+}
+
 void gnumeric_sheet_context::end_table()
 {
     mp_sheet = mp_factory->append_sheet(chars.get(), chars.size());
@@ -669,18 +780,63 @@ void gnumeric_sheet_context::end_font()
     styles.set_xf_font(font_id);
 }
 
-void gnumeric_sheet_context::end_style()
+void gnumeric_sheet_context::end_style(bool conditional_format)
 {
     spreadsheet::iface::import_styles& styles = *mp_factory->get_styles();
     size_t id = styles.commit_cell_xf();
-    mp_region_data->xf_id = id;
+    if (!conditional_format)
+    {
+        mp_region_data->xf_id = id;
+    }
+    else
+    {
+        spreadsheet::iface::import_conditional_format* cond_format =
+            mp_sheet->get_conditional_format();
+        if (cond_format)
+        {
+            cond_format->set_xf_id(id);
+        }
+    }
 }
 
 void gnumeric_sheet_context::end_style_region()
 {
     mp_sheet->set_format(mp_region_data->start_row, mp_region_data->start_col,
             mp_region_data->end_row, mp_region_data->end_col, mp_region_data->xf_id);
+
+    if (mp_region_data->contains_conditional_format)
+    {
+        spreadsheet::iface::import_conditional_format* cond_format =
+            mp_sheet->get_conditional_format();
+        if (cond_format)
+        {
+            cond_format->set_range(mp_region_data->start_row, mp_region_data->start_col,
+                    mp_region_data->end_row, mp_region_data->end_col);
+            cond_format->commit_format();
+        }
+    }
     mp_region_data.reset();
+}
+
+void gnumeric_sheet_context::end_condition()
+{
+    spreadsheet::iface::import_conditional_format* cond_format =
+        mp_sheet->get_conditional_format();
+    if (cond_format)
+    {
+        cond_format->commit_entry();
+    }
+}
+
+void gnumeric_sheet_context::end_expression()
+{
+    spreadsheet::iface::import_conditional_format* cond_format =
+        mp_sheet->get_conditional_format();
+    if (cond_format)
+    {
+        cond_format->set_formula(chars.get(), chars.size());
+        cond_format->commit_condition();
+    }
 }
 
 }
