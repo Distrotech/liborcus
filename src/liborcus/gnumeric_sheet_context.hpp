@@ -42,8 +42,6 @@ struct gnumeric_style_region
     spreadsheet::col_t start_col;
     spreadsheet::col_t end_col;
 
-    gnumeric_color front_color;
-
     size_t xf_id;
 };
 
@@ -81,6 +79,8 @@ private:
 
     boost::scoped_ptr<xml_context_base> mp_child;
     boost::scoped_ptr<gnumeric_style_region> mp_region_data;
+
+    gnumeric_color front_color;
 
     /**
      * Used for temporary storage of characters
