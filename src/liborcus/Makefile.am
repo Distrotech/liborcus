@@ -230,7 +230,8 @@ gnumeric_cell_context_test_SOURCES = \
 	mock_spreadsheet.cpp
 
 gnumeric_cell_context_test_LDADD = \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 orcus_gnumeric_cell_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -254,7 +255,8 @@ orcus_gnumeric_sheet_context_test_SOURCES = \
 	mock_spreadsheet.cpp
 
 orcus_gnumeric_sheet_context_test_LDADD = \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 orcus_gnumeric_sheet_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -270,7 +272,8 @@ liborcus_test_xml_map_tree_SOURCES = \
 	xml_map_tree_test.cpp
 
 liborcus_test_xml_map_tree_LDADD = \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 # liborcus-test-xml-structure-tree
 
@@ -281,7 +284,8 @@ liborcus_test_xml_structure_tree_SOURCES = \
 liborcus_test_xml_structure_tree_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
 
 liborcus_test_xml_structure_tree_LDADD = \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 # liborcus-test-common
 
@@ -291,7 +295,8 @@ liborcus_test_common_SOURCES = \
 	common_test.cpp
 
 liborcus_test_common_LDADD = \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 # liborcus-test-format-detection
 
@@ -299,7 +304,8 @@ liborcus_test_format_detection_SOURCES = \
 	format_detection_test.cpp
 
 liborcus_test_format_detection_LDADD = \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 TESTS += \
 	liborcus-test-xml-map-tree \

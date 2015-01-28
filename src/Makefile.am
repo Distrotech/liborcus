@@ -89,7 +89,8 @@ orcus_detect_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-	$(BOOST_FILESYSTEM_LIBS)
+	$(BOOST_FILESYSTEM_LIBS) \
+	$(BOOST_SYSTEM_LIBS)
 
 orcus_detect_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -112,7 +113,8 @@ orcus_csv_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-	$(BOOST_FILESYSTEM_LIBS)
+	$(BOOST_FILESYSTEM_LIBS) \
+	$(BOOST_SYSTEM_LIBS)
 
 orcus_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -127,7 +129,8 @@ orcus_xml_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-	$(BOOST_FILESYSTEM_LIBS)
+	$(BOOST_FILESYSTEM_LIBS) \
+	$(BOOST_SYSTEM_LIBS)
 
 orcus_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -148,7 +151,8 @@ orcus_ods_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-	$(BOOST_FILESYSTEM_LIBS)
+	$(BOOST_FILESYSTEM_LIBS) \
+	$(BOOST_SYSTEM_LIBS)
 
 
 orcus_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
@@ -172,7 +176,8 @@ orcus_xlsx_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-	$(BOOST_FILESYSTEM_LIBS)
+	$(BOOST_FILESYSTEM_LIBS) \
+	$(BOOST_SYSTEM_LIBS)
 
 orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -195,7 +200,8 @@ orcus_xls_xml_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-	$(BOOST_FILESYSTEM_LIBS)
+	$(BOOST_FILESYSTEM_LIBS) \
+	$(BOOST_SYSTEM_LIBS)
 
 orcus_xls_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -218,7 +224,8 @@ orcus_gnumeric_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-	$(BOOST_FILESYSTEM_LIBS)
+	$(BOOST_FILESYSTEM_LIBS) \
+	$(BOOST_SYSTEM_LIBS)
 
 orcus_gnumeric_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
