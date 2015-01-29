@@ -162,8 +162,9 @@ enum condition_type_t
     condition_type_percentile
 };
 
-enum condition_date_type
+enum condition_date_t
 {
+    condition_date_unknown = 0,
     condition_date_today,
     condition_date_yesterday,
     condition_date_tomorrow,

@@ -266,7 +266,7 @@ public:
     /**
      * Only valid for type = date
      */
-    virtual void set_date(orcus::spreadsheet::condition_date_type date) = 0;
+    virtual void set_date(orcus::spreadsheet::condition_date_t date) = 0;
 
     /**
      * commits the current condition to the current entry.
