@@ -6,7 +6,6 @@
  */
 
 #include <iostream>
-
 #include "orcus/string_pool.hpp"
 #include "orcus/pstring.hpp"
 
