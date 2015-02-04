@@ -11,6 +11,7 @@
 #include "ooxml_namespace_types.hpp"
 #include "ooxml_types.hpp"
 #include "ooxml_schemas.hpp"
+#include "xlsx_helper.hpp"
 #include "xml_context_global.hpp"
 
 #include "orcus/global.hpp"
@@ -28,25 +29,6 @@ using namespace std;
 namespace orcus {
 
 namespace {
-
-bool to_rgb(
-    const pstring& ps, spreadsheet::color_elem_t& alpha,
-    spreadsheet::color_elem_t& red, spreadsheet::color_elem_t& green, spreadsheet::color_elem_t& blue)
-{
-    // RGB string is a 8-character string representing 32-bit hexadecimal
-    // number e.g. 'FF004A12' (alpha - red - green - blue)
-    size_t n = ps.size();
-    if (n != 8)
-        return false;
-
-    unsigned long v = strtoul(ps.get(), NULL, 16);
-    blue  = (0x000000FF & v);
-    green = (0x000000FF & (v >> 8));
-    red   = (0x000000FF & (v >> 16));
-    alpha = (0x000000FF & (v >> 24));
-
-    return true;
-}
 
 class shared_strings_root_attr_parser
 {

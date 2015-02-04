@@ -99,6 +99,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	xlsx_context.hpp \
 	xlsx_handler.cpp \
 	xlsx_handler.hpp \
+	xlsx_helper.cpp \
+	xlsx_helper.hpp \
 	xlsx_session_data.hpp \
 	xlsx_session_data.cpp \
 	xlsx_revision_context.cpp \
@@ -124,6 +126,7 @@ orcus_xlsx_sheet_context_test_SOURCES = \
 	xlsx_sheet_context_test.cpp \
 	xlsx_sheet_context.cpp \
 	xlsx_autofilter_context.cpp \
+	xlsx_helper.cpp \
 	xlsx_types.cpp \
 	ooxml_global.cpp \
 	ooxml_namespace_types.cpp \
