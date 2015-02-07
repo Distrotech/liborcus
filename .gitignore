@@ -3,6 +3,8 @@
 *.o
 *.pc
 *.pyc
+*.log
+*.trs
 Makefile
 Makefile.in
 .deps
