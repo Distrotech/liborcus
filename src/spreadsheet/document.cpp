@@ -257,7 +257,7 @@ const sheet* document::get_sheet(sheet_t sheet_pos) const
 
 void document::calc_formulas()
 {
-    ixion::iface::model_context& cxt = get_model_context();
+    ixion::model_context& cxt = get_model_context();
     ixion::calculate_cells(cxt, mp_impl->m_dirty_cells, 0);
 }
 
