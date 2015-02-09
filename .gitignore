@@ -12,6 +12,7 @@ Makefile.in
 aclocal.m4
 autom4te.cache
 libtool
+compile
 configure
 config.guess
 config.status
