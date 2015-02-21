@@ -39,6 +39,7 @@
 
 #include <boost/unordered_map.hpp>
 #include <boost/noncopyable.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #define ORCUS_DEBUG_SHEET 0
 
@@ -110,6 +111,8 @@ struct sheet_impl : boost::noncopyable
     col_t m_col_size;
     const sheet_t m_sheet; /// sheet ID
 
+    boost::scoped_ptr<ixion::formula_name_resolver> m_resolver;
+
     sheet_impl(document& doc, sheet& sh, sheet_t sheet_index, row_t row_size, col_t col_size) :
         m_doc(doc), m_sheet_props(doc, sh), m_data_table(sh),
         m_col_widths(0, col_size, get_default_column_width()),
@@ -120,7 +123,11 @@ struct sheet_impl : boost::noncopyable
         m_row_hidden(0, row_size, false),
         m_col_hidden_pos(m_col_hidden.begin()),
         m_row_hidden_pos(m_row_hidden.begin()),
-        m_row_size(row_size), m_col_size(col_size), m_sheet(sheet_index) {}
+        m_row_size(row_size), m_col_size(col_size), m_sheet(sheet_index),
+        m_resolver(
+            ixion::formula_name_resolver::get(
+                ixion::formula_name_resolver_excel_a1, &m_doc.get_model_context()))
+    {}
 
     ~sheet_impl()
     {
@@ -325,7 +332,7 @@ void sheet::set_formula(row_t row, col_t col, formula_grammar_t grammar,
     // Tokenize the formula string and store it.
     ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
-    cxt.set_formula_cell(pos, p, n);
+    cxt.set_formula_cell(pos, p, n, *mp_impl->m_resolver);
     ixion::register_formula_cell(cxt, pos);
     mp_impl->m_doc.insert_dirty_cell(pos);
 }
@@ -336,7 +343,7 @@ void sheet::set_shared_formula(
 {
     ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
-    cxt.set_shared_formula(pos, sindex, p_formula, n_formula, p_range, n_range);
+    cxt.set_shared_formula(pos, sindex, p_formula, n_formula, p_range, n_range, *mp_impl->m_resolver);
     set_shared_formula(row, col, sindex);
 }
 
@@ -346,7 +353,7 @@ void sheet::set_shared_formula(
 {
     ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
-    cxt.set_shared_formula(pos, sindex, p_formula, n_formula);
+    cxt.set_shared_formula(pos, sindex, p_formula, n_formula, *mp_impl->m_resolver);
     set_shared_formula(row, col, sindex);
 }
 
@@ -450,8 +457,7 @@ void sheet::set_row_hidden(row_t row, bool hidden)
 void sheet::set_merge_cell_range(const char* p_ref, size_t p_ref_len)
 {
     // A1 style without '$' signs.
-    ixion::formula_name_resolver_a1 resolver;
-    ixion::formula_name_type res = resolver.resolve(p_ref, p_ref_len, ixion::abs_address_t());
+    ixion::formula_name_type res = mp_impl->m_resolver->resolve(p_ref, p_ref_len, ixion::abs_address_t());
     if (res.type != ixion::formula_name_type::range_reference)
         return;
 
@@ -555,7 +561,8 @@ void sheet::dump_flat(std::ostream& os) const
                         ostringstream os2;
                         string formula;
                         ixion::print_formula_tokens(
-                           mp_impl->m_doc.get_model_context(), pos, *t, formula);
+                           mp_impl->m_doc.get_model_context(), pos,
+                           *mp_impl->m_resolver, *t, formula);
                         os2 << formula;
 
                         const ixion::formula_result* res = cell->get_result_cache();
@@ -710,7 +717,8 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
                     {
                         string formula;
                         ixion::print_formula_tokens(
-                            mp_impl->m_doc.get_model_context(), pos, *t, formula);
+                            mp_impl->m_doc.get_model_context(), pos,
+                            *mp_impl->m_resolver, *t, formula);
                         os << ':' << formula;
 
                         const ixion::formula_result* res = cell->get_result_cache();
@@ -1261,7 +1269,8 @@ void sheet::dump_html(const string& filepath) const
                         {
                             string formula;
                             ixion::print_formula_tokens(
-                                mp_impl->m_doc.get_model_context(), pos, *t, formula);
+                                mp_impl->m_doc.get_model_context(), pos,
+                                *mp_impl->m_resolver, *t, formula);
                             os << formula;
 
                             const ixion::formula_result* res = cell->get_result_cache();
