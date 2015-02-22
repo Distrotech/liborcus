@@ -109,6 +109,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	xlsx_pivot_context.hpp \
 	xlsx_sheet_context.cpp \
 	xlsx_sheet_context.hpp \
+	xlsx_conditional_format_context.cpp \
+	xlsx_conditional_format_context.hpp \
 	xlsx_table_context.cpp \
 	xlsx_table_context.hpp \
 	xlsx_autofilter_context.cpp \
@@ -123,6 +125,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 orcus_xlsx_sheet_context_test_SOURCES = \
 	xlsx_session_data.cpp \
 	session_context.cpp \
+	xlsx_conditional_format_context.cpp \
 	xlsx_sheet_context_test.cpp \
 	xlsx_sheet_context.cpp \
 	xlsx_autofilter_context.cpp \

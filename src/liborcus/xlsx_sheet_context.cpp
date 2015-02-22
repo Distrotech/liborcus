@@ -7,6 +7,7 @@
 
 #include "xlsx_sheet_context.hpp"
 #include "xlsx_autofilter_context.hpp"
+#include "xlsx_conditional_format_context.hpp"
 #include "xlsx_session_data.hpp"
 #include "xlsx_types.hpp"
 #include "ooxml_global.hpp"
@@ -302,6 +303,8 @@ bool xlsx_sheet_context::can_handle_element(xmlns_id_t ns, xml_token_t name) con
 {
     if (ns == NS_ooxml_xlsx && name == XML_autoFilter)
         return false;
+    else if (ns == NS_ooxml_xlsx && name == XML_conditionalFormatting)
+        return false;
 
     return true;
 }
@@ -311,6 +314,14 @@ xml_context_base* xlsx_sheet_context::create_child_context(xmlns_id_t ns, xml_to
     if (ns == NS_ooxml_xlsx && name == XML_autoFilter)
     {
         mp_child.reset(new xlsx_autofilter_context(get_session_context(), get_tokens()));
+        mp_child->transfer_common(*this);
+        return mp_child.get();
+    }
+    else if (ns == NS_ooxml_xlsx && name == XML_conditionalFormatting
+            && mp_sheet->get_conditional_format())
+    {
+        mp_child.reset(new xlsx_conditional_format_context(get_session_context(), get_tokens(),
+                    *mp_sheet->get_conditional_format()));
         mp_child->transfer_common(*this);
         return mp_child.get();
     }
