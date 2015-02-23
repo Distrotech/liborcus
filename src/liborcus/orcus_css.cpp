@@ -115,14 +115,4 @@ void orcus_css::parse(const string& strm)
     parser.parse();
 }
 
-int main(int argc, char** argv)
-{
-    if (argc != 2)
-        return EXIT_FAILURE;
-
-    orcus_css app;
-    app.read_file(argv[1]);
-
-    return EXIT_SUCCESS;
-}
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
