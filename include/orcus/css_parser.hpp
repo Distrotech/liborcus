@@ -21,6 +21,8 @@
 #include <iostream>
 #endif
 
+#include "parser_global.hpp"
+
 namespace orcus {
 
 class css_parse_error : public std::exception
@@ -67,38 +69,6 @@ private:
 
     size_t remaining_size() const { return m_length - m_pos - 1; }
     bool has_char() const { return m_pos < m_length; }
-
-    static bool is_blank(char c)
-    {
-        return c == ' ' || c == '\t' || c == '\n';
-    }
-
-    static bool is_alpha(char c)
-    {
-        if ('a' <= c && c <= 'z')
-            return true;
-        if ('A' <= c && c <= 'Z')
-            return true;
-        return false;
-    }
-
-    static bool is_name_char(char c)
-    {
-        switch (c)
-        {
-            case '-':
-                return true;
-        }
-
-        return false;
-    }
-
-    static bool is_numeric(char c)
-    {
-        if ('0' <= c && c <= '9')
-            return true;
-        return false;
-    }
 
     handler_type& m_handler;
     const char* mp_char;
