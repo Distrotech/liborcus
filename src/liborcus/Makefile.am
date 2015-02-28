@@ -34,7 +34,6 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	global.cpp \
 	interface.cpp \
 	spreadsheet_interface.cpp \
-	orcus_css.cpp \
 	orcus_csv.cpp \
 	orcus_xml.cpp \
 	measurement.cpp \
