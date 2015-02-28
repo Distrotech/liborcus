@@ -5,7 +5,9 @@ liborcus_HEADERS = \
 	base64.hpp \
 	cell_buffer.hpp	\
 	config.hpp \
+	css_document_tree.hpp \
 	css_parser.hpp \
+	css_types.hpp \
 	csv_parser.hpp \
 	csv_parser_base.hpp \
 	dom_tree.hpp \
