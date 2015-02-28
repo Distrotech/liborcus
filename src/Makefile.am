@@ -40,10 +40,21 @@ TESTS = \
 if WITH_TOOLS
 
 bin_PROGRAMS += \
+	orcus-css-dump \
 	orcus-zip-dump \
 	orcus-xml-dump \
 	orcus-mso-encryption \
 	orcus-detect
+
+# orcus-css-dump
+
+orcus_css_dump_SOURCES = \
+	orcus_css_dump.cpp
+
+orcus_css_dump_LDADD = \
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
+orcus_css_dump_CPPFLAGS = $(COMMON_CPPFLAGS)
 
 # orcus-zip-dump
 

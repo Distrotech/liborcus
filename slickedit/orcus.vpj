@@ -1,409 +1,406 @@
 <!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
 <Project
-	Version="10.0"
-	VendorName="SlickEdit"
-	TemplateName="Other C/C++"
-	WorkingDir="."
-	VCSProject="Git:">
-	<Config
-		Name="Debug"
-		Type="cpp"
-		DebugCallbackName="gdb"
-		OutputFile="%bdorcus"
-		CompilerConfigName="Latest Version">
-		<Menu>
-			<Target
-				Name="Compile"
-				MenuCaption="&amp;Compile"
-				CaptureOutputWith="ProcessBuffer"
-				OutputExts="*.o"
-				SaveOption="SaveCurrent"
-				RunFromDir="%rw">
-				<Exec CmdLine='cc -c -g %i %defd -o "%bd%n.o" "%f"'/>
-			</Target>
-			<Target
-				Name="Link"
-				MenuCaption="&amp;Link">
-				<Exec CmdLine='cc -g -o "%o" %f %libs'/>
-			</Target>
-			<Target
-				Name="Build"
-				MenuCaption="&amp;Build"
-				CaptureOutputWith="ProcessBuffer"
-				SaveOption="SaveWorkspaceFiles"
-				RunFromDir="%rw">
-				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" build "%w" "%r"'/>
-			</Target>
-			<Target
-				Name="Rebuild"
-				MenuCaption="&amp;Rebuild"
-				CaptureOutputWith="ProcessBuffer"
-				SaveOption="SaveWorkspaceFiles"
-				RunFromDir="%rw">
-				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" rebuild "%w" "%r"'/>
-			</Target>
-			<Target
-				Name="Debug"
-				MenuCaption="&amp;Debug"
-				SaveOption="SaveNone"
-				BuildFirst="1"
-				CaptureOutputWith="ProcessBuffer"
-				RunFromDir="%rw">
-				<Exec CmdLine='vsdebugio -prog "%o"'/>
-			</Target>
-			<Target
-				Name="Execute"
-				MenuCaption="E&amp;xecute"
-				SaveOption="SaveNone"
-				BuildFirst="1"
-				CaptureOutputWith="ProcessBuffer"
-				RunFromDir="%rw">
-				<Exec CmdLine='"%o"'/>
-			</Target>
-		</Menu>
-	</Config>
-	<Config
-		Name="Release"
-		Type="cpp"
-		DebugCallbackName="gdb"
-		OutputFile="%bdorcus"
-		CompilerConfigName="Latest Version">
-		<Menu>
-			<Target
-				Name="Compile"
-				MenuCaption="&amp;Compile"
-				CaptureOutputWith="ProcessBuffer"
-				SaveOption="SaveCurrent"
-				OutputExts="*.o"
-				RunFromDir="%rw">
-				<Exec CmdLine='cc -c -O %i %defd -o "%bd%n.o" "%f"'/>
-			</Target>
-			<Target
-				Name="Link"
-				MenuCaption="&amp;Link">
-				<Exec CmdLine='cc -O -o "%o" %f %libs'/>
-			</Target>
-			<Target
-				Name="Build"
-				MenuCaption="&amp;Build"
-				CaptureOutputWith="ProcessBuffer"
-				SaveOption="SaveWorkspaceFiles"
-				RunFromDir="%rw">
-				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" build "%w" "%r"'/>
-			</Target>
-			<Target
-				Name="Rebuild"
-				MenuCaption="&amp;Rebuild"
-				CaptureOutputWith="ProcessBuffer"
-				SaveOption="SaveWorkspaceFiles"
-				RunFromDir="%rw">
-				<Exec CmdLine='"%(VSLICKBIN1)vsbuild" rebuild "%w" "%r"'/>
-			</Target>
-			<Target
-				Name="Debug"
-				MenuCaption="&amp;Debug"
-				SaveOption="SaveNone"
-				BuildFirst="1"
-				CaptureOutputWith="ProcessBuffer"
-				RunFromDir="%rw">
-				<Exec CmdLine='vsdebugio -prog "%o"'/>
-			</Target>
-			<Target
-				Name="Execute"
-				MenuCaption="E&amp;xecute"
-				SaveOption="SaveNone"
-				BuildFirst="1"
-				CaptureOutputWith="ProcessBuffer"
-				RunFromDir="%rw">
-				<Exec CmdLine='"%o"'/>
-			</Target>
-		</Menu>
-	</Config>
-	<Rules Name="Compile">
-		<Rule
-			InputExts="*.s"
-			OutputExts="*.o"
-			LinkObject="1">
-			<Exec CmdLine='as -o "%bd%n.o" "%f"'/>
-		</Rule>
-	</Rules>
-	<CustomFolders>
-		<Folder
-			Name="Source Files"
-			Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
-		</Folder>
-		<Folder
-			Name="Header Files"
-			Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
-		</Folder>
-		<Folder
-			Name="Resource Files"
-			Filters="*.ico;*.cur;*.dlg"/>
-		<Folder
-			Name="Bitmaps"
-			Filters="*.bmp"/>
-		<Folder
-			Name="Other Files"
-			Filters="">
-		</Folder>
-	</CustomFolders>
-	<Files AutoFolders="DirectoryView">
-		<Folder Name="../include">
-			<Folder Name="orcus">
-				<Folder Name="mso">
-					<F N="../include/orcus/mso/encryption_info.hpp"/>
-				</Folder>
-				<Folder Name="spreadsheet">
-					<F N="../include/orcus/spreadsheet/auto_filter.hpp"/>
-					<F N="../include/orcus/spreadsheet/document.hpp"/>
-					<F N="../include/orcus/spreadsheet/export_interface.hpp"/>
-					<F N="../include/orcus/spreadsheet/factory.hpp"/>
-					<F N="../include/orcus/spreadsheet/global_settings.hpp"/>
-					<F N="../include/orcus/spreadsheet/import_interface.hpp"/>
-					<F N="../include/orcus/spreadsheet/shared_strings.hpp"/>
-					<F N="../include/orcus/spreadsheet/sheet.hpp"/>
-					<F N="../include/orcus/spreadsheet/sheet_properties.hpp"/>
-					<F N="../include/orcus/spreadsheet/styles.hpp"/>
-					<F N="../include/orcus/spreadsheet/types.hpp"/>
-				</Folder>
-				<F N="../include/orcus/base64.hpp"/>
-				<F N="../include/orcus/cell_buffer.hpp"/>
-				<F N="../include/orcus/config.hpp"/>
-				<F N="../include/orcus/css_parser.hpp"/>
-				<F N="../include/orcus/csv_parser.hpp"/>
-				<F N="../include/orcus/csv_parser_base.hpp"/>
-				<F N="../include/orcus/dom_tree.hpp"/>
-				<F N="../include/orcus/env.hpp"/>
-				<F N="../include/orcus/exception.hpp"/>
-				<F N="../include/orcus/format_detection.hpp"/>
-				<F N="../include/orcus/global.hpp"/>
-				<F N="../include/orcus/interface.hpp"/>
-				<F N="../include/orcus/measurement.hpp"/>
-				<F N="../include/orcus/orcus_csv.hpp"/>
-				<F N="../include/orcus/orcus_gnumeric.hpp"/>
-				<F N="../include/orcus/orcus_import_xlsx.hpp"/>
-				<F N="../include/orcus/orcus_ods.hpp"/>
-				<F N="../include/orcus/orcus_xls_xml.hpp"/>
-				<F N="../include/orcus/orcus_xlsx.hpp"/>
-				<F N="../include/orcus/orcus_xml.hpp"/>
-				<F N="../include/orcus/parser_global.hpp"/>
-				<F N="../include/orcus/pstring.hpp"/>
-				<F N="../include/orcus/sax_ns_parser.hpp"/>
-				<F N="../include/orcus/sax_parser.hpp"/>
-				<F N="../include/orcus/sax_parser_base.hpp"/>
-				<F N="../include/orcus/sax_token_parser.hpp"/>
-				<F N="../include/orcus/stream.hpp"/>
-				<F N="../include/orcus/string_pool.hpp"/>
-				<F N="../include/orcus/tokens.hpp"/>
-				<F N="../include/orcus/types.hpp"/>
-				<F N="../include/orcus/xml_namespace.hpp"/>
-				<F N="../include/orcus/xml_structure_tree.hpp"/>
-				<F N="../include/orcus/zip_archive.hpp"/>
-				<F N="../include/orcus/zip_archive_stream.hpp"/>
-			</Folder>
-		</Folder>
-		<Folder Name="../src">
-			<Folder Name="liborcus">
-				<F N="../src/liborcus/common_test.cpp"/>
-				<F N="../src/liborcus/config.cpp"/>
-				<F N="../src/liborcus/detection_result.cpp"/>
-				<F N="../src/liborcus/detection_result.hpp"/>
-				<F N="../src/liborcus/dom_tree.cpp"/>
-				<F N="../src/liborcus/format_detection.cpp"/>
-				<F N="../src/liborcus/format_detection_test.cpp"/>
-				<F N="../src/liborcus/global.cpp"/>
-				<F N="../src/liborcus/gnumeric_cell_context.cpp"/>
-				<F N="../src/liborcus/gnumeric_cell_context.hpp"/>
-				<F N="../src/liborcus/gnumeric_cell_context_test.cpp"/>
-				<F N="../src/liborcus/gnumeric_context.cpp"/>
-				<F N="../src/liborcus/gnumeric_context.hpp"/>
-				<F N="../src/liborcus/gnumeric_detection_handler.cpp"/>
-				<F N="../src/liborcus/gnumeric_detection_handler.hpp"/>
-				<F N="../src/liborcus/gnumeric_handler.cpp"/>
-				<F N="../src/liborcus/gnumeric_handler.hpp"/>
-				<F N="../src/liborcus/gnumeric_helper.cpp"/>
-				<F N="../src/liborcus/gnumeric_helper.hpp"/>
-				<F N="../src/liborcus/gnumeric_namespace_types.cpp"/>
-				<F N="../src/liborcus/gnumeric_namespace_types.hpp"/>
-				<F N="../src/liborcus/gnumeric_sheet_context.cpp"/>
-				<F N="../src/liborcus/gnumeric_sheet_context.hpp"/>
-				<F N="../src/liborcus/gnumeric_sheet_context_test.cpp"/>
-				<F N="../src/liborcus/gnumeric_token_constants.hpp"/>
-				<F N="../src/liborcus/gnumeric_token_constants.inl"/>
-				<F N="../src/liborcus/gnumeric_tokens.cpp"/>
-				<F N="../src/liborcus/gnumeric_tokens.hpp"/>
-				<F N="../src/liborcus/gnumeric_tokens.inl"/>
-				<F N="../src/liborcus/interface.cpp"/>
-				<F N="../src/liborcus/measurement.cpp"/>
-				<F N="../src/liborcus/mock_spreadsheet.cpp"/>
-				<F N="../src/liborcus/mock_spreadsheet.hpp"/>
-				<F N="../src/liborcus/odf_namespace_types.cpp"/>
-				<F N="../src/liborcus/odf_namespace_types.hpp"/>
-				<F N="../src/liborcus/odf_namespace_types_cpp.inl"/>
-				<F N="../src/liborcus/odf_namespace_types_hpp.inl"/>
-				<F N="../src/liborcus/odf_para_context.cpp"/>
-				<F N="../src/liborcus/odf_para_context.hpp"/>
-				<F N="../src/liborcus/odf_styles.cpp"/>
-				<F N="../src/liborcus/odf_styles.hpp"/>
-				<F N="../src/liborcus/odf_styles_context.cpp"/>
-				<F N="../src/liborcus/odf_styles_context.hpp"/>
-				<F N="../src/liborcus/odf_token_constants.hpp"/>
-				<F N="../src/liborcus/odf_token_constants.inl"/>
-				<F N="../src/liborcus/odf_tokens.cpp"/>
-				<F N="../src/liborcus/odf_tokens.hpp"/>
-				<F N="../src/liborcus/odf_tokens.inl"/>
-				<F N="../src/liborcus/ods_content_xml_context.cpp"/>
-				<F N="../src/liborcus/ods_content_xml_context.hpp"/>
-				<F N="../src/liborcus/ods_content_xml_handler.cpp"/>
-				<F N="../src/liborcus/ods_content_xml_handler.hpp"/>
-				<F N="../src/liborcus/ods_session_data.cpp"/>
-				<F N="../src/liborcus/ods_session_data.hpp"/>
-				<F N="../src/liborcus/ooxml_content_types.cpp"/>
-				<F N="../src/liborcus/ooxml_content_types.hpp"/>
-				<F N="../src/liborcus/ooxml_global.cpp"/>
-				<F N="../src/liborcus/ooxml_global.hpp"/>
-				<F N="../src/liborcus/ooxml_namespace_types.cpp"/>
-				<F N="../src/liborcus/ooxml_namespace_types.hpp"/>
-				<F N="../src/liborcus/ooxml_schemas.cpp"/>
-				<F N="../src/liborcus/ooxml_schemas.hpp"/>
-				<F N="../src/liborcus/ooxml_token_constants.hpp"/>
-				<F N="../src/liborcus/ooxml_token_constants.inl"/>
-				<F N="../src/liborcus/ooxml_tokens.cpp"/>
-				<F N="../src/liborcus/ooxml_tokens.hpp"/>
-				<F N="../src/liborcus/ooxml_tokens.inl"/>
-				<F N="../src/liborcus/ooxml_types.cpp"/>
-				<F N="../src/liborcus/ooxml_types.hpp"/>
-				<F N="../src/liborcus/opc_context.cpp"/>
-				<F N="../src/liborcus/opc_context.hpp"/>
-				<F N="../src/liborcus/opc_reader.cpp"/>
-				<F N="../src/liborcus/opc_reader.hpp"/>
-				<F N="../src/liborcus/opc_token_constants.hpp"/>
-				<F N="../src/liborcus/opc_token_constants.inl"/>
-				<F N="../src/liborcus/opc_tokens.inl"/>
-				<F N="../src/liborcus/orcus_css.cpp"/>
-				<F N="../src/liborcus/orcus_csv.cpp"/>
-				<F N="../src/liborcus/orcus_gnumeric.cpp"/>
-				<F N="../src/liborcus/orcus_import_xlsx.cpp"/>
-				<F N="../src/liborcus/orcus_ods.cpp"/>
-				<F N="../src/liborcus/orcus_xls_xml.cpp"/>
-				<F N="../src/liborcus/orcus_xlsx.cpp"/>
-				<F N="../src/liborcus/orcus_xml.cpp"/>
-				<F N="../src/liborcus/session_context.cpp"/>
-				<F N="../src/liborcus/session_context.hpp"/>
-				<F N="../src/liborcus/spreadsheet_interface.cpp"/>
-				<F N="../src/liborcus/spreadsheet_types.cpp"/>
-				<F N="../src/liborcus/tokens.cpp"/>
-				<F N="../src/liborcus/xls_xml_context.cpp"/>
-				<F N="../src/liborcus/xls_xml_context.hpp"/>
-				<F N="../src/liborcus/xls_xml_detection_handler.cpp"/>
-				<F N="../src/liborcus/xls_xml_detection_handler.hpp"/>
-				<F N="../src/liborcus/xls_xml_handler.cpp"/>
-				<F N="../src/liborcus/xls_xml_handler.hpp"/>
-				<F N="../src/liborcus/xls_xml_namespace_types.cpp"/>
-				<F N="../src/liborcus/xls_xml_namespace_types.hpp"/>
-				<F N="../src/liborcus/xls_xml_token_constants.hpp"/>
-				<F N="../src/liborcus/xls_xml_token_constants.inl"/>
-				<F N="../src/liborcus/xls_xml_tokens.cpp"/>
-				<F N="../src/liborcus/xls_xml_tokens.hpp"/>
-				<F N="../src/liborcus/xls_xml_tokens.inl"/>
-				<F N="../src/liborcus/xlsx_autofilter_context.cpp"/>
-				<F N="../src/liborcus/xlsx_autofilter_context.hpp"/>
-				<F N="../src/liborcus/xlsx_context.cpp"/>
-				<F N="../src/liborcus/xlsx_context.hpp"/>
-				<F N="../src/liborcus/xlsx_handler.cpp"/>
-				<F N="../src/liborcus/xlsx_handler.hpp"/>
-				<F N="../src/liborcus/xlsx_pivot_context.cpp"/>
-				<F N="../src/liborcus/xlsx_pivot_context.hpp"/>
-				<F N="../src/liborcus/xlsx_revision_context.cpp"/>
-				<F N="../src/liborcus/xlsx_revision_context.hpp"/>
-				<F N="../src/liborcus/xlsx_session_data.cpp"/>
-				<F N="../src/liborcus/xlsx_session_data.hpp"/>
-				<F N="../src/liborcus/xlsx_sheet_context.cpp"/>
-				<F N="../src/liborcus/xlsx_sheet_context.hpp"/>
-				<F N="../src/liborcus/xlsx_sheet_context_test.cpp"/>
-				<F N="../src/liborcus/xlsx_table_context.cpp"/>
-				<F N="../src/liborcus/xlsx_table_context.hpp"/>
-				<F N="../src/liborcus/xlsx_types.cpp"/>
-				<F N="../src/liborcus/xlsx_types.hpp"/>
-				<F N="../src/liborcus/xlsx_workbook_context.cpp"/>
-				<F N="../src/liborcus/xlsx_workbook_context.hpp"/>
-				<F N="../src/liborcus/xml_context_base.cpp"/>
-				<F N="../src/liborcus/xml_context_base.hpp"/>
-				<F N="../src/liborcus/xml_context_global.cpp"/>
-				<F N="../src/liborcus/xml_context_global.hpp"/>
-				<F N="../src/liborcus/xml_map_tree.cpp"/>
-				<F N="../src/liborcus/xml_map_tree.hpp"/>
-				<F N="../src/liborcus/xml_map_tree_test.cpp"/>
-				<F N="../src/liborcus/xml_simple_stream_handler.cpp"/>
-				<F N="../src/liborcus/xml_simple_stream_handler.hpp"/>
-				<F N="../src/liborcus/xml_stream_handler.cpp"/>
-				<F N="../src/liborcus/xml_stream_handler.hpp"/>
-				<F N="../src/liborcus/xml_stream_parser.cpp"/>
-				<F N="../src/liborcus/xml_stream_parser.hpp"/>
-				<F N="../src/liborcus/xml_structure_tree.cpp"/>
-				<F N="../src/liborcus/xml_structure_tree_test.cpp"/>
-			</Folder>
-			<Folder Name="mso">
-				<F N="../src/mso/encryption_info.cpp"/>
-			</Folder>
-			<Folder Name="parser">
-				<F N="../src/parser/base64.cpp"/>
-				<F N="../src/parser/base64_test.cpp"/>
-				<F N="../src/parser/cell_buffer.cpp"/>
-				<F N="../src/parser/csv_parser_base.cpp"/>
-				<F N="../src/parser/exception.cpp"/>
-				<F N="../src/parser/parser_global.cpp"/>
-				<F N="../src/parser/pstring.cpp"/>
-				<F N="../src/parser/sax_parser_base.cpp"/>
-				<F N="../src/parser/stream.cpp"/>
-				<F N="../src/parser/string_pool.cpp"/>
-				<F N="../src/parser/string_pool_test.cpp"/>
-				<F N="../src/parser/types.cpp"/>
-				<F N="../src/parser/win_stdint.h"/>
-				<F N="../src/parser/xml_namespace.cpp"/>
-				<F N="../src/parser/xml_namespace_test.cpp"/>
-				<F N="../src/parser/zip_archive.cpp"/>
-				<F N="../src/parser/zip_archive_stream.cpp"/>
-			</Folder>
-			<Folder Name="spreadsheet">
-				<F N="../src/spreadsheet/auto_filter.cpp"/>
-				<F N="../src/spreadsheet/data_table.cpp"/>
-				<F N="../src/spreadsheet/data_table.hpp"/>
-				<F N="../src/spreadsheet/document.cpp"/>
-				<F N="../src/spreadsheet/factory.cpp"/>
-				<F N="../src/spreadsheet/formula_global.cpp"/>
-				<F N="../src/spreadsheet/formula_global.hpp"/>
-				<F N="../src/spreadsheet/global_settings.cpp"/>
-				<F N="../src/spreadsheet/shared_strings.cpp"/>
-				<F N="../src/spreadsheet/sheet.cpp"/>
-				<F N="../src/spreadsheet/sheet_properties.cpp"/>
-				<F N="../src/spreadsheet/styles.cpp"/>
-				<F N="../src/spreadsheet/table.cpp"/>
-				<F N="../src/spreadsheet/table.hpp"/>
-			</Folder>
-			<F N="../src/dom_tree_sax_handler.cpp"/>
-			<F N="../src/dom_tree_sax_handler.hpp"/>
-			<F N="../src/orcus_csv_main.cpp"/>
-			<F N="../src/orcus_detect_main.cpp"/>
-			<F N="../src/orcus_filter_global.cpp"/>
-			<F N="../src/orcus_filter_global.hpp"/>
-			<F N="../src/orcus_gnumeric_main.cpp"/>
-			<F N="../src/orcus_mso_encryption.cpp"/>
-			<F N="../src/orcus_ods_main.cpp"/>
-			<F N="../src/orcus_test_common.cpp"/>
-			<F N="../src/orcus_test_csv.cpp"/>
-			<F N="../src/orcus_test_ods.cpp"/>
-			<F N="../src/orcus_test_xls_xml.cpp"/>
-			<F N="../src/orcus_test_xlsx.cpp"/>
-			<F N="../src/orcus_test_xml.cpp"/>
-			<F N="../src/orcus_test_xml_mapped.cpp"/>
-			<F N="../src/orcus_xls_xml_main.cpp"/>
-			<F N="../src/orcus_xlsx_main.cpp"/>
-			<F N="../src/orcus_xml_dump.cpp"/>
-			<F N="../src/orcus_xml_main.cpp"/>
-			<F N="../src/orcus_zip_dump.cpp"/>
-			<F N="../src/xml_map_sax_handler.cpp"/>
-			<F N="../src/xml_map_sax_handler.hpp"/>
-		</Folder>
-	</Files>
+    Version="10.0"
+    VendorName="SlickEdit"
+    TemplateName="Other C/C++"
+    WorkingDir="."
+    VCSProject="Git:">
+    <Config
+        Name="Debug"
+        Type="cpp"
+        DebugCallbackName="gdb"
+        OutputFile="%bdorcus"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                CaptureOutputWith="ProcessBuffer"
+                OutputExts="*.o"
+                SaveOption="SaveCurrent"
+                RunFromDir="%rw">
+                <Exec CmdLine='cc -c -g %i %defd -o "%bd%n.o" "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link">
+                <Exec CmdLine='cc -g -o "%o" %f %libs'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" build "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" rebuild "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='vsdebugio -prog "%o"'/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%o"'/>
+            </Target>
+        </Menu>
+    </Config>
+    <Config
+        Name="Release"
+        Type="cpp"
+        DebugCallbackName="gdb"
+        OutputFile="%bdorcus"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveCurrent"
+                OutputExts="*.o"
+                RunFromDir="%rw">
+                <Exec CmdLine='cc -c -O %i %defd -o "%bd%n.o" "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link">
+                <Exec CmdLine='cc -O -o "%o" %f %libs'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" build "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" rebuild "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='vsdebugio -prog "%o"'/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%o"'/>
+            </Target>
+        </Menu>
+    </Config>
+    <Rules Name="Compile">
+        <Rule
+            InputExts="*.s"
+            OutputExts="*.o"
+            LinkObject="1">
+            <Exec CmdLine='as -o "%bd%n.o" "%f"'/>
+        </Rule>
+    </Rules>
+    <CustomFolders>
+        <Folder
+            Name="Source Files"
+            Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d"></Folder>
+        <Folder
+            Name="Header Files"
+            Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if"></Folder>
+        <Folder
+            Name="Resource Files"
+            Filters="*.ico;*.cur;*.dlg"/>
+        <Folder
+            Name="Bitmaps"
+            Filters="*.bmp"/>
+        <Folder
+            Name="Other Files"
+            Filters=""></Folder>
+    </CustomFolders>
+    <Files AutoFolders="DirectoryView">
+        <Folder Name="../include">
+            <Folder Name="orcus">
+                <Folder Name="mso">
+                    <F N="../include/orcus/mso/encryption_info.hpp"/>
+                </Folder>
+                <Folder Name="spreadsheet">
+                    <F N="../include/orcus/spreadsheet/auto_filter.hpp"/>
+                    <F N="../include/orcus/spreadsheet/document.hpp"/>
+                    <F N="../include/orcus/spreadsheet/export_interface.hpp"/>
+                    <F N="../include/orcus/spreadsheet/factory.hpp"/>
+                    <F N="../include/orcus/spreadsheet/global_settings.hpp"/>
+                    <F N="../include/orcus/spreadsheet/import_interface.hpp"/>
+                    <F N="../include/orcus/spreadsheet/shared_strings.hpp"/>
+                    <F N="../include/orcus/spreadsheet/sheet.hpp"/>
+                    <F N="../include/orcus/spreadsheet/sheet_properties.hpp"/>
+                    <F N="../include/orcus/spreadsheet/styles.hpp"/>
+                    <F N="../include/orcus/spreadsheet/types.hpp"/>
+                </Folder>
+                <F N="../include/orcus/base64.hpp"/>
+                <F N="../include/orcus/cell_buffer.hpp"/>
+                <F N="../include/orcus/config.hpp"/>
+                <F N="../include/orcus/css_parser.hpp"/>
+                <F N="../include/orcus/csv_parser.hpp"/>
+                <F N="../include/orcus/csv_parser_base.hpp"/>
+                <F N="../include/orcus/dom_tree.hpp"/>
+                <F N="../include/orcus/env.hpp"/>
+                <F N="../include/orcus/exception.hpp"/>
+                <F N="../include/orcus/format_detection.hpp"/>
+                <F N="../include/orcus/global.hpp"/>
+                <F N="../include/orcus/interface.hpp"/>
+                <F N="../include/orcus/measurement.hpp"/>
+                <F N="../include/orcus/orcus_csv.hpp"/>
+                <F N="../include/orcus/orcus_gnumeric.hpp"/>
+                <F N="../include/orcus/orcus_import_xlsx.hpp"/>
+                <F N="../include/orcus/orcus_ods.hpp"/>
+                <F N="../include/orcus/orcus_xls_xml.hpp"/>
+                <F N="../include/orcus/orcus_xlsx.hpp"/>
+                <F N="../include/orcus/orcus_xml.hpp"/>
+                <F N="../include/orcus/parser_global.hpp"/>
+                <F N="../include/orcus/pstring.hpp"/>
+                <F N="../include/orcus/sax_ns_parser.hpp"/>
+                <F N="../include/orcus/sax_parser.hpp"/>
+                <F N="../include/orcus/sax_parser_base.hpp"/>
+                <F N="../include/orcus/sax_token_parser.hpp"/>
+                <F N="../include/orcus/stream.hpp"/>
+                <F N="../include/orcus/string_pool.hpp"/>
+                <F N="../include/orcus/tokens.hpp"/>
+                <F N="../include/orcus/types.hpp"/>
+                <F N="../include/orcus/xml_namespace.hpp"/>
+                <F N="../include/orcus/xml_structure_tree.hpp"/>
+                <F N="../include/orcus/zip_archive.hpp"/>
+                <F N="../include/orcus/zip_archive_stream.hpp"/>
+            </Folder>
+        </Folder>
+        <Folder Name="../src">
+            <Folder Name="liborcus">
+                <F N="../src/liborcus/common_test.cpp"/>
+                <F N="../src/liborcus/config.cpp"/>
+                <F N="../src/liborcus/detection_result.cpp"/>
+                <F N="../src/liborcus/detection_result.hpp"/>
+                <F N="../src/liborcus/dom_tree.cpp"/>
+                <F N="../src/liborcus/format_detection.cpp"/>
+                <F N="../src/liborcus/format_detection_test.cpp"/>
+                <F N="../src/liborcus/global.cpp"/>
+                <F N="../src/liborcus/gnumeric_cell_context.cpp"/>
+                <F N="../src/liborcus/gnumeric_cell_context.hpp"/>
+                <F N="../src/liborcus/gnumeric_cell_context_test.cpp"/>
+                <F N="../src/liborcus/gnumeric_context.cpp"/>
+                <F N="../src/liborcus/gnumeric_context.hpp"/>
+                <F N="../src/liborcus/gnumeric_detection_handler.cpp"/>
+                <F N="../src/liborcus/gnumeric_detection_handler.hpp"/>
+                <F N="../src/liborcus/gnumeric_handler.cpp"/>
+                <F N="../src/liborcus/gnumeric_handler.hpp"/>
+                <F N="../src/liborcus/gnumeric_helper.cpp"/>
+                <F N="../src/liborcus/gnumeric_helper.hpp"/>
+                <F N="../src/liborcus/gnumeric_namespace_types.cpp"/>
+                <F N="../src/liborcus/gnumeric_namespace_types.hpp"/>
+                <F N="../src/liborcus/gnumeric_sheet_context.cpp"/>
+                <F N="../src/liborcus/gnumeric_sheet_context.hpp"/>
+                <F N="../src/liborcus/gnumeric_sheet_context_test.cpp"/>
+                <F N="../src/liborcus/gnumeric_token_constants.hpp"/>
+                <F N="../src/liborcus/gnumeric_token_constants.inl"/>
+                <F N="../src/liborcus/gnumeric_tokens.cpp"/>
+                <F N="../src/liborcus/gnumeric_tokens.hpp"/>
+                <F N="../src/liborcus/gnumeric_tokens.inl"/>
+                <F N="../src/liborcus/interface.cpp"/>
+                <F N="../src/liborcus/measurement.cpp"/>
+                <F N="../src/liborcus/mock_spreadsheet.cpp"/>
+                <F N="../src/liborcus/mock_spreadsheet.hpp"/>
+                <F N="../src/liborcus/odf_namespace_types.cpp"/>
+                <F N="../src/liborcus/odf_namespace_types.hpp"/>
+                <F N="../src/liborcus/odf_namespace_types_cpp.inl"/>
+                <F N="../src/liborcus/odf_namespace_types_hpp.inl"/>
+                <F N="../src/liborcus/odf_para_context.cpp"/>
+                <F N="../src/liborcus/odf_para_context.hpp"/>
+                <F N="../src/liborcus/odf_styles.cpp"/>
+                <F N="../src/liborcus/odf_styles.hpp"/>
+                <F N="../src/liborcus/odf_styles_context.cpp"/>
+                <F N="../src/liborcus/odf_styles_context.hpp"/>
+                <F N="../src/liborcus/odf_token_constants.hpp"/>
+                <F N="../src/liborcus/odf_token_constants.inl"/>
+                <F N="../src/liborcus/odf_tokens.cpp"/>
+                <F N="../src/liborcus/odf_tokens.hpp"/>
+                <F N="../src/liborcus/odf_tokens.inl"/>
+                <F N="../src/liborcus/ods_content_xml_context.cpp"/>
+                <F N="../src/liborcus/ods_content_xml_context.hpp"/>
+                <F N="../src/liborcus/ods_content_xml_handler.cpp"/>
+                <F N="../src/liborcus/ods_content_xml_handler.hpp"/>
+                <F N="../src/liborcus/ods_session_data.cpp"/>
+                <F N="../src/liborcus/ods_session_data.hpp"/>
+                <F N="../src/liborcus/ooxml_content_types.cpp"/>
+                <F N="../src/liborcus/ooxml_content_types.hpp"/>
+                <F N="../src/liborcus/ooxml_global.cpp"/>
+                <F N="../src/liborcus/ooxml_global.hpp"/>
+                <F N="../src/liborcus/ooxml_namespace_types.cpp"/>
+                <F N="../src/liborcus/ooxml_namespace_types.hpp"/>
+                <F N="../src/liborcus/ooxml_schemas.cpp"/>
+                <F N="../src/liborcus/ooxml_schemas.hpp"/>
+                <F N="../src/liborcus/ooxml_token_constants.hpp"/>
+                <F N="../src/liborcus/ooxml_token_constants.inl"/>
+                <F N="../src/liborcus/ooxml_tokens.cpp"/>
+                <F N="../src/liborcus/ooxml_tokens.hpp"/>
+                <F N="../src/liborcus/ooxml_tokens.inl"/>
+                <F N="../src/liborcus/ooxml_types.cpp"/>
+                <F N="../src/liborcus/ooxml_types.hpp"/>
+                <F N="../src/liborcus/opc_context.cpp"/>
+                <F N="../src/liborcus/opc_context.hpp"/>
+                <F N="../src/liborcus/opc_reader.cpp"/>
+                <F N="../src/liborcus/opc_reader.hpp"/>
+                <F N="../src/liborcus/opc_token_constants.hpp"/>
+                <F N="../src/liborcus/opc_token_constants.inl"/>
+                <F N="../src/liborcus/opc_tokens.inl"/>
+                <F N="../src/liborcus/orcus_csv.cpp"/>
+                <F N="../src/liborcus/orcus_gnumeric.cpp"/>
+                <F N="../src/liborcus/orcus_import_xlsx.cpp"/>
+                <F N="../src/liborcus/orcus_ods.cpp"/>
+                <F N="../src/liborcus/orcus_xls_xml.cpp"/>
+                <F N="../src/liborcus/orcus_xlsx.cpp"/>
+                <F N="../src/liborcus/orcus_xml.cpp"/>
+                <F N="../src/liborcus/session_context.cpp"/>
+                <F N="../src/liborcus/session_context.hpp"/>
+                <F N="../src/liborcus/spreadsheet_interface.cpp"/>
+                <F N="../src/liborcus/spreadsheet_types.cpp"/>
+                <F N="../src/liborcus/tokens.cpp"/>
+                <F N="../src/liborcus/xls_xml_context.cpp"/>
+                <F N="../src/liborcus/xls_xml_context.hpp"/>
+                <F N="../src/liborcus/xls_xml_detection_handler.cpp"/>
+                <F N="../src/liborcus/xls_xml_detection_handler.hpp"/>
+                <F N="../src/liborcus/xls_xml_handler.cpp"/>
+                <F N="../src/liborcus/xls_xml_handler.hpp"/>
+                <F N="../src/liborcus/xls_xml_namespace_types.cpp"/>
+                <F N="../src/liborcus/xls_xml_namespace_types.hpp"/>
+                <F N="../src/liborcus/xls_xml_token_constants.hpp"/>
+                <F N="../src/liborcus/xls_xml_token_constants.inl"/>
+                <F N="../src/liborcus/xls_xml_tokens.cpp"/>
+                <F N="../src/liborcus/xls_xml_tokens.hpp"/>
+                <F N="../src/liborcus/xls_xml_tokens.inl"/>
+                <F N="../src/liborcus/xlsx_autofilter_context.cpp"/>
+                <F N="../src/liborcus/xlsx_autofilter_context.hpp"/>
+                <F N="../src/liborcus/xlsx_context.cpp"/>
+                <F N="../src/liborcus/xlsx_context.hpp"/>
+                <F N="../src/liborcus/xlsx_handler.cpp"/>
+                <F N="../src/liborcus/xlsx_handler.hpp"/>
+                <F N="../src/liborcus/xlsx_pivot_context.cpp"/>
+                <F N="../src/liborcus/xlsx_pivot_context.hpp"/>
+                <F N="../src/liborcus/xlsx_revision_context.cpp"/>
+                <F N="../src/liborcus/xlsx_revision_context.hpp"/>
+                <F N="../src/liborcus/xlsx_session_data.cpp"/>
+                <F N="../src/liborcus/xlsx_session_data.hpp"/>
+                <F N="../src/liborcus/xlsx_sheet_context.cpp"/>
+                <F N="../src/liborcus/xlsx_sheet_context.hpp"/>
+                <F N="../src/liborcus/xlsx_sheet_context_test.cpp"/>
+                <F N="../src/liborcus/xlsx_table_context.cpp"/>
+                <F N="../src/liborcus/xlsx_table_context.hpp"/>
+                <F N="../src/liborcus/xlsx_types.cpp"/>
+                <F N="../src/liborcus/xlsx_types.hpp"/>
+                <F N="../src/liborcus/xlsx_workbook_context.cpp"/>
+                <F N="../src/liborcus/xlsx_workbook_context.hpp"/>
+                <F N="../src/liborcus/xml_context_base.cpp"/>
+                <F N="../src/liborcus/xml_context_base.hpp"/>
+                <F N="../src/liborcus/xml_context_global.cpp"/>
+                <F N="../src/liborcus/xml_context_global.hpp"/>
+                <F N="../src/liborcus/xml_map_tree.cpp"/>
+                <F N="../src/liborcus/xml_map_tree.hpp"/>
+                <F N="../src/liborcus/xml_map_tree_test.cpp"/>
+                <F N="../src/liborcus/xml_simple_stream_handler.cpp"/>
+                <F N="../src/liborcus/xml_simple_stream_handler.hpp"/>
+                <F N="../src/liborcus/xml_stream_handler.cpp"/>
+                <F N="../src/liborcus/xml_stream_handler.hpp"/>
+                <F N="../src/liborcus/xml_stream_parser.cpp"/>
+                <F N="../src/liborcus/xml_stream_parser.hpp"/>
+                <F N="../src/liborcus/xml_structure_tree.cpp"/>
+                <F N="../src/liborcus/xml_structure_tree_test.cpp"/>
+            </Folder>
+            <Folder Name="mso">
+                <F N="../src/mso/encryption_info.cpp"/>
+            </Folder>
+            <Folder Name="parser">
+                <F N="../src/parser/base64.cpp"/>
+                <F N="../src/parser/base64_test.cpp"/>
+                <F N="../src/parser/cell_buffer.cpp"/>
+                <F N="../src/parser/csv_parser_base.cpp"/>
+                <F N="../src/parser/exception.cpp"/>
+                <F N="../src/parser/parser_global.cpp"/>
+                <F N="../src/parser/pstring.cpp"/>
+                <F N="../src/parser/sax_parser_base.cpp"/>
+                <F N="../src/parser/stream.cpp"/>
+                <F N="../src/parser/string_pool.cpp"/>
+                <F N="../src/parser/string_pool_test.cpp"/>
+                <F N="../src/parser/types.cpp"/>
+                <F N="../src/parser/win_stdint.h"/>
+                <F N="../src/parser/xml_namespace.cpp"/>
+                <F N="../src/parser/xml_namespace_test.cpp"/>
+                <F N="../src/parser/zip_archive.cpp"/>
+                <F N="../src/parser/zip_archive_stream.cpp"/>
+            </Folder>
+            <Folder Name="spreadsheet">
+                <F N="../src/spreadsheet/auto_filter.cpp"/>
+                <F N="../src/spreadsheet/data_table.cpp"/>
+                <F N="../src/spreadsheet/data_table.hpp"/>
+                <F N="../src/spreadsheet/document.cpp"/>
+                <F N="../src/spreadsheet/factory.cpp"/>
+                <F N="../src/spreadsheet/formula_global.cpp"/>
+                <F N="../src/spreadsheet/formula_global.hpp"/>
+                <F N="../src/spreadsheet/global_settings.cpp"/>
+                <F N="../src/spreadsheet/shared_strings.cpp"/>
+                <F N="../src/spreadsheet/sheet.cpp"/>
+                <F N="../src/spreadsheet/sheet_properties.cpp"/>
+                <F N="../src/spreadsheet/styles.cpp"/>
+                <F N="../src/spreadsheet/table.cpp"/>
+                <F N="../src/spreadsheet/table.hpp"/>
+            </Folder>
+            <F N="../src/dom_tree_sax_handler.cpp"/>
+            <F N="../src/dom_tree_sax_handler.hpp"/>
+            <F N="../src/orcus_css_dump.cpp"/>
+            <F N="../src/orcus_csv_main.cpp"/>
+            <F N="../src/orcus_detect_main.cpp"/>
+            <F N="../src/orcus_filter_global.cpp"/>
+            <F N="../src/orcus_filter_global.hpp"/>
+            <F N="../src/orcus_gnumeric_main.cpp"/>
+            <F N="../src/orcus_mso_encryption.cpp"/>
+            <F N="../src/orcus_ods_main.cpp"/>
+            <F N="../src/orcus_test_common.cpp"/>
+            <F N="../src/orcus_test_csv.cpp"/>
+            <F N="../src/orcus_test_ods.cpp"/>
+            <F N="../src/orcus_test_xls_xml.cpp"/>
+            <F N="../src/orcus_test_xlsx.cpp"/>
+            <F N="../src/orcus_test_xml.cpp"/>
+            <F N="../src/orcus_test_xml_mapped.cpp"/>
+            <F N="../src/orcus_xls_xml_main.cpp"/>
+            <F N="../src/orcus_xlsx_main.cpp"/>
+            <F N="../src/orcus_xml_dump.cpp"/>
+            <F N="../src/orcus_xml_main.cpp"/>
+            <F N="../src/orcus_zip_dump.cpp"/>
+            <F N="../src/xml_map_sax_handler.cpp"/>
+            <F N="../src/xml_map_sax_handler.hpp"/>
+        </Folder>
+    </Files>
 </Project>

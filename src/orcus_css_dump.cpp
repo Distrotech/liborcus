@@ -10,8 +10,8 @@
 #include "orcus/global.hpp"
 #include "orcus/stream.hpp"
 
+#include <cstdlib>
 #include <iostream>
-#include <string>
 
 using namespace orcus;
 using namespace std;
@@ -113,6 +113,17 @@ void orcus_css::parse(const string& strm)
     parser_handler handler;
     css_parser<parser_handler> parser(&strm[0], strm.size(), handler);
     parser.parse();
+}
+
+int main(int argc, char** argv)
+{
+    if (argc < 2)
+        return EXIT_FAILURE;
+
+    orcus_css parser;
+    parser.read_file(argv[1]);
+
+    return EXIT_SUCCESS;
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
