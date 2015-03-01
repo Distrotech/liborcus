@@ -183,7 +183,7 @@ void css_parser<_Handler>::selector_name()
     }
     skip_blanks();
 
-    m_handler.selector_name(p_elem, len_elem, p_class, len_class);
+    m_handler.simple_selector(p_elem, len_elem, p_class, len_class);
 #if ORCUS_DEBUG_CSS
     std::string elem_name(p_elem, len_elem), class_name(p_class, len_class);
     std::cout << "selector name: (element)'" << elem_name.c_str() << "' (class)'" << class_name.c_str() << "'" << std::endl;
@@ -317,6 +317,7 @@ void css_parser<_Handler>::name_sep()
 #endif
     next();
     skip_blanks();
+    m_handler.end_selector();
 }
 
 template<typename _Handler>
@@ -338,6 +339,7 @@ void css_parser<_Handler>::block()
 #if ORCUS_DEBUG_CSS
     std::cout << "{" << std::endl;
 #endif
+    m_handler.end_selector();
     m_handler.begin_block();
 
     next();
