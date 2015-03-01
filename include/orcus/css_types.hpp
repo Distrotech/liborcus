@@ -11,26 +11,33 @@
 #include "orcus/env.hpp"
 #include "orcus/pstring.hpp"
 
+#include <ostream>
 #include <vector>
 #include <boost/unordered_set.hpp>
+#include <boost/unordered_map.hpp>
 
 namespace orcus {
 
-enum css_combinator_t
+enum ORCUS_DLLPUBLIC css_combinator_t
 {
     css_combinator_descendant,   /// 'E F' where F is a descendant of E.
     css_combinator_child,        /// 'E > F' where F is a direct child of E.
     css_combinator_next_sibling  /// 'E + F' where F is a direct sibling of E where E precedes F.
 };
 
-struct css_simple_selector_t
+struct ORCUS_DLLPUBLIC css_simple_selector_t
 {
+    typedef boost::unordered_set<pstring, pstring::hash> classes_type;
+
     pstring name;
     pstring identifier;
-    boost::unordered_set<pstring> classes;
+    classes_type classes;
+
+    void clear();
+    bool empty() const;
 };
 
-struct css_chained_simple_selector_t
+struct ORCUS_DLLPUBLIC css_chained_simple_selector_t
 {
     css_combinator_t combinator;
     css_simple_selector_t selector;
@@ -39,11 +46,30 @@ struct css_chained_simple_selector_t
 /**
  * Each CSS selector consists of one or more chained simple selectors.
  */
-struct css_selector_t
+struct ORCUS_DLLPUBLIC css_selector_t
 {
     css_simple_selector_t first;
     std::vector<css_chained_simple_selector_t> chained;
+
+    void clear();
 };
+
+typedef boost::unordered_map<pstring, pstring, pstring::hash> css_properties_t;
+
+inline std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v)
+{
+    os << v.name;
+    css_simple_selector_t::classes_type::const_iterator it = v.classes.begin(), ite = v.classes.end();
+    for (; it != ite; ++it)
+        os << '.' << *it;
+    return os;
+}
+
+inline std::ostream& operator<< (std::ostream& os, const css_selector_t& v)
+{
+    os << v.first;
+    return os;
+}
 
 }
 

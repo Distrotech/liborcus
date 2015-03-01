@@ -52,9 +52,10 @@ orcus_css_dump_SOURCES = \
 	orcus_css_dump.cpp
 
 orcus_css_dump_LDADD = \
-	parser/liborcus-parser-@ORCUS_API_VERSION@.la
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la
 
-orcus_css_dump_CPPFLAGS = $(COMMON_CPPFLAGS)
+orcus_css_dump_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
 # orcus-zip-dump
 

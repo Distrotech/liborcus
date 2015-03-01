@@ -5,31 +5,28 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef INCLUDED_ORCUS_CSS_DOCUMENT_TREE_HPP
-#define INCLUDED_ORCUS_CSS_DOCUMENT_TREE_HPP
-
 #include "orcus/css_types.hpp"
 
 namespace orcus {
 
-/**
- * Class representing CSS rules.
- */
-class ORCUS_DLLPUBLIC css_document_tree
+void css_simple_selector_t::clear()
 {
-    struct impl;
-    impl* mp_impl;
-
-public:
-
-    css_document_tree();
-    ~css_document_tree();
-
-    void insert_properties(const css_selector_t& selector, const css_properties_t& props);
-};
-
+    name.clear();
+    identifier.clear();
+    classes.clear();
 }
 
-#endif
+bool css_simple_selector_t::empty() const
+{
+    return name.empty() && identifier.empty() && classes.empty();
+}
+
+void css_selector_t::clear()
+{
+    first.clear();
+    chained.clear();
+}
+
+}
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
