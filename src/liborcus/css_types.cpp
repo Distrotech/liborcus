@@ -21,10 +21,36 @@ bool css_simple_selector_t::empty() const
     return name.empty() && identifier.empty() && classes.empty();
 }
 
+bool css_simple_selector_t::operator== (const css_simple_selector_t& r) const
+{
+    if (name != r.name)
+        return false;
+
+    if (identifier != r.identifier)
+        return false;
+
+    return classes == r.classes;
+}
+
+size_t css_simple_selector_t::hash::operator() (const css_simple_selector_t& ss) const
+{
+    return 0;
+}
+
+bool css_chained_simple_selector_t::operator== (const css_chained_simple_selector_t& r) const
+{
+    return combinator == r.combinator && simple_selector == r.simple_selector;
+}
+
 void css_selector_t::clear()
 {
     first.clear();
     chained.clear();
+}
+
+bool css_selector_t::operator== (const css_selector_t& r) const
+{
+    return first == r.first && chained == r.chained;
 }
 
 }
