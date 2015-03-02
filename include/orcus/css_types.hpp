@@ -35,12 +35,21 @@ struct ORCUS_DLLPUBLIC css_simple_selector_t
 
     void clear();
     bool empty() const;
+
+    bool operator== (const css_simple_selector_t& r) const;
+
+    struct hash
+    {
+        size_t operator() (const css_simple_selector_t& ss) const;
+    };
 };
 
 struct ORCUS_DLLPUBLIC css_chained_simple_selector_t
 {
     css_combinator_t combinator;
-    css_simple_selector_t selector;
+    css_simple_selector_t simple_selector;
+
+    bool operator== (const css_chained_simple_selector_t& r) const;
 };
 
 /**
@@ -48,10 +57,13 @@ struct ORCUS_DLLPUBLIC css_chained_simple_selector_t
  */
 struct ORCUS_DLLPUBLIC css_selector_t
 {
+    typedef std::vector<css_chained_simple_selector_t> chained_type;
     css_simple_selector_t first;
-    std::vector<css_chained_simple_selector_t> chained;
+    chained_type chained;
 
     void clear();
+
+    bool operator== (const css_selector_t& r) const;
 };
 
 typedef boost::unordered_map<pstring, pstring, pstring::hash> css_properties_t;

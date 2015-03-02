@@ -53,7 +53,7 @@ public:
             // TODO : this is currently not being handled correctly.
             css_chained_simple_selector_t css;
             css.combinator = css_combinator_descendant;
-            css.selector = ss;
+            css.simple_selector = ss;
             m_cur_selector.chained.push_back(css);
         }
     }
