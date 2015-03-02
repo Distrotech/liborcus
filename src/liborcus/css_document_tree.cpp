@@ -67,7 +67,7 @@ css_selector_t intern(string_pool& sp, const css_selector_t& sel)
 void store_properties(
     string_pool& sp, css_properties_t& store, const css_properties_t& props)
 {
-    css_properties_t::const_iterator it = props.end(), ite = props.end();
+    css_properties_t::const_iterator it = props.begin(), ite = props.end();
     for (; it != ite; ++it)
     {
         pstring key = sp.intern(it->first).first;
@@ -119,6 +119,15 @@ simple_selectors_type* get_simple_selectors_type(
     return &it->second;
 }
 
+void dump_properties(const css_properties_t& props)
+{
+    cout << '{' << endl;
+    css_properties_t::const_iterator it = props.begin(), ite = props.end();
+    for (; it != ite; ++it)
+        cout << "    * " << it->first << ": " << it->second << ';' << endl;
+    cout << '}' << endl;
+}
+
 }
 
 struct css_document_tree::impl
@@ -141,20 +150,6 @@ void css_document_tree::insert_properties(
 {
     if (props.empty())
         return;
-
-    {
-        cout << "--" << endl;
-        cout << selector << endl;
-        cout << '{' << endl;
-
-        css_properties_t::const_iterator it = props.begin(), ite = props.end();
-        for (; it != ite; ++it)
-        {
-            cout << "    * " << it->first << ": " << it->second << ';' << endl;
-        }
-
-        cout << '}' << endl;
-    }
 
     css_selector_t selector_interned = intern(mp_impl->m_string_pool, selector);
 
@@ -190,6 +185,25 @@ void css_document_tree::insert_properties(
     // We found the right node to store the properties.
     assert(node);
     store_properties(mp_impl->m_string_pool, node->properties, props);
+}
+
+void css_document_tree::dump() const
+{
+    css_selector_t selector;
+
+    const simple_selectors_type* ss = &mp_impl->m_root;
+    simple_selectors_type::const_iterator it_ss = ss->begin(), ite_ss = ss->end();
+    for (; it_ss != ite_ss; ++it_ss)
+    {
+        selector.first = it_ss->first;
+        cout << selector << endl;
+
+        const simple_selector_node* node = &it_ss->second;
+        if (!node->properties.empty())
+            dump_properties(node->properties);
+
+        // TODO : dump chained selectors.
+    }
 }
 
 }

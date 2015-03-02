@@ -26,6 +26,8 @@ public:
     ~css_document_tree();
 
     void insert_properties(const css_selector_t& selector, const css_properties_t& props);
+
+    void dump() const;
 };
 
 }

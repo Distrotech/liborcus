@@ -134,6 +134,7 @@ public:
     ~orcus_css();
 
     void read_file(const char* filepath);
+    void print_css() const;
 private:
     void parse(const string& strm);
 };
@@ -147,6 +148,11 @@ void orcus_css::read_file(const char* filepath)
     string strm;
     load_file_content(filepath, strm);
     parse(strm);
+}
+
+void orcus_css::print_css() const
+{
+    m_doc.dump();
 }
 
 void orcus_css::parse(const string& strm)
@@ -168,6 +174,7 @@ int main(int argc, char** argv)
 
     orcus_css parser;
     parser.read_file(argv[1]);
+    parser.print_css();
 
     return EXIT_SUCCESS;
 }
