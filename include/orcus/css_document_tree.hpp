@@ -10,6 +10,8 @@
 
 #include "orcus/css_types.hpp"
 
+#include <string>
+
 namespace orcus {
 
 /**
@@ -24,6 +26,14 @@ public:
 
     css_document_tree();
     ~css_document_tree();
+
+    /**
+     * Load raw string stream containing CSS rules to populate the document
+     * tree.
+     *
+     * @param strm stream containing raw CSS rules.
+     */
+    void load(const std::string& strm);
 
     void insert_properties(const css_selector_t& selector, const css_properties_t& props);
 
