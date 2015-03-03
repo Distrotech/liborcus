@@ -196,11 +196,13 @@ void css_document_tree::dump() const
     for (; it_ss != ite_ss; ++it_ss)
     {
         selector.first = it_ss->first;
-        cout << selector << endl;
 
         const simple_selector_node* node = &it_ss->second;
         if (!node->properties.empty())
+        {
+            cout << selector << endl;
             dump_properties(node->properties);
+        }
 
         // TODO : dump chained selectors.
     }
