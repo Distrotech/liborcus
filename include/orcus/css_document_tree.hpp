@@ -27,6 +27,16 @@ public:
 
     void insert_properties(const css_selector_t& selector, const css_properties_t& props);
 
+    /**
+     * Get properties associated with given selector.
+     *
+     * @param selector selector to get properties for.
+     *
+     * @return const pointer to the property set instance, or NULL in case
+     *         there is no properties for the given selector.
+     */
+    const css_properties_t* get_properties(const css_selector_t& selector) const;
+
     void dump() const;
 };
 

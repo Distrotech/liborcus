@@ -98,6 +98,13 @@ simple_selector_node* get_simple_selector_node(
     return &it->second;
 }
 
+const simple_selector_node* get_simple_selector_node(
+    const simple_selectors_type& store, const css_simple_selector_t& ss)
+{
+    simple_selectors_type::const_iterator it = store.find(ss);
+    return it == store.end() ? NULL : &it->second;
+}
+
 simple_selectors_type* get_simple_selectors_type(
     combinators_type& store, css_combinator_t combinator)
 {
@@ -117,6 +124,13 @@ simple_selectors_type* get_simple_selectors_type(
     }
 
     return &it->second;
+}
+
+const simple_selectors_type* get_simple_selectors_type(
+    const combinators_type& store, css_combinator_t combinator)
+{
+    combinators_type::const_iterator it = store.find(combinator);
+    return it == store.end() ? NULL : &it->second;
 }
 
 void dump_properties(const css_properties_t& props)
@@ -185,6 +199,35 @@ void css_document_tree::insert_properties(
     // We found the right node to store the properties.
     assert(node);
     store_properties(mp_impl->m_string_pool, node->properties, props);
+}
+
+const css_properties_t* css_document_tree::get_properties(const css_selector_t& selector) const
+{
+    const simple_selector_node* node = get_simple_selector_node(mp_impl->m_root, selector.first);
+    if (!node)
+        return NULL;
+
+    if (!selector.chained.empty())
+    {
+        // Follow the chain to find the right node to store new properties.
+        css_selector_t::chained_type::const_iterator it_chain = selector.chained.begin();
+        css_selector_t::chained_type::const_iterator ite_chain = selector.chained.end();
+        const combinators_type* combos = &node->children;
+        for (; it_chain != ite_chain; ++it_chain)
+        {
+            const css_chained_simple_selector_t& css = *it_chain;
+            const simple_selectors_type* ss = get_simple_selectors_type(*combos, css.combinator);
+            if (!ss)
+                return NULL;
+
+            node = get_simple_selector_node(*ss, css.simple_selector);
+            if (!node)
+                return NULL;
+        }
+    }
+
+    assert(node);
+    return &node->properties;
 }
 
 void css_document_tree::dump() const
