@@ -181,7 +181,7 @@ void store_properties(
     }
 }
 
-simple_selector_node* get_simple_selector_node(
+simple_selector_node* get_or_create_simple_selector_node(
     simple_selectors_type& store, const css_simple_selector_t& ss)
 {
     simple_selectors_type::iterator it = store.find(ss);
@@ -210,7 +210,7 @@ const simple_selector_node* get_simple_selector_node(
     return it == store.end() ? NULL : &it->second;
 }
 
-simple_selectors_type* get_simple_selectors_type(
+simple_selectors_type* get_or_create_simple_selectors_type(
     combinators_type& store, css_combinator_t combinator)
 {
     combinators_type::iterator it = store.find(combinator);
@@ -286,7 +286,7 @@ void css_document_tree::insert_properties(
 
     // See if the root selector already exists.
     simple_selector_node* node =
-        get_simple_selector_node(mp_impl->m_root, selector_interned.first);
+        get_or_create_simple_selector_node(mp_impl->m_root, selector_interned.first);
 
     if (!node)
         // TODO : throw an exception.
@@ -301,12 +301,12 @@ void css_document_tree::insert_properties(
         for (; it_chain != ite_chain; ++it_chain)
         {
             css_chained_simple_selector_t& css = *it_chain;
-            simple_selectors_type* ss = get_simple_selectors_type(*combos, css.combinator);
+            simple_selectors_type* ss = get_or_create_simple_selectors_type(*combos, css.combinator);
             if (!ss)
                 // TODO : throw an exception.
                 return;
 
-            node = get_simple_selector_node(*ss, css.simple_selector);
+            node = get_or_create_simple_selector_node(*ss, css.simple_selector);
             if (!node)
                 // TODO : throw an exception.
                 return;
