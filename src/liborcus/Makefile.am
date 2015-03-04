@@ -2,6 +2,7 @@
 INCLUDES = -I$(top_srcdir)/include -I./include
 
 EXTRA_PROGRAMS = \
+	liborcus-test-css-document-tree \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-structure-tree \
 	liborcus-test-common \
@@ -302,6 +303,16 @@ TESTS += orcus-gnumeric-helper-test
 
 endif # WITH_GNUMERIC_FILTER
 
+# liborcus-test-css-document-tree
+
+liborcus_test_css_document_tree_SOURCES = \
+	css_document_tree.cpp \
+	css_document_tree_test.cpp
+
+liborcus_test_css_document_tree_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
 # liborcus-test-xml-map-tree
 
 liborcus_test_xml_map_tree_SOURCES = \
@@ -346,6 +357,7 @@ liborcus_test_format_detection_LDADD = \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 TESTS += \
+	liborcus-test-css-document-tree \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-structure-tree \
 	liborcus-test-common \
