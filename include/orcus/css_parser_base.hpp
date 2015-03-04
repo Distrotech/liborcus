@@ -10,6 +10,7 @@
 
 #include "orcus/env.hpp"
 #include <string>
+#include <exception>
 
 namespace orcus { namespace css {
 
