@@ -8,6 +8,7 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	win_stdint.h \
 	base64.cpp \
 	cell_buffer.cpp \
+	css_parser_base.cpp \
 	csv_parser_base.cpp \
 	exception.cpp \
 	parser_global.cpp \
