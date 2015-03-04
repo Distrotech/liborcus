@@ -24,6 +24,18 @@ void test_css_parse_basic1()
     doc.load(strm);
 
     css_selector_t selector;
+    selector.first.name = "table";
+
+    const css_properties_t* props = doc.get_properties(selector);
+    assert(props);
+
+    selector.first.name = "td";
+    props = doc.get_properties(selector);
+    assert(props);
+
+    selector.first.name = "tr";
+    props = doc.get_properties(selector);
+    assert(!props);
 }
 
 int main()
