@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_CSS_PARSER_HPP__
-#define __ORCUS_CSS_PARSER_HPP__
+#ifndef INCLUDED_ORCUS_CSS_PARSER_HPP
+#define INCLUDED_ORCUS_CSS_PARSER_HPP
 
 #define ORCUS_DEBUG_CSS 0
 
@@ -22,17 +22,9 @@
 #endif
 
 #include "parser_global.hpp"
+#include "css_parser_base.hpp"
 
 namespace orcus {
-
-class css_parse_error : public std::exception
-{
-    std::string m_msg;
-public:
-    css_parse_error(const std::string& msg) : m_msg(msg) {}
-    virtual ~css_parse_error() throw() {}
-    virtual const char* what() const throw() { return m_msg.c_str(); }
-};
 
 template<typename _Handler>
 class css_parser
@@ -121,7 +113,7 @@ void css_parser<_Handler>::rule()
         {
             std::ostringstream os;
             os << "failed to parse '" << c << "'";
-            throw css_parse_error(os.str());
+            throw css::parse_error(os.str());
         }
     }
 }
@@ -134,7 +126,7 @@ void css_parser<_Handler>::at_rule_name()
     next();
     char c = cur_char();
     if (!is_alpha(c))
-        throw css_parse_error("first character of an at-rule name must be an alphabet.");
+        throw css::parse_error("first character of an at-rule name must be an alphabet.");
 
     const char* p;
     size_t len;
@@ -167,7 +159,7 @@ void css_parser<_Handler>::selector_name()
     }
 
     if (!is_alpha(c) && c != '.')
-        throw css_parse_error("first character of a name must be an alphabet or a dot.");
+        throw css::parse_error("first character of a name must be an alphabet or a dot.");
 
     const char* p_elem = NULL;
     const char* p_class = NULL;
@@ -198,7 +190,7 @@ void css_parser<_Handler>::property_name()
     assert(has_char());
     char c = cur_char();
     if (!is_alpha(c) && c != '.')
-        throw css_parse_error("first character of a name must be an alphabet or a dot.");
+        throw css::parse_error("first character of a name must be an alphabet or a dot.");
 
     const char* p;
     size_t len;
@@ -220,7 +212,7 @@ void css_parser<_Handler>::property()
     m_handler.begin_property();
     property_name();
     if (cur_char() != ':')
-        throw css_parse_error("':' expected.");
+        throw css::parse_error("':' expected.");
     next();
     skip_blanks();
     while (has_char())
@@ -260,7 +252,7 @@ void css_parser<_Handler>::quoted_value()
     }
 
     if (cur_char() != '"')
-        throw css_parse_error("end quote has never been reached.");
+        throw css::parse_error("end quote has never been reached.");
 
     next();
     skip_blanks();
@@ -287,7 +279,7 @@ void css_parser<_Handler>::value()
     {
         std::ostringstream os;
         os << "illegal first character of a value '" << c << "'";
-        throw css_parse_error(os.str());
+        throw css::parse_error(os.str());
     }
 
     const char* p = mp_char;
@@ -358,7 +350,7 @@ void css_parser<_Handler>::block()
     }
 
     if (cur_char() != '}')
-        throw css_parse_error("} expected.");
+        throw css::parse_error("} expected.");
 
     m_handler.end_block();
 
