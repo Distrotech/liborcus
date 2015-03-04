@@ -10,19 +10,15 @@
 
 #define ORCUS_DEBUG_CSS 0
 
-#include <cstdlib>
-#include <cstring>
-#include <exception>
-#include <string>
+#include "parser_global.hpp"
+#include "css_parser_base.hpp"
+
 #include <cassert>
 #include <sstream>
 
 #if ORCUS_DEBUG_CSS
 #include <iostream>
 #endif
-
-#include "parser_global.hpp"
-#include "css_parser_base.hpp"
 
 namespace orcus {
 
