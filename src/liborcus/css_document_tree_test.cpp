@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
 using namespace orcus;
 using namespace std;
@@ -25,15 +26,22 @@ bool check_prop(const css_properties_t& props, const pstring& key, const pstring
         return false;
     }
 
+    // Chain all property values into a single string delimited by a " ".
     const vector<pstring>& vals = it->second;
-    if (vals.size() != 1 || vals[0] != val)
+    ostringstream os;
+    if (vals.size() > 1)
+    {
+        vector<pstring>::const_iterator it_end = vals.end();
+        advance(it_end, -1);
+        copy(vals.begin(), it_end, ostream_iterator<pstring>(os, " "));
+    }
+    os << vals.back();
+
+    string val_stored = os.str();
+    if (val.str() != val_stored)
     {
         cout << "property '" << key << "' is expected to have value '"
-            << val << "' but '";
-
-        copy(vals.begin(), vals.end(), ostream_iterator<pstring>(cout, " "));
-
-        cout << "' is found." << endl;
+            << val << "' but '" << val_stored << "' is found." << endl;
         return false;
     }
 
@@ -70,9 +78,28 @@ void test_css_parse_basic1()
     assert(!props);
 }
 
+void test_css_parse_basic2()
+{
+    const char* path = SRCDIR"/test/css/basic2.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.name = "div";
+    selector.first.classes.insert("foo");
+
+    const css_properties_t* props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "border", "solid 1px"));
+}
+
 int main()
 {
     test_css_parse_basic1();
+    test_css_parse_basic2();
     return EXIT_SUCCESS;
 }
 
