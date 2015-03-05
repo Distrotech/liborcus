@@ -48,12 +48,14 @@ void test_css_parse_basic1()
 
     const css_properties_t* props = doc.get_properties(selector);
     assert(props);
+    assert(props->size() == 2);
     assert(check_prop(*props, "width", "auto"));
     assert(check_prop(*props, "height", "500px"));
 
     selector.first.name = "td";
     props = doc.get_properties(selector);
     assert(props);
+    assert(props->size() == 2);
     assert(check_prop(*props, "color", "gray"));
     assert(check_prop(*props, "background-color", "yellow"));
 
