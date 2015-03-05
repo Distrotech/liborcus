@@ -24,6 +24,7 @@ class parser_handler
     std::vector<css_selector_t> m_cur_selector_group;
     css_properties_t m_cur_properties;
     pstring m_cur_prop_name;
+    std::vector<pstring> m_cur_prop_values;
     css_selector_t m_cur_selector;  /// current selector
     bool m_in_prop:1;
 public:
@@ -72,9 +73,7 @@ public:
     void value(const char* p, size_t n)
     {
         pstring pv(p, n);
-        m_cur_properties.insert(
-            css_properties_t::value_type(m_cur_prop_name, pv));
-        m_cur_prop_name.clear();
+        m_cur_prop_values.push_back(pv);
         cout << " '" << string(p, n).c_str() << "'";
     }
 
@@ -118,6 +117,10 @@ public:
 
     void end_property()
     {
+        m_cur_properties.insert(
+            css_properties_t::value_type(m_cur_prop_name, m_cur_prop_values));
+        m_cur_prop_name.clear();
+        m_cur_prop_values.clear();
         cout << endl;
     }
 };
@@ -169,6 +172,20 @@ css_selector_t intern(string_pool& sp, const css_selector_t& sel)
     return interned;
 }
 
+class intern_inserter : std::unary_function<pstring, void>
+{
+    string_pool& m_sp;
+    std::vector<pstring>& m_dest;
+public:
+    intern_inserter(string_pool& sp, std::vector<pstring>& dest) :
+        m_sp(sp), m_dest(dest) {}
+
+    void operator() (const pstring& v) const
+    {
+        m_dest.push_back(m_sp.intern(v).first);
+    }
+};
+
 void store_properties(
     string_pool& sp, css_properties_t& store, const css_properties_t& props)
 {
@@ -176,8 +193,9 @@ void store_properties(
     for (; it != ite; ++it)
     {
         pstring key = sp.intern(it->first).first;
-        pstring val = sp.intern(it->second).first;
-        store[key] = val;
+        vector<pstring> vals;
+        for_each(it->second.begin(), it->second.end(), intern_inserter(sp, vals));
+        store[key] = vals;
     }
 }
 
@@ -243,7 +261,12 @@ void dump_properties(const css_properties_t& props)
     cout << '{' << endl;
     css_properties_t::const_iterator it = props.begin(), ite = props.end();
     for (; it != ite; ++it)
-        cout << "    * " << it->first << ": " << it->second << ';' << endl;
+    {
+        cout << "    * " << it->first << ": ";
+        const vector<pstring>& vals = it->second;
+        copy(vals.begin(), vals.end(), ostream_iterator<pstring>(cout, " "));
+        cout << ';' << endl;
+    }
     cout << '}' << endl;
 }
 
