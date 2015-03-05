@@ -25,10 +25,15 @@ bool check_prop(const css_properties_t& props, const pstring& key, const pstring
         return false;
     }
 
-    if (it->second != val)
+    const vector<pstring>& vals = it->second;
+    if (vals.size() != 1 || vals[0] != val)
     {
         cout << "property '" << key << "' is expected to have value '"
-            << val << "' but '" << it->second << "' is found." << endl;
+            << val << "' but '";
+
+        copy(vals.begin(), vals.end(), ostream_iterator<pstring>(cout, " "));
+
+        cout << "' is found." << endl;
         return false;
     }
 
