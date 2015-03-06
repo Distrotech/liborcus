@@ -207,6 +207,7 @@
                 <F N="../src/liborcus/common_test.cpp"/>
                 <F N="../src/liborcus/config.cpp"/>
                 <F N="../src/liborcus/css_document_tree.cpp"/>
+                <F N="../src/liborcus/css_document_tree_test.cpp"/>
                 <F N="../src/liborcus/css_types.cpp"/>
                 <F N="../src/liborcus/detection_result.cpp"/>
                 <F N="../src/liborcus/detection_result.hpp"/>
