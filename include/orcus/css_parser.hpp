@@ -222,7 +222,7 @@ void css_parser<_Handler>::property_name()
     const char* p;
     size_t len;
     identifier(p, len);
-    skip_blanks();
+    skip_comments_and_blanks();
 
     m_handler.property_name(p, len);
 #if ORCUS_DEBUG_CSS
@@ -239,7 +239,7 @@ void css_parser<_Handler>::property()
     m_handler.begin_property();
     property_name();
     if (cur_char() != ':')
-        throw css::parse_error("':' expected.");
+        throw css::parse_error("property: ':' expected.");
     next();
     skip_comments_and_blanks();
 
@@ -341,7 +341,7 @@ void css_parser<_Handler>::value()
 
         break;
     }
-    skip_blanks();
+    skip_comments_and_blanks();
 
     m_handler.value(p, len);
 #if ORCUS_DEBUG_CSS
