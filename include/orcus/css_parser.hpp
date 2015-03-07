@@ -242,19 +242,30 @@ void css_parser<_Handler>::property()
         throw css::parse_error("':' expected.");
     next();
     skip_comments_and_blanks();
-    while (has_char())
+
+    bool in_loop = true;
+    while (in_loop && has_char())
     {
         value();
         char c = cur_char();
-        if (c == ',')
+        switch (c)
         {
-            // separated by commas.
-            next();
-            skip_blanks();
-        }
-        else if (c == ';')
+            case ',':
+            {
+                // separated by commas.
+                next();
+                skip_comments_and_blanks();
+            }
             break;
+            case ';':
+            case '}':
+                in_loop = false;
+            break;
+            default:
+                ;
+        }
     }
+
     skip_comments_and_blanks();
     m_handler.end_property();
 }
@@ -305,7 +316,7 @@ void css_parser<_Handler>::value()
     if (!is_alpha(c) && !is_numeric(c) && c != '-' && c != '+' && c != '.')
     {
         std::ostringstream os;
-        os << "illegal first character of a value '" << c << "'";
+        os << "value:: illegal first character of a value '" << c << "'";
         throw css::parse_error(os.str());
     }
 
