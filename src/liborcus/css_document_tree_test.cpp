@@ -8,6 +8,7 @@
 #include "orcus/css_document_tree.hpp"
 #include "orcus/css_types.hpp"
 #include "orcus/stream.hpp"
+#include "orcus/global.hpp"
 
 #include <cstdlib>
 #include <cassert>
@@ -105,10 +106,50 @@ void test_css_parse_basic2()
     assert(check_prop(*props, "font-weight", "900"));
 }
 
+void test_css_parse_basic3()
+{
+    const char* path = SRCDIR"/test/css/basic3.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.name = "html";
+
+    const css_properties_t* props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "height", "100%"));
+
+    selector.first.name = "body";
+    props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "height", "100%"));
+
+    {
+        // h1, h2, h3 and h4 all have identical set of properties.
+        const char* names[] = { "h1", "h2", "h3", "h4" };
+        size_t n = ORCUS_N_ELEMENTS(names);
+
+        for (size_t i = 0; i < n; ++i)
+        {
+            selector.first.name = names[i];
+            props = doc.get_properties(selector);
+            assert(props);
+            assert(props->size() == 2);
+            assert(check_prop(*props, "font-variant", "small-caps"));
+            assert(check_prop(*props, "padding", "2.5em"));
+        }
+    }
+}
+
 int main()
 {
     test_css_parse_basic1();
     test_css_parse_basic2();
+    test_css_parse_basic3();
     return EXIT_SUCCESS;
 }
 

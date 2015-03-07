@@ -280,12 +280,24 @@ void css_parser<_Handler>::value()
 
     const char* p = mp_char;
     size_t len = 1;
-    for (next(); has_char(); next())
+    for (next(); has_char(); next(), ++len)
     {
         c = cur_char();
-        if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c) && c != '.')
-            break;
-        ++len;
+
+        if (is_alpha(c) || is_name_char(c) || is_numeric(c))
+            continue;
+
+        switch (c)
+        {
+            case '.':
+            case '%':
+                // These characters are allowed in a property value.
+                continue;
+            default:
+                ;
+        }
+
+        break;
     }
     skip_blanks();
 
