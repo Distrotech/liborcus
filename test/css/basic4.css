@@ -1,0 +1,6 @@
+h1 { margin: 0.5in }      /* inches  */
+h2 { line-height: 3cm }   /* centimeters */
+h3 { word-spacing: 4mm }  /* millimeters */
+h4 { font-size: 12pt }    /* points */
+h4 { font-size: 1pc }     /* picas */
+p  { font-size: 12px }    /* px */

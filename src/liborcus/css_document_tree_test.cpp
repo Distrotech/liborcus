@@ -145,11 +145,53 @@ void test_css_parse_basic3()
     }
 }
 
+void test_css_parse_basic4()
+{
+    const char* path = SRCDIR"/test/css/basic4.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.name = "h1";
+
+    const css_properties_t* props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "margin", "0.5in"));
+
+    selector.first.name = "h2";
+    props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "line-height", "3cm"));
+
+    selector.first.name = "h3";
+    props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "word-spacing", "4mm"));
+
+    selector.first.name = "h4";
+    props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "font-size", "1pc"));
+
+    selector.first.name = "p";
+    props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "font-size", "12px"));
+}
+
 int main()
 {
     test_css_parse_basic1();
     test_css_parse_basic2();
     test_css_parse_basic3();
+    test_css_parse_basic4();
     return EXIT_SUCCESS;
 }
 
