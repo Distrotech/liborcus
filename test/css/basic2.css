@@ -1,3 +1,5 @@
+/* selectors with class */
+
 div.foo { border: solid 1px; }
 
 .warning
