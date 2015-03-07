@@ -15,6 +15,7 @@
 #include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
 #define ORCUS_ASCII(literal) literal, sizeof(literal)-1
+#define ORCUS_N_ELEMENTS(name) sizeof(name)/sizeof(name[0])
 
 namespace orcus {
 
