@@ -51,6 +51,7 @@ private:
 
     bool skip_comment();
     void comment();
+    void skip_comments_and_blanks();
 
     void identifier(const char*& p, size_t& len);
 
@@ -176,7 +177,11 @@ void css_parser<_Handler>::selector_name()
     }
 
     if (!is_alpha(c) && c != '.')
-        throw css::parse_error("first character of a name must be an alphabet or a dot.");
+    {
+        std::ostringstream os;
+        os << "selector_name: first character of a name must be an alphabet or a dot, but found '" << c << "'";
+        throw css::parse_error(os.str());
+    }
 
     const char* p_elem = NULL;
     const char* p_class = NULL;
@@ -191,9 +196,7 @@ void css_parser<_Handler>::selector_name()
         identifier(p_class, len_class);
     }
 
-    skip_blanks();
-    while (skip_comment())
-        ;
+    skip_comments_and_blanks();
 
     m_handler.simple_selector(p_elem, len_elem, p_class, len_class);
 #if ORCUS_DEBUG_CSS
@@ -210,7 +213,11 @@ void css_parser<_Handler>::property_name()
     assert(has_char());
     char c = cur_char();
     if (!is_alpha(c) && c != '.')
-        throw css::parse_error("first character of a name must be an alphabet or a dot.");
+    {
+        std::ostringstream os;
+        os << "property_name: first character of a name must be an alphabet or a dot, but found '" << c << "'";
+        throw css::parse_error(os.str());
+    }
 
     const char* p;
     size_t len;
@@ -234,7 +241,7 @@ void css_parser<_Handler>::property()
     if (cur_char() != ':')
         throw css::parse_error("':' expected.");
     next();
-    skip_blanks();
+    skip_comments_and_blanks();
     while (has_char())
     {
         value();
@@ -248,7 +255,7 @@ void css_parser<_Handler>::property()
         else if (c == ';')
             break;
     }
-    skip_blanks();
+    skip_comments_and_blanks();
     m_handler.end_property();
 }
 
@@ -351,7 +358,7 @@ void css_parser<_Handler>::property_sep()
     std::cout << ";" << std::endl;
 #endif
     next();
-    skip_blanks();
+    skip_comments_and_blanks();
 }
 
 template<typename _Handler>
@@ -367,7 +374,7 @@ void css_parser<_Handler>::block()
     m_handler.begin_block();
 
     next();
-    skip_blanks();
+    skip_comments_and_blanks();
 
     // parse properties.
     while (has_char())
@@ -387,7 +394,7 @@ void css_parser<_Handler>::block()
     m_handler.end_block();
 
     next();
-    skip_blanks();
+    skip_comments_and_blanks();
 
 #if ORCUS_DEBUG_CSS
     std::cout << "}" << std::endl;
@@ -431,6 +438,14 @@ void css_parser<_Handler>::comment()
     }
 
     // EOF reached.
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::skip_comments_and_blanks()
+{
+    skip_blanks();
+    while (skip_comment())
+        ;
 }
 
 template<typename _Handler>
