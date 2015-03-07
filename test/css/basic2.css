@@ -1,1 +1,6 @@
 div.foo { border: solid 1px; }
+
+.warning {
+    background-color: red;
+    font-weight: 900;
+}

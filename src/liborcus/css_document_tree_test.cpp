@@ -94,6 +94,15 @@ void test_css_parse_basic2()
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "border", "solid 1px"));
+
+    selector.clear();
+    selector.first.classes.insert("warning");
+
+    props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 2);
+    assert(check_prop(*props, "background-color", "red"));
+    assert(check_prop(*props, "font-weight", "900"));
 }
 
 int main()
