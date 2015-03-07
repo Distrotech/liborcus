@@ -18,6 +18,8 @@
 
 #if ORCUS_DEBUG_CSS
 #include <iostream>
+using std::cout;
+using std::endl;
 #endif
 
 namespace orcus {
@@ -47,6 +49,9 @@ private:
     void property_sep();
     void block();
 
+    bool skip_comment();
+    void comment();
+
     void identifier(const char*& p, size_t& len);
 
     void skip_blanks();
@@ -54,6 +59,11 @@ private:
     void shrink_stream();
     void next();
     char cur_char() const;
+
+    /**
+     * The caller must ensure that the next character exists.
+     */
+    char next_char() const;
 
     size_t remaining_size() const { return m_length - m_pos - 1; }
     bool has_char() const { return m_pos < m_length; }
@@ -92,24 +102,35 @@ void css_parser<_Handler>::rule()
     // <selector name> , ... , <selector name> <block>
     while (has_char())
     {
+        if (skip_comment())
+            continue;
+
         char c = cur_char();
-        if (is_alpha(c) || c == '.' || c == '@')
+
+        if (is_alpha(c))
         {
             selector_name();
+            continue;
         }
-        else if (c == ',')
+
+        switch (c)
         {
-            name_sep();
-        }
-        else if (c == '{')
-        {
-            block();
-        }
-        else
-        {
-            std::ostringstream os;
-            os << "failed to parse '" << c << "'";
-            throw css::parse_error(os.str());
+            case '.':
+            case '@':
+                selector_name();
+            break;
+            case ',':
+                name_sep();
+            break;
+            case '{':
+                block();
+            break;
+            default:
+            {
+                std::ostringstream os;
+                os << "failed to parse '" << c << "'";
+                throw css::parse_error(os.str());
+            }
         }
     }
 }
@@ -169,7 +190,10 @@ void css_parser<_Handler>::selector_name()
         next();
         identifier(p_class, len_class);
     }
+
     skip_blanks();
+    while (skip_comment())
+        ;
 
     m_handler.simple_selector(p_elem, len_elem, p_class, len_class);
 #if ORCUS_DEBUG_CSS
@@ -371,6 +395,45 @@ void css_parser<_Handler>::block()
 }
 
 template<typename _Handler>
+bool css_parser<_Handler>::skip_comment()
+{
+    char c = cur_char();
+    if (c != '/')
+        return false;
+
+    if (remaining_size() > 2 && next_char() == '*')
+    {
+        next();
+        comment();
+        skip_blanks();
+        return true;
+    }
+
+    return false;
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::comment()
+{
+    assert(cur_char() == '*');
+
+    // Parse until we reach either EOF or '*/'.
+    bool has_star = false;
+    for (next(); has_char(); next())
+    {
+        char c = cur_char();
+        if (has_star && c == '/')
+        {
+            next();
+            return;
+        }
+        has_star = (c == '*');
+    }
+
+    // EOF reached.
+}
+
+template<typename _Handler>
 void css_parser<_Handler>::identifier(const char*& p, size_t& len)
 {
     p = mp_char;
@@ -469,7 +532,16 @@ char css_parser<_Handler>::cur_char() const
     return *mp_char;
 }
 
+template<typename _Handler>
+char css_parser<_Handler>::next_char() const
+{
+    const char* p = mp_char;
+    ++p;
+    return *p;
+}
+
 }
 
 #endif
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
