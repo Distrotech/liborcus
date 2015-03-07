@@ -186,12 +186,31 @@ void test_css_parse_basic4()
     assert(check_prop(*props, "font-size", "12px"));
 }
 
+void test_css_parse_basic5()
+{
+    const char* path = SRCDIR"/test/css/basic5.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.classes.insert("info");
+
+    const css_properties_t* props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "word-spacing", "normal"));
+}
+
 int main()
 {
     test_css_parse_basic1();
     test_css_parse_basic2();
     test_css_parse_basic3();
     test_css_parse_basic4();
+    test_css_parse_basic5();
+
     return EXIT_SUCCESS;
 }
 
