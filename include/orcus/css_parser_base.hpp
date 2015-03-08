@@ -40,7 +40,7 @@ protected:
     size_t remaining_size() const;
     bool has_char() const;
 
-    void identifier(const char*& p, size_t& len);
+    void identifier(const char*& p, size_t& len, const char* extra = NULL);
 
     void skip_blanks();
     void skip_blanks_reverse();

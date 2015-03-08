@@ -326,30 +326,13 @@ void css_parser<_Handler>::value()
         throw css::parse_error(os.str());
     }
 
-    const char* p = mp_char;
-    size_t len = 1;
-    for (next(); has_char(); next(), ++len)
-    {
-        c = cur_char();
+    const char* p = NULL;
+    size_t len = 0;
+    identifier(p, len, ".%");
+    m_handler.value(p, len);
 
-        if (is_alpha(c) || is_name_char(c) || is_numeric(c))
-            continue;
-
-        switch (c)
-        {
-            case '.':
-            case '%':
-                // These characters are allowed in a property value.
-                continue;
-            default:
-                ;
-        }
-
-        break;
-    }
     skip_comments_and_blanks();
 
-    m_handler.value(p, len);
 #if ORCUS_DEBUG_CSS
     std::string foo(p, len);
     std::cout << "value: " << foo.c_str() << std::endl;

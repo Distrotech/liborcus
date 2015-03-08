@@ -43,15 +43,29 @@ char parser_base::next_char() const
 size_t parser_base::remaining_size() const { return m_length - m_pos - 1; }
 bool parser_base::has_char() const { return m_pos < m_length; }
 
-void parser_base::identifier(const char*& p, size_t& len)
+void parser_base::identifier(const char*& p, size_t& len, const char* extra)
 {
     p = mp_char;
     len = 1;
     for (next(); has_char(); next(), ++len)
     {
         char c = cur_char();
-        if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c))
-            break;
+        if (is_alpha(c) || is_name_char(c) || is_numeric(c))
+            continue;
+
+        if (extra)
+        {
+            // See if the character is one of the extra allowed characters.
+            bool has_extra = false;
+            for (const char* p_ext = extra; !has_extra && *p_ext != '\0'; ++p_ext)
+            {
+                if (c == *p_ext)
+                    has_extra = true;
+            }
+            if (has_extra)
+                continue;
+        }
+        return;
     }
 }
 
