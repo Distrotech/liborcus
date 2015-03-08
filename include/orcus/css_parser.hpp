@@ -183,48 +183,54 @@ void css_parser<_Handler>::selector_name()
         throw css::parse_error(os.str());
     }
 
-    const char* p_elem = NULL;
-    const char* p_class = NULL;
-    const char* p_id = NULL;
-    size_t len_elem = 0;
-    size_t len_class = 0;
-    size_t len_id = 0;
-    if (c != '.')
-        identifier(p_elem, len_elem);
+    const char* p = NULL;
+    size_t n = 0;
+
+#if ORCUS_DEBUG_CSS
+    cout << "selector_name:";
+#endif
+
+    if (c != '.' && c != '#')
+    {
+        identifier(p, n);
+#if ORCUS_DEBUG_CSS
+        std::string s(p, n);
+        cout << " type=" << s;
+#endif
+        m_handler.simple_selector_type(p, n);
+    }
 
     switch (cur_char())
     {
         case '.':
         {
             next();
-            identifier(p_class, len_class);
+            identifier(p, n);
+            m_handler.simple_selector_class(p, n);
+#if ORCUS_DEBUG_CSS
+            std::string s(p, n);
+            std::cout << " class=" << s;
+#endif
         }
         break;
         case '#':
         {
             next();
-            identifier(p_id, len_id);
+            identifier(p, n);
+            m_handler.simple_selector_id(p, n);
+#if ORCUS_DEBUG_CSS
+            std::string s(p, n);
+            std::cout << " id=" << s;
+#endif
         }
         break;
     }
 
+    m_handler.end_simple_selector();
     skip_comments_and_blanks();
 
-    if (p_elem)
-        m_handler.simple_selector_type(p_elem, len_elem);
-    if (p_class)
-        m_handler.simple_selector_class(p_class, len_class);
-    if (p_id)
-        m_handler.simple_selector_id(p_id, len_id);
-    m_handler.end_simple_selector();
 #if ORCUS_DEBUG_CSS
-    std::string elem_name(p_elem, len_elem);
-    std::string class_name(p_class, len_class);
-    std::string id_name(p_id, len_id);
-    std::cout << "selector name: (element)'" << elem_name.c_str()
-        << "' (class)'" << class_name.c_str() << "'"
-        << "' (id)'" << id_name.c_str() << "'"
-        << std::endl;
+    std::cout << std::endl;
 #endif
 }
 
