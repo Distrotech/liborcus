@@ -23,6 +23,38 @@ public:
     virtual const char* what() const throw();
 };
 
+class ORCUS_PSR_DLLPUBLIC parser_base
+{
+public:
+    parser_base(const char* p, size_t n);
+
+protected:
+    void next();
+    char cur_char() const;
+
+    /**
+     * The caller must ensure that the next character exists.
+     */
+    char next_char() const;
+
+    size_t remaining_size() const;
+    bool has_char() const;
+
+    void identifier(const char*& p, size_t& len);
+
+    void skip_blanks();
+    void skip_blanks_reverse();
+    void shrink_stream();
+    bool skip_comment();
+    void comment();
+    void skip_comments_and_blanks();
+
+protected:
+    const char* mp_char;
+    size_t m_pos;
+    size_t m_length;
+};
+
 }}
 
 #endif
