@@ -25,7 +25,7 @@ using std::endl;
 namespace orcus {
 
 template<typename _Handler>
-class css_parser
+class css_parser : public css::parser_base
 {
 public:
     typedef _Handler handler_type;
@@ -49,35 +49,12 @@ private:
     void property_sep();
     void block();
 
-    bool skip_comment();
-    void comment();
-    void skip_comments_and_blanks();
-
-    void identifier(const char*& p, size_t& len);
-
-    void skip_blanks();
-    void skip_blanks_reverse();
-    void shrink_stream();
-    void next();
-    char cur_char() const;
-
-    /**
-     * The caller must ensure that the next character exists.
-     */
-    char next_char() const;
-
-    size_t remaining_size() const { return m_length - m_pos - 1; }
-    bool has_char() const { return m_pos < m_length; }
-
     handler_type& m_handler;
-    const char* mp_char;
-    size_t m_pos;
-    size_t m_length;
 };
 
 template<typename _Handler>
 css_parser<_Handler>::css_parser(const char* p, size_t n, handler_type& hdl) :
-    m_handler(hdl), mp_char(p), m_pos(0), m_length(n) {}
+    css::parser_base(p, n), m_handler(hdl) {}
 
 template<typename _Handler>
 void css_parser<_Handler>::parse()
@@ -439,159 +416,6 @@ void css_parser<_Handler>::block()
 #if ORCUS_DEBUG_CSS
     std::cout << "}" << std::endl;
 #endif
-}
-
-template<typename _Handler>
-bool css_parser<_Handler>::skip_comment()
-{
-    char c = cur_char();
-    if (c != '/')
-        return false;
-
-    if (remaining_size() > 2 && next_char() == '*')
-    {
-        next();
-        comment();
-        skip_blanks();
-        return true;
-    }
-
-    return false;
-}
-
-template<typename _Handler>
-void css_parser<_Handler>::comment()
-{
-    assert(cur_char() == '*');
-
-    // Parse until we reach either EOF or '*/'.
-    bool has_star = false;
-    for (next(); has_char(); next())
-    {
-        char c = cur_char();
-        if (has_star && c == '/')
-        {
-            next();
-            return;
-        }
-        has_star = (c == '*');
-    }
-
-    // EOF reached.
-}
-
-template<typename _Handler>
-void css_parser<_Handler>::skip_comments_and_blanks()
-{
-    skip_blanks();
-    while (skip_comment())
-        ;
-}
-
-template<typename _Handler>
-void css_parser<_Handler>::identifier(const char*& p, size_t& len)
-{
-    p = mp_char;
-    len = 1;
-    for (next(); has_char(); next(), ++len)
-    {
-        char c = cur_char();
-        if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c))
-            break;
-    }
-}
-
-template<typename _Handler>
-void css_parser<_Handler>::skip_blanks()
-{
-    for (; has_char(); next())
-    {
-        if (!is_blank(*mp_char))
-            break;
-    }
-}
-
-template<typename _Handler>
-void css_parser<_Handler>::skip_blanks_reverse()
-{
-    const char* p = mp_char + remaining_size();
-    for (; p != mp_char; --p, --m_length)
-    {
-        if (!is_blank(*p))
-            break;
-    }
-}
-
-template<typename _Handler>
-void css_parser<_Handler>::shrink_stream()
-{
-    // Skip any leading blanks.
-    skip_blanks();
-
-    if (!remaining_size())
-        return;
-
-    // Skip any trailing blanks.
-    skip_blanks_reverse();
-
-    // Skip leading <!-- if present.
-
-    const char* com_open = "<!--";
-    size_t com_open_len = std::strlen(com_open);
-    if (remaining_size() < com_open_len)
-        // Not enough stream left.  Bail out.
-        return;
-
-    const char* p = mp_char;
-    for (size_t i = 0; i < com_open_len; ++i, ++p)
-    {
-        if (*p != com_open[i])
-            return;
-        next();
-    }
-    mp_char = p;
-
-    // Skip leading blanks once again.
-    skip_blanks();
-
-    // Skip trailing --> if present.
-    const char* com_close = "-->";
-    size_t com_close_len = std::strlen(com_close);
-    size_t n = remaining_size();
-    if (n < com_close_len)
-        // Not enough stream left.  Bail out.
-        return;
-
-    p = mp_char + n; // move to the last char.
-    for (size_t i = com_close_len; i > 0; --i, --p)
-    {
-        if (*p != com_close[i-1])
-            return;
-    }
-    m_length -= com_close_len;
-
-    skip_blanks_reverse();
-}
-
-template<typename _Handler>
-void css_parser<_Handler>::next()
-{
-    ++m_pos;
-    ++mp_char;
-}
-
-template<typename _Handler>
-char css_parser<_Handler>::cur_char() const
-{
-    return *mp_char;
-}
-
-template<typename _Handler>
-char css_parser<_Handler>::next_char() const
-{
-    const char* p = mp_char;
-    ++p;
-    return *p;
 }
 
 }
