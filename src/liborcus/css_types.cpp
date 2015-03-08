@@ -12,13 +12,13 @@ namespace orcus {
 void css_simple_selector_t::clear()
 {
     name.clear();
-    identifier.clear();
+    id.clear();
     classes.clear();
 }
 
 bool css_simple_selector_t::empty() const
 {
-    return name.empty() && identifier.empty() && classes.empty();
+    return name.empty() && id.empty() && classes.empty();
 }
 
 bool css_simple_selector_t::operator== (const css_simple_selector_t& r) const
@@ -26,7 +26,7 @@ bool css_simple_selector_t::operator== (const css_simple_selector_t& r) const
     if (name != r.name)
         return false;
 
-    if (identifier != r.identifier)
+    if (id != r.id)
         return false;
 
     return classes == r.classes;

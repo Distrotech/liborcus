@@ -129,7 +129,7 @@ void css_parser<_Handler>::rule()
             default:
             {
                 std::ostringstream os;
-                os << "failed to parse '" << c << "'";
+                os << "rule: failed to parse '" << c << "'";
                 throw css::parse_error(os.str());
             }
         }
@@ -144,7 +144,7 @@ void css_parser<_Handler>::at_rule_name()
     next();
     char c = cur_char();
     if (!is_alpha(c))
-        throw css::parse_error("first character of an at-rule name must be an alphabet.");
+        throw css::parse_error("at_rule_name: first character of an at-rule name must be an alphabet.");
 
     const char* p;
     size_t len;
@@ -185,23 +185,46 @@ void css_parser<_Handler>::selector_name()
 
     const char* p_elem = NULL;
     const char* p_class = NULL;
+    const char* p_id = NULL;
     size_t len_elem = 0;
     size_t len_class = 0;
+    size_t len_id = 0;
     if (c != '.')
         identifier(p_elem, len_elem);
 
-    if (cur_char() == '.')
+    switch (cur_char())
     {
-        next();
-        identifier(p_class, len_class);
+        case '.':
+        {
+            next();
+            identifier(p_class, len_class);
+        }
+        break;
+        case '#':
+        {
+            next();
+            identifier(p_id, len_id);
+        }
+        break;
     }
 
     skip_comments_and_blanks();
 
-    m_handler.simple_selector(p_elem, len_elem, p_class, len_class);
+    if (p_elem)
+        m_handler.simple_selector_type(p_elem, len_elem);
+    if (p_class)
+        m_handler.simple_selector_class(p_class, len_class);
+    if (p_id)
+        m_handler.simple_selector_id(p_id, len_id);
+    m_handler.end_simple_selector();
 #if ORCUS_DEBUG_CSS
-    std::string elem_name(p_elem, len_elem), class_name(p_class, len_class);
-    std::cout << "selector name: (element)'" << elem_name.c_str() << "' (class)'" << class_name.c_str() << "'" << std::endl;
+    std::string elem_name(p_elem, len_elem);
+    std::string class_name(p_class, len_class);
+    std::string id_name(p_id, len_id);
+    std::cout << "selector name: (element)'" << elem_name.c_str()
+        << "' (class)'" << class_name.c_str() << "'"
+        << "' (id)'" << id_name.c_str() << "'"
+        << std::endl;
 #endif
 }
 
@@ -290,7 +313,7 @@ void css_parser<_Handler>::quoted_value()
     }
 
     if (cur_char() != '"')
-        throw css::parse_error("end quote has never been reached.");
+        throw css::parse_error("quoted_value: end quote has never been reached.");
 
     next();
     skip_blanks();
@@ -400,7 +423,7 @@ void css_parser<_Handler>::block()
     }
 
     if (cur_char() != '}')
-        throw css::parse_error("} expected.");
+        throw css::parse_error("block: '}' expected.");
 
     m_handler.end_block();
 
@@ -464,12 +487,11 @@ void css_parser<_Handler>::identifier(const char*& p, size_t& len)
 {
     p = mp_char;
     len = 1;
-    for (next(); has_char(); next())
+    for (next(); has_char(); next(), ++len)
     {
         char c = cur_char();
         if (!is_alpha(c) && !is_name_char(c) && !is_numeric(c))
             break;
-        ++len;
     }
 }
 
