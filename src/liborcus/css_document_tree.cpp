@@ -26,6 +26,7 @@ class parser_handler
     pstring m_cur_prop_name;
     std::vector<pstring> m_cur_prop_values;
     css_selector_t m_cur_selector;  /// current selector
+    css_simple_selector_t m_cur_simple_selector;
     bool m_in_prop:1;
 public:
     parser_handler(css_document_tree& doc) : m_doc(doc), m_in_prop(false) {}
@@ -35,31 +36,40 @@ public:
         cout << "@" << string(p, n).c_str();
     }
 
-    void simple_selector(const char* p_elem, size_t n_elem, const char* p_class, size_t n_class)
+    void simple_selector_type(const char* p, size_t n)
     {
-        css_simple_selector_t ss;
-        ss.name = pstring(p_elem, n_elem);
-        pstring class_name(p_class, n_class);
-        if (!class_name.empty())
-            ss.classes.insert(class_name);
+        m_cur_simple_selector.name = pstring(p, n);
+    }
 
-        cout << "(elem='" << string(p_elem, n_elem).c_str() << "'; class='" << string(p_class, n_class).c_str() << "') ";
+    void simple_selector_class(const char* p, size_t n)
+    {
+        m_cur_simple_selector.classes.insert(pstring(p, n));
+    }
 
+    void simple_selector_id(const char* p, size_t n)
+    {
+        m_cur_simple_selector.id = pstring(p, n);
+    }
+
+    void end_simple_selector()
+    {
         if (m_cur_selector.first.empty())
-            m_cur_selector.first = ss;
+            m_cur_selector.first = m_cur_simple_selector;
         else
         {
             // TODO : this is currently not being handled correctly.
             css_chained_simple_selector_t css;
             css.combinator = css_combinator_descendant;
-            css.simple_selector = ss;
+            css.simple_selector = m_cur_simple_selector;
             m_cur_selector.chained.push_back(css);
         }
+
+        m_cur_simple_selector.clear();
     }
 
     void end_selector()
     {
-        cout << "|";
+        cout << m_cur_selector << "|";
         m_cur_selector_group.push_back(m_cur_selector);
         m_cur_selector.clear();
     }
@@ -144,8 +154,8 @@ css_simple_selector_t intern(string_pool& sp, const css_simple_selector_t& sel)
 
     if (!sel.name.empty())
         interned.name = sp.intern(sel.name).first;
-    if (!sel.identifier.empty())
-        interned.identifier = sp.intern(sel.identifier).first;
+    if (!sel.id.empty())
+        interned.id = sp.intern(sel.id).first;
 
     css_simple_selector_t::classes_type::const_iterator it = sel.classes.begin(), ite = sel.classes.end();
     for (; it != ite; ++it)

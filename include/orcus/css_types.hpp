@@ -30,7 +30,7 @@ struct ORCUS_DLLPUBLIC css_simple_selector_t
     typedef boost::unordered_set<pstring, pstring::hash> classes_type;
 
     pstring name;
-    pstring identifier;
+    pstring id;
     classes_type classes;
 
     void clear();
@@ -74,6 +74,8 @@ inline std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& 
     css_simple_selector_t::classes_type::const_iterator it = v.classes.begin(), ite = v.classes.end();
     for (; it != ite; ++it)
         os << '.' << *it;
+    if (!v.id.empty())
+        os << '#' << v.id;
     return os;
 }
 

@@ -203,6 +203,30 @@ void test_css_parse_basic5()
     assert(check_prop(*props, "word-spacing", "normal"));
 }
 
+void test_css_parse_basic6()
+{
+    const char* path = SRCDIR"/test/css/basic6.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.name = "h1";
+    selector.first.id = "chapter1";
+
+    const css_properties_t* props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "text-align", "center"));
+
+    selector.first.id = "z98y";
+    props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "letter-spacing", "0.5em"));
+}
+
 int main()
 {
     test_css_parse_basic1();
@@ -210,6 +234,7 @@ int main()
     test_css_parse_basic3();
     test_css_parse_basic4();
     test_css_parse_basic5();
+    test_css_parse_basic6();
 
     return EXIT_SUCCESS;
 }
