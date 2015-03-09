@@ -42,6 +42,7 @@ protected:
 
     void identifier(const char*& p, size_t& len, const char* extra = NULL);
 
+    void skip_to(const char*&p, size_t& len, char c);
     void skip_blanks();
     void skip_blanks_reverse();
     void shrink_stream();
