@@ -69,6 +69,17 @@ void parser_base::identifier(const char*& p, size_t& len, const char* extra)
     }
 }
 
+void parser_base::skip_to(const char*&p, size_t& len, char c)
+{
+    p = mp_char;
+    len = 1;
+    for (next(); has_char(); next(), ++len)
+    {
+        if (cur_char() == c)
+            return;
+    }
+}
+
 void parser_base::skip_blanks()
 {
     for (; has_char(); next())

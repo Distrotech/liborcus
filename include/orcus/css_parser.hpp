@@ -283,17 +283,9 @@ void css_parser<_Handler>::quoted_value()
 
     assert(cur_char() == '"');
     next();
-    const char* p = mp_char;
-    size_t len = 1;
-    for (next(); has_char(); next())
-    {
-        if (cur_char() == '"')
-        {
-            // End quote reached.
-            break;
-        }
-        ++len;
-    }
+    const char* p = NULL;
+    size_t len = 0;
+    skip_to(p, len, '"');
 
     if (cur_char() != '"')
         throw css::parse_error("quoted_value: end quote has never been reached.");
