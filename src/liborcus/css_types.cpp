@@ -32,6 +32,11 @@ bool css_simple_selector_t::operator== (const css_simple_selector_t& r) const
     return classes == r.classes;
 }
 
+bool css_simple_selector_t::operator!= (const css_simple_selector_t& r) const
+{
+    return !operator==(r);
+}
+
 size_t css_simple_selector_t::hash::operator() (const css_simple_selector_t& ss) const
 {
     return 0;

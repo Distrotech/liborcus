@@ -177,30 +177,36 @@ void css_parser<_Handler>::selector_name()
         m_handler.simple_selector_type(p, n);
     }
 
-    switch (cur_char())
+    bool in_loop = true;
+    while (in_loop && has_char())
     {
-        case '.':
+        switch (cur_char())
         {
-            next();
-            identifier(p, n);
-            m_handler.simple_selector_class(p, n);
+            case '.':
+            {
+                next();
+                identifier(p, n);
+                m_handler.simple_selector_class(p, n);
 #if ORCUS_DEBUG_CSS
-            std::string s(p, n);
-            std::cout << " class=" << s;
+                std::string s(p, n);
+                std::cout << " class=" << s;
 #endif
-        }
-        break;
-        case '#':
-        {
-            next();
-            identifier(p, n);
-            m_handler.simple_selector_id(p, n);
+            }
+            break;
+            case '#':
+            {
+                next();
+                identifier(p, n);
+                m_handler.simple_selector_id(p, n);
 #if ORCUS_DEBUG_CSS
-            std::string s(p, n);
-            std::cout << " id=" << s;
+                std::string s(p, n);
+                std::cout << " id=" << s;
 #endif
+            }
+            break;
+            default:
+                in_loop = false;
         }
-        break;
     }
 
     m_handler.end_simple_selector();

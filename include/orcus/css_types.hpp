@@ -37,6 +37,7 @@ struct ORCUS_DLLPUBLIC css_simple_selector_t
     bool empty() const;
 
     bool operator== (const css_simple_selector_t& r) const;
+    bool operator!= (const css_simple_selector_t& r) const;
 
     struct hash
     {
