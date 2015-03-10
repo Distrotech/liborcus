@@ -1,0 +1,26 @@
+/* selector with multiple classes */
+
+.one.two.three {
+    color: blue;
+}
+
+.one {
+    color: aqua;
+}
+
+.two {
+    color: azure;
+}
+
+.one.two {
+    color: brown;
+}
+
+span.button.selected {
+    border: solid 4px red;
+}
+
+span.button {
+    border: solid 1px gray;
+}
+
