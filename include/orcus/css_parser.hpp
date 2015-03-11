@@ -94,6 +94,7 @@ void css_parser<_Handler>::rule()
         switch (c)
         {
             case '.':
+            case '#':
             case '@':
                 selector_name();
             break;
@@ -138,12 +139,6 @@ void css_parser<_Handler>::at_rule_name()
 template<typename _Handler>
 void css_parser<_Handler>::selector_name()
 {
-    // <element name>
-    // '.' <class name>
-    // <element name> '.' <class name>
-    //
-    // Both element and class names are identifiers.
-
     assert(has_char());
     char c = cur_char();
     if (c == '@')
@@ -153,12 +148,7 @@ void css_parser<_Handler>::selector_name()
         return;
     }
 
-    if (!is_alpha(c) && c != '.')
-    {
-        std::ostringstream os;
-        os << "selector_name: first character of a name must be an alphabet or a dot, but found '" << c << "'";
-        throw css::parse_error(os.str());
-    }
+    assert(is_alpha(c) || c == '.' || c == '#');
 
     const char* p = NULL;
     size_t n = 0;
