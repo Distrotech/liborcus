@@ -247,6 +247,13 @@ void test_css_parse_basic6()
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "letter-spacing", "0.5em"));
+
+    selector.clear();
+    selector.first.id = "id_global";
+    props = doc.get_properties(selector);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "margin", "10px"));
 }
 
 void test_css_parse_basic7()

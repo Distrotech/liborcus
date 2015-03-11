@@ -2,3 +2,7 @@
 h1#chapter1 { text-align: center }
 
 h1#z98y { letter-spacing: 0.5em }
+
+#id_global {
+    margin: 10px;
+}
