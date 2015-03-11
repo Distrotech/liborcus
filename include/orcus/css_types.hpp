@@ -42,6 +42,7 @@ struct ORCUS_DLLPUBLIC css_simple_selector_t
     pstring id;
     classes_type classes;
 
+    /** Pseudo element flags (bitfield) */
     css_pseudo_element_t pseudo_elements;
 
     css_simple_selector_t();
