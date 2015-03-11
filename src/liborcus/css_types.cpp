@@ -52,7 +52,16 @@ bool css_simple_selector_t::operator!= (const css_simple_selector_t& r) const
 
 size_t css_simple_selector_t::hash::operator() (const css_simple_selector_t& ss) const
 {
-    return 0;
+    static pstring::hash hasher;
+
+    size_t val = hasher(ss.name);
+    val += hasher(ss.id);
+    classes_type::const_iterator it = ss.classes.begin(), ite = ss.classes.end();
+    for (; it != ite; ++it)
+        val += hasher(*it);
+    val += ss.pseudo_elements;
+
+    return val;
 }
 
 bool css_chained_simple_selector_t::operator== (const css_chained_simple_selector_t& r) const
