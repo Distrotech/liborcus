@@ -9,6 +9,16 @@
 
 namespace orcus {
 
+const css_pseudo_element_t css_pseudo_element_after        = 0x0001;
+const css_pseudo_element_t css_pseudo_element_before       = 0x0002;
+const css_pseudo_element_t css_pseudo_element_first_letter = 0x0004;
+const css_pseudo_element_t css_pseudo_element_first_line   = 0x0008;
+const css_pseudo_element_t css_pseudo_element_selection    = 0x0010;
+const css_pseudo_element_t css_pseudo_element_backdrop     = 0x0020;
+
+css_simple_selector_t::css_simple_selector_t() :
+    pseudo_elements(0) {}
+
 void css_simple_selector_t::clear()
 {
     name.clear();
@@ -29,7 +39,10 @@ bool css_simple_selector_t::operator== (const css_simple_selector_t& r) const
     if (id != r.id)
         return false;
 
-    return classes == r.classes;
+    if (classes != r.classes)
+        return false;
+
+    return pseudo_elements == r.pseudo_elements;
 }
 
 bool css_simple_selector_t::operator!= (const css_simple_selector_t& r) const

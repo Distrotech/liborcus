@@ -18,12 +18,21 @@
 
 namespace orcus {
 
-enum ORCUS_DLLPUBLIC css_combinator_t
+enum css_combinator_t
 {
     css_combinator_descendant,   /// 'E F' where F is a descendant of E.
     css_combinator_child,        /// 'E > F' where F is a direct child of E.
     css_combinator_next_sibling  /// 'E + F' where F is a direct sibling of E where E precedes F.
 };
+
+typedef unsigned int css_pseudo_element_t;
+
+ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_after;
+ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_before;
+ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_first_letter;
+ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_first_line;
+ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_selection;
+ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_backdrop;
 
 struct ORCUS_DLLPUBLIC css_simple_selector_t
 {
@@ -32,6 +41,10 @@ struct ORCUS_DLLPUBLIC css_simple_selector_t
     pstring name;
     pstring id;
     classes_type classes;
+
+    css_pseudo_element_t pseudo_elements;
+
+    css_simple_selector_t();
 
     void clear();
     bool empty() const;
