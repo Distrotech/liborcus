@@ -56,13 +56,7 @@ void parser_base::identifier(const char*& p, size_t& len, const char* extra)
         if (extra)
         {
             // See if the character is one of the extra allowed characters.
-            bool has_extra = false;
-            for (const char* p_ext = extra; !has_extra && *p_ext != '\0'; ++p_ext)
-            {
-                if (c == *p_ext)
-                    has_extra = true;
-            }
-            if (has_extra)
+            if (is_in(c, extra))
                 continue;
         }
         return;

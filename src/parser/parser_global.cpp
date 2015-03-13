@@ -51,5 +51,15 @@ bool is_numeric(char c)
     return ('0' <= c && c <= '9');
 }
 
+bool is_in(char c, const char* allowed)
+{
+    for (; *allowed != '\0'; ++allowed)
+    {
+        if (c == *allowed)
+            return true;
+    }
+    return false;
+}
+
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

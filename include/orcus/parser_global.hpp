@@ -17,6 +17,18 @@ ORCUS_PSR_DLLPUBLIC bool is_alpha(char c);
 ORCUS_PSR_DLLPUBLIC bool is_name_char(char c);
 ORCUS_PSR_DLLPUBLIC bool is_numeric(char c);
 
+/**
+ * Check if the characater is one of allowed characters.
+ *
+ * @param c character to check.
+ * @param allowed null-terminated character array containing all allowed
+ *                characters.
+ *
+ * @return true if the character is one of the allowed characters, false
+ *         otherwise.
+ */
+ORCUS_PSR_DLLPUBLIC bool is_in(char c, const char* allowed);
+
 }
 
 #endif

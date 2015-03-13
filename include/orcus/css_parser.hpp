@@ -307,7 +307,7 @@ void css_parser<_Handler>::value()
         return;
     }
 
-    if (!is_alpha(c) && !is_numeric(c) && c != '-' && c != '+' && c != '.')
+    if (!is_alpha(c) && !is_numeric(c) && !is_in(c, "-+.#"))
     {
         std::ostringstream os;
         os << "value:: illegal first character of a value '" << c << "'";
