@@ -146,6 +146,7 @@ enum condition_operator_t
     condition_operator_begins_with,
     condition_operator_ends_with,
     condition_operator_contains,
+    condition_operator_contains_blanks,
     condition_operator_not_contains,
     condition_operator_expression
 };
