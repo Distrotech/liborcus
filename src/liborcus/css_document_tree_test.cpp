@@ -82,14 +82,14 @@ void test_css_parse_basic1()
     css_selector_t selector;
     selector.first.name = "table";
 
-    const css_properties_t* props = doc.get_properties(selector);
+    const css_properties_t* props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 2);
     assert(check_prop(*props, "width", "auto"));
     assert(check_prop(*props, "height", "500px"));
 
     selector.first.name = "td";
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 2);
     assert(check_prop(*props, "color", "gray"));
@@ -97,7 +97,7 @@ void test_css_parse_basic1()
 
     // This selector doesn't exist in the document tree.
     selector.first.name = "tr";
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(!props);
 }
 
@@ -113,7 +113,7 @@ void test_css_parse_basic2()
     selector.first.name = "div";
     selector.first.classes.insert("foo");
 
-    const css_properties_t* props = doc.get_properties(selector);
+    const css_properties_t* props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "border", "solid 1px"));
@@ -121,7 +121,7 @@ void test_css_parse_basic2()
     selector.clear();
     selector.first.classes.insert("warning");
 
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 2);
     assert(check_prop(*props, "background-color", "red"));
@@ -139,13 +139,13 @@ void test_css_parse_basic3()
     css_selector_t selector;
     selector.first.name = "html";
 
-    const css_properties_t* props = doc.get_properties(selector);
+    const css_properties_t* props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "height", "100%"));
 
     selector.first.name = "body";
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "height", "100%"));
@@ -158,7 +158,7 @@ void test_css_parse_basic3()
         for (size_t i = 0; i < n; ++i)
         {
             selector.first.name = names[i];
-            props = doc.get_properties(selector);
+            props = doc.get_properties(selector, 0);
             assert(props);
             assert(props->size() == 2);
             assert(check_prop(*props, "font-variant", "small-caps"));
@@ -178,31 +178,31 @@ void test_css_parse_basic4()
     css_selector_t selector;
     selector.first.name = "h1";
 
-    const css_properties_t* props = doc.get_properties(selector);
+    const css_properties_t* props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "margin", "0.5in"));
 
     selector.first.name = "h2";
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "line-height", "3cm"));
 
     selector.first.name = "h3";
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "word-spacing", "4mm"));
 
     selector.first.name = "h4";
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "font-size", "1pc"));
 
     selector.first.name = "p";
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "font-size", "12px"));
@@ -219,7 +219,7 @@ void test_css_parse_basic5()
     css_selector_t selector;
     selector.first.classes.insert("info");
 
-    const css_properties_t* props = doc.get_properties(selector);
+    const css_properties_t* props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "word-spacing", "normal"));
@@ -237,20 +237,20 @@ void test_css_parse_basic6()
     selector.first.name = "h1";
     selector.first.id = "chapter1";
 
-    const css_properties_t* props = doc.get_properties(selector);
+    const css_properties_t* props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "text-align", "center"));
 
     selector.first.id = "z98y";
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "letter-spacing", "0.5em"));
 
     selector.clear();
     selector.first.id = "id_global";
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "margin", "10px"));
@@ -269,27 +269,27 @@ void test_css_parse_basic7()
     selector.first.classes.insert("two");
     selector.first.classes.insert("three");
 
-    const css_properties_t* props = doc.get_properties(selector);
+    const css_properties_t* props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "color", "blue"));
 
     selector.first.classes.clear();
     selector.first.classes.insert("one");
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "color", "aqua"));
 
     selector.first.classes.clear();
     selector.first.classes.insert("two");
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "color", "azure"));
 
     selector.first.classes.insert("one"); // one two
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "color", "brown"));
@@ -297,13 +297,13 @@ void test_css_parse_basic7()
     selector.first.clear();
     selector.first.name = "span";
     selector.first.classes.insert("button");
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "border", "solid 1px gray"));
 
     selector.first.classes.insert("selected"); // button selected
-    props = doc.get_properties(selector);
+    props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "border", "solid 4px red"));

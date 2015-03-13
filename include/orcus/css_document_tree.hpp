@@ -35,17 +35,30 @@ public:
      */
     void load(const std::string& strm);
 
-    void insert_properties(const css_selector_t& selector, const css_properties_t& props);
+    /**
+     * Insert or replace properties for given selector and pseudo element
+     * flags.
+     *
+     * @param selector selector to store properties for.
+     * @param pseudo_elem pseudo element flags for the last simple selector.
+     * @param props new properties to insert.
+     */
+    void insert_properties(
+        const css_selector_t& selector,
+        css_pseudo_element_t pseudo_elem,
+        const css_properties_t& props);
 
     /**
      * Get properties associated with given selector.
      *
      * @param selector selector to get properties for.
+     * @param pseudo_elem pseudo element flags for the last simple selector.
      *
      * @return const pointer to the property set instance, or NULL in case
      *         there is no properties for the given selector.
      */
-    const css_properties_t* get_properties(const css_selector_t& selector) const;
+    const css_properties_t* get_properties(
+        const css_selector_t& selector, css_pseudo_element_t pseudo_elem) const;
 
     void dump() const;
 };

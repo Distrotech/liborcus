@@ -112,7 +112,7 @@ public:
 
         std::vector<css_selector_t>::iterator it = m_cur_selector_group.begin(), ite = m_cur_selector_group.end();
         for (; it != ite; ++it)
-            m_doc.insert_properties(*it, m_cur_properties);
+            m_doc.insert_properties(*it, 0, m_cur_properties);
 
         m_cur_selector_group.clear();
         m_cur_properties.clear();
@@ -142,9 +142,11 @@ typedef boost::unordered_map<
 
 typedef boost::unordered_map<css_combinator_t, simple_selectors_type> combinators_type;
 
+typedef boost::unordered_map<css_pseudo_element_t, css_properties_t> properties_store_type;
+
 struct simple_selector_node
 {
-    css_properties_t properties;
+    properties_store_type properties;
     combinators_type children;
 };
 
@@ -197,15 +199,33 @@ public:
 };
 
 void store_properties(
-    string_pool& sp, css_properties_t& store, const css_properties_t& props)
+    string_pool& sp, properties_store_type& store,
+    css_pseudo_element_t pseudo_flags, const css_properties_t& props)
 {
+    properties_store_type::iterator it_store = store.find(pseudo_flags);
+    if (it_store == store.end())
+    {
+        // No storage for this pseudo flag value.  Create a new one.
+        std::pair<properties_store_type::iterator, bool> r =
+            store.insert(
+                properties_store_type::value_type(
+                    pseudo_flags, css_properties_t()));
+        if (!r.second)
+            // insertion failed.
+            return;
+
+        it_store = r.first;
+    }
+
+    css_properties_t& prop_store = it_store->second;
+
     css_properties_t::const_iterator it = props.begin(), ite = props.end();
     for (; it != ite; ++it)
     {
         pstring key = sp.intern(it->first).first;
         vector<pstring> vals;
         for_each(it->second.begin(), it->second.end(), intern_inserter(sp, vals));
-        store[key] = vals;
+        prop_store[key] = vals;
     }
 }
 
@@ -310,7 +330,9 @@ void css_document_tree::load(const std::string& strm)
 }
 
 void css_document_tree::insert_properties(
-    const css_selector_t& selector, const css_properties_t& props)
+    const css_selector_t& selector,
+    css_pseudo_element_t pseudo_elem,
+    const css_properties_t& props)
 {
     if (props.empty())
         return;
@@ -348,10 +370,11 @@ void css_document_tree::insert_properties(
 
     // We found the right node to store the properties.
     assert(node);
-    store_properties(mp_impl->m_string_pool, node->properties, props);
+    store_properties(mp_impl->m_string_pool, node->properties, pseudo_elem, props);
 }
 
-const css_properties_t* css_document_tree::get_properties(const css_selector_t& selector) const
+const css_properties_t* css_document_tree::get_properties(
+    const css_selector_t& selector, css_pseudo_element_t pseudo_elem) const
 {
     const simple_selector_node* node = get_simple_selector_node(mp_impl->m_root, selector.first);
     if (!node)
@@ -377,7 +400,11 @@ const css_properties_t* css_document_tree::get_properties(const css_selector_t& 
     }
 
     assert(node);
-    return &node->properties;
+    properties_store_type::const_iterator it = node->properties.find(pseudo_elem);
+    if (it == node->properties.end())
+        return NULL;
+
+    return &it->second;
 }
 
 void css_document_tree::dump() const
@@ -391,10 +418,17 @@ void css_document_tree::dump() const
         selector.first = it_ss->first;
 
         const simple_selector_node* node = &it_ss->second;
-        if (!node->properties.empty())
+        properties_store_type::const_iterator it_prop = node->properties.begin(), ite_prop = node->properties.end();
+        for (; it_prop != ite_prop; ++it_prop)
         {
-            cout << selector << endl;
-            dump_properties(node->properties);
+            const css_properties_t& prop = it_prop->second;
+            if (!prop.empty())
+            {
+                cout << selector;
+                // TODO : dump pseudo elements.
+                cout << endl;
+                dump_properties(prop);
+            }
         }
 
         // TODO : dump chained selectors.
