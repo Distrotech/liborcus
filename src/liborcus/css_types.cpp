@@ -16,8 +16,7 @@ const css_pseudo_element_t css_pseudo_element_first_line   = 0x0008;
 const css_pseudo_element_t css_pseudo_element_selection    = 0x0010;
 const css_pseudo_element_t css_pseudo_element_backdrop     = 0x0020;
 
-css_simple_selector_t::css_simple_selector_t() :
-    pseudo_elements(0) {}
+css_simple_selector_t::css_simple_selector_t() {}
 
 void css_simple_selector_t::clear()
 {
@@ -42,7 +41,7 @@ bool css_simple_selector_t::operator== (const css_simple_selector_t& r) const
     if (classes != r.classes)
         return false;
 
-    return pseudo_elements == r.pseudo_elements;
+    return true;
 }
 
 bool css_simple_selector_t::operator!= (const css_simple_selector_t& r) const
@@ -59,7 +58,6 @@ size_t css_simple_selector_t::hash::operator() (const css_simple_selector_t& ss)
     classes_type::const_iterator it = ss.classes.begin(), ite = ss.classes.end();
     for (; it != ite; ++it)
         val += hasher(*it);
-    val += ss.pseudo_elements;
 
     return val;
 }
