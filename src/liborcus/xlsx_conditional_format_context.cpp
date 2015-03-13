@@ -134,12 +134,13 @@ bool parse_boolean_flag(const xml_token_attr_t& attr, bool default_value)
     }
 }
 
-class cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
+struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
 
     cfRule_attr_parser(spreadsheet::iface::import_conditional_format& cond_format):
         m_cond_format(cond_format),
         m_above_average(true),
+        m_equal_average(false),
         m_percent(false),
         m_bottom(false)
     {
@@ -179,9 +180,7 @@ class cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
             case XML_stdDev:
             break;
             case XML_equalAverage:
-            {
-
-            }
+                m_equal_average = parse_boolean_flag(attr, false);
             break;
 
             default:
@@ -189,10 +188,106 @@ class cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
         }
     }
 
+    void set_type()
+    {
+        switch (m_type)
+        {
+            case expression:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_expression);
+            break;
+            case cellIs:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_expression);
+            break;
+            case colorScale:
+                m_cond_format.set_type(spreadsheet::conditional_format_colorscale);
+            break;
+            case dataBar:
+                m_cond_format.set_type(spreadsheet::conditional_format_databar);
+            break;
+            case iconSet:
+                m_cond_format.set_type(spreadsheet::conditional_format_iconset);
+            break;
+            case top10:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_top_n);
+            break;
+            case uniqueValues:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_unique);
+            break;
+            case duplicateValues:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_duplicate);
+            break;
+            case containsText:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_contains);
+            break;
+            case notContainsText:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_not_contains);
+            break;
+            case beginsWith:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_begins_with);
+            break;
+            case endsWith:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_ends_with);
+            break;
+            case containsBlanks:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_contains_blanks);
+            break;
+            case containsErrors:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_contains_error);
+            break;
+            case notContainsErrors:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                m_cond_format.set_operator(spreadsheet::condition_operator_contains_no_error);
+            break;
+            case timePeriod:
+                m_cond_format.set_type(spreadsheet::conditional_format_date);
+            break;
+            case aboveAverage:
+                m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                if (m_above_average)
+                {
+                    if (m_equal_average)
+                    {
+                        m_cond_format.set_operator(spreadsheet::condition_operator_above_equal_average);
+                    }
+                    else
+                    {
+                        m_cond_format.set_operator(spreadsheet::condition_operator_above_average);
+                    }
+                }
+                else
+                {
+                    if (m_equal_average)
+                    {
+                        m_cond_format.set_operator(spreadsheet::condition_operator_below_equal_average);
+                    }
+                    else
+                    {
+                        m_cond_format.set_operator(spreadsheet::condition_operator_below_average);
+                    }
+                }
+            break;
+            default:
+            break;
+
+        }
+    }
+
 private:
     spreadsheet::iface::import_conditional_format& m_cond_format;
     xlsx_cond_format_type m_type;
     bool m_above_average;
+    bool m_equal_average;
     bool m_percent;
     bool m_bottom;
 };
@@ -237,6 +332,8 @@ void xlsx_conditional_format_context::start_element(xmlns_id_t ns, xml_token_t n
         case XML_cfRule:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_conditionalFormatting);
+            cfRule_attr_parser parser = std::for_each(attrs.begin(), attrs.end(), cfRule_attr_parser(m_cond_format));
+            parser.set_type();
         }
         break;
         case XML_cfvo:
@@ -244,13 +341,11 @@ void xlsx_conditional_format_context::start_element(xmlns_id_t ns, xml_token_t n
         case XML_dataBar:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_cfRule);
-            m_cond_format.set_type(spreadsheet::conditional_format_databar);
         }
         break;
         case XML_iconSet:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_cfRule);
-            m_cond_format.set_type(spreadsheet::conditional_format_iconset);
         }
         break;
         case XML_color:
