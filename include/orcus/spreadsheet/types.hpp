@@ -137,7 +137,7 @@ enum condition_operator_t
     condition_operator_unique,
     condition_operator_top_n,
     condition_operator_bottom_n,
-    condition_operator_above_averag,
+    condition_operator_above_average,
     condition_operator_below_average,
     condition_operator_above_equal_average,
     condition_operator_below_equal_average,
