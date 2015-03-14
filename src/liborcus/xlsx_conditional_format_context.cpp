@@ -240,6 +240,8 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
             }
             break;
             case XML_text:
+                // do we need to worry about the transient flag here?
+                m_text = attr.value;
             break;
             case XML_timePeriod:
             {
@@ -337,18 +339,22 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
             case containsText:
                 m_cond_format.set_type(spreadsheet::conditional_format_condition);
                 m_cond_format.set_operator(spreadsheet::condition_operator_contains);
+                m_cond_format.set_formula(m_text.get(), m_text.size());
             break;
             case notContainsText:
                 m_cond_format.set_type(spreadsheet::conditional_format_condition);
                 m_cond_format.set_operator(spreadsheet::condition_operator_not_contains);
+                m_cond_format.set_formula(m_text.get(), m_text.size());
             break;
             case beginsWith:
                 m_cond_format.set_type(spreadsheet::conditional_format_condition);
                 m_cond_format.set_operator(spreadsheet::condition_operator_begins_with);
+                m_cond_format.set_formula(m_text.get(), m_text.size());
             break;
             case endsWith:
                 m_cond_format.set_type(spreadsheet::conditional_format_condition);
                 m_cond_format.set_operator(spreadsheet::condition_operator_ends_with);
+                m_cond_format.set_formula(m_text.get(), m_text.size());
             break;
             case containsBlanks:
                 m_cond_format.set_type(spreadsheet::conditional_format_condition);
@@ -437,6 +443,7 @@ private:
     bool m_equal_average;
     bool m_percent;
     bool m_bottom;
+    pstring m_text;
 };
 
 struct conditional_formatting_attr_parser : public std::unary_function<xml_token_attr_t, void>
