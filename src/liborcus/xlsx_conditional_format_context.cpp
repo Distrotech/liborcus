@@ -93,6 +93,20 @@ enum xlsx_cond_format_operator
     operator_notEqual
 };
 
+enum xlsx_cond_format_date
+{
+    date_default = 0,
+    date_last7Days,
+    date_lastMonth,
+    date_lastWeek,
+    date_nextMonth,
+    date_thisMonth,
+    date_thisWeek,
+    date_today,
+    date_tomorrow,
+    date_yesterday
+};
+
 enum xlsx_cond_format_boolean
 {
     boolean_default = 0,
@@ -105,6 +119,8 @@ typedef mdds::sorted_string_map<xlsx_cond_format_type> cond_format_type_map;
 typedef mdds::sorted_string_map<xlsx_cond_format_boolean> cond_format_boolean_map;
 
 typedef mdds::sorted_string_map<xlsx_cond_format_operator> cond_format_operator_map;
+
+typedef mdds::sorted_string_map<xlsx_cond_format_date> cond_format_date_map;
 
 cond_format_type_map::entry cond_format_type_entries[] =
 {
@@ -141,6 +157,19 @@ cond_format_operator_map::entry cond_format_operator_entries[] =
     { ORCUS_ASCII("notBetween"), operator_notBetween },
     { ORCUS_ASCII("notContains"), operator_notContains },
     { ORCUS_ASCII("notEqual"), operator_notEqual }
+};
+
+cond_format_date_map::entry cond_format_date_entries[] =
+{
+    { ORCUS_ASCII("last7Days"), date_last7Days },
+    { ORCUS_ASCII("lastMonth"), date_lastMonth },
+    { ORCUS_ASCII("lastWeek"), date_lastWeek },
+    { ORCUS_ASCII("nextMonth"), date_nextMonth },
+    { ORCUS_ASCII("thisMonth"), date_thisMonth },
+    { ORCUS_ASCII("thisWeek"), date_thisWeek },
+    { ORCUS_ASCII("today"), date_today },
+    { ORCUS_ASCII("tomorrow"), date_tomorrow },
+    { ORCUS_ASCII("yesterday"), date_yesterday },
 };
 
 cond_format_boolean_map::entry cond_format_boolean_entries[] =
@@ -213,6 +242,10 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
             case XML_text:
             break;
             case XML_timePeriod:
+            {
+                cond_format_date_map date_map(cond_format_date_entries, sizeof(cond_format_date_entries)/sizeof(cond_format_date_entries[0]), date_default);
+                m_date = date_map.find(attr.value.get(), attr.value.size());
+            }
             break;
             case XML_rank:
             break;
@@ -331,6 +364,38 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
             break;
             case timePeriod:
                 m_cond_format.set_type(spreadsheet::conditional_format_date);
+                switch (m_date)
+                {
+                    case date_last7Days:
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_last_7_days);
+                    break;
+                    case date_lastMonth:
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_last_month);
+                    break;
+                    case date_lastWeek:
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_last_week);
+                    break;
+                    case date_nextMonth:
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_next_month);
+                    break;
+                    case date_thisMonth:
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_this_month);
+                    break;
+                    case date_thisWeek:
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_this_week);
+                    break;
+                    case date_today:
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_today);
+                    break;
+                    case date_tomorrow:
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_tomorrow);
+                    break;
+                    case date_yesterday:
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_yesterday);
+                    break;
+                    default:
+                    break;
+                }
             break;
             case aboveAverage:
                 m_cond_format.set_type(spreadsheet::conditional_format_condition);
@@ -367,6 +432,7 @@ private:
     spreadsheet::iface::import_conditional_format& m_cond_format;
     xlsx_cond_format_type m_type;
     xlsx_cond_format_operator m_operator;
+    xlsx_cond_format_date m_date;
     bool m_above_average;
     bool m_equal_average;
     bool m_percent;
