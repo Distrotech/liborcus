@@ -23,6 +23,8 @@ namespace spreadsheet { namespace iface {
     class import_conditional_format;
 } }
 
+struct cfvo_values;
+
 class xlsx_conditional_format_context : public xml_context_base
 {
 public:
@@ -45,6 +47,8 @@ private:
 
     string_pool m_pool;
     pstring m_cur_str;
+
+    std::vector<cfvo_values> m_cfvo_values;
 };
 
 }

@@ -515,11 +515,27 @@ cond_format_cfvo_type_map::entry cond_format_cfvo_entries[] =
     { ORCUS_ASCII("percentile"), cfvo_percentile },
 };
 
-struct cfvo_attr_parser : public std::unary_function<xml_token_attr_t, void>
+}
+
+struct cfvo_values
 {
-    cfvo_attr_parser():
+    cfvo_values():
         m_include_equal(true),
         m_type(cfvo_default)
+    {
+    }
+
+    bool m_include_equal;
+    xlsx_cond_format_cfvo_type m_type;
+    pstring m_value;
+};
+
+namespace {
+
+struct cfvo_attr_parser : public std::unary_function<xml_token_attr_t, void>
+{
+    cfvo_attr_parser(string_pool& pool):
+        m_string_pool(pool)
     {
     }
 
@@ -528,27 +544,37 @@ struct cfvo_attr_parser : public std::unary_function<xml_token_attr_t, void>
         switch (attr.name)
         {
             case XML_gte:
-                m_include_equal = parse_boolean_flag(attr, true);
+                m_values.m_include_equal = parse_boolean_flag(attr, true);
             break;
             case XML_type:
             {
                 cond_format_cfvo_type_map cfvo_type_map(cond_format_cfvo_entries, sizeof(cond_format_cfvo_entries)/sizeof(cond_format_cfvo_entries[0]), cfvo_default);
-                m_type = cfvo_type_map.find(attr.value.get(), attr.value.size());
+                m_values.m_type = cfvo_type_map.find(attr.value.get(), attr.value.size());
             }
             break;
             case XML_val:
-                // TODO: I think we need to care about the transient flag here
-                m_value = attr.value;
+                if (attr.transient)
+                {
+                    m_values.m_value = m_string_pool.intern(attr.value).first;
+                }
+                else
+                {
+                    m_values.m_value = attr.value;
+                }
             break;
             default:
             break;
         }
     }
 
+    cfvo_values get_values()
+    {
+        return m_values;
+    }
+
 private:
-    bool m_include_equal;
-    xlsx_cond_format_cfvo_type m_type;
-    pstring m_value;
+    cfvo_values m_values;
+    string_pool& m_string_pool;
 };
 
 }
@@ -600,7 +626,8 @@ void xlsx_conditional_format_context::start_element(xmlns_id_t ns, xml_token_t n
         break;
         case XML_cfvo:
         {
-            cfvo_attr_parser parser = std::for_each(attrs.begin(), attrs.end(), cfvo_attr_parser());
+            cfvo_attr_parser parser = std::for_each(attrs.begin(), attrs.end(), cfvo_attr_parser(m_pool));
+            m_cfvo_values.push_back(parser.get_values());
         }
         break;
         case XML_dataBar:
@@ -641,6 +668,7 @@ bool xlsx_conditional_format_context::end_element(xmlns_id_t ns, xml_token_t nam
         case XML_cfRule:
         {
             m_cond_format.commit_entry();
+            m_cfvo_values.clear();
         }
         break;
         case XML_cfvo:
