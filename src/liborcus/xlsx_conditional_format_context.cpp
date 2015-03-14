@@ -492,6 +492,65 @@ private:
     spreadsheet::iface::import_conditional_format& m_cond_format;
 };
 
+enum xlsx_cond_format_cfvo_type
+{
+    cfvo_default = 0,
+    cfvo_num,
+    cfvo_percent,
+    cfvo_max,
+    cfvo_min,
+    cfvo_formula,
+    cfvo_percentile
+};
+
+typedef mdds::sorted_string_map<xlsx_cond_format_cfvo_type> cond_format_cfvo_type_map;
+
+cond_format_cfvo_type_map::entry cond_format_cfvo_entries[] =
+{
+    { ORCUS_ASCII("num"), cfvo_num },
+    { ORCUS_ASCII("percent"), cfvo_percent },
+    { ORCUS_ASCII("max"), cfvo_max },
+    { ORCUS_ASCII("min"), cfvo_min },
+    { ORCUS_ASCII("formula"), cfvo_formula },
+    { ORCUS_ASCII("percentile"), cfvo_percentile },
+};
+
+struct cfvo_attr_parser : public std::unary_function<xml_token_attr_t, void>
+{
+    cfvo_attr_parser():
+        m_include_equal(true),
+        m_type(cfvo_default)
+    {
+    }
+
+    void operator()(const xml_token_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_gte:
+                m_include_equal = parse_boolean_flag(attr, true);
+            break;
+            case XML_type:
+            {
+                cond_format_cfvo_type_map cfvo_type_map(cond_format_cfvo_entries, sizeof(cond_format_cfvo_entries)/sizeof(cond_format_cfvo_entries[0]), cfvo_default);
+                m_type = cfvo_type_map.find(attr.value.get(), attr.value.size());
+            }
+            break;
+            case XML_val:
+                // TODO: I think we need to care about the transient flag here
+                m_value = attr.value;
+            break;
+            default:
+            break;
+        }
+    }
+
+private:
+    bool m_include_equal;
+    xlsx_cond_format_cfvo_type m_type;
+    pstring m_value;
+};
+
 }
 
 xlsx_conditional_format_context::xlsx_conditional_format_context(
@@ -540,6 +599,9 @@ void xlsx_conditional_format_context::start_element(xmlns_id_t ns, xml_token_t n
         }
         break;
         case XML_cfvo:
+        {
+            cfvo_attr_parser parser = std::for_each(attrs.begin(), attrs.end(), cfvo_attr_parser());
+        }
         break;
         case XML_dataBar:
         {
