@@ -618,6 +618,48 @@ private:
     size_t m_max_length;
 };
 
+struct icon_set_attr_parser : public std::unary_function<xml_token_attr_t, void>
+{
+    icon_set_attr_parser():
+        m_reverse(false),
+        m_percent(true),
+        m_show_value(true)
+    {
+    }
+
+    void operator()(const xml_token_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_iconSet:
+            break;
+            case XML_percent:
+                m_percent = parse_boolean_flag(attr, true);
+            break;
+            case XML_reverse:
+                m_reverse = parse_boolean_flag(attr, false);
+            break;
+            case XML_showValue:
+                m_show_value = parse_boolean_flag(attr, true);
+            break;
+            default:
+            break;
+        }
+    }
+
+    void import_data(spreadsheet::iface::import_conditional_format& cond_format)
+    {
+        cond_format.set_show_value(m_show_value);
+        // TODO: add methods to interface
+        // cond_format.set_databar_reverse(m_reverse);
+    }
+
+private:
+    bool m_reverse;
+    bool m_percent;
+    bool m_show_value;
+};
+
 }
 
 xlsx_conditional_format_context::xlsx_conditional_format_context(
@@ -681,6 +723,8 @@ void xlsx_conditional_format_context::start_element(xmlns_id_t ns, xml_token_t n
         case XML_iconSet:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_cfRule);
+            icon_set_attr_parser parser = std::for_each(attrs.begin(), attrs.end(), icon_set_attr_parser());
+            parser.import_data(m_cond_format);
         }
         break;
         case XML_color:
