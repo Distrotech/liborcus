@@ -203,7 +203,17 @@ void css_parser<_Handler>::selector_name()
                     // pseudo element.
                     next();
                     identifier(p, n);
-                    m_handler.simple_selector_pseudo_element(p, n);
+                    css::pseudo_element_t elem = css::to_pseudo_element(p, n);
+                    if (!elem)
+                    {
+                        std::ostringstream os;
+                        os << "selector_name: unknown pseudo element '";
+                        write_to(os, p, n);
+                        os << "'";
+                        throw css::parse_error(os.str());
+                    }
+
+                    m_handler.simple_selector_pseudo_element(elem);
                 }
                 else
                 {

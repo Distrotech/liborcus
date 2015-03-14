@@ -9,6 +9,7 @@
 #define INCLUDED_ORCUS_CSS_TYPES_HPP
 
 #include "orcus/env.hpp"
+#include <cstdlib>
 
 namespace orcus { namespace css {
 
@@ -27,6 +28,8 @@ ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_first_letter;
 ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_first_line;
 ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_selection;
 ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_backdrop;
+
+ORCUS_PSR_DLLPUBLIC pseudo_element_t to_pseudo_element(const char* p, size_t n);
 
 }}
 

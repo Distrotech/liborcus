@@ -10,6 +10,8 @@
 
 #include "env.hpp"
 
+#include <sstream>
+
 namespace orcus {
 
 ORCUS_PSR_DLLPUBLIC bool is_blank(char c);
@@ -28,6 +30,8 @@ ORCUS_PSR_DLLPUBLIC bool is_numeric(char c);
  *         otherwise.
  */
 ORCUS_PSR_DLLPUBLIC bool is_in(char c, const char* allowed);
+
+ORCUS_PSR_DLLPUBLIC void write_to(std::ostringstream& os, const char* p, size_t n);
 
 }
 

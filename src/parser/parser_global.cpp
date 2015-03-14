@@ -61,5 +61,15 @@ bool is_in(char c, const char* allowed)
     return false;
 }
 
+void write_to(std::ostringstream& os, const char* p, size_t n)
+{
+    if (!p)
+        return;
+
+    const char* pend = p + n;
+    for (; p != pend; ++p)
+        os << *p;
+}
+
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

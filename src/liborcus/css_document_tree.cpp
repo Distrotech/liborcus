@@ -18,10 +18,16 @@ namespace orcus {
 
 namespace {
 
+struct selector_type
+{
+    css_selector_t selector;
+    css::pseudo_element_t pseudo_element;
+};
+
 class parser_handler
 {
     css_document_tree& m_doc;
-    std::vector<css_selector_t> m_cur_selector_group;
+    std::vector<selector_type> m_cur_selector_group;
     css_properties_t m_cur_properties;
     pstring m_cur_prop_name;
     std::vector<pstring> m_cur_prop_values;
@@ -50,9 +56,10 @@ public:
         m_cur_simple_selector.classes.insert(pstring(p, n));
     }
 
-    void simple_selector_pseudo_element(const char* p, size_t n)
+    void simple_selector_pseudo_element(css::pseudo_element_t pe)
     {
-        // TODO : handle this.
+        // Only the one applied to the last simple selector is valid.
+        m_cur_pseudo_element |= pe;
     }
 
     void simple_selector_pseudo_class(const char* p, size_t n)
@@ -84,8 +91,12 @@ public:
     void end_selector()
     {
         cout << m_cur_selector << "|";
-        m_cur_selector_group.push_back(m_cur_selector);
+        selector_type sel;
+        sel.selector = m_cur_selector;
+        sel.pseudo_element = m_cur_pseudo_element;
+        m_cur_selector_group.push_back(sel);
         m_cur_selector.clear();
+        m_cur_pseudo_element = 0;
     }
 
     void property_name(const char* p, size_t n)
@@ -124,9 +135,9 @@ public:
 
         // Push the property set and selector group to the document tree.
 
-        std::vector<css_selector_t>::iterator it = m_cur_selector_group.begin(), ite = m_cur_selector_group.end();
+        std::vector<selector_type>::iterator it = m_cur_selector_group.begin(), ite = m_cur_selector_group.end();
         for (; it != ite; ++it)
-            m_doc.insert_properties(*it, 0, m_cur_properties);
+            m_doc.insert_properties(it->selector, it->pseudo_element, m_cur_properties);
 
         m_cur_selector_group.clear();
         m_cur_properties.clear();
@@ -300,6 +311,25 @@ const simple_selectors_type* get_simple_selectors_type(
     return it == store.end() ? NULL : &it->second;
 }
 
+void dump_pseudo_elements(css::pseudo_element_t elem)
+{
+    if (!elem)
+        return;
+
+    if (elem & css::pseudo_element_after)
+        cout << "::after";
+    if (elem & css::pseudo_element_before)
+        cout << "::before";
+    if (elem & css::pseudo_element_first_letter)
+        cout << "::first-letter";
+    if (elem & css::pseudo_element_first_line)
+        cout << "::first-line";
+    if (elem & css::pseudo_element_selection)
+        cout << "::selection";
+    if (elem & css::pseudo_element_backdrop)
+        cout << "::backdrop";
+}
+
 void dump_properties(const css_properties_t& props)
 {
     cout << '{' << endl;
@@ -439,7 +469,7 @@ void css_document_tree::dump() const
             if (!prop.empty())
             {
                 cout << selector;
-                // TODO : dump pseudo elements.
+                dump_pseudo_elements(it_prop->first);
                 cout << endl;
                 dump_properties(prop);
             }
