@@ -10,6 +10,7 @@
 
 #include "orcus/env.hpp"
 #include <cstdlib>
+#include <inttypes.h>
 
 namespace orcus { namespace css {
 
@@ -20,7 +21,8 @@ enum combinator_t
     combinator_next_sibling  /// 'E + F' where F is a direct sibling of E where E precedes F.
 };
 
-typedef unsigned int pseudo_element_t;
+typedef uint16_t pseudo_element_t;
+typedef uint64_t pseudo_class_t;
 
 ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_after;
 ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_before;
@@ -29,7 +31,57 @@ ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_first_line;
 ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_selection;
 ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_backdrop;
 
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_active;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_checked;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_default;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_dir;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_disabled;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_empty;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_enabled;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_first;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_first_child;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_first_of_type;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_fullscreen;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_focus;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_hover;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_indeterminate;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_in_range;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_invalid;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_lang;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_last_child;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_last_of_type;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_left;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_link;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_not;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_nth_child;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_nth_last_child;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_nth_last_of_type;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_nth_of_type;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_only_child;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_only_of_type;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_optional;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_out_of_range;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_read_only;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_read_write;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_required;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_right;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_root;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_scope;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_target;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_valid;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_class_t pseudo_class_visited;
+
+/**
+ * Convert a textural representation of a pseudo element into its numerical
+ * representation.
+ */
 ORCUS_PSR_DLLPUBLIC pseudo_element_t to_pseudo_element(const char* p, size_t n);
+
+/**
+ * Convert a textural representation of a pseudo class into its numerical
+ * representation.
+ */
+ORCUS_PSR_DLLPUBLIC pseudo_class_t to_pseudo_class(const char* p, size_t n);
 
 }}
 
