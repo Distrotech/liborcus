@@ -439,6 +439,29 @@ private:
     bool m_bottom;
 };
 
+struct conditional_formatting_attr_parser : public std::unary_function<xml_token_attr_t, void>
+{
+    conditional_formatting_attr_parser(spreadsheet::iface::import_conditional_format& cond_format):
+        m_cond_format(cond_format)
+    {
+    }
+
+    void operator()(const xml_token_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_sqref:
+                m_cond_format.set_range(attr.value.get(), attr.value.size());
+            break;
+            default:
+            break;
+        }
+    }
+
+private:
+    spreadsheet::iface::import_conditional_format& m_cond_format;
+};
+
 }
 
 xlsx_conditional_format_context::xlsx_conditional_format_context(
@@ -474,7 +497,10 @@ void xlsx_conditional_format_context::start_element(xmlns_id_t ns, xml_token_t n
     switch (name)
     {
         case XML_conditionalFormatting:
+        {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_worksheet);
+            std::for_each(attrs.begin(), attrs.end(), conditional_formatting_attr_parser(m_cond_format));
+        }
         break;
         case XML_cfRule:
         {
