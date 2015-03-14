@@ -9,6 +9,7 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	base64.cpp \
 	cell_buffer.cpp \
 	css_parser_base.cpp \
+	css_types.cpp \
 	csv_parser_base.cpp \
 	exception.cpp \
 	parser_global.cpp \

@@ -29,7 +29,7 @@ lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	config.cpp \
 	css_document_tree.cpp \
-	css_types.cpp \
+	css_selector.cpp \
 	detection_result.hpp \
 	detection_result.cpp \
 	dom_tree.cpp \

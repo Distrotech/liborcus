@@ -27,9 +27,13 @@ class parser_handler
     std::vector<pstring> m_cur_prop_values;
     css_selector_t m_cur_selector;  /// current selector
     css_simple_selector_t m_cur_simple_selector;
+    css_pseudo_element_t m_cur_pseudo_element;
     bool m_in_prop:1;
 public:
-    parser_handler(css_document_tree& doc) : m_doc(doc), m_in_prop(false) {}
+    parser_handler(css_document_tree& doc) :
+        m_doc(doc),
+        m_cur_pseudo_element(0),
+        m_in_prop(false) {}
 
     void at_rule_name(const char* p, size_t n)
     {
@@ -44,6 +48,16 @@ public:
     void simple_selector_class(const char* p, size_t n)
     {
         m_cur_simple_selector.classes.insert(pstring(p, n));
+    }
+
+    void simple_selector_pseudo_element(const char* p, size_t n)
+    {
+        // TODO : handle this.
+    }
+
+    void simple_selector_pseudo_class(const char* p, size_t n)
+    {
+        // TODO : currently not handled.
     }
 
     void simple_selector_id(const char* p, size_t n)

@@ -8,7 +8,7 @@
 #ifndef INCLUDED_ORCUS_CSS_DOCUMENT_TREE_HPP
 #define INCLUDED_ORCUS_CSS_DOCUMENT_TREE_HPP
 
-#include "orcus/css_types.hpp"
+#include "orcus/css_selector.hpp"
 
 #include <string>
 

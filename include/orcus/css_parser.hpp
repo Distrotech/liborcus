@@ -194,6 +194,25 @@ void css_parser<_Handler>::selector_name()
 #endif
             }
             break;
+            case ':':
+            {
+                // This could be either a pseudo element or pseudo class.
+                next();
+                if (cur_char() == ':')
+                {
+                    // pseudo element.
+                    next();
+                    identifier(p, n);
+                    m_handler.simple_selector_pseudo_element(p, n);
+                }
+                else
+                {
+                    // pseudo class (or pseudo element in the older version of CSS).
+                    identifier(p, n);
+                    m_handler.simple_selector_pseudo_class(p, n);
+                }
+            }
+            break;
             default:
                 in_loop = false;
         }

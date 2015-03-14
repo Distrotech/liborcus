@@ -9,12 +9,6 @@
 #define INCLUDED_ORCUS_CSS_TYPES_HPP
 
 #include "orcus/env.hpp"
-#include "orcus/pstring.hpp"
-
-#include <ostream>
-#include <vector>
-#include <boost/unordered_set.hpp>
-#include <boost/unordered_map.hpp>
 
 namespace orcus {
 
@@ -27,75 +21,12 @@ enum css_combinator_t
 
 typedef unsigned int css_pseudo_element_t;
 
-ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_after;
-ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_before;
-ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_first_letter;
-ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_first_line;
-ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_selection;
-ORCUS_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_backdrop;
-
-struct ORCUS_DLLPUBLIC css_simple_selector_t
-{
-    typedef boost::unordered_set<pstring, pstring::hash> classes_type;
-
-    pstring name;
-    pstring id;
-    classes_type classes;
-
-    css_simple_selector_t();
-
-    void clear();
-    bool empty() const;
-
-    bool operator== (const css_simple_selector_t& r) const;
-    bool operator!= (const css_simple_selector_t& r) const;
-
-    struct hash
-    {
-        size_t operator() (const css_simple_selector_t& ss) const;
-    };
-};
-
-struct ORCUS_DLLPUBLIC css_chained_simple_selector_t
-{
-    css_combinator_t combinator;
-    css_simple_selector_t simple_selector;
-
-    bool operator== (const css_chained_simple_selector_t& r) const;
-};
-
-/**
- * Each CSS selector consists of one or more chained simple selectors.
- */
-struct ORCUS_DLLPUBLIC css_selector_t
-{
-    typedef std::vector<css_chained_simple_selector_t> chained_type;
-    css_simple_selector_t first;
-    chained_type chained;
-
-    void clear();
-
-    bool operator== (const css_selector_t& r) const;
-};
-
-typedef boost::unordered_map<pstring, std::vector<pstring>, pstring::hash> css_properties_t;
-
-inline std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v)
-{
-    os << v.name;
-    css_simple_selector_t::classes_type::const_iterator it = v.classes.begin(), ite = v.classes.end();
-    for (; it != ite; ++it)
-        os << '.' << *it;
-    if (!v.id.empty())
-        os << '#' << v.id;
-    return os;
-}
-
-inline std::ostream& operator<< (std::ostream& os, const css_selector_t& v)
-{
-    os << v.first;
-    return os;
-}
+ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_after;
+ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_before;
+ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_first_letter;
+ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_first_line;
+ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_selection;
+ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_backdrop;
 
 }
 

@@ -7,6 +7,7 @@ liborcus_HEADERS = \
 	config.hpp \
 	css_document_tree.hpp \
 	css_parser.hpp \
+	css_selector.hpp \
 	css_types.hpp \
 	csv_parser.hpp \
 	csv_parser_base.hpp \
