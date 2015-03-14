@@ -13,6 +13,7 @@
 
 #include "orcus/global.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
+#include "orcus/measurement.hpp"
 
 #include <mdds/sorted_string_map.hpp>
 
@@ -221,6 +222,11 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
             }
             break;
             case XML_dxfId:
+            {
+                // TODO: actually we need to translate between dxf id and xf id
+                size_t dxf_id = to_long(attr.value);
+                m_cond_format.set_xf_id(dxf_id);
+            }
             break;
             case XML_aboveAverage:
             {
