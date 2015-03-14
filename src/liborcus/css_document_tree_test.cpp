@@ -309,6 +309,33 @@ void test_css_parse_basic7()
     assert(check_prop(*props, "border", "solid 4px red"));
 }
 
+void test_css_parse_basic8()
+{
+    const char* path = SRCDIR"/test/css/basic8.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.classes.insert("ribbon");
+    const css_properties_t* props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "#5BC8F7"));
+
+    props = doc.get_properties(selector, css::pseudo_element_after);
+    assert(props);
+    assert(props->size() == 4);
+    assert(check_prop(*props, "content", "Look at this orange box."));
+    assert(check_prop(*props, "background-color", "#FFBA10"));
+    assert(check_prop(*props, "border-color", "black"));
+    assert(check_prop(*props, "border-style", "dotted"));
+
+    props = doc.get_properties(selector, css::pseudo_element_before);
+    assert(!props);  // it doesn't exist for this pseudo element.
+}
+
 int main()
 {
     test_css_simple_selector_equality();
@@ -319,6 +346,7 @@ int main()
     test_css_parse_basic5();
     test_css_parse_basic6();
     test_css_parse_basic7();
+    test_css_parse_basic8();
 
     return EXIT_SUCCESS;
 }

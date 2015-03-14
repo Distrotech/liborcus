@@ -1,0 +1,12 @@
+
+.ribbon {
+  background-color: #5BC8F7;
+}
+
+.ribbon::after {
+  content: "Look at this orange box.";
+  background-color: #FFBA10;
+  border-color: black;
+  border-style: dotted;
+}
+
