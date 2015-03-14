@@ -10,3 +10,6 @@
   border-style: dotted;
 }
 
+.ribbon::after::selection {
+  content: "Selected orange box.";
+}

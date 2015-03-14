@@ -334,6 +334,13 @@ void test_css_parse_basic8()
 
     props = doc.get_properties(selector, css::pseudo_element_before);
     assert(!props);  // it doesn't exist for this pseudo element.
+
+    props = doc.get_properties(
+        selector,
+        css::pseudo_element_after|css::pseudo_element_selection);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "content", "Selected orange box."));
 }
 
 int main()
