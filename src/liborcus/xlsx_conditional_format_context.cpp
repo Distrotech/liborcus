@@ -577,6 +577,47 @@ private:
     string_pool& m_string_pool;
 };
 
+struct data_bar_attr_parser : public std::unary_function<xml_token_attr_t, void>
+{
+    data_bar_attr_parser():
+        m_show_value(true),
+        m_min_length(10),
+        m_max_length(90)
+    {
+    }
+
+    void operator()(const xml_token_attr_t& attr)
+    {
+        switch (attr.name)
+        {
+            case XML_showValue:
+                m_show_value = parse_boolean_flag(attr, true);
+            break;
+            case XML_maxLength:
+                m_max_length = to_long(attr.value);
+            break;
+            case XML_minLength:
+                m_min_length = to_long(attr.value);
+            break;
+            default:
+            break;
+        }
+    }
+
+    void import_data(spreadsheet::iface::import_conditional_format& cond_format)
+    {
+        cond_format.set_show_value(m_show_value);
+        // TODO: add interface methods
+        // cond_format.set_min_databar_length(m_min_length);
+        // cond_format.set_max_databar_length(m_max_length);
+    }
+
+private:
+    bool m_show_value;
+    size_t m_min_length;
+    size_t m_max_length;
+};
+
 }
 
 xlsx_conditional_format_context::xlsx_conditional_format_context(
@@ -633,6 +674,8 @@ void xlsx_conditional_format_context::start_element(xmlns_id_t ns, xml_token_t n
         case XML_dataBar:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_cfRule);
+            data_bar_attr_parser parser = std::for_each(attrs.begin(), attrs.end(), data_bar_attr_parser());
+            parser.import_data(m_cond_format);
         }
         break;
         case XML_iconSet:
