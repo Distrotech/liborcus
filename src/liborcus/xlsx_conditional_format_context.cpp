@@ -76,6 +76,23 @@ enum xlsx_cond_format_type
     aboveAverage
 };
 
+enum xlsx_cond_format_operator
+{
+    operator_default = 0,
+    operator_beginsWith,
+    operator_between,
+    operator_containsText,
+    operator_endsWith,
+    operator_equal,
+    operator_greaterThan,
+    operator_greaterThanOrEqual,
+    operator_lessThan,
+    operator_lessThanOrEqual,
+    operator_notBetween,
+    operator_notContains,
+    operator_notEqual
+};
+
 enum xlsx_cond_format_boolean
 {
     boolean_default = 0,
@@ -86,6 +103,8 @@ enum xlsx_cond_format_boolean
 typedef mdds::sorted_string_map<xlsx_cond_format_type> cond_format_type_map;
 
 typedef mdds::sorted_string_map<xlsx_cond_format_boolean> cond_format_boolean_map;
+
+typedef mdds::sorted_string_map<xlsx_cond_format_operator> cond_format_operator_map;
 
 cond_format_type_map::entry cond_format_type_entries[] =
 {
@@ -106,6 +125,22 @@ cond_format_type_map::entry cond_format_type_entries[] =
     { ORCUS_ASCII("notContainsErrors"), notContainsErrors },
     { ORCUS_ASCII("timePeriod"), timePeriod },
     { ORCUS_ASCII("aboveAverage"), aboveAverage },
+};
+
+cond_format_operator_map::entry cond_format_operator_entries[] =
+{
+    { ORCUS_ASCII("beginsWith"), operator_beginsWith },
+    { ORCUS_ASCII("between"), operator_between },
+    { ORCUS_ASCII("containsText"), operator_containsText },
+    { ORCUS_ASCII("endsWith"), operator_endsWith },
+    { ORCUS_ASCII("equal"), operator_equal },
+    { ORCUS_ASCII("greaterThan"), operator_greaterThan },
+    { ORCUS_ASCII("greaterThanOrEqual"), operator_greaterThanOrEqual },
+    { ORCUS_ASCII("lessThan"), operator_lessThan },
+    { ORCUS_ASCII("lessThanOrEqual"), operator_lessThanOrEqual },
+    { ORCUS_ASCII("notBetween"), operator_notBetween },
+    { ORCUS_ASCII("notContains"), operator_notContains },
+    { ORCUS_ASCII("notEqual"), operator_notEqual }
 };
 
 cond_format_boolean_map::entry cond_format_boolean_entries[] =
@@ -170,6 +205,10 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
                 m_bottom = parse_boolean_flag(attr, false);
             break;
             case XML_operator:
+            {
+                cond_format_operator_map operator_map(cond_format_operator_entries, sizeof(cond_format_operator_entries)/sizeof(cond_format_operator_entries[0]), operator_default);
+                m_operator = operator_map.find(attr.value.get(), attr.value.size());
+            }
             break;
             case XML_text:
             break;
@@ -199,6 +238,47 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
             case cellIs:
                 m_cond_format.set_type(spreadsheet::conditional_format_condition);
                 m_cond_format.set_operator(spreadsheet::condition_operator_expression);
+                switch (m_operator)
+                {
+                    case operator_beginsWith:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_begins_with);
+                    break;
+                    case operator_between:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_between);
+                    break;
+                    case operator_containsText:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_contains);
+                    break;
+                    case operator_endsWith:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_ends_with);
+                    break;
+                    case operator_equal:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_equal);
+                    break;
+                    case operator_greaterThan:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_greater);
+                    break;
+                    case operator_greaterThanOrEqual:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_greater_equal);
+                    break;
+                    case operator_lessThan:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_less);
+                    break;
+                    case operator_lessThanOrEqual:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_less_equal);
+                    break;
+                    case operator_notBetween:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_not_between);
+                    break;
+                    case operator_notContains:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_not_contains);
+                    break;
+                    case operator_notEqual:
+                        m_cond_format.set_operator(spreadsheet::condition_operator_not_equal);
+                    break;
+                    default:
+                    break;
+                }
             break;
             case colorScale:
                 m_cond_format.set_type(spreadsheet::conditional_format_colorscale);
@@ -286,6 +366,7 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
 private:
     spreadsheet::iface::import_conditional_format& m_cond_format;
     xlsx_cond_format_type m_type;
+    xlsx_cond_format_operator m_operator;
     bool m_above_average;
     bool m_equal_average;
     bool m_percent;
