@@ -258,6 +258,8 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
             case XML_rank:
             break;
             case XML_stdDev:
+                // do we need to worry about the transient flag here?
+                m_std_dev = attr.value;
             break;
             case XML_equalAverage:
                 m_equal_average = parse_boolean_flag(attr, false);
@@ -411,6 +413,11 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
             break;
             case aboveAverage:
                 m_cond_format.set_type(spreadsheet::conditional_format_condition);
+                if (!m_std_dev.empty())
+                {
+                    // TODO: we need a way to mark that as std dev in the interfaces
+                    m_cond_format.set_formula(m_std_dev.get(), m_std_dev.size());
+                }
                 if (m_above_average)
                 {
                     if (m_equal_average)
@@ -436,7 +443,6 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
             break;
             default:
             break;
-
         }
     }
 
@@ -450,6 +456,7 @@ private:
     bool m_percent;
     bool m_bottom;
     pstring m_text;
+    pstring m_std_dev;
 };
 
 struct conditional_formatting_attr_parser : public std::unary_function<xml_token_attr_t, void>
