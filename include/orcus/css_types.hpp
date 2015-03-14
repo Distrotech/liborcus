@@ -10,25 +10,25 @@
 
 #include "orcus/env.hpp"
 
-namespace orcus {
+namespace orcus { namespace css {
 
-enum css_combinator_t
+enum combinator_t
 {
-    css_combinator_descendant,   /// 'E F' where F is a descendant of E.
-    css_combinator_child,        /// 'E > F' where F is a direct child of E.
-    css_combinator_next_sibling  /// 'E + F' where F is a direct sibling of E where E precedes F.
+    combinator_descendant,   /// 'E F' where F is a descendant of E.
+    combinator_child,        /// 'E > F' where F is a direct child of E.
+    combinator_next_sibling  /// 'E + F' where F is a direct sibling of E where E precedes F.
 };
 
-typedef unsigned int css_pseudo_element_t;
+typedef unsigned int pseudo_element_t;
 
-ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_after;
-ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_before;
-ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_first_letter;
-ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_first_line;
-ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_selection;
-ORCUS_PSR_DLLPUBLIC extern const css_pseudo_element_t css_pseudo_element_backdrop;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_after;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_before;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_first_letter;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_first_line;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_selection;
+ORCUS_PSR_DLLPUBLIC extern const pseudo_element_t pseudo_element_backdrop;
 
-}
+}}
 
 #endif
 

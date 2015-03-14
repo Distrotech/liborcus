@@ -43,7 +43,7 @@ struct ORCUS_DLLPUBLIC css_simple_selector_t
 
 struct ORCUS_DLLPUBLIC css_chained_simple_selector_t
 {
-    css_combinator_t combinator;
+    css::combinator_t combinator;
     css_simple_selector_t simple_selector;
 
     bool operator== (const css_chained_simple_selector_t& r) const;

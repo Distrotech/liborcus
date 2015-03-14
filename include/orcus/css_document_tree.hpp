@@ -45,7 +45,7 @@ public:
      */
     void insert_properties(
         const css_selector_t& selector,
-        css_pseudo_element_t pseudo_elem,
+        css::pseudo_element_t pseudo_elem,
         const css_properties_t& props);
 
     /**
@@ -58,7 +58,7 @@ public:
      *         there is no properties for the given selector.
      */
     const css_properties_t* get_properties(
-        const css_selector_t& selector, css_pseudo_element_t pseudo_elem) const;
+        const css_selector_t& selector, css::pseudo_element_t pseudo_elem) const;
 
     void dump() const;
 };

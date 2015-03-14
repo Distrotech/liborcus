@@ -27,7 +27,7 @@ class parser_handler
     std::vector<pstring> m_cur_prop_values;
     css_selector_t m_cur_selector;  /// current selector
     css_simple_selector_t m_cur_simple_selector;
-    css_pseudo_element_t m_cur_pseudo_element;
+    css::pseudo_element_t m_cur_pseudo_element;
     bool m_in_prop:1;
 public:
     parser_handler(css_document_tree& doc) :
@@ -73,7 +73,7 @@ public:
         {
             // TODO : this is currently not being handled correctly.
             css_chained_simple_selector_t css;
-            css.combinator = css_combinator_descendant;
+            css.combinator = css::combinator_descendant;
             css.simple_selector = m_cur_simple_selector;
             m_cur_selector.chained.push_back(css);
         }
@@ -154,9 +154,9 @@ struct simple_selector_node;
 typedef boost::unordered_map<
     css_simple_selector_t, simple_selector_node, css_simple_selector_t::hash> simple_selectors_type;
 
-typedef boost::unordered_map<css_combinator_t, simple_selectors_type> combinators_type;
+typedef boost::unordered_map<css::combinator_t, simple_selectors_type> combinators_type;
 
-typedef boost::unordered_map<css_pseudo_element_t, css_properties_t> properties_store_type;
+typedef boost::unordered_map<css::pseudo_element_t, css_properties_t> properties_store_type;
 
 struct simple_selector_node
 {
@@ -214,7 +214,7 @@ public:
 
 void store_properties(
     string_pool& sp, properties_store_type& store,
-    css_pseudo_element_t pseudo_flags, const css_properties_t& props)
+    css::pseudo_element_t pseudo_flags, const css_properties_t& props)
 {
     properties_store_type::iterator it_store = store.find(pseudo_flags);
     if (it_store == store.end())
@@ -273,7 +273,7 @@ const simple_selector_node* get_simple_selector_node(
 }
 
 simple_selectors_type* get_or_create_simple_selectors_type(
-    combinators_type& store, css_combinator_t combinator)
+    combinators_type& store, css::combinator_t combinator)
 {
     combinators_type::iterator it = store.find(combinator);
     if (it == store.end())
@@ -294,7 +294,7 @@ simple_selectors_type* get_or_create_simple_selectors_type(
 }
 
 const simple_selectors_type* get_simple_selectors_type(
-    const combinators_type& store, css_combinator_t combinator)
+    const combinators_type& store, css::combinator_t combinator)
 {
     combinators_type::const_iterator it = store.find(combinator);
     return it == store.end() ? NULL : &it->second;
@@ -345,7 +345,7 @@ void css_document_tree::load(const std::string& strm)
 
 void css_document_tree::insert_properties(
     const css_selector_t& selector,
-    css_pseudo_element_t pseudo_elem,
+    css::pseudo_element_t pseudo_elem,
     const css_properties_t& props)
 {
     if (props.empty())
@@ -388,7 +388,7 @@ void css_document_tree::insert_properties(
 }
 
 const css_properties_t* css_document_tree::get_properties(
-    const css_selector_t& selector, css_pseudo_element_t pseudo_elem) const
+    const css_selector_t& selector, css::pseudo_element_t pseudo_elem) const
 {
     const simple_selector_node* node = get_simple_selector_node(mp_impl->m_root, selector.first);
     if (!node)
