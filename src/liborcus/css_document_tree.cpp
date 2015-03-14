@@ -167,11 +167,9 @@ typedef boost::unordered_map<
 
 typedef boost::unordered_map<css::combinator_t, simple_selectors_type> combinators_type;
 
-typedef boost::unordered_map<css::pseudo_element_t, css_properties_t> properties_store_type;
-
 struct simple_selector_node
 {
-    properties_store_type properties;
+    css_pseudo_element_properties_t properties;
     combinators_type children;
 };
 
@@ -224,16 +222,16 @@ public:
 };
 
 void store_properties(
-    string_pool& sp, properties_store_type& store,
+    string_pool& sp, css_pseudo_element_properties_t& store,
     css::pseudo_element_t pseudo_flags, const css_properties_t& props)
 {
-    properties_store_type::iterator it_store = store.find(pseudo_flags);
+    css_pseudo_element_properties_t::iterator it_store = store.find(pseudo_flags);
     if (it_store == store.end())
     {
         // No storage for this pseudo flag value.  Create a new one.
-        std::pair<properties_store_type::iterator, bool> r =
+        std::pair<css_pseudo_element_properties_t::iterator, bool> r =
             store.insert(
-                properties_store_type::value_type(
+                css_pseudo_element_properties_t::value_type(
                     pseudo_flags, css_properties_t()));
         if (!r.second)
             // insertion failed.
@@ -344,6 +342,36 @@ void dump_properties(const css_properties_t& props)
     cout << '}' << endl;
 }
 
+const css_pseudo_element_properties_t* get_properties_map(
+    const simple_selectors_type& root, const css_selector_t& selector)
+{
+    const simple_selector_node* node = get_simple_selector_node(root, selector.first);
+    if (!node)
+        return NULL;
+
+    if (!selector.chained.empty())
+    {
+        // Follow the chain to find the right node to store new properties.
+        css_selector_t::chained_type::const_iterator it_chain = selector.chained.begin();
+        css_selector_t::chained_type::const_iterator ite_chain = selector.chained.end();
+        const combinators_type* combos = &node->children;
+        for (; it_chain != ite_chain; ++it_chain)
+        {
+            const css_chained_simple_selector_t& css = *it_chain;
+            const simple_selectors_type* ss = get_simple_selectors_type(*combos, css.combinator);
+            if (!ss)
+                return NULL;
+
+            node = get_simple_selector_node(*ss, css.simple_selector);
+            if (!node)
+                return NULL;
+        }
+    }
+
+    assert(node);
+    return &node->properties;
+}
+
 }
 
 struct css_document_tree::impl
@@ -420,35 +448,21 @@ void css_document_tree::insert_properties(
 const css_properties_t* css_document_tree::get_properties(
     const css_selector_t& selector, css::pseudo_element_t pseudo_elem) const
 {
-    const simple_selector_node* node = get_simple_selector_node(mp_impl->m_root, selector.first);
-    if (!node)
+    const css_pseudo_element_properties_t* prop_map = get_properties_map(mp_impl->m_root, selector);
+    if (!prop_map)
         return NULL;
 
-    if (!selector.chained.empty())
-    {
-        // Follow the chain to find the right node to store new properties.
-        css_selector_t::chained_type::const_iterator it_chain = selector.chained.begin();
-        css_selector_t::chained_type::const_iterator ite_chain = selector.chained.end();
-        const combinators_type* combos = &node->children;
-        for (; it_chain != ite_chain; ++it_chain)
-        {
-            const css_chained_simple_selector_t& css = *it_chain;
-            const simple_selectors_type* ss = get_simple_selectors_type(*combos, css.combinator);
-            if (!ss)
-                return NULL;
-
-            node = get_simple_selector_node(*ss, css.simple_selector);
-            if (!node)
-                return NULL;
-        }
-    }
-
-    assert(node);
-    properties_store_type::const_iterator it = node->properties.find(pseudo_elem);
-    if (it == node->properties.end())
+    css_pseudo_element_properties_t::const_iterator it = prop_map->find(pseudo_elem);
+    if (it == prop_map->end())
         return NULL;
 
     return &it->second;
+}
+
+const css_pseudo_element_properties_t*
+css_document_tree::get_all_properties(const css_selector_t& selector) const
+{
+    return get_properties_map(mp_impl->m_root, selector);
 }
 
 void css_document_tree::dump() const
@@ -462,7 +476,7 @@ void css_document_tree::dump() const
         selector.first = it_ss->first;
 
         const simple_selector_node* node = &it_ss->second;
-        properties_store_type::const_iterator it_prop = node->properties.begin(), ite_prop = node->properties.end();
+        css_pseudo_element_properties_t::const_iterator it_prop = node->properties.begin(), ite_prop = node->properties.end();
         for (; it_prop != ite_prop; ++it_prop)
         {
             const css_properties_t& prop = it_prop->second;

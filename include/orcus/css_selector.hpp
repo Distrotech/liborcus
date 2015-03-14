@@ -64,6 +64,7 @@ struct ORCUS_DLLPUBLIC css_selector_t
 };
 
 typedef boost::unordered_map<pstring, std::vector<pstring>, pstring::hash> css_properties_t;
+typedef boost::unordered_map<css::pseudo_element_t, css_properties_t> css_pseudo_element_properties_t;
 
 inline std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v)
 {

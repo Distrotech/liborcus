@@ -49,16 +49,31 @@ public:
         const css_properties_t& props);
 
     /**
-     * Get properties associated with given selector.
+     * Get properties associated with given selector and one or more pseudo
+     * elements.
      *
      * @param selector selector to get properties for.
      * @param pseudo_elem pseudo element flags for the last simple selector.
+     *                    This value is a bitfield.
      *
      * @return const pointer to the property set instance, or NULL in case
      *         there is no properties for the given selector.
      */
     const css_properties_t* get_properties(
         const css_selector_t& selector, css::pseudo_element_t pseudo_elem) const;
+
+    /**
+     * Get all sets of properties associated with given selector, for all
+     * pseudo element values.
+     *
+     * @param selector selector to get properties for.
+     *
+     * @return const pointer to the map of property sets with pseudo element
+     *         values as the keys, or NULL in case there is no properties for
+     *         the given selector.
+     */
+    const css_pseudo_element_properties_t*
+        get_all_properties(const css_selector_t& selector) const;
 
     void dump() const;
 };

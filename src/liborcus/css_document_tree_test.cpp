@@ -341,6 +341,34 @@ void test_css_parse_basic8()
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "content", "Selected orange box."));
+
+    // Get all properties for all pseudo element flag combos.
+    const css_pseudo_element_properties_t* all_props = doc.get_all_properties(selector);
+    assert(all_props);
+    assert(all_props->size() == 3);
+
+    // Check the properties for no pseudo element flag.
+    css_pseudo_element_properties_t::const_iterator it = all_props->find(0);
+    assert(it != all_props->end());
+    props = &it->second;
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "#5BC8F7"));
+
+    // ::after pseudo element
+    it = all_props->find(css::pseudo_element_after);
+    assert(it != all_props->end());
+    props = &it->second;
+    assert(props->size() == 4);
+    assert(check_prop(*props, "content", "Look at this orange box."));
+    assert(check_prop(*props, "background-color", "#FFBA10"));
+    assert(check_prop(*props, "border-color", "black"));
+    assert(check_prop(*props, "border-style", "dotted"));
+
+    // ::after::selection pseudo element pair.
+    it = all_props->find(css::pseudo_element_after|css::pseudo_element_selection);
+    assert(it != all_props->end());
+    props = &it->second;
+    assert(check_prop(*props, "content", "Selected orange box."));
 }
 
 int main()
