@@ -623,7 +623,8 @@ struct icon_set_attr_parser : public std::unary_function<xml_token_attr_t, void>
     icon_set_attr_parser():
         m_reverse(false),
         m_percent(true),
-        m_show_value(true)
+        m_show_value(true),
+        icon_name("3Arrows")
     {
     }
 
@@ -632,6 +633,7 @@ struct icon_set_attr_parser : public std::unary_function<xml_token_attr_t, void>
         switch (attr.name)
         {
             case XML_iconSet:
+                icon_name = attr.value;
             break;
             case XML_percent:
                 m_percent = parse_boolean_flag(attr, true);
@@ -651,13 +653,15 @@ struct icon_set_attr_parser : public std::unary_function<xml_token_attr_t, void>
     {
         cond_format.set_show_value(m_show_value);
         // TODO: add methods to interface
-        // cond_format.set_databar_reverse(m_reverse);
+        // cond_format.set_iconset_reverse(m_reverse);
+        cond_format.set_icon_name(icon_name.get(), icon_name.size());
     }
 
 private:
     bool m_reverse;
     bool m_percent;
     bool m_show_value;
+    pstring icon_name;
 };
 
 }
