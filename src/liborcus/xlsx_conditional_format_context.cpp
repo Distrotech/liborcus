@@ -12,6 +12,7 @@
 #include "ooxml_namespace_types.hpp"
 
 #include "orcus/global.hpp"
+#include "orcus/exception.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/measurement.hpp"
 
@@ -739,6 +740,38 @@ void xlsx_conditional_format_context::start_element(xmlns_id_t ns, xml_token_t n
         default:
             warn_unhandled();
     }
+}
+
+namespace {
+
+void import_cfvo(const cfvo_values& values, spreadsheet::iface::import_conditional_format& cond_format)
+{
+    if (!values.m_value.empty())
+        cond_format.set_formula(values.m_value.get(),values.m_value.size());
+    switch (values.m_type)
+    {
+        case cfvo_num:
+            cond_format.set_condition_type(spreadsheet::condition_type_value);
+        break;
+        case cfvo_percent:
+            cond_format.set_condition_type(spreadsheet::condition_type_percent);
+        break;
+        case cfvo_max:
+            cond_format.set_condition_type(spreadsheet::condition_type_max);
+        break;
+        case cfvo_min:
+            cond_format.set_condition_type(spreadsheet::condition_type_min);
+        break;
+        case cfvo_formula:
+            cond_format.set_condition_type(spreadsheet::condition_type_formula);
+        break;
+        case cfvo_percentile:
+            cond_format.set_condition_type(spreadsheet::condition_type_percentile);
+        break;
+        default:
+        break;
+    }
+}
 
 }
 
@@ -759,9 +792,6 @@ bool xlsx_conditional_format_context::end_element(xmlns_id_t ns, xml_token_t nam
         }
         break;
         case XML_cfvo:
-        {
-            m_cond_format.commit_condition();
-        }
         break;
         case XML_color:
         break;
@@ -769,6 +799,49 @@ bool xlsx_conditional_format_context::end_element(xmlns_id_t ns, xml_token_t nam
         {
             m_cond_format.set_formula(m_cur_str.get(), m_cur_str.size());
             m_cond_format.commit_condition();
+        }
+        break;
+        case XML_dataBar:
+        {
+            if (m_colors.size() != 1)
+                throw general_error("invalid dataBar record");
+            if (m_cfvo_values.size() != 2)
+                throw general_error("invalid dataBar record");
+            /*
+             * TODO: missing interface method
+            argb_color& color = m_colors[0];
+            m_cond_format.set_databar_color_postive(color.alpha, color.red,
+                    color.green, color.blue);
+            m_cond_format.set_databar_color_negative(color.alpha, color.red,
+                    color.green, color.blue);
+            */
+            for (std::vector<cfvo_values>::const_iterator itr = m_cfvo_values.begin(); itr != m_cfvo_values.end(); ++itr) {
+                import_cfvo(*itr, m_cond_format);
+                m_cond_format.commit_condition();
+            }
+        }
+        break;
+        case XML_iconSet:
+            if (m_cfvo_values.size() < 2)
+                throw general_error("invalid iconSet record");
+            for (std::vector<cfvo_values>::const_iterator itr = m_cfvo_values.begin(); itr != m_cfvo_values.end(); ++itr) {
+                import_cfvo(*itr, m_cond_format);
+                m_cond_format.commit_condition();
+            }
+        break;
+        case XML_colorScale:
+        {
+            if (m_cfvo_values.size() < 2)
+                throw general_error("invalid colorScale record");
+            if (m_cfvo_values.size() != m_colors.size())
+                throw general_error("invalid colorScale record");
+            std::vector<argb_color>::const_iterator itrColor = m_colors.begin();
+            for (std::vector<cfvo_values>::const_iterator itr = m_cfvo_values.begin(); itr != m_cfvo_values.end(); ++itr, ++itrColor) {
+                import_cfvo(*itr, m_cond_format);
+                m_cond_format.set_color(itrColor->alpha, itrColor->red,
+                        itrColor->green, itrColor->blue);
+                m_cond_format.commit_condition();
+            }
         }
         break;
         default:
