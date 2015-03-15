@@ -25,6 +25,14 @@ namespace spreadsheet { namespace iface {
 
 struct cfvo_values;
 
+struct argb_color
+{
+    spreadsheet::color_elem_t alpha;
+    spreadsheet::color_elem_t red;
+    spreadsheet::color_elem_t green;
+    spreadsheet::color_elem_t blue;
+};
+
 class xlsx_conditional_format_context : public xml_context_base
 {
 public:
@@ -49,6 +57,7 @@ private:
     pstring m_cur_str;
 
     std::vector<cfvo_values> m_cfvo_values;
+    std::vector<argb_color> m_colors;
 };
 
 }

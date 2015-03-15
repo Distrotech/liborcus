@@ -38,13 +38,12 @@ public:
         }
     }
 
-    void get_colors(spreadsheet::color_elem_t& alpha, spreadsheet::color_elem_t& red,
-            spreadsheet::color_elem_t& green, spreadsheet::color_elem_t& blue)
+    void get_color(argb_color& color)
     {
-        alpha = m_alpha;
-        red = m_red;
-        green = m_green;
-        blue = m_blue;
+        color.alpha = m_alpha;
+        color.red = m_red;
+        color.green = m_green;
+        color.blue = m_blue;
     }
 
 private:
@@ -730,9 +729,9 @@ void xlsx_conditional_format_context::start_element(xmlns_id_t ns, xml_token_t n
         case XML_color:
         {
             color_attr_parser func = for_each(attrs.begin(), attrs.end(), color_attr_parser());
-            spreadsheet::color_elem_t alpha, red, green, blue;
-            func.get_colors(alpha, red, green, blue);
-            m_cond_format.set_color(alpha, red, green, blue);
+            argb_color color;
+            func.get_color(color);
+            m_colors.push_back(color);
         }
         break;
         case XML_formula:
@@ -756,6 +755,7 @@ bool xlsx_conditional_format_context::end_element(xmlns_id_t ns, xml_token_t nam
         {
             m_cond_format.commit_entry();
             m_cfvo_values.clear();
+            m_colors.clear();
         }
         break;
         case XML_cfvo:
