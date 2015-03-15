@@ -197,6 +197,8 @@ bool parse_boolean_flag(const xml_token_attr_t& attr, bool default_value)
             return false;
         break;
     }
+
+    return default_value;
 }
 
 struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
