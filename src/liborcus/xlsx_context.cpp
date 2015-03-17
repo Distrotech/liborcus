@@ -534,7 +534,12 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         }
         break;
         case XML_font:
-            xml_element_expected(parent, NS_ooxml_xlsx, XML_fonts);
+        {
+            xml_elem_stack_t expected_elements;
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_fonts));
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_dxf));
+            xml_element_expected(parent, expected_elements);
+        }
         break;
         case XML_b:
             xml_element_expected(parent, NS_ooxml_xlsx, XML_font);
@@ -619,7 +624,12 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         }
         break;
         case XML_fill:
+        {
+            xml_elem_stack_t expected_elements;
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_fills));
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_dxf));
             xml_element_expected(parent, NS_ooxml_xlsx, XML_fills);
+        }
         break;
         case XML_patternFill:
         {
@@ -649,7 +659,12 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         }
         break;
         case XML_border:
-            xml_element_expected(parent, NS_ooxml_xlsx, XML_borders);
+        {
+            xml_elem_stack_t expected_elements;
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_borders));
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_dxf));
+            xml_element_expected(parent, expected_elements);
+        }
         break;
         case XML_top:
         {
@@ -712,6 +727,16 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             m_cell_style_xf = false;
         }
         break;
+        case XML_dxfs:
+        {
+            // Collection of differential formats used in the document.
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
+            pstring ps = for_each(
+                attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
+            size_t n = strtoul(ps.get(), NULL, 10);
+            mp_styles->set_dxf_count(n);
+        }
+        break;
         case XML_cellStyles:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
@@ -740,15 +765,23 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             for_each(attrs.begin(), attrs.end(), xf_attr_parser(*mp_styles));
         }
         break;
+        case XML_dxf:
+        break;
         case XML_protection:
         {
-            xml_element_expected(parent, NS_ooxml_xlsx, XML_xf);
+            xml_elem_stack_t expected_elements;
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_xf));
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_dxf));
+            xml_element_expected(parent, expected_elements);
             for_each(attrs.begin(), attrs.end(), cell_protection_attr_parser(*mp_styles));
         }
         break;
         case XML_alignment:
         {
-            xml_element_expected(parent, NS_ooxml_xlsx, XML_xf);
+            xml_elem_stack_t expected_elements;
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_xf));
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_dxf));
+            xml_element_expected(parent, expected_elements);
             cell_alignment_attr_parser func;
             func = for_each(attrs.begin(), attrs.end(), func);
             mp_styles->set_xf_horizontal_alignment(func.get_hor_align());
@@ -768,7 +801,10 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         break;
         case XML_numFmt:
         {
-            xml_element_expected(parent, NS_ooxml_xlsx, XML_numFmts);
+            xml_elem_stack_t expected_elements;
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_numFmts));
+            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_dxf));
+            xml_element_expected(parent, expected_elements);
         }
         break;
         default:
@@ -797,6 +833,9 @@ bool xlsx_styles_context::end_element(xmlns_id_t ns, xml_token_t name)
                 mp_styles->commit_cell_style_xf();
             else
                 mp_styles->commit_cell_xf();
+        break;
+        case XML_dxf:
+            mp_styles->commit_dxf();
         break;
         case XML_protection:
         {
