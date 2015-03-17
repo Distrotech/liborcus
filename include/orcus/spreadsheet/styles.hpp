@@ -172,6 +172,9 @@ public:
     virtual void set_cell_xf_count(size_t n);
     virtual size_t commit_cell_xf();
 
+    virtual void set_dxf_count(size_t n);
+    virtual size_t commit_dxf();
+
     virtual void set_xf_font(size_t index);
     virtual void set_xf_fill(size_t index);
     virtual void set_xf_border(size_t index);
@@ -211,6 +214,7 @@ private:
     ::std::vector<number_format_t> m_number_formats;
     ::std::vector<cell_format_t> m_cell_style_formats;
     ::std::vector<cell_format_t> m_cell_formats;
+    ::std::vector<cell_format_t> m_dxf_formats;
     ::std::vector<cell_style_t> m_cell_styles;
 };
 

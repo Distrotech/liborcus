@@ -316,6 +316,18 @@ size_t import_styles::commit_cell_xf()
     return m_cell_formats.size() - 1;
 }
 
+void import_styles::set_dxf_count(size_t n)
+{
+    m_dxf_formats.reserve(n);
+}
+
+size_t import_styles::commit_dxf()
+{
+    m_dxf_formats.push_back(m_cur_cell_format);
+    m_cur_cell_format.reset();
+    return m_dxf_formats.size() - 1;
+}
+
 void import_styles::set_xf_font(size_t index)
 {
     m_cur_cell_format.font = index;

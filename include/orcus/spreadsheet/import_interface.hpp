@@ -70,6 +70,12 @@ public:
  * index of 0 in each style category, the caller must set the default styles
  * first before importing and setting real styles. ID's of styles are
  * assigned sequentially starting with 0 and upward in each style category.
+ *
+ * In contrast to xf formatting dxf (differential formats) formatting only use
+ * the formatting information that are explicitly set. It does not inherit
+ * formatting from the default stlye. Setting a dxf format to an object only
+ * applies these explicitly set formattings from the dxf entry, all other are
+ * retained.
  */
 class import_styles
 {
@@ -118,6 +124,7 @@ public:
 
     virtual void set_cell_xf_count(size_t n) = 0;
     virtual void set_cell_style_xf_count(size_t n) = 0;
+    virtual void set_dxf_count(size_t n) = 0;
 
     virtual void set_xf_font(size_t index) = 0;
     virtual void set_xf_fill(size_t index) = 0;
@@ -131,6 +138,7 @@ public:
 
     virtual size_t commit_cell_xf() = 0;
     virtual size_t commit_cell_style_xf() = 0;
+    virtual size_t commit_dxf() = 0;
 
     // cell style entry
 

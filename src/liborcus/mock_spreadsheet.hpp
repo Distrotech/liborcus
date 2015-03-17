@@ -76,6 +76,10 @@ public:
     virtual void set_cell_xf_count(size_t n);
     virtual size_t commit_cell_xf();
 
+    // dxf
+    virtual void set_dxf_count(size_t n);
+    virtual size_t commit_dxf();
+
     // xf (cell format) - used both by cell xf and cell style xf.
 
     virtual void set_xf_number_format(size_t index);
