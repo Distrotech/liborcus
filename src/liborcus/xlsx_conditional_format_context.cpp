@@ -609,9 +609,8 @@ struct data_bar_attr_parser : public std::unary_function<xml_token_attr_t, void>
     void import_data(spreadsheet::iface::import_conditional_format& cond_format)
     {
         cond_format.set_show_value(m_show_value);
-        // TODO: add interface methods
-        // cond_format.set_min_databar_length(m_min_length);
-        // cond_format.set_max_databar_length(m_max_length);
+        cond_format.set_min_databar_length(m_min_length);
+        cond_format.set_max_databar_length(m_max_length);
     }
 
 private:

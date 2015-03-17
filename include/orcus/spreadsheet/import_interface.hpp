@@ -314,6 +314,18 @@ public:
             color_elem_t green, color_elem_t blue) = 0;
 
     /**
+     * Sets the minimum length for a databar.
+     * only valid for type == databar
+     */
+    virtual void set_min_databar_length(double length) = 0;
+
+    /**
+     * Sets the maximum length for a databar.
+     * only valid for type == databar
+     */
+    virtual void set_max_databar_length(double length) = 0;
+
+    /**
      * Don't show the value in the cell.
      * only valid for type = databar, iconset, colorscale
      */
