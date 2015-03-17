@@ -332,6 +332,12 @@ public:
     virtual void set_show_value(bool show) = 0;
 
     /**
+     * Use the icons in reverse order.
+     * only valid for type == iconset
+     */
+    virtual void set_iconset_reverse(bool reverse) = 0;
+
+    /**
      * TODO: In OOXML the style is stored as dxf and in ODF as named style.
      */
     virtual void set_xf_id(size_t xf) = 0;

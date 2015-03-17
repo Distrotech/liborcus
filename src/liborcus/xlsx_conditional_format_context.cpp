@@ -653,8 +653,7 @@ struct icon_set_attr_parser : public std::unary_function<xml_token_attr_t, void>
     void import_data(spreadsheet::iface::import_conditional_format& cond_format)
     {
         cond_format.set_show_value(m_show_value);
-        // TODO: add methods to interface
-        // cond_format.set_iconset_reverse(m_reverse);
+        cond_format.set_iconset_reverse(m_reverse);
         cond_format.set_icon_name(icon_name.get(), icon_name.size());
     }
 
