@@ -300,6 +300,20 @@ public:
     virtual void set_databar_axis(orcus::spreadsheet::databar_axis_t axis) = 0;
 
     /**
+     * Databar color for positive values.
+     * only valid for type == databar
+     */
+    virtual void set_databar_color_positive(color_elem_t alpha, color_elem_t red,
+            color_elem_t green, color_elem_t blue) = 0;
+
+    /**
+     * Databar color for negative values.
+     * only valid for type == databar
+     */
+    virtual void set_databar_color_negative(color_elem_t alpha, color_elem_t red,
+            color_elem_t green, color_elem_t blue) = 0;
+
+    /**
      * Don't show the value in the cell.
      * only valid for type = databar, iconset, colorscale
      */

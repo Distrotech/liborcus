@@ -815,14 +815,11 @@ bool xlsx_conditional_format_context::end_element(xmlns_id_t ns, xml_token_t nam
                 throw general_error("invalid dataBar record");
             if (m_cfvo_values.size() != 2)
                 throw general_error("invalid dataBar record");
-            /*
-             * TODO: missing interface method
             argb_color& color = m_colors[0];
-            m_cond_format.set_databar_color_postive(color.alpha, color.red,
+            m_cond_format.set_databar_color_positive(color.alpha, color.red,
                     color.green, color.blue);
             m_cond_format.set_databar_color_negative(color.alpha, color.red,
                     color.green, color.blue);
-            */
             for (std::vector<cfvo_values>::const_iterator itr = m_cfvo_values.begin(); itr != m_cfvo_values.end(); ++itr) {
                 import_cfvo(*itr, m_cond_format);
                 m_cond_format.commit_condition();
