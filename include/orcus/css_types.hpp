@@ -11,6 +11,7 @@
 #include "orcus/env.hpp"
 #include <cstdlib>
 #include <inttypes.h>
+#include <string>
 
 namespace orcus { namespace css {
 
@@ -82,6 +83,8 @@ ORCUS_PSR_DLLPUBLIC pseudo_element_t to_pseudo_element(const char* p, size_t n);
  * representation.
  */
 ORCUS_PSR_DLLPUBLIC pseudo_class_t to_pseudo_class(const char* p, size_t n);
+
+ORCUS_PSR_DLLPUBLIC std::string pseudo_class_to_string(pseudo_class_t val);
 
 }}
 

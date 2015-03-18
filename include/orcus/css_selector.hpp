@@ -26,6 +26,7 @@ struct ORCUS_DLLPUBLIC css_simple_selector_t
     pstring name;
     pstring id;
     classes_type classes;
+    css::pseudo_class_t pseudo_classes;
 
     css_simple_selector_t();
 
@@ -66,22 +67,8 @@ struct ORCUS_DLLPUBLIC css_selector_t
 typedef boost::unordered_map<pstring, std::vector<pstring>, pstring::hash> css_properties_t;
 typedef boost::unordered_map<css::pseudo_element_t, css_properties_t> css_pseudo_element_properties_t;
 
-inline std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v)
-{
-    os << v.name;
-    css_simple_selector_t::classes_type::const_iterator it = v.classes.begin(), ite = v.classes.end();
-    for (; it != ite; ++it)
-        os << '.' << *it;
-    if (!v.id.empty())
-        os << '#' << v.id;
-    return os;
-}
-
-inline std::ostream& operator<< (std::ostream& os, const css_selector_t& v)
-{
-    os << v.first;
-    return os;
-}
+ORCUS_DLLPUBLIC std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v);
+ORCUS_DLLPUBLIC std::ostream& operator<< (std::ostream& os, const css_selector_t& v);
 
 }
 

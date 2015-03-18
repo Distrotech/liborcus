@@ -9,18 +9,20 @@
 
 namespace orcus {
 
-css_simple_selector_t::css_simple_selector_t() {}
+css_simple_selector_t::css_simple_selector_t() :
+    pseudo_classes(0) {}
 
 void css_simple_selector_t::clear()
 {
     name.clear();
     id.clear();
     classes.clear();
+    pseudo_classes = 0;
 }
 
 bool css_simple_selector_t::empty() const
 {
-    return name.empty() && id.empty() && classes.empty();
+    return name.empty() && id.empty() && classes.empty() && !pseudo_classes;
 }
 
 bool css_simple_selector_t::operator== (const css_simple_selector_t& r) const
@@ -34,7 +36,7 @@ bool css_simple_selector_t::operator== (const css_simple_selector_t& r) const
     if (classes != r.classes)
         return false;
 
-    return true;
+    return pseudo_classes == r.pseudo_classes;
 }
 
 bool css_simple_selector_t::operator!= (const css_simple_selector_t& r) const
@@ -51,6 +53,8 @@ size_t css_simple_selector_t::hash::operator() (const css_simple_selector_t& ss)
     classes_type::const_iterator it = ss.classes.begin(), ite = ss.classes.end();
     for (; it != ite; ++it)
         val += hasher(*it);
+
+    val += ss.pseudo_classes;
 
     return val;
 }
@@ -69,6 +73,25 @@ void css_selector_t::clear()
 bool css_selector_t::operator== (const css_selector_t& r) const
 {
     return first == r.first && chained == r.chained;
+}
+
+std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v)
+{
+    os << v.name;
+    css_simple_selector_t::classes_type::const_iterator it = v.classes.begin(), ite = v.classes.end();
+    for (; it != ite; ++it)
+        os << '.' << *it;
+    if (!v.id.empty())
+        os << '#' << v.id;
+    if (v.pseudo_classes)
+        os << css::pseudo_class_to_string(v.pseudo_classes);
+    return os;
+}
+
+std::ostream& operator<< (std::ostream& os, const css_selector_t& v)
+{
+    os << v.first;
+    return os;
 }
 
 }

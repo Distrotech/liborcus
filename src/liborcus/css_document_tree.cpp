@@ -62,9 +62,9 @@ public:
         m_cur_pseudo_element |= pe;
     }
 
-    void simple_selector_pseudo_class(const char* p, size_t n)
+    void simple_selector_pseudo_class(css::pseudo_class_t pc)
     {
-        // TODO : currently not handled.
+        m_cur_simple_selector.pseudo_classes |= pc;
     }
 
     void simple_selector_id(const char* p, size_t n)

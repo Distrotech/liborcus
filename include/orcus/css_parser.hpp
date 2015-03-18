@@ -219,7 +219,16 @@ void css_parser<_Handler>::selector_name()
                 {
                     // pseudo class (or pseudo element in the older version of CSS).
                     identifier(p, n);
-                    m_handler.simple_selector_pseudo_class(p, n);
+                    css::pseudo_class_t pc = css::to_pseudo_class(p, n);
+                    if (!pc)
+                    {
+                        std::ostringstream os;
+                        os << "selector_name: unknown pseudo class '";
+                        write_to(os, p, n);
+                        os << "'";
+                        throw css::parse_error(os.str());
+                    }
+                    m_handler.simple_selector_pseudo_class(pc);
                 }
             }
             break;

@@ -10,6 +10,8 @@
 #include <mdds/sorted_string_map.hpp>
 #include <mdds/global.hpp>
 
+#include <sstream>
+
 namespace orcus { namespace css {
 
 const pseudo_element_t pseudo_element_after        = 0x0001;
@@ -142,6 +144,21 @@ pseudo_class_t to_pseudo_class(const char* p, size_t n)
         0);
 
     return class_map.find(p, n);
+}
+
+std::string pseudo_class_to_string(pseudo_class_t val)
+{
+    std::ostringstream os;
+    size_t n = ORCUS_N_ELEMENTS(pseudo_class_type_entries);
+    const pc_map_type::entry* p = pseudo_class_type_entries;
+    const pc_map_type::entry* p_end = p + n;
+    for (; p != p_end; ++p)
+    {
+        if (val & p->value)
+            os << ":" << p->key;
+    }
+
+    return os.str();
 }
 
 }}
