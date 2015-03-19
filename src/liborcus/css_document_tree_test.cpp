@@ -371,6 +371,42 @@ void test_css_parse_basic8()
     assert(check_prop(*props, "content", "Selected orange box."));
 }
 
+void test_css_parse_basic9()
+{
+    const char* path = SRCDIR"/test/css/basic9.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.name = "a";
+    selector.first.pseudo_classes = css::pseudo_class_link;
+
+    const css_properties_t* props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "color", "#FF0000"));
+
+    selector.first.pseudo_classes = css::pseudo_class_visited;
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "color", "#00FF00"));
+
+    selector.first.pseudo_classes = css::pseudo_class_hover;
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "color", "#FF00FF"));
+
+    selector.first.pseudo_classes = css::pseudo_class_active;
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "color", "#0000FF"));
+}
+
 int main()
 {
     test_css_simple_selector_equality();
@@ -382,6 +418,7 @@ int main()
     test_css_parse_basic6();
     test_css_parse_basic7();
     test_css_parse_basic8();
+    test_css_parse_basic9();
 
     return EXIT_SUCCESS;
 }

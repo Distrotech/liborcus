@@ -186,6 +186,8 @@ css_simple_selector_t intern(string_pool& sp, const css_simple_selector_t& sel)
     for (; it != ite; ++it)
         interned.classes.insert(sp.intern(*it).first);
 
+    interned.pseudo_classes = sel.pseudo_classes;
+
     return interned;
 }
 
