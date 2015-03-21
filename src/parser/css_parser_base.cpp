@@ -10,6 +10,7 @@
 
 #include <cstring>
 #include <cassert>
+#include <sstream>
 
 using namespace std;
 
@@ -19,8 +20,43 @@ parse_error::parse_error(const std::string& msg) : m_msg(msg) {}
 parse_error::~parse_error() throw() {}
 const char* parse_error::what() const throw() { return m_msg.c_str(); }
 
+void parse_error::throw_with(const char* msg_before, char c, const char* msg_after)
+{
+    std::ostringstream os;
+
+    if (msg_before)
+        os << msg_before;
+
+    os << c;
+
+    if (msg_after)
+        os << msg_after;
+
+    throw css::parse_error(os.str());
+}
+
+void parse_error::throw_with(
+    const char* msg_before, const char* p, size_t n, const char* msg_after)
+{
+    std::ostringstream os;
+
+    if (msg_before)
+        os << msg_before;
+
+    write_to(os, p, n);
+
+    if (msg_after)
+        os << msg_after;
+
+    throw css::parse_error(os.str());
+}
+
 parser_base::parser_base(const char* p, size_t n) :
-    mp_char(p), m_pos(0), m_length(n) {}
+    mp_char(p),
+    m_pos(0),
+    m_length(n),
+    m_simple_selector_count(0),
+    m_combinator(combinator_descendant) {}
 
 void parser_base::next()
 {
@@ -185,6 +221,23 @@ void parser_base::skip_comments_and_blanks()
     skip_blanks();
     while (skip_comment())
         ;
+}
+
+void parser_base::set_combinator(char c, css::combinator_t combinator)
+{
+    if (!m_simple_selector_count)
+        css::parse_error::throw_with(
+            "set_combinator: combinator '", c, "' encountered without parent element.");
+
+    m_combinator = combinator;
+    next();
+    skip_comments_and_blanks();
+}
+
+void parser_base::reset_before_block()
+{
+    m_simple_selector_count = 0;
+    m_combinator = css::combinator_descendant;
 }
 
 }}

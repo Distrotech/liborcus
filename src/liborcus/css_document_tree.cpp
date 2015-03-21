@@ -99,6 +99,10 @@ public:
         m_cur_pseudo_element = 0;
     }
 
+    void combinator(css::combinator_t combinator)
+    {
+    }
+
     void property_name(const char* p, size_t n)
     {
         m_cur_prop_name = pstring(p, n);

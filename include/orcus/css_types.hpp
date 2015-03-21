@@ -18,7 +18,7 @@ namespace orcus { namespace css {
 enum combinator_t
 {
     combinator_descendant,   /// 'E F' where F is a descendant of E.
-    combinator_child,        /// 'E > F' where F is a direct child of E.
+    combinator_direct_child, /// 'E > F' where F is a direct child of E.
     combinator_next_sibling  /// 'E + F' where F is a direct sibling of E where E precedes F.
 };
 

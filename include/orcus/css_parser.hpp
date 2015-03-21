@@ -14,7 +14,6 @@
 #include "css_parser_base.hpp"
 
 #include <cassert>
-#include <sstream>
 
 #if ORCUS_DEBUG_CSS
 #include <iostream>
@@ -40,7 +39,7 @@ private:
     // non-blank character when it finishes.
     void rule();
     void at_rule_name();
-    void selector_name();
+    void simple_selector_name();
     void property_name();
     void property();
     void quoted_value();
@@ -87,29 +86,32 @@ void css_parser<_Handler>::rule()
 
         if (is_alpha(c))
         {
-            selector_name();
+            simple_selector_name();
             continue;
         }
 
         switch (c)
         {
+            case '>':
+                set_combinator(c, css::combinator_direct_child);
+            break;
+            case '+':
+                set_combinator(c, css::combinator_next_sibling);
+            break;
             case '.':
             case '#':
             case '@':
-                selector_name();
+                simple_selector_name();
             break;
             case ',':
                 name_sep();
             break;
             case '{':
+                reset_before_block();
                 block();
             break;
             default:
-            {
-                std::ostringstream os;
-                os << "rule: failed to parse '" << c << "'";
-                throw css::parse_error(os.str());
-            }
+                css::parse_error::throw_with("rule: failed to parse '", c, "'");
         }
     }
 }
@@ -137,7 +139,7 @@ void css_parser<_Handler>::at_rule_name()
 }
 
 template<typename _Handler>
-void css_parser<_Handler>::selector_name()
+void css_parser<_Handler>::simple_selector_name()
 {
     assert(has_char());
     char c = cur_char();
@@ -148,13 +150,21 @@ void css_parser<_Handler>::selector_name()
         return;
     }
 
+    if (m_simple_selector_count)
+    {
+#if ORCUS_DEBUG_CSS
+    cout << "combinator: " << m_combinator << endl;
+#endif
+        m_handler.combinator(m_combinator);
+        m_combinator = css::combinator_descendant;
+    }
     assert(is_alpha(c) || c == '.' || c == '#');
 
     const char* p = NULL;
     size_t n = 0;
 
 #if ORCUS_DEBUG_CSS
-    cout << "selector_name:";
+    cout << "simple_selector_name: (" << m_simple_selector_count << ")";
 #endif
 
     if (c != '.' && c != '#')
@@ -205,13 +215,8 @@ void css_parser<_Handler>::selector_name()
                     identifier(p, n);
                     css::pseudo_element_t elem = css::to_pseudo_element(p, n);
                     if (!elem)
-                    {
-                        std::ostringstream os;
-                        os << "selector_name: unknown pseudo element '";
-                        write_to(os, p, n);
-                        os << "'";
-                        throw css::parse_error(os.str());
-                    }
+                        css::parse_error::throw_with(
+                            "selector_name: unknown pseudo element '", p, n, "'");
 
                     m_handler.simple_selector_pseudo_element(elem);
                 }
@@ -221,13 +226,9 @@ void css_parser<_Handler>::selector_name()
                     identifier(p, n);
                     css::pseudo_class_t pc = css::to_pseudo_class(p, n);
                     if (!pc)
-                    {
-                        std::ostringstream os;
-                        os << "selector_name: unknown pseudo class '";
-                        write_to(os, p, n);
-                        os << "'";
-                        throw css::parse_error(os.str());
-                    }
+                        css::parse_error::throw_with(
+                            "selector_name: unknown pseudo class '", p, n, "'");
+
                     m_handler.simple_selector_pseudo_class(pc);
                 }
             }
@@ -239,6 +240,8 @@ void css_parser<_Handler>::selector_name()
 
     m_handler.end_simple_selector();
     skip_comments_and_blanks();
+
+    ++m_simple_selector_count;
 
 #if ORCUS_DEBUG_CSS
     std::cout << std::endl;
@@ -253,11 +256,8 @@ void css_parser<_Handler>::property_name()
     assert(has_char());
     char c = cur_char();
     if (!is_alpha(c) && c != '.')
-    {
-        std::ostringstream os;
-        os << "property_name: first character of a name must be an alphabet or a dot, but found '" << c << "'";
-        throw css::parse_error(os.str());
-    }
+        css::parse_error::throw_with(
+            "property_name: first character of a name must be an alphabet or a dot, but found '", c, "'");
 
     const char* p;
     size_t len;
@@ -346,11 +346,7 @@ void css_parser<_Handler>::value()
     }
 
     if (!is_alpha(c) && !is_numeric(c) && !is_in(c, "-+.#"))
-    {
-        std::ostringstream os;
-        os << "value:: illegal first character of a value '" << c << "'";
-        throw css::parse_error(os.str());
-    }
+        css::parse_error::throw_with("value:: illegal first character of a value '", c, "'");
 
     const char* p = NULL;
     size_t len = 0;

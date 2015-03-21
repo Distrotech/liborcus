@@ -9,6 +9,8 @@
 #define INCLUDED_CSS_PARSER_BASE_HPP
 
 #include "orcus/env.hpp"
+#include "orcus/css_types.hpp"
+
 #include <string>
 #include <exception>
 
@@ -21,6 +23,9 @@ public:
     parse_error(const std::string& msg);
     virtual ~parse_error() throw();
     virtual const char* what() const throw();
+
+    static void throw_with(const char* msg_before, char c, const char* msg_after);
+    static void throw_with(const char* msg_before, const char* p, size_t n, const char* msg_after);
 };
 
 class ORCUS_PSR_DLLPUBLIC parser_base
@@ -49,12 +54,18 @@ protected:
     bool skip_comment();
     void comment();
     void skip_comments_and_blanks();
+    void set_combinator(char c, css::combinator_t combinator);
+    void reset_before_block();
 
 protected:
     const char* mp_char;
     size_t m_pos;
     size_t m_length;
+
+    size_t m_simple_selector_count;
+    combinator_t m_combinator;
 };
+
 
 }}
 
