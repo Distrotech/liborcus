@@ -9,6 +9,7 @@
 #define INCLUDED_ORCUS_CSS_DOCUMENT_TREE_HPP
 
 #include "orcus/css_selector.hpp"
+#include "orcus/exception.hpp"
 
 #include <string>
 
@@ -23,6 +24,12 @@ class ORCUS_DLLPUBLIC css_document_tree
     impl* mp_impl;
 
 public:
+
+    class insertion_error : public general_error
+    {
+    public:
+        insertion_error(const std::string& msg);
+    };
 
     css_document_tree();
     ~css_document_tree();

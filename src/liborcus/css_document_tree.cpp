@@ -34,11 +34,13 @@ class parser_handler
     css_selector_t m_cur_selector;  /// current selector
     css_simple_selector_t m_cur_simple_selector;
     css::pseudo_element_t m_cur_pseudo_element;
+    css::combinator_t m_cur_combinator;
     bool m_in_prop:1;
 public:
     parser_handler(css_document_tree& doc) :
         m_doc(doc),
         m_cur_pseudo_element(0),
+        m_cur_combinator(css::combinator_descendant),
         m_in_prop(false) {}
 
     void at_rule_name(const char* p, size_t n)
@@ -78,9 +80,8 @@ public:
             m_cur_selector.first = m_cur_simple_selector;
         else
         {
-            // TODO : this is currently not being handled correctly.
             css_chained_simple_selector_t css;
-            css.combinator = css::combinator_descendant;
+            css.combinator = m_cur_combinator;
             css.simple_selector = m_cur_simple_selector;
             m_cur_selector.chained.push_back(css);
         }
@@ -101,6 +102,7 @@ public:
 
     void combinator(css::combinator_t combinator)
     {
+        m_cur_combinator = combinator;
     }
 
     void property_name(const char* p, size_t n)
@@ -380,6 +382,9 @@ const css_pseudo_element_properties_t* get_properties_map(
 
 }
 
+css_document_tree::insertion_error::insertion_error(const std::string& msg) :
+    general_error(msg) {}
+
 struct css_document_tree::impl
 {
     string_pool m_string_pool;
@@ -422,8 +427,7 @@ void css_document_tree::insert_properties(
         get_or_create_simple_selector_node(mp_impl->m_root, selector_interned.first);
 
     if (!node)
-        // TODO : throw an exception.
-        return;
+        throw insertion_error("failed to find or create the root simple selector node.");
 
     if (!selector_interned.chained.empty())
     {
@@ -436,13 +440,11 @@ void css_document_tree::insert_properties(
             css_chained_simple_selector_t& css = *it_chain;
             simple_selectors_type* ss = get_or_create_simple_selectors_type(*combos, css.combinator);
             if (!ss)
-                // TODO : throw an exception.
-                return;
+                throw insertion_error("failed to find or create the simple selectors type by combinator.");
 
             node = get_or_create_simple_selector_node(*ss, css.simple_selector);
             if (!node)
-                // TODO : throw an exception.
-                return;
+                throw insertion_error("failed to find or create the simple selector node.");
         }
     }
 
