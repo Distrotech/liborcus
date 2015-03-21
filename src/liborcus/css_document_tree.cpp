@@ -350,6 +350,44 @@ void dump_properties(const css_properties_t& props)
     cout << '}' << endl;
 }
 
+void dump_all_properties(const css_selector_t& selector, const css_pseudo_element_properties_t& properties)
+{
+    css_pseudo_element_properties_t::const_iterator it_prop = properties.begin(), ite_prop = properties.end();
+    for (; it_prop != ite_prop; ++it_prop)
+    {
+        const css_properties_t& prop = it_prop->second;
+        if (!prop.empty())
+        {
+            cout << selector;
+            dump_pseudo_elements(it_prop->first);
+            cout << endl;
+            dump_properties(prop);
+        }
+    }
+}
+
+void dump_chained_recursive(
+    css_selector_t& selector, css::combinator_t op, const simple_selectors_type& ss)
+{
+    simple_selectors_type::const_iterator it_ss = ss.begin(), ite_ss = ss.end();
+    for (; it_ss != ite_ss; ++it_ss)
+    {
+        css_chained_simple_selector_t chained_ss;
+        chained_ss.combinator = op;
+        chained_ss.simple_selector = it_ss->first;
+        selector.chained.push_back(chained_ss);
+
+        const simple_selector_node& node = it_ss->second;
+        dump_all_properties(selector, node.properties);
+
+        combinators_type::const_iterator it_comb = node.children.begin(), ite_comb = node.children.end();
+        for (; it_comb != ite_comb; ++it_comb)
+            dump_chained_recursive(selector, it_comb->first, it_comb->second);
+
+        selector.chained.pop_back();
+    }
+}
+
 const css_pseudo_element_properties_t* get_properties_map(
     const simple_selectors_type& root, const css_selector_t& selector)
 {
@@ -477,27 +515,18 @@ void css_document_tree::dump() const
 {
     css_selector_t selector;
 
-    const simple_selectors_type* ss = &mp_impl->m_root;
-    simple_selectors_type::const_iterator it_ss = ss->begin(), ite_ss = ss->end();
+    const simple_selectors_type& ss = mp_impl->m_root;
+    simple_selectors_type::const_iterator it_ss = ss.begin(), ite_ss = ss.end();
     for (; it_ss != ite_ss; ++it_ss)
     {
         selector.first = it_ss->first;
 
-        const simple_selector_node* node = &it_ss->second;
-        css_pseudo_element_properties_t::const_iterator it_prop = node->properties.begin(), ite_prop = node->properties.end();
-        for (; it_prop != ite_prop; ++it_prop)
-        {
-            const css_properties_t& prop = it_prop->second;
-            if (!prop.empty())
-            {
-                cout << selector;
-                dump_pseudo_elements(it_prop->first);
-                cout << endl;
-                dump_properties(prop);
-            }
-        }
+        const simple_selector_node& node = it_ss->second;
+        dump_all_properties(selector, node.properties);
 
-        // TODO : dump chained selectors.
+        combinators_type::const_iterator it_comb = node.children.begin(), ite_comb = node.children.end();
+        for (; it_comb != ite_comb; ++it_comb)
+            dump_chained_recursive(selector, it_comb->first, it_comb->second);
     }
 }
 
