@@ -15,7 +15,7 @@
 
 namespace orcus {
 
-class ORCUS_DLLPUBLIC general_error : public ::std::exception
+class ORCUS_PSR_DLLPUBLIC general_error : public ::std::exception
 {
 public:
     explicit general_error(const ::std::string& msg);

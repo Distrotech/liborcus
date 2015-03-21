@@ -16,9 +16,7 @@ using namespace std;
 
 namespace orcus { namespace css {
 
-parse_error::parse_error(const std::string& msg) : m_msg(msg) {}
-parse_error::~parse_error() throw() {}
-const char* parse_error::what() const throw() { return m_msg.c_str(); }
+parse_error::parse_error(const std::string& msg) : general_error(msg) {}
 
 void parse_error::throw_with(const char* msg_before, char c, const char* msg_after)
 {

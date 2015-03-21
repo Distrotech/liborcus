@@ -10,19 +10,17 @@
 
 #include "orcus/env.hpp"
 #include "orcus/css_types.hpp"
+#include "orcus/exception.hpp"
 
 #include <string>
 #include <exception>
 
 namespace orcus { namespace css {
 
-class ORCUS_PSR_DLLPUBLIC parse_error : public std::exception
+class ORCUS_PSR_DLLPUBLIC parse_error : public general_error
 {
-    std::string m_msg;
 public:
     parse_error(const std::string& msg);
-    virtual ~parse_error() throw();
-    virtual const char* what() const throw();
 
     static void throw_with(const char* msg_before, char c, const char* msg_after);
     static void throw_with(const char* msg_before, const char* p, size_t n, const char* msg_after);
