@@ -91,6 +91,25 @@ std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v)
 std::ostream& operator<< (std::ostream& os, const css_selector_t& v)
 {
     os << v.first;
+    css_selector_t::chained_type::const_iterator it = v.chained.begin(), ite = v.chained.end();
+    for (; it != ite; ++it)
+    {
+        const css_chained_simple_selector_t& css = *it;
+        os << ' ';
+        switch (css.combinator)
+        {
+            case css::combinator_direct_child:
+                os << "> ";
+            break;
+            case css::combinator_next_sibling:
+                os << "+ ";
+            break;
+            case css::combinator_descendant:
+            default:
+                ;
+        }
+        os << css.simple_selector;
+    }
     return os;
 }
 
