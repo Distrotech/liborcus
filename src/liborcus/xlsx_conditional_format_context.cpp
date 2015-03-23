@@ -17,6 +17,7 @@
 #include "orcus/measurement.hpp"
 
 #include <mdds/sorted_string_map.hpp>
+#include <mdds/global.hpp>
 
 namespace orcus {
 
@@ -125,60 +126,60 @@ typedef mdds::sorted_string_map<xlsx_cond_format_date> cond_format_date_map;
 
 cond_format_type_map::entry cond_format_type_entries[] =
 {
-    { ORCUS_ASCII("expression"), expression },
-    { ORCUS_ASCII("cellIs"), cellIs },
-    { ORCUS_ASCII("colorScale"), colorScale },
-    { ORCUS_ASCII("dataBar"), dataBar },
-    { ORCUS_ASCII("iconSet"), iconSet },
-    { ORCUS_ASCII("top10"), top10 },
-    { ORCUS_ASCII("uniqueValues"), uniqueValues },
-    { ORCUS_ASCII("duplicateValues"), duplicateValues },
-    { ORCUS_ASCII("containsText"), containsText },
-    { ORCUS_ASCII("notContainsText"), notContainsText },
-    { ORCUS_ASCII("beginsWith"), beginsWith },
-    { ORCUS_ASCII("endsWith"), endsWith },
-    { ORCUS_ASCII("containsBlanks"), containsBlanks },
-    { ORCUS_ASCII("containsErrors"), containsErrors },
-    { ORCUS_ASCII("notContainsErrors"), notContainsErrors },
-    { ORCUS_ASCII("timePeriod"), timePeriod },
-    { ORCUS_ASCII("aboveAverage"), aboveAverage },
+    { MDDS_ASCII("expression"), expression },
+    { MDDS_ASCII("cellIs"), cellIs },
+    { MDDS_ASCII("colorScale"), colorScale },
+    { MDDS_ASCII("dataBar"), dataBar },
+    { MDDS_ASCII("iconSet"), iconSet },
+    { MDDS_ASCII("top10"), top10 },
+    { MDDS_ASCII("uniqueValues"), uniqueValues },
+    { MDDS_ASCII("duplicateValues"), duplicateValues },
+    { MDDS_ASCII("containsText"), containsText },
+    { MDDS_ASCII("notContainsText"), notContainsText },
+    { MDDS_ASCII("beginsWith"), beginsWith },
+    { MDDS_ASCII("endsWith"), endsWith },
+    { MDDS_ASCII("containsBlanks"), containsBlanks },
+    { MDDS_ASCII("containsErrors"), containsErrors },
+    { MDDS_ASCII("notContainsErrors"), notContainsErrors },
+    { MDDS_ASCII("timePeriod"), timePeriod },
+    { MDDS_ASCII("aboveAverage"), aboveAverage },
 };
 
 cond_format_operator_map::entry cond_format_operator_entries[] =
 {
-    { ORCUS_ASCII("beginsWith"), operator_beginsWith },
-    { ORCUS_ASCII("between"), operator_between },
-    { ORCUS_ASCII("containsText"), operator_containsText },
-    { ORCUS_ASCII("endsWith"), operator_endsWith },
-    { ORCUS_ASCII("equal"), operator_equal },
-    { ORCUS_ASCII("greaterThan"), operator_greaterThan },
-    { ORCUS_ASCII("greaterThanOrEqual"), operator_greaterThanOrEqual },
-    { ORCUS_ASCII("lessThan"), operator_lessThan },
-    { ORCUS_ASCII("lessThanOrEqual"), operator_lessThanOrEqual },
-    { ORCUS_ASCII("notBetween"), operator_notBetween },
-    { ORCUS_ASCII("notContains"), operator_notContains },
-    { ORCUS_ASCII("notEqual"), operator_notEqual }
+    { MDDS_ASCII("beginsWith"), operator_beginsWith },
+    { MDDS_ASCII("between"), operator_between },
+    { MDDS_ASCII("containsText"), operator_containsText },
+    { MDDS_ASCII("endsWith"), operator_endsWith },
+    { MDDS_ASCII("equal"), operator_equal },
+    { MDDS_ASCII("greaterThan"), operator_greaterThan },
+    { MDDS_ASCII("greaterThanOrEqual"), operator_greaterThanOrEqual },
+    { MDDS_ASCII("lessThan"), operator_lessThan },
+    { MDDS_ASCII("lessThanOrEqual"), operator_lessThanOrEqual },
+    { MDDS_ASCII("notBetween"), operator_notBetween },
+    { MDDS_ASCII("notContains"), operator_notContains },
+    { MDDS_ASCII("notEqual"), operator_notEqual }
 };
 
 cond_format_date_map::entry cond_format_date_entries[] =
 {
-    { ORCUS_ASCII("last7Days"), date_last7Days },
-    { ORCUS_ASCII("lastMonth"), date_lastMonth },
-    { ORCUS_ASCII("lastWeek"), date_lastWeek },
-    { ORCUS_ASCII("nextMonth"), date_nextMonth },
-    { ORCUS_ASCII("thisMonth"), date_thisMonth },
-    { ORCUS_ASCII("thisWeek"), date_thisWeek },
-    { ORCUS_ASCII("today"), date_today },
-    { ORCUS_ASCII("tomorrow"), date_tomorrow },
-    { ORCUS_ASCII("yesterday"), date_yesterday },
+    { MDDS_ASCII("last7Days"), date_last7Days },
+    { MDDS_ASCII("lastMonth"), date_lastMonth },
+    { MDDS_ASCII("lastWeek"), date_lastWeek },
+    { MDDS_ASCII("nextMonth"), date_nextMonth },
+    { MDDS_ASCII("thisMonth"), date_thisMonth },
+    { MDDS_ASCII("thisWeek"), date_thisWeek },
+    { MDDS_ASCII("today"), date_today },
+    { MDDS_ASCII("tomorrow"), date_tomorrow },
+    { MDDS_ASCII("yesterday"), date_yesterday },
 };
 
 cond_format_boolean_map::entry cond_format_boolean_entries[] =
 {
-    { ORCUS_ASCII("0"), boolean_false },
-    { ORCUS_ASCII("1"), boolean_true },
-    { ORCUS_ASCII("true"), boolean_false },
-    { ORCUS_ASCII("false"), boolean_true }
+    { MDDS_ASCII("0"), boolean_false },
+    { MDDS_ASCII("1"), boolean_true },
+    { MDDS_ASCII("true"), boolean_false },
+    { MDDS_ASCII("false"), boolean_true }
 };
 
 bool parse_boolean_flag(const xml_token_attr_t& attr, bool default_value)
@@ -509,12 +510,12 @@ typedef mdds::sorted_string_map<xlsx_cond_format_cfvo_type> cond_format_cfvo_typ
 
 cond_format_cfvo_type_map::entry cond_format_cfvo_entries[] =
 {
-    { ORCUS_ASCII("num"), cfvo_num },
-    { ORCUS_ASCII("percent"), cfvo_percent },
-    { ORCUS_ASCII("max"), cfvo_max },
-    { ORCUS_ASCII("min"), cfvo_min },
-    { ORCUS_ASCII("formula"), cfvo_formula },
-    { ORCUS_ASCII("percentile"), cfvo_percentile },
+    { MDDS_ASCII("num"), cfvo_num },
+    { MDDS_ASCII("percent"), cfvo_percent },
+    { MDDS_ASCII("max"), cfvo_max },
+    { MDDS_ASCII("min"), cfvo_min },
+    { MDDS_ASCII("formula"), cfvo_formula },
+    { MDDS_ASCII("percentile"), cfvo_percentile },
 };
 
 }
