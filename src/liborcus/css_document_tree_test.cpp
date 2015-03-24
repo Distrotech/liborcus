@@ -442,6 +442,34 @@ void test_css_parse_chained1()
     assert(check_prop(*props, "background-color", "red"));
 }
 
+void test_css_parse_chained2()
+{
+    const char* path = SRCDIR"/test/css/chained2.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    // Build selector '#id1 table.data td'.
+    css_selector_t selector;
+    selector.first.id = "id1";
+
+    css_simple_selector_t ss;
+    ss.name = "table";
+    ss.classes.insert("data");
+    selector.chained.push_back(ss);
+
+    ss.clear();
+    ss.name = "td";
+    selector.chained.push_back(ss);
+
+    const css_properties_t* props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 2);
+    assert(check_prop(*props, "background-color", "aquamarine"));
+    assert(check_prop(*props, "border", "solid 2px"));
+}
+
 int main()
 {
     test_css_simple_selector_equality();
@@ -455,6 +483,7 @@ int main()
     test_css_parse_basic8();
     test_css_parse_basic9();
     test_css_parse_chained1();
+    test_css_parse_chained2();
 
     return EXIT_SUCCESS;
 }

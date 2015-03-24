@@ -1,0 +1,6 @@
+
+/* selector with 3 chained simple selectors */
+#id1 table.data td {
+    background-color: aquamarine;
+    border: solid 2px;
+}

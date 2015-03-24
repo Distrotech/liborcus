@@ -411,6 +411,8 @@ const css_pseudo_element_properties_t* get_properties_map(
             node = get_simple_selector_node(*ss, css.simple_selector);
             if (!node)
                 return NULL;
+
+            combos = &node->children;
         }
     }
 
