@@ -356,13 +356,13 @@ void dump_all_properties(const css_selector_t& selector, const css_pseudo_elemen
     for (; it_prop != ite_prop; ++it_prop)
     {
         const css_properties_t& prop = it_prop->second;
-        if (!prop.empty())
-        {
-            cout << selector;
-            dump_pseudo_elements(it_prop->first);
-            cout << endl;
-            dump_properties(prop);
-        }
+        if (prop.empty())
+            continue;
+
+        cout << selector;
+        dump_pseudo_elements(it_prop->first);
+        cout << endl;
+        dump_properties(prop);
     }
 }
 
@@ -483,6 +483,8 @@ void css_document_tree::insert_properties(
             node = get_or_create_simple_selector_node(*ss, css.simple_selector);
             if (!node)
                 throw insertion_error("failed to find or create the simple selector node.");
+
+            combos = &node->children;
         }
     }
 
