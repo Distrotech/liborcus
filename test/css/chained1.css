@@ -1,0 +1,15 @@
+/* descendant selector */
+div p {
+    background-color: yellow;
+}
+
+/* direct child */
+div > p {
+    background-color: blue;
+}
+
+/* next sibling */
+div + p {
+    background-color: red;
+}
+

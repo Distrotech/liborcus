@@ -407,6 +407,41 @@ void test_css_parse_basic9()
     assert(check_prop(*props, "color", "#0000FF"));
 }
 
+void test_css_parse_chained1()
+{
+    const char* path = SRCDIR"/test/css/chained1.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.name = "div";
+    css_simple_selector_t ss;
+    ss.name = "p";
+    selector.chained.push_back(ss);
+
+    // div p
+    const css_properties_t* props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "yellow"));
+
+    // div > p
+    selector.chained.back().combinator = css::combinator_direct_child;
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "blue"));
+
+    // div + p
+    selector.chained.back().combinator = css::combinator_next_sibling;
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "red"));
+}
+
 int main()
 {
     test_css_simple_selector_equality();
@@ -419,6 +454,7 @@ int main()
     test_css_parse_basic7();
     test_css_parse_basic8();
     test_css_parse_basic9();
+    test_css_parse_chained1();
 
     return EXIT_SUCCESS;
 }

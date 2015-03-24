@@ -64,6 +64,16 @@ bool css_chained_simple_selector_t::operator== (const css_chained_simple_selecto
     return combinator == r.combinator && simple_selector == r.simple_selector;
 }
 
+css_chained_simple_selector_t::css_chained_simple_selector_t() :
+    combinator(css::combinator_descendant) {}
+
+css_chained_simple_selector_t::css_chained_simple_selector_t(const css_simple_selector_t& ss) :
+    combinator(css::combinator_descendant), simple_selector(ss) {}
+
+css_chained_simple_selector_t::css_chained_simple_selector_t(
+    css::combinator_t op, const css_simple_selector_t& ss) :
+    combinator(op), simple_selector(ss) {}
+
 void css_selector_t::clear()
 {
     first.clear();
