@@ -71,11 +71,11 @@ public:
  * first before importing and setting real styles. ID's of styles are
  * assigned sequentially starting with 0 and upward in each style category.
  *
- * In contrast to xf formatting dxf (differential formats) formatting only use
- * the formatting information that are explicitly set. It does not inherit
- * formatting from the default stlye. Setting a dxf format to an object only
- * applies these explicitly set formattings from the dxf entry, all other are
- * retained.
+ * In contrast to xf formatting, dxf (differential formats) formatting only
+ * stores the format information that is explicitly set. It does not store
+ * formatting from the default style. Applying a dxf format to an object
+ * only applies those explicitly set formats from the dxf entry, while all
+ * the other formats are retained.
  */
 class import_styles
 {
@@ -235,18 +235,25 @@ public:
 
 /**
  * This is an optional interface to import conditional formatting.
+ *
  * A conditional format consists of:
- *  * a range
- *  * several entrys
+ * <ul>
+ *  <li>a range</li>
+ *  <li>several entries</li>
+ * </ul>
  *
- *  ** An entry consits of:
- *      * a type
- *      * a few properties depending on the type (optional)
- *      ** zero or more conditions depending on the type
+ * Each entry consists of:
+ * <ul>
+ *   <li>a type</li>
+ *   <li>a few properties depending on the type (optional)</li>
+ *   <li>zero or more conditions depending on the type</li>
+ * </ul>
  *
- *      ** A condition consists of:
- *          * a formula/value/string
- *          * a color (optional)
+ * Each condition consists of:
+ * <ul>
+ *   <li>a formula/value/string</li>
+ *   <li>a color (optional)</li>
+ * </ul>
  */
 class import_conditional_format
 {
@@ -255,7 +262,7 @@ public:
 
     /**
      * Sets the color of the current condition.
-     * only valid for type == databar or type == colorscale
+     * only valid for type == databar or type == colorscale.
      */
     virtual void set_color(color_elem_t alpha, color_elem_t red,
             color_elem_t green, color_elem_t blue) = 0;
@@ -267,12 +274,12 @@ public:
 
     /**
      * Sets the type for the formula, value or string of the current condition.
-     * Only valid for type = iconset, databar or colorscale
+     * Only valid for type = iconset, databar or colorscale.
      */
     virtual void set_condition_type(orcus::spreadsheet::condition_type_t type) = 0;
 
     /**
-     * Only valid for type = date
+     * Only valid for type = date.
      */
     virtual void set_date(orcus::spreadsheet::condition_date_t date) = 0;
 
@@ -294,46 +301,46 @@ public:
     virtual void set_databar_gradient(bool gradient) = 0;
 
     /**
-     * Position of the 0 axis in the current entry
-     * only valid for type == databar
+     * Position of the 0 axis in the current entry.
+     * only valid for type == databar.
      */
     virtual void set_databar_axis(orcus::spreadsheet::databar_axis_t axis) = 0;
 
     /**
      * Databar color for positive values.
-     * only valid for type == databar
+     * only valid for type == databar.
      */
     virtual void set_databar_color_positive(color_elem_t alpha, color_elem_t red,
             color_elem_t green, color_elem_t blue) = 0;
 
     /**
      * Databar color for negative values.
-     * only valid for type == databar
+     * only valid for type == databar.
      */
     virtual void set_databar_color_negative(color_elem_t alpha, color_elem_t red,
             color_elem_t green, color_elem_t blue) = 0;
 
     /**
      * Sets the minimum length for a databar.
-     * only valid for type == databar
+     * only valid for type == databar.
      */
     virtual void set_min_databar_length(double length) = 0;
 
     /**
      * Sets the maximum length for a databar.
-     * only valid for type == databar
+     * only valid for type == databar.
      */
     virtual void set_max_databar_length(double length) = 0;
 
     /**
      * Don't show the value in the cell.
-     * only valid for type = databar, iconset, colorscale
+     * only valid for type = databar, iconset, colorscale.
      */
     virtual void set_show_value(bool show) = 0;
 
     /**
      * Use the icons in reverse order.
-     * only valid for type == iconset
+     * only valid for type == iconset.
      */
     virtual void set_iconset_reverse(bool reverse) = 0;
 
