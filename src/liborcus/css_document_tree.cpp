@@ -118,6 +118,16 @@ public:
         cout << " '" << string(p, n).c_str() << "'";
     }
 
+    void rgb(uint8_t red, uint8_t green, uint8_t blue)
+    {
+        cout << " rgb(" << (int)red << ',' << (int)green << ',' << (int)blue << ')';
+    }
+
+    void rgba(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
+    {
+        cout << " rgba(" << (int)red << ',' << (int)green << ',' << (int)blue << ',' << (int)alpha << ')';
+    }
+
     void begin_parse()
     {
         cout << "========" << endl;

@@ -22,6 +22,19 @@ enum combinator_t
     combinator_next_sibling  /// 'E + F' where F is a direct sibling of E where E precedes F.
 };
 
+/**
+ * List of functions used as property values.
+ */
+enum property_function_t
+{
+    func_unknown = 0,
+    func_hsl,
+    func_hsla,
+    func_rgb,
+    func_rgba,
+    func_url
+};
+
 typedef uint16_t pseudo_element_t;
 typedef uint64_t pseudo_class_t;
 
@@ -85,6 +98,8 @@ ORCUS_PSR_DLLPUBLIC pseudo_element_t to_pseudo_element(const char* p, size_t n);
 ORCUS_PSR_DLLPUBLIC pseudo_class_t to_pseudo_class(const char* p, size_t n);
 
 ORCUS_PSR_DLLPUBLIC std::string pseudo_class_to_string(pseudo_class_t val);
+
+ORCUS_PSR_DLLPUBLIC property_function_t to_property_function(const char* p, size_t n);
 
 }}
 

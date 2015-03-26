@@ -44,6 +44,7 @@ protected:
     bool has_char() const;
 
     void identifier(const char*& p, size_t& len, const char* extra = NULL);
+    uint8_t parse_uint8();
 
     void skip_to(const char*&p, size_t& len, char c);
     void skip_blanks();

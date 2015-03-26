@@ -44,6 +44,8 @@ private:
     void property();
     void quoted_value();
     void value();
+    void function_value(const char* p, size_t len);
+    void function_rgb(bool alpha);
     void name_sep();
     void property_sep();
     void block();
@@ -351,6 +353,12 @@ void css_parser<_Handler>::value()
     const char* p = NULL;
     size_t len = 0;
     identifier(p, len, ".%");
+    if (cur_char() == '(')
+    {
+        function_value(p, len);
+        return;
+    }
+
     m_handler.value(p, len);
 
     skip_comments_and_blanks();
@@ -358,6 +366,83 @@ void css_parser<_Handler>::value()
 #if ORCUS_DEBUG_CSS
     std::string foo(p, len);
     std::cout << "value: " << foo.c_str() << std::endl;
+#endif
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::function_value(const char* p, size_t len)
+{
+    assert(cur_char() == '(');
+    css::property_function_t func = css::to_property_function(p, len);
+    if (!func)
+        css::parse_error::throw_with("function_value: unknown function '", p, len, "'");
+
+    // Move to the first character of the first argument.
+    next();
+    skip_comments_and_blanks();
+
+    switch (func)
+    {
+        case css::func_rgb:
+            function_rgb(false);
+        break;
+        case css::func_rgba:
+            function_rgb(true);
+        break;
+        default:
+            css::parse_error::throw_with("function_value: unhandled function '", p, len, "'");
+    }
+
+    char c = cur_char();
+    if (c != ')')
+        css::parse_error::throw_with("function_value: ')' expected but '", c, "' found.");
+
+    next();
+    skip_comments_and_blanks();
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::function_rgb(bool alpha)
+{
+    // rgb(num, num, num)  rgba(num, num, num, num)
+
+    uint8_t vals[4];
+    uint8_t* p = vals;
+    const uint8_t* plast = p + (alpha ? 3 : 2);
+
+    for (; ; ++p)
+    {
+        *p = parse_uint8();
+
+        skip_comments_and_blanks();
+
+        if (p == plast)
+            break;
+
+        char c = cur_char();
+
+        if (c != ',')
+            css::parse_error::throw_with("function_rgb: ',' expected but '", c, "' found.");
+
+        next();
+        skip_comments_and_blanks();
+    }
+
+    if (alpha)
+        m_handler.rgba(vals[0], vals[1], vals[2], vals[3]);
+    else
+        m_handler.rgb(vals[0], vals[1], vals[2]);
+
+#if ORCUS_DEBUG_CSS
+    std::cout << "rgb";
+    if (alpha)
+        std::cout << 'a';
+    std::cout << '(';
+    p = vals;
+    const uint8_t* pend = plast + 1;
+    for (; p != pend; ++p)
+        std::cout << ' ' << (int)*p;
+    std::cout << " )" << std::endl;
 #endif
 }
 

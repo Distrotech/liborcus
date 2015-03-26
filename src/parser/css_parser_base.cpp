@@ -11,6 +11,7 @@
 #include <cstring>
 #include <cassert>
 #include <sstream>
+#include <limits>
 
 using namespace std;
 
@@ -95,6 +96,32 @@ void parser_base::identifier(const char*& p, size_t& len, const char* extra)
         }
         return;
     }
+}
+
+uint8_t parser_base::parse_uint8()
+{
+    // 0 - 255
+    int val = 0;
+    size_t len = 0;
+    for (; has_char() && len <= 3; next())
+    {
+        char c = cur_char();
+        if (!is_numeric(c))
+            break;
+
+        ++len;
+        val *= 10;
+        val += c - '0';
+    }
+
+    if (!len)
+        throw parse_error("parse_uint8: no digit encountered.");
+
+    int maxval = std::numeric_limits<uint8_t>::max();
+    if (val > maxval)
+        throw parse_error("parse_uint8: maximum value exceeded.");
+
+    return static_cast<uint8_t>(val);
 }
 
 void parser_base::skip_to(const char*&p, size_t& len, char c)
