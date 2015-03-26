@@ -119,7 +119,7 @@ uint8_t parser_base::parse_uint8()
 
     int maxval = std::numeric_limits<uint8_t>::max();
     if (val > maxval)
-        throw parse_error("parse_uint8: maximum value exceeded.");
+        val = maxval;
 
     return static_cast<uint8_t>(val);
 }
