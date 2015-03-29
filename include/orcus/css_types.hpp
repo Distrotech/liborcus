@@ -35,6 +35,17 @@ enum property_function_t
     func_url
 };
 
+enum property_value_t
+{
+    property_value_none = 0,
+    property_value_string,
+    property_value_hsl,
+    property_value_hsla,
+    property_value_rgb,
+    property_value_rgba,
+    property_value_url
+};
+
 typedef uint16_t pseudo_element_t;
 typedef uint64_t pseudo_class_t;
 

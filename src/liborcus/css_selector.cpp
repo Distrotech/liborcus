@@ -85,6 +85,9 @@ bool css_selector_t::operator== (const css_selector_t& r) const
     return first == r.first && chained == r.chained;
 }
 
+css_property_value_t::css_property_value_t() :
+    type(css::property_value_none), str(NULL) {}
+
 std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v)
 {
     os << v.name;
