@@ -406,9 +406,10 @@ void css_parser<_Handler>::function_rgb(bool alpha)
 {
     // rgb(num, num, num)  rgba(num, num, num, num)
 
-    uint8_t vals[4];
+    uint8_t vals[3];
     uint8_t* p = vals;
-    const uint8_t* plast = p + (alpha ? 3 : 2);
+    const uint8_t* plast = p + 2;
+    char c = 0;
 
     for (; ; ++p)
     {
@@ -419,7 +420,7 @@ void css_parser<_Handler>::function_rgb(bool alpha)
         if (p == plast)
             break;
 
-        char c = cur_char();
+        c = cur_char();
 
         if (c != ',')
             css::parse_error::throw_with("function_rgb: ',' expected but '", c, "' found.");
@@ -429,7 +430,22 @@ void css_parser<_Handler>::function_rgb(bool alpha)
     }
 
     if (alpha)
-        m_handler.rgba(vals[0], vals[1], vals[2], vals[3]);
+    {
+        c = cur_char();
+        if (c != ',')
+            css::parse_error::throw_with("function_rgb: ',' expected but '", c, "' found.");
+
+        next();
+        skip_comments_and_blanks();
+
+        double alpha_val = parse_double();
+        if (alpha_val < 0.0)
+            alpha_val = 0.0;
+        if (alpha_val > 1.0)
+            alpha_val = 1.0;
+
+        m_handler.rgba(vals[0], vals[1], vals[2], alpha_val);
+    }
     else
         m_handler.rgb(vals[0], vals[1], vals[2]);
 

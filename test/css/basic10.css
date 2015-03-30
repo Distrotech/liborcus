@@ -2,6 +2,6 @@
 /* function as property value */
 .foo {
     background-color: rgb(12, 230, 222);
-    border: solid 5px rgba(30, 12, 0, 200);
+    border: solid 5px rgba(30, 12, 0, 0.79);
 }
 

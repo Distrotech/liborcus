@@ -33,6 +33,8 @@ ORCUS_PSR_DLLPUBLIC bool is_in(char c, const char* allowed);
 
 ORCUS_PSR_DLLPUBLIC void write_to(std::ostringstream& os, const char* p, size_t n);
 
+ORCUS_PSR_DLLPUBLIC double parse_numeric(const char*& p, size_t max_length);
+
 }
 
 #endif

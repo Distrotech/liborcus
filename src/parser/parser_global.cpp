@@ -71,5 +71,61 @@ void write_to(std::ostringstream& os, const char* p, size_t n)
         os << *p;
 }
 
+double parse_numeric(const char*& p, size_t max_length)
+{
+    const char* p_end = p + max_length;
+    double ret = 0.0, divisor = 1.0;
+    bool negative_sign = false;
+    bool before_decimal_pt = true;
+
+    // Check for presence of a sign.
+    if (p != p_end)
+    {
+        switch (*p)
+        {
+            case '+':
+                ++p;
+            break;
+            case '-':
+                negative_sign = true;
+                ++p;
+            break;
+            default:
+                ;
+        }
+    }
+
+    for (; p != p_end; ++p)
+    {
+        if (*p == '.')
+        {
+            if (!before_decimal_pt)
+            {
+                // Second '.' encountered. Terminate the parsing.
+                ret /= divisor;
+                return negative_sign ? -ret : ret;
+            }
+
+            before_decimal_pt = false;
+            continue;
+        }
+
+        if (*p < '0' || '9' < *p)
+        {
+            ret /= divisor;
+            return negative_sign ? -ret : ret;
+        }
+
+        ret *= 10.0;
+        ret += *p - '0';
+
+        if (!before_decimal_pt)
+            divisor *= 10.0;
+    }
+
+    ret /= divisor;
+    return negative_sign ? -ret : ret;
+}
+
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

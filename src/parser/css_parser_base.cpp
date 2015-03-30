@@ -124,6 +124,19 @@ uint8_t parser_base::parse_uint8()
     return static_cast<uint8_t>(val);
 }
 
+double parser_base::parse_double()
+{
+    size_t max_length = remaining_size();
+    const char* p = mp_char;
+    double val = parse_numeric(p, max_length);
+    if (p == mp_char)
+        throw parse_error("parse_double: failed to parse double precision value.");
+
+    m_pos += p - mp_char;
+    mp_char = p;
+    return val;
+}
+
 void parser_base::skip_to(const char*&p, size_t& len, char c)
 {
     p = mp_char;

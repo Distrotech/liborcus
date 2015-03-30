@@ -8,6 +8,7 @@
 #include "orcus/measurement.hpp"
 #include "orcus/pstring.hpp"
 #include "orcus/exception.hpp"
+#include "orcus/parser_global.hpp"
 
 #include <sstream>
 
@@ -16,61 +17,6 @@ using namespace std;
 namespace orcus {
 
 namespace {
-
-double parse_numeric(const char*& p, const char* p_end)
-{
-    double ret = 0.0, divisor = 1.0;
-    bool negative_sign = false;
-    bool before_decimal_pt = true;
-
-    // Check for presence of a sign.
-    if (p != p_end)
-    {
-        switch (*p)
-        {
-            case '+':
-                ++p;
-            break;
-            case '-':
-                negative_sign = true;
-                ++p;
-            break;
-            default:
-                ;
-        }
-    }
-
-    for (; p != p_end; ++p)
-    {
-        if (*p == '.')
-        {
-            if (!before_decimal_pt)
-            {
-                // Second '.' encountered. Terminate the parsing.
-                ret /= divisor;
-                return negative_sign ? -ret : ret;
-            }
-
-            before_decimal_pt = false;
-            continue;
-        }
-
-        if (*p < '0' || '9' < *p)
-        {
-            ret /= divisor;
-            return negative_sign ? -ret : ret;
-        }
-
-        ret *= 10.0;
-        ret += *p - '0';
-
-        if (!before_decimal_pt)
-            divisor *= 10.0;
-    }
-
-    ret /= divisor;
-    return negative_sign ? -ret : ret;
-}
 
 long parse_integer(const char*& p, const char* p_end)
 {
@@ -139,7 +85,7 @@ std::string length_t::print() const
 
 double to_double(const char* p, const char* p_end, const char** p_parse_ended)
 {
-    double val = parse_numeric(p, p_end);
+    double val = parse_numeric(p, p_end-p);
     if (p_parse_ended)
         *p_parse_ended = p;
 
@@ -198,7 +144,7 @@ length_t to_length(const pstring& str)
     const char* p = str.get();
     const char* p_start = p;
     const char* p_end = p_start + str.size();
-    ret.value = parse_numeric(p, p_end);
+    ret.value = parse_numeric(p, p_end-p);
 
     // TODO: See if this part can be optimized.
     pstring tail(p, p_end-p);

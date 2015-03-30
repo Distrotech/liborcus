@@ -123,9 +123,9 @@ public:
         cout << " rgb(" << (int)red << ',' << (int)green << ',' << (int)blue << ')';
     }
 
-    void rgba(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
+    void rgba(uint8_t red, uint8_t green, uint8_t blue, double alpha)
     {
-        cout << " rgba(" << (int)red << ',' << (int)green << ',' << (int)blue << ',' << (int)alpha << ')';
+        cout << " rgba(" << (int)red << ',' << (int)green << ',' << (int)blue << ',' << alpha << ')';
     }
 
     void begin_parse()
