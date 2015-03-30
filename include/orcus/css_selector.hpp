@@ -107,6 +107,11 @@ struct ORCUS_DLLPUBLIC css_property_value_t
     };
 
     css_property_value_t();
+    css_property_value_t(const css_property_value_t& r);
+
+    css_property_value_t& operator= (const css_property_value_t& r);
+
+    void swap(css_property_value_t& r);
 };
 
 typedef boost::unordered_map<pstring, std::vector<pstring>, pstring::hash> css_properties_t;

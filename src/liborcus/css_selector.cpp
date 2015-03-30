@@ -88,6 +88,51 @@ bool css_selector_t::operator== (const css_selector_t& r) const
 css_property_value_t::css_property_value_t() :
     type(css::property_value_none), str(NULL) {}
 
+css_property_value_t::css_property_value_t(const css_property_value_t& r) :
+    type(r.type)
+{
+    switch (type)
+    {
+        case css::property_value_rgb:
+        case css::property_value_rgba:
+            red = r.red;
+            green = r.green;
+            blue = r.blue;
+            alpha = r.alpha;
+        break;
+        case css::property_value_hsl:
+        case css::property_value_hsla:
+            hue = r.hue;
+            saturation = r.saturation;
+            lightness = r.lightness;
+            alpha = r.alpha;
+        break;
+        case css::property_value_string:
+        case css::property_value_url:
+            str = r.str;
+        break;
+        case css::property_value_none:
+        default:
+            ;
+    }
+}
+
+css_property_value_t& css_property_value_t::operator= (const css_property_value_t& r)
+{
+    css_property_value_t tmp(r);
+    swap(tmp);
+    return *this;
+}
+
+void css_property_value_t::swap(css_property_value_t& r)
+{
+    std::swap(type, r.type);
+    std::swap(hue, r.hue);
+    std::swap(saturation, r.saturation);
+    std::swap(lightness, r.lightness);
+    std::swap(alpha, r.alpha);
+}
+
 std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v)
 {
     os << v.name;
