@@ -110,12 +110,16 @@ css_property_value_t::css_property_value_t(const css_property_value_t& r) :
         case css::property_value_string:
         case css::property_value_url:
             str = r.str;
+            length = r.length;
         break;
         case css::property_value_none:
         default:
             ;
     }
 }
+
+css_property_value_t::css_property_value_t(const pstring& str) :
+    type(css::property_value_string), str(str.get()), length(str.size()) {}
 
 css_property_value_t& css_property_value_t::operator= (const css_property_value_t& r)
 {
@@ -168,6 +172,54 @@ std::ostream& operator<< (std::ostream& os, const css_selector_t& v)
         }
         os << css.simple_selector;
     }
+    return os;
+}
+
+std::ostream& operator<< (std::ostream& os, const css_property_value_t& v)
+{
+    const char* sep = ",";
+
+    switch (v.type)
+    {
+        case css::property_value_hsl:
+            os << "hsl("
+               << (int)v.hue << sep
+               << (int)v.saturation << sep
+               << (int)v.lightness
+               << ")";
+        break;
+        case css::property_value_hsla:
+            os << "hsla("
+               << (int)v.hue << sep
+               << (int)v.saturation << sep
+               << (int)v.lightness << sep
+               << v.alpha
+               << ")";
+        break;
+        case css::property_value_rgb:
+            os << "rgb("
+               << (int)v.red << sep
+               << (int)v.green << sep
+               << (int)v.blue
+               << ")";
+        break;
+        case css::property_value_rgba:
+            os << "rgba("
+               << (int)v.red << sep
+               << (int)v.green << sep
+               << (int)v.blue << sep
+               << v.alpha
+               << ")";
+        break;
+        case css::property_value_string:
+        case css::property_value_url:
+            os << pstring(v.str, v.length);
+        break;
+        case css::property_value_none:
+        default:
+            ;
+    }
+
     return os;
 }
 

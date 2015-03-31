@@ -28,13 +28,13 @@ bool check_prop(const css_properties_t& props, const pstring& key, const pstring
     }
 
     // Chain all property values into a single string delimited by a " ".
-    const vector<pstring>& vals = it->second;
+    const vector<css_property_value_t>& vals = it->second;
     ostringstream os;
     if (vals.size() > 1)
     {
-        vector<pstring>::const_iterator it_end = vals.end();
+        vector<css_property_value_t>::const_iterator it_end = vals.end();
         advance(it_end, -1);
-        copy(vals.begin(), it_end, ostream_iterator<pstring>(os, " "));
+        copy(vals.begin(), it_end, ostream_iterator<css_property_value_t>(os, " "));
     }
     os << vals.back();
 

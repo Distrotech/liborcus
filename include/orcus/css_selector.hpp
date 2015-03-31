@@ -77,11 +77,15 @@ struct ORCUS_DLLPUBLIC css_property_value_t
 
     union
     {
-        /**
-         * Pointer to a string value. The actual string value must be stored
-         * in the string pool associated with the document tree storage.
-         */
-        const char* str;
+        struct
+        {
+            /**
+             * Pointer to a string value. The actual string value must be stored
+             * in the string pool associated with the document tree storage.
+             */
+            const char* str;
+            uint32_t length;
+        };
 
         struct
         {
@@ -109,16 +113,27 @@ struct ORCUS_DLLPUBLIC css_property_value_t
     css_property_value_t();
     css_property_value_t(const css_property_value_t& r);
 
+    /**
+     * Constructor that takes a string value.
+     *
+     * @param str string value to store. This value should point to a string
+     *            buffer that's already been interned. The caller is
+     *            responsible for managing the life cycle of the string buffer
+     *            that the pstring object points to.
+     */
+    css_property_value_t(const pstring& str);
+
     css_property_value_t& operator= (const css_property_value_t& r);
 
     void swap(css_property_value_t& r);
 };
 
-typedef boost::unordered_map<pstring, std::vector<pstring>, pstring::hash> css_properties_t;
+typedef boost::unordered_map<pstring, std::vector<css_property_value_t>, pstring::hash> css_properties_t;
 typedef boost::unordered_map<css::pseudo_element_t, css_properties_t> css_pseudo_element_properties_t;
 
 ORCUS_DLLPUBLIC std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v);
 ORCUS_DLLPUBLIC std::ostream& operator<< (std::ostream& os, const css_selector_t& v);
+ORCUS_DLLPUBLIC std::ostream& operator<< (std::ostream& os, const css_property_value_t& v);
 
 }
 

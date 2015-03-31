@@ -30,7 +30,7 @@ class parser_handler
     std::vector<selector_type> m_cur_selector_group;
     css_properties_t m_cur_properties;
     pstring m_cur_prop_name;
-    std::vector<pstring> m_cur_prop_values;
+    std::vector<css_property_value_t> m_cur_prop_values;
     css_selector_t m_cur_selector;  /// current selector
     css_simple_selector_t m_cur_simple_selector;
     css::pseudo_element_t m_cur_pseudo_element;
@@ -121,11 +121,24 @@ public:
     void rgb(uint8_t red, uint8_t green, uint8_t blue)
     {
         cout << " rgb(" << (int)red << ',' << (int)green << ',' << (int)blue << ')';
+        css_property_value_t val;
+        val.type = css::property_value_rgb;
+        val.red = red;
+        val.green = green;
+        val.blue = blue;
+        m_cur_prop_values.push_back(val);
     }
 
     void rgba(uint8_t red, uint8_t green, uint8_t blue, double alpha)
     {
         cout << " rgba(" << (int)red << ',' << (int)green << ',' << (int)blue << ',' << alpha << ')';
+        css_property_value_t val;
+        val.type = css::property_value_rgba;
+        val.red = red;
+        val.green = green;
+        val.blue = blue;
+        val.alpha = alpha;
+        m_cur_prop_values.push_back(val);
     }
 
     void begin_parse()
@@ -225,17 +238,29 @@ css_selector_t intern(string_pool& sp, const css_selector_t& sel)
     return interned;
 }
 
-class intern_inserter : std::unary_function<pstring, void>
+class intern_inserter : std::unary_function<css_property_value_t, void>
 {
     string_pool& m_sp;
-    std::vector<pstring>& m_dest;
+    std::vector<css_property_value_t>& m_dest;
 public:
-    intern_inserter(string_pool& sp, std::vector<pstring>& dest) :
+    intern_inserter(string_pool& sp, std::vector<css_property_value_t>& dest) :
         m_sp(sp), m_dest(dest) {}
 
-    void operator() (const pstring& v) const
+    void operator() (const css_property_value_t& v) const
     {
-        m_dest.push_back(m_sp.intern(v).first);
+        switch (v.type)
+        {
+            case css::property_value_string:
+            case css::property_value_url:
+            {
+                // String value needs interning.
+                pstring interned = m_sp.intern(v.str, v.length).first;
+                m_dest.push_back(interned);
+            }
+            break;
+            default:
+                m_dest.push_back(v);
+        }
     }
 };
 
@@ -264,7 +289,7 @@ void store_properties(
     for (; it != ite; ++it)
     {
         pstring key = sp.intern(it->first).first;
-        vector<pstring> vals;
+        vector<css_property_value_t> vals;
         for_each(it->second.begin(), it->second.end(), intern_inserter(sp, vals));
         prop_store[key] = vals;
     }
@@ -353,8 +378,8 @@ void dump_properties(const css_properties_t& props)
     for (; it != ite; ++it)
     {
         cout << "    * " << it->first << ": ";
-        const vector<pstring>& vals = it->second;
-        copy(vals.begin(), vals.end(), ostream_iterator<pstring>(cout, " "));
+        const vector<css_property_value_t>& vals = it->second;
+        copy(vals.begin(), vals.end(), ostream_iterator<css_property_value_t>(cout, " "));
         cout << ';' << endl;
     }
     cout << '}' << endl;
