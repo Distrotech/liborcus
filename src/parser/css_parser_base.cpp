@@ -140,8 +140,8 @@ double parser_base::parse_double()
 void parser_base::skip_to(const char*&p, size_t& len, char c)
 {
     p = mp_char;
-    len = 1;
-    for (next(); has_char(); next(), ++len)
+    len = 0;
+    for (; has_char(); next(), ++len)
     {
         if (cur_char() == c)
             return;
