@@ -407,6 +407,24 @@ void test_css_parse_basic9()
     assert(check_prop(*props, "color", "#0000FF"));
 }
 
+void test_css_parse_basic10()
+{
+    const char* path = SRCDIR"/test/css/basic10.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.classes.insert("foo");
+
+    const css_properties_t* props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 2);
+    assert(check_prop(*props, "background-color", "rgb(12,230,222)"));
+    assert(check_prop(*props, "border", "solid 5px rgba(30,12,0,0.79)"));
+}
+
 void test_css_parse_chained1()
 {
     const char* path = SRCDIR"/test/css/chained1.css";
@@ -482,6 +500,7 @@ int main()
     test_css_parse_basic7();
     test_css_parse_basic8();
     test_css_parse_basic9();
+    test_css_parse_basic10();
     test_css_parse_chained1();
     test_css_parse_chained2();
 
