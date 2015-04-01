@@ -446,6 +446,29 @@ void test_css_parse_basic11()
     assert(check_prop(*props, "position", "absolute"));
 }
 
+void test_css_parse_basic12()
+{
+    const char* path = SRCDIR"/test/css/basic12.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.name = "div";
+
+    const css_properties_t* props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-image", "url(https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png)"));
+
+    selector.first.name = "p";
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-image", "none"));
+}
+
 void test_css_parse_chained1()
 {
     const char* path = SRCDIR"/test/css/chained1.css";
@@ -523,6 +546,7 @@ int main()
     test_css_parse_basic9();
     test_css_parse_basic10();
     test_css_parse_basic11();
+    test_css_parse_basic12();
     test_css_parse_chained1();
     test_css_parse_chained2();
 
