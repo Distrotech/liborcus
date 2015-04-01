@@ -47,7 +47,8 @@ protected:
     uint8_t parse_uint8();
     double parse_double();
 
-    void skip_to(const char*&p, size_t& len, char c);
+    void literal(const char*& p, size_t& len);
+    void skip_to(const char*& p, size_t& len, char c);
     void skip_blanks();
     void skip_blanks_reverse();
     void shrink_stream();

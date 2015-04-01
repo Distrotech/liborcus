@@ -141,6 +141,16 @@ public:
         m_cur_prop_values.push_back(val);
     }
 
+    void url(const char* p, size_t n)
+    {
+        cout << " url(" << pstring(p, n) << ")";
+        css_property_value_t val;
+        val.type = orcus::css::property_value_url;
+        val.str = p;
+        val.length = n;
+        m_cur_prop_values.push_back(val);
+    }
+
     void begin_parse()
     {
         cout << "========" << endl;
@@ -254,7 +264,8 @@ public:
             case css::property_value_url:
             {
                 // String value needs interning.
-                pstring interned = m_sp.intern(v.str, v.length).first;
+                css_property_value_t interned = v;
+                interned.str = m_sp.intern(v.str, v.length).first.get();
                 m_dest.push_back(interned);
             }
             break;

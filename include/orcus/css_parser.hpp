@@ -46,6 +46,7 @@ private:
     void value();
     void function_value(const char* p, size_t len);
     void function_rgb(bool alpha);
+    void function_url();
     void name_sep();
     void property_sep();
     void block();
@@ -316,16 +317,9 @@ template<typename _Handler>
 void css_parser<_Handler>::quoted_value()
 {
     // Parse until the the end quote is reached.
-
-    assert(cur_char() == '"');
-    next();
     const char* p = NULL;
     size_t len = 0;
-    skip_to(p, len, '"');
-
-    if (cur_char() != '"')
-        throw css::parse_error("quoted_value: end quote has never been reached.");
-
+    literal(p, len);
     next();
     skip_blanks();
 
@@ -388,6 +382,9 @@ void css_parser<_Handler>::function_value(const char* p, size_t len)
         break;
         case css::func_rgba:
             function_rgb(true);
+        break;
+        case css::func_url:
+            function_url();
         break;
         default:
             css::parse_error::throw_with("function_value: unhandled function '", p, len, "'");
@@ -460,6 +457,26 @@ void css_parser<_Handler>::function_rgb(bool alpha)
         std::cout << ' ' << (int)*p;
     std::cout << " )" << std::endl;
 #endif
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::function_url()
+{
+    if (cur_char() == '"')
+    {
+        const char* p;
+        size_t len;
+        literal(p, len);
+        next();
+        skip_comments_and_blanks();
+        m_handler.url(p, len);
+#if ORCUS_DEBUG_CSS
+        std::cout << "url(" << std::string(p, len) << ")" << std::endl;
+#endif
+        return;
+    }
+
+    throw css::parse_error("function_url: TODO");
 }
 
 template<typename _Handler>
