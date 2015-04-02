@@ -137,13 +137,13 @@ double parser_base::parse_double()
     return val;
 }
 
-void parser_base::literal(const char*& p, size_t& len)
+void parser_base::literal(const char*& p, size_t& len, char quote)
 {
-    assert(cur_char() == '"');
+    assert(cur_char() == quote);
     next();
-    skip_to(p, len, '"');
+    skip_to(p, len, quote);
 
-    if (cur_char() != '"')
+    if (cur_char() != quote)
         throw css::parse_error("literal: end quote has never been reached.");
 }
 

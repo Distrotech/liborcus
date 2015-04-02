@@ -319,7 +319,7 @@ void css_parser<_Handler>::quoted_value()
     // Parse until the the end quote is reached.
     const char* p = NULL;
     size_t len = 0;
-    literal(p, len);
+    literal(p, len, '"');
     next();
     skip_blanks();
 
@@ -462,11 +462,12 @@ void css_parser<_Handler>::function_rgb(bool alpha)
 template<typename _Handler>
 void css_parser<_Handler>::function_url()
 {
-    if (cur_char() == '"')
+    char c = cur_char();
+    if (c == '"')
     {
         const char* p;
         size_t len;
-        literal(p, len);
+        literal(p, len, c);
         next();
         skip_comments_and_blanks();
         m_handler.url(p, len);
