@@ -463,8 +463,10 @@ template<typename _Handler>
 void css_parser<_Handler>::function_url()
 {
     char c = cur_char();
-    if (c == '"')
+
+    if (c == '"' || c == '\'')
     {
+        // Quoted URL value.
         const char* p;
         size_t len;
         literal(p, len, c);
@@ -477,7 +479,15 @@ void css_parser<_Handler>::function_url()
         return;
     }
 
-    throw css::parse_error("function_url: TODO");
+    // Unquoted URL value.
+    const char* p;
+    size_t len;
+    skip_to_or_blank(p, len, ")");
+    skip_comments_and_blanks();
+    m_handler.url(p, len);
+#if ORCUS_DEBUG_CSS
+    std::cout << "url(" << std::string(p, len) << ")" << std::endl;
+#endif
 }
 
 template<typename _Handler>

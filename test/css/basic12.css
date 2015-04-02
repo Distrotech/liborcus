@@ -6,3 +6,14 @@ div {
 p {
   background-image: none;
 }
+
+div.img1 {
+    background-image: url('http://www.rabiakhan.com/Gallery/background.jpg');
+}
+
+div.img2 {
+    background-image: url(
+        http://www.tgraphic.com/userimages/Gallery/Backgrounds/TGraphic_com-Full-Wallpapers-Backgrounds_Colorful_C_1920_33.jpg
+    );
+}
+

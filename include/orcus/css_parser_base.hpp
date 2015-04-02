@@ -49,6 +49,15 @@ protected:
 
     void literal(const char*& p, size_t& len, char quote);
     void skip_to(const char*& p, size_t& len, char c);
+
+    /**
+     * Skip until one of specified characters or a blank character is reached.
+     *
+     * @param p pointer to the first character of the skipped character array.
+     * @param len length of the skipped character array.
+     * @param chars one or more characters that can end the skipping.
+     */
+    void skip_to_or_blank(const char*& p, size_t& len, const char* chars);
     void skip_blanks();
     void skip_blanks_reverse();
     void shrink_stream();

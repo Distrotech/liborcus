@@ -467,6 +467,22 @@ void test_css_parse_basic12()
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "background-image", "none"));
+
+    selector.first.name = "div";
+    selector.first.classes.insert("img1");
+
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-image", "url(http://www.rabiakhan.com/Gallery/background.jpg)"));
+
+    selector.first.classes.clear();
+    selector.first.classes.insert("img2");
+
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-image", "url(http://www.tgraphic.com/userimages/Gallery/Backgrounds/TGraphic_com-Full-Wallpapers-Backgrounds_Colorful_C_1920_33.jpg)"));
 }
 
 void test_css_parse_chained1()
