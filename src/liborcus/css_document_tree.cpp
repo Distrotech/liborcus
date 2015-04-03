@@ -9,6 +9,8 @@
 #include "orcus/css_parser.hpp"
 #include "orcus/string_pool.hpp"
 
+#define ORCUS_DEBUG_CSS_DOCTREE 0
+
 #include <iostream>
 #include <boost/unordered_map.hpp>
 
@@ -45,7 +47,9 @@ public:
 
     void at_rule_name(const char* p, size_t n)
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << "@" << string(p, n).c_str();
+#endif
     }
 
     void simple_selector_type(const char* p, size_t n)
@@ -91,7 +95,9 @@ public:
 
     void end_selector()
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << m_cur_selector << "|";
+#endif
         selector_type sel;
         sel.selector = m_cur_selector;
         sel.pseudo_element = m_cur_pseudo_element;
@@ -108,19 +114,25 @@ public:
     void property_name(const char* p, size_t n)
     {
         m_cur_prop_name = pstring(p, n);
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << string(p, n).c_str() << ":";
+#endif
     }
 
     void value(const char* p, size_t n)
     {
         pstring pv(p, n);
         m_cur_prop_values.push_back(pv);
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << " '" << string(p, n).c_str() << "'";
+#endif
     }
 
     void rgb(uint8_t red, uint8_t green, uint8_t blue)
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << " rgb(" << (int)red << ',' << (int)green << ',' << (int)blue << ')';
+#endif
         css_property_value_t val;
         val.type = css::property_value_rgb;
         val.red = red;
@@ -131,7 +143,9 @@ public:
 
     void rgba(uint8_t red, uint8_t green, uint8_t blue, double alpha)
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << " rgba(" << (int)red << ',' << (int)green << ',' << (int)blue << ',' << alpha << ')';
+#endif
         css_property_value_t val;
         val.type = css::property_value_rgba;
         val.red = red;
@@ -143,7 +157,9 @@ public:
 
     void hsl(uint8_t hue, uint8_t sat, uint8_t light)
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << "hsl(" << (int)hue << ',' << (int)sat << ',' << (int)light << ')';
+#endif
         css_property_value_t val;
         val.type = css::property_value_hsl;
         val.hue = hue;
@@ -154,7 +170,9 @@ public:
 
     void hsla(uint8_t hue, uint8_t sat, uint8_t light, double alpha)
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << "hsla(" << (int)hue << ',' << (int)sat << ',' << (int)light << ',' << alpha << ')';
+#endif
         css_property_value_t val;
         val.type = css::property_value_hsla;
         val.hue = hue;
@@ -166,7 +184,9 @@ public:
 
     void url(const char* p, size_t n)
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << " url(" << pstring(p, n) << ")";
+#endif
         css_property_value_t val;
         val.type = orcus::css::property_value_url;
         val.str = p;
@@ -176,23 +196,31 @@ public:
 
     void begin_parse()
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << "========" << endl;
+#endif
     }
 
     void end_parse()
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << "========" << endl;
+#endif
     }
 
     void begin_block()
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << endl << "{" << endl;
+#endif
         m_in_prop = true;
     }
 
     void end_block()
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << "}" << endl;
+#endif
         m_in_prop = false;
 
         // Push the property set and selector group to the document tree.
@@ -207,9 +235,11 @@ public:
 
     void begin_property()
     {
+#if ORCUS_DEBUG_CSS_DOCTREE
         if (m_in_prop)
             cout << "    ";
         cout << "* ";
+#endif
     }
 
     void end_property()
@@ -218,7 +248,9 @@ public:
             css_properties_t::value_type(m_cur_prop_name, m_cur_prop_values));
         m_cur_prop_name.clear();
         m_cur_prop_values.clear();
+#if ORCUS_DEBUG_CSS_DOCTREE
         cout << endl;
+#endif
     }
 };
 
@@ -514,7 +546,9 @@ void css_document_tree::load(const std::string& strm)
     if (strm.empty())
         return;
 
+#if ORCUS_DEBUG_CSS_DOCTREE
     cout << "original: '" << strm << "'" << endl << endl;
+#endif
 
     parser_handler handler(*this);
     css_parser<parser_handler> parser(&strm[0], strm.size(), handler);
