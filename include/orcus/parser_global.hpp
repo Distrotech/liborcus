@@ -35,6 +35,17 @@ ORCUS_PSR_DLLPUBLIC void write_to(std::ostringstream& os, const char* p, size_t 
 
 ORCUS_PSR_DLLPUBLIC double parse_numeric(const char*& p, size_t max_length);
 
+/**
+ * Clip input value to specified range in case it falls outside the range.
+ *
+ * @param input original input value.
+ * @param low lower bound.
+ * @param high upper bound.
+ *
+ * @return clipped value.
+ */
+ORCUS_PSR_DLLPUBLIC double clip(double input, double low, double high);
+
 }
 
 #endif

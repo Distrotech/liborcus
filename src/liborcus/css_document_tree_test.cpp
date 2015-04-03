@@ -485,6 +485,41 @@ void test_css_parse_basic12()
     assert(check_prop(*props, "background-image", "url(http://www.tgraphic.com/userimages/Gallery/Backgrounds/TGraphic_com-Full-Wallpapers-Backgrounds_Colorful_C_1920_33.jpg)"));
 }
 
+void test_css_parse_basic13()
+{
+    const char* path = SRCDIR"/test/css/basic13.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.id = "p1";
+
+    const css_properties_t* props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "hsl(120,100,50)"));
+
+    selector.first.id = "p2";
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "hsl(120,100,75)"));
+
+    selector.first.id = "p3";
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "hsl(120,100,25)"));
+
+    selector.first.id = "p4";
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "hsl(120,60,70)"));
+}
+
 void test_css_parse_chained1()
 {
     const char* path = SRCDIR"/test/css/chained1.css";

@@ -115,7 +115,7 @@ uint8_t parser_base::parse_uint8()
     }
 
     if (!len)
-        throw parse_error("parse_uint8: no digit encountered.");
+        throw css::parse_error("parse_uint8: no digit encountered.");
 
     int maxval = std::numeric_limits<uint8_t>::max();
     if (val > maxval)
@@ -130,11 +130,23 @@ double parser_base::parse_double()
     const char* p = mp_char;
     double val = parse_numeric(p, max_length);
     if (p == mp_char)
-        throw parse_error("parse_double: failed to parse double precision value.");
+        throw css::parse_error("parse_double: failed to parse double precision value.");
 
     m_pos += p - mp_char;
     mp_char = p;
     return val;
+}
+
+double parser_base::parse_percent()
+{
+    double v = parse_double();
+
+    if (*mp_char != '%')
+        css::parse_error::throw_with(
+            "parse_percent: '%' expected after the numeric value, but '", *mp_char, "' found.");
+
+    next(); // skip the '%'.
+    return v;
 }
 
 void parser_base::literal(const char*& p, size_t& len, char quote)

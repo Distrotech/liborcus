@@ -46,6 +46,7 @@ private:
     void value();
     void function_value(const char* p, size_t len);
     void function_rgb(bool alpha);
+    void function_hsl(bool alpha);
     void function_url();
     void name_sep();
     void property_sep();
@@ -383,6 +384,12 @@ void css_parser<_Handler>::function_value(const char* p, size_t len)
         case css::func_rgba:
             function_rgb(true);
         break;
+        case css::func_hsl:
+            function_hsl(false);
+        break;
+        case css::func_hsla:
+            function_hsl(true);
+        break;
         case css::func_url:
             function_url();
         break;
@@ -401,7 +408,7 @@ void css_parser<_Handler>::function_value(const char* p, size_t len)
 template<typename _Handler>
 void css_parser<_Handler>::function_rgb(bool alpha)
 {
-    // rgb(num, num, num)  rgba(num, num, num, num)
+    // rgb(num, num, num)  rgba(num, num, num, float)
 
     uint8_t vals[3];
     uint8_t* p = vals;
@@ -436,11 +443,7 @@ void css_parser<_Handler>::function_rgb(bool alpha)
         skip_comments_and_blanks();
 
         double alpha_val = parse_double();
-        if (alpha_val < 0.0)
-            alpha_val = 0.0;
-        if (alpha_val > 1.0)
-            alpha_val = 1.0;
-
+        alpha_val = clip(alpha_val, 0.0, 1.0);
         m_handler.rgba(vals[0], vals[1], vals[2], alpha_val);
     }
     else
@@ -457,6 +460,56 @@ void css_parser<_Handler>::function_rgb(bool alpha)
         std::cout << ' ' << (int)*p;
     std::cout << " )" << std::endl;
 #endif
+}
+
+template<typename _Handler>
+void css_parser<_Handler>::function_hsl(bool alpha)
+{
+    // hsl(num, percent, percent)  hsla(num, percent, percent, float)
+
+    double hue = parse_double(); // casted to uint8_t eventually.
+    hue = clip(hue, 0.0, 360.0);
+    skip_comments_and_blanks();
+
+    char c = cur_char();
+    if (c != ',')
+        css::parse_error::throw_with("function_hsl: ',' expected but '", c, "' found.");
+
+    next();
+    skip_comments_and_blanks();
+
+    double sat = parse_percent();
+    sat = clip(sat, 0.0, 100.0);
+    skip_comments_and_blanks();
+
+    c = cur_char();
+    if (c != ',')
+        css::parse_error::throw_with("function_hsl: ',' expected but '", c, "' found.");
+
+    next();
+    skip_comments_and_blanks();
+
+    double light = parse_percent();
+    light = clip(light, 0.0, 100.0);
+    skip_comments_and_blanks();
+
+    if (!alpha)
+    {
+        m_handler.hsl(hue, sat, light);
+        return;
+    }
+
+    c = cur_char();
+    if (c != ',')
+        css::parse_error::throw_with("function_hsl: ',' expected but '", c, "' found.");
+
+    next();
+    skip_comments_and_blanks();
+
+    double alpha_val = parse_double();
+    alpha_val = clip(alpha_val, 0.0, 1.0);
+    skip_comments_and_blanks();
+    m_handler.hsla(hue, sat, light, alpha_val);
 }
 
 template<typename _Handler>

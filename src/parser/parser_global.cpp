@@ -127,5 +127,14 @@ double parse_numeric(const char*& p, size_t max_length)
     return negative_sign ? -ret : ret;
 }
 
+double clip(double input, double low, double high)
+{
+    if (input < low)
+        input = low;
+    if (input > high)
+        input = high;
+    return input;
+}
+
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

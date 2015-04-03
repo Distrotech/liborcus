@@ -141,6 +141,29 @@ public:
         m_cur_prop_values.push_back(val);
     }
 
+    void hsl(uint8_t hue, uint8_t sat, uint8_t light)
+    {
+        cout << "hsl(" << (int)hue << ',' << (int)sat << ',' << (int)light << ')';
+        css_property_value_t val;
+        val.type = css::property_value_hsl;
+        val.hue = hue;
+        val.saturation = sat;
+        val.lightness = light;
+        m_cur_prop_values.push_back(val);
+    }
+
+    void hsla(uint8_t hue, uint8_t sat, uint8_t light, double alpha)
+    {
+        cout << "hsla(" << (int)hue << ',' << (int)sat << ',' << (int)light << ',' << alpha << ')';
+        css_property_value_t val;
+        val.type = css::property_value_hsl;
+        val.hue = hue;
+        val.saturation = sat;
+        val.lightness = light;
+        val.alpha = alpha;
+        m_cur_prop_values.push_back(val);
+    }
+
     void url(const char* p, size_t n)
     {
         cout << " url(" << pstring(p, n) << ")";
