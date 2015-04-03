@@ -598,6 +598,7 @@ int main()
     test_css_parse_basic10();
     test_css_parse_basic11();
     test_css_parse_basic12();
+    test_css_parse_basic13();
     test_css_parse_chained1();
     test_css_parse_chained2();
 
