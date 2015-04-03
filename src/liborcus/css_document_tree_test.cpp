@@ -520,6 +520,41 @@ void test_css_parse_basic13()
     assert(check_prop(*props, "background-color", "hsl(120,60,70)"));
 }
 
+void test_css_parse_basic14()
+{
+    const char* path = SRCDIR"/test/css/basic14.css";
+    string strm;
+    load_file_content(path, strm);
+    css_document_tree doc;
+    doc.load(strm);
+
+    css_selector_t selector;
+    selector.first.id = "p1";
+
+    const css_properties_t* props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "hsla(120,100,50,0.3)"));
+
+    selector.first.id = "p2";
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "hsla(120,100,75,0.3)"));
+
+    selector.first.id = "p3";
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "hsla(120,100,25,0.3)"));
+
+    selector.first.id = "p4";
+    props = doc.get_properties(selector, 0);
+    assert(props);
+    assert(props->size() == 1);
+    assert(check_prop(*props, "background-color", "hsla(120,60,70,0.3)"));
+}
+
 void test_css_parse_chained1()
 {
     const char* path = SRCDIR"/test/css/chained1.css";
@@ -599,6 +634,7 @@ int main()
     test_css_parse_basic11();
     test_css_parse_basic12();
     test_css_parse_basic13();
+    test_css_parse_basic14();
     test_css_parse_chained1();
     test_css_parse_chained2();
 

@@ -156,7 +156,7 @@ public:
     {
         cout << "hsla(" << (int)hue << ',' << (int)sat << ',' << (int)light << ',' << alpha << ')';
         css_property_value_t val;
-        val.type = css::property_value_hsl;
+        val.type = css::property_value_hsla;
         val.hue = hue;
         val.saturation = sat;
         val.lightness = light;
