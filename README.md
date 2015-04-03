@@ -14,3 +14,13 @@ The library currently includes the following import filters:
 * Plain Text
 * Gnumeric XML
 * Generic XML
+
+The library also includes low-level parsers for the following:
+
+* CSV
+* CSS
+* XML
+
+These parsers are all implemented as C++ templates and require a handler class
+passed as a template argument so that the handler class receives various
+callbacks from the parser as the file is being parsed.
