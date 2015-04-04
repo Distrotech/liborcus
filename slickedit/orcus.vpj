@@ -203,6 +203,12 @@
                 <F N="../include/orcus/zip_archive_stream.hpp"/>
             </Folder>
         </Folder>
+	<Folder Name="../parser_handlers">
+	  <F N="../parser_handlers/css.hpp"/>
+	  <F N="../parser_handlers/css_test.cpp"/>
+	  <F N="../parser_handlers/csv.hpp"/>
+	  <F N="../parser_handlers/csv_test.cpp"/>
+	</Folder>
         <Folder Name="../src">
             <Folder Name="liborcus">
                 <F N="../src/liborcus/common_test.cpp"/>
