@@ -1,4 +1,4 @@
-SUBDIRS = src include
+SUBDIRS = src include parser_handlers
 ACLOCAL_AMFLAGS = -I m4
 
 pcfiles = liborcus-@ORCUS_API_VERSION@.pc

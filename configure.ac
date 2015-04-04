@@ -210,6 +210,7 @@ AC_CONFIG_FILES([Makefile
 	src/mso/Makefile
 	src/parser/Makefile
 	src/spreadsheet/Makefile
+        parser_handlers/Makefile
 ])
 AC_OUTPUT
 
