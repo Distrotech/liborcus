@@ -31,7 +31,7 @@
 #include <orcus/css_types.hpp>
 
 /**
- * Template handler for css_parser.  Feel free to copy this as a starting
+ * Skeleton handler for css_parser.  Feel free to copy this as a starting
  * point for your own CSS handler.
  */
 class css_parser_handler

@@ -40,7 +40,7 @@ struct doctype_declaration;
 }}
 
 /**
- * Template handler for sax_ns_parser.  Feel free to copy this as a starting
+ * Skeleton handler for sax_ns_parser.  Feel free to copy this as a starting
  * point for your own handler.
  */
 class sax_ns_handler

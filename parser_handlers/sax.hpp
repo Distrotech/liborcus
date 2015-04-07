@@ -42,7 +42,7 @@ class pstring;
 }
 
 /**
- * Template handler for sax_parser.  Feel free to copy this as a starting
+ * Skeleton handler for sax_parser.  Feel free to copy this as a starting
  * point for your own handler.
  */
 class sax_parser_handler

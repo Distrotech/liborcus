@@ -34,14 +34,44 @@ struct sax_token_parser_element;
 
 }
 
+/**
+ * Skeleton handler for sax_token_parser.  Feel free to copy this as a
+ * starting point for your own handler.
+ */
 class sax_token_handler
 {
 public:
-    void start_element(const orcus::sax_token_parser_element& /*elem*/) {}
+    /**
+     * Called at the start of each element.
+     *
+     * @param elem struct containing the element's information as well as all
+     *             the attributes that belong to the element.
+     */
+    void start_element(const orcus::sax_token_parser_element& elem) {}
 
-    void end_element(const orcus::sax_token_parser_element& /*elem*/) {}
+    /**
+     * Called at the end of each element.
+     *
+     * @param elem struct containing the element's information as well as all
+     *             the attributes that belong to the element.
+     */
+    void end_element(const orcus::sax_token_parser_element& elem) {}
 
-    void characters(const orcus::pstring& /*val*/, bool /*transient*/) {}
+    /**
+     * Called when a segment of a text content is parsed.  Each text content
+     * is a direct child of an element, which may have multiple child contents
+     * when the element also has a child element that are direct sibling to
+     * the text contents or the text contents are splitted by a comment.
+     *
+     * @param val value of the text content.
+     * @param transient when true, the text content has been converted and is
+     *                  stored in a temporary buffer due to presence of one or
+     *                  more encoded characters, in which case <em>the passed
+     *                  text value needs to be either immediately converted to
+     *                  a non-text value or be interned within the scope of
+     *                  the callback</em>.
+     */
+    void characters(const orcus::pstring& val, bool transient) {}
 };
 
 #endif

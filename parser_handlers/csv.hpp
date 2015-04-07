@@ -31,7 +31,7 @@
 #include <cstdlib>
 
 /**
- * Template handler for csv_parser.  Feel free to copy this as a starting
+ * Skeleton handler for csv_parser.  Feel free to copy this as a starting
  * point for your own CSV handler.
  */
 class csv_parser_handler
