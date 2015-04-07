@@ -30,8 +30,6 @@
 
 #include <cstdlib>
 
-namespace orcus {
-
 /**
  * Template handler for csv_parser.  Feel free to copy this as a starting
  * point for your own CSV handler.
@@ -49,7 +47,5 @@ public:
 
     void cell(const char* /*p*/, size_t /*n*/) {}
 };
-
-}
 
 #endif

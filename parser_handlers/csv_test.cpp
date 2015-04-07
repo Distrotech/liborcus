@@ -15,9 +15,9 @@ int main()
     const char* test_code = "1,2,3,4,5\n6,7,8,9,10\n";
     size_t n = strlen(test_code);
 
-    orcus::csv_parser_handler hdl;
+    csv_parser_handler hdl;
     orcus::csv::parser_config config;
-    orcus::csv_parser<orcus::csv_parser_handler> parser(test_code, n, hdl, config);
+    orcus::csv_parser<csv_parser_handler> parser(test_code, n, hdl, config);
     parser.parse();
 
     return 0;

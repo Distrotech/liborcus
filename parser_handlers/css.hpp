@@ -30,8 +30,6 @@
 
 #include <orcus/css_types.hpp>
 
-namespace orcus {
-
 /**
  * Template handler for css_parser.  Feel free to copy this as a starting
  * point for your own CSS handler.
@@ -45,9 +43,9 @@ public:
 
     void simple_selector_class(const char* /*p*/, size_t /*n*/) {}
 
-    void simple_selector_pseudo_element(css::pseudo_element_t /*pe*/) {}
+    void simple_selector_pseudo_element(orcus::css::pseudo_element_t /*pe*/) {}
 
-    void simple_selector_pseudo_class(css::pseudo_class_t /*pc*/) {}
+    void simple_selector_pseudo_class(orcus::css::pseudo_class_t /*pc*/) {}
 
     void simple_selector_id(const char* /*p*/, size_t /*n*/) {}
 
@@ -55,7 +53,7 @@ public:
 
     void end_selector() {}
 
-    void combinator(css::combinator_t /*combinator*/) {}
+    void combinator(orcus::css::combinator_t /*combinator*/) {}
 
     void property_name(const char* /*p*/, size_t /*n*/) {}
 
@@ -83,7 +81,5 @@ public:
 
     void end_property() {}
 };
-
-}
 
 #endif
