@@ -7,7 +7,8 @@ bin_PROGRAMS =
 EXTRA_PROGRAMS = \
 	orcus-handler-test-css \
 	orcus-handler-test-csv \
-	orcus-handler-test-sax
+	orcus-handler-test-sax \
+	orcus-handler-test-sax-token
 
 COMMON_CPPFLAGS =
 
@@ -33,10 +34,18 @@ orcus_handler_test_sax_SOURCES = sax_test.cpp
 orcus_handler_test_sax_LDADD = \
 	../src/parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
+# orcus-handler-test-sax-token
+
+orcus_handler_test_sax_token_SOURCES = sax_token_test.cpp
+orcus_handler_test_sax_token_LDADD = \
+	../src/parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	../src/liborcus/liborcus-@ORCUS_API_VERSION@.la
+
 TESTS = \
 	orcus-handler-test-css \
 	orcus-handler-test-csv \
-	orcus-handler-test-sax
+	orcus-handler-test-sax \
+	orcus-handler-test-sax-token
 
 distclean-local:
 	rm -rf $(TESTS)

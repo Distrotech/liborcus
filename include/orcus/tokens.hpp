@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_TOKENS_BASE_HPP__
-#define __ORCUS_TOKENS_BASE_HPP__
+#ifndef INCLUDED_ORCUS_TOKENS_HPP
+#define INCLUDED_ORCUS_TOKENS_HPP
 
 #include "orcus/types.hpp"
 #include "orcus/pstring.hpp"
@@ -18,7 +18,7 @@ namespace orcus {
 
 class pstring;
 
-class tokens
+class ORCUS_DLLPUBLIC tokens
 {
 public:
 

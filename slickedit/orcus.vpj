@@ -208,6 +208,10 @@
 	  <F N="../parser_handlers/css_test.cpp"/>
 	  <F N="../parser_handlers/csv.hpp"/>
 	  <F N="../parser_handlers/csv_test.cpp"/>
+	  <F N="../parser_handlers/sax.hpp"/>
+	  <F N="../parser_handlers/sax_test.cpp"/>
+	  <F N="../parser_handlers/sax_token.hpp"/>
+	  <F N="../parser_handlers/sax_token_test.cpp"/>
 	</Folder>
         <Folder Name="../src">
             <Folder Name="liborcus">
