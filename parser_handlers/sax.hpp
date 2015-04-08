@@ -65,7 +65,7 @@ public:
     void start_declaration(const orcus::pstring& decl) {}
 
     /**
-     * Called when the closing tag (&gt;) of a &lt;?... &gt; is encountered.
+     * Called when the closing tag (&gt;) of a &lt;?... ?&gt; is encountered.
      *
      * @param decl name of the identifier.
      */
@@ -102,7 +102,7 @@ public:
     void characters(const orcus::pstring& val, bool transient) {}
 
     /**
-     * Called upon parsing of a name-value pair within &lt;? ... &gt; tag.
+     * Called upon parsing of a name-value pair within &lt;? ... ?&gt; tag.
      *
      * @param name attribute name.
      * @param val attribute value text.
