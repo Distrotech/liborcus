@@ -30,9 +30,10 @@ liborcus_parser_@ORCUS_API_VERSION@_la_LIBADD = \
 						$(ZLIB_LIBS)
 
 EXTRA_PROGRAMS = \
-		parser-test-string-pool \
+	parser-test-string-pool \
 	parser-test-xml-namespace \
-	parser-test-base64
+	parser-test-base64 \
+	parser-test-sax-token-parser
 
 # parser-test-string-pool
 
@@ -60,10 +61,19 @@ parser_test_base64_SOURCES = \
 
 parser_test_base64_CPPFLAGS = $(COMMON_CPPFLAGS)
 
+# parser-test-sax-token-parser
+
+parser_test_sax_token_parser_SOURCES = \
+	sax_token_parser_test.cpp
+
+parser_test_sax_token_parser_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
+parser_test_sax_token_parser_CPPFLAGS = $(COMMON_CPPFLAGS)
+
 TESTS = \
 	parser-test-string-pool \
 	parser-test-xml-namespace \
-	parser-test-base64
+	parser-test-base64 \
+	parser-test-sax-token-parser
 
 distclean-local:
 	rm -rf $(TESTS)
