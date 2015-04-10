@@ -39,15 +39,13 @@ orcus_handler_test_sax_LDADD = \
 
 orcus_handler_test_sax_token_SOURCES = sax_token_test.cpp
 orcus_handler_test_sax_token_LDADD = \
-	../src/parser/liborcus-parser-@ORCUS_API_VERSION@.la \
-	../src/liborcus/liborcus-@ORCUS_API_VERSION@.la
+	../src/parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 # orcus-handler-test-sax-ns
 
 orcus_handler_test_sax_ns_SOURCES = sax_ns_test.cpp
 orcus_handler_test_sax_ns_LDADD = \
-	../src/parser/liborcus-parser-@ORCUS_API_VERSION@.la \
-	../src/liborcus/liborcus-@ORCUS_API_VERSION@.la
+	../src/parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 TESTS = \
 	orcus-handler-test-css \
