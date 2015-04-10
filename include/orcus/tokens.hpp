@@ -18,7 +18,7 @@ namespace orcus {
 
 class pstring;
 
-class ORCUS_DLLPUBLIC tokens
+class ORCUS_PSR_DLLPUBLIC tokens
 {
 public:
 

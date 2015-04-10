@@ -40,7 +40,6 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	orcus_csv.cpp \
 	orcus_xml.cpp \
 	measurement.cpp \
-	tokens.cpp \
 	xml_context_base.hpp \
 	xml_context_base.cpp \
 	xml_context_global.hpp \
@@ -141,7 +140,6 @@ orcus_xlsx_sheet_context_test_SOURCES = \
 	ooxml_schemas.cpp \
 	xml_context_base.cpp \
 	xml_context_global.cpp \
-	tokens.cpp \
 	global.cpp \
 	spreadsheet_interface.cpp \
 	mock_spreadsheet.hpp \
@@ -248,7 +246,6 @@ gnumeric_cell_context_test_SOURCES = \
 	gnumeric_cell_context.cpp \
 	xml_context_base.cpp \
 	gnumeric_namespace_types.cpp \
-	tokens.cpp \
 	gnumeric_tokens.cpp \
 	odf_namespace_types.cpp \
 	spreadsheet_interface.cpp \
@@ -273,7 +270,6 @@ orcus_gnumeric_sheet_context_test_SOURCES = \
 	gnumeric_helper.cpp \
 	xml_context_base.cpp \
 	gnumeric_namespace_types.cpp \
-	tokens.cpp \
 	gnumeric_tokens.cpp \
 	odf_namespace_types.cpp \
 	spreadsheet_interface.cpp \
@@ -340,7 +336,6 @@ liborcus_test_xml_structure_tree_LDADD = \
 
 liborcus_test_common_SOURCES = \
 	global.cpp \
-	tokens.cpp \
 	common_test.cpp
 
 liborcus_test_common_LDADD = \

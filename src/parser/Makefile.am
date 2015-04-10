@@ -17,6 +17,7 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	sax_parser_base.cpp \
 	stream.cpp \
 	string_pool.cpp \
+	tokens.cpp \
 	types.cpp \
 	xml_namespace.cpp \
 	zip_archive.cpp \
