@@ -34,8 +34,8 @@ class xmlns_repository
     size_t get_index(xmlns_id_t ns_id) const;
 
 public:
-    ORCUS_DLLPUBLIC xmlns_repository();
-    ORCUS_DLLPUBLIC ~xmlns_repository();
+    ORCUS_PSR_DLLPUBLIC xmlns_repository();
+    ORCUS_PSR_DLLPUBLIC ~xmlns_repository();
 
     /**
      * Add a set of predefined namespace values to the repository.
@@ -49,9 +49,9 @@ public:
      *                      corresponding xmlns_repository instance is
      *                      deleted.
      */
-    ORCUS_DLLPUBLIC void add_predefined_values(const xmlns_id_t* predefined_ns);
+    ORCUS_PSR_DLLPUBLIC void add_predefined_values(const xmlns_id_t* predefined_ns);
 
-    ORCUS_DLLPUBLIC xmlns_context create_context();
+    ORCUS_PSR_DLLPUBLIC xmlns_context create_context();
 
     /**
      * Get XML namespace identifier from its numerical index.
@@ -60,10 +60,10 @@ public:
      *
      * @return valid namespace identifier, or XMLNS_UNKNOWN_ID if not found.
      */
-    ORCUS_DLLPUBLIC xmlns_id_t get_identifier(size_t index) const;
+    ORCUS_PSR_DLLPUBLIC xmlns_id_t get_identifier(size_t index) const;
 
-    ORCUS_DLLPUBLIC std::string get_short_name(xmlns_id_t ns_id) const;
-    ORCUS_DLLPUBLIC std::string get_short_name(size_t index) const;
+    ORCUS_PSR_DLLPUBLIC std::string get_short_name(xmlns_id_t ns_id) const;
+    ORCUS_PSR_DLLPUBLIC std::string get_short_name(size_t index) const;
 
 private:
     xmlns_repository_impl* mp_impl;
@@ -77,7 +77,7 @@ private:
  *
  * An empty key value is associated with a default namespace.
  */
-class ORCUS_DLLPUBLIC xmlns_context
+class ORCUS_PSR_DLLPUBLIC xmlns_context
 {
     friend class xmlns_repository;
 
