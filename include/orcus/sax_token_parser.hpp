@@ -51,6 +51,7 @@ struct sax_token_parser_element
 {
     xmlns_id_t ns;
     xml_token_t name;
+    pstring raw_name;
     std::vector<xml_token_attr_t> attrs;
 };
 
@@ -98,6 +99,7 @@ private:
         {
             m_elem.ns = elem.ns;
             m_elem.name = tokenize(elem.name);
+            m_elem.raw_name = elem.name;
             m_handler.start_element(m_elem);
             m_elem.attrs.clear();
         }
@@ -106,6 +108,7 @@ private:
         {
             m_elem.ns = elem.ns;
             m_elem.name = tokenize(elem.name);
+            m_elem.raw_name = elem.name;
             m_handler.end_element(m_elem);
         }
 
@@ -123,7 +126,8 @@ private:
         {
             m_elem.attrs.push_back(
                xml_token_attr_t(
-                  attr.ns, tokenize(attr.name), attr.value, attr.transient));
+                   attr.ns, tokenize(attr.name), attr.name,
+                   attr.value, attr.transient));
         }
 
     private:

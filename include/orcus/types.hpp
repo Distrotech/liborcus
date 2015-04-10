@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_TYPES_HPP__
-#define __ORCUS_TYPES_HPP__
+#ifndef INCLUDED_ORCUS_TYPES_HPP
+#define INCLUDED_ORCUS_TYPES_HPP
 
 #include <cstdlib>
 #include <vector>
@@ -21,10 +21,10 @@ namespace orcus {
 typedef size_t xml_token_t;
 typedef const char* xmlns_id_t;
 
-ORCUS_DLLPUBLIC extern const xmlns_id_t XMLNS_UNKNOWN_ID;
-ORCUS_DLLPUBLIC extern const xml_token_t XML_UNKNOWN_TOKEN;
-ORCUS_DLLPUBLIC extern const size_t index_not_found;
-ORCUS_DLLPUBLIC extern const size_t unspecified;
+ORCUS_PSR_DLLPUBLIC extern const xmlns_id_t XMLNS_UNKNOWN_ID;
+ORCUS_PSR_DLLPUBLIC extern const xml_token_t XML_UNKNOWN_TOKEN;
+ORCUS_PSR_DLLPUBLIC extern const size_t index_not_found;
+ORCUS_PSR_DLLPUBLIC extern const size_t unspecified;
 
 struct xml_name_t
 {
@@ -36,10 +36,11 @@ struct xml_name_t
     xml_name_t(const xml_name_t& r) : ns(r.ns), name(r.name) {}
 };
 
-struct xml_token_attr_t
+struct ORCUS_PSR_DLLPUBLIC xml_token_attr_t
 {
     xmlns_id_t ns;
     xml_token_t name;
+    pstring raw_name;
     pstring value;
 
     /**
@@ -50,9 +51,12 @@ struct xml_token_attr_t
      */
     bool transient;
 
-    xml_token_attr_t() : ns(XMLNS_UNKNOWN_ID), name(XML_UNKNOWN_TOKEN) {}
-    xml_token_attr_t(xmlns_id_t _ns, xml_token_t _name, const pstring& _value, bool _transient) :
-        ns(_ns), name(_name), value(_value), transient(_transient) {}
+    xml_token_attr_t();
+    xml_token_attr_t(
+        xmlns_id_t _ns, xml_token_t _name, const pstring& _value, bool _transient);
+    xml_token_attr_t(
+        xmlns_id_t _ns, xml_token_t _name, const pstring& _raw_name,
+        const pstring& _value, bool _transient);
 };
 
 // Other types
@@ -69,7 +73,7 @@ enum length_unit_t
     // TODO: Add more.
 };
 
-struct ORCUS_DLLPUBLIC date_time_t
+struct ORCUS_PSR_DLLPUBLIC date_time_t
 {
     int year;
     int month;
