@@ -307,7 +307,6 @@
                 <F N="../src/liborcus/session_context.hpp"/>
                 <F N="../src/liborcus/spreadsheet_interface.cpp"/>
                 <F N="../src/liborcus/spreadsheet_types.cpp"/>
-                <F N="../src/liborcus/tokens.cpp"/>
                 <F N="../src/liborcus/xls_xml_context.cpp"/>
                 <F N="../src/liborcus/xls_xml_context.hpp"/>
                 <F N="../src/liborcus/xls_xml_detection_handler.cpp"/>
@@ -366,7 +365,8 @@
                 <F N="../src/parser/base64_test.cpp"/>
                 <F N="../src/parser/cell_buffer.cpp"/>
                 <F N="../src/parser/css_parser_base.cpp"/>
-		                <F N="../include/orcus/parser_global.hpp"/>
+                <F N="../src/parser/tokens.cpp"/>		
+		<F N="../include/orcus/parser_global.hpp"/>
                 <F N="../include/orcus/pstring.hpp"/>
                 <F N="../include/orcus/sax_ns_parser.hpp"/>
                 <F N="../include/orcus/sax_parser.hpp"/>
@@ -474,7 +474,6 @@
                 <F N="../src/liborcus/session_context.hpp"/>
                 <F N="../src/liborcus/spreadsheet_interface.cpp"/>
                 <F N="../src/liborcus/spreadsheet_types.cpp"/>
-                <F N="../src/liborcus/tokens.cpp"/>
                 <F N="../src/liborcus/xls_xml_context.cpp"/>
                 <F N="../src/liborcus/xls_xml_context.hpp"/>
                 <F N="../src/liborcus/xls_xml_detection_handler.cpp"/>
