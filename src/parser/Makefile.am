@@ -15,6 +15,7 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	parser_global.cpp \
 	pstring.cpp \
 	sax_parser_base.cpp \
+	sax_token_parser.cpp \
 	stream.cpp \
 	string_pool.cpp \
 	tokens.cpp \

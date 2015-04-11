@@ -22,7 +22,7 @@ int main()
     orcus::tokens token_map(NULL, 0);
     orcus::xmlns_repository repo;
     orcus::xmlns_context cxt = repo.create_context();
-    orcus::sax_token_parser<sax_token_handler, orcus::tokens> parser(test_code, len, token_map, cxt, hdl);
+    orcus::sax_token_parser<sax_token_handler> parser(test_code, len, token_map, cxt, hdl);
     parser.parse();
 }
 

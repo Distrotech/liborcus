@@ -52,7 +52,7 @@ void xml_stream_parser::parse()
     if (!mp_handler)
         return;
 
-    sax_token_parser<xml_stream_handler, tokens> sax(m_content, m_size, m_tokens, m_ns_cxt, *mp_handler);
+    sax_token_parser<xml_stream_handler> sax(m_content, m_size, m_tokens, m_ns_cxt, *mp_handler);
     sax.parse();
 }
 

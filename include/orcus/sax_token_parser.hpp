@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_SAX_TOKEN_PARSER_HPP__
-#define __ORCUS_SAX_TOKEN_PARSER_HPP__
+#ifndef INCLUDED_ORCUS_SAX_TOKEN_PARSER_HPP
+#define INCLUDED_ORCUS_SAX_TOKEN_PARSER_HPP
 
 #include <vector>
 #include <algorithm>
@@ -16,6 +16,8 @@
 #include "sax_ns_parser.hpp"
 
 namespace orcus {
+
+class tokens;
 
 namespace sax {
 
@@ -55,17 +57,35 @@ struct sax_token_parser_element
     std::vector<xml_token_attr_t> attrs;
 };
 
+class ORCUS_PSR_DLLPUBLIC sax_token_handler_base
+{
+protected:
+    sax_token_parser_element m_elem;
+    const tokens& m_tokens;
+
+    xml_token_t tokenize(const pstring& name) const;
+    void set_element(const sax_ns_parser_element& elem);
+
+public:
+    sax_token_handler_base(const tokens& _tokens);
+
+    void attribute(const pstring& name, const pstring& val);
+    void attribute(const sax_ns_parser_attribute& attr);
+};
+
 /**
  * XML parser that tokenizes element and attribute names while parsing.
  */
-template<typename _Handler, typename _Tokens>
+template<typename _Handler>
 class sax_token_parser
 {
 public:
     typedef _Handler    handler_type;
-    typedef _Tokens     tokens_map;
 
-    sax_token_parser(const char* content, const size_t size, const tokens_map& tokens, xmlns_context& ns_cxt, handler_type& handler);
+    sax_token_parser(
+        const char* content, const size_t size, const tokens& _tokens,
+        xmlns_context& ns_cxt, handler_type& handler);
+
     ~sax_token_parser();
 
     void parse();
@@ -76,15 +96,13 @@ private:
      * Re-route callbacks from the internal sax_parser into the token_parser
      * callbacks.
      */
-    class handler_wrapper
+    class handler_wrapper : public sax_token_handler_base
     {
-        sax_token_parser_element m_elem;
-        const tokens_map& m_tokens;
         handler_type& m_handler;
 
     public:
-        handler_wrapper(const tokens_map& tokens, handler_type& handler) :
-            m_tokens(tokens), m_handler(handler) {}
+        handler_wrapper(const tokens& _tokens, handler_type& handler) :
+            sax_token_handler_base(_tokens), m_handler(handler) {}
 
         void doctype(const sax::doctype_declaration&) {}
 
@@ -97,47 +115,20 @@ private:
 
         void start_element(const sax_ns_parser_element& elem)
         {
-            m_elem.ns = elem.ns;
-            m_elem.name = tokenize(elem.name);
-            m_elem.raw_name = elem.name;
+            set_element(elem);
             m_handler.start_element(m_elem);
             m_elem.attrs.clear();
         }
 
         void end_element(const sax_ns_parser_element& elem)
         {
-            m_elem.ns = elem.ns;
-            m_elem.name = tokenize(elem.name);
-            m_elem.raw_name = elem.name;
+            set_element(elem);
             m_handler.end_element(m_elem);
         }
 
         void characters(const pstring& val, bool transient)
         {
             m_handler.characters(val, transient);
-        }
-
-        void attribute(const pstring& /*name*/, const pstring& /*val*/)
-        {
-            // Right now we don't process XML declaration.
-        }
-
-        void attribute(const sax_ns_parser_attribute& attr)
-        {
-            m_elem.attrs.push_back(
-               xml_token_attr_t(
-                   attr.ns, tokenize(attr.name), attr.name,
-                   attr.value, attr.transient));
-        }
-
-    private:
-
-        xml_token_t tokenize(const pstring& name) const
-        {
-            xml_token_t token = XML_UNKNOWN_TOKEN;
-            if (!name.empty())
-                token = m_tokens.get_token(name);
-            return token;
         }
     };
 
@@ -147,22 +138,22 @@ private:
     sax_ns_parser<handler_wrapper> m_parser;
 };
 
-template<typename _Handler, typename _Tokens>
-sax_token_parser<_Handler,_Tokens>::sax_token_parser(
-    const char* content, const size_t size, const tokens_map& tokens, xmlns_context& ns_cxt, handler_type& handler) :
+template<typename _Handler>
+sax_token_parser<_Handler>::sax_token_parser(
+    const char* content, const size_t size, const tokens& _tokens, xmlns_context& ns_cxt, handler_type& handler) :
     m_ns_cxt(ns_cxt),
-    m_wrapper(tokens, handler),
+    m_wrapper(_tokens, handler),
     m_parser(content, size, m_ns_cxt, m_wrapper)
 {
 }
 
-template<typename _Handler, typename _Tokens>
-sax_token_parser<_Handler,_Tokens>::~sax_token_parser()
+template<typename _Handler>
+sax_token_parser<_Handler>::~sax_token_parser()
 {
 }
 
-template<typename _Handler, typename _Tokens>
-void sax_token_parser<_Handler,_Tokens>::parse()
+template<typename _Handler>
+void sax_token_parser<_Handler>::parse()
 {
     m_parser.parse();
 }

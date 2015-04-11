@@ -8,6 +8,8 @@
 #include "orcus/sax_token_parser.hpp"
 #include "orcus/tokens.hpp"
 
+using namespace orcus;
+
 void test_sax_token_parser_raw_string_name()
 {
     // TODO : write test.
