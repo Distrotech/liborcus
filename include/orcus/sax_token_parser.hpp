@@ -57,7 +57,7 @@ struct sax_token_parser_element
     std::vector<xml_token_attr_t> attrs;
 };
 
-class ORCUS_PSR_DLLPUBLIC sax_token_handler_base
+class ORCUS_PSR_DLLPUBLIC sax_token_handler_wrapper_base
 {
 protected:
     sax_token_parser_element m_elem;
@@ -67,7 +67,7 @@ protected:
     void set_element(const sax_ns_parser_element& elem);
 
 public:
-    sax_token_handler_base(const tokens& _tokens);
+    sax_token_handler_wrapper_base(const tokens& _tokens);
 
     void attribute(const pstring& name, const pstring& val);
     void attribute(const sax_ns_parser_attribute& attr);
@@ -96,13 +96,13 @@ private:
      * Re-route callbacks from the internal sax_parser into the token_parser
      * callbacks.
      */
-    class handler_wrapper : public sax_token_handler_base
+    class handler_wrapper : public sax_token_handler_wrapper_base
     {
         handler_type& m_handler;
 
     public:
         handler_wrapper(const tokens& _tokens, handler_type& handler) :
-            sax_token_handler_base(_tokens), m_handler(handler) {}
+            sax_token_handler_wrapper_base(_tokens), m_handler(handler) {}
 
         void doctype(const sax::doctype_declaration&) {}
 
