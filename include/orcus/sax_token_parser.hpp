@@ -133,7 +133,6 @@ private:
     };
 
 private:
-    xmlns_context& m_ns_cxt;
     handler_wrapper m_wrapper;
     sax_ns_parser<handler_wrapper> m_parser;
 };
@@ -141,9 +140,8 @@ private:
 template<typename _Handler>
 sax_token_parser<_Handler>::sax_token_parser(
     const char* content, const size_t size, const tokens& _tokens, xmlns_context& ns_cxt, handler_type& handler) :
-    m_ns_cxt(ns_cxt),
     m_wrapper(_tokens, handler),
-    m_parser(content, size, m_ns_cxt, m_wrapper)
+    m_parser(content, size, ns_cxt, m_wrapper)
 {
 }
 

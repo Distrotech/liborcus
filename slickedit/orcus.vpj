@@ -365,7 +365,9 @@
                 <F N="../src/parser/base64_test.cpp"/>
                 <F N="../src/parser/cell_buffer.cpp"/>
                 <F N="../src/parser/css_parser_base.cpp"/>
-                <F N="../src/parser/tokens.cpp"/>		
+                <F N="../src/parser/tokens.cpp"/>
+                <F N="../src/parser/sax_token_parser.cpp"/>
+                <F N="../src/parser/sax_token_parser_test.cpp"/>		
 		<F N="../include/orcus/parser_global.hpp"/>
                 <F N="../include/orcus/pstring.hpp"/>
                 <F N="../include/orcus/sax_ns_parser.hpp"/>
