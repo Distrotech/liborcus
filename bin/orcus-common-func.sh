@@ -43,6 +43,20 @@ orcus_exec()
     common_exec "$@"
 }
 
+parser_test_exec()
+{
+    EXEC="$1"
+    shift
+    EXECDIR="$PROGDIR/../src/parser"
+    PROGDIR="$PWD/"`dirname $0`
+    ROOTDIR=$PROGDIR/..
+    EXECPATH=$ROOTDIR/src/parser/.libs/$EXEC
+    export LD_LIBRARY_PATH=$ROOTDIR/src/parser/.libs:
+    cd $EXECDIR
+
+    common_exec "$@"
+}
+
 liborcus_test_exec()
 {
     EXEC="$1"
