@@ -1,7 +1,5 @@
 
-INCLUDES = -I$(top_srcdir)/include
-
-COMMON_CPPFLAGS = $(BOOST_SYSTEM_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/include $(BOOST_SYSTEM_CFLAGS)
 
 lib_LTLIBRARIES = liborcus-parser-@ORCUS_API_VERSION@.la
 liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
@@ -27,8 +25,8 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 
 liborcus_parser_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 liborcus_parser_@ORCUS_API_VERSION@_la_LIBADD = \
-						$(BOOST_SYSTEM_LIBS) \
-						$(ZLIB_LIBS)
+	$(BOOST_SYSTEM_LIBS) \
+	$(ZLIB_LIBS)
 
 EXTRA_PROGRAMS = \
 	parser-test-string-pool \
@@ -43,7 +41,7 @@ parser_test_string_pool_SOURCES = \
 	string_pool_test.cpp
 
 parser_test_string_pool_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
-parser_test_string_pool_CPPFLAGS = $(COMMON_CPPFLAGS)
+parser_test_string_pool_CPPFLAGS = $(AM_CPPFLAGS)
 
 # parser-test-xml-namespace
 
@@ -52,7 +50,7 @@ parser_test_xml_namespace_SOURCES = \
 	xml_namespace_test.cpp
 
 parser_test_xml_namespace_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
-parser_test_xml_namespace_CPPFLAGS = $(COMMON_CPPFLAGS)
+parser_test_xml_namespace_CPPFLAGS = $(AM_CPPFLAGS)
 
 # parser-test-base64
 
@@ -60,7 +58,7 @@ parser_test_base64_SOURCES = \
 	base64.cpp \
 	base64_test.cpp
 
-parser_test_base64_CPPFLAGS = $(COMMON_CPPFLAGS)
+parser_test_base64_CPPFLAGS = $(AM_CPPFLAGS)
 
 # parser-test-sax-token-parser
 
@@ -68,7 +66,7 @@ parser_test_sax_token_parser_SOURCES = \
 	sax_token_parser_test.cpp
 
 parser_test_sax_token_parser_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
-parser_test_sax_token_parser_CPPFLAGS = $(COMMON_CPPFLAGS)
+parser_test_sax_token_parser_CPPFLAGS = $(AM_CPPFLAGS)
 
 TESTS = \
 	parser-test-string-pool \

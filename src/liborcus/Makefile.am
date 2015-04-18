@@ -1,5 +1,5 @@
 
-INCLUDES = -I$(top_srcdir)/include -I./include
+AM_CPPFLAGS = -I$(top_srcdir)/include -I./include
 
 EXTRA_PROGRAMS = \
 	liborcus-test-css-document-tree \
@@ -11,9 +11,9 @@ EXTRA_PROGRAMS = \
 TESTS =
 
 if HAVE_STATIC_LIB
-AM_CPPFLAGS = -D__ORCUS_STATIC_LIB=1
+AM_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 else
-AM_CPPFLAGS = -D__ORCUS_BUILDING_DLL=1
+AM_CPPFLAGS += -D__ORCUS_BUILDING_DLL=1
 endif
 
 liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS = \
@@ -149,7 +149,7 @@ orcus_xlsx_sheet_context_test_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
-orcus_xlsx_sheet_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_xlsx_sheet_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 TESTS += \
 	 orcus-xlsx-sheet-context-test
@@ -256,7 +256,7 @@ gnumeric_cell_context_test_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
-orcus_gnumeric_cell_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_gnumeric_cell_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 TESTS += gnumeric-cell-context-test
 
@@ -280,7 +280,7 @@ orcus_gnumeric_sheet_context_test_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
-orcus_gnumeric_sheet_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_gnumeric_sheet_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 TESTS += orcus-gnumeric-sheet-context-test
 
@@ -293,7 +293,7 @@ orcus_gnumeric_helper_test_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
-orcus_gnumeric_helper_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_gnumeric_helper_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 TESTS += orcus-gnumeric-helper-test
 
@@ -326,7 +326,7 @@ liborcus_test_xml_structure_tree_SOURCES = \
 	xml_structure_tree.cpp \
 	xml_structure_tree_test.cpp
 
-liborcus_test_xml_structure_tree_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
+liborcus_test_xml_structure_tree_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
 
 liborcus_test_xml_structure_tree_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la \

@@ -1,11 +1,11 @@
 if BUILD_SPREADSHEET_MODEL
 
-INCLUDES = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include
 
-COMMON_CPPFLAGS =
+COMMON_CPPFLAGS = $(AM_CPPFLAGS)
 
 if HAVE_STATIC_LIB
-COMMON_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+AM_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 endif
 
 lib_LTLIBRARIES = liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la

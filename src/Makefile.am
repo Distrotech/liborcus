@@ -1,6 +1,6 @@
 SUBDIRS = parser mso liborcus spreadsheet
 
-INCLUDES = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include
 
 bin_PROGRAMS =
 
@@ -8,10 +8,10 @@ EXTRA_PROGRAMS = \
 	orcus-test-common \
 	orcus-test-xml
 
-COMMON_CPPFLAGS = $(BOOST_SYSTEM_CFLAGS)
+AM_CPPFLAGS += $(BOOST_SYSTEM_CFLAGS)
 
 if HAVE_STATIC_LIB
-COMMON_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
+AM_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 endif
 
 # orcus-test-common
@@ -21,7 +21,7 @@ orcus_test_common_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la
 
-orcus_test_common_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_test_common_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 # orcus-test-xml
 
@@ -30,7 +30,7 @@ orcus_test_xml_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la
 
-orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
+orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
 
 
 TESTS = \
@@ -55,7 +55,7 @@ orcus_css_dump_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la
 
-orcus_css_dump_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_css_dump_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 # orcus-zip-dump
 
@@ -65,7 +65,7 @@ orcus_zip_dump_SOURCES = \
 orcus_zip_dump_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
-orcus_zip_dump_CPPFLAGS =
+orcus_zip_dump_CPPFLAGS = $(AM_CPPFLAGS)
 
 # orcus-xml-dump
 
@@ -78,7 +78,7 @@ orcus_xml_dump_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la
 
-orcus_xml_dump_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_xml_dump_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 #----------------------------------------------------------------------------
 
@@ -90,7 +90,7 @@ orcus_mso_encryption_LDADD = \
 	mso/liborcus-mso-@ORCUS_API_VERSION@.la \
 	$(BOOST_SYSTEM_LIB)
 
-orcus_mso_encryption_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_mso_encryption_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 #----------------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ orcus_detect_LDADD = \
 	$(BOOST_FILESYSTEM_LIBS) \
 	$(BOOST_SYSTEM_LIBS)
 
-orcus_detect_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_detect_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 #----------------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ orcus_csv_LDADD = \
 	$(BOOST_FILESYSTEM_LIBS) \
 	$(BOOST_SYSTEM_LIBS)
 
-orcus_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 # orcus-xml
 
@@ -144,7 +144,7 @@ orcus_xml_LDADD = \
 	$(BOOST_FILESYSTEM_LIBS) \
 	$(BOOST_SYSTEM_LIBS)
 
-orcus_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 if WITH_ODS_FILTER
 
@@ -167,7 +167,7 @@ orcus_ods_LDADD = \
 	$(BOOST_SYSTEM_LIBS)
 
 
-orcus_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 endif # WITH_ODS_FILTER
 
@@ -191,7 +191,7 @@ orcus_xlsx_LDADD = \
 	$(BOOST_FILESYSTEM_LIBS) \
 	$(BOOST_SYSTEM_LIBS)
 
-orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 endif # WITH_XLSX_FILTER
 
@@ -215,7 +215,7 @@ orcus_xls_xml_LDADD = \
 	$(BOOST_FILESYSTEM_LIBS) \
 	$(BOOST_SYSTEM_LIBS)
 
-orcus_xls_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_xls_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 endif # WITH_XLS_XML_FILTER
 
@@ -239,7 +239,7 @@ orcus_gnumeric_LDADD = \
 	$(BOOST_FILESYSTEM_LIBS) \
 	$(BOOST_SYSTEM_LIBS)
 
-orcus_gnumeric_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+orcus_gnumeric_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 endif # WITH_GNUMERIC_FILTER
 
@@ -265,7 +265,7 @@ orcus_test_csv_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 
-orcus_test_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
+orcus_test_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
 
 # orcus-test-xml-mapped
 
@@ -281,7 +281,7 @@ orcus_test_xml_mapped_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 
-orcus_test_xml_mapped_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
+orcus_test_xml_mapped_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
 
 TESTS += \
 	orcus-test-csv \
@@ -304,7 +304,7 @@ orcus_test_ods_LDADD = \
 
 orcus_test_ods_CPPFLAGS = \
 	-I$(top_builddir)/lib/liborcus/liborcus.la -DSRCDIR=\""$(top_srcdir)"\" \
-	 $(MDDS_CFLAGS)
+	 $(MDDS_CFLAGS) $(AM_CPPFLAGS)
 
 TESTS += orcus-test-ods
 
@@ -320,15 +320,15 @@ EXTRA_PROGRAMS += \
 orcus_test_xlsx_SOURCES = \
 	orcus_test_xlsx.cpp
 
-orcus_test_xlsx_CXXFLAGS = @LIBIXION_CFLAGS@
-
 orcus_test_xlsx_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 	@LIBIXION_LIBS@
 
-orcus_test_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la -DSRCDIR=\""$(top_srcdir)"\"
+orcus_test_xlsx_CPPFLAGS = \
+	@LIBIXION_CFLAGS@  $(AM_CPPFLAGS) \
+	-I$(top_builddir)/lib/liborcus/liborcus.la -DSRCDIR=\""$(top_srcdir)"\"
 
 TESTS += \
 	 orcus-test-xlsx
@@ -349,7 +349,9 @@ orcus_test_xls_xml_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 
-orcus_test_xls_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la -DSRCDIR=\""$(top_srcdir)"\"
+orcus_test_xls_xml_CPPFLAGS = \
+	@LIBIXION_CFLAGS@  $(AM_CPPFLAGS) \
+	-I$(top_builddir)/lib/liborcus/liborcus.la -DSRCDIR=\""$(top_srcdir)"\"
 
 TESTS += \
 	 orcus-test-xls-xml
