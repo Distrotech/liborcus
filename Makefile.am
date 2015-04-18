@@ -99,7 +99,6 @@ test_data = \
     test/xml-mapped/content-namespace/map.xml \
     test/xml-mapped/content-namespace/input.xml \
     test/gnumeric/test.gnumeric \
-    test/gnumeric/test.xml \
     test/xlsx/test.xlsx \
     test/xlsx/column-width-row-height/input.xlsx \
     test/xlsx/empty-shared-strings/check.txt \
@@ -108,19 +107,15 @@ test_data = \
     test/xlsx/data-table/one-variable.xlsx \
     test/xlsx/borders/single-cells.xlsx \
     test/xlsx/borders/grid-box.xlsx \
-    test/xlsx/number-format/basic.xlsx \
     test/xlsx/formula-simple.xlsx \
     test/xlsx/raw-values-1/check.txt \
     test/xlsx/raw-values-1/input.xlsx \
     test/xlsx/pivot-table/two-pivot-caches.xlsx \
     test/xlsx/pivot-table/two-tables-one-source.xlsx \
-    test/xlsx/pivot-table/pivot-cache.xlsx \
     test/xlsx/pivot-table/many-fields.xlsx \
     test/xlsx/date-cell/input.xlsx \
     test/xlsx/table/table-2.xlsx \
     test/xlsx/table/autofilter.xlsx \
-    test/xlsx/table/excel-table-test.xlsx \
-    test/xlsx/table/table-test.xlsx \
     test/xlsx/table/table-1.xlsx \
     test/xlsx/formatted-text/colored-text.xlsx \
     test/xlsx/formatted-text/bold-and-italic.xlsx \
@@ -165,7 +160,6 @@ test_data = \
     test/xml/ns-alias-1/input.xml \
     test/ods/column-width-row-height/input.ods \
     test/ods/japanese.ods \
-    test/ods/multi-sheet-ref.ods \
     test/ods/formula-1/check.txt \
     test/ods/formula-1/input.ods \
     test/ods/borders/grid-box.ods \
