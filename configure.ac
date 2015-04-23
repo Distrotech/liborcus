@@ -182,7 +182,7 @@ AS_IF([test "x$with_tools" != "xno"], [
 # mdds support
 # ============
 PKG_CHECK_MODULES([MDDS],[mdds >= 0.11.0])
-CXXFLAGS="$CXXFLAGS -DMDDS_HASH_CONTAINER_BOOST"
+CXXFLAGS="$CXXFLAGS -DMDDS_HASH_CONTAINER_BOOST $MDDS_CFLAGS"
 
 # =================
 # Spreadsheet model
