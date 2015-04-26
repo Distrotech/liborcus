@@ -18,7 +18,7 @@ namespace orcus {
  * Temporary cell buffer used to convert cell values when needed.  This is
  * used in the sax and csv parsers.
  */
-class ORCUS_DLLPUBLIC cell_buffer
+class ORCUS_PSR_DLLPUBLIC cell_buffer
 {
     std::string m_buffer;
     size_t m_buf_size; /// Logical buffer size. May differ from the actual buffer size.
