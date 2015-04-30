@@ -14,7 +14,7 @@
 
 namespace orcus {
 
-class ORCUS_DLLPUBLIC zip_archive_stream
+class ORCUS_PSR_DLLPUBLIC zip_archive_stream
 {
 public:
     virtual ~zip_archive_stream();
@@ -29,7 +29,7 @@ public:
  * Zip archive based on file descriptor. The caller needs to provide the
  * file path to the zip archive.
  */
-class ORCUS_DLLPUBLIC zip_archive_stream_fd : public zip_archive_stream
+class ORCUS_PSR_DLLPUBLIC zip_archive_stream_fd : public zip_archive_stream
 {
     FILE* m_stream;
 
@@ -48,7 +48,7 @@ public:
 /**
  * Zip archive whose content is already loaded onto memory.
  */
-class ORCUS_DLLPUBLIC zip_archive_stream_blob : public zip_archive_stream
+class ORCUS_PSR_DLLPUBLIC zip_archive_stream_blob : public zip_archive_stream
 {
     const unsigned char* m_blob;
     const unsigned char* m_cur;

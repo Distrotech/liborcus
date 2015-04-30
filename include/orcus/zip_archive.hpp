@@ -22,7 +22,7 @@ class zip_archive_stream;
 class zip_archive_impl;
 class pstring;
 
-class ORCUS_DLLPUBLIC zip_error : public std::exception
+class ORCUS_PSR_DLLPUBLIC zip_error : public std::exception
 {
     std::string m_msg;
 public:
@@ -33,7 +33,7 @@ public:
     virtual const char* what() const throw();
 };
 
-class ORCUS_DLLPUBLIC zip_archive
+class ORCUS_PSR_DLLPUBLIC zip_archive
 {
     zip_archive_impl* mp_impl;
 
