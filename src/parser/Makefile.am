@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I$(top_srcdir)/include $(BOOST_SYSTEM_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/include $(BOOST_SYSTEM_CFLAGS) -D__ORCUS_PSR_BUILDING_DLL
 
 lib_LTLIBRARIES = liborcus-parser-@ORCUS_API_VERSION@.la
 liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \

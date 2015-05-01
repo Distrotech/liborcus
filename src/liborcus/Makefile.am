@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I$(top_srcdir)/include -I./include
+AM_CPPFLAGS = -I$(top_srcdir)/include -I./include -D__ORCUS_BUILDING_DLL
 
 EXTRA_PROGRAMS = \
 	liborcus-test-css-document-tree \

@@ -1,6 +1,6 @@
 if BUILD_SPREADSHEET_MODEL
 
-AM_CPPFLAGS = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include -D__ORCUS_SPM_BUILDING_DLL
 
 COMMON_CPPFLAGS = $(AM_CPPFLAGS)
 
