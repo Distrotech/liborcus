@@ -16,22 +16,14 @@
 using namespace orcus;
 using namespace std;
 
-int main(int argc, char** argv)
+int main(int argc, char** argv) try
 {
     if (argc != 2)
         return EXIT_FAILURE;
 
     const char* filepath = argv[1];
     string strm;
-    try
-    {
-        load_file_content(filepath, strm);
-    }
-    catch (const general_error& e)
-    {
-        cerr << e.what() << endl;
-        return EXIT_FAILURE;
-    }
+    load_file_content(filepath, strm);
 
     if (strm.empty())
     {
@@ -67,4 +59,10 @@ int main(int argc, char** argv)
 
     return EXIT_SUCCESS;
 }
+catch (const general_error& e)
+{
+    cerr << e.what() << endl;
+    return EXIT_FAILURE;
+}
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
