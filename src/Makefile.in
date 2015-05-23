@@ -88,6 +88,7 @@ TESTS = orcus-test-common$(EXEEXT) orcus-test-xml$(EXEEXT) \
 	$(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3) \
 	$(am__EXEEXT_4)
 @WITH_TOOLS_TRUE@am__append_2 = \
+@WITH_TOOLS_TRUE@	orcus-css-dump \
 @WITH_TOOLS_TRUE@	orcus-zip-dump \
 @WITH_TOOLS_TRUE@	orcus-xml-dump \
 @WITH_TOOLS_TRUE@	orcus-mso-encryption \
@@ -155,7 +156,8 @@ CONFIG_CLEAN_VPATH_FILES =
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@am__EXEEXT_2 = orcus-test-ods$(EXEEXT)
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_XLSX_FILTER_TRUE@am__EXEEXT_3 = orcus-test-xlsx$(EXEEXT)
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_XLS_XML_FILTER_TRUE@am__EXEEXT_4 = orcus-test-xls-xml$(EXEEXT)
-@WITH_TOOLS_TRUE@am__EXEEXT_5 = orcus-zip-dump$(EXEEXT) \
+@WITH_TOOLS_TRUE@am__EXEEXT_5 = orcus-css-dump$(EXEEXT) \
+@WITH_TOOLS_TRUE@	orcus-zip-dump$(EXEEXT) \
 @WITH_TOOLS_TRUE@	orcus-xml-dump$(EXEEXT) \
 @WITH_TOOLS_TRUE@	orcus-mso-encryption$(EXEEXT) \
 @WITH_TOOLS_TRUE@	orcus-detect$(EXEEXT)
@@ -167,6 +169,15 @@ CONFIG_CLEAN_VPATH_FILES =
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@am__EXEEXT_10 = orcus-gnumeric$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
+am__orcus_css_dump_SOURCES_DIST = orcus_css_dump.cpp
+@WITH_TOOLS_TRUE@am_orcus_css_dump_OBJECTS =  \
+@WITH_TOOLS_TRUE@	orcus_css_dump-orcus_css_dump.$(OBJEXT)
+orcus_css_dump_OBJECTS = $(am_orcus_css_dump_OBJECTS)
+@WITH_TOOLS_TRUE@orcus_css_dump_DEPENDENCIES = parser/liborcus-parser-@ORCUS_API_VERSION@.la
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 am__orcus_csv_SOURCES_DIST = orcus_filter_global.hpp \
 	orcus_filter_global.cpp orcus_csv_main.cpp
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@am_orcus_csv_OBJECTS = orcus_csv-orcus_filter_global.$(OBJEXT) \
@@ -177,18 +188,16 @@ am__DEPENDENCIES_1 =
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1) \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1) \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1)
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
-am__v_lt_1 = 
 am__orcus_detect_SOURCES_DIST = orcus_detect_main.cpp
 @WITH_TOOLS_TRUE@am_orcus_detect_OBJECTS =  \
 @WITH_TOOLS_TRUE@	orcus_detect-orcus_detect_main.$(OBJEXT)
 orcus_detect_OBJECTS = $(am_orcus_detect_OBJECTS)
 @WITH_TOOLS_TRUE@orcus_detect_DEPENDENCIES = parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @WITH_TOOLS_TRUE@	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1)
 am__orcus_gnumeric_SOURCES_DIST = orcus_filter_global.hpp \
 	orcus_filter_global.cpp orcus_gnumeric_main.cpp
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@am_orcus_gnumeric_OBJECTS = orcus_gnumeric-orcus_filter_global.$(OBJEXT) \
@@ -197,6 +206,7 @@ orcus_gnumeric_OBJECTS = $(am_orcus_gnumeric_OBJECTS)
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@orcus_gnumeric_DEPENDENCIES = liborcus/liborcus-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1) \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1) \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1)
 am__orcus_mso_encryption_SOURCES_DIST = orcus_mso_encryption.cpp
@@ -212,6 +222,7 @@ orcus_ods_OBJECTS = $(am_orcus_ods_OBJECTS)
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@orcus_ods_DEPENDENCIES = liborcus/liborcus-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1) \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1) \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1)
 am_orcus_test_common_OBJECTS =  \
@@ -272,6 +283,7 @@ orcus_xls_xml_OBJECTS = $(am_orcus_xls_xml_OBJECTS)
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@	$(am__DEPENDENCIES_1) \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@	$(am__DEPENDENCIES_1) \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@	$(am__DEPENDENCIES_1)
 am__orcus_xlsx_SOURCES_DIST = orcus_filter_global.hpp \
 	orcus_filter_global.cpp orcus_xlsx_main.cpp
@@ -282,6 +294,7 @@ orcus_xlsx_OBJECTS = $(am_orcus_xlsx_OBJECTS)
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@	$(am__DEPENDENCIES_1) \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@	$(am__DEPENDENCIES_1) \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@	$(am__DEPENDENCIES_1)
 am__orcus_xml_SOURCES_DIST = xml_map_sax_handler.cpp \
 	orcus_xml_main.cpp
@@ -291,6 +304,7 @@ orcus_xml_OBJECTS = $(am_orcus_xml_OBJECTS)
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@orcus_xml_DEPENDENCIES = liborcus/liborcus-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1) \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1) \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(am__DEPENDENCIES_1)
 am__orcus_xml_dump_SOURCES_DIST = orcus_xml_dump.cpp \
@@ -358,17 +372,17 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(orcus_csv_SOURCES) $(orcus_detect_SOURCES) \
-	$(orcus_gnumeric_SOURCES) $(orcus_mso_encryption_SOURCES) \
-	$(orcus_ods_SOURCES) $(orcus_test_common_SOURCES) \
-	$(orcus_test_csv_SOURCES) $(orcus_test_ods_SOURCES) \
-	$(orcus_test_xls_xml_SOURCES) $(orcus_test_xlsx_SOURCES) \
-	$(orcus_test_xml_SOURCES) $(orcus_test_xml_mapped_SOURCES) \
-	$(orcus_xls_xml_SOURCES) $(orcus_xlsx_SOURCES) \
-	$(orcus_xml_SOURCES) $(orcus_xml_dump_SOURCES) \
-	$(orcus_zip_dump_SOURCES)
-DIST_SOURCES = $(am__orcus_csv_SOURCES_DIST) \
-	$(am__orcus_detect_SOURCES_DIST) \
+SOURCES = $(orcus_css_dump_SOURCES) $(orcus_csv_SOURCES) \
+	$(orcus_detect_SOURCES) $(orcus_gnumeric_SOURCES) \
+	$(orcus_mso_encryption_SOURCES) $(orcus_ods_SOURCES) \
+	$(orcus_test_common_SOURCES) $(orcus_test_csv_SOURCES) \
+	$(orcus_test_ods_SOURCES) $(orcus_test_xls_xml_SOURCES) \
+	$(orcus_test_xlsx_SOURCES) $(orcus_test_xml_SOURCES) \
+	$(orcus_test_xml_mapped_SOURCES) $(orcus_xls_xml_SOURCES) \
+	$(orcus_xlsx_SOURCES) $(orcus_xml_SOURCES) \
+	$(orcus_xml_dump_SOURCES) $(orcus_zip_dump_SOURCES)
+DIST_SOURCES = $(am__orcus_css_dump_SOURCES_DIST) \
+	$(am__orcus_csv_SOURCES_DIST) $(am__orcus_detect_SOURCES_DIST) \
 	$(am__orcus_gnumeric_SOURCES_DIST) \
 	$(am__orcus_mso_encryption_SOURCES_DIST) \
 	$(am__orcus_ods_SOURCES_DIST) $(orcus_test_common_SOURCES) \
@@ -819,6 +833,15 @@ orcus_test_xml_LDADD = \
 
 orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
 
+# orcus-css-dump
+@WITH_TOOLS_TRUE@orcus_css_dump_SOURCES = \
+@WITH_TOOLS_TRUE@	orcus_css_dump.cpp
+
+@WITH_TOOLS_TRUE@orcus_css_dump_LDADD = \
+@WITH_TOOLS_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
+@WITH_TOOLS_TRUE@orcus_css_dump_CPPFLAGS = $(COMMON_CPPFLAGS)
+
 # orcus-zip-dump
 @WITH_TOOLS_TRUE@orcus_zip_dump_SOURCES = \
 @WITH_TOOLS_TRUE@	orcus_zip_dump.cpp
@@ -859,7 +882,8 @@ orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CP
 @WITH_TOOLS_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @WITH_TOOLS_TRUE@	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 @WITH_TOOLS_TRUE@	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-@WITH_TOOLS_TRUE@	$(BOOST_FILESYSTEM_LIBS)
+@WITH_TOOLS_TRUE@	$(BOOST_FILESYSTEM_LIBS) \
+@WITH_TOOLS_TRUE@	$(BOOST_SYSTEM_LIBS)
 
 @WITH_TOOLS_TRUE@orcus_detect_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -874,7 +898,8 @@ orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CP
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_FILESYSTEM_LIBS)
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_FILESYSTEM_LIBS) \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_SYSTEM_LIBS)
 
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@orcus_csv_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -888,7 +913,8 @@ orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CP
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_FILESYSTEM_LIBS)
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_FILESYSTEM_LIBS) \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_SYSTEM_LIBS)
 
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@orcus_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -903,7 +929,8 @@ orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CP
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_FILESYSTEM_LIBS)
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_FILESYSTEM_LIBS) \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_SYSTEM_LIBS)
 
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_ODS_FILTER_TRUE@@WITH_TOOLS_TRUE@orcus_ods_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -918,7 +945,8 @@ orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CP
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@	$(BOOST_FILESYSTEM_LIBS)
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@	$(BOOST_FILESYSTEM_LIBS) \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@	$(BOOST_SYSTEM_LIBS)
 
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLSX_FILTER_TRUE@orcus_xlsx_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -933,7 +961,8 @@ orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CP
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@	$(BOOST_FILESYSTEM_LIBS)
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@	$(BOOST_FILESYSTEM_LIBS) \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@	$(BOOST_SYSTEM_LIBS)
 
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_TOOLS_TRUE@@WITH_XLS_XML_FILTER_TRUE@orcus_xls_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -948,7 +977,8 @@ orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CP
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_PROGRAM_OPTIONS_LIBS) \
-@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_FILESYSTEM_LIBS)
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_FILESYSTEM_LIBS) \
+@BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@	$(BOOST_SYSTEM_LIBS)
 
 @BUILD_SPREADSHEET_MODEL_TRUE@@WITH_GNUMERIC_FILTER_TRUE@@WITH_TOOLS_TRUE@orcus_gnumeric_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -1097,6 +1127,10 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
+orcus-css-dump$(EXEEXT): $(orcus_css_dump_OBJECTS) $(orcus_css_dump_DEPENDENCIES) $(EXTRA_orcus_css_dump_DEPENDENCIES) 
+	@rm -f orcus-css-dump$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(orcus_css_dump_OBJECTS) $(orcus_css_dump_LDADD) $(LIBS)
+
 orcus-csv$(EXEEXT): $(orcus_csv_OBJECTS) $(orcus_csv_DEPENDENCIES) $(EXTRA_orcus_csv_DEPENDENCIES) 
 	@rm -f orcus-csv$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(orcus_csv_OBJECTS) $(orcus_csv_LDADD) $(LIBS)
@@ -1171,6 +1205,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/orcus_css_dump-orcus_css_dump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/orcus_csv-orcus_csv_main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/orcus_csv-orcus_filter_global.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/orcus_detect-orcus_detect_main.Po@am__quote@
@@ -1218,6 +1253,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
+
+orcus_css_dump-orcus_css_dump.o: orcus_css_dump.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(orcus_css_dump_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT orcus_css_dump-orcus_css_dump.o -MD -MP -MF $(DEPDIR)/orcus_css_dump-orcus_css_dump.Tpo -c -o orcus_css_dump-orcus_css_dump.o `test -f 'orcus_css_dump.cpp' || echo '$(srcdir)/'`orcus_css_dump.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/orcus_css_dump-orcus_css_dump.Tpo $(DEPDIR)/orcus_css_dump-orcus_css_dump.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='orcus_css_dump.cpp' object='orcus_css_dump-orcus_css_dump.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(orcus_css_dump_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o orcus_css_dump-orcus_css_dump.o `test -f 'orcus_css_dump.cpp' || echo '$(srcdir)/'`orcus_css_dump.cpp
+
+orcus_css_dump-orcus_css_dump.obj: orcus_css_dump.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(orcus_css_dump_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT orcus_css_dump-orcus_css_dump.obj -MD -MP -MF $(DEPDIR)/orcus_css_dump-orcus_css_dump.Tpo -c -o orcus_css_dump-orcus_css_dump.obj `if test -f 'orcus_css_dump.cpp'; then $(CYGPATH_W) 'orcus_css_dump.cpp'; else $(CYGPATH_W) '$(srcdir)/orcus_css_dump.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/orcus_css_dump-orcus_css_dump.Tpo $(DEPDIR)/orcus_css_dump-orcus_css_dump.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='orcus_css_dump.cpp' object='orcus_css_dump-orcus_css_dump.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(orcus_css_dump_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o orcus_css_dump-orcus_css_dump.obj `if test -f 'orcus_css_dump.cpp'; then $(CYGPATH_W) 'orcus_css_dump.cpp'; else $(CYGPATH_W) '$(srcdir)/orcus_css_dump.cpp'; fi`
 
 orcus_csv-orcus_filter_global.o: orcus_filter_global.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(orcus_csv_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT orcus_csv-orcus_filter_global.o -MD -MP -MF $(DEPDIR)/orcus_csv-orcus_filter_global.Tpo -c -o orcus_csv-orcus_filter_global.o `test -f 'orcus_filter_global.cpp' || echo '$(srcdir)/'`orcus_filter_global.cpp
