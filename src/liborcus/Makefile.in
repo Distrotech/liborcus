@@ -207,10 +207,12 @@ TESTS = $(am__EXEEXT_1) $(am__EXEEXT_2) \
 # gnumeric-cell-context-test
 @WITH_GNUMERIC_FILTER_TRUE@am__append_13 = \
 @WITH_GNUMERIC_FILTER_TRUE@	gnumeric-cell-context-test \
-@WITH_GNUMERIC_FILTER_TRUE@	orcus-gnumeric-sheet-context-test
+@WITH_GNUMERIC_FILTER_TRUE@	orcus-gnumeric-sheet-context-test \
+@WITH_GNUMERIC_FILTER_TRUE@	orcus-gnumeric-helper-test
 
 @WITH_GNUMERIC_FILTER_TRUE@am__append_14 = gnumeric-cell-context-test \
-@WITH_GNUMERIC_FILTER_TRUE@	orcus-gnumeric-sheet-context-test
+@WITH_GNUMERIC_FILTER_TRUE@	orcus-gnumeric-sheet-context-test \
+@WITH_GNUMERIC_FILTER_TRUE@	orcus-gnumeric-helper-test
 subdir = src/liborcus
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp $(top_srcdir)/test-driver
@@ -263,8 +265,8 @@ liborcus_@ORCUS_API_VERSION@_la_DEPENDENCIES =  \
 am__liborcus_@ORCUS_API_VERSION@_la_SOURCES_DIST = config.cpp \
 	detection_result.hpp detection_result.cpp dom_tree.cpp \
 	format_detection.cpp global.cpp interface.cpp \
-	spreadsheet_interface.cpp orcus_css.cpp orcus_csv.cpp \
-	orcus_xml.cpp measurement.cpp tokens.cpp xml_context_base.hpp \
+	spreadsheet_interface.cpp orcus_csv.cpp orcus_xml.cpp \
+	measurement.cpp tokens.cpp xml_context_base.hpp \
 	xml_context_base.cpp xml_context_global.hpp \
 	xml_context_global.cpp xml_map_tree.hpp xml_map_tree.cpp \
 	xml_stream_handler.hpp xml_stream_handler.cpp \
@@ -276,10 +278,10 @@ am__liborcus_@ORCUS_API_VERSION@_la_SOURCES_DIST = config.cpp \
 	odf_namespace_types_cpp.inl gnumeric_namespace_types.hpp \
 	gnumeric_namespace_types.cpp xls_xml_namespace_types.hpp \
 	xls_xml_namespace_types.cpp session_context.hpp \
-	session_context.cpp sorted_string_map.hpp \
-	spreadsheet_types.cpp ooxml_content_types.cpp \
-	ooxml_content_types.hpp ooxml_global.cpp ooxml_global.hpp \
-	ooxml_schemas.cpp ooxml_schemas.hpp ooxml_token_constants.hpp \
+	session_context.cpp spreadsheet_types.cpp \
+	ooxml_content_types.cpp ooxml_content_types.hpp \
+	ooxml_global.cpp ooxml_global.hpp ooxml_schemas.cpp \
+	ooxml_schemas.hpp ooxml_token_constants.hpp \
 	ooxml_token_constants.inl ooxml_tokens.cpp ooxml_tokens.hpp \
 	ooxml_tokens.inl ooxml_types.hpp ooxml_types.cpp \
 	opc_context.cpp opc_context.hpp opc_reader.cpp opc_reader.hpp \
@@ -362,7 +364,6 @@ am_liborcus_@ORCUS_API_VERSION@_la_OBJECTS =  \
 	liborcus_@ORCUS_API_VERSION@_la-global.lo \
 	liborcus_@ORCUS_API_VERSION@_la-interface.lo \
 	liborcus_@ORCUS_API_VERSION@_la-spreadsheet_interface.lo \
-	liborcus_@ORCUS_API_VERSION@_la-orcus_css.lo \
 	liborcus_@ORCUS_API_VERSION@_la-orcus_csv.lo \
 	liborcus_@ORCUS_API_VERSION@_la-orcus_xml.lo \
 	liborcus_@ORCUS_API_VERSION@_la-measurement.lo \
@@ -395,7 +396,8 @@ liborcus_@ORCUS_API_VERSION@_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 @WITH_XLSX_FILTER_TRUE@am__EXEEXT_1 =  \
 @WITH_XLSX_FILTER_TRUE@	orcus-xlsx-sheet-context-test$(EXEEXT)
 @WITH_GNUMERIC_FILTER_TRUE@am__EXEEXT_2 = gnumeric-cell-context-test$(EXEEXT) \
-@WITH_GNUMERIC_FILTER_TRUE@	orcus-gnumeric-sheet-context-test$(EXEEXT)
+@WITH_GNUMERIC_FILTER_TRUE@	orcus-gnumeric-sheet-context-test$(EXEEXT) \
+@WITH_GNUMERIC_FILTER_TRUE@	orcus-gnumeric-helper-test$(EXEEXT)
 am__gnumeric_cell_context_test_SOURCES_DIST = session_context.cpp \
 	gnumeric_cell_context_test.cpp gnumeric_cell_context.cpp \
 	xml_context_base.cpp gnumeric_namespace_types.cpp tokens.cpp \
@@ -416,30 +418,43 @@ am__gnumeric_cell_context_test_SOURCES_DIST = session_context.cpp \
 gnumeric_cell_context_test_OBJECTS =  \
 	$(am_gnumeric_cell_context_test_OBJECTS)
 @WITH_GNUMERIC_FILTER_TRUE@gnumeric_cell_context_test_DEPENDENCIES =  \
-@WITH_GNUMERIC_FILTER_TRUE@	liborcus-@ORCUS_API_VERSION@.la
+@WITH_GNUMERIC_FILTER_TRUE@	liborcus-@ORCUS_API_VERSION@.la \
+@WITH_GNUMERIC_FILTER_TRUE@	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 am_liborcus_test_common_OBJECTS = global.$(OBJEXT) tokens.$(OBJEXT) \
 	common_test.$(OBJEXT)
 liborcus_test_common_OBJECTS = $(am_liborcus_test_common_OBJECTS)
-liborcus_test_common_DEPENDENCIES = liborcus-@ORCUS_API_VERSION@.la
+liborcus_test_common_DEPENDENCIES = liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 am_liborcus_test_format_detection_OBJECTS =  \
 	format_detection_test.$(OBJEXT)
 liborcus_test_format_detection_OBJECTS =  \
 	$(am_liborcus_test_format_detection_OBJECTS)
 liborcus_test_format_detection_DEPENDENCIES =  \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 am_liborcus_test_xml_map_tree_OBJECTS = xml_map_tree.$(OBJEXT) \
 	xml_map_tree_test.$(OBJEXT)
 liborcus_test_xml_map_tree_OBJECTS =  \
 	$(am_liborcus_test_xml_map_tree_OBJECTS)
 liborcus_test_xml_map_tree_DEPENDENCIES =  \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 am_liborcus_test_xml_structure_tree_OBJECTS =  \
 	liborcus_test_xml_structure_tree-xml_structure_tree.$(OBJEXT) \
 	liborcus_test_xml_structure_tree-xml_structure_tree_test.$(OBJEXT)
 liborcus_test_xml_structure_tree_OBJECTS =  \
 	$(am_liborcus_test_xml_structure_tree_OBJECTS)
 liborcus_test_xml_structure_tree_DEPENDENCIES =  \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
+am__orcus_gnumeric_helper_test_SOURCES_DIST =  \
+	gnumeric_helper_test.cpp
+@WITH_GNUMERIC_FILTER_TRUE@am_orcus_gnumeric_helper_test_OBJECTS = orcus_gnumeric_helper_test-gnumeric_helper_test.$(OBJEXT)
+orcus_gnumeric_helper_test_OBJECTS =  \
+	$(am_orcus_gnumeric_helper_test_OBJECTS)
+@WITH_GNUMERIC_FILTER_TRUE@orcus_gnumeric_helper_test_DEPENDENCIES =  \
+@WITH_GNUMERIC_FILTER_TRUE@	liborcus-@ORCUS_API_VERSION@.la \
+@WITH_GNUMERIC_FILTER_TRUE@	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 am__orcus_gnumeric_sheet_context_test_SOURCES_DIST =  \
 	session_context.cpp gnumeric_sheet_context_test.cpp \
 	gnumeric_sheet_context.cpp gnumeric_cell_context.cpp \
@@ -462,7 +477,8 @@ am__orcus_gnumeric_sheet_context_test_SOURCES_DIST =  \
 orcus_gnumeric_sheet_context_test_OBJECTS =  \
 	$(am_orcus_gnumeric_sheet_context_test_OBJECTS)
 @WITH_GNUMERIC_FILTER_TRUE@orcus_gnumeric_sheet_context_test_DEPENDENCIES =  \
-@WITH_GNUMERIC_FILTER_TRUE@	liborcus-@ORCUS_API_VERSION@.la
+@WITH_GNUMERIC_FILTER_TRUE@	liborcus-@ORCUS_API_VERSION@.la \
+@WITH_GNUMERIC_FILTER_TRUE@	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 am__orcus_xlsx_sheet_context_test_SOURCES_DIST =  \
 	xlsx_session_data.cpp session_context.cpp \
 	xlsx_sheet_context_test.cpp xlsx_sheet_context.cpp \
@@ -551,6 +567,7 @@ SOURCES = $(liborcus_@ORCUS_API_VERSION@_la_SOURCES) \
 	$(liborcus_test_format_detection_SOURCES) \
 	$(liborcus_test_xml_map_tree_SOURCES) \
 	$(liborcus_test_xml_structure_tree_SOURCES) \
+	$(orcus_gnumeric_helper_test_SOURCES) \
 	$(orcus_gnumeric_sheet_context_test_SOURCES) \
 	$(orcus_xlsx_sheet_context_test_SOURCES)
 DIST_SOURCES = $(am__liborcus_@ORCUS_API_VERSION@_la_SOURCES_DIST) \
@@ -559,6 +576,7 @@ DIST_SOURCES = $(am__liborcus_@ORCUS_API_VERSION@_la_SOURCES_DIST) \
 	$(liborcus_test_format_detection_SOURCES) \
 	$(liborcus_test_xml_map_tree_SOURCES) \
 	$(liborcus_test_xml_structure_tree_SOURCES) \
+	$(am__orcus_gnumeric_helper_test_SOURCES_DIST) \
 	$(am__orcus_gnumeric_sheet_context_test_SOURCES_DIST) \
 	$(am__orcus_xlsx_sheet_context_test_SOURCES_DIST)
 am__can_run_installinfo = \
@@ -933,8 +951,8 @@ lib_LTLIBRARIES = liborcus-@ORCUS_API_VERSION@.la
 liborcus_@ORCUS_API_VERSION@_la_SOURCES = config.cpp \
 	detection_result.hpp detection_result.cpp dom_tree.cpp \
 	format_detection.cpp global.cpp interface.cpp \
-	spreadsheet_interface.cpp orcus_css.cpp orcus_csv.cpp \
-	orcus_xml.cpp measurement.cpp tokens.cpp xml_context_base.hpp \
+	spreadsheet_interface.cpp orcus_csv.cpp orcus_xml.cpp \
+	measurement.cpp tokens.cpp xml_context_base.hpp \
 	xml_context_base.cpp xml_context_global.hpp \
 	xml_context_global.cpp xml_map_tree.hpp xml_map_tree.cpp \
 	xml_stream_handler.hpp xml_stream_handler.cpp \
@@ -946,9 +964,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = config.cpp \
 	odf_namespace_types_cpp.inl gnumeric_namespace_types.hpp \
 	gnumeric_namespace_types.cpp xls_xml_namespace_types.hpp \
 	xls_xml_namespace_types.cpp session_context.hpp \
-	session_context.cpp sorted_string_map.hpp \
-	spreadsheet_types.cpp $(am__append_3) $(am__append_6) \
-	$(am__append_8) $(am__append_10)
+	session_context.cpp spreadsheet_types.cpp $(am__append_3) \
+	$(am__append_6) $(am__append_8) $(am__append_10)
 
 # orcus-xlsx-sheet-context-test
 @WITH_XLSX_FILTER_TRUE@orcus_xlsx_sheet_context_test_SOURCES = \
@@ -990,7 +1007,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = config.cpp \
 @WITH_GNUMERIC_FILTER_TRUE@	mock_spreadsheet.cpp
 
 @WITH_GNUMERIC_FILTER_TRUE@gnumeric_cell_context_test_LDADD = \
-@WITH_GNUMERIC_FILTER_TRUE@	liborcus-@ORCUS_API_VERSION@.la
+@WITH_GNUMERIC_FILTER_TRUE@	liborcus-@ORCUS_API_VERSION@.la \
+@WITH_GNUMERIC_FILTER_TRUE@	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 @WITH_GNUMERIC_FILTER_TRUE@orcus_gnumeric_cell_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
@@ -1011,9 +1029,20 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = config.cpp \
 @WITH_GNUMERIC_FILTER_TRUE@	mock_spreadsheet.cpp
 
 @WITH_GNUMERIC_FILTER_TRUE@orcus_gnumeric_sheet_context_test_LDADD = \
-@WITH_GNUMERIC_FILTER_TRUE@	liborcus-@ORCUS_API_VERSION@.la
+@WITH_GNUMERIC_FILTER_TRUE@	liborcus-@ORCUS_API_VERSION@.la \
+@WITH_GNUMERIC_FILTER_TRUE@	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 @WITH_GNUMERIC_FILTER_TRUE@orcus_gnumeric_sheet_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
+
+# orcus-gnumeric-helper-test
+@WITH_GNUMERIC_FILTER_TRUE@orcus_gnumeric_helper_test_SOURCES = \
+@WITH_GNUMERIC_FILTER_TRUE@	gnumeric_helper_test.cpp
+
+@WITH_GNUMERIC_FILTER_TRUE@orcus_gnumeric_helper_test_LDADD = \
+@WITH_GNUMERIC_FILTER_TRUE@	liborcus-@ORCUS_API_VERSION@.la \
+@WITH_GNUMERIC_FILTER_TRUE@	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
+@WITH_GNUMERIC_FILTER_TRUE@orcus_gnumeric_helper_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS)
 
 # liborcus-test-xml-map-tree
 liborcus_test_xml_map_tree_SOURCES = \
@@ -1022,7 +1051,8 @@ liborcus_test_xml_map_tree_SOURCES = \
 	xml_map_tree_test.cpp
 
 liborcus_test_xml_map_tree_LDADD = \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 
 # liborcus-test-xml-structure-tree
@@ -1032,7 +1062,8 @@ liborcus_test_xml_structure_tree_SOURCES = \
 
 liborcus_test_xml_structure_tree_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(COMMON_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
 liborcus_test_xml_structure_tree_LDADD = \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 
 # liborcus-test-common
@@ -1042,7 +1073,8 @@ liborcus_test_common_SOURCES = \
 	common_test.cpp
 
 liborcus_test_common_LDADD = \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 
 # liborcus-test-format-detection
@@ -1050,7 +1082,8 @@ liborcus_test_format_detection_SOURCES = \
 	format_detection_test.cpp
 
 liborcus_test_format_detection_LDADD = \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 all: all-am
 
@@ -1145,6 +1178,10 @@ liborcus-test-xml-structure-tree$(EXEEXT): $(liborcus_test_xml_structure_tree_OB
 	@rm -f liborcus-test-xml-structure-tree$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(liborcus_test_xml_structure_tree_OBJECTS) $(liborcus_test_xml_structure_tree_LDADD) $(LIBS)
 
+orcus-gnumeric-helper-test$(EXEEXT): $(orcus_gnumeric_helper_test_OBJECTS) $(orcus_gnumeric_helper_test_DEPENDENCIES) $(EXTRA_orcus_gnumeric_helper_test_DEPENDENCIES) 
+	@rm -f orcus-gnumeric-helper-test$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(orcus_gnumeric_helper_test_OBJECTS) $(orcus_gnumeric_helper_test_LDADD) $(LIBS)
+
 orcus-gnumeric-sheet-context-test$(EXEEXT): $(orcus_gnumeric_sheet_context_test_OBJECTS) $(orcus_gnumeric_sheet_context_test_DEPENDENCIES) $(EXTRA_orcus_gnumeric_sheet_context_test_DEPENDENCIES) 
 	@rm -f orcus-gnumeric-sheet-context-test$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(orcus_gnumeric_sheet_context_test_OBJECTS) $(orcus_gnumeric_sheet_context_test_LDADD) $(LIBS)
@@ -1197,7 +1234,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liborcus_@ORCUS_API_VERSION@_la-ooxml_types.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liborcus_@ORCUS_API_VERSION@_la-opc_context.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liborcus_@ORCUS_API_VERSION@_la-opc_reader.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liborcus_@ORCUS_API_VERSION@_la-orcus_css.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liborcus_@ORCUS_API_VERSION@_la-orcus_csv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liborcus_@ORCUS_API_VERSION@_la-orcus_gnumeric.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liborcus_@ORCUS_API_VERSION@_la-orcus_import_xlsx.Plo@am__quote@
@@ -1235,6 +1271,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liborcus_test_xml_structure_tree-xml_structure_tree_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mock_spreadsheet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/odf_namespace_types.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/orcus_gnumeric_helper_test-gnumeric_helper_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/orcus_gnumeric_sheet_context_test-gnumeric_cell_context.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/orcus_gnumeric_sheet_context_test-gnumeric_helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/orcus_gnumeric_sheet_context_test-gnumeric_namespace_types.Po@am__quote@
@@ -1340,13 +1377,6 @@ liborcus_@ORCUS_API_VERSION@_la-spreadsheet_interface.lo: spreadsheet_interface.
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='spreadsheet_interface.cpp' object='liborcus_@ORCUS_API_VERSION@_la-spreadsheet_interface.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_@ORCUS_API_VERSION@_la-spreadsheet_interface.lo `test -f 'spreadsheet_interface.cpp' || echo '$(srcdir)/'`spreadsheet_interface.cpp
-
-liborcus_@ORCUS_API_VERSION@_la-orcus_css.lo: orcus_css.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_@ORCUS_API_VERSION@_la-orcus_css.lo -MD -MP -MF $(DEPDIR)/liborcus_@ORCUS_API_VERSION@_la-orcus_css.Tpo -c -o liborcus_@ORCUS_API_VERSION@_la-orcus_css.lo `test -f 'orcus_css.cpp' || echo '$(srcdir)/'`orcus_css.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_@ORCUS_API_VERSION@_la-orcus_css.Tpo $(DEPDIR)/liborcus_@ORCUS_API_VERSION@_la-orcus_css.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='orcus_css.cpp' object='liborcus_@ORCUS_API_VERSION@_la-orcus_css.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_@ORCUS_API_VERSION@_la-orcus_css.lo `test -f 'orcus_css.cpp' || echo '$(srcdir)/'`orcus_css.cpp
 
 liborcus_@ORCUS_API_VERSION@_la-orcus_csv.lo: orcus_csv.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_@ORCUS_API_VERSION@_la-orcus_csv.lo -MD -MP -MF $(DEPDIR)/liborcus_@ORCUS_API_VERSION@_la-orcus_csv.Tpo -c -o liborcus_@ORCUS_API_VERSION@_la-orcus_csv.lo `test -f 'orcus_csv.cpp' || echo '$(srcdir)/'`orcus_csv.cpp
@@ -1774,6 +1804,20 @@ liborcus_test_xml_structure_tree-xml_structure_tree_test.obj: xml_structure_tree
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='xml_structure_tree_test.cpp' object='liborcus_test_xml_structure_tree-xml_structure_tree_test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_test_xml_structure_tree_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_test_xml_structure_tree-xml_structure_tree_test.obj `if test -f 'xml_structure_tree_test.cpp'; then $(CYGPATH_W) 'xml_structure_tree_test.cpp'; else $(CYGPATH_W) '$(srcdir)/xml_structure_tree_test.cpp'; fi`
+
+orcus_gnumeric_helper_test-gnumeric_helper_test.o: gnumeric_helper_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(orcus_gnumeric_helper_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT orcus_gnumeric_helper_test-gnumeric_helper_test.o -MD -MP -MF $(DEPDIR)/orcus_gnumeric_helper_test-gnumeric_helper_test.Tpo -c -o orcus_gnumeric_helper_test-gnumeric_helper_test.o `test -f 'gnumeric_helper_test.cpp' || echo '$(srcdir)/'`gnumeric_helper_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/orcus_gnumeric_helper_test-gnumeric_helper_test.Tpo $(DEPDIR)/orcus_gnumeric_helper_test-gnumeric_helper_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gnumeric_helper_test.cpp' object='orcus_gnumeric_helper_test-gnumeric_helper_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(orcus_gnumeric_helper_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o orcus_gnumeric_helper_test-gnumeric_helper_test.o `test -f 'gnumeric_helper_test.cpp' || echo '$(srcdir)/'`gnumeric_helper_test.cpp
+
+orcus_gnumeric_helper_test-gnumeric_helper_test.obj: gnumeric_helper_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(orcus_gnumeric_helper_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT orcus_gnumeric_helper_test-gnumeric_helper_test.obj -MD -MP -MF $(DEPDIR)/orcus_gnumeric_helper_test-gnumeric_helper_test.Tpo -c -o orcus_gnumeric_helper_test-gnumeric_helper_test.obj `if test -f 'gnumeric_helper_test.cpp'; then $(CYGPATH_W) 'gnumeric_helper_test.cpp'; else $(CYGPATH_W) '$(srcdir)/gnumeric_helper_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/orcus_gnumeric_helper_test-gnumeric_helper_test.Tpo $(DEPDIR)/orcus_gnumeric_helper_test-gnumeric_helper_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='gnumeric_helper_test.cpp' object='orcus_gnumeric_helper_test-gnumeric_helper_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(orcus_gnumeric_helper_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o orcus_gnumeric_helper_test-gnumeric_helper_test.obj `if test -f 'gnumeric_helper_test.cpp'; then $(CYGPATH_W) 'gnumeric_helper_test.cpp'; else $(CYGPATH_W) '$(srcdir)/gnumeric_helper_test.cpp'; fi`
 
 orcus_gnumeric_sheet_context_test-session_context.o: session_context.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(orcus_gnumeric_sheet_context_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT orcus_gnumeric_sheet_context_test-session_context.o -MD -MP -MF $(DEPDIR)/orcus_gnumeric_sheet_context_test-session_context.Tpo -c -o orcus_gnumeric_sheet_context_test-session_context.o `test -f 'session_context.cpp' || echo '$(srcdir)/'`session_context.cpp
@@ -2397,6 +2441,13 @@ gnumeric-cell-context-test.log: gnumeric-cell-context-test$(EXEEXT)
 orcus-gnumeric-sheet-context-test.log: orcus-gnumeric-sheet-context-test$(EXEEXT)
 	@p='orcus-gnumeric-sheet-context-test$(EXEEXT)'; \
 	b='orcus-gnumeric-sheet-context-test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+orcus-gnumeric-helper-test.log: orcus-gnumeric-helper-test$(EXEEXT)
+	@p='orcus-gnumeric-helper-test$(EXEEXT)'; \
+	b='orcus-gnumeric-helper-test'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
