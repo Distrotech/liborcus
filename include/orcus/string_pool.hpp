@@ -21,7 +21,7 @@ namespace orcus {
 /**
  * Implements string hash map.
  */
-class ORCUS_DLLPUBLIC string_pool
+class ORCUS_PSR_DLLPUBLIC string_pool
 {
     struct string_hash
     {

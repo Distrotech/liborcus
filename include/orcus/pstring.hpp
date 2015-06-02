@@ -71,7 +71,7 @@ public:
         m_size = 0;
     }
 
-    struct ORCUS_DLLPUBLIC hash
+    struct ORCUS_PSR_DLLPUBLIC hash
     {
         size_t operator() (const pstring& val) const;
     };
@@ -86,8 +86,8 @@ inline ::std::ostream& operator<< (::std::ostream& os, const pstring& str)
     return os << str.str();
 }
 
-ORCUS_DLLPUBLIC std::string operator+ (const std::string& left, const pstring& right);
-ORCUS_DLLPUBLIC std::string& operator+= (std::string& left, const pstring& right);
+ORCUS_PSR_DLLPUBLIC std::string operator+ (const std::string& left, const pstring& right);
+ORCUS_PSR_DLLPUBLIC std::string& operator+= (std::string& left, const pstring& right);
 
 }
 

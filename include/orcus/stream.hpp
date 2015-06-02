@@ -20,7 +20,7 @@ namespace orcus {
  * @param filepath file to open
  * @param strm content of the file
  */
-ORCUS_DLLPUBLIC void load_file_content(const char* filepath, std::string& strm);
+ORCUS_PSR_DLLPUBLIC void load_file_content(const char* filepath, std::string& strm);
 
 }
 

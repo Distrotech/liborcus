@@ -25,7 +25,7 @@ private:
     ::std::string m_msg;
 };
 
-class ORCUS_DLLPUBLIC xml_structure_error : public general_error
+class ORCUS_PSR_DLLPUBLIC xml_structure_error : public general_error
 {
 public:
     explicit xml_structure_error(const ::std::string& msg);
