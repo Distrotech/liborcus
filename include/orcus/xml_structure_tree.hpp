@@ -31,7 +31,7 @@ class ORCUS_DLLPUBLIC xml_structure_tree
 
 public:
 
-    struct entity_name
+    struct ORCUS_DLLPUBLIC entity_name
     {
         xmlns_id_t ns;
         pstring name;
@@ -42,7 +42,7 @@ public:
         bool operator< (const entity_name& r) const;
         bool operator== (const entity_name& r) const;
 
-        struct hash
+        struct ORCUS_DLLPUBLIC hash
         {
             size_t operator ()(const entity_name& val) const;
         };
@@ -50,7 +50,7 @@ public:
 
     typedef std::vector<entity_name> entity_names_type;
 
-    struct element
+    struct ORCUS_DLLPUBLIC element
     {
         entity_name name;
         bool repeat;
@@ -64,7 +64,7 @@ public:
     /**
      * This class allows client to traverse the tree.
      */
-    class walker
+    class ORCUS_DLLPUBLIC walker
     {
         friend class xml_structure_tree;
         walker_impl* mp_impl;
