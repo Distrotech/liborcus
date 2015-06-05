@@ -28,7 +28,7 @@ AM_INIT_AUTOMAKE([1.11 foreign dist-bzip2 dist-xz])
 AM_SILENT_RULES([yes])
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11
-CXXFLAGS="$CXXFLAGS -O2 -fvisibility=hidden -Wall"
+CXXFLAGS="$CXXFLAGS -fvisibility=hidden -Wall"
 
 # ===========================
 # Find required base packages
@@ -104,8 +104,9 @@ AC_ARG_ENABLE(debug,
 	[enable_debug=no]
 )
 AS_IF([test "x$enable_debug" != "xno"], [
-	CXXFLAGS="$CXXFLAGS -g"
+	CXXFLAGS="$CXXFLAGS -g -O0"
 ], [
+	CXXFLAGS="$CXXFLAGS -O2"
 	AC_DEFINE([NDEBUG], [], [Disable debugging information])
 ])
 
