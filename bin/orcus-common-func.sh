@@ -36,7 +36,7 @@ orcus_exec()
     shift
     PROGDIR="$PWD/"`dirname $0`
     ROOTDIR=$PROGDIR/..
-    EXECPATH=$ROOTDIR/src/.libs/$EXEC
+    EXECPATH=$ROOTDIR/src/$EXEC
     export LD_LIBRARY_PATH=$ROOTDIR/src/liborcus/.libs:$ROOTDIR/src/mso/.libs:$ROOTDIR/src/parser/.libs:$ROOTDIR/src/spreadsheet/.libs:
     cd $EXECDIR
 
