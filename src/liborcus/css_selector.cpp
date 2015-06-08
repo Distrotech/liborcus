@@ -7,6 +7,8 @@
 
 #include "orcus/css_selector.hpp"
 
+#include <cstring>
+
 namespace orcus {
 
 css_simple_selector_t::css_simple_selector_t() :
@@ -123,18 +125,17 @@ css_property_value_t::css_property_value_t(const pstring& str) :
 
 css_property_value_t& css_property_value_t::operator= (const css_property_value_t& r)
 {
-    css_property_value_t tmp(r);
-    swap(tmp);
+    if (&r != this)
+        std::memcpy(this, &r, sizeof(css_property_value_t));
     return *this;
 }
 
 void css_property_value_t::swap(css_property_value_t& r)
 {
-    std::swap(type, r.type);
-    std::swap(hue, r.hue);
-    std::swap(saturation, r.saturation);
-    std::swap(lightness, r.lightness);
-    std::swap(alpha, r.alpha);
+    unsigned char buf[sizeof(css_property_value_t)];
+    std::memcpy(buf, this, sizeof(css_property_value_t));
+    std::memcpy(this, &r, sizeof(css_property_value_t));
+    std::memcpy(&r, buf, sizeof(css_property_value_t));
 }
 
 std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v)
