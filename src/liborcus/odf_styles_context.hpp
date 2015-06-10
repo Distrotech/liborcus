@@ -57,7 +57,7 @@ private:
 
     style_value_converter m_converter;
 
-    unique_ptr<odf_style> m_current_style;
+    std::unique_ptr<odf_style> m_current_style;
 };
 
 }

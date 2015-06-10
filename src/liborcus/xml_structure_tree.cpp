@@ -85,7 +85,7 @@ typedef std::vector<element_ref> elements_type;
 class xml_sax_handler
 {
     string_pool& m_pool;
-    unique_ptr<root> mp_root;
+    std::unique_ptr<root> mp_root;
     elements_type m_stack;
     xml_structure_tree::entity_names_type m_attrs;
 
@@ -108,7 +108,7 @@ private:
 
 public:
     xml_sax_handler(string_pool& pool) :
-        m_pool(pool), mp_root(NULL) {}
+        m_pool(pool), mp_root(nullptr) {}
 
     void doctype(const sax::doctype_declaration&) {}
 

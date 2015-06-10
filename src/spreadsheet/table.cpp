@@ -91,7 +91,7 @@ struct table_impl : boost::noncopyable
 
     table_auto_filter m_auto_filter;
 
-    orcus::unique_ptr<table_t> mp_data;
+    std::unique_ptr<table_t> mp_data;
     table_column_t m_column;
 
     table_impl(document& doc, sheet& sh) :

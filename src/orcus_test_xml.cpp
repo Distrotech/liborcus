@@ -146,7 +146,7 @@ sax_handler* parse_file(xmlns_context& cxt, const char* filepath, string &strm)
     load_file_content(filepath, strm);
     assert(!strm.empty());
 
-    orcus::unique_ptr<sax_handler> hdl(new sax_handler(cxt));
+    std::unique_ptr<sax_handler> hdl(new sax_handler(cxt));
     sax_ns_parser<sax_handler> parser(strm.c_str(), strm.size(), cxt, *hdl);
     parser.parse();
 

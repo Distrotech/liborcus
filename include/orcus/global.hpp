@@ -5,14 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_GLOBAL_HPP__
-#define __ORCUS_GLOBAL_HPP__
+#ifndef INCLUDED_ORCUS_GLOBAL_HPP
+#define INCLUDED_ORCUS_GLOBAL_HPP
 
 #include "types.hpp"
 #include "env.hpp"
 
+#include <memory>
 #include <functional>
-#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 
 #define ORCUS_ASCII(literal) literal, sizeof(literal)-1
 #define ORCUS_N_ELEMENTS(name) sizeof(name)/sizeof(name[0])
@@ -62,14 +62,6 @@ struct map_object_deleter : public ::std::unary_function<typename T::value_type,
     {
         delete v.second;
     }
-};
-
-template<typename _T, typename _Deleter = default_deleter<_T> >
-class unique_ptr : public boost::interprocess::unique_ptr<_T, _Deleter>
-{
-public:
-    unique_ptr() : boost::interprocess::unique_ptr<_T, _Deleter>(NULL) {}
-    unique_ptr(_T* p) : boost::interprocess::unique_ptr<_T, _Deleter>(p) {}
 };
 
 template<typename T, typename ...Args>

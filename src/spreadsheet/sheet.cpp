@@ -95,7 +95,7 @@ class sheet_auto_filter : public orcus::spreadsheet::iface::import_auto_filter
     sheet& m_sheet;
     orcus::string_pool& m_string_pool;
     const ixion::formula_name_resolver* mp_resolver;
-    orcus::unique_ptr<auto_filter_t> mp_data;
+    std::unique_ptr<auto_filter_t> mp_data;
     col_t m_cur_col;
     auto_filter_column_t m_cur_col_data;
 
@@ -177,7 +177,7 @@ struct sheet_impl : boost::noncopyable
     col_merge_size_type m_merge_ranges; /// 2-dimensional merged cell ranges.
     overlapped_cells_type m_overlapped_ranges;
 
-    orcus::unique_ptr<auto_filter_t> mp_auto_filter_data;
+    std::unique_ptr<auto_filter_t> mp_auto_filter_data;
 
     cell_format_type m_cell_formats;
     row_t m_row_size;
@@ -259,7 +259,7 @@ struct sheet_impl : boost::noncopyable
                     overlapped_cells_type::iterator it_cont = m_overlapped_ranges.find(row);
                     if (it_cont == m_overlapped_ranges.end())
                     {
-                        unique_ptr<overlapped_col_index_type> p(new overlapped_col_index_type(0, m_col_size, false));
+                        std::unique_ptr<overlapped_col_index_type> p(new overlapped_col_index_type(0, m_col_size, false));
                         std::pair<overlapped_cells_type::iterator, bool> r =
                             m_overlapped_ranges.insert(overlapped_cells_type::value_type(row, p.get()));
 
@@ -391,7 +391,7 @@ void sheet::set_format(row_t row, col_t col, size_t index)
     cell_format_type::iterator itr = mp_impl->m_cell_formats.find(col);
     if (itr == mp_impl->m_cell_formats.end())
     {
-        unique_ptr<segment_row_index_type> p(new segment_row_index_type(0, mp_impl->m_row_size+1, 0));
+        std::unique_ptr<segment_row_index_type> p(new segment_row_index_type(0, mp_impl->m_row_size+1, 0));
 
         pair<cell_format_type::iterator, bool> r =
             mp_impl->m_cell_formats.insert(cell_format_type::value_type(col, p.get()));
@@ -579,7 +579,7 @@ void sheet::set_merge_cell_range(const char* p_ref, size_t p_ref_len)
     col_merge_size_type::iterator it_col = mp_impl->m_merge_ranges.find(res.range.first.col);
     if (it_col == mp_impl->m_merge_ranges.end())
     {
-        unique_ptr<merge_size_type> p(new merge_size_type);
+        std::unique_ptr<merge_size_type> p(new merge_size_type);
         pair<col_merge_size_type::iterator, bool> r =
             mp_impl->m_merge_ranges.insert(
                 col_merge_size_type::value_type(res.range.first.col, p.get()));
