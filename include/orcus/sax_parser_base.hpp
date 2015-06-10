@@ -17,8 +17,7 @@
 #include <cstdlib>
 #include <exception>
 #include <sstream>
-
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <memory>
 
 #define ORCUS_DEBUG_SAX_PARSER 0
 
@@ -95,8 +94,13 @@ struct parser_attribute
 
 class ORCUS_PSR_DLLPUBLIC parser_base
 {
+    struct impl;
+    std::unique_ptr<impl> mp_impl;
+
+    parser_base() = delete;
+    parser_base(const parser_base&) = delete;
+    parser_base& operator=(const parser_base&) = delete;
 protected:
-    boost::ptr_vector<cell_buffer> m_cell_buffers;
     const char* m_content;
     const char* m_char;
     const size_t m_size;
@@ -107,6 +111,7 @@ protected:
 
 protected:
     parser_base(const char* content, size_t size);
+    ~parser_base();
 
     void next() { ++m_pos; ++m_char; }
 

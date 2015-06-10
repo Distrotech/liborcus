@@ -72,6 +72,12 @@ public:
     unique_ptr(_T* p) : boost::interprocess::unique_ptr<_T, _Deleter>(p) {}
 };
 
+template<typename T, typename ...Args>
+std::unique_ptr<T> make_unique(Args&& ...args)
+{
+    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
+
 }
 
 #endif
