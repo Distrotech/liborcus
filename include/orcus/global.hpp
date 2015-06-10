@@ -42,15 +42,6 @@ void print_attrs(const tokens& tokens, const xml_attrs_t& attrs);
  */
 date_time_t to_date_time(const pstring& str);
 
-template<typename _T>
-struct default_deleter : public std::unary_function<_T*, void>
-{
-    void operator() (_T* p)
-    {
-        delete p;
-    }
-};
-
 /**
  * Function object for deleting objects that are stored in map container as
  * pointers.
