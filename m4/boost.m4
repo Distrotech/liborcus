@@ -309,7 +309,10 @@ fi
 # ...  If you want to make sure you have a specific version of Boost
 # (eg, >= 1.33) you *must* invoke BOOST_REQUIRE before this macro.
 AC_DEFUN([BOOST_FIND_LIBS],
-[AC_REQUIRE([BOOST_REQUIRE])dnl
+[dnl Skip test if the variables are set from outside. We assume the caller knows
+dnl what he does.
+if test x"[$]AS_TR_CPP([BOOST_$1_LIBS])" == "x" -o x"[$]AS_TR_CPP([BOOST_$1_LDFLAGS])" == "x"; then
+AC_REQUIRE([BOOST_REQUIRE])dnl
 AC_REQUIRE([_BOOST_FIND_COMPILER_TAG])dnl
 AC_REQUIRE([BOOST_STATIC])dnl
 AC_REQUIRE([_BOOST_GUESS_WHETHER_TO_USE_MT])dnl
@@ -342,6 +345,7 @@ AS_VAR_POPDEF([Boost_lib_LDFLAGS])dnl
 AS_VAR_POPDEF([Boost_lib_LDPATH])dnl
 AS_VAR_POPDEF([Boost_lib_LIBS])dnl
 AC_LANG_POP([C++])dnl
+fi
 fi
 ])
 
