@@ -12,6 +12,8 @@
 
 #include "orcus/spreadsheet/types.hpp"
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 namespace orcus {
 
 struct ods_session_data : public session_context::custom_data

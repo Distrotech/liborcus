@@ -5,16 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_STRING_POOL_HPP__
-#define __ORCUS_STRING_POOL_HPP__
-
-#include <string>
-#include <boost/unordered_set.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/functional/hash.hpp>
+#ifndef INCLUDED_ORCUS_STRING_POOL_HPP
+#define INCLUDED_ORCUS_STRING_POOL_HPP
 
 #include "env.hpp"
 #include "pstring.hpp"
+
+#include <string>
+#include <boost/functional/hash.hpp>
 
 namespace orcus {
 
@@ -37,8 +35,8 @@ class ORCUS_PSR_DLLPUBLIC string_pool
         std::equal_to<std::string> m_equal_to;
     };
 
-    typedef boost::unordered_set<pstring, pstring::hash> string_set_type;
-    typedef boost::ptr_vector<std::string> string_store_type;
+    string_pool(const string_pool&) = delete;
+    string_pool& operator=(const string_pool&) = delete;
 
 public:
     string_pool();
@@ -80,8 +78,8 @@ public:
     size_t size() const;
 
 private:
-    string_set_type m_set;
-    string_store_type m_store;
+    struct impl;
+    std::unique_ptr<impl> mp_impl;
 };
 
 }

@@ -12,6 +12,8 @@
 #include "orcus/exception.hpp"
 
 #include <iostream>
+#include <boost/unordered_set.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
 
@@ -48,6 +50,9 @@ private:
 
 namespace orcus {
 
+typedef boost::unordered_set<pstring, pstring::hash> string_set_type;
+typedef boost::ptr_vector<std::string> string_store_type;
+
 size_t string_pool::string_hash::operator() (const string* p) const
 {
     return m_hash(*p);
@@ -58,7 +63,13 @@ bool string_pool::string_equal_to::operator() (const string* p1, const string* p
     return m_equal_to(*p1, *p2);
 }
 
-string_pool::string_pool() {}
+struct string_pool::impl
+{
+    string_set_type m_set;
+    string_store_type m_store;
+};
+
+string_pool::string_pool() : mp_impl(make_unique<impl>()) {}
 
 string_pool::~string_pool()
 {
@@ -75,12 +86,12 @@ pair<pstring, bool> string_pool::intern(const char* str, size_t n)
     if (!n)
         return pair<pstring, bool>(pstring(), false);
 
-    string_set_type::const_iterator itr = m_set.find(pstring(str, n));
-    if (itr == m_set.end())
+    string_set_type::const_iterator itr = mp_impl->m_set.find(pstring(str, n));
+    if (itr == mp_impl->m_set.end())
     {
         // This string has not been interned.  Intern it.
-        m_store.push_back(new string(str, n));
-        pair<string_set_type::iterator,bool> r = m_set.insert(pstring(&m_store.back()[0], n));
+        mp_impl->m_store.push_back(new string(str, n));
+        pair<string_set_type::iterator,bool> r = mp_impl->m_set.insert(pstring(&mp_impl->m_store.back()[0], n));
         if (!r.second)
             throw general_error("failed to intern a new string instance.");
         const pstring& ps = *r.first;
@@ -103,12 +114,12 @@ pair<pstring, bool> string_pool::intern(const pstring& str)
 
 void string_pool::dump() const
 {
-    cout << "interned string count: " << m_store.size() << endl;
+    cout << "interned string count: " << mp_impl->m_store.size() << endl;
 
     // Sorted stored strings first.
     vector<const string*> sorted;
-    sorted.reserve(m_store.size());
-    for_each(m_store.begin(), m_store.end(), pstring_back_inserter(sorted));
+    sorted.reserve(mp_impl->m_store.size());
+    for_each(mp_impl->m_store.begin(), mp_impl->m_store.end(), pstring_back_inserter(sorted));
     sort(sorted.begin(), sorted.end(), pstring_less());
 
     // Now dump them all to stdout.
@@ -117,13 +128,13 @@ void string_pool::dump() const
 
 void string_pool::clear()
 {
-    m_set.clear();
-    m_store.clear();
+    mp_impl->m_set.clear();
+    mp_impl->m_store.clear();
 }
 
 size_t string_pool::size() const
 {
-    return m_store.size();
+    return mp_impl->m_store.size();
 }
 
 }

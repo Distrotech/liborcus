@@ -9,6 +9,8 @@
 #include "orcus/string_pool.hpp"
 #include "orcus/measurement.hpp"
 
+#include <algorithm>
+
 namespace orcus {
 
 single_attr_getter::single_attr_getter(string_pool& pool, xmlns_id_t ns, xml_token_t name) :
