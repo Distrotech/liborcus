@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I$(top_srcdir)/include -I./include
+AM_CPPFLAGS = -I$(top_srcdir)/include -I./include $(BOOST_CPPFLAGS)
 
 EXTRA_PROGRAMS = \
 	liborcus-test-css-document-tree \
@@ -17,11 +17,11 @@ AM_CPPFLAGS += -D__ORCUS_BUILDING_DLL=1
 endif
 
 liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS = \
-	$(BOOST_SYSTEM_CFLAGS) $(ZLIB_CFLAGS)
-liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
+	$(ZLIB_CFLAGS)
+liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined $(BOOST_SYSTEM_LDFLAGS)
 liborcus_@ORCUS_API_VERSION@_la_LIBADD = \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
-	 $(BOOST_SYSTEM_LIBS) $(BOOST_SYSTEM_LIB) $(ZLIB_LIBS)
+	 $(BOOST_SYSTEM_LIBS) $(ZLIB_LIBS)
 
 AM_CPPFLAGS += -DSRCDIR=\""$(top_srcdir)"\"
 

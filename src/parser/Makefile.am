@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I$(top_srcdir)/include $(BOOST_SYSTEM_CFLAGS) -D__ORCUS_PSR_BUILDING_DLL
+AM_CPPFLAGS = -I$(top_srcdir)/include $(BOOST_CPPFLAGS) -D__ORCUS_PSR_BUILDING_DLL
 
 lib_LTLIBRARIES = liborcus-parser-@ORCUS_API_VERSION@.la
 liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
@@ -23,7 +23,7 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	zip_archive_stream.cpp
 
 
-liborcus_parser_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
+liborcus_parser_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined $(BOOST_SYSTEM_LDFLAGS)
 liborcus_parser_@ORCUS_API_VERSION@_la_LIBADD = \
 	$(BOOST_SYSTEM_LIBS) \
 	$(ZLIB_LIBS)

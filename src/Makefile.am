@@ -8,7 +8,7 @@ EXTRA_PROGRAMS = \
 	orcus-test-common \
 	orcus-test-xml
 
-AM_CPPFLAGS += $(BOOST_SYSTEM_CFLAGS)
+AM_CPPFLAGS += $(BOOST_CPPFLAGS)
 
 if HAVE_STATIC_LIB
 AM_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
@@ -85,10 +85,11 @@ orcus_xml_dump_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLA
 # orcus-mso-encryption
 
 orcus_mso_encryption_SOURCES = orcus_mso_encryption.cpp
+orcus_mso_encryption_LDFLAGS = $(BOOST_SYSTEM_LDFLAGS)
 orcus_mso_encryption_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	mso/liborcus-mso-@ORCUS_API_VERSION@.la \
-	$(BOOST_SYSTEM_LIB)
+	$(BOOST_SYSTEM_LIBS)
 
 orcus_mso_encryption_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
@@ -97,6 +98,10 @@ orcus_mso_encryption_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_
 # orcus-detect
 
 orcus_detect_SOURCES = orcus_detect_main.cpp
+orcus_detect_LDFLAGS = \
+	$(BOOST_PROGRAM_OPTIONS_LDFLAGS) \
+	$(BOOST_FILESYSTEM_LDFLAGS) \
+	$(BOOST_SYSTEM_LDFLAGS)
 orcus_detect_LDADD = \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
@@ -120,6 +125,10 @@ orcus_csv_SOURCES = \
 	orcus_filter_global.cpp \
 	orcus_csv_main.cpp
 
+orcus_csv_LDFLAGS = \
+	$(BOOST_PROGRAM_OPTIONS_LDFLAGS) \
+	$(BOOST_FILESYSTEM_LDFLAGS) \
+	$(BOOST_SYSTEM_LDFLAGS)
 orcus_csv_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
@@ -136,6 +145,10 @@ orcus_xml_SOURCES = \
 	xml_map_sax_handler.cpp \
 	orcus_xml_main.cpp
 
+orcus_xml_LDFLAGS = \
+	$(BOOST_PROGRAM_OPTIONS_LDFLAGS) \
+	$(BOOST_FILESYSTEM_LDFLAGS) \
+	$(BOOST_SYSTEM_LDFLAGS)
 orcus_xml_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
@@ -158,6 +171,10 @@ orcus_ods_SOURCES = \
 	orcus_filter_global.cpp \
 	orcus_ods_main.cpp
 
+orcus_ods_LDFLAGS = \
+	$(BOOST_PROGRAM_OPTIONS_LDFLAGS) \
+	$(BOOST_FILESYSTEM_LDFLAGS) \
+	$(BOOST_SYSTEM_LDFLAGS)
 orcus_ods_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
@@ -183,6 +200,10 @@ orcus_xlsx_SOURCES = \
 	orcus_filter_global.cpp \
 	orcus_xlsx_main.cpp
 
+orcus_xlsx_LDFLAGS = \
+	$(BOOST_PROGRAM_OPTIONS_LDFLAGS) \
+	$(BOOST_FILESYSTEM_LDFLAGS) \
+	$(BOOST_SYSTEM_LDFLAGS)
 orcus_xlsx_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
@@ -207,6 +228,10 @@ orcus_xls_xml_SOURCES = \
 	orcus_filter_global.cpp \
 	orcus_xls_xml_main.cpp
 
+orcus_xls_xml_LDFLAGS = \
+	$(BOOST_PROGRAM_OPTIONS_LDFLAGS) \
+	$(BOOST_FILESYSTEM_LDFLAGS) \
+	$(BOOST_SYSTEM_LDFLAGS)
 orcus_xls_xml_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
@@ -231,6 +256,10 @@ orcus_gnumeric_SOURCES = \
 	orcus_filter_global.cpp \
 	orcus_gnumeric_main.cpp
 
+orcus_gnumeric_LDFLAGS = \
+	$(BOOST_PROGRAM_OPTIONS_LDFLAGS) \
+	$(BOOST_FILESYSTEM_LDFLAGS) \
+	$(BOOST_SYSTEM_LDFLAGS)
 orcus_gnumeric_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
 	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
