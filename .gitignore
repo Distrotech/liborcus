@@ -26,5 +26,6 @@ ltmain.sh
 m4/libtool.m4
 m4/lt*.m4
 missing
+test-driver
 VERSION
 stamp-h1
