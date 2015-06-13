@@ -5,16 +5,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_DOM_TREE_HPP__
-#define __ORCUS_DOM_TREE_HPP__
+#ifndef INCLUDED_ORCUS_DOM_TREE_HPP
+#define INCLUDED_ORCUS_DOM_TREE_HPP
 
 #include "pstring.hpp"
 #include "types.hpp"
 
 #include <vector>
 #include <ostream>
-
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <memory>
 
 namespace orcus {
 
@@ -26,8 +25,8 @@ struct dom_tree_impl;
  */
 class ORCUS_DLLPUBLIC dom_tree
 {
-    dom_tree(const dom_tree&); // disabled
-    dom_tree& operator= (const dom_tree&); // disabled
+    dom_tree(const dom_tree&) = delete;
+    dom_tree& operator= (const dom_tree&) = delete;
 
 public:
 
@@ -66,7 +65,7 @@ public:
         virtual void print(std::ostream& os, const xmlns_context& cxt) const = 0;
     };
 
-    typedef boost::ptr_vector<node> nodes_type;
+    typedef std::vector<std::unique_ptr<node>> nodes_type;
 
     struct element : public node
     {

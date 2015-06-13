@@ -10,9 +10,12 @@
 
 #include "sax_parser.hpp"
 #include "xml_namespace.hpp"
+#include "global.hpp"
 
 #include <unordered_set>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
+#include <memory>
+#include <algorithm>
 
 namespace orcus {
 
@@ -69,7 +72,7 @@ struct elem_scope
     ns_keys_type ns_keys;
 };
 
-typedef boost::ptr_vector<elem_scope> elem_scopes_type;
+typedef std::vector<std::unique_ptr<elem_scope>> elem_scopes_type;
 
 class pop_ns_by_key : std::unary_function<pstring, void>
 {
@@ -139,8 +142,8 @@ private:
 
         void start_element(const sax::parser_element& elem)
         {
-            m_scopes.push_back(new __sax::elem_scope);
-            __sax::elem_scope& scope = m_scopes.back();
+            m_scopes.push_back(make_unique<__sax::elem_scope>());
+            __sax::elem_scope& scope = *m_scopes.back();
             scope.ns = m_ns_cxt.get(elem.ns);
             scope.name = elem.name;
             scope.ns_keys.swap(m_ns_keys);
@@ -157,7 +160,7 @@ private:
 
         void end_element(const sax::parser_element& elem)
         {
-            __sax::elem_scope& scope = m_scopes.back();
+            __sax::elem_scope& scope = *m_scopes.back();
             if (scope.ns != m_ns_cxt.get(elem.ns) || scope.name != elem.name)
                 throw sax::malformed_xml_error("mis-matching closing element.");
 

@@ -8,6 +8,7 @@
 #include "orcus/dom_tree.hpp"
 #include "orcus/exception.hpp"
 #include "orcus/xml_namespace.hpp"
+#include "orcus/global.hpp"
 
 #include "orcus/string_pool.hpp"
 
@@ -16,6 +17,7 @@
 
 #include <boost/noncopyable.hpp>
 #include <boost/unordered_map.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
 
@@ -167,8 +169,8 @@ void dom_tree::start_element(xmlns_id_t ns, const pstring& name)
 
     // Append new element as a child element of the current element.
     p = mp_impl->m_elem_stack.back();
-    p->child_nodes.push_back(new element(ns, name_safe));
-    p = static_cast<element*>(&p->child_nodes.back());
+    p->child_nodes.push_back(make_unique<element>(ns, name_safe));
+    p = static_cast<element*>(p->child_nodes.back().get());
     p->attrs.swap(mp_impl->m_cur_attrs);
     mp_impl->m_elem_stack.push_back(p);
 }
@@ -194,7 +196,7 @@ void dom_tree::set_characters(const pstring& val)
 
     element* p = mp_impl->m_elem_stack.back();
     val2 = mp_impl->m_pool.intern(val2).first; // Make sure the string is persistent.
-    p->child_nodes.push_back(new content(val2));
+    p->child_nodes.push_back(make_unique<content>(val2));
 }
 
 void dom_tree::set_attribute(xmlns_id_t ns, const pstring& name, const pstring& val)
@@ -314,7 +316,7 @@ void dom_tree::dump_compact(ostream& os) const
             dom_tree::nodes_type::const_iterator it = elem->child_nodes.begin(), it_end = elem->child_nodes.end();
             scope::nodes_type nodes;
             for (; it != it_end; ++it)
-                nodes.push_back(&(*it));
+                nodes.push_back(it->get());
 
             assert(!nodes.empty());
 
