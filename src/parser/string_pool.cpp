@@ -53,16 +53,6 @@ namespace orcus {
 typedef boost::unordered_set<pstring, pstring::hash> string_set_type;
 typedef boost::ptr_vector<std::string> string_store_type;
 
-size_t string_pool::string_hash::operator() (const string* p) const
-{
-    return m_hash(*p);
-}
-
-bool string_pool::string_equal_to::operator() (const string* p1, const string* p2) const
-{
-    return m_equal_to(*p1, *p2);
-}
-
 struct string_pool::impl
 {
     string_set_type m_set;

@@ -5,9 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <iostream>
 #include "orcus/string_pool.hpp"
 #include "orcus/pstring.hpp"
+
+#include <iostream>
+#include <cassert>
 
 using namespace std;
 using namespace orcus;

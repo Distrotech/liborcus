@@ -12,7 +12,7 @@
 #include "pstring.hpp"
 
 #include <string>
-#include <boost/functional/hash.hpp>
+#include <memory>
 
 namespace orcus {
 
@@ -21,20 +21,6 @@ namespace orcus {
  */
 class ORCUS_PSR_DLLPUBLIC string_pool
 {
-    struct string_hash
-    {
-        size_t operator() (const std::string* p) const;
-    private:
-        boost::hash<std::string> m_hash;
-    };
-
-    struct string_equal_to
-    {
-        bool operator() (const std::string* p1, const std::string* p2) const;
-    private:
-        std::equal_to<std::string> m_equal_to;
-    };
-
     string_pool(const string_pool&) = delete;
     string_pool& operator=(const string_pool&) = delete;
 
