@@ -5,13 +5,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_SAX_NS_PARSER_HPP__
-#define __ORCUS_SAX_NS_PARSER_HPP__
+#ifndef INCLUDED_ORCUS_SAX_NS_PARSER_HPP
+#define INCLUDED_ORCUS_SAX_NS_PARSER_HPP
 
 #include "sax_parser.hpp"
 #include "xml_namespace.hpp"
 
-#include <boost/unordered_set.hpp>
+#include <unordered_set>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
@@ -59,8 +59,8 @@ struct entity_name
     };
 };
 
-typedef boost::unordered_set<pstring, pstring::hash> ns_keys_type;
-typedef boost::unordered_set<entity_name, entity_name::hash> entity_names_type;
+typedef std::unordered_set<pstring, pstring::hash>          ns_keys_type;
+typedef std::unordered_set<entity_name, entity_name::hash>  entity_names_type;
 
 struct elem_scope
 {

@@ -14,14 +14,14 @@
 
 #include <ostream>
 #include <vector>
-#include <boost/unordered_set.hpp>
-#include <boost/unordered_map.hpp>
+#include <unordered_set>
+#include <unordered_map>
 
 namespace orcus {
 
 struct ORCUS_DLLPUBLIC css_simple_selector_t
 {
-    typedef boost::unordered_set<pstring, pstring::hash> classes_type;
+    typedef std::unordered_set<pstring, pstring::hash> classes_type;
 
     pstring name;
     pstring id;
@@ -128,8 +128,8 @@ struct ORCUS_DLLPUBLIC css_property_value_t
     void swap(css_property_value_t& r);
 };
 
-typedef boost::unordered_map<pstring, std::vector<css_property_value_t>, pstring::hash> css_properties_t;
-typedef boost::unordered_map<css::pseudo_element_t, css_properties_t> css_pseudo_element_properties_t;
+typedef std::unordered_map<pstring, std::vector<css_property_value_t>, pstring::hash> css_properties_t;
+typedef std::unordered_map<css::pseudo_element_t, css_properties_t> css_pseudo_element_properties_t;
 
 ORCUS_DLLPUBLIC std::ostream& operator<< (std::ostream& os, const css_simple_selector_t& v);
 ORCUS_DLLPUBLIC std::ostream& operator<< (std::ostream& os, const css_selector_t& v);

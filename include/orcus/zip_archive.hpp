@@ -5,16 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_ZIP_ARCHIVE_HPP__
-#define __ORCUS_ZIP_ARCHIVE_HPP__
+#ifndef INCLUDED_ORCUS_ZIP_ARCHIVE_HPP
+#define INCLUDED_ORCUS_ZIP_ARCHIVE_HPP
 
 #include "env.hpp"
 #include <cstdlib>
 #include <exception>
 #include <string>
 #include <vector>
-
-#include <boost/unordered_map.hpp>
 
 namespace orcus {
 
@@ -37,9 +35,9 @@ class ORCUS_PSR_DLLPUBLIC zip_archive
 {
     zip_archive_impl* mp_impl;
 
-    zip_archive(); // disabled
-    zip_archive(const zip_archive&); // disabled
-    zip_archive& operator= (const zip_archive); // disabled
+    zip_archive() = delete;
+    zip_archive(const zip_archive&) = delete;
+    zip_archive& operator= (const zip_archive) = delete;
 
 public:
     zip_archive(zip_archive_stream* stream);

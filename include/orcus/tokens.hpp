@@ -12,7 +12,7 @@
 #include "orcus/pstring.hpp"
 
 #include <algorithm>
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
 
 namespace orcus {
 
@@ -20,6 +20,7 @@ class pstring;
 
 class ORCUS_PSR_DLLPUBLIC tokens
 {
+    tokens() = delete;
 public:
 
     tokens(const char** token_names, size_t token_name_count);
@@ -51,7 +52,8 @@ public:
     const char* get_token_name(xml_token_t token) const;
 
 private:
-    typedef boost::unordered_map<pstring, xml_token_t, pstring::hash>     token_map_type;
+    typedef std::unordered_map<pstring, xml_token_t, pstring::hash> token_map_type;
+
     token_map_type   m_tokens;
     const char** m_token_names;
     size_t m_token_name_count;

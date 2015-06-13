@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_SPREADSHEET_SHARED_STRINGS_HPP__
-#define __ORCUS_SPREADSHEET_SHARED_STRINGS_HPP__
+#ifndef INCLUDED_ORCUS_SPREADSHEET_SHARED_STRINGS_HPP
+#define INCLUDED_ORCUS_SPREADSHEET_SHARED_STRINGS_HPP
 
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/spreadsheet/styles.hpp"
@@ -15,9 +15,7 @@
 
 #include <cstdlib>
 #include <vector>
-
-#include <boost/noncopyable.hpp>
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
 
 namespace ixion { class model_context; }
 
@@ -50,16 +48,18 @@ typedef std::vector<format_run> format_runs_t;
 /**
  * This class handles global pool of string instances.
  */
-class ORCUS_DLLPUBLIC import_shared_strings : public iface::import_shared_strings, private boost::noncopyable
+class ORCUS_DLLPUBLIC import_shared_strings : public iface::import_shared_strings
 {
-    typedef boost::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
+    typedef std::unordered_map<pstring, size_t, pstring::hash> str_index_map_type;
 
-    import_shared_strings(); // disabled
+    import_shared_strings() = delete;
+    import_shared_strings(const import_shared_strings&) = delete;
+    import_shared_strings& operator=(const import_shared_strings&) = delete;
 
 public:
 
     // format runs for all shared strings, mapped by string IDs.
-    typedef boost::unordered_map<size_t, format_runs_t*> format_runs_map_type;
+    typedef std::unordered_map<size_t, format_runs_t*> format_runs_map_type;
 
     import_shared_strings(orcus::string_pool& sp, ixion::model_context& cxt, import_styles& styles);
     virtual ~import_shared_strings();

@@ -14,6 +14,7 @@
 #include <cassert>
 #include <iostream>
 #include <sstream>
+#include <iterator>
 
 using namespace orcus;
 using namespace std;

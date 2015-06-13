@@ -5,16 +5,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef ORCUS_SPREADSHEET_AUTO_FILTER_HPP
-#define ORCUS_SPREADSHEET_AUTO_FILTER_HPP
+#ifndef INCLUDED_ORCUS_SPREADSHEET_AUTO_FILTER_HPP
+#define INCLUDED_ORCUS_SPREADSHEET_AUTO_FILTER_HPP
 
 #include "types.hpp"
 #include "orcus/pstring.hpp"
 #include "../env.hpp"
 
 #include <map>
-
-#include <boost/unordered_set.hpp>
+#include <unordered_set>
 
 #include <ixion/address.hpp>
 
@@ -25,7 +24,7 @@ namespace orcus { namespace spreadsheet {
  */
 struct ORCUS_SPM_DLLPUBLIC auto_filter_column_t
 {
-    typedef boost::unordered_set<pstring, pstring::hash> match_values_type;
+    typedef std::unordered_set<pstring, pstring::hash> match_values_type;
     match_values_type match_values;
 
     void reset();

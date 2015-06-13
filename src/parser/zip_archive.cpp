@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-#include <vector>
+#include <unordered_map>
 #ifdef _WIN32
 #include "win_stdint.h"
 #else
@@ -212,7 +212,7 @@ struct central_dir_end
 class zip_archive_impl
 {
     typedef std::vector<zip_file_param> file_params_type;
-    typedef boost::unordered_map<pstring, size_t, pstring::hash> filename_map_type;
+    typedef std::unordered_map<pstring, size_t, pstring::hash> filename_map_type;
 
     string_pool m_pool;
     zip_archive_stream* m_stream;
