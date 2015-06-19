@@ -12,8 +12,11 @@
 #include "orcus/exception.hpp"
 
 #include <iostream>
-#include <boost/unordered_set.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <unordered_set>
+#include <vector>
+#include <memory>
+#include <cassert>
+#include <algorithm>
 
 using namespace std;
 
@@ -32,11 +35,10 @@ private:
 
 class pstring_back_inserter
 {
+    vector<const string*>& m_store;
 public:
     pstring_back_inserter(vector<const string*>& store) : m_store(store) {}
-    void operator() (const string& r) { m_store.push_back(&r); }
-private:
-    vector<const string*>& m_store;
+    void operator() (const unique_ptr<string>& p) { m_store.push_back(p.get()); }
 };
 
 struct pstring_less
@@ -50,8 +52,8 @@ private:
 
 namespace orcus {
 
-typedef boost::unordered_set<pstring, pstring::hash> string_set_type;
-typedef boost::ptr_vector<std::string> string_store_type;
+typedef std::unordered_set<pstring, pstring::hash> string_set_type;
+typedef std::vector<std::unique_ptr<std::string>> string_store_type;
 
 struct string_pool::impl
 {
@@ -80,8 +82,8 @@ pair<pstring, bool> string_pool::intern(const char* str, size_t n)
     if (itr == mp_impl->m_set.end())
     {
         // This string has not been interned.  Intern it.
-        mp_impl->m_store.push_back(new string(str, n));
-        pair<string_set_type::iterator,bool> r = mp_impl->m_set.insert(pstring(&mp_impl->m_store.back()[0], n));
+        mp_impl->m_store.push_back(make_unique<string>(str, n));
+        pair<string_set_type::iterator,bool> r = mp_impl->m_set.insert(pstring(mp_impl->m_store.back()->data(), n));
         if (!r.second)
             throw general_error("failed to intern a new string instance.");
         const pstring& ps = *r.first;
@@ -106,7 +108,7 @@ void string_pool::dump() const
 {
     cout << "interned string count: " << mp_impl->m_store.size() << endl;
 
-    // Sorted stored strings first.
+    // Sort stored strings first.
     vector<const string*> sorted;
     sorted.reserve(mp_impl->m_store.size());
     for_each(mp_impl->m_store.begin(), mp_impl->m_store.end(), pstring_back_inserter(sorted));

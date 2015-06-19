@@ -9,8 +9,8 @@
 #include "orcus/global.hpp"
 
 #include <cstring>
-
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
+#include <memory>
 
 namespace orcus { namespace sax {
 
@@ -56,7 +56,7 @@ char decode_xml_encoded_char(const char* p, size_t n)
 
 struct parser_base::impl
 {
-    boost::ptr_vector<cell_buffer> m_cell_buffers;
+    std::vector<std::unique_ptr<cell_buffer>> m_cell_buffers;
 };
 
 parser_base::parser_base(const char* content, size_t size) :
@@ -69,7 +69,7 @@ parser_base::parser_base(const char* content, size_t size) :
     m_buffer_pos(0),
     m_root_elem_open(true)
 {
-    mp_impl->m_cell_buffers.push_back(new cell_buffer);
+    mp_impl->m_cell_buffers.push_back(orcus::make_unique<cell_buffer>());
 }
 
 parser_base::~parser_base() {}
@@ -78,12 +78,12 @@ void parser_base::inc_buffer_pos()
 {
     ++m_buffer_pos;
     if (m_buffer_pos == mp_impl->m_cell_buffers.size())
-        mp_impl->m_cell_buffers.push_back(new cell_buffer);
+        mp_impl->m_cell_buffers.push_back(orcus::make_unique<cell_buffer>());
 }
 
 cell_buffer& parser_base::get_cell_buffer()
 {
-    return mp_impl->m_cell_buffers[m_buffer_pos];
+    return *mp_impl->m_cell_buffers[m_buffer_pos];
 }
 
 void parser_base::blank()

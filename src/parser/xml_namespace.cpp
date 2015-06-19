@@ -9,10 +9,12 @@
 #include "orcus/exception.hpp"
 #include "orcus/string_pool.hpp"
 
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
 #include <vector>
 #include <limits>
 #include <sstream>
+#include <algorithm>
+#include <cassert>
 
 #define ORCUS_DEBUG_XML_NAMESPACE 0
 
@@ -48,7 +50,7 @@ void print_map_keys(const _MapType& map_store)
 
 }
 
-typedef boost::unordered_map<pstring, size_t, pstring::hash> strid_map_type;
+typedef std::unordered_map<pstring, size_t, pstring::hash> strid_map_type;
 
 struct xmlns_repository_impl
 {
@@ -175,7 +177,7 @@ size_t xmlns_repository::get_index(xmlns_id_t ns_id) const
 }
 
 typedef std::vector<xmlns_id_t> xmlns_list_type;
-typedef boost::unordered_map<pstring, xmlns_list_type, pstring::hash> alias_map_type;
+typedef std::unordered_map<pstring, xmlns_list_type, pstring::hash> alias_map_type;
 
 struct xmlns_context_impl
 {

@@ -13,8 +13,6 @@
 #include <iostream>
 #include <vector>
 
-#include <boost/thread/mutex.hpp>
-
 using namespace std;
 
 namespace orcus {
