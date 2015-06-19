@@ -28,6 +28,16 @@ callbacks from the parser as the file is being parsed.
 Download source packages
 ========================
 
+0.9.2
+-----
+* release date: 2015-06-18
+* [liborcus-0.9.2.tar.xz](http://kohei.us/files/orcus/src/liborcus-0.9.2.tar.xz)
+  * md5sum: 3ff918cc988cb325e12d8bbc7f8c3deb
+  * sha1sum: 4c55f1bdc65490e8e79bbf7d069a64381eb1d1bc
+* [liborcus-0.9.2.tar.gz](http://kohei.us/files/orcus/src/liborcus-0.9.2.tar.gz)
+  * md5sum: e6efcbe50a5fd4d50d513c9a7a4139b0
+  * sha1sum: f44c7ec7bd0c54f506efe3cb600bca4cd1401638
+
 0.9.1
 -----
 * release date: 2015-05-17
