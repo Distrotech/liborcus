@@ -16,6 +16,7 @@
 #include "orcus/pstring.hpp"
 #include "orcus/types.hpp"
 #include "orcus/string_pool.hpp"
+#include "orcus/global.hpp"
 
 #include <ixion/formula.hpp>
 #include <ixion/formula_result.hpp>
@@ -26,9 +27,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
-#include <boost/scoped_ptr.hpp>
+#include <map>
 
 using namespace std;
 
@@ -41,47 +40,50 @@ namespace {
  * Use the printer function object to print sheet content with for_each
  * function.
  */
-struct sheet_item : private boost::noncopyable
+struct sheet_item
 {
+    sheet_item(const sheet_item&) = delete;
+    sheet_item& operator=(const sheet_item&) = delete;
+
     pstring name;
     sheet   data;
     sheet_item(document& doc, const pstring& _name, sheet_t sheet_index, row_t row_size, col_t col_size);
 
-    class flat_printer : public ::std::unary_function<sheet_item, void>
+    class flat_printer : public ::std::unary_function<std::unique_ptr<sheet_item>, void>
     {
         const std::string& m_outdir;
     public:
         flat_printer(const std::string& outdir);
-        void operator() (const sheet_item& item) const;
+        void operator() (const std::unique_ptr<sheet_item>& item) const;
     };
 
-    class check_printer : public std::unary_function<sheet_item, void>
+    class check_printer : public std::unary_function<std::unique_ptr<sheet_item>, void>
     {
         std::ostream& m_os;
     public:
         check_printer(std::ostream& os);
-        void operator() (const sheet_item& item) const;
+        void operator() (const std::unique_ptr<sheet_item>& item) const;
     };
 
-    struct html_printer : public ::std::unary_function<sheet_item, void>
+    struct html_printer : public ::std::unary_function<std::unique_ptr<sheet_item>, void>
     {
         html_printer(const ::std::string& filepath);
-        void operator() (const sheet_item& item) const;
+        void operator() (const std::unique_ptr<sheet_item>& item) const;
     private:
         const ::std::string& m_filepath;
     };
 };
 
-typedef boost::ptr_map<pstring, table_t> table_store_type;
+typedef std::map<pstring, std::unique_ptr<table_t>> table_store_type;
 
 sheet_item::sheet_item(document& doc, const pstring& _name, sheet_t sheet_index, row_t row_size, col_t col_size) :
     name(_name), data(doc, sheet_index, row_size, col_size) {}
 
 sheet_item::flat_printer::flat_printer(const string& outdir) : m_outdir(outdir) {}
 
-void sheet_item::flat_printer::operator() (const sheet_item& item) const
+void sheet_item::flat_printer::operator() (const std::unique_ptr<sheet_item>& item) const
 {
-    string this_file = m_outdir + '/' + item.name.str() + ".txt";
+    string this_file = m_outdir + '/' + item->name.str() + ".txt";
 
     ofstream file(this_file.c_str());
     if (!file)
@@ -91,35 +93,35 @@ void sheet_item::flat_printer::operator() (const sheet_item& item) const
     }
 
     file << "---" << endl;
-    file << "Sheet name: " << item.name << endl;
-    item.data.dump_flat(file);
+    file << "Sheet name: " << item->name << endl;
+    item->data.dump_flat(file);
 }
 
 sheet_item::check_printer::check_printer(std::ostream& os) : m_os(os) {}
 
-void sheet_item::check_printer::operator() (const sheet_item& item) const
+void sheet_item::check_printer::operator() (const std::unique_ptr<sheet_item>& item) const
 {
-    item.data.dump_check(m_os, item.name);
+    item->data.dump_check(m_os, item->name);
 }
 
 sheet_item::html_printer::html_printer(const string& filepath) :
     m_filepath(filepath) {}
 
-void sheet_item::html_printer::operator() (const sheet_item& item) const
+void sheet_item::html_printer::operator() (const std::unique_ptr<sheet_item>& item) const
 {
     // file path is expected to be a directory.
-    string this_file = m_filepath + '/' + item.name.str() + ".html";
-    item.data.dump_html(this_file);
+    string this_file = m_filepath + '/' + item->name.str() + ".html";
+    item->data.dump_html(this_file);
 }
 
-class find_sheet_by_name : std::unary_function<sheet_item , bool>
+class find_sheet_by_name : std::unary_function<std::unique_ptr<sheet_item> , bool>
 {
     const pstring& m_name;
 public:
     find_sheet_by_name(const pstring& name) : m_name(name) {}
-    bool operator() (const sheet_item & v) const
+    bool operator() (const std::unique_ptr<sheet_item>& v) const
     {
-        return v.name == m_name;
+        return v->name == m_name;
     }
 };
 
@@ -208,10 +210,10 @@ class table_handler : public ixion::iface::table_handler
 
     const table_t* find_table(const ixion::abs_address_t& pos) const
     {
-        table_store_type::const_iterator it = m_tables.begin(), it_end = m_tables.end();
+        auto it = m_tables.begin(), it_end = m_tables.end();
         for (; it != it_end; ++it)
         {
-            const table_t* p = it->second;
+            const table_t* p = it->second.get();
             if (p->range.contains(pos))
                 return p;
         }
@@ -310,31 +312,36 @@ public:
             // no table name given.
             return ixion::abs_range_t(ixion::abs_range_t::invalid);
 
-        table_store_type::const_iterator it = m_tables.find(tab_name);
+        auto it = m_tables.find(tab_name);
         if (it == m_tables.end())
             // no table by this name found.
             return ixion::abs_range_t(ixion::abs_range_t::invalid);
 
-        const table_t* tab = it->second;
+        const table_t* tab = it->second.get();
         return get_range_from_table(*tab, column_first, column_last, areas);
     }
 };
+
+typedef std::vector<std::unique_ptr<sheet_item>> sheet_items_type;
 
 }
 
 struct document_impl
 {
+    document_impl(const document_impl&) = delete;
+    document_impl& operator=(const document_impl&) = delete;
+
     document& m_doc;
 
     string_pool m_string_pool;
     ixion::model_context m_context;
     date_time_t m_origin_date;
-    boost::ptr_vector<sheet_item> m_sheets;
+    sheet_items_type m_sheets;
     import_styles* mp_styles;
     import_shared_strings* mp_strings;
     ixion::dirty_formula_cells_t m_dirty_cells;
 
-    boost::scoped_ptr<ixion::formula_name_resolver> mp_name_resolver;
+    std::unique_ptr<ixion::formula_name_resolver> mp_name_resolver;
     formula_grammar_t m_grammar;
 
     table_store_type m_tables;
@@ -407,22 +414,23 @@ void document::insert_table(table_t* p)
         return;
 
     pstring name = p->name;
-    mp_impl->m_tables.insert(name, p);
+    mp_impl->m_tables.insert(
+        table_store_type::value_type(name, std::unique_ptr<table_t>(p)));
 }
 
 const table_t* document::get_table(const pstring& name) const
 {
-    table_store_type::const_iterator it = mp_impl->m_tables.find(name);
-    return it == mp_impl->m_tables.end() ? NULL : it->second;
+    auto it = mp_impl->m_tables.find(name);
+    return it == mp_impl->m_tables.end() ? NULL : it->second.get();
 }
 
 namespace {
 
-struct sheet_finalizer : unary_function<sheet_item, void>
+struct sheet_finalizer : std::unary_function<std::unique_ptr<sheet_item>, void>
 {
-    void operator() (sheet_item& sh)
+    void operator() (std::unique_ptr<sheet_item>& sh)
     {
-        sh.data.finalize();
+        sh->data.finalize();
     }
 };
 
@@ -440,24 +448,24 @@ sheet* document::append_sheet(const pstring& sheet_name, row_t row_size, col_t c
     sheet_t sheet_index = static_cast<sheet_t>(mp_impl->m_sheets.size());
 
     mp_impl->m_sheets.push_back(
-        new sheet_item(
+        make_unique<sheet_item>(
             *this, sheet_name_safe, sheet_index, row_size, col_size));
 
     mp_impl->m_context.append_sheet(
         sheet_name_safe.get(), sheet_name_safe.size(), row_size, col_size);
 
-    return &mp_impl->m_sheets.back().data;
+    return &mp_impl->m_sheets.back()->data;
 }
 
 sheet* document::get_sheet(const pstring& sheet_name)
 {
-    boost::ptr_vector<sheet_item>::iterator it =
-        std::find_if(mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), find_sheet_by_name(sheet_name));
+    auto it = std::find_if(
+        mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), find_sheet_by_name(sheet_name));
 
     if (it == mp_impl->m_sheets.end())
         return NULL;
 
-    return &it->data;
+    return &(*it)->data;
 }
 
 sheet* document::get_sheet(sheet_t sheet_pos)
@@ -465,7 +473,7 @@ sheet* document::get_sheet(sheet_t sheet_pos)
     if (static_cast<size_t>(sheet_pos) >= mp_impl->m_sheets.size())
         return NULL;
 
-    return &mp_impl->m_sheets[sheet_pos].data;
+    return &mp_impl->m_sheets[sheet_pos]->data;
 }
 
 const sheet* document::get_sheet(sheet_t sheet_pos) const
@@ -473,7 +481,7 @@ const sheet* document::get_sheet(sheet_t sheet_pos) const
     if (static_cast<size_t>(sheet_pos) >= mp_impl->m_sheets.size())
         return NULL;
 
-    return &mp_impl->m_sheets[sheet_pos].data;
+    return &mp_impl->m_sheets[sheet_pos]->data;
 }
 
 void document::calc_formulas()
@@ -516,13 +524,13 @@ void document::dump_html(const string& outdir) const
 
 sheet_t document::get_sheet_index(const pstring& name) const
 {
-    boost::ptr_vector<sheet_item>::const_iterator it =
-        std::find_if(mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), find_sheet_by_name(name));
+    auto it = std::find_if(
+        mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), find_sheet_by_name(name));
 
     if (it == mp_impl->m_sheets.end())
         return ixion::invalid_sheet;
 
-    boost::ptr_vector<sheet_item>::const_iterator it_beg = mp_impl->m_sheets.begin();
+    auto it_beg = mp_impl->m_sheets.begin();
     size_t pos = std::distance(it_beg, it);
     return static_cast<sheet_t>(pos);
 }
@@ -536,7 +544,7 @@ pstring document::get_sheet_name(sheet_t sheet_pos) const
     if (pos >= mp_impl->m_sheets.size())
         return pstring();
 
-    return mp_impl->m_sheets[pos].name;
+    return mp_impl->m_sheets[pos]->name;
 }
 
 size_t document::sheet_size() const

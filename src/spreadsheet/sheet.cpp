@@ -30,6 +30,7 @@
 #include <cassert>
 #include <memory>
 #include <cstdlib>
+#include <unordered_map>
 
 #include <mdds/flat_segment_tree.hpp>
 #include <mdds/multi_type_matrix.hpp>
@@ -42,9 +43,6 @@
 #include <ixion/matrix.hpp>
 #include <ixion/model_context.hpp>
 #include <ixion/address.hpp>
-
-#include <boost/unordered_map.hpp>
-#include <boost/noncopyable.hpp>
 
 #define ORCUS_DEBUG_SHEET 0
 
@@ -64,15 +62,15 @@ struct merge_size
 };
 
 // Merged cell data stored in sheet.
-typedef boost::unordered_map<row_t, merge_size> merge_size_type;
-typedef boost::unordered_map<col_t, merge_size_type*> col_merge_size_type;
+typedef std::unordered_map<row_t, merge_size> merge_size_type;
+typedef std::unordered_map<col_t, merge_size_type*> col_merge_size_type;
 
 // Overlapped cells per row, used when rendering sheet content.
 typedef mdds::flat_segment_tree<col_t, bool> overlapped_col_index_type;
-typedef boost::unordered_map<row_t, overlapped_col_index_type*> overlapped_cells_type;
+typedef std::unordered_map<row_t, overlapped_col_index_type*> overlapped_cells_type;
 
 typedef mdds::flat_segment_tree<row_t, size_t>  segment_row_index_type;
-typedef boost::unordered_map<col_t, segment_row_index_type*> cell_format_type;
+typedef std::unordered_map<col_t, segment_row_index_type*> cell_format_type;
 
 // Widths and heights are stored in twips.
 typedef mdds::flat_segment_tree<col_t, col_width_t> col_widths_store_type;
@@ -156,7 +154,7 @@ public:
 
 }
 
-struct sheet_impl : boost::noncopyable
+struct sheet_impl
 {
     document& m_doc;
     sheet_properties m_sheet_props;     /// sheet properties import interface.
@@ -183,6 +181,10 @@ struct sheet_impl : boost::noncopyable
     row_t m_row_size;
     col_t m_col_size;
     const sheet_t m_sheet; /// sheet ID
+
+    sheet_impl() = delete;
+    sheet_impl(const sheet_impl&) = delete;
+    sheet_impl& operator=(const sheet_impl&) = delete;
 
     sheet_impl(document& doc, sheet& sh, sheet_t sheet_index, row_t row_size, col_t col_size) :
         m_doc(doc),

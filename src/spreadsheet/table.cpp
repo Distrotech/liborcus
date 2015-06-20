@@ -15,7 +15,6 @@
 #include "orcus/spreadsheet/auto_filter.hpp"
 
 #include <ixion/formula_name_resolver.hpp>
-#include <boost/noncopyable.hpp>
 
 namespace orcus { namespace spreadsheet {
 
@@ -84,7 +83,7 @@ public:
 
 }
 
-struct table_impl : boost::noncopyable
+struct table_impl
 {
     document& m_doc;
     sheet& m_sheet;
@@ -93,6 +92,9 @@ struct table_impl : boost::noncopyable
 
     std::unique_ptr<table_t> mp_data;
     table_column_t m_column;
+
+    table_impl(const table_impl&) = delete;
+    table_impl& operator=(const table_impl&) = delete;
 
     table_impl(document& doc, sheet& sh) :
         m_doc(doc), m_sheet(sh), m_auto_filter(doc) {}
