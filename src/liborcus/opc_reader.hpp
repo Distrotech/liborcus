@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_OPC_READER_HPP__
-#define __ORCUS_OPC_READER_HPP__
+#ifndef INCLUDED_ORCUS_OPC_READER_HPP
+#define INCLUDED_ORCUS_OPC_READER_HPP
 
 #include "orcus/env.hpp"
 #include "orcus/zip_archive.hpp"
@@ -18,7 +18,6 @@
 #include <vector>
 #include <string>
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/unordered_set.hpp>
 
 namespace orcus {
@@ -102,8 +101,8 @@ private:
     session_context& m_session_cxt;
     part_handler& m_handler;
 
-    boost::scoped_ptr<zip_archive> m_archive;
-    boost::scoped_ptr<zip_archive_stream> m_archive_stream;
+    std::unique_ptr<zip_archive> m_archive;
+    std::unique_ptr<zip_archive_stream> m_archive_stream;
 
     xml_simple_stream_handler m_opc_rel_handler;
 

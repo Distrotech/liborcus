@@ -5,13 +5,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_GNUMERICCONTEXT_HPP__
-#define __ORCUS_GNUMERICCONTEXT_HPP__
+#ifndef INCLUDED_ORCUS_GNUMERICCONTEXT_HPP
+#define INCLUDED_ORCUS_GNUMERICCONTEXT_HPP
 
 #include "xml_context_base.hpp"
 
 #include <vector>
-#include <boost/scoped_ptr.hpp>
 
 namespace orcus {
 
@@ -40,7 +39,7 @@ private:
 
 private:
     spreadsheet::iface::import_factory* mp_factory;
-    boost::scoped_ptr<xml_context_base> mp_child;
+    std::unique_ptr<xml_context_base> mp_child;
 };
 
 }

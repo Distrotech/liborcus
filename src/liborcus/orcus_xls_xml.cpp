@@ -18,8 +18,6 @@
 #include "xls_xml_namespace_types.hpp"
 #include "detection_result.hpp"
 
-#include <boost/scoped_ptr.hpp>
-
 #define ORCUS_DEBUG_XLS_XML_FILTER 1
 
 #if ORCUS_DEBUG_XLS_XML_FILTER
@@ -86,8 +84,10 @@ void orcus_xls_xml::read_file(const string& filepath)
 
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, xls_xml_tokens, &strm[0], strm.size());
-    boost::scoped_ptr<xls_xml_handler> handler(
-        new xls_xml_handler(mp_impl->m_cxt, xls_xml_tokens, mp_impl->mp_factory));
+
+    auto handler = make_unique<xls_xml_handler>(
+        mp_impl->m_cxt, xls_xml_tokens, mp_impl->mp_factory);
+
     parser.set_handler(handler.get());
     parser.parse();
 }

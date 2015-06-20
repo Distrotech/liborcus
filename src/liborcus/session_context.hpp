@@ -10,13 +10,15 @@
 
 #include "orcus/string_pool.hpp"
 
-#include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace orcus {
 
-struct session_context : boost::noncopyable
+struct session_context
 {
+    session_context(const session_context&) = delete;
+    session_context& operator=(const session_context&) = delete;
+
     string_pool m_string_pool;
 
     /**
@@ -28,7 +30,7 @@ struct session_context : boost::noncopyable
         virtual ~custom_data() = 0;
     };
 
-    boost::scoped_ptr<custom_data> mp_data;
+    std::unique_ptr<custom_data> mp_data;
 
     session_context();
     session_context(custom_data* data);

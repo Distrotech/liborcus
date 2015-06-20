@@ -15,7 +15,6 @@
 #include "orcus/config.hpp"
 
 #include <iostream>
-#include <boost/scoped_ptr.hpp>
 
 using namespace std;
 
@@ -247,8 +246,10 @@ void opc_reader::read_content_types()
     xml_stream_parser parser(
         m_config, m_ns_repo, opc_tokens,
         reinterpret_cast<const char*>(&buffer[0]), buffer.size());
-    ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-        new xml_simple_stream_handler(new opc_content_types_context(m_session_cxt, opc_tokens)));
+
+    auto handler = make_unique<xml_simple_stream_handler>(
+        new opc_content_types_context(m_session_cxt, opc_tokens));
+
     parser.set_handler(handler.get());
     parser.parse();
 

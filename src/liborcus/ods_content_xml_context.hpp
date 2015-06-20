@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_ODSCONTEXT_HPP__
-#define __ORCUS_ODSCONTEXT_HPP__
+#ifndef INCLUDED_ORCUS_ODSCONTEXT_XML_CONTEXT_HPP
+#define INCLUDED_ORCUS_ODSCONTEXT_XML_CONTEXT_HPP
 
 #include "xml_context_base.hpp"
 #include "odf_para_context.hpp"
@@ -14,7 +14,6 @@
 #include "orcus/spreadsheet/types.hpp"
 
 #include <vector>
-#include <boost/scoped_ptr.hpp>
 #include <boost/unordered_map.hpp>
 
 namespace orcus {
@@ -87,7 +86,7 @@ private:
     spreadsheet::iface::import_factory* mp_factory;
     std::vector<spreadsheet::iface::import_sheet*> m_tables;
 
-    boost::scoped_ptr<xml_context_base> mp_child;
+    std::unique_ptr<xml_context_base> mp_child;
 
     row_attr    m_row_attr;
     cell_attr   m_cell_attr; /// attributes of current cell.

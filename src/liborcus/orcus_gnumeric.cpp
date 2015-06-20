@@ -25,7 +25,6 @@
 #include <iostream>
 #include <string>
 
-#include <boost/scoped_ptr.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 
@@ -82,8 +81,10 @@ orcus_gnumeric::~orcus_gnumeric()
 void orcus_gnumeric::read_content_xml(const char* p, size_t size)
 {
     xml_stream_parser parser(get_config(), mp_impl->m_ns_repo, gnumeric_tokens, p, size);
-    ::boost::scoped_ptr<gnumeric_content_xml_handler> handler(
-        new gnumeric_content_xml_handler(mp_impl->m_cxt, gnumeric_tokens, mp_impl->mp_factory));
+
+    auto handler = make_unique<gnumeric_content_xml_handler>(
+        mp_impl->m_cxt, gnumeric_tokens, mp_impl->mp_factory);
+
     parser.set_handler(handler.get());
     parser.parse();
 }

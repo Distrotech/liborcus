@@ -35,7 +35,6 @@
 #include <sstream>
 
 #include <boost/shared_ptr.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
@@ -275,8 +274,8 @@ void orcus_xlsx::read_workbook(const string& dir_path, const string& file_name)
     if (buffer.empty())
         return;
 
-    ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-        new xml_simple_stream_handler(new xlsx_workbook_context(mp_impl->m_cxt, ooxml_tokens)));
+    auto handler = make_unique<xml_simple_stream_handler>(
+        new xlsx_workbook_context(mp_impl->m_cxt, ooxml_tokens));
 
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,
@@ -329,8 +328,10 @@ void orcus_xlsx::read_sheet(const string& dir_path, const string& file_name, xls
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,
         reinterpret_cast<const char*>(&buffer[0]), buffer.size());
-    boost::scoped_ptr<xlsx_sheet_xml_handler> handler(
-        new xlsx_sheet_xml_handler(mp_impl->m_cxt, ooxml_tokens, data->id-1, sheet));
+
+    auto handler = make_unique<xlsx_sheet_xml_handler>(
+        mp_impl->m_cxt, ooxml_tokens, data->id-1, sheet);
+
     parser.set_handler(handler.get());
     parser.parse();
 
@@ -359,9 +360,11 @@ void orcus_xlsx::read_shared_strings(const string& dir_path, const string& file_
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,
         reinterpret_cast<const char*>(&buffer[0]), buffer.size());
-    ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-        new xml_simple_stream_handler(
-            new xlsx_shared_strings_context(mp_impl->m_cxt, ooxml_tokens, mp_impl->mp_factory->get_shared_strings())));
+
+    auto handler = make_unique<xml_simple_stream_handler>(
+        new xlsx_shared_strings_context(
+            mp_impl->m_cxt, ooxml_tokens, mp_impl->mp_factory->get_shared_strings()));
+
     parser.set_handler(handler.get());
     parser.parse();
 }
@@ -390,9 +393,11 @@ void orcus_xlsx::read_styles(const string& dir_path, const string& file_name)
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,
         reinterpret_cast<const char*>(&buffer[0]), buffer.size());
-    ::boost::scoped_ptr<xml_simple_stream_handler> handler(
-        new xml_simple_stream_handler(
-            new xlsx_styles_context(mp_impl->m_cxt, ooxml_tokens, mp_impl->mp_factory->get_styles())));
+
+    auto handler = make_unique<xml_simple_stream_handler>(
+        new xlsx_styles_context(
+            mp_impl->m_cxt, ooxml_tokens, mp_impl->mp_factory->get_styles()));
+
     parser.set_handler(handler.get());
     parser.parse();
 }
@@ -424,8 +429,7 @@ void orcus_xlsx::read_table(const std::string& dir_path, const std::string& file
     if (buffer.empty())
         return;
 
-    boost::scoped_ptr<xlsx_table_xml_handler> handler(
-        new xlsx_table_xml_handler(mp_impl->m_cxt, ooxml_tokens, *table));
+    auto handler = make_unique<xlsx_table_xml_handler>(mp_impl->m_cxt, ooxml_tokens, *table);
 
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,
@@ -455,8 +459,7 @@ void orcus_xlsx::read_pivot_cache_def(const std::string& dir_path, const std::st
     if (buffer.empty())
         return;
 
-    boost::scoped_ptr<xlsx_pivot_cache_def_xml_handler> handler(
-        new xlsx_pivot_cache_def_xml_handler(mp_impl->m_cxt, ooxml_tokens));
+    auto handler = make_unique<xlsx_pivot_cache_def_xml_handler>(mp_impl->m_cxt, ooxml_tokens);
 
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,
@@ -487,8 +490,7 @@ void orcus_xlsx::read_pivot_cache_rec(const std::string& dir_path, const std::st
     if (buffer.empty())
         return;
 
-    boost::scoped_ptr<xlsx_pivot_cache_rec_xml_handler> handler(
-        new xlsx_pivot_cache_rec_xml_handler(mp_impl->m_cxt, ooxml_tokens));
+    auto handler = make_unique<xlsx_pivot_cache_rec_xml_handler>(mp_impl->m_cxt, ooxml_tokens);
 
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,
@@ -518,8 +520,7 @@ void orcus_xlsx::read_pivot_table(const std::string& dir_path, const std::string
     if (buffer.empty())
         return;
 
-    boost::scoped_ptr<xlsx_pivot_table_xml_handler> handler(
-        new xlsx_pivot_table_xml_handler(mp_impl->m_cxt, ooxml_tokens));
+    auto handler = make_unique<xlsx_pivot_table_xml_handler>(mp_impl->m_cxt, ooxml_tokens);
 
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,
@@ -553,9 +554,10 @@ void orcus_xlsx::read_rev_headers(const std::string& dir_path, const std::string
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,
         reinterpret_cast<const char*>(&buffer[0]), buffer.size());
-    boost::scoped_ptr<xml_simple_stream_handler> handler(
-        new xml_simple_stream_handler(
-            new xlsx_revheaders_context(mp_impl->m_cxt, ooxml_tokens)));
+
+    auto handler = make_unique<xml_simple_stream_handler>(
+        new xlsx_revheaders_context(mp_impl->m_cxt, ooxml_tokens));
+
     parser.set_handler(handler.get());
     parser.parse();
 
@@ -585,9 +587,10 @@ void orcus_xlsx::read_rev_log(const std::string& dir_path, const std::string& fi
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, ooxml_tokens,
         reinterpret_cast<const char*>(&buffer[0]), buffer.size());
-    boost::scoped_ptr<xml_simple_stream_handler> handler(
-        new xml_simple_stream_handler(
-            new xlsx_revlog_context(mp_impl->m_cxt, ooxml_tokens)));
+
+    auto handler = make_unique<xml_simple_stream_handler>(
+        new xlsx_revlog_context(mp_impl->m_cxt, ooxml_tokens));
+
     parser.set_handler(handler.get());
     parser.parse();
 

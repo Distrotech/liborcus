@@ -5,11 +5,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_GNUMERIC_CELL_CONTEXT_HPP__
-#define __ORCUS_GNUMERIC_CELL_CONTEXT_HPP__
+#ifndef INCLUDED_ORCUS_GNUMERIC_CELL_CONTEXT_HPP
+#define INCLUDED_ORCUS_GNUMERIC_CELL_CONTEXT_HPP
 
 #include "xml_context_base.hpp"
-#include <boost/scoped_ptr.hpp>
 
 namespace orcus {
 
@@ -42,7 +41,7 @@ private:
 private:
     spreadsheet::iface::import_factory* mp_factory;
 
-    boost::scoped_ptr<gnumeric_cell_data> mp_cell_data;
+    std::unique_ptr<gnumeric_cell_data> mp_cell_data;
 
     /**
     * Used for temporary storage of characters

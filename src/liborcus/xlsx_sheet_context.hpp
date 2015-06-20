@@ -15,7 +15,7 @@
 #include "orcus/spreadsheet/types.hpp"
 #include "orcus/string_pool.hpp"
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace orcus {
 
@@ -69,7 +69,7 @@ private:
     void push_raw_cell_value();
 
 private:
-    boost::scoped_ptr<xml_context_base> mp_child;
+    std::unique_ptr<xml_context_base> mp_child;
 
     spreadsheet::iface::import_sheet* mp_sheet; /// sheet model instance for the loaded document.
     string_pool m_pool;

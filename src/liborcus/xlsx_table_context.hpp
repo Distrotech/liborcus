@@ -10,7 +10,7 @@
 
 #include "xml_context_base.hpp"
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace orcus {
 
@@ -37,7 +37,7 @@ public:
 
 private:
     spreadsheet::iface::import_table& m_table;
-    boost::scoped_ptr<xml_context_base> mp_child;
+    std::unique_ptr<xml_context_base> mp_child;
 };
 
 }

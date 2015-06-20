@@ -5,13 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_GNUMERIC_SHEET_CONTEXT_HPP__
-#define __ORCUS_GNUMERIC_SHEET_CONTEXT_HPP__
+#ifndef INCLUDED_ORCUS_GNUMERIC_SHEET_CONTEXT_HPP
+#define INCLUDED_ORCUS_GNUMERIC_SHEET_CONTEXT_HPP
 
 #include "xml_context_base.hpp"
 #include "orcus/spreadsheet/types.hpp"
-
-#include <boost/scoped_ptr.hpp>
 
 namespace orcus {
 
@@ -89,8 +87,8 @@ private:
     spreadsheet::iface::import_sheet* mp_sheet;
     spreadsheet::iface::import_auto_filter* mp_auto_filter;
 
-    boost::scoped_ptr<xml_context_base> mp_child;
-    boost::scoped_ptr<gnumeric_style_region> mp_region_data;
+    std::unique_ptr<xml_context_base> mp_child;
+    std::unique_ptr<gnumeric_style_region> mp_region_data;
 
     gnumeric_color front_color;
 

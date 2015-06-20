@@ -22,8 +22,6 @@
 #include "xlsx_session_data.hpp"
 #include "ooxml_global.hpp"
 
-#include <boost/scoped_ptr.hpp>
-
 namespace orcus {
 
 void import_xlsx::read_table(const char* p, size_t n, spreadsheet::iface::import_table* table)
@@ -35,8 +33,7 @@ void import_xlsx::read_table(const char* p, size_t n, spreadsheet::iface::import
         return;
 
     session_context cxt;
-    boost::scoped_ptr<xlsx_table_xml_handler> handler(
-        new xlsx_table_xml_handler(cxt, ooxml_tokens, *table));
+    auto handler = make_unique<xlsx_table_xml_handler>(cxt, ooxml_tokens, *table);
 
     xmlns_repository ns_repo;
     ns_repo.add_predefined_values(NS_ooxml_all);
