@@ -17,8 +17,7 @@
 
 #include <vector>
 #include <string>
-#include <boost/noncopyable.hpp>
-#include <boost/unordered_set.hpp>
+#include <unordered_set>
 
 namespace orcus {
 
@@ -32,10 +31,13 @@ struct opc_rel_extra;
  * Class to handle parsing through all xml parts stored in a file packaged
  * according to the Open Package Convention (OPC).
  */
-class opc_reader : boost::noncopyable
+class opc_reader
 {
     typedef std::vector<std::string> dir_stack_type;
-    typedef boost::unordered_set<std::string> part_set_type;
+    typedef std::unordered_set<std::string> part_set_type;
+
+    opc_reader(const opc_reader&) = delete;
+    opc_reader& operator=(const opc_reader&) = delete;
 
 public:
     /**

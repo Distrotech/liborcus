@@ -18,9 +18,8 @@
 #include <vector>
 #include <cstdio>
 
-#include <boost/noncopyable.hpp>
-#include <boost/unordered_map.hpp>
-#include <boost/unordered_set.hpp>
+#include <unordered_map>
+#include <unordered_set>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
@@ -30,11 +29,11 @@ namespace orcus {
 namespace {
 
 struct elem_prop;
-typedef boost::unordered_map<xml_structure_tree::entity_name, elem_prop*, xml_structure_tree::entity_name::hash> element_store_type;
-typedef boost::unordered_set<xml_structure_tree::entity_name, xml_structure_tree::entity_name::hash> attribute_names_type;
+typedef std::unordered_map<xml_structure_tree::entity_name, elem_prop*, xml_structure_tree::entity_name::hash> element_store_type;
+typedef std::unordered_set<xml_structure_tree::entity_name, xml_structure_tree::entity_name::hash> attribute_names_type;
 
 /** Element properties. */
-struct elem_prop : boost::noncopyable
+struct elem_prop
 {
     element_store_type child_elements;
     attribute_names_type attributes;
@@ -55,6 +54,9 @@ struct elem_prop : boost::noncopyable
      * elements below the base element have this flag set.
      */
     bool repeat:1;
+
+    elem_prop(const elem_prop&) = delete;
+    elem_prop& operator=(const elem_prop&) = delete;
 
     elem_prop() : appearance_order(0), in_scope_count(1), repeat(false) {}
     elem_prop(size_t _appearance_order) : appearance_order(_appearance_order), in_scope_count(1), repeat(false) {}
@@ -214,12 +216,15 @@ struct sort_by_appearance : std::binary_function<element_ref, element_ref, bool>
     }
 };
 
-struct scope : boost::noncopyable
+struct scope
 {
     xml_structure_tree::entity_name name;
     elements_type elements;
     elements_type::const_iterator current_pos;
     bool repeat:1;
+
+    scope(const scope&) = delete;
+    scope& operator=(const scope&) = delete;
 
     scope(const xml_structure_tree::entity_name& _name, bool _repeat, const element_ref& _elem) :
         name(_name), repeat(_repeat)
@@ -255,11 +260,14 @@ void print_scope(ostream& os, const scopes_type& scopes, const xmlns_context& cx
 
 }
 
-struct xml_structure_tree_impl : boost::noncopyable
+struct xml_structure_tree_impl
 {
     string_pool m_pool;
     xmlns_context& m_xmlns_cxt;
     root* mp_root;
+
+    xml_structure_tree_impl(const xml_structure_tree_impl&) = delete;
+    xml_structure_tree_impl& operator=(const xml_structure_tree_impl&) = delete;
 
     xml_structure_tree_impl(xmlns_context& xmlns_cxt) :
         m_xmlns_cxt(xmlns_cxt), mp_root(NULL) {}
@@ -270,12 +278,14 @@ struct xml_structure_tree_impl : boost::noncopyable
     }
 };
 
-struct xml_structure_tree::walker_impl : boost::noncopyable
+struct xml_structure_tree::walker_impl
 {
     const xml_structure_tree_impl& m_parent_impl;
     root* mp_root; /// Root element of the authoritative tree.
     element_ref m_cur_elem;
     std::vector<element_ref> m_scopes;
+
+    walker_impl& operator=(const walker_impl&) = delete;
 
     walker_impl(const xml_structure_tree_impl& parent_impl) :
         m_parent_impl(parent_impl), mp_root(parent_impl.mp_root) {}

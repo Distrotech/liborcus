@@ -14,7 +14,7 @@
 #include "orcus/spreadsheet/types.hpp"
 
 #include <vector>
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
 
 namespace orcus {
 
@@ -27,7 +27,7 @@ class import_sheet;
 
 class ods_content_xml_context : public xml_context_base
 {
-    typedef boost::unordered_map<pstring, size_t, pstring::hash> name2id_type;
+    typedef std::unordered_map<pstring, size_t, pstring::hash> name2id_type;
 
 public:
     struct row_attr

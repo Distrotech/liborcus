@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_XML_MAP_TREE_HPP__
-#define __ORCUS_XML_MAP_TREE_HPP__
+#ifndef INCLUDED_ORCUS_XML_MAP_TREE_HPP
+#define INCLUDED_ORCUS_XML_MAP_TREE_HPP
 
 #include "orcus/pstring.hpp"
 #include "orcus/spreadsheet/types.hpp"
@@ -18,7 +18,6 @@
 #include <ostream>
 #include <map>
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
@@ -28,11 +27,10 @@ class xmlns_repository;
 /**
  * Tree representing XML-to-sheet mapping for mapped XML import.
  */
-class xml_map_tree : boost::noncopyable
+class xml_map_tree
 {
-    xml_map_tree(); // disabled
-
 public:
+
     /**
      * Error indicating improper xpath syntax.
      */
@@ -71,9 +69,13 @@ public:
         element_position();
     };
 
-    struct cell_reference : boost::noncopyable
+    struct cell_reference
     {
         cell_position pos;
+
+        cell_reference(const cell_reference&) = delete;
+        cell_reference& operator=(const cell_reference&) = delete;
+
         cell_reference();
     };
 
@@ -84,7 +86,7 @@ public:
     typedef std::vector<const element*> const_element_list_type;
     typedef std::vector<const linkable*> const_linkable_list_type;
 
-    struct range_reference : boost::noncopyable
+    struct range_reference
     {
         cell_position pos;
 
@@ -99,6 +101,9 @@ public:
          * label row at the top.
          */
         spreadsheet::row_t row_size;
+
+        range_reference(const range_reference&) = delete;
+        range_reference& operator=(const range_reference&) = delete;
 
         range_reference(const cell_position& _pos);
     };
@@ -115,13 +120,16 @@ public:
     enum reference_type { reference_unknown, reference_cell, reference_range_field };
     enum element_type { element_unknown, element_linked, element_unlinked };
 
-    struct linkable : boost::noncopyable
+    struct linkable
     {
         xmlns_id_t ns;
         pstring name;
         linkable_node_type node_type;
 
         mutable pstring ns_alias; // namespace alias used in the content stream.
+
+        linkable(const linkable&) = delete;
+        linkable& operator=(const linkable&) = delete;
 
         linkable(xmlns_id_t _ns, const pstring& _name, linkable_node_type _node_type);
     };
@@ -197,6 +205,10 @@ public:
         const element* push_element(xmlns_id_t ns, const pstring& name);
         const element* pop_element(xmlns_id_t ns, const pstring& name);
     };
+
+    xml_map_tree() = delete;
+    xml_map_tree(const xml_map_tree&) = delete;
+    xml_map_tree& operator=(const xml_map_tree&) = delete;
 
     xml_map_tree(xmlns_repository& xmlns_repo);
     ~xml_map_tree();

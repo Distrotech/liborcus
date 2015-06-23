@@ -13,7 +13,7 @@
 
 #include "orcus/global.hpp"
 
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
 
 namespace orcus {
 
@@ -23,7 +23,7 @@ namespace spreadsheet { namespace iface {
 
 class style_value_converter
 {
-    typedef boost::unordered_map<pstring, odf_style_family, pstring::hash> style_families_type;
+    typedef std::unordered_map<pstring, odf_style_family, pstring::hash> style_families_type;
     style_families_type m_style_families;
 
 public:

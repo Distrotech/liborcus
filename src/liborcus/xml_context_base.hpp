@@ -5,12 +5,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef ORCUS_XML_CONTEXT_BASE_HPP
-#define ORCUS_XML_CONTEXT_BASE_HPP
+#ifndef INCLUDED_ORCUS_XML_CONTEXT_BASE_HPP
+#define INCLUDED_ORCUS_XML_CONTEXT_BASE_HPP
 
 #include "xml_stream_handler.hpp"
-
-#include <boost/noncopyable.hpp>
 
 namespace orcus {
 
@@ -21,9 +19,12 @@ class xmlns_context;
 typedef ::std::pair<xmlns_id_t, xml_token_t> xml_token_pair_t;
 typedef ::std::vector<xml_token_pair_t>         xml_elem_stack_t;
 
-class xml_context_base : boost::noncopyable
+class xml_context_base
 {
 public:
+    xml_context_base(const xml_context_base&) = delete;
+    xml_context_base& operator=(const xml_context_base&) = delete;
+
     xml_context_base(session_context& session_cxt, const tokens& tokens);
     virtual ~xml_context_base() = 0;
 

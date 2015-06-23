@@ -5,13 +5,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef ORCUS_ODF_STYLES_HPP
-#define ORCUS_ODF_STYLES_HPP
+#ifndef INCLUDED_ORCUS_ODF_STYLES_HPP
+#define INCLUDED_ORCUS_ODF_STYLES_HPP
 
 #include "orcus/pstring.hpp"
 #include "orcus/measurement.hpp"
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
 namespace orcus {
@@ -31,7 +30,7 @@ enum odf_style_family
 /**
  * Each instance of this class represents a single <style:style> entry.
  */
-struct odf_style : boost::noncopyable
+struct odf_style
 {
     struct column
     {
@@ -77,6 +76,9 @@ struct odf_style : boost::noncopyable
         paragraph* paragraph_data;
         text* text_data;
     };
+
+    odf_style(const odf_style&) = delete;
+    odf_style& operator=(const odf_style&) = delete;
 
     odf_style();
     odf_style(const pstring& _name, odf_style_family _family);

@@ -5,14 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_XLSX_WORKBOOK_CONTEXT_HPP__
-#define __ORCUS_XLSX_WORKBOOK_CONTEXT_HPP__
+#ifndef INCLUDED_ORCUS_XLSX_WORKBOOK_CONTEXT_HPP
+#define INCLUDED_ORCUS_XLSX_WORKBOOK_CONTEXT_HPP
 
 #include "xml_context_base.hpp"
 #include "orcus/spreadsheet/types.hpp"
 #include "xlsx_types.hpp"
 
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
 
 namespace orcus {
 
@@ -22,7 +22,7 @@ namespace orcus {
 class xlsx_workbook_context : public xml_context_base
 {
 public:
-    typedef boost::unordered_map<
+    typedef std::unordered_map<
         pstring, xlsx_rel_sheet_info, pstring::hash> sheet_info_type;
 
     xlsx_workbook_context(session_context& session_cxt, const tokens& tokens);

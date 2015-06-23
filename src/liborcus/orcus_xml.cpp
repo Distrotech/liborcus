@@ -236,12 +236,15 @@ public:
 /**
  * Used in write_range_reference_group().
  */
-struct scope : boost::noncopyable
+struct scope
 {
     const xml_map_tree::element& element;
     xml_map_tree::element_store_type::const_iterator current_child_pos;
     xml_map_tree::element_store_type::const_iterator end_child_pos;
     bool opened:1;
+
+    scope(const scope&) = delete;
+    scope& operator=(const scope&) = delete;
 
     scope(const xml_map_tree::element& _elem) :
         element(_elem), opened(false)

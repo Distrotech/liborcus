@@ -9,6 +9,8 @@
 
 #include "orcus/global.hpp"
 
+#include <algorithm>
+
 namespace orcus {
 
 opc_rel_extra::~opc_rel_extra() {}

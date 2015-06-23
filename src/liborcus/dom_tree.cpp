@@ -15,8 +15,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/noncopyable.hpp>
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
@@ -46,7 +45,7 @@ void escape(ostream& os, const pstring& val)
     }
 }
 
-typedef boost::unordered_map<pstring, dom_tree::attrs_type, pstring::hash> declarations_type;
+typedef std::unordered_map<pstring, dom_tree::attrs_type, pstring::hash> declarations_type;
 
 }
 
@@ -216,12 +215,15 @@ const dom_tree::attrs_type* dom_tree::get_declaration_attributes(const pstring& 
 
 namespace {
 
-struct scope : boost::noncopyable
+struct scope
 {
     typedef std::vector<const dom_tree::node*> nodes_type;
     string name;
     nodes_type nodes;
     nodes_type::const_iterator current_pos;
+
+    scope(const scope&) = delete;
+    scope& operator=(const scope&) = delete;
 
     scope(const string& _name, dom_tree::node* _node) :
         name(_name)

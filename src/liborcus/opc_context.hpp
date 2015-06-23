@@ -5,13 +5,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_OPC_CONTEXT_HPP__
-#define __ORCUS_OPC_CONTEXT_HPP__
+#ifndef INCLUDED_ORCUS_OPC_CONTEXT_HPP
+#define INCLUDED_ORCUS_OPC_CONTEXT_HPP
 
 #include "xml_context_base.hpp"
 #include "ooxml_types.hpp"
 
-#include <boost/unordered_set.hpp>
+#include <unordered_set>
 #include <vector>
 
 namespace orcus {
@@ -24,7 +24,7 @@ namespace orcus {
 class opc_content_types_context : public xml_context_base
 {
 public:
-    typedef boost::unordered_set<pstring, pstring::hash> ct_cache_type;
+    typedef std::unordered_set<pstring, pstring::hash> ct_cache_type;
 
     opc_content_types_context(session_context& session_cxt, const tokens& _tokens);
     virtual ~opc_content_types_context();
@@ -65,7 +65,7 @@ private:
 class opc_relations_context : public xml_context_base
 {
 public:
-    typedef boost::unordered_set<pstring, pstring::hash> schema_cache_type;
+    typedef std::unordered_set<pstring, pstring::hash> schema_cache_type;
 
     opc_relations_context(session_context& session_cxt, const tokens& _tokens);
     virtual ~opc_relations_context();
