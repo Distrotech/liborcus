@@ -5,15 +5,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef ORCUS_XLSX_SESSION_DATA_HPP
-#define ORCUS_XLSX_SESSION_DATA_HPP
+#ifndef INCLUDED_ORCUS_XLSX_SESSION_DATA_HPP
+#define INCLUDED_ORCUS_XLSX_SESSION_DATA_HPP
 
 #include "session_context.hpp"
 
 #include "orcus/spreadsheet/types.hpp"
 
 #include <string>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
+#include <memory>
 
 namespace orcus {
 
@@ -60,8 +61,8 @@ struct xlsx_session_data : public session_context::custom_data
             size_t _identifier, const std::string& _formula, const std::string& _range);
     };
 
-    typedef boost::ptr_vector<formula> formulas_type;
-    typedef boost::ptr_vector<shared_formula> shared_formulas_type;
+    typedef std::vector<std::unique_ptr<formula>> formulas_type;
+    typedef std::vector<std::unique_ptr<shared_formula>> shared_formulas_type;
 
     formulas_type m_formulas;
     shared_formulas_type m_shared_formulas;

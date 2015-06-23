@@ -14,21 +14,25 @@
 #include <iostream>
 #endif
 
+#include <cassert>
+#include <algorithm>
+
 using namespace std;
 
 namespace orcus {
 
 namespace {
 
-class find_by_name : std::unary_function<xml_map_tree::linkable, bool>
+template<typename T>
+class find_by_name : std::unary_function<std::unique_ptr<T>, bool>
 {
     xmlns_id_t m_ns;
     pstring m_name;
 public:
     find_by_name(xmlns_id_t ns, const pstring& name) : m_ns(ns), m_name(name) {}
-    bool operator() (const xml_map_tree::linkable& e) const
+    bool operator() (const std::unique_ptr<T>& e) const
     {
-        return m_ns == e.ns && m_name == e.name;
+        return m_ns == e->ns && m_name == e->name;
     }
 };
 
@@ -252,10 +256,10 @@ const xml_map_tree::element* xml_map_tree::element::get_child(xmlns_id_t _ns, co
 
     assert(child_elements);
 
-    element_store_type::const_iterator it =
-        std::find_if(child_elements->begin(), child_elements->end(), find_by_name(_ns, _name));
+    auto it = std::find_if(
+        child_elements->begin(), child_elements->end(), find_by_name<element>(_ns, _name));
 
-    return it == child_elements->end() ? NULL : &(*it);
+    return it == child_elements->end() ? NULL : it->get();
 }
 
 bool xml_map_tree::element::unlinked_attribute_anchor() const
@@ -561,14 +565,14 @@ const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
 
             const element* elem = static_cast<const element*>(cur_node);
             const attribute_store_type& attrs = elem->attributes;
-            attribute_store_type::const_iterator it =
-                std::find_if(attrs.begin(), attrs.end(), find_by_name(token.ns, token.name));
+            auto it = std::find_if(
+                attrs.begin(), attrs.end(), find_by_name<attribute>(token.ns, token.name));
 
             if (it == attrs.end())
                 // No such attribute exists.
                 return NULL;
 
-            return &(*it);
+            return it->get();
         }
 
         // See if an element of this name exists below the current element.
@@ -583,16 +587,15 @@ const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
         if (!elem->child_elements)
             return NULL;
 
-        element_store_type::const_iterator it =
-            std::find_if(
-                elem->child_elements->begin(), elem->child_elements->end(),
-                find_by_name(token.ns, token.name));
+        auto it = std::find_if(
+            elem->child_elements->begin(), elem->child_elements->end(),
+            find_by_name<element>(token.ns, token.name));
 
         if (it == elem->child_elements->end())
             // No such child element exists.
             return NULL;
 
-        cur_node = &(*it);
+        cur_node = it->get();
     }
 
     if (cur_node->node_type != node_element || static_cast<const element*>(cur_node)->elem_type == element_unlinked)
@@ -657,18 +660,19 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
             throw xpath_error("attribute must always be at the end of the path.");
 
         element_store_type& children = *cur_element->child_elements;
-        element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(token.ns, token.name));
+        auto it = std::find_if(
+            children.begin(), children.end(), find_by_name<element>(token.ns, token.name));
         if (it == children.end())
         {
             // Insert a new element of this name.
             children.push_back(
-                new element(
+                make_unique<element>(
                     token.ns, m_names.intern(token.name.get(), token.name.size()).first,
                     element_unlinked, reference_unknown));
-            cur_element = &children.back();
+            cur_element = children.back().get();
         }
         else
-            cur_element = &(*it);
+            cur_element = it->get();
 
         elem_stack_new.push_back(cur_element);
         token = token_next;
@@ -685,36 +689,38 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         attribute_store_type& attrs = cur_element->attributes;
 
         // Check if an attribute of the same name already exists.
-        attribute_store_type::iterator it = std::find_if(attrs.begin(), attrs.end(), find_by_name(token.ns, token.name));
+        auto it = std::find_if(
+            attrs.begin(), attrs.end(), find_by_name<attribute>(token.ns, token.name));
         if (it != attrs.end())
             throw xpath_error("This attribute is already linked.  You can't link the same attribute twice.");
 
         attrs.push_back(
-            new attribute(
+            make_unique<attribute>(
                 token.ns, m_names.intern(token.name.get(), token.name.size()).first, ref_type));
 
-        ret = &attrs.back();
+        ret = attrs.back().get();
     }
     else
     {
         // Check if an element of the same name already exists.
         element_store_type& children = *cur_element->child_elements;
-        element_store_type::iterator it = std::find_if(children.begin(), children.end(), find_by_name(token.ns, token.name));
+        auto it = std::find_if(
+            children.begin(), children.end(), find_by_name<element>(token.ns, token.name));
         if (it == children.end())
         {
             // No element of that name exists.
             children.push_back(
-                new element(
+                make_unique<element>(
                     token.ns, m_names.intern(token.name.get(), token.name.size()).first,
                     element_linked, ref_type));
 
-            elem_stack_new.push_back(&children.back());
-            ret = &children.back();
+            elem_stack_new.push_back(children.back().get());
+            ret = children.back().get();
         }
         else
         {
             // This element already exists.  Check if this is already linked.
-            element& elem = *it;
+            element& elem = **it;
             if (elem.ref_type != reference_unknown || elem.elem_type != element_unlinked)
                 throw xpath_error("This element is already linked.  You can't link the same element twice.");
 

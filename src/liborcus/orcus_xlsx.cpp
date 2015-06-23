@@ -34,8 +34,6 @@
 #include <cstring>
 #include <sstream>
 
-#include <boost/ptr_container/ptr_vector.hpp>
-
 using namespace std;
 
 namespace orcus {
@@ -220,7 +218,7 @@ void orcus_xlsx::set_formulas_to_doc()
     xlsx_session_data::shared_formulas_type::iterator its = sdata.m_shared_formulas.begin(), its_end = sdata.m_shared_formulas.end();
     for (; its != its_end; ++its)
     {
-        xlsx_session_data::shared_formula& sf = *its;
+        xlsx_session_data::shared_formula& sf = **its;
         spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->get_sheet(sf.sheet);
         if (!sheet)
             continue;
@@ -241,7 +239,7 @@ void orcus_xlsx::set_formulas_to_doc()
     xlsx_session_data::formulas_type::iterator it = sdata.m_formulas.begin(), it_end = sdata.m_formulas.end();
     for (; it != it_end; ++it)
     {
-        xlsx_session_data::formula& f = *it;
+        xlsx_session_data::formula& f = **it;
         spreadsheet::iface::import_sheet* sheet = mp_impl->mp_factory->get_sheet(f.sheet);
         if (!sheet)
             continue;

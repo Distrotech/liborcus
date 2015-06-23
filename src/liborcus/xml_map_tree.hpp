@@ -17,8 +17,7 @@
 
 #include <ostream>
 #include <map>
-
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
 
 namespace orcus {
 
@@ -81,7 +80,7 @@ public:
 
     struct element;
     struct linkable;
-    typedef boost::ptr_vector<element> element_store_type;
+    typedef std::vector<std::unique_ptr<element>> element_store_type;
     typedef std::vector<element*> element_list_type;
     typedef std::vector<const element*> const_element_list_type;
     typedef std::vector<const linkable*> const_linkable_list_type;
@@ -146,7 +145,7 @@ public:
         ~attribute();
     };
 
-    typedef boost::ptr_vector<attribute> attribute_store_type;
+    typedef std::vector<std::unique_ptr<attribute>> attribute_store_type;
 
     struct element : public linkable
     {

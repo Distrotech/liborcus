@@ -14,9 +14,10 @@
 
 #include <iostream>
 #include <sstream>
-
+#include <cassert>
 #include <unordered_map>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -235,7 +236,7 @@ struct scope
     scope(const string& _name) : name(_name) {}
 };
 
-typedef boost::ptr_vector<scope> scopes_type;
+typedef std::vector<std::unique_ptr<scope>> scopes_type;
 
 void print_scope(ostream& os, const scopes_type& scopes)
 {
@@ -245,7 +246,7 @@ void print_scope(ostream& os, const scopes_type& scopes)
     // Skip the first scope which is root.
     scopes_type::const_iterator it = scopes.begin(), it_end = scopes.end();
     for (++it; it != it_end; ++it)
-        os << "/" << it->name;
+        os << "/" << (*it)->name;
 }
 
 struct sort_by_name : std::binary_function<dom_tree::attr, dom_tree::attr, bool>
@@ -268,13 +269,13 @@ void dom_tree::dump_compact(ostream& os) const
 
     scopes_type scopes;
 
-    scopes.push_back(new scope(string(), mp_impl->m_root));
+    scopes.push_back(make_unique<scope>(string(), mp_impl->m_root));
     while (!scopes.empty())
     {
         bool new_scope = false;
 
         // Iterate through all elements in the current scope.
-        scope& cur_scope = scopes.back();
+        scope& cur_scope = *scopes.back();
         for (; cur_scope.current_pos != cur_scope.nodes.end(); ++cur_scope.current_pos)
         {
             const node* this_node = *cur_scope.current_pos;
@@ -326,8 +327,8 @@ void dom_tree::dump_compact(ostream& os) const
             ++cur_scope.current_pos;
             ostringstream elem_name;
             elem->print(elem_name, mp_impl->m_ns_cxt);
-            scopes.push_back(new scope(elem_name.str()));
-            scope& child_scope = scopes.back();
+            scopes.push_back(make_unique<scope>(elem_name.str()));
+            scope& child_scope = *scopes.back();
             child_scope.nodes.swap(nodes);
             child_scope.current_pos = child_scope.nodes.begin();
 

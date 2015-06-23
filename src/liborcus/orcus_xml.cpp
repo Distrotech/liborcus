@@ -22,7 +22,6 @@
 #endif
 
 #include <vector>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <fstream>
 
 using namespace std;
@@ -138,7 +137,7 @@ public:
             xml_map_tree::attribute_store_type::const_iterator it = linked_attrs.begin(), it_end = linked_attrs.end();
             for (; it != it_end; ++it)
             {
-                const xml_map_tree::attribute& linked_attr = *it;
+                const xml_map_tree::attribute& linked_attr = **it;
                 const sax_ns_parser_attribute* p = find_attr_by_name(linked_attr.ns, linked_attr.name);
                 if (!p)
                     continue;
@@ -259,7 +258,7 @@ struct scope
     }
 };
 
-typedef boost::ptr_vector<scope> scopes_type;
+typedef std::vector<std::unique_ptr<scope>> scopes_type;
 
 void write_opening_element(
     ostream& os, const xml_map_tree::element& elem, const xml_map_tree::range_reference& ref,
@@ -279,7 +278,7 @@ void write_opening_element(
     xml_map_tree::attribute_store_type::const_iterator it = elem.attributes.begin(), it_end = elem.attributes.end();
     for (; it != it_end; ++it)
     {
-        const xml_map_tree::attribute& attr = *it;
+        const xml_map_tree::attribute& attr = **it;
         if (attr.ref_type != xml_map_tree::reference_range_field)
             // In theory this should never happen but it won't hurt to check.
             continue;
@@ -302,7 +301,7 @@ void write_opening_element(
     xml_map_tree::attribute_store_type::const_iterator it = elem.attributes.begin(), it_end = elem.attributes.end();
     for (; it != it_end; ++it)
     {
-        const xml_map_tree::attribute& attr = *it;
+        const xml_map_tree::attribute& attr = **it;
         if (attr.ref_type != xml_map_tree::reference_cell)
             // We should only see single linked cell here, as all
             // field links are handled by the range parent above.
@@ -346,13 +345,13 @@ void write_range_reference_group(
     scopes_type scopes;
     for (spreadsheet::row_t current_row = 0; current_row < ref.row_size; ++current_row)
     {
-        scopes.push_back(new scope(root)); // root element
+        scopes.push_back(make_unique<scope>(root)); // root element
 
         while (!scopes.empty())
         {
             bool new_scope = false;
 
-            scope& cur_scope = scopes.back();
+            scope& cur_scope = *scopes.back();
 
             // Self-closing element has no child elements nor content.
             bool self_close =
@@ -375,13 +374,13 @@ void write_range_reference_group(
             // Go though all child elements.
             for (; cur_scope.current_child_pos != cur_scope.end_child_pos; ++cur_scope.current_child_pos)
             {
-                const xml_map_tree::element& child_elem = *cur_scope.current_child_pos;
+                const xml_map_tree::element& child_elem = **cur_scope.current_child_pos;
                 if (child_elem.elem_type == xml_map_tree::element_unlinked)
                 {
                     // This is a non-leaf element.  Push a new scope with this
                     // element and re-start the loop.
                     ++cur_scope.current_child_pos;
-                    scopes.push_back(new scope(child_elem));
+                    scopes.push_back(make_unique<scope>(child_elem));
                     new_scope = true;
                     break;
                 }
@@ -400,12 +399,12 @@ void write_range_reference_group(
                 continue;
 
             // Write content of this element before closing it (if it's linked).
-            if (scopes.back().element.ref_type == xml_map_tree::reference_range_field)
+            if (scopes.back()->element.ref_type == xml_map_tree::reference_range_field)
                 sheet->write_string(
-                    os, ref.pos.row + 1 + current_row, ref.pos.col + scopes.back().element.field_ref->column_pos);
+                    os, ref.pos.row + 1 + current_row, ref.pos.col + scopes.back()->element.field_ref->column_pos);
 
             // Close this element for good, and exit the current scope.
-            os << "</" << scopes.back().element << ">";
+            os << "</" << scopes.back()->element << ">";
             scopes.pop_back();
         }
     }
@@ -433,7 +432,7 @@ void write_range_reference(ostream& os, const xml_map_tree::element& elem_top, c
     // TODO: For now, we assume that there is only one child element under the
     // range ref parent.
     write_range_reference_group(
-       os, *elem_top.child_elements->begin(), *elem_top.range_parent, factory);
+       os, **elem_top.child_elements->begin(), *elem_top.range_parent, factory);
 }
 
 struct less_by_opening_elem_pos : std::binary_function<xml_map_tree::element*, xml_map_tree::element*, bool>

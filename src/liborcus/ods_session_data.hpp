@@ -5,14 +5,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef ORCUS_ODS_SESSION_DATA_HPP
-#define ORCUS_ODS_SESSION_DATA_HPP
+#ifndef INCLUDED_ORCUS_ODS_SESSION_DATA_HPP
+#define INCLUDED_ORCUS_ODS_SESSION_DATA_HPP
 
 #include "session_context.hpp"
 
 #include "orcus/spreadsheet/types.hpp"
 
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
+#include <memory>
 
 namespace orcus {
 
@@ -46,7 +47,7 @@ struct ods_session_data : public session_context::custom_data
             spreadsheet::formula_grammar_t _grammar, const pstring& _exp);
     };
 
-    typedef boost::ptr_vector<formula> formulas_type;
+    typedef std::vector<std::unique_ptr<formula>> formulas_type;
 
     formulas_type m_formulas;
 

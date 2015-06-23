@@ -7,6 +7,8 @@
 
 #include "ods_session_data.hpp"
 
+#include <limits>
+
 namespace orcus {
 
 ods_session_data::formula_result::formula_result() :

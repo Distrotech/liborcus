@@ -5,16 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef ORCUS_XLSX_CONTEXT_HPP
-#define ORCUS_XLSX_CONTEXT_HPP
+#ifndef INCLUDED_ORCUS_XLSX_CONTEXT_HPP
+#define INCLUDED_ORCUS_XLSX_CONTEXT_HPP
 
 #include "orcus/spreadsheet/types.hpp"
 #include "orcus/string_pool.hpp"
 
 #include "xml_context_base.hpp"
 #include "xlsx_types.hpp"
-
-#include <boost/ptr_container/ptr_vector.hpp>
 
 namespace orcus {
 

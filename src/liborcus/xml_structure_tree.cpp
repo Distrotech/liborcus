@@ -20,7 +20,6 @@
 
 #include <unordered_map>
 #include <unordered_set>
-#include <boost/ptr_container/ptr_vector.hpp>
 
 using namespace std;
 
@@ -53,7 +52,7 @@ struct elem_prop
      * This flag is set only with the base element; none of the child
      * elements below the base element have this flag set.
      */
-    bool repeat:1;
+    bool repeat;
 
     elem_prop(const elem_prop&) = delete;
     elem_prop& operator=(const elem_prop&) = delete;
@@ -237,7 +236,7 @@ struct scope
         name(_name), repeat(_repeat) {}
 };
 
-typedef boost::ptr_vector<scope> scopes_type;
+typedef std::vector<std::unique_ptr<scope>> scopes_type;
 
 void print_scope(ostream& os, const scopes_type& scopes, const xmlns_context& cxt)
 {
@@ -249,11 +248,11 @@ void print_scope(ostream& os, const scopes_type& scopes, const xmlns_context& cx
     for (++it; it != it_end; ++it)
     {
         os << "/";
-        size_t num_id = cxt.get_index(it->name.ns);
+        size_t num_id = cxt.get_index((*it)->name.ns);
         if (num_id != index_not_found)
             os << "ns" << num_id << ":";
-        os << it->name.name;
-        if (it->repeat)
+        os << (*it)->name.name;
+        if ((*it)->repeat)
             os << "[*]";
     }
 }
@@ -452,13 +451,13 @@ void xml_structure_tree::dump_compact(ostream& os) const
     cxt.dump(os);
 
     element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
-    scopes.push_back(new scope(entity_name(), false, ref));
+    scopes.push_back(make_unique<scope>(entity_name(), false, ref));
     while (!scopes.empty())
     {
         bool new_scope = false;
 
         // Iterate through all elements in the current scope.
-        scope& cur_scope = scopes.back();
+        scope& cur_scope = *scopes.back();
         for (; cur_scope.current_pos != cur_scope.elements.end(); ++cur_scope.current_pos)
         {
             const element_ref& this_elem = *cur_scope.current_pos;
@@ -506,8 +505,8 @@ void xml_structure_tree::dump_compact(ostream& os) const
 
             // Push a new scope, and restart the loop with the new scope.
             ++cur_scope.current_pos;
-            scopes.push_back(new scope(this_elem.name, this_elem.prop->repeat));
-            scope& child_scope = scopes.back();
+            scopes.push_back(make_unique<scope>(this_elem.name, this_elem.prop->repeat));
+            scope& child_scope = *scopes.back();
             child_scope.elements.swap(elems);
             child_scope.current_pos = child_scope.elements.begin();
 
