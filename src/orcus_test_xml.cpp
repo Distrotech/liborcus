@@ -16,8 +16,6 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/scoped_ptr.hpp>
-
 using namespace orcus;
 using namespace std;
 
@@ -169,7 +167,7 @@ void test_xml_sax_parser()
 
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();
-        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file.c_str(), strm));
+        std::unique_ptr<sax_handler> hdl(parse_file(cxt, file.c_str(), strm));
 
         // Get the compact form of the content.
         ostringstream os;
@@ -202,7 +200,7 @@ void test_xml_sax_parser_read_only()
 
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();
-        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file.c_str(), strm));
+        std::unique_ptr<sax_handler> hdl(parse_file(cxt, file.c_str(), strm));
     }
 }
 
@@ -212,7 +210,7 @@ void test_xml_declarations()
     const char* file_path = SRCDIR"/test/xml/custom-decl-1/input.xml";
     xmlns_repository repo;
     xmlns_context cxt = repo.create_context();
-    boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file_path, strm));
+    std::unique_ptr<sax_handler> hdl(parse_file(cxt, file_path, strm));
 
     const dom_tree& dom = hdl->get_dom();
 
@@ -246,7 +244,7 @@ void test_xml_dtd()
         const char* file_path = tests[i].file_path;
         string strm;
         xmlns_context cxt = repo.create_context();
-        boost::scoped_ptr<sax_handler> hdl(parse_file(cxt, file_path, strm));
+        std::unique_ptr<sax_handler> hdl(parse_file(cxt, file_path, strm));
         const sax::doctype_declaration& dtd = hdl->get_dtd();
         assert(dtd.keyword == tests[i].keyword);
         assert(dtd.root_element == tests[i].root_element);

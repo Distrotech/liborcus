@@ -23,8 +23,6 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/scoped_ptr.hpp>
-
 #include <unistd.h>
 
 using namespace std;

@@ -12,8 +12,6 @@
 #include "orcus/spreadsheet/factory.hpp"
 #include "orcus/spreadsheet/document.hpp"
 
-#include <boost/scoped_ptr.hpp>
-
 #include <cstdlib>
 #include <cassert>
 #include <string>
