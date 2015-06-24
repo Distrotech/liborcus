@@ -11,7 +11,8 @@
 #include "orcus/pstring.hpp"
 #include "orcus/measurement.hpp"
 
-#include <boost/ptr_container/ptr_map.hpp>
+#include <map>
+#include <memory>
 
 namespace orcus {
 
@@ -86,7 +87,7 @@ struct odf_style
     ~odf_style();
 };
 
-typedef boost::ptr_map<pstring, odf_style> odf_styles_map_type;
+typedef std::map<pstring, std::unique_ptr<odf_style>> odf_styles_map_type;
 
 }
 

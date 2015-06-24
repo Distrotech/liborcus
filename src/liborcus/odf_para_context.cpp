@@ -149,9 +149,9 @@ void text_para_context::flush_segment()
     if (!m_span_stack.empty())
     {
         pstring style_name = m_span_stack.back();
-        odf_styles_map_type::const_iterator it = m_styles.find(style_name);
+        auto it = m_styles.find(style_name);
         if (it != m_styles.end())
-            style = it->second;
+            style = it->second.get();
     }
 
     if (style && style->family == style_family_text)
