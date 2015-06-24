@@ -12,7 +12,10 @@
 #define ORCUS_DEBUG_CSS_DOCTREE 0
 
 #include <iostream>
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
+#include <map>
+#include <algorithm>
+#include <iterator>
 
 using namespace std;
 
@@ -256,10 +259,10 @@ public:
 
 struct simple_selector_node;
 
-typedef boost::unordered_map<
+typedef std::unordered_map<
     css_simple_selector_t, simple_selector_node, css_simple_selector_t::hash> simple_selectors_type;
 
-typedef boost::unordered_map<css::combinator_t, simple_selectors_type> combinators_type;
+typedef std::map<css::combinator_t, simple_selectors_type> combinators_type;
 
 struct simple_selector_node
 {
