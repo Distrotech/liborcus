@@ -199,6 +199,19 @@ AS_IF([test "x$enable_spreadsheet_model" != "xno"], [
 ])
 AM_CONDITIONAL([BUILD_SPREADSHEET_MODEL], [test "x$enable_spreadsheet_model" != "xno"])
 
+# ==============
+# Python support
+# ==============
+AC_ARG_ENABLE([python],
+    AS_HELP_STRING([--disable-python], [Disable python bindings]))
+
+# Check for python.
+AS_IF([test "x$enable_python" != "xno"], [
+    AM_PATH_PYTHON(3)
+    PKG_CHECK_MODULES([PYTHON], [python3 >= 0.28])
+])
+AM_CONDITIONAL([PYTHON], [test "x$enable_python" != "xno"])
+
 AC_CONFIG_FILES([Makefile
 	liborcus-$ORCUS_API_VERSION.pc:liborcus.pc.in
 	liborcus-spreadsheet-model-$ORCUS_API_VERSION.pc:liborcus-spreadsheet-model.pc.in
@@ -211,6 +224,7 @@ AC_CONFIG_FILES([Makefile
 	src/liborcus/Makefile
 	src/mso/Makefile
 	src/parser/Makefile
+        src/python/Makefile
 	src/spreadsheet/Makefile
         parser_handlers/Makefile
 ])

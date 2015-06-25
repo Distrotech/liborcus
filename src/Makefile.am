@@ -1,5 +1,11 @@
 SUBDIRS = parser mso liborcus spreadsheet
 
+if PYTHON
+
+SUBDIRS += python
+
+endif
+
 AM_CPPFLAGS = -I$(top_srcdir)/include
 
 bin_PROGRAMS =
