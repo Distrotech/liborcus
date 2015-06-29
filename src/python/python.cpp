@@ -6,6 +6,7 @@
  */
 
 #include "orcus/env.hpp"
+#include "orcus/info.hpp"
 
 #include <iostream>
 #include <string>
@@ -38,7 +39,12 @@ void print_args(PyObject* args)
 
 PyObject* info(PyObject*, PyObject*)
 {
-    cout << "info" << endl;
+    cout << "orcus version: "
+        << orcus::get_version_major() << '.'
+        << orcus::get_version_minor() << '.'
+        << orcus::get_version_micro() << endl;
+
+    Py_INCREF(Py_None);
     return Py_None;
 }
 

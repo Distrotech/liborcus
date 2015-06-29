@@ -72,7 +72,13 @@ AC_SUBST(IXION_REQUIRED_API_VERSION)
 # Set orcus api
 # =============
 ORCUS_API_VERSION=orcus_api_version
+ORCUS_MAJOR_VERSION=orcus_major_version
+ORCUS_MINOR_VERSION=orcus_minor_version
+ORCUS_MICRO_VERSION=orcus_micro_version
 AC_SUBST(ORCUS_API_VERSION)
+AC_SUBST(ORCUS_MAJOR_VERSION)
+AC_SUBST(ORCUS_MINOR_VERSION)
+AC_SUBST(ORCUS_MICRO_VERSION)
 
 BOOST_REQUIRE([1.36])
 BOOST_SYSTEM
@@ -222,6 +228,7 @@ AC_CONFIG_FILES([Makefile
 	include/orcus/spreadsheet/Makefile
 	src/Makefile
 	src/liborcus/Makefile
+        src/liborcus/constants.inl
 	src/mso/Makefile
 	src/parser/Makefile
         src/python/Makefile
