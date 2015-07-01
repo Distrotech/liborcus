@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 
-PROGDIR=`dirname $0`
-ORCUS_PYTHONPATH="$PROGDIR/../src/python/.libs"
+if [ "$1" == "" ]; then
+    echo "no input file"
+    exit 1
+fi
 
-export PYTHONPATH=$ORCUS_PYTHONPATH:$PYTHONPATH
+if [ ! -e "$1" ]; then
+    echo "file '$1' does not exist"
+    exit 1
+fi
+
+PROGDIR=`dirname $0`
+_PYTHONPATH="$PROGDIR/../src/python/.libs"
+
+export PYTHONPATH=$_PYTHONPATH:$PYTHONPATH
 exec $PWD/"$1"
 
 
