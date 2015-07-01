@@ -501,7 +501,7 @@ void sheet::write_string(ostream& os, row_t row, col_t col) const
     ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
     switch (cxt.get_celltype(pos))
     {
-        case ixion::celltype_string:
+        case ixion::celltype_t::string:
         {
             size_t str_id = cxt.get_string_identifier(pos);
             const string* p = cxt.get_string(str_id);
@@ -509,7 +509,7 @@ void sheet::write_string(ostream& os, row_t row, col_t col) const
                 os << *p;
         }
         break;
-        case ixion::celltype_numeric:
+        case ixion::celltype_t::numeric:
             os << cxt.get_numeric_value(pos);
         break;
         default:
@@ -668,7 +668,7 @@ void sheet::dump_flat(std::ostream& os) const
             ixion::abs_address_t pos(mp_impl->m_sheet,row,col);
             switch (cxt.get_celltype(pos))
             {
-                case ixion::celltype_string:
+                case ixion::celltype_t::string:
                 {
                     size_t sindex = cxt.get_string_identifier(pos);
                     const string* p = cxt.get_string(sindex);
@@ -676,14 +676,14 @@ void sheet::dump_flat(std::ostream& os) const
                     mx.set(row, col, *p);
                 }
                 break;
-                case ixion::celltype_numeric:
+                case ixion::celltype_t::numeric:
                 {
                     ostringstream os2;
                     os2 << cxt.get_numeric_value(pos) << " [v]";
                     mx.set(row, col, os2.str());
                 }
                 break;
-                case ixion::celltype_formula:
+                case ixion::celltype_t::formula:
                 {
                     // print the formula and the formula result.
                     const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
@@ -829,7 +829,7 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
             ixion::abs_address_t pos(mp_impl->m_sheet, row, col);
             switch (cxt.get_celltype(pos))
             {
-                case ixion::celltype_string:
+                case ixion::celltype_t::string:
                 {
                     write_cell_position(os, sheet_name, row, col);
                     size_t sindex = cxt.get_string_identifier(pos);
@@ -838,13 +838,13 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
                     os << "string:\"" << escape_chars(*p) << '"' << endl;
                 }
                 break;
-                case ixion::celltype_numeric:
+                case ixion::celltype_t::numeric:
                 {
                     write_cell_position(os, sheet_name, row, col);
                     os << "numeric:" << cxt.get_numeric_value(pos) << endl;
                 }
                 break;
-                case ixion::celltype_formula:
+                case ixion::celltype_t::formula:
                 {
                     write_cell_position(os, sheet_name, row, col);
                     os << "formula";
@@ -1373,7 +1373,7 @@ void sheet::dump_html(const string& filepath) const
                 }
 
                 ixion::celltype_t ct = cxt.get_celltype(pos);
-                if (ct == ixion::celltype_empty)
+                if (ct == ixion::celltype_t::empty)
                 {
                     html_elem::attrs_type attrs;
                     build_html_elem_attributes(attrs, style, p_merge_size);
@@ -1390,7 +1390,7 @@ void sheet::dump_html(const string& filepath) const
                 ostringstream os;
                 switch (ct)
                 {
-                    case ixion::celltype_string:
+                    case ixion::celltype_t::string:
                     {
                         size_t sindex = cxt.get_string_identifier(pos);
                         const string* p = cxt.get_string(sindex);
@@ -1402,10 +1402,10 @@ void sheet::dump_html(const string& filepath) const
                             os << *p;
                     }
                     break;
-                    case ixion::celltype_numeric:
+                    case ixion::celltype_t::numeric:
                         os << cxt.get_numeric_value(pos);
                     break;
-                    case ixion::celltype_formula:
+                    case ixion::celltype_t::formula:
                     {
                         // print the formula and the formula result.
                         const ixion::formula_cell* cell = cxt.get_formula_cell(pos);

@@ -65,7 +65,7 @@ AC_DEFINE([BOOST_ALL_NO_LIB], [], [Disable boost's evil autolink.])
 # ======================
 # Set required ixion api
 # ======================
-IXION_REQUIRED_API_VERSION=0.10
+IXION_REQUIRED_API_VERSION=0.12
 AC_SUBST(IXION_REQUIRED_API_VERSION)
 
 # =============
