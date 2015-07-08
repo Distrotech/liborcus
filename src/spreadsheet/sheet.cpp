@@ -1312,7 +1312,7 @@ void sheet::dump_html(const string& filepath) const
                 if (rh != get_default_row_height())
                 {
                     string style;
-                    double val = orcus::convert(rh, length_unit_twip, length_unit_inch);
+                    double val = orcus::convert(rh, length_unit_t::twip, length_unit_t::inch);
                     ostringstream os_style;
                     os_style << "height: " << val << "in;";
                     row_style += os_style.str();
@@ -1355,7 +1355,7 @@ void sheet::dump_html(const string& filepath) const
                         // Convert width from twip to inches.
                         if (cw != get_default_column_width())
                         {
-                            double val = orcus::convert(cw, length_unit_twip, length_unit_inch);
+                            double val = orcus::convert(cw, length_unit_t::twip, length_unit_t::inch);
                             ostringstream os_style;
                             os_style << "width: " << val << "in;";
                             style += os_style.str();

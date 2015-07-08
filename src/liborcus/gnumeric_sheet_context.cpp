@@ -714,7 +714,7 @@ void gnumeric_sheet_context::start_col(const xml_attrs_t& attrs)
     for (size_t i = col_info.get_position(),
             n = col_info.get_col_row_repeated() + col_info.get_position(); i < n; ++i)
     {
-        p_sheet_props->set_column_width(i, col_size, length_unit_point);
+        p_sheet_props->set_column_width(i, col_size, length_unit_t::point);
         p_sheet_props->set_column_hidden(i, hidden);
     }
 }
@@ -729,7 +729,7 @@ void gnumeric_sheet_context::start_row(const xml_attrs_t& attrs)
     for (size_t i = row_info.get_position(),
             n = row_info.get_col_row_repeated() + row_info.get_position(); i < n; ++i)
     {
-        p_sheet_props->set_row_height(i, row_size, length_unit_point);
+        p_sheet_props->set_row_height(i, row_size, length_unit_t::point);
         p_sheet_props->set_row_hidden(i, hidden);
     }
 }

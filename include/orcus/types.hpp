@@ -61,14 +61,14 @@ struct ORCUS_PSR_DLLPUBLIC xml_token_attr_t
 
 // Other types
 
-enum length_unit_t
+enum class length_unit_t
 {
-    length_unit_unknown = 0,
-    length_unit_centimeter,
-    length_unit_xlsx_column_digit,
-    length_unit_inch,
-    length_unit_point,
-    length_unit_twip
+    unknown = 0,
+    centimeter,
+    xlsx_column_digit,
+    inch,
+    point,
+    twip
 
     // TODO: Add more.
 };

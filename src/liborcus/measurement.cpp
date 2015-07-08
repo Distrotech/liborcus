@@ -54,7 +54,7 @@ long parse_integer(const char*& p, const char* p_end)
 
 }
 
-length_t::length_t() : unit(length_unit_unknown), value(0.0) {}
+length_t::length_t() : unit(length_unit_t::unknown), value(0.0) {}
 
 std::string length_t::print() const
 {
@@ -63,19 +63,19 @@ std::string length_t::print() const
 
     switch (unit)
     {
-        case length_unit_centimeter:
+        case length_unit_t::centimeter:
             os << " cm";
         break;
-        case length_unit_inch:
+        case length_unit_t::inch:
             os << " in";
         break;
-        case length_unit_point:
+        case length_unit_t::point:
             os << " pt";
         break;
-        case length_unit_twip:
+        case length_unit_t::twip:
             os << " twip";
         break;
-        case length_unit_unknown:
+        case length_unit_t::unknown:
         default:
             ;
     }
@@ -149,11 +149,11 @@ length_t to_length(const pstring& str)
     // TODO: See if this part can be optimized.
     pstring tail(p, p_end-p);
     if (tail == "in")
-        ret.unit = length_unit_inch;
+        ret.unit = length_unit_t::inch;
     else if (tail == "cm")
-        ret.unit = length_unit_centimeter;
+        ret.unit = length_unit_t::centimeter;
     else if (tail == "pt")
-        ret.unit = length_unit_point;
+        ret.unit = length_unit_t::point;
 
     return ret;
 }
@@ -164,7 +164,7 @@ double convert_inch(double value, length_unit_t unit_to)
 {
     switch (unit_to)
     {
-        case length_unit_twip:
+        case length_unit_t::twip:
             // inches to twips : 1 twip = 1/1440 inches
             return value * 1440.0;
         default:
@@ -185,7 +185,7 @@ double convert_centimeter(double value, length_unit_t unit_to)
 {
     switch (unit_to)
     {
-        case length_unit_twip:
+        case length_unit_t::twip:
             // centimeters to twips : 2.54 cm = 1 inch = 1440 twips
             return value / 2.54 * 1440.0;
         default:
@@ -199,7 +199,7 @@ double convert_twip(double value, length_unit_t unit_to)
 {
     switch (unit_to)
     {
-        case length_unit_inch:
+        case length_unit_t::inch:
             // twips to inches : 1 twip = 1/1440 inches
             return value / 1440.0;
         default:
@@ -228,15 +228,15 @@ double convert(double value, length_unit_t unit_from, length_unit_t unit_to)
 {
     switch (unit_from)
     {
-        case length_unit_point:
+        case length_unit_t::point:
             return convert_point(value, unit_to);
-        case length_unit_inch:
+        case length_unit_t::inch:
             return convert_inch(value, unit_to);
-        case length_unit_centimeter:
+        case length_unit_t::centimeter:
             return convert_centimeter(value, unit_to);
-        case length_unit_twip:
+        case length_unit_t::twip:
             return convert_twip(value, unit_to);
-        case length_unit_xlsx_column_digit:
+        case length_unit_t::xlsx_column_digit:
             return convert_xlsx_column_digit(value, unit_to);
         default:
             ;

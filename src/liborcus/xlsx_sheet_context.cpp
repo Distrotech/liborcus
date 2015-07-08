@@ -106,7 +106,7 @@ public:
             case XML_ht:
             {
                 m_height.value = to_double(attr.value);
-                m_height.unit = length_unit_point;
+                m_height.unit = length_unit_t::point;
             }
             break;
             case XML_hidden:
@@ -374,7 +374,7 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
                 for (spreadsheet::col_t col = func.get_min(); col <= func.get_max(); ++col)
                 {
                     if (contains_width)
-                        sheet_props->set_column_width(col-1, width, length_unit_xlsx_column_digit);
+                        sheet_props->set_column_width(col-1, width, length_unit_t::xlsx_column_digit);
                     sheet_props->set_column_hidden(col-1, hidden);
                 }
             }
@@ -444,7 +444,7 @@ void xlsx_sheet_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             if (sheet_props)
             {
                 length_t ht = func.get_height();
-                if (ht.unit != length_unit_unknown)
+                if (ht.unit != length_unit_t::unknown)
                     sheet_props->set_row_height(m_cur_row, ht.value, ht.unit);
 
                 bool hidden = func.is_hidden();

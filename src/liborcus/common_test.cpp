@@ -52,15 +52,15 @@ string to_string(length_unit_t unit)
 {
     switch (unit)
     {
-        case length_unit_centimeter:
+        case length_unit_t::centimeter:
             return "centimeter";
-        case length_unit_inch:
+        case length_unit_t::inch:
             return "inch";
-        case length_unit_point:
+        case length_unit_t::point:
             return "point";
-        case length_unit_twip:
+        case length_unit_t::twip:
             return "twip";
-        case length_unit_unknown:
+        case length_unit_t::unknown:
         default:
             ;
     }
@@ -75,18 +75,18 @@ void test_measurement_conversion()
         size_t decimals;
         length_unit_t unit;
     } tests[] = {
-        { "12.34", 12.34, 2, length_unit_unknown },
-        { "35", 35, 0, length_unit_unknown },
-        { "0.69825", 0.69825, 5, length_unit_unknown },
-        { ".1592", 0.1592, 4, length_unit_unknown },
-        { "5", 5.0, 0, length_unit_unknown },
-        { "-3", -3.0, 0, length_unit_unknown },
-        { "-3.456", -3.456, 3, length_unit_unknown },
-        { "-.987", -0.987, 3, length_unit_unknown },
-        { "-100.987.", -100.987, 3, length_unit_unknown }, // Second decimal point should stop the parsing.
+        { "12.34", 12.34, 2, length_unit_t::unknown },
+        { "35", 35, 0, length_unit_t::unknown },
+        { "0.69825", 0.69825, 5, length_unit_t::unknown },
+        { ".1592", 0.1592, 4, length_unit_t::unknown },
+        { "5", 5.0, 0, length_unit_t::unknown },
+        { "-3", -3.0, 0, length_unit_t::unknown },
+        { "-3.456", -3.456, 3, length_unit_t::unknown },
+        { "-.987", -0.987, 3, length_unit_t::unknown },
+        { "-100.987.", -100.987, 3, length_unit_t::unknown }, // Second decimal point should stop the parsing.
 
-        { "12.345in", 12.345, 3, length_unit_inch },
-        { "120.30001cm", 120.30001, 5, length_unit_centimeter },
+        { "12.345in", 12.345, 3, length_unit_t::inch },
+        { "120.30001cm", 120.30001, 5, length_unit_t::centimeter },
     };
 
     for (size_t i = 0, n = sizeof(tests)/sizeof(tests[0]); i < n; ++i)

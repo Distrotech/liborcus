@@ -258,7 +258,7 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
                         styles->set_font_name(font_name.get(), font_name.size());
 
                     length_t font_size = func.get_font_size();
-                    if (font_size.unit == length_unit_point)
+                    if (font_size.unit == length_unit_t::point)
                         styles->set_font_size(font_size.value);
 
                     if (func.is_bold())

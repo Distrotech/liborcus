@@ -29,7 +29,7 @@ public:
     {
         assert(col == 2);
         assert(size == 37.3);
-        assert(unit == length_unit_point);
+        assert(unit == length_unit_t::point);
     }
 
     virtual void set_column_hidden(col_t, bool)
@@ -40,7 +40,7 @@ public:
     {
         assert(row == 4);
         assert(size == 7.3);
-        assert(unit == length_unit_point);
+        assert(unit == length_unit_t::point);
     }
 
     virtual void set_row_hidden(row_t, bool)
