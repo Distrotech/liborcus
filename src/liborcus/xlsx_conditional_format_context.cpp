@@ -758,22 +758,22 @@ void import_cfvo(const cfvo_values& values, spreadsheet::iface::import_condition
     switch (values.m_type)
     {
         case cfvo_num:
-            cond_format.set_condition_type(spreadsheet::condition_type_value);
+            cond_format.set_condition_type(spreadsheet::condition_type_t::value);
         break;
         case cfvo_percent:
-            cond_format.set_condition_type(spreadsheet::condition_type_percent);
+            cond_format.set_condition_type(spreadsheet::condition_type_t::percent);
         break;
         case cfvo_max:
-            cond_format.set_condition_type(spreadsheet::condition_type_max);
+            cond_format.set_condition_type(spreadsheet::condition_type_t::max);
         break;
         case cfvo_min:
-            cond_format.set_condition_type(spreadsheet::condition_type_min);
+            cond_format.set_condition_type(spreadsheet::condition_type_t::min);
         break;
         case cfvo_formula:
-            cond_format.set_condition_type(spreadsheet::condition_type_formula);
+            cond_format.set_condition_type(spreadsheet::condition_type_t::formula);
         break;
         case cfvo_percentile:
-            cond_format.set_condition_type(spreadsheet::condition_type_percentile);
+            cond_format.set_condition_type(spreadsheet::condition_type_t::percentile);
         break;
         default:
         break;

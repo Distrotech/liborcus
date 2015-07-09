@@ -151,16 +151,16 @@ enum class condition_operator_t
     expression
 };
 
-enum condition_type_t
+enum class condition_type_t
 {
-    condition_type_unknown = 0,
-    condition_type_value,
-    condition_type_auto,
-    condition_type_max,
-    condition_type_min,
-    condition_type_formula,
-    condition_type_percent,
-    condition_type_percentile
+    unknown = 0,
+    value,
+    automatic,
+    max,
+    min,
+    formula,
+    percent,
+    percentile
 };
 
 enum condition_date_t
