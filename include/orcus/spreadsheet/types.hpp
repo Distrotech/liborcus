@@ -111,15 +111,15 @@ enum class totals_row_function_t
     custom
 };
 
-enum conditional_format_t
+enum class conditional_format_t
 {
-    conditional_format_unknown = 0,
-    conditional_format_condition,
-    conditional_format_date,
-    conditional_format_formula,
-    conditional_format_colorscale,
-    conditional_format_databar,
-    conditional_format_iconset
+    unknown = 0,
+    condition,
+    date,
+    formula,
+    colorscale,
+    databar,
+    iconset
 };
 
 enum condition_operator_t
