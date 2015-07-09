@@ -137,7 +137,7 @@ public:
         cout << " rgb(" << (int)red << ',' << (int)green << ',' << (int)blue << ')';
 #endif
         css_property_value_t val;
-        val.type = css::property_value_rgb;
+        val.type = css::property_value_t::rgb;
         val.red = red;
         val.green = green;
         val.blue = blue;
@@ -150,7 +150,7 @@ public:
         cout << " rgba(" << (int)red << ',' << (int)green << ',' << (int)blue << ',' << alpha << ')';
 #endif
         css_property_value_t val;
-        val.type = css::property_value_rgba;
+        val.type = css::property_value_t::rgba;
         val.red = red;
         val.green = green;
         val.blue = blue;
@@ -164,7 +164,7 @@ public:
         cout << "hsl(" << (int)hue << ',' << (int)sat << ',' << (int)light << ')';
 #endif
         css_property_value_t val;
-        val.type = css::property_value_hsl;
+        val.type = css::property_value_t::hsl;
         val.hue = hue;
         val.saturation = sat;
         val.lightness = light;
@@ -177,7 +177,7 @@ public:
         cout << "hsla(" << (int)hue << ',' << (int)sat << ',' << (int)light << ',' << alpha << ')';
 #endif
         css_property_value_t val;
-        val.type = css::property_value_hsla;
+        val.type = css::property_value_t::hsla;
         val.hue = hue;
         val.saturation = sat;
         val.lightness = light;
@@ -191,7 +191,7 @@ public:
         cout << " url(" << pstring(p, n) << ")";
 #endif
         css_property_value_t val;
-        val.type = orcus::css::property_value_url;
+        val.type = orcus::css::property_value_t::url;
         val.str = p;
         val.length = n;
         m_cur_prop_values.push_back(val);
@@ -318,8 +318,8 @@ public:
     {
         switch (v.type)
         {
-            case css::property_value_string:
-            case css::property_value_url:
+            case css::property_value_t::string:
+            case css::property_value_t::url:
             {
                 // String value needs interning.
                 css_property_value_t interned = v;

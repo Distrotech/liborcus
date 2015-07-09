@@ -88,40 +88,40 @@ bool css_selector_t::operator== (const css_selector_t& r) const
 }
 
 css_property_value_t::css_property_value_t() :
-    type(css::property_value_none), str(NULL) {}
+    type(css::property_value_t::none), str(NULL) {}
 
 css_property_value_t::css_property_value_t(const css_property_value_t& r) :
     type(r.type)
 {
     switch (type)
     {
-        case css::property_value_rgb:
-        case css::property_value_rgba:
+        case css::property_value_t::rgb:
+        case css::property_value_t::rgba:
             red = r.red;
             green = r.green;
             blue = r.blue;
             alpha = r.alpha;
         break;
-        case css::property_value_hsl:
-        case css::property_value_hsla:
+        case css::property_value_t::hsl:
+        case css::property_value_t::hsla:
             hue = r.hue;
             saturation = r.saturation;
             lightness = r.lightness;
             alpha = r.alpha;
         break;
-        case css::property_value_string:
-        case css::property_value_url:
+        case css::property_value_t::string:
+        case css::property_value_t::url:
             str = r.str;
             length = r.length;
         break;
-        case css::property_value_none:
+        case css::property_value_t::none:
         default:
             ;
     }
 }
 
 css_property_value_t::css_property_value_t(const pstring& str) :
-    type(css::property_value_string), str(str.get()), length(str.size()) {}
+    type(css::property_value_t::string), str(str.get()), length(str.size()) {}
 
 css_property_value_t& css_property_value_t::operator= (const css_property_value_t& r)
 {
@@ -182,14 +182,14 @@ std::ostream& operator<< (std::ostream& os, const css_property_value_t& v)
 
     switch (v.type)
     {
-        case css::property_value_hsl:
+        case css::property_value_t::hsl:
             os << "hsl("
                << (int)v.hue << sep
                << (int)v.saturation << sep
                << (int)v.lightness
                << ")";
         break;
-        case css::property_value_hsla:
+        case css::property_value_t::hsla:
             os << "hsla("
                << (int)v.hue << sep
                << (int)v.saturation << sep
@@ -197,14 +197,14 @@ std::ostream& operator<< (std::ostream& os, const css_property_value_t& v)
                << v.alpha
                << ")";
         break;
-        case css::property_value_rgb:
+        case css::property_value_t::rgb:
             os << "rgb("
                << (int)v.red << sep
                << (int)v.green << sep
                << (int)v.blue
                << ")";
         break;
-        case css::property_value_rgba:
+        case css::property_value_t::rgba:
             os << "rgba("
                << (int)v.red << sep
                << (int)v.green << sep
@@ -212,14 +212,14 @@ std::ostream& operator<< (std::ostream& os, const css_property_value_t& v)
                << v.alpha
                << ")";
         break;
-        case css::property_value_string:
+        case css::property_value_t::string:
             os << pstring(v.str, v.length);
         break;
-        case css::property_value_url:
+        case css::property_value_t::url:
             os << "url(" << pstring(v.str, v.length) << ")";
         break;
         break;
-        case css::property_value_none:
+        case css::property_value_t::none:
         default:
             ;
     }

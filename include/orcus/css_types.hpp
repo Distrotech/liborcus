@@ -35,15 +35,15 @@ enum class property_function_t
     url
 };
 
-enum property_value_t
+enum class property_value_t
 {
-    property_value_none = 0,
-    property_value_string,
-    property_value_hsl,
-    property_value_hsla,
-    property_value_rgb,
-    property_value_rgba,
-    property_value_url
+    none = 0,
+    string,
+    hsl,
+    hsla,
+    rgb,
+    rgba,
+    url
 };
 
 typedef uint16_t pseudo_element_t;
