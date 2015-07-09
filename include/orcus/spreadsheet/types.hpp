@@ -44,12 +44,12 @@ enum class formula_grammar_t
     gnumeric
 };
 
-enum formula_t
+enum class formula_t
 {
-    formula_array,
-    formula_data_table,
-    formula_normal,
-    formula_shared
+    array,
+    data_table,
+    normal,
+    shared
 };
 
 enum underline_t

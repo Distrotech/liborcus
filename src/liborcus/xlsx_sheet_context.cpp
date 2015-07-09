@@ -226,11 +226,11 @@ public:
             case XML_t:
             {
                 if (attr.value == "shared")
-                    m_attrs.type = spreadsheet::formula_shared;
+                    m_attrs.type = spreadsheet::formula_t::shared;
                 else if (attr.value == "array")
-                    m_attrs.type = spreadsheet::formula_array;
+                    m_attrs.type = spreadsheet::formula_t::array;
                 else if (attr.value == "dataTable")
-                    m_attrs.type = spreadsheet::formula_data_table;
+                    m_attrs.type = spreadsheet::formula_t::data_table;
             }
             break;
             case XML_ref:
@@ -268,7 +268,7 @@ public:
 }
 
 xlsx_sheet_context::formula::formula() :
-    type(spreadsheet::formula_normal),
+    type(spreadsheet::formula_t::normal),
     str(), ref(),
     data_table_ref1(),
     data_table_ref2(),
@@ -543,7 +543,7 @@ void xlsx_sheet_context::end_element_cell()
 
     if (!m_cur_formula.str.empty())
     {
-        if (m_cur_formula.type == spreadsheet::formula_shared && m_cur_formula.shared_id >= 0)
+        if (m_cur_formula.type == spreadsheet::formula_t::shared && m_cur_formula.shared_id >= 0)
         {
             // shared formula expression
             session_data.m_shared_formulas.push_back(
@@ -551,7 +551,7 @@ void xlsx_sheet_context::end_element_cell()
                     m_sheet_id, m_cur_row, m_cur_col, m_cur_formula.shared_id,
                     m_cur_formula.str.str(), m_cur_formula.ref.str()));
         }
-        else if (m_cur_formula.type == spreadsheet::formula_array)
+        else if (m_cur_formula.type == spreadsheet::formula_t::array)
         {
             // array formula expression
             session_data.m_formulas.push_back(
@@ -566,14 +566,14 @@ void xlsx_sheet_context::end_element_cell()
                     m_sheet_id, m_cur_row, m_cur_col, m_cur_formula.str.str()));
         }
     }
-    else if (m_cur_formula.type == spreadsheet::formula_shared && m_cur_formula.shared_id >= 0)
+    else if (m_cur_formula.type == spreadsheet::formula_t::shared && m_cur_formula.shared_id >= 0)
     {
         // shared formula without formula expression
         session_data.m_shared_formulas.push_back(
             make_unique<xlsx_session_data::shared_formula>(
                 m_sheet_id, m_cur_row, m_cur_col, m_cur_formula.shared_id));
     }
-    else if (m_cur_formula.type == spreadsheet::formula_data_table)
+    else if (m_cur_formula.type == spreadsheet::formula_t::data_table)
     {
         // Import data table.
         spreadsheet::iface::import_data_table* dt = mp_sheet->get_data_table();
