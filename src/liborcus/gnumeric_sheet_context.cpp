@@ -243,23 +243,23 @@ spreadsheet::condition_operator_t get_condition_operator(int val)
     switch(val)
     {
         case 0:
-            return spreadsheet::condition_operator_between;
+            return spreadsheet::condition_operator_t::between;
         case 1:
-            return spreadsheet::condition_operator_not_between;
+            return spreadsheet::condition_operator_t::not_between;
         case 2:
-            return spreadsheet::condition_operator_equal;
+            return spreadsheet::condition_operator_t::equal;
         case 3:
-            return spreadsheet::condition_operator_not_equal;
+            return spreadsheet::condition_operator_t::not_equal;
         case 4:
-            return spreadsheet::condition_operator_greater;
+            return spreadsheet::condition_operator_t::greater;
         case 5:
-            return spreadsheet::condition_operator_less;
+            return spreadsheet::condition_operator_t::less;
         case 6:
-            return spreadsheet::condition_operator_greater_equal;
+            return spreadsheet::condition_operator_t::greater_equal;
         case 7:
-            return spreadsheet::condition_operator_less_equal;
+            return spreadsheet::condition_operator_t::less_equal;
         case 8:
-            return spreadsheet::condition_operator_expression;
+            return spreadsheet::condition_operator_t::expression;
         case 9:
         case 10:
         case 11:
@@ -269,25 +269,25 @@ spreadsheet::condition_operator_t get_condition_operator(int val)
         case 15:
             break;
         case 16:
-            return spreadsheet::condition_operator_contains;
+            return spreadsheet::condition_operator_t::contains;
         case 17:
-            return spreadsheet::condition_operator_not_contains;
+            return spreadsheet::condition_operator_t::not_contains;
         case 18:
-            return spreadsheet::condition_operator_begins_with;
+            return spreadsheet::condition_operator_t::begins_with;
         case 19:
             break;
         case 20:
-            return spreadsheet::condition_operator_ends_with;
+            return spreadsheet::condition_operator_t::ends_with;
         case 21:
             break;
         case 22:
-            return spreadsheet::condition_operator_contains_error;
+            return spreadsheet::condition_operator_t::contains_error;
         case 23:
-            return spreadsheet::condition_operator_contains_no_error;
+            return spreadsheet::condition_operator_t::contains_no_error;
         default:
             break;
     }
-    return orcus::spreadsheet::condition_operator_unknown;
+    return orcus::spreadsheet::condition_operator_t::unknown;
 }
 
 class gnumeric_condition_attr_parser : public std::unary_function<xml_token_attr_t, void>

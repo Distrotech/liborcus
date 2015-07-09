@@ -122,33 +122,33 @@ enum class conditional_format_t
     iconset
 };
 
-enum condition_operator_t
+enum class condition_operator_t
 {
-    condition_operator_unknown = 0,
-    condition_operator_equal,
-    condition_operator_less,
-    condition_operator_greater,
-    condition_operator_greater_equal,
-    condition_operator_less_equal,
-    condition_operator_not_equal,
-    condition_operator_between,
-    condition_operator_not_between,
-    condition_operator_duplicate,
-    condition_operator_unique,
-    condition_operator_top_n,
-    condition_operator_bottom_n,
-    condition_operator_above_average,
-    condition_operator_below_average,
-    condition_operator_above_equal_average,
-    condition_operator_below_equal_average,
-    condition_operator_contains_error,
-    condition_operator_contains_no_error,
-    condition_operator_begins_with,
-    condition_operator_ends_with,
-    condition_operator_contains,
-    condition_operator_contains_blanks,
-    condition_operator_not_contains,
-    condition_operator_expression
+    unknown = 0,
+    equal,
+    less,
+    greater,
+    greater_equal,
+    less_equal,
+    not_equal,
+    between,
+    not_between,
+    duplicate,
+    unique,
+    top_n,
+    bottom_n,
+    above_average,
+    below_average,
+    above_equal_average,
+    below_equal_average,
+    contains_error,
+    contains_no_error,
+    begins_with,
+    ends_with,
+    contains,
+    contains_blanks,
+    not_contains,
+    expression
 };
 
 enum condition_type_t

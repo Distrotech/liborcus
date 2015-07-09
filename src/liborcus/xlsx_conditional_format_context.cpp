@@ -280,48 +280,48 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
         {
             case expression:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
-                m_cond_format.set_operator(spreadsheet::condition_operator_expression);
+                m_cond_format.set_operator(spreadsheet::condition_operator_t::expression);
             break;
             case cellIs:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
-                m_cond_format.set_operator(spreadsheet::condition_operator_expression);
+                m_cond_format.set_operator(spreadsheet::condition_operator_t::expression);
                 switch (m_operator)
                 {
                     case operator_beginsWith:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_begins_with);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::begins_with);
                     break;
                     case operator_between:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_between);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::between);
                     break;
                     case operator_containsText:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_contains);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::contains);
                     break;
                     case operator_endsWith:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_ends_with);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::ends_with);
                     break;
                     case operator_equal:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_equal);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::equal);
                     break;
                     case operator_greaterThan:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_greater);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::greater);
                     break;
                     case operator_greaterThanOrEqual:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_greater_equal);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::greater_equal);
                     break;
                     case operator_lessThan:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_less);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::less);
                     break;
                     case operator_lessThanOrEqual:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_less_equal);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::less_equal);
                     break;
                     case operator_notBetween:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_not_between);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::not_between);
                     break;
                     case operator_notContains:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_not_contains);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::not_contains);
                     break;
                     case operator_notEqual:
-                        m_cond_format.set_operator(spreadsheet::condition_operator_not_equal);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::not_equal);
                     break;
                     default:
                     break;
@@ -340,53 +340,53 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
                 if (m_bottom)
                 {
-                    m_cond_format.set_operator(spreadsheet::condition_operator_bottom_n);
+                    m_cond_format.set_operator(spreadsheet::condition_operator_t::bottom_n);
                 }
                 else
                 {
-                    m_cond_format.set_operator(spreadsheet::condition_operator_top_n);
+                    m_cond_format.set_operator(spreadsheet::condition_operator_t::top_n);
                 }
                 m_cond_format.set_formula(m_rank.get(), m_rank.size());
             break;
             case uniqueValues:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
-                m_cond_format.set_operator(spreadsheet::condition_operator_unique);
+                m_cond_format.set_operator(spreadsheet::condition_operator_t::unique);
             break;
             case duplicateValues:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
-                m_cond_format.set_operator(spreadsheet::condition_operator_duplicate);
+                m_cond_format.set_operator(spreadsheet::condition_operator_t::duplicate);
             break;
             case containsText:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
-                m_cond_format.set_operator(spreadsheet::condition_operator_contains);
+                m_cond_format.set_operator(spreadsheet::condition_operator_t::contains);
                 m_cond_format.set_formula(m_text.get(), m_text.size());
             break;
             case notContainsText:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
-                m_cond_format.set_operator(spreadsheet::condition_operator_not_contains);
+                m_cond_format.set_operator(spreadsheet::condition_operator_t::not_contains);
                 m_cond_format.set_formula(m_text.get(), m_text.size());
             break;
             case beginsWith:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
-                m_cond_format.set_operator(spreadsheet::condition_operator_begins_with);
+                m_cond_format.set_operator(spreadsheet::condition_operator_t::begins_with);
                 m_cond_format.set_formula(m_text.get(), m_text.size());
             break;
             case endsWith:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
-                m_cond_format.set_operator(spreadsheet::condition_operator_ends_with);
+                m_cond_format.set_operator(spreadsheet::condition_operator_t::ends_with);
                 m_cond_format.set_formula(m_text.get(), m_text.size());
             break;
             case containsBlanks:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
-                m_cond_format.set_operator(spreadsheet::condition_operator_contains_blanks);
+                m_cond_format.set_operator(spreadsheet::condition_operator_t::contains_blanks);
             break;
             case containsErrors:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
-                m_cond_format.set_operator(spreadsheet::condition_operator_contains_error);
+                m_cond_format.set_operator(spreadsheet::condition_operator_t::contains_error);
             break;
             case notContainsErrors:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::condition);
-                m_cond_format.set_operator(spreadsheet::condition_operator_contains_no_error);
+                m_cond_format.set_operator(spreadsheet::condition_operator_t::contains_no_error);
             break;
             case timePeriod:
                 m_cond_format.set_type(spreadsheet::conditional_format_t::date);
@@ -434,22 +434,22 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
                 {
                     if (m_equal_average)
                     {
-                        m_cond_format.set_operator(spreadsheet::condition_operator_above_equal_average);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::above_equal_average);
                     }
                     else
                     {
-                        m_cond_format.set_operator(spreadsheet::condition_operator_above_average);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::above_average);
                     }
                 }
                 else
                 {
                     if (m_equal_average)
                     {
-                        m_cond_format.set_operator(spreadsheet::condition_operator_below_equal_average);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::below_equal_average);
                     }
                     else
                     {
-                        m_cond_format.set_operator(spreadsheet::condition_operator_below_average);
+                        m_cond_format.set_operator(spreadsheet::condition_operator_t::below_average);
                     }
                 }
             break;
