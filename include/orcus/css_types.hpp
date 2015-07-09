@@ -25,14 +25,14 @@ enum class combinator_t
 /**
  * List of functions used as property values.
  */
-enum property_function_t
+enum class property_function_t
 {
-    func_unknown = 0,
-    func_hsl,
-    func_hsla,
-    func_rgb,
-    func_rgba,
-    func_url
+    unknown = 0,
+    hsl,
+    hsla,
+    rgb,
+    rgba,
+    url
 };
 
 enum property_value_t

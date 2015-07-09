@@ -369,7 +369,7 @@ void css_parser<_Handler>::function_value(const char* p, size_t len)
 {
     assert(cur_char() == '(');
     css::property_function_t func = css::to_property_function(p, len);
-    if (!func)
+    if (func == css::property_function_t::unknown)
         css::parse_error::throw_with("function_value: unknown function '", p, len, "'");
 
     // Move to the first character of the first argument.
@@ -378,19 +378,19 @@ void css_parser<_Handler>::function_value(const char* p, size_t len)
 
     switch (func)
     {
-        case css::func_rgb:
+        case css::property_function_t::rgb:
             function_rgb(false);
         break;
-        case css::func_rgba:
+        case css::property_function_t::rgba:
             function_rgb(true);
         break;
-        case css::func_hsl:
+        case css::property_function_t::hsl:
             function_hsl(false);
         break;
-        case css::func_hsla:
+        case css::property_function_t::hsla:
             function_hsl(true);
         break;
-        case css::func_url:
+        case css::property_function_t::url:
             function_url();
         break;
         default:

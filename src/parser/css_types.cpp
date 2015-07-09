@@ -167,11 +167,11 @@ typedef mdds::sorted_string_map<property_function_t> propfunc_map_type;
 
 // Keys must be sorted.
 propfunc_map_type::entry propfunc_type_entries[] = {
-    { MDDS_ASCII("hsl"),  func_hsl  },
-    { MDDS_ASCII("hsla"), func_hsla },
-    { MDDS_ASCII("rgb"),  func_rgb  },
-    { MDDS_ASCII("rgba"), func_rgba },
-    { MDDS_ASCII("url"),  func_url  }
+    { MDDS_ASCII("hsl"),  property_function_t::hsl  },
+    { MDDS_ASCII("hsla"), property_function_t::hsla },
+    { MDDS_ASCII("rgb"),  property_function_t::rgb  },
+    { MDDS_ASCII("rgba"), property_function_t::rgba },
+    { MDDS_ASCII("url"),  property_function_t::url  }
 };
 
 }
@@ -181,7 +181,7 @@ property_function_t to_property_function(const char* p, size_t n)
     static propfunc_map_type propfunc_map(
         propfunc_type_entries,
         ORCUS_N_ELEMENTS(propfunc_type_entries),
-        func_unknown);
+        property_function_t::unknown);
 
     return propfunc_map.find(p, n);
 }
