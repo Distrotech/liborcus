@@ -36,22 +36,22 @@ int main(int argc, char** argv) try
     cout << "type: ";
     switch (detected_type)
     {
-        case format_csv:
+        case format_t::csv:
             cout << "plain text format";
         break;
-        case format_gnumeric:
+        case format_t::gnumeric:
             cout << "Gnumeric";
         break;
-        case format_ods:
+        case format_t::ods:
             cout << "OpenDocument Spreadsheet";
         break;
-        case format_xls_xml:
+        case format_t::xls_xml:
             cout << "Microsoft Excel XML";
         break;
-        case format_xlsx:
+        case format_t::xlsx:
             cout << "Microsoft Office Open XML Excel 2007+";
         break;
-        case format_unknown:
+        case format_t::unknown:
         default:
             cout << "unknown";
     }

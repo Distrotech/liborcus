@@ -14,14 +14,14 @@
 
 namespace orcus {
 
-enum format_t
+enum class format_t
 {
-    format_unknown,
-    format_ods,
-    format_xlsx,
-    format_gnumeric,
-    format_xls_xml,
-    format_csv
+    unknown = 0,
+    ods,
+    xlsx,
+    gnumeric,
+    xls_xml,
+    csv
 };
 
 ORCUS_DLLPUBLIC format_t detect(const unsigned char* buffer, size_t length);

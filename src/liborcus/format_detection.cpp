@@ -54,22 +54,22 @@ format_t detect(const unsigned char* buffer, size_t length)
 {
 #if ODS_ENABLED
     if (orcus_ods::detect(buffer, length))
-        return format_ods;
+        return format_t::ods;
 #endif
 #if XLSX_ENABLED
     if (orcus_xlsx::detect(buffer, length))
-        return format_xlsx;
+        return format_t::xlsx;
 #endif
 #if GNUMERIC_ENABLED
     if (orcus_gnumeric::detect(buffer, length))
-        return format_gnumeric;
+        return format_t::gnumeric;
 #endif
 #if XLS_XML_ENABLED
     if (orcus_xls_xml::detect(buffer, length))
-        return format_xls_xml;
+        return format_t::xls_xml;
 #endif
 
-    return format_unknown;
+    return format_t::unknown;
 }
 
 }
