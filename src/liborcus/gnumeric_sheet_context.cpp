@@ -95,13 +95,13 @@ public:
                 switch (n)
                 {
                     case 0:
-                        m_styles.set_font_underline(spreadsheet::underline_none);
+                        m_styles.set_font_underline(spreadsheet::underline_t::none);
                     break;
                     case 1:
-                        m_styles.set_font_underline(spreadsheet::underline_single);
+                        m_styles.set_font_underline(spreadsheet::underline_t::single_line);
                     break;
                     case 2:
-                        m_styles.set_font_underline(spreadsheet::underline_double);
+                        m_styles.set_font_underline(spreadsheet::underline_t::double_line);
                     break;
                     default:
                         ;
@@ -178,40 +178,40 @@ public:
             break;
             case XML_HAlign:
             {
-                orcus::spreadsheet::hor_alignment_t hor_alignment = orcus::spreadsheet::hor_alignment_unknown;
+                orcus::spreadsheet::hor_alignment_t hor_alignment = orcus::spreadsheet::hor_alignment_t::unknown;
                 if (attr.value == "GNM_HALIGN_CENTER")
-                    hor_alignment = orcus::spreadsheet::hor_alignment_center;
+                    hor_alignment = orcus::spreadsheet::hor_alignment_t::center;
                 else if (attr.value == "GNM_HALIGN_RIGHT")
-                    hor_alignment = orcus::spreadsheet::hor_alignment_right;
+                    hor_alignment = orcus::spreadsheet::hor_alignment_t::right;
                 else if (attr.value == "GNM_HALIGN_LEFT")
-                    hor_alignment = orcus::spreadsheet::hor_alignment_left;
+                    hor_alignment = orcus::spreadsheet::hor_alignment_t::left;
                 else if (attr.value == "GNM_HALIGN_JUSTIFY")
-                    hor_alignment = orcus::spreadsheet::hor_alignment_justified;
+                    hor_alignment = orcus::spreadsheet::hor_alignment_t::justified;
                 else if (attr.value == "GNM_HALIGN_DISTRIBUTED")
-                    hor_alignment = orcus::spreadsheet::hor_alignment_distributed;
+                    hor_alignment = orcus::spreadsheet::hor_alignment_t::distributed;
                 else if (attr.value == "GNM_HALIGN_FILL")
-                    hor_alignment = orcus::spreadsheet::hor_alignment_filled;
+                    hor_alignment = orcus::spreadsheet::hor_alignment_t::filled;
 
-                if (hor_alignment != orcus::spreadsheet::hor_alignment_unknown)
+                if (hor_alignment != orcus::spreadsheet::hor_alignment_t::unknown)
                     m_styles.set_xf_apply_alignment(true);
                 m_styles.set_xf_horizontal_alignment(hor_alignment);
             }
             break;
             case XML_VAlign:
             {
-                orcus::spreadsheet::ver_alignment_t ver_alignment = orcus::spreadsheet::ver_alignment_unknown;
+                orcus::spreadsheet::ver_alignment_t ver_alignment = orcus::spreadsheet::ver_alignment_t::unknown;
                 if (attr.value == "GNM_VALIGN_BOTTOM")
-                    ver_alignment = orcus::spreadsheet::ver_alignment_bottom;
+                    ver_alignment = orcus::spreadsheet::ver_alignment_t::bottom;
                 else if (attr.value == "GNM_VALIGN_TOP")
-                    ver_alignment = orcus::spreadsheet::ver_alignment_top;
+                    ver_alignment = orcus::spreadsheet::ver_alignment_t::top;
                 else if (attr.value == "GNM_VALIGN_CENTER")
-                    ver_alignment = orcus::spreadsheet::ver_alignment_middle;
+                    ver_alignment = orcus::spreadsheet::ver_alignment_t::middle;
                 else if (attr.value == "GNM_VALIGN_JUSTIFY")
-                    ver_alignment = orcus::spreadsheet::ver_alignment_justified;
+                    ver_alignment = orcus::spreadsheet::ver_alignment_t::justified;
                 else if (attr.value == "GNM_VALIGN_DISTRIBUTED")
-                    ver_alignment = orcus::spreadsheet::ver_alignment_distributed;
+                    ver_alignment = orcus::spreadsheet::ver_alignment_t::distributed;
 
-                if (ver_alignment != orcus::spreadsheet::ver_alignment_unknown)
+                if (ver_alignment != orcus::spreadsheet::ver_alignment_t::unknown)
                     m_styles.set_xf_apply_alignment(true);
                 m_styles.set_xf_vertical_alignment(ver_alignment);
             }

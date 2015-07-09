@@ -14,7 +14,7 @@ namespace orcus { namespace spreadsheet {
 
 font_t::font_t() :
     size(0.0), bold(false),
-    italic(false), underline(underline_none),
+    italic(false), underline(underline_t::none),
     color()
 {
 }
@@ -95,8 +95,8 @@ cell_format_t::cell_format_t() :
     protection(0),
     number_format(0),
     style_xf(0),
-    hor_align(hor_alignment_unknown),
-    ver_align(ver_alignment_unknown),
+    hor_align(hor_alignment_t::unknown),
+    ver_align(ver_alignment_t::unknown),
     apply_num_format(false),
     apply_font(false),
     apply_fill(false),

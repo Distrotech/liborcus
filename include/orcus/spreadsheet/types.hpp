@@ -52,34 +52,34 @@ enum class formula_t
     shared
 };
 
-enum underline_t
+enum class underline_t
 {
-    underline_none,
-    underline_single,
-    underline_single_accounting, // unique to xlsx
-    underline_double,
-    underline_double_accounting // unique to xlsx
+    none = 0,
+    single_line,
+    single_accounting, // unique to xlsx
+    double_line,
+    double_accounting // unique to xlsx
 };
 
-enum hor_alignment_t
+enum class hor_alignment_t
 {
-    hor_alignment_unknown = 0,
-    hor_alignment_left,
-    hor_alignment_center,
-    hor_alignment_right,
-    hor_alignment_justified,
-    hor_alignment_distributed,
-    hor_alignment_filled
+    unknown = 0,
+    left,
+    center,
+    right,
+    justified,
+    distributed,
+    filled
 };
 
-enum ver_alignment_t
+enum class ver_alignment_t
 {
-    ver_alignment_unknown = 0,
-    ver_alignment_top,
-    ver_alignment_middle,
-    ver_alignment_bottom,
-    ver_alignment_justified,
-    ver_alignment_distributed
+    unknown = 0,
+    top,
+    middle,
+    bottom,
+    justified,
+    distributed
 };
 
 /**
@@ -87,11 +87,11 @@ enum ver_alignment_t
  * column, a single-variable row, or a double-variable type that uses both
  * column and row input cells.
  */
-enum data_table_type_t
+enum class data_table_type_t
 {
-    data_table_column,
-    data_table_row,
-    data_table_both
+    column,
+    row,
+    both
 };
 
 /**

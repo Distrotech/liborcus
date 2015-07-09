@@ -426,8 +426,8 @@ class cell_alignment_attr_parser : public unary_function<xml_token_attr_t, void>
 
 public:
     cell_alignment_attr_parser() :
-        m_hor_align(spreadsheet::hor_alignment_unknown),
-        m_ver_align(spreadsheet::ver_alignment_bottom) // 'bottom' is the default if no vertical alignment is given.
+        m_hor_align(spreadsheet::hor_alignment_t::unknown),
+        m_ver_align(spreadsheet::ver_alignment_t::bottom) // 'bottom' is the default if no vertical alignment is given.
     {}
 
     void operator() (const xml_token_attr_t& attr)
@@ -437,21 +437,21 @@ public:
             case XML_horizontal:
             {
                 if (attr.value == "center")
-                    m_hor_align = spreadsheet::hor_alignment_center;
+                    m_hor_align = spreadsheet::hor_alignment_t::center;
                 else if (attr.value == "right")
-                    m_hor_align = spreadsheet::hor_alignment_right;
+                    m_hor_align = spreadsheet::hor_alignment_t::right;
                 else if (attr.value == "left")
-                    m_hor_align = spreadsheet::hor_alignment_left;
+                    m_hor_align = spreadsheet::hor_alignment_t::left;
             }
             break;
             case XML_vertical:
             {
                 if (attr.value == "top")
-                    m_ver_align = spreadsheet::ver_alignment_top;
+                    m_ver_align = spreadsheet::ver_alignment_t::top;
                 else if (attr.value == "center")
-                    m_ver_align = spreadsheet::ver_alignment_middle;
+                    m_ver_align = spreadsheet::ver_alignment_t::middle;
                 else if (attr.value == "bottom")
-                    m_ver_align = spreadsheet::ver_alignment_bottom;
+                    m_ver_align = spreadsheet::ver_alignment_t::bottom;
             }
             break;
             default:
@@ -536,13 +536,13 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             xml_element_expected(parent, NS_ooxml_xlsx, XML_font);
             pstring ps = for_each(attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_val)).get_value();
             if (ps == "double")
-                mp_styles->set_font_underline(spreadsheet::underline_double);
+                mp_styles->set_font_underline(spreadsheet::underline_t::double_line);
             else if (ps == "single")
-                mp_styles->set_font_underline(spreadsheet::underline_single);
+                mp_styles->set_font_underline(spreadsheet::underline_t::single_line);
             else if (ps == "singleAccounting")
-                mp_styles->set_font_underline(spreadsheet::underline_single_accounting);
+                mp_styles->set_font_underline(spreadsheet::underline_t::single_accounting);
             else if (ps == "doubleAccounting")
-                mp_styles->set_font_underline(spreadsheet::underline_double_accounting);
+                mp_styles->set_font_underline(spreadsheet::underline_t::double_accounting);
         }
         break;
         case XML_sz:

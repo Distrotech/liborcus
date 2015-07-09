@@ -1177,18 +1177,18 @@ void build_style_string(string& str, const import_styles& styles, const cell_for
 
     if (fmt.apply_alignment)
     {
-        if (fmt.hor_align != hor_alignment_unknown)
+        if (fmt.hor_align != hor_alignment_t::unknown)
         {
             os << "text-align: ";
             switch (fmt.hor_align)
             {
-                case hor_alignment_left:
+                case hor_alignment_t::left:
                     os << "left";
                 break;
-                case hor_alignment_center:
+                case hor_alignment_t::center:
                     os << "center";
                 break;
-                case hor_alignment_right:
+                case hor_alignment_t::right:
                     os << "right";
                 break;
                 default:
@@ -1197,18 +1197,18 @@ void build_style_string(string& str, const import_styles& styles, const cell_for
             os << ";";
         }
 
-        if (fmt.ver_align != ver_alignment_unknown)
+        if (fmt.ver_align != ver_alignment_t::unknown)
         {
             os << "vertical-align: ";
             switch (fmt.ver_align)
             {
-                case ver_alignment_top:
+                case ver_alignment_t::top:
                     os << "top";
                 break;
-                case ver_alignment_middle:
+                case ver_alignment_t::middle:
                     os << "middle";
                 break;
-                case ver_alignment_bottom:
+                case ver_alignment_t::bottom:
                     os << "bottom";
                 break;
                 default:
