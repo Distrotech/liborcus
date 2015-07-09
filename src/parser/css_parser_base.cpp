@@ -55,7 +55,7 @@ parser_base::parser_base(const char* p, size_t n) :
     m_pos(0),
     m_length(n),
     m_simple_selector_count(0),
-    m_combinator(combinator_descendant) {}
+    m_combinator(combinator_t::descendant) {}
 
 void parser_base::next()
 {
@@ -308,7 +308,7 @@ void parser_base::set_combinator(char c, css::combinator_t combinator)
 void parser_base::reset_before_block()
 {
     m_simple_selector_count = 0;
-    m_combinator = css::combinator_descendant;
+    m_combinator = css::combinator_t::descendant;
 }
 
 }}

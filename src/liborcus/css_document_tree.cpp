@@ -45,7 +45,7 @@ public:
     parser_handler(css_document_tree& doc) :
         m_doc(doc),
         m_cur_pseudo_element(0),
-        m_cur_combinator(css::combinator_descendant),
+        m_cur_combinator(css::combinator_t::descendant),
         m_in_prop(false) {}
 
     void at_rule_name(const char* p, size_t n)

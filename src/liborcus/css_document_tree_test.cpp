@@ -577,14 +577,14 @@ void test_css_parse_chained1()
     assert(check_prop(*props, "background-color", "yellow"));
 
     // div > p
-    selector.chained.back().combinator = css::combinator_direct_child;
+    selector.chained.back().combinator = css::combinator_t::direct_child;
     props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);
     assert(check_prop(*props, "background-color", "blue"));
 
     // div + p
-    selector.chained.back().combinator = css::combinator_next_sibling;
+    selector.chained.back().combinator = css::combinator_t::next_sibling;
     props = doc.get_properties(selector, 0);
     assert(props);
     assert(props->size() == 1);

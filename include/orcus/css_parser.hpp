@@ -97,10 +97,10 @@ void css_parser<_Handler>::rule()
         switch (c)
         {
             case '>':
-                set_combinator(c, css::combinator_direct_child);
+                set_combinator(c, css::combinator_t::direct_child);
             break;
             case '+':
-                set_combinator(c, css::combinator_next_sibling);
+                set_combinator(c, css::combinator_t::next_sibling);
             break;
             case '.':
             case '#':
@@ -160,7 +160,7 @@ void css_parser<_Handler>::simple_selector_name()
     cout << "combinator: " << m_combinator << endl;
 #endif
         m_handler.combinator(m_combinator);
-        m_combinator = css::combinator_descendant;
+        m_combinator = css::combinator_t::descendant;
     }
     assert(is_alpha(c) || c == '.' || c == '#');
 

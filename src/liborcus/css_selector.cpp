@@ -67,10 +67,10 @@ bool css_chained_simple_selector_t::operator== (const css_chained_simple_selecto
 }
 
 css_chained_simple_selector_t::css_chained_simple_selector_t() :
-    combinator(css::combinator_descendant) {}
+    combinator(css::combinator_t::descendant) {}
 
 css_chained_simple_selector_t::css_chained_simple_selector_t(const css_simple_selector_t& ss) :
-    combinator(css::combinator_descendant), simple_selector(ss) {}
+    combinator(css::combinator_t::descendant), simple_selector(ss) {}
 
 css_chained_simple_selector_t::css_chained_simple_selector_t(
     css::combinator_t op, const css_simple_selector_t& ss) :
@@ -161,13 +161,13 @@ std::ostream& operator<< (std::ostream& os, const css_selector_t& v)
         os << ' ';
         switch (css.combinator)
         {
-            case css::combinator_direct_child:
+            case css::combinator_t::direct_child:
                 os << "> ";
             break;
-            case css::combinator_next_sibling:
+            case css::combinator_t::next_sibling:
                 os << "+ ";
             break;
-            case css::combinator_descendant:
+            case css::combinator_t::descendant:
             default:
                 ;
         }
