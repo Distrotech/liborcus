@@ -99,7 +99,7 @@ void dom_tree::attr::print(std::ostream& os, const xmlns_context& cxt) const
 
 dom_tree::node::~node() {}
 
-dom_tree::element::element(xmlns_id_t _ns, const pstring& _name) : node(node_element), name(_ns, _name) {}
+dom_tree::element::element(xmlns_id_t _ns, const pstring& _name) : node(node_type::element), name(_ns, _name) {}
 
 void dom_tree::element::print(ostream& os, const xmlns_context& cxt) const
 {
@@ -108,7 +108,7 @@ void dom_tree::element::print(ostream& os, const xmlns_context& cxt) const
 
 dom_tree::element::~element() {}
 
-dom_tree::content::content(const pstring& _value) : node(node_content), value(_value) {}
+dom_tree::content::content(const pstring& _value) : node(node_type::content), value(_value) {}
 
 void dom_tree::content::print(ostream& os, const xmlns_context& /*cxt*/) const
 {
@@ -281,7 +281,7 @@ void dom_tree::dump_compact(ostream& os) const
             const node* this_node = *cur_scope.current_pos;
             assert(this_node);
             print_scope(os, scopes);
-            if (this_node->type == node_content)
+            if (this_node->type == node_type::content)
             {
                 // This is a text content.
                 this_node->print(os, mp_impl->m_ns_cxt);
@@ -289,7 +289,7 @@ void dom_tree::dump_compact(ostream& os) const
                 continue;
             }
 
-            assert(this_node->type == node_element);
+            assert(this_node->type == node_type::element);
             const element* elem = static_cast<const element*>(this_node);
             os << "/";
             elem->print(os, mp_impl->m_ns_cxt);

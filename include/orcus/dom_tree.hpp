@@ -53,7 +53,7 @@ public:
 
     typedef std::vector<attr> attrs_type;
 
-    enum node_type { node_element, node_content };
+    enum class node_type { element, content };
 
     struct node
     {
