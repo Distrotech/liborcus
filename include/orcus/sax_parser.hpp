@@ -353,14 +353,14 @@ void sax_parser<_Handler,_Config>::doctype()
     if (len < 6)
         sax::malformed_xml_error("DOCTYPE section too short.");
 
-    param.keyword = sax::doctype_declaration::keyword_private;
+    param.keyword = sax::doctype_declaration::keyword_type::dtd_private;
     char c = cur_char();
     if (c == 'P')
     {
         if (next_char() != 'U' || next_char() != 'B' || next_char() != 'L' || next_char() != 'I' || next_char() != 'C')
             throw sax::malformed_xml_error("malformed DOCTYPE section.");
 
-        param.keyword = sax::doctype_declaration::keyword_public;
+        param.keyword = sax::doctype_declaration::keyword_type::dtd_public;
     }
     else if (c == 'S')
     {

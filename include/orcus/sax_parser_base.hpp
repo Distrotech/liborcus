@@ -44,7 +44,7 @@ public:
  */
 struct doctype_declaration
 {
-    enum keyword_type { keyword_public, keyword_private };
+    enum class keyword_type { dtd_public, dtd_private };
 
     keyword_type keyword;
     pstring root_element;

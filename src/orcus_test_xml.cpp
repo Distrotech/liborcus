@@ -231,7 +231,7 @@ void test_xml_dtd()
         const char* fpi;
         const char* uri;
     } tests[] = {
-        { SRCDIR"/test/xml/doctype/html.xml", sax::doctype_declaration::keyword_public,
+        { SRCDIR"/test/xml/doctype/html.xml", sax::doctype_declaration::keyword_type::dtd_public,
           "html", "-//W3C//DTD XHTML 1.0 Transitional//EN", "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" }
     };
 
