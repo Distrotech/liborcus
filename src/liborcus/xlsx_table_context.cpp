@@ -88,7 +88,7 @@ class table_column_attr_parser : public unary_function<xml_token_attr_t, void>
 
 public:
     table_column_attr_parser(string_pool* pool) :
-        m_pool(pool), m_id(-1), m_totals_row_func(spreadsheet::totals_row_function_none) {}
+        m_pool(pool), m_id(-1), m_totals_row_func(spreadsheet::totals_row_function_t::none) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -273,7 +273,7 @@ void xlsx_table_context::start_element(xmlns_id_t ns, xml_token_t name, const xm
             {
                 cout << "  * table column (id=" << func.get_id() << "; name=" << func.get_name() << ")" << endl;
                 cout << "    * totals row label: " << func.get_totals_row_label() << endl;
-                cout << "    * totals func: " << func.get_totals_row_function() << endl;
+                cout << "    * totals func: " << static_cast<int>(func.get_totals_row_function()) << endl;
             }
 
             m_table.set_column_identifier(func.get_id());

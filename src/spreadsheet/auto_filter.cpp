@@ -50,14 +50,14 @@ void auto_filter_t::commit_column(col_t col, auto_filter_column_t& data)
         it->second.swap(data);
 }
 
-table_column_t::table_column_t() : identifier(0), totals_row_function(totals_row_function_none) {}
+table_column_t::table_column_t() : identifier(0), totals_row_function(totals_row_function_t::none) {}
 
 void table_column_t::reset()
 {
     identifier = 0;
     name.clear();
     totals_row_label.clear();
-    totals_row_function = totals_row_function_none;
+    totals_row_function = totals_row_function_t::none;
 }
 
 table_style_t::table_style_t() :

@@ -140,14 +140,14 @@ void test_xlsx_table()
     assert(tcol->identifier == 1);
     assert(tcol->name == "Category");
     assert(tcol->totals_row_label == "Total");
-    assert(tcol->totals_row_function == totals_row_function_none);
+    assert(tcol->totals_row_function == totals_row_function_t::none);
 
     tcol = &p->columns[1];
     assert(tcol);
     assert(tcol->identifier == 2);
     assert(tcol->name == "Value");
     assert(tcol->totals_row_label.empty());
-    assert(tcol->totals_row_function == totals_row_function_sum);
+    assert(tcol->totals_row_function == totals_row_function_t::sum);
 
     const auto_filter_t& filter = p->filter;
 

@@ -97,18 +97,18 @@ enum class data_table_type_t
 /**
  * Function type used in the totals row of a table.
  */
-enum totals_row_function_t
+enum class totals_row_function_t
 {
-    totals_row_function_none = 0,
-    totals_row_function_sum,
-    totals_row_function_minimum,
-    totals_row_function_maximum,
-    totals_row_function_average,
-    totals_row_function_count,
-    totals_row_function_count_numbers,
-    totals_row_function_standard_deviation,
-    totals_row_function_variance,
-    totals_row_function_custom
+    none = 0,
+    sum,
+    minimum,
+    maximum,
+    average,
+    count,
+    count_numbers,
+    standard_deviation,
+    variance,
+    custom
 };
 
 enum conditional_format_t

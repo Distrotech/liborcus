@@ -21,16 +21,16 @@ typedef mdds::sorted_string_map<totals_row_function_t> trf_map_type;
 // Keys must be sorted.
 trf_map_type::entry trf_entries[] =
 {
-    { ORCUS_ASCII("average"), totals_row_function_average },
-    { ORCUS_ASCII("count"), totals_row_function_count },
-    { ORCUS_ASCII("countNums"), totals_row_function_count_numbers },
-    { ORCUS_ASCII("custom"), totals_row_function_custom },
-    { ORCUS_ASCII("max"), totals_row_function_maximum },
-    { ORCUS_ASCII("min"), totals_row_function_minimum },
-    { ORCUS_ASCII("none"), totals_row_function_none },
-    { ORCUS_ASCII("stdDev"), totals_row_function_standard_deviation },
-    { ORCUS_ASCII("sum"), totals_row_function_sum },
-    { ORCUS_ASCII("var"), totals_row_function_variance },
+    { ORCUS_ASCII("average"),   totals_row_function_t::average },
+    { ORCUS_ASCII("count"),     totals_row_function_t::count },
+    { ORCUS_ASCII("countNums"), totals_row_function_t::count_numbers },
+    { ORCUS_ASCII("custom"),    totals_row_function_t::custom },
+    { ORCUS_ASCII("max"),       totals_row_function_t::maximum },
+    { ORCUS_ASCII("min"),       totals_row_function_t::minimum },
+    { ORCUS_ASCII("none"),      totals_row_function_t::none },
+    { ORCUS_ASCII("stdDev"),    totals_row_function_t::standard_deviation },
+    { ORCUS_ASCII("sum"),       totals_row_function_t::sum },
+    { ORCUS_ASCII("var"),       totals_row_function_t::variance },
 };
 
 const trf_map_type& get_trf_map()
@@ -38,7 +38,7 @@ const trf_map_type& get_trf_map()
     static trf_map_type trf_map(
         trf_entries,
         sizeof(trf_entries)/sizeof(trf_entries[0]),
-        totals_row_function_none);
+        totals_row_function_t::none);
 
     return trf_map;
 }
