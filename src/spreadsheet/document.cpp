@@ -352,7 +352,7 @@ struct document_impl
         mp_styles(new import_styles(m_string_pool)),
         mp_strings(new import_shared_strings(m_string_pool, m_context, *mp_styles)),
         mp_name_resolver(ixion::formula_name_resolver::get(ixion::formula_name_resolver_t::excel_a1, &m_context)),
-        m_grammar(formula_grammar_xlsx_2007),
+        m_grammar(formula_grammar_t::xlsx_2007),
         m_table_handler(m_context, m_tables)
     {
         m_context.set_table_handler(&m_table_handler);
@@ -567,18 +567,18 @@ void document::set_formula_grammar(formula_grammar_t grammar)
     mp_impl->m_grammar = grammar;
     switch (mp_impl->m_grammar)
     {
-        case formula_grammar_xlsx_2007:
-        case formula_grammar_xlsx_2010:
+        case formula_grammar_t::xlsx_2007:
+        case formula_grammar_t::xlsx_2010:
             mp_impl->mp_name_resolver =
                 ixion::formula_name_resolver::get(
                     ixion::formula_name_resolver_t::excel_a1, &mp_impl->m_context);
         break;
-        case formula_grammar_ods:
+        case formula_grammar_t::ods:
             mp_impl->mp_name_resolver =
                 ixion::formula_name_resolver::get(
                     ixion::formula_name_resolver_t::odff, &mp_impl->m_context);
         break;
-        case formula_grammar_gnumeric:
+        case formula_grammar_t::gnumeric:
             // TODO : Use Excel A1 name resolver for now.
             mp_impl->mp_name_resolver =
                 ixion::formula_name_resolver::get(

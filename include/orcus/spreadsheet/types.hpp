@@ -35,13 +35,13 @@ enum class border_direction_t
     diagonal
 };
 
-enum formula_grammar_t
+enum class formula_grammar_t
 {
-    formula_grammar_unknown = 0,
-    formula_grammar_xlsx_2007,
-    formula_grammar_xlsx_2010,
-    formula_grammar_ods,
-    formula_grammar_gnumeric
+    unknown = 0,
+    xlsx_2007,
+    xlsx_2010,
+    ods,
+    gnumeric
 };
 
 enum formula_t

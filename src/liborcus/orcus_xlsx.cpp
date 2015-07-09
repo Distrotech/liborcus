@@ -226,7 +226,7 @@ void orcus_xlsx::set_formulas_to_doc()
         if (sf.master)
         {
             sheet->set_shared_formula(
-                sf.row, sf.column, orcus::spreadsheet::formula_grammar_xlsx_2007, sf.identifier,
+                sf.row, sf.column, orcus::spreadsheet::formula_grammar_t::xlsx_2007, sf.identifier,
                 &sf.formula[0], sf.formula.size(), &sf.range[0], sf.range.size());
         }
         else
@@ -247,13 +247,13 @@ void orcus_xlsx::set_formulas_to_doc()
         if (f.array)
         {
             sheet->set_array_formula(
-                f.row, f.column, spreadsheet::formula_grammar_xlsx_2007, &f.exp[0],
+                f.row, f.column, spreadsheet::formula_grammar_t::xlsx_2007, &f.exp[0],
                 f.exp.size(), &f.range[0], f.range.size());
         }
         else
         {
             sheet->set_formula(
-                f.row, f.column, orcus::spreadsheet::formula_grammar_xlsx_2007, &f.exp[0], f.exp.size());
+                f.row, f.column, orcus::spreadsheet::formula_grammar_t::xlsx_2007, &f.exp[0], f.exp.size());
         }
     }
 }
