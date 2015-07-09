@@ -202,19 +202,19 @@ border_attrs_t* get_border_attrs(border_t& cur_border, border_direction_t dir)
     border_attrs_t* p = NULL;
     switch (dir)
     {
-        case border_top:
+        case border_direction_t::top:
             p = &cur_border.top;
         break;
-        case border_bottom:
+        case border_direction_t::bottom:
             p = &cur_border.bottom;
         break;
-        case border_left:
+        case border_direction_t::left:
             p = &cur_border.left;
         break;
-        case border_right:
+        case border_direction_t::right:
             p = &cur_border.right;
         break;
-        case border_diagonal:
+        case border_direction_t::diagonal:
             p = &cur_border.diagonal;
         break;
         default:

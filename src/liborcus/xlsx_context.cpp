@@ -475,7 +475,7 @@ public:
 xlsx_styles_context::xlsx_styles_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_styles* styles) :
     xml_context_base(session_cxt, tokens),
     mp_styles(styles),
-    m_cur_border_dir(spreadsheet::border_direction_unknown),
+    m_cur_border_dir(spreadsheet::border_direction_t::unknown),
     m_cell_style_xf(false) {}
 
 xlsx_styles_context::~xlsx_styles_context() {}
@@ -651,40 +651,40 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         case XML_top:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_border);
-            m_cur_border_dir = spreadsheet::border_top;
-            border_attr_parser func(spreadsheet::border_top, *mp_styles);
+            m_cur_border_dir = spreadsheet::border_direction_t::top;
+            border_attr_parser func(spreadsheet::border_direction_t::top, *mp_styles);
             for_each(attrs.begin(), attrs.end(), func);
         }
         break;
         case XML_bottom:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_border);
-            m_cur_border_dir = spreadsheet::border_bottom;
-            border_attr_parser func(spreadsheet::border_bottom, *mp_styles);
+            m_cur_border_dir = spreadsheet::border_direction_t::bottom;
+            border_attr_parser func(spreadsheet::border_direction_t::bottom, *mp_styles);
             for_each(attrs.begin(), attrs.end(), func);
         }
         break;
         case XML_left:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_border);
-            m_cur_border_dir = spreadsheet::border_left;
-            border_attr_parser func(spreadsheet::border_left, *mp_styles);
+            m_cur_border_dir = spreadsheet::border_direction_t::left;
+            border_attr_parser func(spreadsheet::border_direction_t::left, *mp_styles);
             for_each(attrs.begin(), attrs.end(), func);
         }
         break;
         case XML_right:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_border);
-            m_cur_border_dir = spreadsheet::border_right;
-            border_attr_parser func(spreadsheet::border_right, *mp_styles);
+            m_cur_border_dir = spreadsheet::border_direction_t::right;
+            border_attr_parser func(spreadsheet::border_direction_t::right, *mp_styles);
             for_each(attrs.begin(), attrs.end(), func);
         }
         break;
         case XML_diagonal:
         {
             xml_element_expected(parent, NS_ooxml_xlsx, XML_border);
-            m_cur_border_dir = spreadsheet::border_diagonal;
-            border_attr_parser func(spreadsheet::border_diagonal, *mp_styles);
+            m_cur_border_dir = spreadsheet::border_direction_t::diagonal;
+            border_attr_parser func(spreadsheet::border_direction_t::diagonal, *mp_styles);
             for_each(attrs.begin(), attrs.end(), func);
         }
         break;

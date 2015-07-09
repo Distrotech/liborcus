@@ -25,14 +25,14 @@ typedef unsigned short row_height_t;
 ORCUS_DLLPUBLIC col_width_t get_default_column_width();
 ORCUS_DLLPUBLIC row_height_t get_default_row_height();
 
-enum border_direction_t
+enum class border_direction_t
 {
-    border_direction_unknown = 0,
-    border_top,
-    border_bottom,
-    border_left,
-    border_right,
-    border_diagonal
+    unknown = 0,
+    top,
+    bottom,
+    left,
+    right,
+    diagonal
 };
 
 enum formula_grammar_t
