@@ -181,11 +181,11 @@ enum class condition_date_t
     last_year,
 };
 
-enum databar_axis_t
+enum class databar_axis_t
 {
-    databar_axis_none = 0,
-    databar_axis_middle,
-    databar_axis_automatic
+    none = 0,
+    middle,
+    automatic
 };
 
 /**
