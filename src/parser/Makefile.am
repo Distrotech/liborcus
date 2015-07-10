@@ -10,6 +10,7 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	css_types.cpp \
 	csv_parser_base.cpp \
 	exception.cpp \
+	json_parser_base.cpp \
 	parser_base.cpp \
 	parser_global.cpp \
 	pstring.cpp \

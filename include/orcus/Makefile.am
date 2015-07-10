@@ -19,6 +19,7 @@ liborcus_HEADERS = \
 	global.hpp \
 	info.hpp \
 	interface.hpp \
+	json_parser_base.hpp \
 	measurement.hpp \
 	orcus_csv.hpp \
 	orcus_xml.hpp \

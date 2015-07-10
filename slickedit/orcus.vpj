@@ -180,6 +180,8 @@
                 <F N="../include/orcus/global.hpp"/>
                 <F N="../include/orcus/info.hpp"/>
                 <F N="../include/orcus/interface.hpp"/>
+                <F N="../include/orcus/json_parser.hpp"/>
+                <F N="../include/orcus/json_parser_base.hpp"/>
                 <F N="../include/orcus/measurement.hpp"/>
                 <F N="../include/orcus/orcus_csv.hpp"/>
                 <F N="../include/orcus/orcus_gnumeric.hpp"/>
@@ -534,6 +536,7 @@
                 <F N="../src/parser/css_types.cpp"/>
                 <F N="../src/parser/csv_parser_base.cpp"/>
                 <F N="../src/parser/exception.cpp"/>
+                <F N="../src/parser/json_parser_base.cpp"/>
                 <F N="../src/parser/parser_base.cpp"/>
                 <F N="../src/parser/parser_global.cpp"/>
                 <F N="../src/parser/pstring.cpp"/>

@@ -29,3 +29,4 @@ missing
 test-driver
 VERSION
 stamp-h1
+src/liborcus/constants.inl
