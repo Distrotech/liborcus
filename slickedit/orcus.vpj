@@ -180,6 +180,7 @@
                 <F N="../include/orcus/global.hpp"/>
                 <F N="../include/orcus/info.hpp"/>
                 <F N="../include/orcus/interface.hpp"/>
+                <F N="../include/orcus/json_document_tree.hpp"/>
                 <F N="../include/orcus/json_parser.hpp"/>
                 <F N="../include/orcus/json_parser_base.hpp"/>
                 <F N="../include/orcus/measurement.hpp"/>
@@ -303,6 +304,7 @@
                 <F N="../src/liborcus/info.cpp"/>
                 <F N="../src/liborcus/interface.cpp"/>
                 <F N="../src/liborcus/interface.cpp"/>
+                <F N="../src/liborcus/json_document_tree.cpp"/>
                 <F N="../src/liborcus/measurement.cpp"/>
                 <F N="../src/liborcus/measurement.cpp"/>
                 <F N="../src/liborcus/mock_spreadsheet.cpp"/>
