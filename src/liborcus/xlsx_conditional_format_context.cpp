@@ -393,31 +393,31 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
                 switch (m_date)
                 {
                     case date_last7Days:
-                        m_cond_format.set_date(orcus::spreadsheet::condition_date_last_7_days);
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_t::last_7_days);
                     break;
                     case date_lastMonth:
-                        m_cond_format.set_date(orcus::spreadsheet::condition_date_last_month);
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_t::last_month);
                     break;
                     case date_lastWeek:
-                        m_cond_format.set_date(orcus::spreadsheet::condition_date_last_week);
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_t::last_week);
                     break;
                     case date_nextMonth:
-                        m_cond_format.set_date(orcus::spreadsheet::condition_date_next_month);
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_t::next_month);
                     break;
                     case date_thisMonth:
-                        m_cond_format.set_date(orcus::spreadsheet::condition_date_this_month);
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_t::this_month);
                     break;
                     case date_thisWeek:
-                        m_cond_format.set_date(orcus::spreadsheet::condition_date_this_week);
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_t::this_week);
                     break;
                     case date_today:
-                        m_cond_format.set_date(orcus::spreadsheet::condition_date_today);
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_t::today);
                     break;
                     case date_tomorrow:
-                        m_cond_format.set_date(orcus::spreadsheet::condition_date_tomorrow);
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_t::tomorrow);
                     break;
                     case date_yesterday:
-                        m_cond_format.set_date(orcus::spreadsheet::condition_date_yesterday);
+                        m_cond_format.set_date(orcus::spreadsheet::condition_date_t::yesterday);
                     break;
                     default:
                     break;

@@ -163,22 +163,22 @@ enum class condition_type_t
     percentile
 };
 
-enum condition_date_t
+enum class condition_date_t
 {
-    condition_date_unknown = 0,
-    condition_date_today,
-    condition_date_yesterday,
-    condition_date_tomorrow,
-    condition_date_last_7_days,
-    condition_date_this_week,
-    condition_date_next_week,
-    condition_date_last_week,
-    condition_date_this_month,
-    condition_date_next_month,
-    condition_date_last_month,
-    condition_date_this_year,
-    condition_date_next_year,
-    condition_date_last_year,
+    unknown = 0,
+    today,
+    yesterday,
+    tomorrow,
+    last_7_days,
+    this_week,
+    next_week,
+    last_week,
+    this_month,
+    next_month,
+    last_month,
+    this_year,
+    next_year,
+    last_year,
 };
 
 enum databar_axis_t
