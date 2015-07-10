@@ -28,14 +28,7 @@ parser_base::parser_base(
 
 bool parser_base::is_blank(char c) const
 {
-    if (c == ' ')
-        return true;
-
-    if (c == '\t')
-        // tab character.
-        return true;
-
-    return false;
+    return is_in(c, " \t");
 }
 
 bool parser_base::is_delim(char c) const

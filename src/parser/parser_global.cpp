@@ -11,14 +11,7 @@ namespace orcus {
 
 bool is_blank(char c)
 {
-    if (is_in(c, " \t"))
-        return true;
-
-    if (c == 0x0A || c == 0x0D)
-        // LF or CR
-        return true;
-
-    return false;
+    return is_in(c, " \t\n\r");
 }
 
 bool is_alpha(char c)
@@ -32,14 +25,7 @@ bool is_alpha(char c)
 
 bool is_name_char(char c)
 {
-    switch (c)
-    {
-        case '-':
-        case '_':
-            return true;
-    }
-
-    return false;
+    return is_in(c, "-_");
 }
 
 bool is_numeric(char c)
