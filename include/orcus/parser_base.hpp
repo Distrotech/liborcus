@@ -30,6 +30,8 @@ protected:
     void next();
     char cur_char() const;
     char next_char() const;
+
+    void skip(const char* chars_to_skip);
 };
 
 }

@@ -162,11 +162,7 @@ void parser_base::skip_to_or_blank(const char*&p, size_t& len, const char* chars
 
 void parser_base::skip_blanks()
 {
-    for (; has_char(); next())
-    {
-        if (!is_blank(*mp_char))
-            break;
-    }
+    skip(" \t\r\n");
 }
 
 void parser_base::skip_blanks_reverse()

@@ -50,11 +50,7 @@ bool parser_base::is_text_qualifier(char c) const
 
 void parser_base::skip_blanks()
 {
-    for (; has_char(); next())
-    {
-        if (!is_blank(*mp_char))
-            break;
-    }
+    skip(" \t");
 }
 
 

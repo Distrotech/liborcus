@@ -6,6 +6,7 @@
  */
 
 #include "orcus/parser_base.hpp"
+#include "orcus/parser_global.hpp"
 
 namespace orcus {
 
@@ -26,6 +27,15 @@ char parser_base::cur_char() const
 char parser_base::next_char() const
 {
     return *(mp_char+1);
+}
+
+void parser_base::skip(const char* chars_to_skip)
+{
+    for (; has_char(); next())
+    {
+        if (!is_in(*mp_char, chars_to_skip))
+            break;
+    }
 }
 
 }

@@ -11,15 +11,11 @@ namespace orcus {
 
 bool is_blank(char c)
 {
-    if (c == ' ')
+    if (is_in(c, " \t"))
         return true;
 
     if (c == 0x0A || c == 0x0D)
         // LF or CR
-        return true;
-
-    if (c == '\t')
-        // tab character.
         return true;
 
     return false;
