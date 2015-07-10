@@ -51,32 +51,11 @@ void parse_error::throw_with(
 }
 
 parser_base::parser_base(const char* p, size_t n) :
-    mp_char(p),
-    m_pos(0),
-    m_length(n),
+    ::orcus::parser_base(p, n),
     m_simple_selector_count(0),
     m_combinator(combinator_t::descendant) {}
 
-void parser_base::next()
-{
-    ++m_pos;
-    ++mp_char;
-}
-
-char parser_base::cur_char() const
-{
-    return *mp_char;
-}
-
-char parser_base::next_char() const
-{
-    const char* p = mp_char;
-    ++p;
-    return *p;
-}
-
 size_t parser_base::remaining_size() const { return m_length - m_pos - 1; }
-bool parser_base::has_char() const { return m_pos < m_length; }
 
 void parser_base::identifier(const char*& p, size_t& len, const char* extra)
 {

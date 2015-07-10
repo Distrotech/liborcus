@@ -11,6 +11,7 @@
 #include "env.hpp"
 #include "cell_buffer.hpp"
 #include "parser_global.hpp"
+#include "parser_base.hpp"
 
 #include <cstdlib>
 #include <cstring>
@@ -47,23 +48,14 @@ public:
     virtual const char* what() const throw();
 };
 
-class ORCUS_PSR_DLLPUBLIC parser_base
+class ORCUS_PSR_DLLPUBLIC parser_base : public ::orcus::parser_base
 {
 protected:
     const csv::parser_config& m_config;
     cell_buffer m_cell_buf;
-    const char* mp_char;
-    size_t m_pos;
-    size_t m_length;
 
 protected:
     parser_base(const char* p, size_t n, const parser_config& config);
-
-    bool has_char() const { return m_pos < m_length; }
-    bool has_next() const { return m_pos + 1 < m_length; }
-    void next();
-    char cur_char() const;
-    char next_char() const;
 
     /**
      * This is different from the global 'is_blank' in that it doesn't treat

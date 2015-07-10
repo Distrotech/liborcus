@@ -11,6 +11,7 @@
 #include "orcus/env.hpp"
 #include "orcus/css_types.hpp"
 #include "orcus/exception.hpp"
+#include "orcus/parser_base.hpp"
 
 #include <string>
 #include <exception>
@@ -26,22 +27,14 @@ public:
     static void throw_with(const char* msg_before, const char* p, size_t n, const char* msg_after);
 };
 
-class ORCUS_PSR_DLLPUBLIC parser_base
+class ORCUS_PSR_DLLPUBLIC parser_base : public ::orcus::parser_base
 {
 public:
     parser_base(const char* p, size_t n);
 
 protected:
-    void next();
-    char cur_char() const;
-
-    /**
-     * The caller must ensure that the next character exists.
-     */
-    char next_char() const;
 
     size_t remaining_size() const;
-    bool has_char() const;
 
     void identifier(const char*& p, size_t& len, const char* extra = NULL);
     uint8_t parse_uint8();
@@ -69,10 +62,6 @@ protected:
     void reset_before_block();
 
 protected:
-    const char* mp_char;
-    size_t m_pos;
-    size_t m_length;
-
     size_t m_simple_selector_count;
     combinator_t m_combinator;
 };

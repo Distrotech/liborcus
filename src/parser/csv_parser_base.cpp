@@ -24,23 +24,7 @@ const char* parse_error::what() const throw()
 
 parser_base::parser_base(
     const char* p, size_t n, const csv::parser_config& config) :
-    m_config(config), mp_char(p), m_pos(0), m_length(n) {}
-
-void parser_base::next()
-{
-    ++m_pos;
-    ++mp_char;
-}
-
-char parser_base::cur_char() const
-{
-    return *mp_char;
-}
-
-char parser_base::next_char() const
-{
-    return *(mp_char+1);
-}
+    ::orcus::parser_base(p, n), m_config(config) {}
 
 bool parser_base::is_blank(char c) const
 {
