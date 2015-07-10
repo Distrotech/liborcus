@@ -27,12 +27,12 @@ private:
 };
 
 template<typename _Handler>
-json_parser<_Handler>::csv_parser(
+json_parser<_Handler>::json_parser(
     const char* p, size_t n, handler_type& hdl) :
     json::parser_base(p, n), m_handler(hdl) {}
 
 template<typename _Handler>
-void csv_parser<_Handler>::parse()
+void json_parser<_Handler>::parse()
 {
     m_handler.begin_parse();
     m_handler.end_parse();
