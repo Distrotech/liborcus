@@ -60,6 +60,7 @@ parser_test_base64_SOURCES = \
 	base64.cpp \
 	base64_test.cpp
 
+parser_test_base64_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
 parser_test_base64_CPPFLAGS = $(AM_CPPFLAGS)
 
 # parser-test-sax-token-parser

@@ -8,6 +8,9 @@ case "$1" in
     csv|xml|xml-mapped)
         LOCATION=orcus
         ;;
+    base64|sax-token-parser|string-pool|xml-namespace)
+        LOCATION=parser
+        ;;
 esac
 
 if [ "$LOCATION" = "" ]; then
@@ -20,6 +23,10 @@ if [ "$LOCATION" = "" ]; then
     echo "  * xml-mapped"
     echo "  * css-document-tree"
     echo "  * json-document-tree"
+    echo "  * base64"
+    echo "  * sax-token-parser"
+    echo "  * string-pool"
+    echo "  * xml-namespace"
     echo ""
 
     exit 1
@@ -37,4 +44,6 @@ case $LOCATION in
     orcus)
         orcus_exec $TEST "$PROGDIR/../src/"
         ;;
+    parser)
+        parser_test_exec $TEST "$PROGDIR/../src/parser"
 esac
