@@ -5,13 +5,30 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include "orcus/stream.hpp"
+#include "orcus/json_document_tree.hpp"
+
 #include <cassert>
 #include <cstdlib>
+#include <iostream>
 
 using namespace std;
+using namespace orcus;
+
+void test_json_parse_basic1()
+{
+    const char* path = SRCDIR"/test/json/basic1.json";
+    string strm;
+    load_file_content(path, strm);
+    cout << strm << endl;
+    json_document_tree doc;
+    doc.load(strm);
+}
 
 int main()
 {
+    test_json_parse_basic1();
+
     return EXIT_SUCCESS;
 }
 
