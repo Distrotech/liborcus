@@ -87,6 +87,8 @@ void json_parser<_Handler>::array()
             {
                 case ']':
                     m_handler.end_array();
+                    next();
+                    skip_blanks();
                     return;
                 case ',':
                     continue;
