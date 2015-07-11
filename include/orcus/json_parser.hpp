@@ -81,7 +81,7 @@ void json_parser<_Handler>::array()
         skip_blanks();
         value();
         skip_blanks();
-        if (has_char() && cur_char() == ']')
+        if (has_char())
         {
             switch (cur_char())
             {
