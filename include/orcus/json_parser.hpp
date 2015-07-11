@@ -10,10 +10,12 @@
 
 #include "orcus/json_parser_base.hpp"
 
+#include <cassert>
+
 namespace orcus {
 
 template<typename _Handler>
-class json_parser
+class json_parser : public json::parser_base
 {
 public:
     typedef _Handler handler_type;
@@ -21,6 +23,10 @@ public:
     json_parser(const char* p, size_t n, handler_type& hdl);
 
     void parse();
+
+private:
+    void value();
+    void array();
 
 private:
     handler_type& m_handler;
@@ -35,7 +41,62 @@ template<typename _Handler>
 void json_parser<_Handler>::parse()
 {
     m_handler.begin_parse();
+
+    skip_blanks();
+    if (has_char())
+        value();
+
     m_handler.end_parse();
+}
+
+template<typename _Handler>
+void json_parser<_Handler>::value()
+{
+    switch (cur_char())
+    {
+        case '[':
+            array();
+        break;
+        case 't':
+            parse_true();
+            m_handler.boolean_true();
+        break;
+        case 'f':
+            parse_false();
+            m_handler.boolean_false();
+        break;
+        default:
+            json::parse_error::throw_with("value: failed to parse '", cur_char(), "'.");
+    }
+}
+
+template<typename _Handler>
+void json_parser<_Handler>::array()
+{
+    assert(cur_char() == '[');
+
+    m_handler.begin_array();
+    for (next(); has_char(); next())
+    {
+        skip_blanks();
+        value();
+        skip_blanks();
+        if (has_char() && cur_char() == ']')
+        {
+            switch (cur_char())
+            {
+                case ']':
+                    m_handler.end_array();
+                    return;
+                case ',':
+                    continue;
+                default:
+                    json::parse_error::throw_with("array: either ']' or ',' expected, but '", cur_char(), "' found.");
+            }
+        }
+    }
+
+    throw json::parse_error("array: failed to parse array.");
 }
 
 }

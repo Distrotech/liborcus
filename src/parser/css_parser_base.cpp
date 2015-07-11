@@ -10,52 +10,29 @@
 
 #include <cstring>
 #include <cassert>
-#include <sstream>
 #include <limits>
 
 using namespace std;
 
 namespace orcus { namespace css {
 
-parse_error::parse_error(const std::string& msg) : general_error(msg) {}
+parse_error::parse_error(const std::string& msg) : ::orcus::parse_error(msg) {}
 
 void parse_error::throw_with(const char* msg_before, char c, const char* msg_after)
 {
-    std::ostringstream os;
-
-    if (msg_before)
-        os << msg_before;
-
-    os << c;
-
-    if (msg_after)
-        os << msg_after;
-
-    throw css::parse_error(os.str());
+    throw parse_error(build_message(msg_before, c, msg_after));
 }
 
 void parse_error::throw_with(
     const char* msg_before, const char* p, size_t n, const char* msg_after)
 {
-    std::ostringstream os;
-
-    if (msg_before)
-        os << msg_before;
-
-    write_to(os, p, n);
-
-    if (msg_after)
-        os << msg_after;
-
-    throw css::parse_error(os.str());
+    throw parse_error(build_message(msg_before, p, n, msg_after));
 }
 
 parser_base::parser_base(const char* p, size_t n) :
     ::orcus::parser_base(p, n),
     m_simple_selector_count(0),
     m_combinator(combinator_t::descendant) {}
-
-size_t parser_base::remaining_size() const { return m_length - m_pos - 1; }
 
 void parser_base::identifier(const char*& p, size_t& len, const char* extra)
 {

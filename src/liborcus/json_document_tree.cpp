@@ -6,14 +6,61 @@
  */
 
 #include "orcus/json_document_tree.hpp"
+#include "orcus/json_parser.hpp"
+
+#include <iostream>
 
 namespace orcus {
+
+namespace {
+
+class parser_handler
+{
+    json_document_tree& m_doc;
+public:
+    parser_handler(json_document_tree& doc) : m_doc(doc) {}
+
+    void begin_parse()
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:begin_parse): " << std::endl;
+    }
+
+    void end_parse()
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:end_parse): " << std::endl;
+    }
+
+    void begin_array()
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:begin_array): " << std::endl;
+    }
+
+    void end_array()
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:end_array): " << std::endl;
+    }
+
+    void boolean_true()
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:boolean_true): " << std::endl;
+    }
+
+    void boolean_false()
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:boolean_false): " << std::endl;
+    }
+};
+
+}
 
 json_document_tree::json_document_tree() {}
 json_document_tree::~json_document_tree() {}
 
 void json_document_tree::load(const std::string& strm)
 {
+    parser_handler hdl(*this);
+    json_parser<parser_handler> parser(strm.data(), strm.size(), hdl);
+    parser.parse();
 }
 
 }

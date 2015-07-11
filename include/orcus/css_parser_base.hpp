@@ -18,7 +18,7 @@
 
 namespace orcus { namespace css {
 
-class ORCUS_PSR_DLLPUBLIC parse_error : public general_error
+class ORCUS_PSR_DLLPUBLIC parse_error : public ::orcus::parse_error
 {
 public:
     parse_error(const std::string& msg);
@@ -33,8 +33,6 @@ public:
     parser_base(const char* p, size_t n);
 
 protected:
-
-    size_t remaining_size() const;
 
     void identifier(const char*& p, size_t& len, const char* extra = NULL);
     uint8_t parse_uint8();

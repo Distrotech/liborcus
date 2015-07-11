@@ -7,10 +7,48 @@
 
 #include "orcus/json_parser_base.hpp"
 
+#include <cassert>
+
 namespace orcus { namespace json {
+
+parse_error::parse_error(const std::string& msg) : ::orcus::parse_error(msg) {}
+
+void parse_error::throw_with(const char* msg_before, char c, const char* msg_after)
+{
+    throw parse_error(build_message(msg_before, c, msg_after));
+}
+
+void parse_error::throw_with(
+    const char* msg_before, const char* p, size_t n, const char* msg_after)
+{
+    throw parse_error(build_message(msg_before, p, n, msg_after));
+}
 
 parser_base::parser_base(const char* p, size_t n) :
     ::orcus::parser_base(p, n) {}
+
+void parser_base::parse_true()
+{
+    static const char* expected = "true";
+    if (!parse_expected(expected))
+        throw parse_error("parse_true: boolean 'true' expected.");
+
+    skip_blanks();
+}
+
+void parser_base::parse_false()
+{
+    static const char* expected = "false";
+    if (!parse_expected(expected))
+        throw parse_error("parse_false: boolean 'false' expected.");
+
+    skip_blanks();
+}
+
+void parser_base::skip_blanks()
+{
+    skip(" \t\n\r");
+}
 
 }}
 

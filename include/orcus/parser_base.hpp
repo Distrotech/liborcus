@@ -8,11 +8,22 @@
 #ifndef INCLUDED_ORCUS_PARSER_BASE_HPP
 #define INCLUDED_ORCUS_PARSER_BASE_HPP
 
-#include "env.hpp"
+#include "orcus/env.hpp"
+#include "orcus/exception.hpp"
 
+#include <string>
 #include <cstdlib>
 
 namespace orcus {
+
+class ORCUS_PSR_DLLPUBLIC parse_error : public general_error
+{
+protected:
+    parse_error(const std::string& msg);
+
+    static std::string build_message(const char* msg_before, char c, const char* msg_after);
+    static std::string build_message(const char* msg_before, const char* p, size_t n, const char* msg_after);
+};
 
 class ORCUS_PSR_DLLPUBLIC parser_base
 {
@@ -32,6 +43,19 @@ protected:
     char next_char() const;
 
     void skip(const char* chars_to_skip);
+
+    /**
+     * Parse and check next characters to see if it matches specified
+     * character sequence.
+     *
+     * @param expected null-terminated character array to match against.
+     *
+     * @return true if it matches specified character sequence, false
+     *         otherwise.
+     */
+    bool parse_expected(const char* expected);
+
+    size_t remaining_size() const;
 };
 
 }
