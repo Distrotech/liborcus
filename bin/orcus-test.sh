@@ -2,10 +2,10 @@
 
 LOCATION=
 case "$1" in
-    css-document-tree | json-document-tree)
+    common|css-document-tree|json-document-tree|format-detection|xml-map-tree|xml-structure-tree)
         LOCATION=liborcus
         ;;
-    csv|xml|xml-mapped)
+    csv|ods|xml|xml-mapped|xls-xml|xlsx)
         LOCATION=orcus
         ;;
     base64|sax-token-parser|string-pool|xml-namespace)
@@ -19,10 +19,19 @@ if [ "$LOCATION" = "" ]; then
     echo "Specify which test to run by passing one of"
     echo ""
     echo "  * csv"
+    echo "  * ods"
     echo "  * xml"
     echo "  * xml-mapped"
+    echo "  * xls-xml"
+    echo "  * xlsx"
+    echo
+    echo "  * common"
     echo "  * css-document-tree"
     echo "  * json-document-tree"
+    echo "  * format-detection"
+    echo "  * xml-map-tree"
+    echo "  * xml-structure-tree"
+    echo
     echo "  * base64"
     echo "  * sax-token-parser"
     echo "  * string-pool"

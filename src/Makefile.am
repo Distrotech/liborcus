@@ -11,7 +11,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/include
 bin_PROGRAMS =
 
 EXTRA_PROGRAMS = \
-	orcus-test-common \
 	orcus-test-xml
 
 AM_CPPFLAGS += $(BOOST_CPPFLAGS)
@@ -19,15 +18,6 @@ AM_CPPFLAGS += $(BOOST_CPPFLAGS)
 if HAVE_STATIC_LIB
 AM_CPPFLAGS += -D__ORCUS_STATIC_LIB=1
 endif
-
-# orcus-test-common
-
-orcus_test_common_SOURCES = orcus_test_common.cpp
-orcus_test_common_LDADD = \
-	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
-	liborcus/liborcus-@ORCUS_API_VERSION@.la
-
-orcus_test_common_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 # orcus-test-xml
 
@@ -40,7 +30,6 @@ orcus_test_xml_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLA
 
 
 TESTS = \
-	orcus-test-common \
 	orcus-test-xml
 
 if WITH_TOOLS

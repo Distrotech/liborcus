@@ -180,12 +180,32 @@ void test_string2long_conversion()
     }
 }
 
+void test_pstring()
+{
+    {
+        // test for trimming.
+        string s1("test"), s2("  test"), s3("   test  ");
+        pstring ps1(s1.c_str()), ps2(s2.c_str()), ps3(s3.c_str());
+        assert(ps1 != ps2);
+        assert(ps1 != ps3);
+        assert(ps2 != ps3);
+
+        pstring trimmed = ps1.trim();
+        assert(ps1 == trimmed); // nothing to trim.
+        assert(ps1 == ps2.trim());
+        assert(ps1 == ps3.trim());
+        assert(ps1.size() == ps2.trim().size());
+        assert(ps1.size() == ps3.trim().size());
+    }
+}
+
 int main()
 {
     test_date_time_conversion();
     test_measurement_conversion();
     test_string2number_conversion();
     test_string2long_conversion();
+    test_pstring();
 
     return EXIT_SUCCESS;
 }
