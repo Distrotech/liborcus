@@ -1,0 +1,16 @@
+[
+    "I am string",
+    "me too",
+    "",
+    "\\",
+    "\/",
+    "\b",
+    "\f",
+    "\n",
+    "\r",
+    "\t",
+    "\"quoted\"",
+    "http:\/\/www.google.com",
+    "one \n two \n three"
+]
+

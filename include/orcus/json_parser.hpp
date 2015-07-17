@@ -27,6 +27,8 @@ public:
 private:
     void value();
     void array();
+    void string();
+    void string_with_escaped_char(const char* p, size_t n, char c);
 
 private:
     handler_type& m_handler;
@@ -65,6 +67,9 @@ void json_parser<_Handler>::value()
             parse_false();
             m_handler.boolean_false();
         break;
+        case '"':
+            string();
+        break;
         default:
             json::parse_error::throw_with("value: failed to parse '", cur_char(), "'.");
     }
@@ -99,6 +104,140 @@ void json_parser<_Handler>::array()
     }
 
     throw json::parse_error("array: failed to parse array.");
+}
+
+template<typename _Handler>
+void json_parser<_Handler>::string()
+{
+    assert(cur_char() == '"');
+    next();
+    if (!has_char())
+        throw json::parse_error("string: stream ended prematurely before reaching the closing quote.");
+
+    size_t len = 0;
+    const char* p = mp_char;
+    bool escape = false;
+
+    for (; has_char(); next(), ++len)
+    {
+        if (escape)
+        {
+            char c = cur_char();
+            escape = false;
+
+            switch (c)
+            {
+                case '"':
+                case '\\':
+                case '/':
+                    string_with_escaped_char(p, len-1, c);
+                    return;
+                case 'b': // backspace
+                case 'f': // formfeed
+                case 'n': // newline
+                case 'r': // carriage return
+                case 't': // horizontal tab
+                    // these are legal escape characters.
+                break;
+                default:
+                    json::parse_error::throw_with("string: illegal escape character '", c, "'.");
+            }
+        }
+
+        switch (cur_char())
+        {
+            case '"':
+                // closing quote.
+                m_handler.string(p, len);
+                next(); // skip the quote.
+                skip_blanks();
+                return;
+            break;
+            case '\\':
+            {
+                escape = true;
+                continue;
+            }
+            break;
+            default:
+                ;
+        }
+    }
+
+    throw json::parse_error("string: stream ended prematurely before reaching the closing quote.");
+}
+
+template<typename _Handler>
+void json_parser<_Handler>::string_with_escaped_char(const char* p, size_t n, char c)
+{
+    // Start the buffer with the string we've parsed so far.
+    reset_buffer();
+    append_to_buffer(p, n);
+    append_to_buffer(&c, 1);
+
+    next();
+    if (!has_char())
+        throw json::parse_error(
+            "string_with_escaped_char: stream ended prematurely before reaching the closing quote.");
+
+    size_t len = 0;
+    p = mp_char;
+    bool escape = false;
+
+    for (; has_char(); next(), ++len)
+    {
+        char c = cur_char();
+
+        if (escape)
+        {
+            escape = false;
+
+            switch (c)
+            {
+                case '"':
+                case '\\':
+                case '/':
+                    append_to_buffer(p, len-1);
+                    append_to_buffer(&c, 1);
+                    next();
+                    len = 0;
+                    p = mp_char;
+                break;
+                case 'b': // backspace
+                case 'f': // formfeed
+                case 'n': // newline
+                case 'r': // carriage return
+                case 't': // horizontal tab
+                    // these are control characters.
+                break;
+                default:
+                    json::parse_error::throw_with("string_with_escaped_char: illegal escape character '", c, "'.");
+            }
+        }
+
+        switch (cur_char())
+        {
+            case '"':
+                // closing quote.
+                append_to_buffer(p, len);
+                m_handler.string(get_buffer(), get_buffer_size());
+                next(); // skip the quote.
+                skip_blanks();
+                return;
+            break;
+            case '\\':
+            {
+                escape = true;
+                continue;
+            }
+            break;
+            default:
+                ;
+        }
+    }
+
+    throw json::parse_error(
+        "string_with_escaped_char: stream ended prematurely before reaching the closing quote.");
 }
 
 }

@@ -10,6 +10,8 @@
 
 #include "orcus/parser_base.hpp"
 
+#include <memory>
+
 namespace orcus { namespace json {
 
 class ORCUS_PSR_DLLPUBLIC parse_error : public ::orcus::parse_error
@@ -23,12 +25,25 @@ public:
 
 class ORCUS_PSR_DLLPUBLIC parser_base : public ::orcus::parser_base
 {
+    struct impl;
+    std::unique_ptr<impl> mp_impl;
+
 protected:
+    parser_base() = delete;
+    parser_base(const parser_base&) = delete;
+    parser_base& operator=(const parser_base&) = delete;
+
     parser_base(const char* p, size_t n);
+    ~parser_base();
 
     void parse_true();
     void parse_false();
     void skip_blanks();
+
+    void reset_buffer();
+    void append_to_buffer(const char* p, size_t n);
+    const char* get_buffer() const;
+    size_t get_buffer_size() const;
 };
 
 }}

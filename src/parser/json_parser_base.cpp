@@ -6,8 +6,11 @@
  */
 
 #include "orcus/json_parser_base.hpp"
+#include "orcus/global.hpp"
+#include "orcus/cell_buffer.hpp"
 
 #include <cassert>
+#include <iostream>
 
 namespace orcus { namespace json {
 
@@ -24,8 +27,15 @@ void parse_error::throw_with(
     throw parse_error(build_message(msg_before, p, n, msg_after));
 }
 
+struct parser_base::impl
+{
+    cell_buffer m_buffer;
+};
+
 parser_base::parser_base(const char* p, size_t n) :
-    ::orcus::parser_base(p, n) {}
+    ::orcus::parser_base(p, n), mp_impl(make_unique<impl>()) {}
+
+parser_base::~parser_base() {}
 
 void parser_base::parse_true()
 {
@@ -48,6 +58,29 @@ void parser_base::parse_false()
 void parser_base::skip_blanks()
 {
     skip(" \t\n\r");
+}
+
+void parser_base::reset_buffer()
+{
+    mp_impl->m_buffer.reset();
+}
+
+void parser_base::append_to_buffer(const char* p, size_t n)
+{
+    if (!p || !n)
+        return;
+
+    mp_impl->m_buffer.append(p, n);
+}
+
+const char* parser_base::get_buffer() const
+{
+    return mp_impl->m_buffer.get();
+}
+
+size_t parser_base::get_buffer_size() const
+{
+    return mp_impl->m_buffer.size();
 }
 
 }}

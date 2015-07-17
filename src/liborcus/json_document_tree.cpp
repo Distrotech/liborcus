@@ -7,6 +7,7 @@
 
 #include "orcus/json_document_tree.hpp"
 #include "orcus/json_parser.hpp"
+#include "orcus/pstring.hpp"
 
 #include <iostream>
 
@@ -48,6 +49,11 @@ public:
     void boolean_false()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:boolean_false): " << std::endl;
+    }
+
+    void string(const char* p, size_t len)
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:string): '" << pstring(p, len) << "'" << std::endl;
     }
 };
 

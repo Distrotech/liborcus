@@ -15,12 +15,28 @@
 using namespace std;
 using namespace orcus;
 
-void test_json_parse_basic1()
+string get_stream(const char* path)
 {
-    const char* path = SRCDIR"/test/json/basic1.json";
+    cout << path << endl;
     string strm;
     load_file_content(path, strm);
     cout << strm << endl;
+
+    return strm;
+}
+
+void test_json_parse_basic1()
+{
+    const char* path = SRCDIR"/test/json/basic1.json";
+    string strm = get_stream(path);
+    json_document_tree doc;
+    doc.load(strm);
+}
+
+void test_json_parse_basic2()
+{
+    const char* path = SRCDIR"/test/json/basic2.json";
+    string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm);
 }
@@ -28,6 +44,7 @@ void test_json_parse_basic1()
 int main()
 {
     test_json_parse_basic1();
+    test_json_parse_basic2();
 
     return EXIT_SUCCESS;
 }
