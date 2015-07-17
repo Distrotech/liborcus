@@ -14,6 +14,27 @@
 
 namespace orcus { namespace json {
 
+escape_char_t get_escape_char_type(char c)
+{
+    switch (c)
+    {
+        case '"':
+        case '\\':
+        case '/':
+            return escape_char_t::legal;
+        case 'b': // backspace
+        case 'f': // formfeed
+        case 'n': // newline
+        case 'r': // carriage return
+        case 't': // horizontal tab
+            return escape_char_t::control_char;
+        default:
+            ;
+    }
+
+    return escape_char_t::illegal;
+}
+
 parse_error::parse_error(const std::string& msg) : ::orcus::parse_error(msg) {}
 
 void parse_error::throw_with(const char* msg_before, char c, const char* msg_after)

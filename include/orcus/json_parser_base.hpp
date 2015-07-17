@@ -14,6 +14,24 @@
 
 namespace orcus { namespace json {
 
+enum class escape_char_t
+{
+    illegal,
+    legal,
+    control_char
+};
+
+/**
+ * Given a character that occurs immediately after the escape character '\',
+ * return what type this character is.
+ *
+ * @param c character that occurs immediately after the escape character
+ *          '\'.
+ *
+ * @return enum value representing the type of escape character.
+ */
+ORCUS_PSR_DLLPUBLIC escape_char_t get_escape_char_type(char c);
+
 class ORCUS_PSR_DLLPUBLIC parse_error : public ::orcus::parse_error
 {
 public:

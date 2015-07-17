@@ -125,20 +125,16 @@ void json_parser<_Handler>::string()
             char c = cur_char();
             escape = false;
 
-            switch (c)
+            switch (json::get_escape_char_type(c))
             {
-                case '"':
-                case '\\':
-                case '/':
+                case json::escape_char_t::legal:
                     string_with_escaped_char(p, len-1, c);
                     return;
-                case 'b': // backspace
-                case 'f': // formfeed
-                case 'n': // newline
-                case 'r': // carriage return
-                case 't': // horizontal tab
-                    // these are legal escape characters.
                 break;
+                case json::escape_char_t::control_char:
+                    // do nothing on control characters.
+                break;
+                case json::escape_char_t::illegal:
                 default:
                     json::parse_error::throw_with("string: illegal escape character '", c, "'.");
             }
@@ -192,24 +188,19 @@ void json_parser<_Handler>::string_with_escaped_char(const char* p, size_t n, ch
         {
             escape = false;
 
-            switch (c)
+            switch (json::get_escape_char_type(c))
             {
-                case '"':
-                case '\\':
-                case '/':
+                case json::escape_char_t::legal:
                     append_to_buffer(p, len-1);
                     append_to_buffer(&c, 1);
                     next();
                     len = 0;
                     p = mp_char;
                 break;
-                case 'b': // backspace
-                case 'f': // formfeed
-                case 'n': // newline
-                case 'r': // carriage return
-                case 't': // horizontal tab
-                    // these are control characters.
+                case json::escape_char_t::control_char:
+                    // do nothing on control characters.
                 break;
+                case json::escape_char_t::illegal:
                 default:
                     json::parse_error::throw_with("string_with_escaped_char: illegal escape character '", c, "'.");
             }
