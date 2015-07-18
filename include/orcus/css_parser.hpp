@@ -442,7 +442,8 @@ void css_parser<_Handler>::function_rgb(bool alpha)
         next();
         skip_comments_and_blanks();
 
-        double alpha_val = parse_double();
+        double alpha_val = parse_double_or_throw();
+
         alpha_val = clip(alpha_val, 0.0, 1.0);
         m_handler.rgba(vals[0], vals[1], vals[2], alpha_val);
     }
@@ -467,7 +468,7 @@ void css_parser<_Handler>::function_hsl(bool alpha)
 {
     // hsl(num, percent, percent)  hsla(num, percent, percent, float)
 
-    double hue = parse_double(); // casted to uint8_t eventually.
+    double hue = parse_double_or_throw(); // casted to uint8_t eventually.
     hue = clip(hue, 0.0, 360.0);
     skip_comments_and_blanks();
 
@@ -506,7 +507,7 @@ void css_parser<_Handler>::function_hsl(bool alpha)
     next();
     skip_comments_and_blanks();
 
-    double alpha_val = parse_double();
+    double alpha_val = parse_double_or_throw();
     alpha_val = clip(alpha_val, 0.0, 1.0);
     skip_comments_and_blanks();
     m_handler.hsla(hue, sat, light, alpha_val);

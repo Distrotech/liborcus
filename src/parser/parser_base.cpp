@@ -10,6 +10,7 @@
 
 #include <sstream>
 #include <cstring>
+#include <limits>
 
 namespace orcus {
 
@@ -87,6 +88,19 @@ bool parser_base::parse_expected(const char* expected)
     }
 
     return true;
+}
+
+double parser_base::parse_double()
+{
+    size_t max_length = remaining_size();
+    const char* p = mp_char;
+    double val = parse_numeric(p, max_length);
+    if (p == mp_char)
+        return std::numeric_limits<double>::quiet_NaN();
+
+    m_pos += p - mp_char;
+    mp_char = p;
+    return val;
 }
 
 size_t parser_base::remaining_size() const

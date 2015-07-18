@@ -55,6 +55,11 @@ public:
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:string): '" << pstring(p, len) << "'" << std::endl;
     }
+
+    void number(double val)
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:number): " << val << std::endl;
+    }
 };
 
 }

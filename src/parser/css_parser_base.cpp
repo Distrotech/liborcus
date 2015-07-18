@@ -10,6 +10,7 @@
 
 #include <cstring>
 #include <cassert>
+#include <cmath>
 #include <limits>
 
 using namespace std;
@@ -80,28 +81,23 @@ uint8_t parser_base::parse_uint8()
     return static_cast<uint8_t>(val);
 }
 
-double parser_base::parse_double()
-{
-    size_t max_length = remaining_size();
-    const char* p = mp_char;
-    double val = parse_numeric(p, max_length);
-    if (p == mp_char)
-        throw css::parse_error("parse_double: failed to parse double precision value.");
-
-    m_pos += p - mp_char;
-    mp_char = p;
-    return val;
-}
-
 double parser_base::parse_percent()
 {
-    double v = parse_double();
+    double v = parse_double_or_throw();
 
     if (*mp_char != '%')
         css::parse_error::throw_with(
             "parse_percent: '%' expected after the numeric value, but '", *mp_char, "' found.");
 
     next(); // skip the '%'.
+    return v;
+}
+
+double parser_base::parse_double_or_throw()
+{
+    double v = parse_double();
+    if (std::isnan(v))
+        throw css::parse_error("parse_double: failed to parse double precision value.");
     return v;
 }
 

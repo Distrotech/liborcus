@@ -10,6 +10,7 @@
 #include "orcus/cell_buffer.hpp"
 
 #include <cassert>
+#include <cmath>
 #include <iostream>
 
 namespace orcus { namespace json {
@@ -74,6 +75,26 @@ void parser_base::parse_false()
         throw parse_error("parse_false: boolean 'false' expected.");
 
     skip_blanks();
+}
+
+long parser_base::parse_long_or_throw()
+{
+    const char* p = mp_char;
+    long v = parse_integer(p, remaining_size());
+    if (p == mp_char)
+        throw parse_error("parse_integer_or_throw: failed to parse long integer value.");
+
+    m_pos += p - mp_char;
+    mp_char = p;
+    return v;
+}
+
+double parser_base::parse_double_or_throw()
+{
+    double v = parse_double();
+    if (std::isnan(v))
+        throw parse_error("parse_double_or_throw: failed to parse double precision value.");
+    return v;
 }
 
 void parser_base::skip_blanks()

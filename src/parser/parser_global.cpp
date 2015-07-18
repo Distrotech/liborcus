@@ -109,6 +109,42 @@ double parse_numeric(const char*& p, size_t max_length)
     return negative_sign ? -ret : ret;
 }
 
+long parse_integer(const char*& p, size_t max_length)
+{
+    const char* p_end = p + max_length;
+
+    long ret = 0.0;
+    bool negative_sign = false;
+
+    // Check for presence of a sign.
+    if (p != p_end)
+    {
+        switch (*p)
+        {
+            case '+':
+                ++p;
+            break;
+            case '-':
+                negative_sign = true;
+                ++p;
+            break;
+            default:
+                ;
+        }
+    }
+
+    for (; p != p_end; ++p)
+    {
+        if (*p < '0' || '9' < *p)
+            return negative_sign ? -ret : ret;
+
+        ret *= 10;
+        ret += *p - '0';
+    }
+
+    return negative_sign ? -ret : ret;
+}
+
 double clip(double input, double low, double high)
 {
     if (input < low)

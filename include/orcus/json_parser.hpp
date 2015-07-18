@@ -11,6 +11,7 @@
 #include "orcus/json_parser_base.hpp"
 
 #include <cassert>
+#include <cmath>
 
 namespace orcus {
 
@@ -27,6 +28,8 @@ public:
 private:
     void value();
     void array();
+    void number();
+    void number_with_exp(double base);
     void string();
     void string_with_escaped_char(const char* p, size_t n, char c);
 
@@ -54,8 +57,18 @@ void json_parser<_Handler>::parse()
 template<typename _Handler>
 void json_parser<_Handler>::value()
 {
-    switch (cur_char())
+    char c = cur_char();
+    if (is_numeric(c))
     {
+        number();
+        return;
+    }
+
+    switch (c)
+    {
+        case '-':
+            number();
+        break;
         case '[':
             array();
         break;
@@ -104,6 +117,37 @@ void json_parser<_Handler>::array()
     }
 
     throw json::parse_error("array: failed to parse array.");
+}
+
+template<typename _Handler>
+void json_parser<_Handler>::number()
+{
+    assert(is_numeric(cur_char()) || cur_char() == '-');
+
+    double val = parse_double_or_throw();
+    switch (cur_char())
+    {
+        case 'e':
+        case 'E':
+            number_with_exp(val);
+            return;
+        default:
+            ;
+    }
+    m_handler.number(val);
+}
+
+template<typename _Handler>
+void json_parser<_Handler>::number_with_exp(double base)
+{
+    assert(cur_char() == 'e' || cur_char() == 'E');
+    next();
+    if (!has_char())
+        throw json::parse_error("number_with_exp: illegal exponent value.");
+
+    long exp = parse_long_or_throw();
+    double v = std::pow(base, exp);
+    m_handler.number(v);
 }
 
 template<typename _Handler>

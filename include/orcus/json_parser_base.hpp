@@ -9,6 +9,7 @@
 #define INCLUDED_ORCUS_JSON_PARSER_BASE_HPP
 
 #include "orcus/parser_base.hpp"
+#include "orcus/parser_global.hpp"
 
 #include <memory>
 
@@ -56,6 +57,8 @@ protected:
 
     void parse_true();
     void parse_false();
+    long parse_long_or_throw();
+    double parse_double_or_throw();
     void skip_blanks();
 
     void reset_buffer();

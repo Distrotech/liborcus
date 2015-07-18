@@ -55,6 +55,14 @@ protected:
      */
     bool parse_expected(const char* expected);
 
+    /**
+     * Try to parse the next characters as double, or return NaN in case of
+     * failure.
+     *
+     * @return double value on success, or NaN on failure.
+     */
+    double parse_double();
+
     size_t remaining_size() const;
 };
 

@@ -36,8 +36,8 @@ protected:
 
     void identifier(const char*& p, size_t& len, const char* extra = NULL);
     uint8_t parse_uint8();
-    double parse_double();
     double parse_percent();
+    double parse_double_or_throw();
 
     void literal(const char*& p, size_t& len, char quote);
     void skip_to(const char*& p, size_t& len, char c);
