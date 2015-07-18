@@ -80,6 +80,10 @@ void json_parser<_Handler>::value()
             parse_false();
             m_handler.boolean_false();
         break;
+        case 'n':
+            parse_null();
+            m_handler.null();
+        break;
         case '"':
             string();
         break;

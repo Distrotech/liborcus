@@ -77,6 +77,15 @@ void parser_base::parse_false()
     skip_blanks();
 }
 
+void parser_base::parse_null()
+{
+    static const char* expected = "null";
+    if (!parse_expected(expected))
+        throw parse_error("parse_null: null expected.");
+
+    skip_blanks();
+}
+
 long parser_base::parse_long_or_throw()
 {
     const char* p = mp_char;

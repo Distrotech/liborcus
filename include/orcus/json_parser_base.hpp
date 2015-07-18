@@ -57,6 +57,7 @@ protected:
 
     void parse_true();
     void parse_false();
+    void parse_null();
     long parse_long_or_throw();
     double parse_double_or_throw();
     void skip_blanks();
