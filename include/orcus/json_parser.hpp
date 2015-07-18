@@ -135,6 +135,7 @@ void json_parser<_Handler>::number()
             ;
     }
     m_handler.number(val);
+    skip_blanks();
 }
 
 template<typename _Handler>
@@ -148,6 +149,7 @@ void json_parser<_Handler>::number_with_exp(double base)
     long exp = parse_long_or_throw();
     double v = std::pow(base, exp);
     m_handler.number(v);
+    skip_blanks();
 }
 
 template<typename _Handler>
