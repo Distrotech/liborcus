@@ -49,11 +49,20 @@ void test_json_parse_basic3()
     doc.load(strm);
 }
 
+void test_json_parse_basic4()
+{
+    const char* path = SRCDIR"/test/json/basic4.json";
+    string strm = get_stream(path);
+    json_document_tree doc;
+    doc.load(strm);
+}
+
 int main()
 {
     test_json_parse_basic1();
     test_json_parse_basic2();
     test_json_parse_basic3();
+    test_json_parse_basic4();
 
     return EXIT_SUCCESS;
 }

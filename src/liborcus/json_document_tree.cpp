@@ -41,6 +41,16 @@ public:
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:end_array): " << std::endl;
     }
 
+    void begin_object()
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:begin_object): " << std::endl;
+    }
+
+    void end_object()
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:end_object): " << std::endl;
+    }
+
     void boolean_true()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:boolean_true): " << std::endl;

@@ -28,6 +28,7 @@ public:
 private:
     void value();
     void array();
+    void object();
     void number();
     void number_with_exp(double base);
     void string();
@@ -71,6 +72,9 @@ void json_parser<_Handler>::value()
         break;
         case '[':
             array();
+        break;
+        case '{':
+            object();
         break;
         case 't':
             parse_true();
@@ -121,6 +125,55 @@ void json_parser<_Handler>::array()
     }
 
     throw json::parse_error("array: failed to parse array.");
+}
+
+template<typename _Handler>
+void json_parser<_Handler>::object()
+{
+    assert(cur_char() == '{');
+
+    m_handler.begin_object();
+    for (next(); has_char(); next())
+    {
+        skip_blanks();
+        if (!has_char())
+            throw json::parse_error("object: stream ended prematurely before reaching a key.");
+
+        if (cur_char() != '"')
+            json::parse_error::throw_with("object: '\"' was expected, but '", cur_char(), "' found.");
+
+        string();
+        skip_blanks();
+        if (cur_char() != ':')
+            json::parse_error::throw_with("object: ':' was expected, but '", cur_char(), "' found.");
+
+        next();
+        skip_blanks();
+
+        if (!has_char())
+            throw json::parse_error("object: stream ended prematurely before reaching a value.");
+
+        value();
+
+        skip_blanks();
+        if (!has_char())
+            throw json::parse_error("object: stream ended prematurely before reaching either ']' or ','.");
+
+        switch (cur_char())
+        {
+            case '}':
+                m_handler.end_object();
+                next();
+                skip_blanks();
+                return;
+            case ',':
+                continue;
+            default:
+                json::parse_error::throw_with("object: either ']' or ',' expected, but '", cur_char(), "' found.");
+        }
+    }
+
+    throw json::parse_error("object: closing '}' was never reached.");
 }
 
 template<typename _Handler>
