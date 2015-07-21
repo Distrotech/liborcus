@@ -141,7 +141,23 @@ void json_parser<_Handler>::object()
         if (cur_char() != '"')
             json::parse_error::throw_with("object: '\"' was expected, but '", cur_char(), "' found.");
 
-        string();
+        parse_string_state res = parse_string();
+        if (!res.str)
+        {
+            // Parsing was unsuccessful.
+            switch (res.length)
+            {
+                case parse_string_error_no_closing_quote:
+                    throw json::parse_error("object: stream ended prematurely before reaching the closing quote of a key.");
+                case parse_string_error_illegal_escape_char:
+                    json::parse_error::throw_with("object: illegal escape character '", cur_char(), "' in key value.");
+                default:
+                    throw json::parse_error("object: unknown error while parsing a key value.");
+            }
+        }
+
+        m_handler.object_key(res.str, res.length);
+
         skip_blanks();
         if (cur_char() != ':')
             json::parse_error::throw_with("object: ':' was expected, but '", cur_char(), "' found.");

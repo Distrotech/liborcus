@@ -46,6 +46,11 @@ public:
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:begin_object): " << std::endl;
     }
 
+    void object_key(const char* p, size_t len)
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:object_key): '" << pstring(p, len) << "'" << std::endl;
+    }
+
     void end_object()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:end_object): " << std::endl;
