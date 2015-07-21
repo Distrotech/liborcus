@@ -48,6 +48,21 @@ class ORCUS_PSR_DLLPUBLIC parser_base : public ::orcus::parser_base
     std::unique_ptr<impl> mp_impl;
 
 protected:
+    static constexpr size_t parse_string_error_no_closing_quote    = 1;
+    static constexpr size_t parse_string_error_illegal_escape_char = 2;
+
+    /**
+     * Stores state of string parsing.  Upon successful parsing the str points
+     * to the first character of the string and the length stores the size of
+     * the string.  When the parsing fails, the str value becomes NULL and the
+     * length stores the error code.
+     */
+    struct parse_string_state
+    {
+        const char* str;
+        size_t length;
+    };
+
     parser_base() = delete;
     parser_base(const parser_base&) = delete;
     parser_base& operator=(const parser_base&) = delete;
@@ -60,6 +75,10 @@ protected:
     void parse_null();
     long parse_long_or_throw();
     double parse_double_or_throw();
+
+    parse_string_state parse_string();
+    parse_string_state parse_string_with_escaped_char(const char* p, size_t n, char c);
+
     void skip_blanks();
 
     void reset_buffer();

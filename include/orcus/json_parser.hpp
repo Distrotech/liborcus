@@ -32,7 +32,6 @@ private:
     void number();
     void number_with_exp(double base);
     void string();
-    void string_with_escaped_char(const char* p, size_t n, char c);
 
 private:
     handler_type& m_handler;
@@ -212,126 +211,23 @@ void json_parser<_Handler>::number_with_exp(double base)
 template<typename _Handler>
 void json_parser<_Handler>::string()
 {
-    assert(cur_char() == '"');
-    next();
-    if (!has_char())
-        throw json::parse_error("string: stream ended prematurely before reaching the closing quote.");
-
-    size_t len = 0;
-    const char* p = mp_char;
-    bool escape = false;
-
-    for (; has_char(); next(), ++len)
+    parse_string_state res = parse_string();
+    if (res.str)
     {
-        if (escape)
-        {
-            char c = cur_char();
-            escape = false;
-
-            switch (json::get_escape_char_type(c))
-            {
-                case json::escape_char_t::legal:
-                    string_with_escaped_char(p, len-1, c);
-                    return;
-                break;
-                case json::escape_char_t::control_char:
-                    // do nothing on control characters.
-                break;
-                case json::escape_char_t::illegal:
-                default:
-                    json::parse_error::throw_with("string: illegal escape character '", c, "'.");
-            }
-        }
-
-        switch (cur_char())
-        {
-            case '"':
-                // closing quote.
-                m_handler.string(p, len);
-                next(); // skip the quote.
-                skip_blanks();
-                return;
-            break;
-            case '\\':
-            {
-                escape = true;
-                continue;
-            }
-            break;
-            default:
-                ;
-        }
+        m_handler.string(res.str, res.length);
+        return;
     }
 
-    throw json::parse_error("string: stream ended prematurely before reaching the closing quote.");
-}
-
-template<typename _Handler>
-void json_parser<_Handler>::string_with_escaped_char(const char* p, size_t n, char c)
-{
-    // Start the buffer with the string we've parsed so far.
-    reset_buffer();
-    append_to_buffer(p, n);
-    append_to_buffer(&c, 1);
-
-    next();
-    if (!has_char())
-        throw json::parse_error(
-            "string_with_escaped_char: stream ended prematurely before reaching the closing quote.");
-
-    size_t len = 0;
-    p = mp_char;
-    bool escape = false;
-
-    for (; has_char(); next(), ++len)
+    // Parsing was unsuccessful.
+    switch (res.length)
     {
-        char c = cur_char();
-
-        if (escape)
-        {
-            escape = false;
-
-            switch (json::get_escape_char_type(c))
-            {
-                case json::escape_char_t::legal:
-                    append_to_buffer(p, len-1);
-                    append_to_buffer(&c, 1);
-                    next();
-                    len = 0;
-                    p = mp_char;
-                break;
-                case json::escape_char_t::control_char:
-                    // do nothing on control characters.
-                break;
-                case json::escape_char_t::illegal:
-                default:
-                    json::parse_error::throw_with("string_with_escaped_char: illegal escape character '", c, "'.");
-            }
-        }
-
-        switch (cur_char())
-        {
-            case '"':
-                // closing quote.
-                append_to_buffer(p, len);
-                m_handler.string(get_buffer(), get_buffer_size());
-                next(); // skip the quote.
-                skip_blanks();
-                return;
-            break;
-            case '\\':
-            {
-                escape = true;
-                continue;
-            }
-            break;
-            default:
-                ;
-        }
+        case parse_string_error_no_closing_quote:
+            throw json::parse_error("string: stream ended prematurely before reaching the closing quote.");
+        case parse_string_error_illegal_escape_char:
+            json::parse_error::throw_with("string: illegal escape character '", cur_char(), "'.");
+        default:
+            throw json::parse_error("string: unknown error.");
     }
-
-    throw json::parse_error(
-        "string_with_escaped_char: stream ended prematurely before reaching the closing quote.");
 }
 
 }
