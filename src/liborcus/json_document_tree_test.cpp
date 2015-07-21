@@ -7,6 +7,8 @@
 
 #include "orcus/stream.hpp"
 #include "orcus/json_document_tree.hpp"
+#include "orcus/json_parser_base.hpp"
+#include "orcus/global.hpp"
 
 #include <cassert>
 #include <cstdlib>
@@ -57,12 +59,41 @@ void test_json_parse_basic4()
     doc.load(strm);
 }
 
+void test_json_parse_invalid()
+{
+    const char* invalids[] = {
+        "[foo]",
+        "[1,2] null",
+        "{\"key\" 1: 12}",
+        "[1,,2]"
+    };
+
+    for (size_t i = 0; i < ORCUS_N_ELEMENTS(invalids); ++i)
+    {
+        const char* invalid_json = invalids[i];
+        json_document_tree doc;
+        try
+        {
+            doc.load(string(invalid_json, strlen(invalid_json)));
+            cerr << "Invalid JSON expression is parsed as valid: '" << invalid_json << "'" << endl;
+            assert(false);
+        }
+        catch (const json::parse_error& e)
+        {
+            // works as expected.
+            cout << "expression: " << invalid_json << endl;
+            cout << "error: " << e.what() << endl;
+        }
+    }
+}
+
 int main()
 {
     test_json_parse_basic1();
     test_json_parse_basic2();
     test_json_parse_basic3();
     test_json_parse_basic4();
+    test_json_parse_invalid();
 
     return EXIT_SUCCESS;
 }

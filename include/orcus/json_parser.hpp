@@ -51,6 +51,9 @@ void json_parser<_Handler>::parse()
     if (has_char())
         value();
 
+    if (has_char())
+        throw json::parse_error("parse: unexpected trailing string segment.");
+
     m_handler.end_parse();
 }
 
