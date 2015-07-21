@@ -80,11 +80,6 @@ protected:
     parse_string_state parse_string_with_escaped_char(const char* p, size_t n, char c);
 
     void skip_blanks();
-
-    void reset_buffer();
-    void append_to_buffer(const char* p, size_t n);
-    const char* get_buffer() const;
-    size_t get_buffer_size() const;
 };
 
 }}

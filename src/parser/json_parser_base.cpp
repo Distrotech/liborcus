@@ -178,9 +178,10 @@ parser_base::parse_string_state parser_base::parse_string_with_escaped_char(
     ret.length = 0;
 
     // Start the buffer with the string we've parsed so far.
-    reset_buffer();
-    append_to_buffer(p, n);
-    append_to_buffer(&c, 1);
+    mp_impl->m_buffer.reset();
+    if (p && n)
+        mp_impl->m_buffer.append(p, n);
+    mp_impl->m_buffer.append(&c, 1);
 
     next();
     if (!has_char())
@@ -204,8 +205,8 @@ parser_base::parse_string_state parser_base::parse_string_with_escaped_char(
             switch (json::get_escape_char_type(c))
             {
                 case json::escape_char_t::legal:
-                    append_to_buffer(p, len-1);
-                    append_to_buffer(&c, 1);
+                    mp_impl->m_buffer.append(p, len-1);
+                    mp_impl->m_buffer.append(&c, 1);
                     next();
                     len = 0;
                     p = mp_char;
@@ -224,11 +225,11 @@ parser_base::parse_string_state parser_base::parse_string_with_escaped_char(
         {
             case '"':
                 // closing quote.
-                append_to_buffer(p, len);
+                mp_impl->m_buffer.append(p, len);
                 next(); // skip the quote.
                 skip_blanks();
-                ret.str = get_buffer();
-                ret.length = get_buffer_size();
+                ret.str = mp_impl->m_buffer.get();
+                ret.length = mp_impl->m_buffer.size();
                 return ret;
             break;
             case '\\':
@@ -249,29 +250,6 @@ parser_base::parse_string_state parser_base::parse_string_with_escaped_char(
 void parser_base::skip_blanks()
 {
     skip(" \t\n\r");
-}
-
-void parser_base::reset_buffer()
-{
-    mp_impl->m_buffer.reset();
-}
-
-void parser_base::append_to_buffer(const char* p, size_t n)
-{
-    if (!p || !n)
-        return;
-
-    mp_impl->m_buffer.append(p, n);
-}
-
-const char* parser_base::get_buffer() const
-{
-    return mp_impl->m_buffer.get();
-}
-
-size_t parser_base::get_buffer_size() const
-{
-    return mp_impl->m_buffer.size();
 }
 
 }}
