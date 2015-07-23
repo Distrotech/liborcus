@@ -59,6 +59,22 @@ void test_json_parse_basic4()
     doc.load(strm);
 }
 
+void test_json_parse_nested1()
+{
+    const char* path = SRCDIR"/test/json/nested1.json";
+    string strm = get_stream(path);
+    json_document_tree doc;
+    doc.load(strm);
+}
+
+void test_json_parse_nested2()
+{
+    const char* path = SRCDIR"/test/json/nested2.json";
+    string strm = get_stream(path);
+    json_document_tree doc;
+    doc.load(strm);
+}
+
 void test_json_parse_invalid()
 {
     const char* invalids[] = {
@@ -93,6 +109,8 @@ int main()
     test_json_parse_basic2();
     test_json_parse_basic3();
     test_json_parse_basic4();
+    test_json_parse_nested1();
+    test_json_parse_nested2();
     test_json_parse_invalid();
 
     return EXIT_SUCCESS;
