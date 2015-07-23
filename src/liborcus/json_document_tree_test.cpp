@@ -79,6 +79,7 @@ void test_json_parse_invalid()
 {
     const char* invalids[] = {
         "[foo]",
+        "[qwerty]",
         "[1,2] null",
         "{\"key\" 1: 12}",
         "[1,,2]"
