@@ -8,12 +8,76 @@
 #include "orcus/json_document_tree.hpp"
 #include "orcus/json_parser.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/global.hpp"
 
 #include <iostream>
+#include <string>
+#include <vector>
+#include <unordered_map>
 
 namespace orcus {
 
 namespace {
+
+enum class json_value_type
+{
+    unset,
+    string,
+    number,
+    object,
+    array,
+    boolean_true,
+    boolean_false,
+    null
+};
+
+struct json_value
+{
+    json_value_type type;
+
+    json_value() : type(json_value_type::unset) {}
+    json_value(json_value_type _type) : type(_type) {}
+    json_value(const json_value& r) : type(r.type) {}
+    virtual ~json_value() {}
+};
+
+struct json_value_string : public json_value
+{
+    std::string value_string;
+
+    json_value_string() : json_value(json_value_type::string) {}
+    json_value_string(const std::string& s) : json_value(json_value_type::string), value_string(s) {}
+    json_value_string(const json_value_string& r) : json_value(r), value_string(r.value_string) {}
+    virtual ~json_value_string() {}
+};
+
+struct json_value_number : public json_value
+{
+    double value_number;
+
+    json_value_number() : json_value(json_value_type::number) {}
+    json_value_number(double num) : json_value(json_value_type::number), value_number(num) {}
+    json_value_number(const json_value_number& r) : json_value(r), value_number(r.value_number) {}
+    virtual ~json_value_number() {}
+};
+
+struct json_value_array : public json_value
+{
+    std::vector<json_value> value_array;
+
+    json_value_array() : json_value(json_value_type::array) {}
+    json_value_array(const json_value_array& r) : json_value(r), value_array(r.value_array) {}
+    virtual ~json_value_array() {}
+};
+
+struct json_value_object : public json_value
+{
+    std::unordered_map<std::string, json_value> value_object;
+
+    json_value_object() : json_value(json_value_type::object) {}
+    json_value_object(const json_value_object& r) : value_object(r.value_object) {}
+    virtual ~json_value_object() {}
+};
 
 class parser_handler
 {
@@ -84,7 +148,12 @@ public:
 
 }
 
-json_document_tree::json_document_tree() {}
+struct json_document_tree::impl
+{
+    std::unique_ptr<json_value> m_root;
+};
+
+json_document_tree::json_document_tree() : mp_impl(make_unique<impl>()) {}
 json_document_tree::~json_document_tree() {}
 
 void json_document_tree::load(const std::string& strm)
