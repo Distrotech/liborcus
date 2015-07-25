@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 LOCATION=
-case "$1" in
+NAME=$BASH_ARGV
+case $NAME in
     common|css-document-tree|json-document-tree|format-detection|xml-map-tree|xml-structure-tree)
         LOCATION=liborcus
         ;;
@@ -43,16 +44,16 @@ fi
 
 PROGDIR=`dirname $0`
 source $PROGDIR/orcus-common-func.sh
-TEST=$LOCATION-test-$1
+TEST=$LOCATION-test-$NAME
 echo "Running $TEST..."
 
 case $LOCATION in
     liborcus)
-        liborcus_test_exec $TEST "$PROGDIR/../src/liborcus"
+        liborcus_test_exec $TEST "$PROGDIR/../src/liborcus" "$@"
         ;;
     orcus)
-        orcus_exec $TEST "$PROGDIR/../src/"
+        orcus_exec $TEST "$PROGDIR/../src/" "$@"
         ;;
     parser)
-        parser_test_exec $TEST "$PROGDIR/../src/parser"
+        parser_test_exec $TEST "$PROGDIR/../src/parser" "$@"
 esac

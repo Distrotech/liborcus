@@ -47,7 +47,8 @@ parser_test_exec()
 {
     EXEC="$1"
     shift
-    EXECDIR="$PROGDIR/../src/parser"
+    EXECDIR="$1"
+    shift
     PROGDIR="$PWD/"`dirname $0`
     ROOTDIR=$PROGDIR/..
     EXECPATH=$ROOTDIR/src/parser/.libs/$EXEC
@@ -61,7 +62,8 @@ liborcus_test_exec()
 {
     EXEC="$1"
     shift
-    EXECDIR="$PROGDIR/../src/liborcus"
+    EXECDIR="$1"
+    shift
     PROGDIR="$PWD/"`dirname $0`
     ROOTDIR=$PROGDIR/..
     EXECPATH=$ROOTDIR/src/liborcus/.libs/$EXEC
