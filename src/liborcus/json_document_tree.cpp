@@ -22,6 +22,10 @@ namespace orcus {
 
 namespace {
 
+const char* tab = "    ";
+const char quote = '"';
+const char backslash = '\\';
+
 enum class json_value_type
 {
     unset,
@@ -84,10 +88,29 @@ void dump_repeat(std::ostringstream& os, const char* s, int repeat)
         os << s;
 }
 
+void dump_string(std::ostringstream& os, const std::string& s)
+{
+    os << quote;
+    for (auto it = s.begin(), ite = s.end(); it != ite; ++it)
+    {
+        char c = *it;
+        if (is_in(c, "\"/"))
+            // Escape double quote and forward slash.
+            os << backslash;
+        else if (c == backslash)
+        {
+            // Escape a '\' if and only if the next character is not one of control characters.
+            auto itnext = it + 1;
+            if (itnext == ite || json::get_escape_char_type(*itnext) != json::escape_char_t::control_char)
+                os << backslash;
+        }
+        os << c;
+    }
+    os << quote;
+}
+
 void dump_value(std::ostringstream& os, const json_value* v, int level, const std::string* key = nullptr)
 {
-    static const char* tab = "    ";
-    static const char quote = '"';
     dump_repeat(os, tab, level);
 
     if (key)
@@ -146,7 +169,7 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
         }
         break;
         case json_value_type::string:
-            os << static_cast<const json_value_string*>(v)->value_string;
+            dump_string(os, static_cast<const json_value_string*>(v)->value_string);
         break;
         case json_value_type::unset:
         default:
