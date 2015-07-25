@@ -40,7 +40,6 @@ struct json_value
 
     json_value() : type(json_value_type::unset) {}
     json_value(json_value_type _type) : type(_type) {}
-    json_value(const json_value& r) : type(r.type) {}
     virtual ~json_value() {}
 };
 
@@ -51,7 +50,6 @@ struct json_value_string : public json_value
     json_value_string() : json_value(json_value_type::string) {}
     json_value_string(const std::string& s) : json_value(json_value_type::string), value_string(s) {}
     json_value_string(const char* p, size_t n) : json_value(json_value_type::string), value_string(p, n) {}
-    json_value_string(const json_value_string& r) : json_value(r), value_string(r.value_string) {}
     virtual ~json_value_string() {}
 };
 
@@ -61,44 +59,41 @@ struct json_value_number : public json_value
 
     json_value_number() : json_value(json_value_type::number) {}
     json_value_number(double num) : json_value(json_value_type::number), value_number(num) {}
-    json_value_number(const json_value_number& r) : json_value(r), value_number(r.value_number) {}
     virtual ~json_value_number() {}
 };
 
 struct json_value_array : public json_value
 {
-    std::vector<json_value> value_array;
+    std::vector<std::unique_ptr<json_value>> value_array;
 
     json_value_array() : json_value(json_value_type::array) {}
-    json_value_array(const json_value_array& r) : json_value(r), value_array(r.value_array) {}
     virtual ~json_value_array() {}
 };
 
 struct json_value_object : public json_value
 {
-    std::unordered_map<std::string, json_value> value_object;
+    std::unordered_map<std::string, std::unique_ptr<json_value>> value_object;
 
     json_value_object() : json_value(json_value_type::object) {}
-    json_value_object(const json_value_object& r) : value_object(r.value_object) {}
     virtual ~json_value_object() {}
 };
 
-void dump_value(std::ostringstream& os, const json_value& v, int level)
+void dump_value(std::ostringstream& os, const json_value* v, int level)
 {
     static const char* tab = "    ";
     for (int i = 0; i < level; ++i)
         os << tab;
 
-    switch (v.type)
+    switch (v->type)
     {
         case json_value_type::array:
         {
-            const std::vector<json_value>& vals = static_cast<const json_value_array&>(v).value_array;
+            const std::vector<std::unique_ptr<json_value>>& vals = dynamic_cast<const json_value_array*>(v)->value_array;
             os << "[" << std::endl;
             size_t n = vals.size();
             for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
             {
-                dump_value(os, *it, level+1);
+                dump_value(os, it->get(), level+1);
                 size_t pos = std::distance(vals.begin(), it);
                 if (pos < (n-1))
                     os << ",";
@@ -117,7 +112,7 @@ void dump_value(std::ostringstream& os, const json_value& v, int level)
             os << "null";
         break;
         case json_value_type::number:
-            os << static_cast<const json_value_number&>(v).value_number;
+            os << dynamic_cast<const json_value_number*>(v)->value_number;
         break;
         case json_value_type::object:
         {
@@ -126,7 +121,7 @@ void dump_value(std::ostringstream& os, const json_value& v, int level)
         }
         break;
         case json_value_type::string:
-            os << static_cast<const json_value_string&>(v).value_string;
+            os << dynamic_cast<const json_value_string*>(v)->value_string;
         break;
         case json_value_type::unset:
         default:
@@ -134,9 +129,9 @@ void dump_value(std::ostringstream& os, const json_value& v, int level)
     }
 }
 
-void dump(const json_value& root)
+void dump(const json_value* root)
 {
-    if (root.type == json_value_type::unset)
+    if (root->type == json_value_type::unset)
         return;
 
     std::ostringstream os;
@@ -149,8 +144,7 @@ class parser_handler
     std::unique_ptr<json_value> m_root;
     std::vector<json_value*> m_stack;
 
-
-    void push_value(const json_value& value)
+    void push_value(std::unique_ptr<json_value>&& value)
     {
         assert(!m_stack.empty());
         json_value* cur = m_stack.back();
@@ -160,7 +154,7 @@ class parser_handler
             case json_value_type::array:
             {
                 json_value_array* jva = static_cast<json_value_array*>(cur);
-                jva->value_array.push_back(value);
+                jva->value_array.push_back(std::move(value));
             }
             break;
             case json_value_type::object:
@@ -223,31 +217,31 @@ public:
     void boolean_true()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:boolean_true): " << std::endl;
-        push_value(json_value(json_value_type::boolean_true));
+        push_value(make_unique<json_value>(json_value_type::boolean_true));
     }
 
     void boolean_false()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:boolean_false): " << std::endl;
-        push_value(json_value(json_value_type::boolean_false));
+        push_value(make_unique<json_value>(json_value_type::boolean_false));
     }
 
     void null()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:null): " << std::endl;
-        push_value(json_value(json_value_type::null));
+        push_value(make_unique<json_value>(json_value_type::null));
     }
 
     void string(const char* p, size_t len)
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:string): '" << pstring(p, len) << "'" << std::endl;
-        push_value(json_value_string(p, len));
+        push_value(std::unique_ptr<json_value>(new json_value_string(p, len)));
     }
 
     void number(double val)
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:number): " << val << std::endl;
-        push_value(json_value_number(val));
+        push_value(std::unique_ptr<json_value>(new json_value_number(val)));
     }
 
     void swap(std::unique_ptr<json_value>& other)
@@ -273,7 +267,7 @@ void json_document_tree::load(const std::string& strm)
     parser.parse();
     hdl.swap(mp_impl->m_root);
     if (mp_impl->m_root)
-        dump(*mp_impl->m_root);
+        dump(mp_impl->m_root.get());
 }
 
 }
