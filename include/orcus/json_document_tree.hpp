@@ -24,8 +24,19 @@ public:
     json_document_tree();
     ~json_document_tree();
 
+    /**
+     * Load raw string stream containing a JSON structure to populate the
+     * document tree.
+     *
+     * @param strm stream containing a JSON structure.
+     */
     void load(const std::string& strm);
 
+    /**
+     * Dump the JSON document tree to string.
+     *
+     * @return a string representation of the JSON document tree.
+     */
     std::string dump() const;
 };
 
