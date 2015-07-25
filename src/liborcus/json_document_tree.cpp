@@ -218,18 +218,15 @@ public:
 
     void begin_parse()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:begin_parse): " << std::endl;
         m_root.reset();
     }
 
     void end_parse()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:end_parse): " << std::endl;
     }
 
     void begin_array()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:begin_array): " << std::endl;
         if (m_root)
         {
             json_value* jv = push_value(make_unique<json_value_array>());
@@ -245,14 +242,12 @@ public:
 
     void end_array()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:end_array): " << std::endl;
         assert(!m_stack.empty());
         m_stack.pop_back();
     }
 
     void begin_object()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:begin_object): " << std::endl;
         if (m_root)
         {
             json_value* jv = push_value(make_unique<json_value_object>());
@@ -268,45 +263,38 @@ public:
 
     void object_key(const char* p, size_t len)
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:object_key): '" << pstring(p, len) << "'" << std::endl;
         parser_stack& cur = m_stack.back();
         cur.key = std::string(p, len);
     }
 
     void end_object()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:end_object): " << std::endl;
         assert(!m_stack.empty());
         m_stack.pop_back();
     }
 
     void boolean_true()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:boolean_true): " << std::endl;
         push_value(make_unique<json_value>(json_value_type::boolean_true));
     }
 
     void boolean_false()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:boolean_false): " << std::endl;
         push_value(make_unique<json_value>(json_value_type::boolean_false));
     }
 
     void null()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:null): " << std::endl;
         push_value(make_unique<json_value>(json_value_type::null));
     }
 
     void string(const char* p, size_t len)
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:string): '" << pstring(p, len) << "'" << std::endl;
         push_value(make_unique<json_value_string>(p, len));
     }
 
     void number(double val)
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:number): " << val << std::endl;
         push_value(make_unique<json_value_number>(val));
     }
 
