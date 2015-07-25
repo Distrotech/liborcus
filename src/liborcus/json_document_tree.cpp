@@ -177,14 +177,14 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
     }
 }
 
-void dump(const json_value* root)
+std::string dump_json_tree(const json_value* root)
 {
     if (root->type == json_value_type::unset)
-        return;
+        return std::string();
 
     std::ostringstream os;
     dump_value(os, root, 0);
-    std::cout << os.str() << std::endl;
+    return os.str();
 }
 
 struct parser_stack
@@ -343,8 +343,14 @@ void json_document_tree::load(const std::string& strm)
     json_parser<parser_handler> parser(strm.data(), strm.size(), hdl);
     parser.parse();
     hdl.swap(mp_impl->m_root);
-    if (mp_impl->m_root)
-        dump(mp_impl->m_root.get());
+}
+
+std::string json_document_tree::dump() const
+{
+    if (!mp_impl->m_root)
+        return std::string();
+
+    return dump_json_tree(mp_impl->m_root.get());
 }
 
 }

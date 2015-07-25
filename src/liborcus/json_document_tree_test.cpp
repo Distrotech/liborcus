@@ -33,6 +33,7 @@ void test_json_parse_basic1()
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm);
+    cout << doc.dump() << endl;
 }
 
 void test_json_parse_basic2()
@@ -41,6 +42,7 @@ void test_json_parse_basic2()
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm);
+    cout << doc.dump() << endl;
 }
 
 void test_json_parse_basic3()
@@ -49,6 +51,7 @@ void test_json_parse_basic3()
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm);
+    cout << doc.dump() << endl;
 }
 
 void test_json_parse_basic4()
@@ -57,6 +60,7 @@ void test_json_parse_basic4()
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm);
+    cout << doc.dump() << endl;
 }
 
 void test_json_parse_nested1()
@@ -65,6 +69,7 @@ void test_json_parse_nested1()
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm);
+    cout << doc.dump() << endl;
 }
 
 void test_json_parse_nested2()
@@ -73,6 +78,7 @@ void test_json_parse_nested2()
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm);
+    cout << doc.dump() << endl;
 }
 
 void test_json_parse_invalid()

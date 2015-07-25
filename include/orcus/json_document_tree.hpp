@@ -25,6 +25,8 @@ public:
     ~json_document_tree();
 
     void load(const std::string& strm);
+
+    std::string dump() const;
 };
 
 }
