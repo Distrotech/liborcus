@@ -78,12 +78,17 @@ struct json_value_object : public json_value
     virtual ~json_value_object() {}
 };
 
+void dump_repeat(std::ostringstream& os, const char* s, int repeat)
+{
+    for (int i = 0; i < repeat; ++i)
+        os << s;
+}
+
 void dump_value(std::ostringstream& os, const json_value* v, int level, const std::string* key = nullptr)
 {
     static const char* tab = "    ";
     static const char quote = '"';
-    for (int i = 0; i < level; ++i)
-        os << tab;
+    dump_repeat(os, tab, level);
 
     if (key)
         os << quote << *key << quote << ": ";
@@ -103,6 +108,8 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
                     os << ",";
                 os << std::endl;
             }
+
+            dump_repeat(os, tab, level);
             os << "]" << std::endl;
         }
         break;
@@ -133,6 +140,8 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
                     os << ",";
                 os << std::endl;
             }
+
+            dump_repeat(os, tab, level);
             os << "}" << std::endl;
         }
         break;
@@ -161,7 +170,6 @@ struct parser_stack
     json_value* node;
 
     parser_stack(json_value* _node) : node(_node) {}
-    parser_stack(const std::string& _key, json_value* _node) : key(_key), node(_node) {}
 };
 
 class parser_handler
@@ -170,7 +178,7 @@ class parser_handler
     std::vector<parser_stack> m_stack;
     std::string m_cur_object_key;
 
-    void push_value(std::unique_ptr<json_value>&& value)
+    json_value* push_value(std::unique_ptr<json_value>&& value)
     {
         assert(!m_stack.empty());
         parser_stack& cur = m_stack.back();
@@ -181,13 +189,17 @@ class parser_handler
             {
                 json_value_array* jva = static_cast<json_value_array*>(cur.node);
                 jva->value_array.push_back(std::move(value));
+                return jva->value_array.back().get();
             }
             break;
             case json_value_type::object:
             {
                 const std::string& key = cur.key;
                 json_value_object* jvo = static_cast<json_value_object*>(cur.node);
-                jvo->value_object.insert(std::make_pair(key, std::move(value)));
+                auto r = jvo->value_object.insert(
+                    std::make_pair(key, std::move(value)));
+
+                return r.first->second.get();
             }
             break;
             default:
@@ -197,6 +209,8 @@ class parser_handler
                 throw json::parse_error(os.str());
             }
         }
+
+        return nullptr;
     }
 
 public:
@@ -216,7 +230,13 @@ public:
     void begin_array()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:begin_array): " << std::endl;
-        if (!m_root)
+        if (m_root)
+        {
+            json_value* jv = push_value(make_unique<json_value_array>());
+            assert(jv && jv->type == json_value_type::array);
+            m_stack.push_back(parser_stack(jv));
+        }
+        else
         {
             m_root = make_unique<json_value_array>();
             m_stack.push_back(parser_stack(m_root.get()));
@@ -233,7 +253,13 @@ public:
     void begin_object()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:begin_object): " << std::endl;
-        if (!m_root)
+        if (m_root)
+        {
+            json_value* jv = push_value(make_unique<json_value_object>());
+            assert(jv && jv->type == json_value_type::object);
+            m_stack.push_back(parser_stack(jv));
+        }
+        else
         {
             m_root = make_unique<json_value_object>();
             m_stack.push_back(parser_stack(m_root.get()));
@@ -275,13 +301,13 @@ public:
     void string(const char* p, size_t len)
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:string): '" << pstring(p, len) << "'" << std::endl;
-        push_value(std::unique_ptr<json_value>(new json_value_string(p, len)));
+        push_value(make_unique<json_value_string>(p, len));
     }
 
     void number(double val)
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:number): " << val << std::endl;
-        push_value(std::unique_ptr<json_value>(new json_value_number(val)));
+        push_value(make_unique<json_value_number>(val));
     }
 
     void swap(std::unique_ptr<json_value>& other)
