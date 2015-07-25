@@ -78,17 +78,21 @@ struct json_value_object : public json_value
     virtual ~json_value_object() {}
 };
 
-void dump_value(std::ostringstream& os, const json_value* v, int level)
+void dump_value(std::ostringstream& os, const json_value* v, int level, const std::string* key = nullptr)
 {
     static const char* tab = "    ";
+    static const char quote = '"';
     for (int i = 0; i < level; ++i)
         os << tab;
+
+    if (key)
+        os << quote << *key << quote << ": ";
 
     switch (v->type)
     {
         case json_value_type::array:
         {
-            const std::vector<std::unique_ptr<json_value>>& vals = dynamic_cast<const json_value_array*>(v)->value_array;
+            auto& vals = static_cast<const json_value_array*>(v)->value_array;
             os << "[" << std::endl;
             size_t n = vals.size();
             for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
@@ -112,16 +116,28 @@ void dump_value(std::ostringstream& os, const json_value* v, int level)
             os << "null";
         break;
         case json_value_type::number:
-            os << dynamic_cast<const json_value_number*>(v)->value_number;
+            os << static_cast<const json_value_number*>(v)->value_number;
         break;
         case json_value_type::object:
         {
+            auto& vals = static_cast<const json_value_object*>(v)->value_object;
             os << "{" << std::endl;
+            size_t n = vals.size();
+            for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
+            {
+                auto& key = it->first;
+                auto& val = it->second;
+                dump_value(os, val.get(), level+1, &key);
+                size_t pos = std::distance(vals.begin(), it);
+                if (pos < (n-1))
+                    os << ",";
+                os << std::endl;
+            }
             os << "}" << std::endl;
         }
         break;
         case json_value_type::string:
-            os << dynamic_cast<const json_value_string*>(v)->value_string;
+            os << static_cast<const json_value_string*>(v)->value_string;
         break;
         case json_value_type::unset:
         default:
@@ -139,25 +155,40 @@ void dump(const json_value* root)
     std::cout << os.str() << std::endl;
 }
 
+struct parser_stack
+{
+    std::string key;
+    json_value* node;
+
+    parser_stack(json_value* _node) : node(_node) {}
+    parser_stack(const std::string& _key, json_value* _node) : key(_key), node(_node) {}
+};
+
 class parser_handler
 {
     std::unique_ptr<json_value> m_root;
-    std::vector<json_value*> m_stack;
+    std::vector<parser_stack> m_stack;
+    std::string m_cur_object_key;
 
     void push_value(std::unique_ptr<json_value>&& value)
     {
         assert(!m_stack.empty());
-        json_value* cur = m_stack.back();
+        parser_stack& cur = m_stack.back();
 
-        switch (cur->type)
+        switch (cur.node->type)
         {
             case json_value_type::array:
             {
-                json_value_array* jva = static_cast<json_value_array*>(cur);
+                json_value_array* jva = static_cast<json_value_array*>(cur.node);
                 jva->value_array.push_back(std::move(value));
             }
             break;
             case json_value_type::object:
+            {
+                const std::string& key = cur.key;
+                json_value_object* jvo = static_cast<json_value_object*>(cur.node);
+                jvo->value_object.insert(std::make_pair(key, std::move(value)));
+            }
             break;
             default:
             {
@@ -188,7 +219,7 @@ public:
         if (!m_root)
         {
             m_root = make_unique<json_value_array>();
-            m_stack.push_back(m_root.get());
+            m_stack.push_back(parser_stack(m_root.get()));
         }
     }
 
@@ -202,16 +233,25 @@ public:
     void begin_object()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:begin_object): " << std::endl;
+        if (!m_root)
+        {
+            m_root = make_unique<json_value_object>();
+            m_stack.push_back(parser_stack(m_root.get()));
+        }
     }
 
     void object_key(const char* p, size_t len)
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:object_key): '" << pstring(p, len) << "'" << std::endl;
+        parser_stack& cur = m_stack.back();
+        cur.key = std::string(p, len);
     }
 
     void end_object()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (parser_handler:end_object): " << std::endl;
+        assert(!m_stack.empty());
+        m_stack.pop_back();
     }
 
     void boolean_true()
