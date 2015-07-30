@@ -12,6 +12,7 @@
 #include "orcus_filter_global.hpp"
 
 #include <iostream>
+#include <fstream>
 #include <string>
 
 using namespace std;
@@ -31,7 +32,18 @@ int main(int argc, char** argv)
         json_document_tree doc;
         doc.load(strm);
 
-        // TODO : continue....
+        switch (config->output_format)
+        {
+            case orcus::json_config::output_format_type::xml:
+            {
+                std::string xml_output = doc.dump_xml();
+                ofstream fs(config->output_path.c_str());
+                fs << xml_output;
+            }
+            break;
+            default:
+                ;
+        }
     }
     catch (const std::exception& e)
     {

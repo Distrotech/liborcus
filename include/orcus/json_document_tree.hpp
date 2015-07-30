@@ -38,6 +38,15 @@ public:
      * @return a string representation of the JSON document tree.
      */
     std::string dump() const;
+
+    /**
+     * Dump the JSON document tree to an XML structure.
+     *
+     *
+     * @return a string containing an XML structure representing the JSON
+     *         content.
+     */
+    std::string dump_xml() const;
 };
 
 }

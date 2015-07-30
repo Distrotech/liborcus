@@ -23,8 +23,8 @@ namespace orcus {
 namespace {
 
 const char* tab = "    ";
-const char quote = '"';
-const char backslash = '\\';
+constexpr char quote = '"';
+constexpr char backslash = '\\';
 
 enum class json_value_type
 {
@@ -184,6 +184,107 @@ std::string dump_json_tree(const json_value* root)
 
     std::ostringstream os;
     dump_value(os, root, 0);
+    return os.str();
+}
+
+void dump_string_xml(std::ostringstream& os, const std::string& s)
+{
+    for (auto it = s.begin(), ite = s.end(); it != ite; ++it)
+    {
+        char c = *it;
+        switch (c)
+        {
+            case '"':
+                os << "&quot;";
+            break;
+            case '<':
+                os << "&lt;";
+            break;
+            case '>':
+                os << "&gt;";
+            break;
+            case '&':
+                os << "&amp;";
+            break;
+            case '\'':
+                os << "&apos;";
+            break;
+            default:
+                os << c;
+        }
+    }
+}
+
+void dump_value_xml(std::ostringstream& os, const json_value* v, int level)
+{
+    switch (v->type)
+    {
+        case json_value_type::array:
+        {
+            auto& vals = static_cast<const json_value_array*>(v)->value_array;
+            os << "<array>";
+            for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
+            {
+                os << "<item>";
+                dump_value_xml(os, it->get(), level+1);
+                os << "</item>";
+            }
+
+            os << "</array>";
+        }
+        break;
+        case json_value_type::boolean_false:
+            os << "<false/>";
+        break;
+        case json_value_type::boolean_true:
+            os << "<true/>";
+        break;
+        case json_value_type::null:
+            os << "<null/>";
+        break;
+        case json_value_type::number:
+            os << "<number value=\"";
+            os << static_cast<const json_value_number*>(v)->value_number;
+            os << "\"/>";
+        break;
+        case json_value_type::object:
+        {
+            auto& vals = static_cast<const json_value_object*>(v)->value_object;
+            os << "<object>";
+            for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
+            {
+                auto& key = it->first;
+                auto& val = it->second;
+                os << "<item name=\"";
+                dump_string_xml(os, key);
+                os << "\">";
+                dump_value_xml(os, val.get(), level+1);
+                os << "</item>";
+            }
+
+            os << "</object>";
+        }
+        break;
+        case json_value_type::string:
+            os << "<string value=\"";
+            dump_string_xml(os, static_cast<const json_value_string*>(v)->value_string);
+            os << "\"/>";
+        break;
+        case json_value_type::unset:
+        default:
+            ;
+    }
+}
+
+std::string dump_xml_tree(const json_value* root)
+{
+    if (root->type == json_value_type::unset)
+        return std::string();
+
+    std::ostringstream os;
+    os << "<?xml version=\"1.0\"?>" << std::endl;
+    dump_value_xml(os, root, 0);
+    os << std::endl;
     return os.str();
 }
 
@@ -351,6 +452,11 @@ std::string json_document_tree::dump() const
         return std::string();
 
     return dump_json_tree(mp_impl->m_root.get());
+}
+
+std::string json_document_tree::dump_xml() const
+{
+    return dump_xml_tree(mp_impl->m_root.get());
 }
 
 }
