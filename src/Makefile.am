@@ -39,7 +39,8 @@ bin_PROGRAMS += \
 	orcus-zip-dump \
 	orcus-xml-dump \
 	orcus-mso-encryption \
-	orcus-detect
+	orcus-detect \
+	orcus-json
 
 # orcus-css-dump
 
@@ -74,6 +75,27 @@ orcus_xml_dump_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la
 
 orcus_xml_dump_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
+
+# orcus-json
+
+orcus_json_SOURCES = \
+	orcus_filter_global.hpp \
+	orcus_filter_global.cpp \
+	orcus_json_main.cpp
+
+orcus_json_LDFLAGS = \
+	$(BOOST_PROGRAM_OPTIONS_LDFLAGS) \
+	$(BOOST_FILESYSTEM_LDFLAGS) \
+	$(BOOST_SYSTEM_LDFLAGS)
+
+orcus_json_LDADD = \
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	$(BOOST_PROGRAM_OPTIONS_LIBS) \
+	$(BOOST_FILESYSTEM_LIBS) \
+	$(BOOST_SYSTEM_LIBS)
+
+orcus_json_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 #----------------------------------------------------------------------------
 

@@ -580,6 +580,7 @@
             <F N="../src/orcus_filter_global.cpp"/>
             <F N="../src/orcus_filter_global.hpp"/>
             <F N="../src/orcus_gnumeric_main.cpp"/>
+            <F N="../src/orcus_json_main.cpp"/>
             <F N="../src/orcus_mso_encryption.cpp"/>
             <F N="../src/orcus_ods_main.cpp"/>
             <F N="../src/orcus_test_common.cpp"/>

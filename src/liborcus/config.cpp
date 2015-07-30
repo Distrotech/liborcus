@@ -11,6 +11,9 @@ namespace orcus {
 
 config::config() : debug(false), structure_check(true) {}
 
+json_config::json_config() : output_format(output_format_type::none) {}
+json_config::~json_config() {}
+
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

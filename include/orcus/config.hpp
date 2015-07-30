@@ -5,10 +5,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef ORCUS_CONFIG_HPP
-#define ORCUS_CONFIG_HPP
+#ifndef INCLUDED_ORCUS_CONFIG_HPP
+#define INCLUDED_ORCUS_CONFIG_HPP
 
 #include "env.hpp"
+
+#include <string>
 
 namespace orcus {
 
@@ -27,6 +29,18 @@ struct ORCUS_DLLPUBLIC config
     bool structure_check;
 
     config();
+};
+
+struct ORCUS_DLLPUBLIC json_config
+{
+    enum class output_format_type { none, xml };
+
+    std::string input_path;
+    std::string output_path;
+    output_format_type output_format;
+
+    json_config();
+    ~json_config();
 };
 
 }

@@ -8,7 +8,11 @@
 #ifndef ORCUS_ORCUS_FILTER_GLOBAL_HPP
 #define ORCUS_ORCUS_FILTER_GLOBAL_HPP
 
+#include <memory>
+
 namespace orcus {
+
+struct json_config;
 
 namespace iface {
 
@@ -19,6 +23,12 @@ class document_dumper;
 
 bool parse_import_filter_args(
     iface::import_filter& app, iface::document_dumper& doc, int argc, char** argv);
+
+/**
+ * Parse the command-line options, populate the json_config object, and
+ * return that to the caller.
+ */
+std::unique_ptr<json_config> parse_json_args(int argc, char** argv);
 
 }
 

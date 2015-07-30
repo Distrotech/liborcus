@@ -9,6 +9,7 @@
 #include "orcus/pstring.hpp"
 #include "orcus/config.hpp"
 #include "orcus/interface.hpp"
+#include "orcus/global.hpp"
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
@@ -41,6 +42,15 @@ const char* help_dump_check =
 
 const char* help_debug =
 "Turn on a debug mode to generate run-time debug output.";
+
+const char* help_json_output =
+"Output file path.";
+
+const char* help_json_output_format =
+"Specify the format of output file.  Supported format types are: "
+"1) XML (xml) or 2) no output (none).";
+
+const char* err_no_input_file = "No input file.";
 
 }
 
@@ -121,13 +131,11 @@ bool parse_import_filter_args(
     if (vm.count("output-format"))
         outformat = vm["output-format"].as<string>();
 
-    config opt;
-    opt.debug = vm.count("debug") > 0;
-    app.set_config(opt);
+    json_config opt;
 
     if (infile.empty())
     {
-        cerr << "No input file." << endl;
+        cerr << err_no_input_file << endl;
         return false;
     }
 
@@ -180,6 +188,106 @@ bool parse_import_filter_args(
     }
 
     return true;
+}
+
+void print_json_usage(std::ostream& os, const po::options_description& desc)
+{
+    os << "Usage: orcus-json [options] FILE" << endl << endl;
+    os << help_program << endl << endl << desc;
+}
+
+std::unique_ptr<json_config> parse_json_args(int argc, char** argv)
+{
+    po::options_description desc("Allowed options");
+    desc.add_options()
+        ("help,h", "Print this help.")
+        ("output,o", po::value<string>(), help_json_output)
+        ("output-format,f", po::value<string>(), help_json_output_format);
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+        ("input", po::value<string>(), "input file");
+
+    po::options_description cmd_opt;
+    cmd_opt.add(desc).add(hidden);
+
+    po::positional_options_description po_desc;
+    po_desc.add("input", -1);
+
+    po::variables_map vm;
+    try
+    {
+        po::store(
+            po::command_line_parser(argc, argv).options(cmd_opt).positional(po_desc).run(), vm);
+        po::notify(vm);
+    }
+    catch (const exception& e)
+    {
+        // Unknown options.
+        cerr << e.what() << endl;
+        print_json_usage(cerr, desc);
+        return nullptr;
+    }
+
+    if (vm.count("help"))
+    {
+        print_json_usage(cout, desc);
+        return nullptr;
+    }
+
+    std::unique_ptr<json_config> config = make_unique<json_config>();
+
+    if (vm.count("input"))
+        config->input_path = vm["input"].as<string>();
+
+    if (vm.count("output"))
+        config->output_path = vm["output"].as<string>();
+
+    if (vm.count("output-format"))
+    {
+        std::string outformat = vm["output-format"].as<string>();
+        if (outformat == "none")
+            config->output_format = json_config::output_format_type::none;
+        else if (outformat == "xml")
+            config->output_format = json_config::output_format_type::xml;
+        else
+        {
+            cerr << "Unknown output format type '" << outformat << "'." << endl;
+            return nullptr;
+        }
+    }
+
+    if (config->input_path.empty())
+    {
+        cerr << err_no_input_file << endl;
+        print_json_usage(cerr, desc);
+        return nullptr;
+    }
+
+    if (!fs::exists(config->input_path))
+    {
+        cerr << "Input file does not exist: " << config->input_path << endl;
+        return nullptr;
+    }
+
+    if (config->output_format != json_config::output_format_type::none)
+    {
+        if (config->output_path.empty())
+        {
+            cerr << "Output file not given." << endl;
+            return nullptr;
+        }
+
+        // Check to make sure the output path doesn't point to an existing
+        // directory.
+        if (fs::is_directory(config->output_path))
+        {
+            cerr << "Output file path points to an existing directory.  Aborting." << endl;
+            return nullptr;
+        }
+    }
+
+    return config;
 }
 
 }
