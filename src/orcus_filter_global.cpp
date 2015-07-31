@@ -201,6 +201,7 @@ std::unique_ptr<json_config> parse_json_args(int argc, char** argv)
     po::options_description desc("Allowed options");
     desc.add_options()
         ("help,h", "Print this help.")
+        ("resolve-refs", "Resolve JSON references to external files.")
         ("output,o", po::value<string>(), help_json_output)
         ("output-format,f", po::value<string>(), help_json_output_format);
 
@@ -242,6 +243,9 @@ std::unique_ptr<json_config> parse_json_args(int argc, char** argv)
 
     if (vm.count("output"))
         config->output_path = vm["output"].as<string>();
+
+    if (vm.count("resolve-refs"))
+        config->resolve_references = true;
 
     if (vm.count("output-format"))
     {

@@ -19,10 +19,13 @@ endif
 
 liborcus_@ORCUS_API_VERSION@_la_CXXFLAGS = \
 	$(ZLIB_CFLAGS)
-liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined $(BOOST_SYSTEM_LDFLAGS)
+
+liborcus_@ORCUS_API_VERSION@_la_LDFLAGS = \
+	-no-undefined $(BOOST_SYSTEM_LDFLAGS) $(BOOST_FILESYSTEM_LDFLAGS)
+
 liborcus_@ORCUS_API_VERSION@_la_LIBADD = \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
-	 $(BOOST_SYSTEM_LIBS) $(ZLIB_LIBS)
+	 $(BOOST_SYSTEM_LIBS) $(ZLIB_LIBS) $(BOOST_FILESYSTEM_LIBS)
 
 AM_CPPFLAGS += -DSRCDIR=\""$(top_srcdir)"\"
 

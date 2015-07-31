@@ -47,6 +47,11 @@ struct ORCUS_DLLPUBLIC json_config
      */
     bool preserve_object_order;
 
+    /**
+     * Control whether or not to resolve JSON references to external files.
+     */
+    bool resolve_references;
+
     json_config();
     ~json_config();
 };

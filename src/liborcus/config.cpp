@@ -13,7 +13,8 @@ config::config() : debug(false), structure_check(true) {}
 
 json_config::json_config() :
     output_format(output_format_type::none),
-    preserve_object_order(true) {}
+    preserve_object_order(true),
+    resolve_references(false) {}
 
 json_config::~json_config() {}
 

@@ -10,14 +10,17 @@
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
 #include "orcus/config.hpp"
+#include "orcus/stream.hpp"
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <sstream>
 
 #include <boost/current_function.hpp>
+#include <boost/filesystem.hpp>
+
+namespace fs = boost::filesystem;
 
 namespace orcus {
 
@@ -80,8 +83,16 @@ struct json_value_object : public json_value
     std::vector<std::string> key_order;
     std::unordered_map<std::string, std::unique_ptr<json_value>> value_object;
 
-    json_value_object() : json_value(json_value_type::object) {}
+    bool has_ref;
+
+    json_value_object() : json_value(json_value_type::object), has_ref(false) {}
     virtual ~json_value_object() {}
+
+    void swap(json_value_object& src)
+    {
+        key_order.swap(src.key_order);
+        value_object.swap(src.value_object);
+    }
 };
 
 void dump_repeat(std::ostringstream& os, const char* s, int repeat)
@@ -342,12 +353,22 @@ struct parser_stack
     parser_stack(json_value* _node) : node(_node) {}
 };
 
+struct external_ref
+{
+    std::string path;
+    json_value_object* dest;
+
+    external_ref(const std::string& _path, json_value_object* _dest) :
+        path(_path), dest(_dest) {}
+};
+
 class parser_handler
 {
     const json_config& m_config;
 
     std::unique_ptr<json_value> m_root;
     std::vector<parser_stack> m_stack;
+    std::vector<external_ref> m_external_refs;
     std::string m_cur_object_key;
 
     json_value* push_value(std::unique_ptr<json_value>&& value)
@@ -368,8 +389,23 @@ class parser_handler
             {
                 const std::string& key = cur.key;
                 json_value_object* jvo = static_cast<json_value_object*>(cur.node);
+
+                if (m_config.resolve_references &&
+                    key == "$ref" && value->type == json_value_type::string)
+                {
+                    json_value_string* jvs = static_cast<json_value_string*>(value.get());
+                    if (!jvo->has_ref && !jvs->value_string.empty() && jvs->value_string[0] != '#')
+                    {
+                        // Store the external reference path and the destination
+                        // object for later processing.
+                        m_external_refs.emplace_back(jvs->value_string, jvo);
+                        jvo->has_ref = true;
+                    }
+                }
+
                 if (m_config.preserve_object_order)
                     jvo->key_order.push_back(key);
+
                 auto r = jvo->value_object.insert(
                     std::make_pair(key, std::move(value)));
 
@@ -476,6 +512,11 @@ public:
     {
         other.swap(m_root);
     }
+
+    const std::vector<external_ref>& get_external_refs() const
+    {
+        return m_external_refs;
+    }
 };
 
 }
@@ -494,6 +535,41 @@ void json_document_tree::load(const std::string& strm, const json_config& config
     json_parser<parser_handler> parser(strm.data(), strm.size(), hdl);
     parser.parse();
     hdl.swap(mp_impl->m_root);
+
+    auto& external_refs = hdl.get_external_refs();
+
+    json_config ext_config = config;
+
+    fs::path parent_dir = config.input_path;
+    parent_dir = parent_dir.parent_path();
+    for (auto it = external_refs.begin(), ite = external_refs.end(); it != ite; ++it)
+    {
+        fs::path extfile = it->path;
+        fs::path extpath = parent_dir;
+        extpath /= extfile;
+
+        // Get the stream content from the path.
+        std::string strm;
+        load_file_content(extpath.string().c_str(), strm);
+
+        ext_config.input_path = extpath.string();
+        json_document_tree doc;
+        doc.load(strm, ext_config);
+
+        json_value* root = doc.mp_impl->m_root.get();
+        if (root->type == json_value_type::object)
+        {
+            json_value_object* jvo_src = static_cast<json_value_object*>(root);
+            json_value_object* jvo_dest = it->dest;
+            if (jvo_dest->value_object.size() == 1)
+            {
+                // Swap with the referenced object only when the destination
+                // has one child value i.e. it only has '$ref'.
+                jvo_dest->swap(*jvo_src);
+                jvo_dest->has_ref = false;
+            }
+        }
+    }
 }
 
 std::string json_document_tree::dump() const
