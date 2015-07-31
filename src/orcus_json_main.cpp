@@ -34,11 +34,16 @@ int main(int argc, char** argv)
 
         switch (config->output_format)
         {
-            case orcus::json_config::output_format_type::xml:
+            case json_config::output_format_type::xml:
             {
-                std::string xml_output = doc.dump_xml();
                 ofstream fs(config->output_path.c_str());
-                fs << xml_output;
+                fs << doc.dump_xml();
+            }
+            break;
+            case json_config::output_format_type::json:
+            {
+                ofstream fs(config->output_path.c_str());
+                fs << doc.dump();
             }
             break;
             default:

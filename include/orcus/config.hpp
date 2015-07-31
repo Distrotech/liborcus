@@ -33,7 +33,7 @@ struct ORCUS_DLLPUBLIC config
 
 struct ORCUS_DLLPUBLIC json_config
 {
-    enum class output_format_type { none, xml };
+    enum class output_format_type { none, xml, json };
 
     std::string input_path;
     std::string output_path;
