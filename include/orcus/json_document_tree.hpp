@@ -15,6 +15,8 @@
 
 namespace orcus {
 
+struct json_config;
+
 class ORCUS_DLLPUBLIC json_document_tree
 {
     struct impl;
@@ -30,7 +32,7 @@ public:
      *
      * @param strm stream containing a JSON structure.
      */
-    void load(const std::string& strm);
+    void load(const std::string& strm, const json_config& config);
 
     /**
      * Dump the JSON document tree to string.

@@ -9,6 +9,7 @@
 #include "orcus/json_parser.hpp"
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
+#include "orcus/config.hpp"
 
 #include <iostream>
 #include <string>
@@ -76,6 +77,7 @@ struct json_value_array : public json_value
 
 struct json_value_object : public json_value
 {
+    std::vector<std::string> key_order;
     std::unordered_map<std::string, std::unique_ptr<json_value>> value_object;
 
     json_value_object() : json_value(json_value_type::object) {}
@@ -150,18 +152,40 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
         break;
         case json_value_type::object:
         {
+            auto& key_order = static_cast<const json_value_object*>(v)->key_order;
             auto& vals = static_cast<const json_value_object*>(v)->value_object;
             os << "{" << std::endl;
             size_t n = vals.size();
-            for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
+
+            if (key_order.empty())
             {
-                auto& key = it->first;
-                auto& val = it->second;
-                dump_value(os, val.get(), level+1, &key);
-                size_t pos = std::distance(vals.begin(), it);
-                if (pos < (n-1))
-                    os << ",";
-                os << std::endl;
+                // Dump object's children unordered.
+                for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
+                {
+                    auto& key = it->first;
+                    auto& val = it->second;
+                    dump_value(os, val.get(), level+1, &key);
+                    size_t pos = std::distance(vals.begin(), it);
+                    if (pos < (n-1))
+                        os << ",";
+                    os << std::endl;
+                }
+            }
+            else
+            {
+                // Dump them based on key's original ordering.
+                for (auto it = key_order.begin(), ite = key_order.end(); it != ite; ++it)
+                {
+                    auto& key = *it;
+                    auto val_pos = vals.find(key);
+                    assert(val_pos != vals.end());
+
+                    dump_value(os, val_pos->second.get(), level+1, &key);
+                    size_t pos = std::distance(key_order.begin(), it);
+                    if (pos < (n-1))
+                        os << ",";
+                    os << std::endl;
+                }
             }
 
             dump_repeat(os, tab, level);
@@ -298,6 +322,8 @@ struct parser_stack
 
 class parser_handler
 {
+    const json_config& m_config;
+
     std::unique_ptr<json_value> m_root;
     std::vector<parser_stack> m_stack;
     std::string m_cur_object_key;
@@ -320,6 +346,8 @@ class parser_handler
             {
                 const std::string& key = cur.key;
                 json_value_object* jvo = static_cast<json_value_object*>(cur.node);
+                if (m_config.preserve_object_order)
+                    jvo->key_order.push_back(key);
                 auto r = jvo->value_object.insert(
                     std::make_pair(key, std::move(value)));
 
@@ -338,7 +366,7 @@ class parser_handler
     }
 
 public:
-    parser_handler() {}
+    parser_handler(const json_config& config) : m_config(config) {}
 
     void begin_parse()
     {
@@ -438,9 +466,9 @@ struct json_document_tree::impl
 json_document_tree::json_document_tree() : mp_impl(make_unique<impl>()) {}
 json_document_tree::~json_document_tree() {}
 
-void json_document_tree::load(const std::string& strm)
+void json_document_tree::load(const std::string& strm, const json_config& config)
 {
-    parser_handler hdl;
+    parser_handler hdl(config);
     json_parser<parser_handler> parser(strm.data(), strm.size(), hdl);
     parser.parse();
     hdl.swap(mp_impl->m_root);

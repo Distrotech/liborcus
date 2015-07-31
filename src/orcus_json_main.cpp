@@ -30,7 +30,7 @@ int main(int argc, char** argv)
         load_file_content(config->input_path.c_str(), strm);
 
         json_document_tree doc;
-        doc.load(strm);
+        doc.load(strm, *config);
 
         switch (config->output_format)
         {

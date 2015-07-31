@@ -11,7 +11,10 @@ namespace orcus {
 
 config::config() : debug(false), structure_check(true) {}
 
-json_config::json_config() : output_format(output_format_type::none) {}
+json_config::json_config() :
+    output_format(output_format_type::none),
+    preserve_object_order(true) {}
+
 json_config::~json_config() {}
 
 }

@@ -39,6 +39,14 @@ struct ORCUS_DLLPUBLIC json_config
     std::string output_path;
     output_format_type output_format;
 
+    /**
+     * Control whether or not to preserve the order of object's child
+     * name/value pairs.  By definition, JSON's object is an unordered set of
+     * name/value pairs, but in some cases preserving the original order may
+     * be desirable.
+     */
+    bool preserve_object_order;
+
     json_config();
     ~json_config();
 };
