@@ -273,17 +273,39 @@ void dump_value_xml(std::ostringstream& os, const json_value* v, int level)
         break;
         case json_value_type::object:
         {
+            auto& key_order = static_cast<const json_value_object*>(v)->key_order;
             auto& vals = static_cast<const json_value_object*>(v)->value_object;
             os << "<object>";
-            for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
+
+            if (key_order.empty())
             {
-                auto& key = it->first;
-                auto& val = it->second;
-                os << "<item name=\"";
-                dump_string_xml(os, key);
-                os << "\">";
-                dump_value_xml(os, val.get(), level+1);
-                os << "</item>";
+                // Dump object's children unordered.
+                for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
+                {
+                    auto& key = it->first;
+                    auto& val = it->second;
+                    os << "<item name=\"";
+                    dump_string_xml(os, key);
+                    os << "\">";
+                    dump_value_xml(os, val.get(), level+1);
+                    os << "</item>";
+                }
+            }
+            else
+            {
+                // Dump them based on key's original ordering.
+                for (auto it = key_order.begin(), ite = key_order.end(); it != ite; ++it)
+                {
+                    auto& key = *it;
+                    auto val_pos = vals.find(key);
+                    assert(val_pos != vals.end());
+
+                    os << "<item name=\"";
+                    dump_string_xml(os, key);
+                    os << "\">";
+                    dump_value_xml(os, val_pos->second.get(), level+1);
+                    os << "</item>";
+                }
             }
 
             os << "</object>";
