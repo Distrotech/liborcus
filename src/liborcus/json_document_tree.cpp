@@ -96,8 +96,8 @@ void dump_string(std::ostringstream& os, const std::string& s)
     for (auto it = s.begin(), ite = s.end(); it != ite; ++it)
     {
         char c = *it;
-        if (is_in(c, "\"/"))
-            // Escape double quote and forward slash.
+        if (c == '"')
+            // Escape double quote, but not forward slash.
             os << backslash;
         else if (c == backslash)
         {
