@@ -146,7 +146,7 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
             }
 
             dump_repeat(os, tab, level);
-            os << "]" << std::endl;
+            os << "]";
         }
         break;
         case json_value_type::boolean_false:
@@ -200,7 +200,7 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
             }
 
             dump_repeat(os, tab, level);
-            os << "}" << std::endl;
+            os << "}";
         }
         break;
         case json_value_type::string:
