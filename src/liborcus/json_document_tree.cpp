@@ -122,6 +122,10 @@ void dump_string(std::ostringstream& os, const std::string& s)
     os << quote;
 }
 
+void dump_item(
+    std::ostringstream& os, const std::string* key, const json_value* val,
+    int level, bool sep);
+
 void dump_value(std::ostringstream& os, const json_value* v, int level, const std::string* key = nullptr)
 {
     dump_repeat(os, tab, level);
@@ -136,14 +140,9 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
             auto& vals = static_cast<const json_value_array*>(v)->value_array;
             os << "[" << std::endl;
             size_t n = vals.size();
-            for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
-            {
-                dump_value(os, it->get(), level+1);
-                size_t pos = std::distance(vals.begin(), it);
-                if (pos < (n-1))
-                    os << ",";
-                os << std::endl;
-            }
+            size_t pos = 0;
+            for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it, ++pos)
+                dump_item(os, nullptr, it->get(), level, pos < (n-1));
 
             dump_repeat(os, tab, level);
             os << "]";
@@ -171,31 +170,26 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
             if (key_order.empty())
             {
                 // Dump object's children unordered.
-                for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
+                size_t pos = 0;
+                for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it, ++pos)
                 {
                     auto& key = it->first;
                     auto& val = it->second;
-                    dump_value(os, val.get(), level+1, &key);
-                    size_t pos = std::distance(vals.begin(), it);
-                    if (pos < (n-1))
-                        os << ",";
-                    os << std::endl;
+
+                    dump_item(os, &key, val.get(), level, pos < (n-1));
                 }
             }
             else
             {
                 // Dump them based on key's original ordering.
-                for (auto it = key_order.begin(), ite = key_order.end(); it != ite; ++it)
+                size_t pos = 0;
+                for (auto it = key_order.begin(), ite = key_order.end(); it != ite; ++it, ++pos)
                 {
                     auto& key = *it;
                     auto val_pos = vals.find(key);
                     assert(val_pos != vals.end());
 
-                    dump_value(os, val_pos->second.get(), level+1, &key);
-                    size_t pos = std::distance(key_order.begin(), it);
-                    if (pos < (n-1))
-                        os << ",";
-                    os << std::endl;
+                    dump_item(os, &key, val_pos->second.get(), level, pos < (n-1));
                 }
             }
 
@@ -210,6 +204,16 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
         default:
             ;
     }
+}
+
+void dump_item(
+    std::ostringstream& os, const std::string* key, const json_value* val,
+    int level, bool sep)
+{
+    dump_value(os, val, level+1, key);
+    if (sep)
+        os << ",";
+    os << std::endl;
 }
 
 std::string dump_json_tree(const json_value* root)
@@ -249,6 +253,9 @@ void dump_string_xml(std::ostringstream& os, const std::string& s)
         }
     }
 }
+
+void dump_object_item_xml(
+    std::ostringstream& os, const std::string& key, const json_value* val, int level);
 
 void dump_value_xml(std::ostringstream& os, const json_value* v, int level)
 {
@@ -295,11 +302,7 @@ void dump_value_xml(std::ostringstream& os, const json_value* v, int level)
                 {
                     auto& key = it->first;
                     auto& val = it->second;
-                    os << "<item name=\"";
-                    dump_string_xml(os, key);
-                    os << "\">";
-                    dump_value_xml(os, val.get(), level+1);
-                    os << "</item>";
+                    dump_object_item_xml(os, key, val.get(), level);
                 }
             }
             else
@@ -311,11 +314,7 @@ void dump_value_xml(std::ostringstream& os, const json_value* v, int level)
                     auto val_pos = vals.find(key);
                     assert(val_pos != vals.end());
 
-                    os << "<item name=\"";
-                    dump_string_xml(os, key);
-                    os << "\">";
-                    dump_value_xml(os, val_pos->second.get(), level+1);
-                    os << "</item>";
+                    dump_object_item_xml(os, key, val_pos->second.get(), level);
                 }
             }
 
@@ -331,6 +330,16 @@ void dump_value_xml(std::ostringstream& os, const json_value* v, int level)
         default:
             ;
     }
+}
+
+void dump_object_item_xml(
+    std::ostringstream& os, const std::string& key, const json_value* val, int level)
+{
+    os << "<item name=\"";
+    dump_string_xml(os, key);
+    os << "\">";
+    dump_value_xml(os, val, level+1);
+    os << "</item>";
 }
 
 std::string dump_xml_tree(const json_value* root)
