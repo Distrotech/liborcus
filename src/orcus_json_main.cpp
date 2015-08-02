@@ -8,6 +8,8 @@
 #include "orcus/json_document_tree.hpp"
 #include "orcus/config.hpp"
 #include "orcus/stream.hpp"
+#include "orcus/xml_namespace.hpp"
+#include "orcus/dom_tree.hpp"
 
 #include "orcus_filter_global.hpp"
 
@@ -44,6 +46,18 @@ int main(int argc, char** argv)
             {
                 ofstream fs(config->output_path.c_str());
                 fs << doc.dump();
+            }
+            break;
+            case json_config::output_format_type::check:
+            {
+                string xml_strm = doc.dump_xml();
+                xmlns_repository repo;
+                xmlns_context cxt = repo.create_context();
+                dom_tree dom(cxt);
+                dom.load(xml_strm);
+
+                ofstream fs(config->output_path.c_str());
+                dom.dump_compact(fs);
             }
             break;
             default:

@@ -48,7 +48,8 @@ const char* help_json_output =
 
 const char* help_json_output_format =
 "Specify the format of output file.  Supported format types are: "
-"1) XML (xml), 2) JSON (json), or 3) no output (none).";
+"1) XML (xml), 2) JSON (json), 3) special format used to verify tree content "
+"for unit tests (check), or 4) no output (none).";
 
 const char* err_no_input_file = "No input file.";
 
@@ -256,6 +257,8 @@ std::unique_ptr<json_config> parse_json_args(int argc, char** argv)
             config->output_format = json_config::output_format_type::xml;
         else if (outformat == "json")
             config->output_format = orcus::json_config::output_format_type::json;
+        else if (outformat == "check")
+            config->output_format = orcus::json_config::output_format_type::check;
         else
         {
             cerr << "Unknown output format type '" << outformat << "'." << endl;
