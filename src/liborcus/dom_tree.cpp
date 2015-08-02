@@ -9,6 +9,7 @@
 #include "orcus/exception.hpp"
 #include "orcus/xml_namespace.hpp"
 #include "orcus/global.hpp"
+#include "orcus/sax_ns_parser.hpp"
 
 #include "orcus/string_pool.hpp"
 
@@ -24,6 +25,60 @@ using namespace std;
 namespace orcus {
 
 namespace {
+
+class sax_handler
+{
+    sax::doctype_declaration m_dtd;
+    dom_tree m_tree;
+
+public:
+    sax_handler(xmlns_context& cxt) : m_tree(cxt) {}
+
+    void doctype(const sax::doctype_declaration& dtd)
+    {
+        m_tree.set_doctype(dtd);
+    }
+
+    void start_declaration(const pstring& name)
+    {
+        m_tree.start_declaration(name);
+    }
+
+    void end_declaration(const pstring& name)
+    {
+        m_tree.end_declaration(name);
+    }
+
+    void start_element(const sax_ns_parser_element& elem)
+    {
+        m_tree.start_element(elem.ns, elem.name);
+    }
+
+    void end_element(const sax_ns_parser_element& elem)
+    {
+        m_tree.end_element(elem.ns, elem.name);
+    }
+
+    void characters(const pstring& val, bool)
+    {
+        m_tree.set_characters(val);
+    }
+
+    void attribute(const pstring& name, const pstring& val)
+    {
+        m_tree.set_attribute(XMLNS_UNKNOWN_ID, name, val);
+    }
+
+    void attribute(const sax_ns_parser_attribute& attr)
+    {
+        m_tree.set_attribute(attr.ns, attr.name, attr.value);
+    }
+
+    void swap(dom_tree& other)
+    {
+        m_tree.swap(other);
+    }
+};
 
 /**
  * Escape certain characters with backslash (\).
@@ -54,6 +109,8 @@ struct dom_tree_impl
 {
     xmlns_context& m_ns_cxt;
     string_pool m_pool;
+
+    std::unique_ptr<sax::doctype_declaration> m_doctype;
 
     pstring m_cur_decl_name;
     declarations_type m_decls;
@@ -123,6 +180,21 @@ dom_tree::dom_tree(xmlns_context& cxt) :
     mp_impl(make_unique<dom_tree_impl>(cxt)) {}
 
 dom_tree::~dom_tree() {}
+
+void dom_tree::load(const std::string& strm)
+{
+    sax_handler hdl(mp_impl->m_ns_cxt);
+    sax_ns_parser<sax_handler> parser(
+        strm.c_str(), strm.size(), mp_impl->m_ns_cxt, hdl);
+    parser.parse();
+
+    hdl.swap(*this);
+}
+
+void dom_tree::swap(dom_tree& other)
+{
+    mp_impl.swap(other.mp_impl);
+}
 
 void dom_tree::start_declaration(const pstring& name)
 {
@@ -207,6 +279,24 @@ void dom_tree::set_attribute(xmlns_id_t ns, const pstring& name, const pstring& 
     pstring val2 = mp_impl->m_pool.intern(val).first;
 
     mp_impl->m_cur_attrs.push_back(attr(ns, name2, val2));
+}
+
+void dom_tree::set_doctype(const sax::doctype_declaration& dtd)
+{
+    mp_impl->m_doctype = make_unique<sax::doctype_declaration>(dtd);  // make a copy.
+
+    sax::doctype_declaration& this_dtd = *mp_impl->m_doctype;
+    string_pool& pool = mp_impl->m_pool;
+
+    // Intern the strings.
+    this_dtd.root_element = pool.intern(dtd.root_element).first;
+    this_dtd.fpi = pool.intern(dtd.fpi).first;
+    this_dtd.uri = pool.intern(dtd.uri).first;
+}
+
+const sax::doctype_declaration* dom_tree::get_doctype() const
+{
+    return mp_impl->m_doctype.get();
 }
 
 const dom_tree::attrs_type* dom_tree::get_declaration_attributes(const pstring& name) const

@@ -19,65 +19,6 @@
 using namespace orcus;
 using namespace std;
 
-class sax_handler
-{
-    sax::doctype_declaration m_dtd;
-    dom_tree m_tree;
-
-public:
-    sax_handler(xmlns_context& cxt) : m_tree(cxt) {}
-
-    void doctype(const sax::doctype_declaration& dtd)
-    {
-        m_dtd = dtd;
-    }
-
-    void start_declaration(const pstring& name)
-    {
-        m_tree.start_declaration(name);
-    }
-
-    void end_declaration(const pstring& name)
-    {
-        m_tree.end_declaration(name);
-    }
-
-    void start_element(const sax_ns_parser_element& elem)
-    {
-        m_tree.start_element(elem.ns, elem.name);
-    }
-
-    void end_element(const sax_ns_parser_element& elem)
-    {
-        m_tree.end_element(elem.ns, elem.name);
-    }
-
-    void characters(const pstring& val, bool)
-    {
-        m_tree.set_characters(val);
-    }
-
-    void attribute(const pstring& name, const pstring& val)
-    {
-        m_tree.set_attribute(XMLNS_UNKNOWN_ID, name, val);
-    }
-
-    void attribute(const sax_ns_parser_attribute& attr)
-    {
-        m_tree.set_attribute(attr.ns, attr.name, attr.value);
-    }
-
-    const dom_tree& get_dom() const
-    {
-        return m_tree;
-    }
-
-    const sax::doctype_declaration& get_dtd() const
-    {
-        return m_dtd;
-    }
-};
-
 class sax_handler_encoded_attrs
 {
     std::vector<sax::parser_attribute> m_attrs;
@@ -138,20 +79,13 @@ const char* sax_parser_parse_only_test_dirs[] = {
     SRCDIR"/test/xml/parse-only/rss/"
 };
 
-std::unique_ptr<sax_handler> parse_file(xmlns_context& cxt, const char* filepath, string &strm)
+void parse_file(dom_tree& tree, const char* filepath, string& strm)
 {
     cout << "testing " << filepath << endl;
     load_file_content(filepath, strm);
     assert(!strm.empty());
 
-    std::unique_ptr<sax_handler> hdl(new sax_handler(cxt));
-    sax_ns_parser<sax_handler> parser(strm.c_str(), strm.size(), cxt, *hdl);
-    parser.parse();
-
-    // Every valid XML file must have <?xml....?> in it.
-    assert(hdl->get_dom().get_declaration_attributes("xml"));
-
-    return hdl;
+    tree.load(strm);
 }
 
 void test_xml_sax_parser()
@@ -167,11 +101,12 @@ void test_xml_sax_parser()
 
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();
-        std::unique_ptr<sax_handler> hdl = parse_file(cxt, file.c_str(), strm);
+        dom_tree tree(cxt);
+        parse_file(tree, file.c_str(), strm);
 
         // Get the compact form of the content.
         ostringstream os;
-        hdl->get_dom().dump_compact(os);
+        tree.dump_compact(os);
         string content = os.str();
 
         // Load the check form.
@@ -200,7 +135,8 @@ void test_xml_sax_parser_read_only()
 
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();
-        std::unique_ptr<sax_handler> hdl = parse_file(cxt, file.c_str(), strm);
+        dom_tree tree(cxt);
+        parse_file(tree, file.c_str(), strm);
     }
 }
 
@@ -210,9 +146,8 @@ void test_xml_declarations()
     const char* file_path = SRCDIR"/test/xml/custom-decl-1/input.xml";
     xmlns_repository repo;
     xmlns_context cxt = repo.create_context();
-    std::unique_ptr<sax_handler> hdl = parse_file(cxt, file_path, strm);
-
-    const dom_tree& dom = hdl->get_dom();
+    dom_tree dom(cxt);
+    parse_file(dom, file_path, strm);
 
     // Make sure we parse the custom declaration correctly.
     const dom_tree::attrs_type* p = dom.get_declaration_attributes("mso-application");
@@ -244,14 +179,16 @@ void test_xml_dtd()
         const char* file_path = tests[i].file_path;
         string strm;
         xmlns_context cxt = repo.create_context();
-        std::unique_ptr<sax_handler> hdl = parse_file(cxt, file_path, strm);
-        const sax::doctype_declaration& dtd = hdl->get_dtd();
-        assert(dtd.keyword == tests[i].keyword);
-        assert(dtd.root_element == tests[i].root_element);
-        assert(dtd.fpi == tests[i].fpi);
+        dom_tree dom(cxt);
+        parse_file(dom, file_path, strm);
+        const sax::doctype_declaration* dtd = dom.get_doctype();
+        assert(dtd);
+        assert(dtd->keyword == tests[i].keyword);
+        assert(dtd->root_element == tests[i].root_element);
+        assert(dtd->fpi == tests[i].fpi);
         if (tests[i].uri)
         {
-            assert(dtd.uri == tests[i].uri);
+            assert(dtd->uri == tests[i].uri);
         }
     }
 }

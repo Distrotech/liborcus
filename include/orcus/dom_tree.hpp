@@ -20,6 +20,12 @@ namespace orcus {
 class xmlns_context;
 struct dom_tree_impl;
 
+namespace sax {
+
+struct doctype_declaration;
+
+}
+
 /**
  * Ordinary DOM tree representing the structure of a XML content in full.
  */
@@ -92,12 +98,29 @@ public:
     dom_tree(xmlns_context& cxt);
     ~dom_tree();
 
+    /**
+     * Parse a given XML stream and build the content tree.
+     *
+     * @param strm XML stream.
+     */
+    void load(const std::string& strm);
+
+    /**
+     * Swap the content with another dom_tree instance.
+     *
+     * @param other the dom_tree instance to swap the content with.
+     */
+    void swap(dom_tree& other);
+
     void start_declaration(const pstring& name);
     void end_declaration(const pstring& name);
     void start_element(xmlns_id_t ns, const pstring& name);
     void end_element(xmlns_id_t ns, const pstring& name);
     void set_characters(const pstring& val);
     void set_attribute(xmlns_id_t ns, const pstring& name, const pstring& val);
+
+    void set_doctype(const sax::doctype_declaration& dtd);
+    const sax::doctype_declaration* get_doctype() const;
 
     const attrs_type* get_declaration_attributes(const pstring& name) const;
 
