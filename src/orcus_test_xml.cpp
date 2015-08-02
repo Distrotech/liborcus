@@ -138,7 +138,7 @@ const char* sax_parser_parse_only_test_dirs[] = {
     SRCDIR"/test/xml/parse-only/rss/"
 };
 
-sax_handler* parse_file(xmlns_context& cxt, const char* filepath, string &strm)
+std::unique_ptr<sax_handler> parse_file(xmlns_context& cxt, const char* filepath, string &strm)
 {
     cout << "testing " << filepath << endl;
     load_file_content(filepath, strm);
@@ -151,7 +151,7 @@ sax_handler* parse_file(xmlns_context& cxt, const char* filepath, string &strm)
     // Every valid XML file must have <?xml....?> in it.
     assert(hdl->get_dom().get_declaration_attributes("xml"));
 
-    return hdl.release();
+    return hdl;
 }
 
 void test_xml_sax_parser()
@@ -167,7 +167,7 @@ void test_xml_sax_parser()
 
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();
-        std::unique_ptr<sax_handler> hdl(parse_file(cxt, file.c_str(), strm));
+        std::unique_ptr<sax_handler> hdl = parse_file(cxt, file.c_str(), strm);
 
         // Get the compact form of the content.
         ostringstream os;
@@ -200,7 +200,7 @@ void test_xml_sax_parser_read_only()
 
         xmlns_repository repo;
         xmlns_context cxt = repo.create_context();
-        std::unique_ptr<sax_handler> hdl(parse_file(cxt, file.c_str(), strm));
+        std::unique_ptr<sax_handler> hdl = parse_file(cxt, file.c_str(), strm);
     }
 }
 
@@ -210,7 +210,7 @@ void test_xml_declarations()
     const char* file_path = SRCDIR"/test/xml/custom-decl-1/input.xml";
     xmlns_repository repo;
     xmlns_context cxt = repo.create_context();
-    std::unique_ptr<sax_handler> hdl(parse_file(cxt, file_path, strm));
+    std::unique_ptr<sax_handler> hdl = parse_file(cxt, file_path, strm);
 
     const dom_tree& dom = hdl->get_dom();
 
@@ -244,7 +244,7 @@ void test_xml_dtd()
         const char* file_path = tests[i].file_path;
         string strm;
         xmlns_context cxt = repo.create_context();
-        std::unique_ptr<sax_handler> hdl(parse_file(cxt, file_path, strm));
+        std::unique_ptr<sax_handler> hdl = parse_file(cxt, file_path, strm);
         const sax::doctype_declaration& dtd = hdl->get_dtd();
         assert(dtd.keyword == tests[i].keyword);
         assert(dtd.root_element == tests[i].root_element);
