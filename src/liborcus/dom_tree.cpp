@@ -119,9 +119,10 @@ void dom_tree::content::print(ostream& os, const xmlns_context& /*cxt*/) const
 
 dom_tree::content::~content() {}
 
-dom_tree::dom_tree(xmlns_context& cxt) : mp_impl(new dom_tree_impl(cxt)) {}
+dom_tree::dom_tree(xmlns_context& cxt) :
+    mp_impl(make_unique<dom_tree_impl>(cxt)) {}
 
-dom_tree::~dom_tree() { delete mp_impl; }
+dom_tree::~dom_tree() {}
 
 void dom_tree::start_declaration(const pstring& name)
 {

@@ -104,7 +104,7 @@ public:
     void dump_compact(std::ostream& os) const;
 
 private:
-    dom_tree_impl* mp_impl;
+    std::unique_ptr<dom_tree_impl> mp_impl;
 };
 
 }
