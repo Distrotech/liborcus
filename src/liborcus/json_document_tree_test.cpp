@@ -32,7 +32,7 @@ json_config test_config;
 
 void test_json_parse_basic1()
 {
-    const char* path = SRCDIR"/test/json/basic1.json";
+    const char* path = SRCDIR"/test/json/basic1/input.json";
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm, test_config);
@@ -41,7 +41,7 @@ void test_json_parse_basic1()
 
 void test_json_parse_basic2()
 {
-    const char* path = SRCDIR"/test/json/basic2.json";
+    const char* path = SRCDIR"/test/json/basic2/input.json";
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm, test_config);
@@ -50,7 +50,7 @@ void test_json_parse_basic2()
 
 void test_json_parse_basic3()
 {
-    const char* path = SRCDIR"/test/json/basic3.json";
+    const char* path = SRCDIR"/test/json/basic3/input.json";
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm, test_config);
@@ -59,7 +59,7 @@ void test_json_parse_basic3()
 
 void test_json_parse_basic4()
 {
-    const char* path = SRCDIR"/test/json/basic4.json";
+    const char* path = SRCDIR"/test/json/basic4/input.json";
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm, test_config);
@@ -68,7 +68,7 @@ void test_json_parse_basic4()
 
 void test_json_parse_nested1()
 {
-    const char* path = SRCDIR"/test/json/nested1.json";
+    const char* path = SRCDIR"/test/json/nested1/input.json";
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm, test_config);
@@ -77,7 +77,7 @@ void test_json_parse_nested1()
 
 void test_json_parse_nested2()
 {
-    const char* path = SRCDIR"/test/json/nested2.json";
+    const char* path = SRCDIR"/test/json/nested2/input.json";
     string strm = get_stream(path);
     json_document_tree doc;
     doc.load(strm, test_config);

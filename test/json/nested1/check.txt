@@ -1,0 +1,13 @@
+/object
+/object/item
+/object/item@name="array"
+/object/item/array
+/object/item/array/item
+/object/item/array/item/number
+/object/item/array/item/number@value="1"
+/object/item/array/item
+/object/item/array/item/number
+/object/item/array/item/number@value="2"
+/object/item/array/item
+/object/item/array/item/number
+/object/item/array/item/number@value="3"

@@ -1,0 +1,43 @@
+/array
+/array/item
+/array/item/string
+/array/item/string@value="I am string"
+/array/item
+/array/item/string
+/array/item/string@value="me too"
+/array/item
+/array/item/string
+/array/item/string@value=""
+/array/item
+/array/item/string
+/array/item/string@value="\\"
+/array/item
+/array/item/string
+/array/item/string@value="/"
+/array/item
+/array/item/string
+/array/item/string@value="\\b"
+/array/item
+/array/item/string
+/array/item/string@value="\\f"
+/array/item
+/array/item/string
+/array/item/string@value="\\n"
+/array/item
+/array/item/string
+/array/item/string@value="\\r"
+/array/item
+/array/item/string
+/array/item/string@value="\\t"
+/array/item
+/array/item/string
+/array/item/string@value="\"quoted\""
+/array/item
+/array/item/string
+/array/item/string@value="http://www.google.com"
+/array/item
+/array/item/string
+/array/item/string@value="one \\n two \\n three"
+/array/item
+/array/item/string
+/array/item/string@value="front segment 'single quote' and \"double quote\" end segment"
