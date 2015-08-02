@@ -28,8 +28,7 @@ int main(int argc, char** argv)
 
     try
     {
-        std::string strm;
-        load_file_content(config->input_path.c_str(), strm);
+        std::string strm = load_file_content(config->input_path.c_str());
 
         json_document_tree doc;
         doc.load(strm, *config);

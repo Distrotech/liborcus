@@ -17,8 +17,7 @@ int main(int argc, char** argv) try
         return EXIT_FAILURE;
 
     mso::encryption_info_reader reader;
-    string strm;
-    load_file_content(argv[1], strm);
+    string strm = load_file_content(argv[1]);
 
     if (strm.empty())
         return EXIT_FAILURE;

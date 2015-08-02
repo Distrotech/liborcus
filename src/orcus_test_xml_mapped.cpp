@@ -52,7 +52,7 @@ const char* temp_output_xml = "out.xml";
 
 void dump_xml_structure(string& dump_content, string& strm, const char* filepath, xmlns_context& cxt)
 {
-    load_file_content(filepath, strm);
+    strm = load_file_content(filepath);
     dom_tree_sax_handler hdl(cxt);
     sax_ns_parser<dom_tree_sax_handler> parser(strm.c_str(), strm.size(), cxt, hdl);
     parser.parse();
@@ -74,7 +74,7 @@ void test_mapped_xml_import()
 
         // Load the data file content.
         cout << "reading " << data_file << endl;
-        load_file_content(data_file.c_str(), strm);
+        strm = load_file_content(data_file.c_str());
 
         spreadsheet::document doc;
         spreadsheet::import_factory import_fact(doc);
@@ -92,7 +92,7 @@ void test_mapped_xml_import()
         ostringstream os;
         doc.dump_check(os);
         string loaded = os.str();
-        load_file_content(check_file.c_str(), strm);
+        strm = load_file_content(check_file.c_str());
 
         assert(!loaded.empty());
         assert(!strm.empty());

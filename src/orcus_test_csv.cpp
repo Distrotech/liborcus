@@ -53,8 +53,7 @@ void test_csv_import()
         // Check that against known control.
         path = dir;
         path.append("check.txt");
-        string control;
-        load_file_content(path.c_str(), control);
+        string control = load_file_content(path.c_str());
 
         assert(!check.empty());
         assert(!control.empty());

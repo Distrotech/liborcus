@@ -34,8 +34,7 @@ void test_basic()
     {
         string filepath(base_dirs[i]);
         filepath.append("input.xml");
-        string strm;
-        load_file_content(filepath.c_str(), strm);
+        string strm = load_file_content(filepath.c_str());
         assert(!strm.empty());
         xmlns_repository xmlns_repo;
         xmlns_context cxt = xmlns_repo.create_context();
@@ -50,8 +49,7 @@ void test_basic()
         // Check the dump content against known datum.
         filepath = base_dirs[i];
         filepath.append("check.txt");
-        string strm_check;
-        load_file_content(filepath.c_str(), strm_check);
+        string strm_check = load_file_content(filepath.c_str());
         assert(!strm_check.empty());
 
         // They should be identical, plus or minus leading/trailing whitespaces.
@@ -66,8 +64,7 @@ void test_walker()
     {
         string filepath(base_dirs[0]);
         filepath.append("input.xml");
-        string strm;
-        load_file_content(filepath.c_str(), strm);
+        string strm = load_file_content(filepath.c_str());
         assert(!strm.empty());
         xmlns_repository xmlns_repo;
         xmlns_context cxt = xmlns_repo.create_context();
@@ -136,8 +133,7 @@ void test_walker()
         string filepath(base_dirs[3]); // attribute-1
         filepath.append("input.xml");
 
-        string strm;
-        load_file_content(filepath.c_str(), strm);
+        string strm = load_file_content(filepath.c_str());
         assert(!strm.empty());
         xmlns_repository xmlns_repo;
         xmlns_context cxt = xmlns_repo.create_context();

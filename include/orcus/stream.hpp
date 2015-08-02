@@ -18,10 +18,8 @@ namespace orcus {
  * Load the content of a file into a file stream.
  *
  * @param filepath file to open
- * @param strm content of the file
+ * @return content of the file
  */
-ORCUS_PSR_DLLPUBLIC void load_file_content(const char* filepath, std::string& strm);
-
 ORCUS_PSR_DLLPUBLIC std::string load_file_content(const char* filepath);
 
 }

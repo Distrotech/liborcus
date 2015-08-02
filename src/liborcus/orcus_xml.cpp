@@ -530,7 +530,7 @@ void orcus_xml::read_file(const char* filepath)
     cout << "reading file " << filepath << endl;
 #endif
     string& strm = mp_impl->m_data_strm;
-    load_file_content(filepath, strm);
+    strm = load_file_content(filepath);
     if (strm.empty())
         return;
 

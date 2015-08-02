@@ -137,8 +137,7 @@ void xml_map_sax_handler::attribute(const sax::parser_attribute& attr)
 
 void read_map_file(orcus_xml& app, const char* filepath)
 {
-    string strm;
-    load_file_content(filepath, strm);
+    string strm = load_file_content(filepath);
     if (strm.empty())
         return;
 

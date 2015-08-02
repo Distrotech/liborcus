@@ -22,8 +22,7 @@ int main(int argc, char** argv) try
         return EXIT_FAILURE;
 
     const char* filepath = argv[1];
-    string strm;
-    load_file_content(filepath, strm);
+    string strm = load_file_content(filepath);
 
     if (strm.empty())
     {

@@ -30,7 +30,7 @@ int main(int argc, char** argv)
     string strm;
     try
     {
-        load_file_content(argv[1], strm);
+        strm = load_file_content(argv[1]);
     }
     catch (const std::exception& e)
     {

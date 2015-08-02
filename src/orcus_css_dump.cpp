@@ -14,8 +14,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
 
     const char* filepath = argv[1];
-    std::string strm;
-    orcus::load_file_content(filepath, strm);
+    std::string strm = orcus::load_file_content(filepath);
     orcus::css_document_tree doc;
     doc.load(strm);
     doc.dump();

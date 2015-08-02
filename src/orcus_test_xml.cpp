@@ -82,7 +82,7 @@ const char* sax_parser_parse_only_test_dirs[] = {
 void parse_file(dom_tree& tree, const char* filepath, string& strm)
 {
     cout << "testing " << filepath << endl;
-    load_file_content(filepath, strm);
+    strm = load_file_content(filepath);
     assert(!strm.empty());
 
     tree.load(strm);
@@ -110,10 +110,9 @@ void test_xml_sax_parser()
         string content = os.str();
 
         // Load the check form.
-        string check;
         file = dir_path;
         file.append("check.txt");
-        load_file_content(file.c_str(), check);
+        string check = load_file_content(file.c_str());
         pstring psource(content.c_str(), content.size());
         pstring pcheck(check.c_str(), check.size());
 
@@ -197,9 +196,8 @@ void test_xml_encoded_attrs()
 {
     const char* filepath = SRCDIR"/test/xml/encoded-attrs/test1.xml";
 
-    string strm;
     cout << "testing " << filepath << endl;
-    load_file_content(filepath, strm);
+    string strm = load_file_content(filepath);
     assert(!strm.empty());
 
     sax_handler_encoded_attrs hdl;

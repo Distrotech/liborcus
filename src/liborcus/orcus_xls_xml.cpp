@@ -77,8 +77,7 @@ void orcus_xls_xml::read_file(const string& filepath)
     cout << "reading " << filepath << endl;
 #endif
 
-    string strm;
-    load_file_content(filepath.c_str(), strm);
+    string strm = load_file_content(filepath.c_str());
     if (strm.empty())
         return;
 
