@@ -32,5 +32,23 @@ void load_file_content(const char* filepath, string& strm)
     strm = os.str();
 }
 
+std::string load_file_content(const char* filepath)
+{
+    ifstream file(filepath);
+    if (!file)
+    {
+        // failed to open the specified file.
+        ostringstream os;
+        os << "failed to load " << filepath;
+        throw general_error(os.str());
+    }
+
+    ostringstream os;
+    os << file.rdbuf();
+    file.close();
+
+    return os.str();
+}
+
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

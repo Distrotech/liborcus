@@ -10,6 +10,8 @@
 #include "orcus/json_parser_base.hpp"
 #include "orcus/global.hpp"
 #include "orcus/config.hpp"
+#include "orcus/xml_namespace.hpp"
+#include "orcus/dom_tree.hpp"
 
 #include <cassert>
 #include <cstdlib>
@@ -18,70 +20,62 @@
 using namespace std;
 using namespace orcus;
 
-string get_stream(const char* path)
-{
-    cout << path << endl;
-    string strm;
-    load_file_content(path, strm);
-    cout << strm << endl;
-
-    return strm;
-}
-
 json_config test_config;
 
-void test_json_parse_basic1()
+const char* json_test_dirs[] = {
+    SRCDIR"/test/json/basic1/",
+    SRCDIR"/test/json/basic2/",
+    SRCDIR"/test/json/basic3/",
+    SRCDIR"/test/json/basic4/",
+    SRCDIR"/test/json/nested1/",
+    SRCDIR"/test/json/nested2/",
+    SRCDIR"/test/json/swagger/"
+};
+
+string dump_check_content(const json_document_tree& doc)
 {
-    const char* path = SRCDIR"/test/json/basic1/input.json";
-    string strm = get_stream(path);
-    json_document_tree doc;
-    doc.load(strm, test_config);
-    cout << doc.dump() << endl;
+    string xml_strm = doc.dump_xml();
+    xmlns_repository repo;
+    xmlns_context cxt = repo.create_context();
+    dom_tree dom(cxt);
+    dom.load(xml_strm);
+
+    ostringstream os;
+    dom.dump_compact(os);
+    return os.str();
 }
 
-void test_json_parse_basic2()
+bool compare_check_contents(const std::string& expected, const std::string& actual)
 {
-    const char* path = SRCDIR"/test/json/basic2/input.json";
-    string strm = get_stream(path);
-    json_document_tree doc;
-    doc.load(strm, test_config);
-    cout << doc.dump() << endl;
+    pstring _expected(expected.data(), expected.size());
+    pstring _actual(actual.data(), actual.size());
+    _expected = _expected.trim();
+    _actual = _actual.trim();
+
+    return _expected == _actual;
 }
 
-void test_json_parse_basic3()
+void test_json_parse()
 {
-    const char* path = SRCDIR"/test/json/basic3/input.json";
-    string strm = get_stream(path);
-    json_document_tree doc;
-    doc.load(strm, test_config);
-    cout << doc.dump() << endl;
-}
+    for (size_t i = 0; i < ORCUS_N_ELEMENTS(json_test_dirs); ++i)
+    {
+        const char* basedir = json_test_dirs[i];
+        string json_file(basedir);
+        json_file += "input.json";
 
-void test_json_parse_basic4()
-{
-    const char* path = SRCDIR"/test/json/basic4/input.json";
-    string strm = get_stream(path);
-    json_document_tree doc;
-    doc.load(strm, test_config);
-    cout << doc.dump() << endl;
-}
+        cout << "Testing " << json_file << endl;
 
-void test_json_parse_nested1()
-{
-    const char* path = SRCDIR"/test/json/nested1/input.json";
-    string strm = get_stream(path);
-    json_document_tree doc;
-    doc.load(strm, test_config);
-    cout << doc.dump() << endl;
-}
+        string strm = load_file_content(json_file.c_str());
+        json_document_tree doc;
+        doc.load(strm, test_config);
 
-void test_json_parse_nested2()
-{
-    const char* path = SRCDIR"/test/json/nested2/input.json";
-    string strm = get_stream(path);
-    json_document_tree doc;
-    doc.load(strm, test_config);
-    cout << doc.dump() << endl;
+        string check_file(basedir);
+        check_file += "check.txt";
+        string check_master = load_file_content(check_file.c_str());
+        string check_doc = dump_check_content(doc);
+
+        assert(compare_check_contents(check_master, check_doc));
+    }
 }
 
 void test_json_parse_invalid()
@@ -115,12 +109,7 @@ void test_json_parse_invalid()
 
 int main()
 {
-    test_json_parse_basic1();
-    test_json_parse_basic2();
-    test_json_parse_basic3();
-    test_json_parse_basic4();
-    test_json_parse_nested1();
-    test_json_parse_nested2();
+    test_json_parse();
     test_json_parse_invalid();
 
     return EXIT_SUCCESS;

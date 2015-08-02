@@ -22,6 +22,8 @@ namespace orcus {
  */
 ORCUS_PSR_DLLPUBLIC void load_file_content(const char* filepath, std::string& strm);
 
+ORCUS_PSR_DLLPUBLIC std::string load_file_content(const char* filepath);
+
 }
 
 #endif
