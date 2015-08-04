@@ -20,8 +20,6 @@
 using namespace std;
 using namespace orcus;
 
-json_config test_config;
-
 const char* json_test_dirs[] = {
     SRCDIR"/test/json/basic1/",
     SRCDIR"/test/json/basic2/",
@@ -57,6 +55,8 @@ bool compare_check_contents(const std::string& expected, const std::string& actu
 
 void test_json_parse()
 {
+    json_config test_config;
+
     for (size_t i = 0; i < ORCUS_N_ELEMENTS(json_test_dirs); ++i)
     {
         const char* basedir = json_test_dirs[i];
@@ -80,6 +80,8 @@ void test_json_parse()
 
 void test_json_parse_invalid()
 {
+    json_config test_config;
+
     const char* invalids[] = {
         "[foo]",
         "[qwerty]",
