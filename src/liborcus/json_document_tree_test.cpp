@@ -85,7 +85,8 @@ void test_json_parse_invalid()
         "[qwerty]",
         "[1,2] null",
         "{\"key\" 1: 12}",
-        "[1,,2]"
+        "[1,,2]",
+        "\"key\": {\"inner\": 12}"
     };
 
     for (size_t i = 0; i < ORCUS_N_ELEMENTS(invalids); ++i)

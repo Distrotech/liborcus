@@ -26,6 +26,7 @@ public:
     void parse();
 
 private:
+    void root_value();
     void value();
     void array();
     void object();
@@ -49,12 +50,31 @@ void json_parser<_Handler>::parse()
 
     skip_blanks();
     if (has_char())
-        value();
+        root_value();
 
     if (has_char())
         throw json::parse_error("parse: unexpected trailing string segment.");
 
     m_handler.end_parse();
+}
+
+template<typename _Handler>
+void json_parser<_Handler>::root_value()
+{
+    char c = cur_char();
+
+    switch (c)
+    {
+        case '[':
+            array();
+        break;
+        case '{':
+            object();
+        break;
+        default:
+            json::parse_error::throw_with(
+                "root_value: either '[' or '{' was expected, but '", cur_char(), "' was found.");
+    }
 }
 
 template<typename _Handler>
