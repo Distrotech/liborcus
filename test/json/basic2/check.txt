@@ -1,43 +1,44 @@
-/array
-/array/item
-/array/item/string
-/array/item/string@value="I am string"
-/array/item
-/array/item/string
-/array/item/string@value="me too"
-/array/item
-/array/item/string
-/array/item/string@value=""
-/array/item
-/array/item/string
-/array/item/string@value="\\"
-/array/item
-/array/item/string
-/array/item/string@value="/"
-/array/item
-/array/item/string
-/array/item/string@value="\\b"
-/array/item
-/array/item/string
-/array/item/string@value="\\f"
-/array/item
-/array/item/string
-/array/item/string@value="\\n"
-/array/item
-/array/item/string
-/array/item/string@value="\\r"
-/array/item
-/array/item/string
-/array/item/string@value="\\t"
-/array/item
-/array/item/string
-/array/item/string@value="\"quoted\""
-/array/item
-/array/item/string
-/array/item/string@value="http://www.google.com"
-/array/item
-/array/item/string
-/array/item/string@value="one \\n two \\n three"
-/array/item
-/array/item/string
-/array/item/string@value="front segment 'single quote' and \"double quote\" end segment"
+ns0="http://schemas.kohei.us/orcus/2015/json"
+/ns0:array
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="I am string"
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="me too"
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value=""
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="\\"
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="/"
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="\\b"
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="\\f"
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="\\n"
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="\\r"
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="\\t"
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="\"quoted\""
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="http://www.google.com"
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="one \\n two \\n three"
+/ns0:array/ns0:item
+/ns0:array/ns0:item/ns0:string
+/ns0:array/ns0:item/ns0:string@ns0:value="front segment 'single quote' and \"double quote\" end segment"

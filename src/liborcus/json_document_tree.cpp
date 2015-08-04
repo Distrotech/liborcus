@@ -30,6 +30,8 @@ const char* tab = "    ";
 constexpr char quote = '"';
 constexpr char backslash = '\\';
 
+const xmlns_id_t NS_orcus_json_xml = "http://schemas.kohei.us/orcus/2015/json";
+
 enum class json_value_type
 {
     unset,
@@ -263,8 +265,13 @@ void dump_value_xml(std::ostringstream& os, const json_value* v, int level)
     {
         case json_value_type::array:
         {
+            os << "<array";
+            if (level == 0)
+                os << " xmlns=\"" << NS_orcus_json_xml << "\"";
+            os << ">";
+
             auto& vals = static_cast<const json_value_array*>(v)->value_array;
-            os << "<array>";
+
             for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it)
             {
                 os << "<item>";
@@ -291,9 +298,13 @@ void dump_value_xml(std::ostringstream& os, const json_value* v, int level)
         break;
         case json_value_type::object:
         {
+            os << "<object";
+            if (level == 0)
+                os << " xmlns=\"" << NS_orcus_json_xml << "\"";
+            os << ">";
+
             auto& key_order = static_cast<const json_value_object*>(v)->key_order;
             auto& vals = static_cast<const json_value_object*>(v)->value_object;
-            os << "<object>";
 
             if (key_order.empty())
             {
