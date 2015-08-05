@@ -30,6 +30,10 @@ const char* json_test_dirs[] = {
     SRCDIR"/test/json/swagger/"
 };
 
+const char* json_test_refs_dirs[] = {
+    SRCDIR"/test/json/refs1/",
+};
+
 string dump_check_content(const json_document_tree& doc)
 {
     string xml_strm = doc.dump_xml();
@@ -53,6 +57,26 @@ bool compare_check_contents(const std::string& expected, const std::string& actu
     return _expected == _actual;
 }
 
+void verify_input(json_config& test_config, const char* basedir)
+{
+    string json_file(basedir);
+    json_file += "input.json";
+    test_config.input_path = json_file;
+
+    cout << "Testing " << json_file << endl;
+
+    string strm = load_file_content(json_file.c_str());
+    json_document_tree doc;
+    doc.load(strm, test_config);
+
+    string check_file(basedir);
+    check_file += "check.txt";
+    string check_master = load_file_content(check_file.c_str());
+    string check_doc = dump_check_content(doc);
+
+    assert(compare_check_contents(check_master, check_doc));
+}
+
 void test_json_parse()
 {
     json_config test_config;
@@ -60,21 +84,19 @@ void test_json_parse()
     for (size_t i = 0; i < ORCUS_N_ELEMENTS(json_test_dirs); ++i)
     {
         const char* basedir = json_test_dirs[i];
-        string json_file(basedir);
-        json_file += "input.json";
+        verify_input(test_config, basedir);
+    }
+}
 
-        cout << "Testing " << json_file << endl;
+void test_json_resolve_refs()
+{
+    json_config test_config;
+    test_config.resolve_references = true;
 
-        string strm = load_file_content(json_file.c_str());
-        json_document_tree doc;
-        doc.load(strm, test_config);
-
-        string check_file(basedir);
-        check_file += "check.txt";
-        string check_master = load_file_content(check_file.c_str());
-        string check_doc = dump_check_content(doc);
-
-        assert(compare_check_contents(check_master, check_doc));
+    for (size_t i = 0; i < ORCUS_N_ELEMENTS(json_test_refs_dirs); ++i)
+    {
+        const char* basedir = json_test_refs_dirs[i];
+        verify_input(test_config, basedir);
     }
 }
 
@@ -113,6 +135,7 @@ void test_json_parse_invalid()
 int main()
 {
     test_json_parse();
+    test_json_resolve_refs();
     test_json_parse_invalid();
 
     return EXIT_SUCCESS;
