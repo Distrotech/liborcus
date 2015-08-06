@@ -20,6 +20,7 @@ The library also includes low-level parsers for the following:
 * CSV
 * CSS
 * XML
+* JSON
 
 These parsers are all implemented as C++ templates and require a handler class
 passed as a template argument so that the handler class receives various
