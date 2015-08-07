@@ -4,6 +4,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -I./include $(BOOST_CPPFLAGS)
 EXTRA_PROGRAMS = \
 	liborcus-test-css-document-tree \
 	liborcus-test-json-document-tree \
+	liborcus-test-yaml-document-tree \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-structure-tree \
 	liborcus-test-common \
@@ -380,6 +381,16 @@ liborcus_test_json_document_tree_LDADD = \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	$(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 
+# liborcus-test-yaml-document-tree
+
+liborcus_test_yaml_document_tree_SOURCES = \
+	yaml_document_tree.cpp \
+	yaml_document_tree_test.cpp
+
+liborcus_test_yaml_document_tree_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
 # liborcus-test-xml-map-tree
 
 liborcus_test_xml_map_tree_SOURCES = \
@@ -425,6 +436,7 @@ liborcus_test_format_detection_LDADD = \
 TESTS += \
 	liborcus-test-css-document-tree \
 	liborcus-test-json-document-tree \
+	liborcus-test-yaml-document-tree \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-structure-tree \
 	liborcus-test-common \

@@ -3,7 +3,7 @@
 LOCATION=
 NAME=$BASH_ARGV
 case $NAME in
-    common|css-document-tree|json-document-tree|format-detection|xml-map-tree|xml-structure-tree)
+    common|*-document-tree|format-detection|xml-map-tree|xml-structure-tree)
         LOCATION=liborcus
         ;;
     csv|ods|xml|xml-mapped|xls-xml|xlsx)
@@ -29,6 +29,7 @@ if [ "$LOCATION" = "" ]; then
     echo "  * common"
     echo "  * css-document-tree"
     echo "  * json-document-tree"
+    echo "  * yaml-document-tree"
     echo "  * format-detection"
     echo "  * xml-map-tree"
     echo "  * xml-structure-tree"
