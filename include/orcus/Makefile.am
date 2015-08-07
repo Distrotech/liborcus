@@ -38,6 +38,9 @@ liborcus_HEADERS = \
 	types.hpp \
 	xml_namespace.hpp \
 	xml_structure_tree.hpp \
+	yaml_document_tree.hpp \
+	yaml_parser.hpp \
+	yaml_parser_base.hpp \
 	zip_archive.hpp \
 	zip_archive_stream.hpp
 

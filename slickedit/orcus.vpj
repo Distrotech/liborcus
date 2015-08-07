@@ -216,6 +216,9 @@
                 <F N="../include/orcus/xml_namespace.hpp"/>
                 <F N="../include/orcus/xml_structure_tree.hpp"/>
                 <F N="../include/orcus/xml_structure_tree.hpp"/>
+                <F N="../include/orcus/yaml_document_tree.hpp"/>
+                <F N="../include/orcus/yaml_parser.hpp"/>
+                <F N="../include/orcus/yaml_parser_base.hpp"/>
                 <F N="../include/orcus/zip_archive.hpp"/>
                 <F N="../include/orcus/zip_archive.hpp"/>
                 <F N="../include/orcus/zip_archive_stream.hpp"/>
@@ -522,6 +525,7 @@
                 <F N="../src/liborcus/xml_structure_tree.cpp"/>
                 <F N="../src/liborcus/xml_structure_tree_test.cpp"/>
                 <F N="../src/liborcus/xml_structure_tree_test.cpp"/>
+                <F N="../src/liborcus/yaml_document_tree.cpp"/>
             </Folder>
             <Folder Name="mso">
                 <F N="../src/mso/encryption_info.cpp"/>
@@ -554,6 +558,7 @@
                 <F N="../src/parser/win_stdint.h"/>
                 <F N="../src/parser/xml_namespace.cpp"/>
                 <F N="../src/parser/xml_namespace_test.cpp"/>
+                <F N="../src/parser/yaml_parser_base.cpp"/>
                 <F N="../src/parser/zip_archive.cpp"/>
                 <F N="../src/parser/zip_archive_stream.cpp"/>
             </Folder>

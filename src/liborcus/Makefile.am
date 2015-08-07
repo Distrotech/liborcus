@@ -59,6 +59,7 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	xml_simple_stream_handler.hpp \
 	xml_simple_stream_handler.cpp \
 	xml_structure_tree.cpp \
+	yaml_document_tree.cpp \
 	ooxml_namespace_types.cpp \
 	ooxml_namespace_types.hpp \
 	odf_namespace_types.hpp \
