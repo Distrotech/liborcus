@@ -9,9 +9,7 @@
 #define INCLUDED_ORCUS_YAML_PARSER_HPP
 
 #include "orcus/yaml_parser_base.hpp"
-#include "orcus/pstring.hpp"
 
-#include <cassert>
 #include <iostream>
 
 namespace orcus {
@@ -25,27 +23,6 @@ public:
     yaml_parser(const char* p, size_t n, handler_type& hdl);
 
     void parse();
-
-private:
-
-    /**
-     * Parse the prefix indent part of a line.
-     *
-     * @return number of whitespace characters encountered.
-     */
-    size_t parse_indent();
-
-    /**
-     * Once a non-whitespace character is reached, parse until the end of the
-     * line.
-     */
-    pstring parse_to_end_of_line();
-
-    /**
-     * Upon encountering a '#', skip until either the line-feed or the
-     * end-of-stream is reached.
-     */
-    void skip_comment();
 
 private:
     handler_type& m_handler;
@@ -72,72 +49,6 @@ void yaml_parser<_Handler>::parse()
 
         std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): indent: " << indent << std::endl;
         std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): line='" << line << "'" << std::endl;
-    }
-}
-
-template<typename _Handler>
-size_t yaml_parser<_Handler>::parse_indent()
-{
-    for (size_t indent = 0; has_char(); next(), ++indent)
-    {
-        char c = cur_char();
-        switch (c)
-        {
-            case '#':
-                skip_comment();
-                return parse_indent_blank_line;
-            case '\n':
-                next();
-                return parse_indent_blank_line;
-            case ' ':
-                continue;
-            default:
-                return indent;
-        }
-    }
-
-    return parse_indent_end_of_stream;
-}
-
-template<typename _Handler>
-pstring yaml_parser<_Handler>::parse_to_end_of_line()
-{
-    assert(cur_char() != ' ');
-    const char* p = mp_char;
-    size_t len = 0;
-    for (; has_char(); next(), ++len)
-    {
-        switch (cur_char())
-        {
-            case '#':
-                skip_comment();
-            break;
-            case '\n':
-                next();
-            break;
-            default:
-                continue;
-        }
-        break;
-    }
-
-    pstring ret(p, len);
-    ret = ret.trim();
-    return ret;
-}
-
-template<typename _Handler>
-void yaml_parser<_Handler>::skip_comment()
-{
-    assert(cur_char() == '#');
-
-    for (; has_char(); next())
-    {
-        if (cur_char() == '\n')
-        {
-            next();
-            break;
-        }
     }
 }
 

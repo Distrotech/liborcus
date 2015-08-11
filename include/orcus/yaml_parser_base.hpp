@@ -9,8 +9,10 @@
 #define INCLUDED_ORCUS_YAML_PARSER_BASE_HPP
 
 #include "orcus/parser_base.hpp"
+#include "orcus/pstring.hpp"
 
 #include <memory>
+#include <cassert>
 
 namespace orcus { namespace yaml {
 
@@ -33,6 +35,25 @@ protected:
 
     parser_base(const char* p, size_t n);
     ~parser_base();
+
+    /**
+     * Parse the prefix indent part of a line.
+     *
+     * @return number of whitespace characters encountered.
+     */
+    size_t parse_indent();
+
+    /**
+     * Once a non-whitespace character is reached, parse until the end of the
+     * line.
+     */
+    pstring parse_to_end_of_line();
+
+    /**
+     * Upon encountering a '#', skip until either the line-feed or the
+     * end-of-stream is reached.
+     */
+    void skip_comment();
 };
 
 }}

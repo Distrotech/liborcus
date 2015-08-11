@@ -24,6 +24,69 @@ parser_base::parser_base(const char* p, size_t n) :
 
 parser_base::~parser_base() {}
 
+size_t parser_base::parse_indent()
+{
+    for (size_t indent = 0; has_char(); next(), ++indent)
+    {
+        char c = cur_char();
+        switch (c)
+        {
+            case '#':
+                skip_comment();
+                return parse_indent_blank_line;
+            case '\n':
+                next();
+                return parse_indent_blank_line;
+            case ' ':
+                continue;
+            default:
+                return indent;
+        }
+    }
+
+    return parse_indent_end_of_stream;
+}
+
+pstring parser_base::parse_to_end_of_line()
+{
+    assert(cur_char() != ' ');
+    const char* p = mp_char;
+    size_t len = 0;
+    for (; has_char(); next(), ++len)
+    {
+        switch (cur_char())
+        {
+            case '#':
+                skip_comment();
+            break;
+            case '\n':
+                next();
+            break;
+            default:
+                continue;
+        }
+        break;
+    }
+
+    pstring ret(p, len);
+    ret = ret.trim();
+    return ret;
+}
+
+void parser_base::skip_comment()
+{
+    assert(cur_char() == '#');
+
+    for (; has_char(); next())
+    {
+        if (cur_char() == '\n')
+        {
+            next();
+            break;
+        }
+    }
+}
+
 }}
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
