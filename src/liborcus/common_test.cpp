@@ -187,16 +187,18 @@ void test_pstring()
 {
     {
         // test for trimming.
-        string s1("test"), s2("  test"), s3("   test  ");
-        pstring ps1(s1.c_str()), ps2(s2.c_str()), ps3(s3.c_str());
+        string s1("test"), s2("  test"), s3("   test  "), s4("test   ");
+        pstring ps1(s1.c_str()), ps2(s2.c_str()), ps3(s3.c_str()), ps4(s4.c_str());
         assert(ps1 != ps2);
         assert(ps1 != ps3);
         assert(ps2 != ps3);
+        assert(ps1 != ps4);
 
         pstring trimmed = ps1.trim();
         assert(ps1 == trimmed); // nothing to trim.
         assert(ps1 == ps2.trim());
         assert(ps1 == ps3.trim());
+        assert(ps1 == ps4.trim());
         assert(ps1.size() == ps2.trim().size());
         assert(ps1.size() == ps3.trim().size());
     }
