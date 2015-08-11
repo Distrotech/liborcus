@@ -41,6 +41,12 @@ private:
      */
     pstring parse_to_end_of_line();
 
+    /**
+     * Upon encountering a '#', skip until either the line-feed or the
+     * end-of-stream is reached.
+     */
+    void skip_comment();
+
 private:
     handler_type& m_handler;
 };
@@ -52,7 +58,7 @@ yaml_parser<_Handler>::yaml_parser(const char* p, size_t n, handler_type& hdl) :
 template<typename _Handler>
 void yaml_parser<_Handler>::parse()
 {
-    for (; has_char(); next())
+    while (has_char())
     {
         size_t indent = parse_indent();
         if (indent == parse_indent_end_of_stream)
@@ -66,9 +72,6 @@ void yaml_parser<_Handler>::parse()
 
         std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): indent: " << indent << std::endl;
         std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): line='" << line << "'" << std::endl;
-
-        if (!has_char())
-            return;
     }
 }
 
@@ -80,7 +83,11 @@ size_t yaml_parser<_Handler>::parse_indent()
         char c = cur_char();
         switch (c)
         {
+            case '#':
+                skip_comment();
+                return parse_indent_blank_line;
             case '\n':
+                next();
                 return parse_indent_blank_line;
             case ' ':
                 continue;
@@ -102,12 +109,36 @@ pstring yaml_parser<_Handler>::parse_to_end_of_line()
     {
         switch (cur_char())
         {
+            case '#':
+                skip_comment();
+            break;
             case '\n':
-                return pstring(p, len);
+                next();
+            break;
+            default:
+                continue;
         }
+        break;
     }
 
-    return pstring(p, len);
+    pstring ret(p, len);
+    ret.trim();
+    return ret;
+}
+
+template<typename _Handler>
+void yaml_parser<_Handler>::skip_comment()
+{
+    assert(cur_char() == '#');
+
+    for (; has_char(); next())
+    {
+        if (cur_char() == '\n')
+        {
+            next();
+            break;
+        }
+    }
 }
 
 }

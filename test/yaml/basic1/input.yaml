@@ -1,8 +1,8 @@
 # header comment.
----
+--- # start of document
 dict:
-  a: 1
-  b: 2
+  a: 1  # one
+  b: 2  # two
   c:
     - foo
     - bar
@@ -13,6 +13,7 @@ list:
     a: 1.1
     b: 1.2
     c: 1.3
+
 number: 12.3
 string: foo
 
