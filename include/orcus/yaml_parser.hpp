@@ -122,7 +122,7 @@ pstring yaml_parser<_Handler>::parse_to_end_of_line()
     }
 
     pstring ret(p, len);
-    ret.trim();
+    ret = ret.trim();
     return ret;
 }
 
