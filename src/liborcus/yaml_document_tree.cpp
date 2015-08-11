@@ -6,14 +6,22 @@
  */
 
 #include "orcus/yaml_document_tree.hpp"
+#include "orcus/yaml_parser.hpp"
 
 namespace orcus {
+
+class handler
+{
+};
 
 yaml_document_tree::yaml_document_tree() {}
 yaml_document_tree::~yaml_document_tree() {}
 
 void yaml_document_tree::load(const std::string& strm)
 {
+    handler hdl;
+    yaml_parser<handler> parser(strm.data(), strm.size(), hdl);
+    parser.parse();
 }
 
 }

@@ -9,6 +9,10 @@
 #define INCLUDED_ORCUS_YAML_PARSER_HPP
 
 #include "orcus/yaml_parser_base.hpp"
+#include "orcus/pstring.hpp"
+
+#include <cassert>
+#include <iostream>
 
 namespace orcus {
 
@@ -18,21 +22,92 @@ class yaml_parser : public yaml::parser_base
 public:
     typedef _Handler handler_type;
 
-    yaml_parser(const char* p, size_t n, hanlder_type& hdl);
+    yaml_parser(const char* p, size_t n, handler_type& hdl);
 
     void parse();
+
+private:
+
+    /**
+     * Parse the prefix indent part of a line.
+     *
+     * @return number of whitespace characters encountered.
+     */
+    size_t parse_indent();
+
+    /**
+     * Once a non-whitespace character is reached, parse until the end of the
+     * line.
+     */
+    pstring parse_to_end_of_line();
 
 private:
     handler_type& m_handler;
 };
 
 template<typename _Handler>
-yaml_parser<_Handler>::yaml_parser(const char* p, size_t n, hanlder_type& hdl) :
+yaml_parser<_Handler>::yaml_parser(const char* p, size_t n, handler_type& hdl) :
     yaml::parser_base(p, n), m_handler(hdl) {}
 
 template<typename _Handler>
 void yaml_parser<_Handler>::parse()
 {
+    for (; has_char(); next())
+    {
+        size_t indent = parse_indent();
+        if (indent == parse_indent_end_of_stream)
+            return;
+
+        if (indent == parse_indent_blank_line)
+            continue;
+
+        // Parse the rest of the line.
+        pstring line = parse_to_end_of_line();
+
+        std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): indent: " << indent << std::endl;
+        std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): line='" << line << "'" << std::endl;
+
+        if (!has_char())
+            return;
+    }
+}
+
+template<typename _Handler>
+size_t yaml_parser<_Handler>::parse_indent()
+{
+    for (size_t indent = 0; has_char(); next(), ++indent)
+    {
+        char c = cur_char();
+        switch (c)
+        {
+            case '\n':
+                return parse_indent_blank_line;
+            case ' ':
+                continue;
+            default:
+                return indent;
+        }
+    }
+
+    return parse_indent_end_of_stream;
+}
+
+template<typename _Handler>
+pstring yaml_parser<_Handler>::parse_to_end_of_line()
+{
+    assert(cur_char() != ' ');
+    const char* p = mp_char;
+    size_t len = 0;
+    for (; has_char(); next(), ++len)
+    {
+        switch (cur_char())
+        {
+            case '\n':
+                return pstring(p, len);
+        }
+    }
+
+    return pstring(p, len);
 }
 
 }

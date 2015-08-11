@@ -20,6 +20,13 @@ class ORCUS_PSR_DLLPUBLIC parser_base : public ::orcus::parser_base
     std::unique_ptr<impl> mp_impl;
 
 protected:
+
+    // The entire line is empty.
+    static const size_t parse_indent_blank_line;
+
+    // End of stream has reached while parsing in the indent part of a line.
+    static const size_t parse_indent_end_of_stream;
+
     parser_base() = delete;
     parser_base(const parser_base&) = delete;
     parser_base& operator=(const parser_base&) = delete;

@@ -8,11 +8,16 @@
 #include "orcus/yaml_parser_base.hpp"
 #include "orcus/global.hpp"
 
+#include <limits>
+
 namespace orcus { namespace yaml {
 
 struct parser_base::impl
 {
 };
+
+const size_t parser_base::parse_indent_blank_line    = std::numeric_limits<size_t>::max();
+const size_t parser_base::parse_indent_end_of_stream = std::numeric_limits<size_t>::max() - 1;
 
 parser_base::parser_base(const char* p, size_t n) :
     ::orcus::parser_base(p, n), mp_impl(make_unique<impl>()) {}
