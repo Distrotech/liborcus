@@ -25,6 +25,9 @@ public:
     void parse();
 
 private:
+    void parse_line(const pstring& line);
+
+private:
     handler_type& m_handler;
 };
 
@@ -47,8 +50,60 @@ void yaml_parser<_Handler>::parse()
         // Parse the rest of the line.
         pstring line = parse_to_end_of_line();
 
+        assert(!line.empty());
+
         std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): indent: " << indent << std::endl;
         std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): line='" << line << "'" << std::endl;
+
+        parse_line(line);
+    }
+}
+
+template<typename _Handler>
+void yaml_parser<_Handler>::parse_line(const pstring& line)
+{
+    const char* p = line.get();
+    const char* p_end = p + line.size();
+
+    if (*p == '-')
+    {
+        ++p;
+        if (p == p_end)
+        {
+            // List item start.
+            return;
+        }
+
+        switch (*p)
+        {
+            case '-':
+            {
+                // start of a document
+                ++p;
+                if (p == p_end)
+                    throw yaml::parse_error("parse_line: line ended with '--'.");
+
+                if (*p != '-')
+                    yaml::parse_error::throw_with("parse_line: '-' expected but '", *p, "' found.");
+
+                std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_line): start of document" << std::endl;
+            }
+            break;
+            case ' ':
+            {
+                // list item start with inline first item content.
+                ++p;
+                if (p == p_end)
+                    throw yaml::parse_error("parse_line: list item expected, but the line ended prematurely.");
+
+                // Skip all white spaces.
+                size_t n = 1;
+                for (; *p == ' '; ++p, ++n)
+                    ;
+
+                std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_line): n = " << n << std::endl;
+            }
+        }
     }
 }
 

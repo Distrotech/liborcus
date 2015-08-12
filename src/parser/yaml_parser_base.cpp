@@ -9,11 +9,26 @@
 #include "orcus/global.hpp"
 
 #include <limits>
+#include <vector>
 
 namespace orcus { namespace yaml {
 
+parse_error::parse_error(const std::string& msg) : ::orcus::parse_error(msg) {}
+
+void parse_error::throw_with(const char* msg_before, char c, const char* msg_after)
+{
+    throw parse_error(build_message(msg_before, c, msg_after));
+}
+
+void parse_error::throw_with(
+    const char* msg_before, const char* p, size_t n, const char* msg_after)
+{
+    throw parse_error(build_message(msg_before, p, n, msg_after));
+}
+
 struct parser_base::impl
 {
+    std::vector<size_t> m_scopes;
 };
 
 const size_t parser_base::parse_indent_blank_line    = std::numeric_limits<size_t>::max();
