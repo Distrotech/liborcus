@@ -47,6 +47,25 @@ void yaml_parser<_Handler>::parse()
         if (indent == parse_indent_blank_line)
             continue;
 
+        size_t cur_scope = get_current_scope();
+        if (cur_scope == scope_empty || indent > cur_scope)
+        {
+            std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): push " << indent << std::endl;
+            push_scope(indent);
+        }
+        else if (indent < cur_scope)
+        {
+            // Current indent is less than the current scope level.
+            do
+            {
+                cur_scope = pop_scope();
+                std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): scope after pop " << cur_scope << std::endl;
+                if (cur_scope < indent)
+                    throw yaml::parse_error("parse: invalid indent level.");
+            }
+            while (indent < cur_scope);
+        }
+
         // Parse the rest of the line.
         pstring line = parse_to_end_of_line();
 
@@ -103,6 +122,7 @@ void yaml_parser<_Handler>::parse_line(const pstring& line)
 
                 std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_line): n = " << n << std::endl;
             }
+            break;
         }
     }
 }

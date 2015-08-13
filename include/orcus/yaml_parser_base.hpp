@@ -38,6 +38,8 @@ protected:
     // End of stream has reached while parsing in the indent part of a line.
     static const size_t parse_indent_end_of_stream;
 
+    static const size_t scope_empty;
+
     parser_base() = delete;
     parser_base(const parser_base&) = delete;
     parser_base& operator=(const parser_base&) = delete;
@@ -63,6 +65,17 @@ protected:
      * end-of-stream is reached.
      */
     void skip_comment();
+
+    size_t get_current_scope() const;
+
+    void push_scope(size_t scope_width);
+
+    /**
+     * Pop the current scope and return the new scope width after the pop.
+     *
+     * @return new scope width after the pop.
+     */
+    size_t pop_scope();
 };
 
 }}

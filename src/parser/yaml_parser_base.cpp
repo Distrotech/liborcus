@@ -33,6 +33,7 @@ struct parser_base::impl
 
 const size_t parser_base::parse_indent_blank_line    = std::numeric_limits<size_t>::max();
 const size_t parser_base::parse_indent_end_of_stream = std::numeric_limits<size_t>::max() - 1;
+const size_t parser_base::scope_empty = std::numeric_limits<size_t>::max() - 2;
 
 parser_base::parser_base(const char* p, size_t n) :
     ::orcus::parser_base(p, n), mp_impl(make_unique<impl>()) {}
@@ -100,6 +101,23 @@ void parser_base::skip_comment()
             break;
         }
     }
+}
+
+size_t parser_base::get_current_scope() const
+{
+    return (mp_impl->m_scopes.empty()) ? scope_empty : mp_impl->m_scopes.back();
+}
+
+void parser_base::push_scope(size_t scope_width)
+{
+    mp_impl->m_scopes.push_back(scope_width);
+}
+
+size_t parser_base::pop_scope()
+{
+    assert(!mp_impl->m_scopes.empty());
+    mp_impl->m_scopes.pop_back();
+    return get_current_scope();
 }
 
 }}
