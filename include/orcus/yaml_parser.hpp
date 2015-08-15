@@ -120,7 +120,9 @@ void yaml_parser<_Handler>::parse_line(const pstring& line)
                 for (; *p == ' '; ++p, ++n)
                     ;
 
-                std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_line): n = " << n << std::endl;
+                size_t scope_width = get_current_scope() + 1 + n;
+                std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_line): scope for inline list item = " << scope_width << std::endl;
+                push_scope(scope_width);
             }
             break;
         }
