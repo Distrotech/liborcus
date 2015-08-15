@@ -12,6 +12,36 @@ namespace orcus {
 
 class handler
 {
+public:
+    void begin_parse() {}
+
+    void end_parse() {}
+
+    void begin_document() {}
+
+    void end_document() {}
+
+    void begin_sequence() {}
+
+    void end_sequence() {}
+
+    void begin_map() {}
+
+    void begin_map_key() {}
+
+    void end_map_key() {}
+
+    void end_map() {}
+
+    void string(const char* p, size_t n) {}
+
+    void number(double) {}
+
+    void boolean_true() {}
+
+    void boolean_false() {}
+
+    void null() {}
 };
 
 yaml_document_tree::yaml_document_tree() {}
