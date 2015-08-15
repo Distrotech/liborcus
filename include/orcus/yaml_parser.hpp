@@ -10,8 +10,6 @@
 
 #include "orcus/yaml_parser_base.hpp"
 
-#include <iostream>
-
 namespace orcus {
 
 template<typename _Handler>
@@ -39,16 +37,18 @@ yaml_parser<_Handler>::yaml_parser(const char* p, size_t n, handler_type& hdl) :
 template<typename _Handler>
 void yaml_parser<_Handler>::parse()
 {
+    m_handler.begin_parse();
+
     while (has_char())
     {
         size_t indent = parse_indent();
         if (indent == parse_indent_end_of_stream)
-            return;
+            break;
 
         if (indent == parse_indent_blank_line)
             continue;
 
-        size_t cur_scope = get_current_scope();
+        size_t cur_scope = get_scope();
         if (cur_scope == scope_empty || indent > cur_scope)
         {
             push_scope(indent);
@@ -58,6 +58,16 @@ void yaml_parser<_Handler>::parse()
             // Current indent is less than the current scope level.
             do
             {
+                switch (get_scope_type())
+                {
+                    case yaml::scope_t::map:
+                        m_handler.end_map();
+                    break;
+                    case yaml::scope_t::sequence:
+                        m_handler.end_sequence();
+                    default:
+                        ;
+                }
                 cur_scope = pop_scope();
                 if (cur_scope < indent)
                     throw yaml::parse_error("parse: invalid indent level.");
@@ -71,6 +81,11 @@ void yaml_parser<_Handler>::parse()
         assert(!line.empty());
         parse_line(line.get(), line.size());
     }
+
+    if (get_doc_hash())
+        m_handler.end_document();
+
+    m_handler.end_parse();
 }
 
 template<typename _Handler>
@@ -84,6 +99,12 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
         if (p == p_end)
         {
             // List item start.
+            if (get_scope_type() == yaml::scope_t::unset)
+            {
+                m_handler.begin_sequence();
+                set_scope_type(yaml::scope_t::sequence);
+            }
+
             return;
         }
 
@@ -99,11 +120,18 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
                 if (*p != '-')
                     yaml::parse_error::throw_with("parse_line: '-' expected but '", *p, "' found.");
 
-                std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_line): start of document" << std::endl;
+                set_doc_hash(p);
+                m_handler.begin_document();
             }
             break;
             case ' ':
             {
+                if (get_scope_type() == yaml::scope_t::unset)
+                {
+                    m_handler.begin_sequence();
+                    set_scope_type(yaml::scope_t::sequence);
+                }
+
                 // list item start with inline first item content.
                 ++p;
                 if (p == p_end)
@@ -114,11 +142,10 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
                 for (; *p == ' '; ++p, ++n)
                     ;
 
-                size_t scope_width = get_current_scope() + 1 + n;
+                size_t scope_width = get_scope() + 1 + n;
                 push_scope(scope_width);
 
-                pstring value(p, p_end-p);
-                std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_line): value='" << value << "'" << std::endl;
+                m_handler.string(p, p_end-p);
             }
             break;
         }
@@ -149,21 +176,26 @@ void yaml_parser<_Handler>::parse_dict_key(const char* p, size_t len)
     if (!has_key)
         throw yaml::parse_error("parse_dict_key: no key found.");
 
-    pstring key(p0, n);
+    if (get_scope_type() == yaml::scope_t::unset)
+    {
+        set_scope_type(yaml::scope_t::map);
+        m_handler.begin_map();
+    }
+
+    m_handler.begin_map_key();
+    m_handler.string(p0, n);
+    m_handler.end_map_key();
 
     ++p;  // skip the ':'.
     if (p == p_end)
-    {
-        std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_dict_key): key='" << key << "'" << std::endl;
         return;
-    }
 
     // Skip all white spaces.
     n = 1;
     for (; *p == ' '; ++p, ++n)
         ;
 
-    size_t scope_width = get_current_scope() + 1 + n;
+    size_t scope_width = get_scope() + 1 + n;
     push_scope(scope_width);
 
     // inline dictionary item.
@@ -178,8 +210,7 @@ void yaml_parser<_Handler>::parse_dict_key(const char* p, size_t len)
             throw yaml::parse_error("parse_dict_key: nested inline dictionary key is not allowed.");
     }
 
-    pstring value(p0, n);
-    std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_dict_key): key='" << key << "', value='" << value << "'" << std::endl;
+    m_handler.string(p0, n);
 }
 
 }

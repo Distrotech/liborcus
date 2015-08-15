@@ -10,7 +10,6 @@
 
 #include <limits>
 #include <vector>
-#include <iostream>
 
 namespace orcus { namespace yaml {
 
@@ -27,9 +26,20 @@ void parse_error::throw_with(
     throw parse_error(build_message(msg_before, p, n, msg_after));
 }
 
+struct scope
+{
+    size_t width;
+    scope_t type;
+
+    scope(size_t _width) : width(_width), type(scope_t::unset) {}
+};
+
 struct parser_base::impl
 {
-    std::vector<size_t> m_scopes;
+    std::vector<scope> m_scopes;
+    const char* m_document;
+
+    impl() : m_document(nullptr) {}
 };
 
 const size_t parser_base::parse_indent_blank_line    = std::numeric_limits<size_t>::max();
@@ -104,24 +114,43 @@ void parser_base::skip_comment()
     }
 }
 
-size_t parser_base::get_current_scope() const
+size_t parser_base::get_scope() const
 {
-    return (mp_impl->m_scopes.empty()) ? scope_empty : mp_impl->m_scopes.back();
+    return (mp_impl->m_scopes.empty()) ? scope_empty : mp_impl->m_scopes.back().width;
 }
 
 void parser_base::push_scope(size_t scope_width)
 {
-    std::cout << __FILE__ << "#" << __LINE__ << " (parser_base:push_scope): w=" << scope_width << std::endl;
-    mp_impl->m_scopes.push_back(scope_width);
+    mp_impl->m_scopes.emplace_back(scope_width);
+}
+
+scope_t parser_base::get_scope_type() const
+{
+    assert(!mp_impl->m_scopes.empty());
+    return mp_impl->m_scopes.back().type;
+}
+
+void parser_base::set_scope_type(scope_t type)
+{
+    assert(!mp_impl->m_scopes.empty());
+    mp_impl->m_scopes.back().type = type;
 }
 
 size_t parser_base::pop_scope()
 {
     assert(!mp_impl->m_scopes.empty());
     mp_impl->m_scopes.pop_back();
-    size_t w = get_current_scope();
-    std::cout << __FILE__ << "#" << __LINE__ << " (parser_base:pop_scope): w=" << w << std::endl;
-    return w;
+    return get_scope();
+}
+
+const char* parser_base::get_doc_hash() const
+{
+    return mp_impl->m_document;
+}
+
+void parser_base::set_doc_hash(const char* hash)
+{
+    mp_impl->m_document = hash;
 }
 
 }}

@@ -25,6 +25,13 @@ public:
     static void throw_with(const char* msg_before, const char* p, size_t n, const char* msg_after);
 };
 
+enum class scope_t
+{
+    unset,
+    sequence,
+    map
+};
+
 class ORCUS_PSR_DLLPUBLIC parser_base : public ::orcus::parser_base
 {
     struct impl;
@@ -66,9 +73,12 @@ protected:
      */
     void skip_comment();
 
-    size_t get_current_scope() const;
+    size_t get_scope() const;
 
     void push_scope(size_t scope_width);
+
+    scope_t get_scope_type() const;
+    void set_scope_type(scope_t type);
 
     /**
      * Pop the current scope and return the new scope width after the pop.
@@ -76,6 +86,23 @@ protected:
      * @return new scope width after the pop.
      */
     size_t pop_scope();
+
+    /**
+     * Get the hash value of current document, or nullptr if a document has
+     * not started.
+     *
+     * @return hash value of current document.
+     */
+    const char* get_doc_hash() const;
+
+    /**
+     * Set the hash value representing the current document.  For now the
+     * memory address of the first character of the document is used as its
+     * hash value.
+     *
+     * @param hash hash value of a document.
+     */
+    void set_doc_hash(const char* hash);
 };
 
 }}
