@@ -51,7 +51,6 @@ void yaml_parser<_Handler>::parse()
         size_t cur_scope = get_current_scope();
         if (cur_scope == scope_empty || indent > cur_scope)
         {
-            std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): push " << indent << std::endl;
             push_scope(indent);
         }
         else if (indent < cur_scope)
@@ -60,7 +59,6 @@ void yaml_parser<_Handler>::parse()
             do
             {
                 cur_scope = pop_scope();
-                std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): scope after pop " << cur_scope << std::endl;
                 if (cur_scope < indent)
                     throw yaml::parse_error("parse: invalid indent level.");
             }
@@ -71,10 +69,6 @@ void yaml_parser<_Handler>::parse()
         pstring line = parse_to_end_of_line();
 
         assert(!line.empty());
-
-        std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): indent: " << indent << std::endl;
-        std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): line='" << line << "'" << std::endl;
-
         parse_line(line.get(), line.size());
     }
 }
@@ -121,8 +115,10 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
                     ;
 
                 size_t scope_width = get_current_scope() + 1 + n;
-                std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_line): scope for inline list item = " << scope_width << std::endl;
                 push_scope(scope_width);
+
+                pstring value(p, p_end-p);
+                std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_line): value='" << value << "'" << std::endl;
             }
             break;
         }
@@ -154,11 +150,13 @@ void yaml_parser<_Handler>::parse_dict_key(const char* p, size_t len)
         throw yaml::parse_error("parse_dict_key: no key found.");
 
     pstring key(p0, n);
-    std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_dict_key): key='" << key << "'" << std::endl;
 
     ++p;  // skip the ':'.
     if (p == p_end)
+    {
+        std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_dict_key): key='" << key << "'" << std::endl;
         return;
+    }
 
     // Skip all white spaces.
     n = 1;
@@ -166,7 +164,6 @@ void yaml_parser<_Handler>::parse_dict_key(const char* p, size_t len)
         ;
 
     size_t scope_width = get_current_scope() + 1 + n;
-    std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_dict_key): scope for inline dict item = " << scope_width << std::endl;
     push_scope(scope_width);
 
     // inline dictionary item.
@@ -182,7 +179,7 @@ void yaml_parser<_Handler>::parse_dict_key(const char* p, size_t len)
     }
 
     pstring value(p0, n);
-    std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_dict_key): value='" << value << "'" << std::endl;
+    std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_dict_key): key='" << key << "', value='" << value << "'" << std::endl;
 }
 
 }

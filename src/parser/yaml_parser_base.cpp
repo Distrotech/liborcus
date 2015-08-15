@@ -10,6 +10,7 @@
 
 #include <limits>
 #include <vector>
+#include <iostream>
 
 namespace orcus { namespace yaml {
 
@@ -110,6 +111,7 @@ size_t parser_base::get_current_scope() const
 
 void parser_base::push_scope(size_t scope_width)
 {
+    std::cout << __FILE__ << "#" << __LINE__ << " (parser_base:push_scope): w=" << scope_width << std::endl;
     mp_impl->m_scopes.push_back(scope_width);
 }
 
@@ -117,7 +119,9 @@ size_t parser_base::pop_scope()
 {
     assert(!mp_impl->m_scopes.empty());
     mp_impl->m_scopes.pop_back();
-    return get_current_scope();
+    size_t w = get_current_scope();
+    std::cout << __FILE__ << "#" << __LINE__ << " (parser_base:pop_scope): w=" << w << std::endl;
+    return w;
 }
 
 }}
