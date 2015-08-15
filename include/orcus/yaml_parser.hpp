@@ -25,7 +25,8 @@ public:
     void parse();
 
 private:
-    void parse_line(const pstring& line);
+    void parse_line(const char* p, size_t len);
+    void parse_dict_key(const char* p, size_t len);
 
 private:
     handler_type& m_handler;
@@ -74,15 +75,14 @@ void yaml_parser<_Handler>::parse()
         std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): indent: " << indent << std::endl;
         std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse): line='" << line << "'" << std::endl;
 
-        parse_line(line);
+        parse_line(line.get(), line.size());
     }
 }
 
 template<typename _Handler>
-void yaml_parser<_Handler>::parse_line(const pstring& line)
+void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
 {
-    const char* p = line.get();
-    const char* p_end = p + line.size();
+    const char* p_end = p + len;
 
     if (*p == '-')
     {
@@ -126,7 +126,63 @@ void yaml_parser<_Handler>::parse_line(const pstring& line)
             }
             break;
         }
+
+        return;
     }
+
+    // If the line doesn't start with a '-', it must be a dictionary key.
+    parse_dict_key(p, len);
+}
+
+template<typename _Handler>
+void yaml_parser<_Handler>::parse_dict_key(const char* p, size_t len)
+{
+    const char* p0 = p;
+    const char* p_end = p + len;
+    size_t n = 0;
+    bool has_key = false;
+    for (; p != p_end; ++p, ++n)
+    {
+        if (*p == ':')
+        {
+            has_key = true;
+            break;
+        }
+    }
+
+    if (!has_key)
+        throw yaml::parse_error("parse_dict_key: no key found.");
+
+    pstring key(p0, n);
+    std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_dict_key): key='" << key << "'" << std::endl;
+
+    ++p;  // skip the ':'.
+    if (p == p_end)
+        return;
+
+    // Skip all white spaces.
+    n = 1;
+    for (; *p == ' '; ++p, ++n)
+        ;
+
+    size_t scope_width = get_current_scope() + 1 + n;
+    std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_dict_key): scope for inline dict item = " << scope_width << std::endl;
+    push_scope(scope_width);
+
+    // inline dictionary item.
+    if (*p == '-')
+        throw yaml::parse_error("parse_dict_key: sequence entry is not allowed as an inline dictionary item.");
+
+    n = 0;
+    p0 = p;
+    for (; p != p_end; ++p, ++n)
+    {
+        if (*p == ':')
+            throw yaml::parse_error("parse_dict_key: nested inline dictionary key is not allowed.");
+    }
+
+    pstring value(p0, n);
+    std::cout << __FILE__ << "#" << __LINE__ << " (yaml_parser:parse_dict_key): value='" << value << "'" << std::endl;
 }
 
 }
