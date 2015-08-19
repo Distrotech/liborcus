@@ -209,14 +209,17 @@ AM_CONDITIONAL([BUILD_SPREADSHEET_MODEL], [test "x$enable_spreadsheet_model" != 
 # Python support
 # ==============
 AC_ARG_ENABLE([python],
-    AS_HELP_STRING([--disable-python], [Disable python bindings]))
+    [AS_HELP_STRING([--disable-python], [Disable python bindings])],
+    [enable_python="$enableval"],
+    [enable_python=yes]
+)
 
 # Check for python.
 AS_IF([test "x$enable_python" != "xno"], [
     AM_PATH_PYTHON(3)
     PKG_CHECK_MODULES([PYTHON], [python3 >= 0.28])
 ])
-AM_CONDITIONAL([PYTHON], [test "x$enable_python" != "xno"])
+AM_CONDITIONAL([BUILD_PYTHON], [test "x$enable_python" != "xno"])
 
 AC_CONFIG_FILES([Makefile
 	liborcus-$ORCUS_API_VERSION.pc:liborcus.pc.in
@@ -246,6 +249,7 @@ Build configuration:
 	debug:               $enable_debug
 	werror:              $enable_werror
 	spreadsheet-model:   $enable_spreadsheet_model
+	python:              $enable_python
         gnumeric-filter:     $with_gnumeric_filter
         ods-filter:          $with_ods_filter
         xlsx-filter:         $with_xlsx_filter
