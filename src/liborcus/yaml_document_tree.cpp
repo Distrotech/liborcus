@@ -10,8 +10,80 @@
 #include "orcus/pstring.hpp"
 
 #include <iostream>
+#include <vector>
+#include <memory>
+#include <unordered_map>
 
 namespace orcus {
+
+namespace {
+
+enum class yaml_value_type
+{
+    unset,
+    string,
+    number,
+    map,
+    sequence,
+    boolean_true,
+    boolean_false,
+    null
+};
+
+struct yaml_value
+{
+    yaml_value_type type;
+
+    yaml_value() : type(yaml_value_type::unset) {}
+    yaml_value(yaml_value_type _type) : type(_type) {}
+    virtual ~yaml_value() {}
+};
+
+struct yaml_value_string : public yaml_value
+{
+    std::string value_string;
+
+    yaml_value_string() : yaml_value(yaml_value_type::string) {}
+    yaml_value_string(const std::string& s) : yaml_value(yaml_value_type::string), value_string(s) {}
+    yaml_value_string(const char* p, size_t n) : yaml_value(yaml_value_type::string), value_string(p, n) {}
+    virtual ~yaml_value_string() {}
+};
+
+struct yaml_value_number : public yaml_value
+{
+    double value_number;
+
+    yaml_value_number() : yaml_value(yaml_value_type::number) {}
+    yaml_value_number(double num) : yaml_value(yaml_value_type::number), value_number(num) {}
+    virtual ~yaml_value_number() {}
+};
+
+struct yaml_value_sequence : public yaml_value
+{
+    std::vector<std::unique_ptr<yaml_value>> value_array;
+
+    yaml_value_sequence() : yaml_value(yaml_value_type::sequence) {}
+    virtual ~yaml_value_sequence() {}
+};
+
+struct yaml_value_map : public yaml_value
+{
+    std::vector<std::string> key_order;
+    std::unordered_map<std::string, std::unique_ptr<yaml_value>> value_object;
+
+    bool has_ref;
+
+    yaml_value_map() : yaml_value(yaml_value_type::map), has_ref(false) {}
+    virtual ~yaml_value_map() {}
+
+    void swap(yaml_value_map& src)
+    {
+        key_order.swap(src.key_order);
+        value_object.swap(src.value_object);
+    }
+};
+
+}
 
 class handler
 {
