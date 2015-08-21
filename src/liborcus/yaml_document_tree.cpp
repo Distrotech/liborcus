@@ -50,7 +50,34 @@ struct yaml_value
     virtual std::string print() const
     {
         std::ostringstream os;
-        os << "type: " << static_cast<int>(type);
+        os << "type: ";
+        switch (type)
+        {
+            case yaml_value_type::unset:
+                os << "unset";
+            break;
+            case yaml_value_type::string:
+                os << "string";
+            break;
+            case yaml_value_type::number:
+                os << "number";
+            break;
+            case yaml_value_type::map:
+                os << "map";
+            break;
+            case yaml_value_type::sequence:
+                os << "sequence";
+            break;
+            case yaml_value_type::boolean_true:
+                os << "true";
+            break;
+            case yaml_value_type::boolean_false:
+                os << "false";
+            break;
+            case yaml_value_type::null:
+                os << "null";
+            break;
+        }
         return os.str();
     }
 
@@ -134,10 +161,18 @@ class handler
     root_type m_root;
     root_type m_key_root;
 
+    void print_stack()
+    {
+        std::ostringstream os;
+        os << '(';
+        for (auto i = m_stack.begin(), ie = m_stack.end(); i != ie; ++i)
+            os << i->node->print() << ',';
+        os << ')';
+        std::cout << os.str() << std::endl;
+    }
+
     yaml_value* push_value(std::unique_ptr<yaml_value>&& value)
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:push_value): value = " << value.get() << std::endl;
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:push_value): value type = " << (int)value->type << std::endl;
         assert(!m_stack.empty());
         parser_stack& cur = m_stack.back();
 
@@ -152,7 +187,6 @@ class handler
             break;
             case yaml_value_type::map:
             {
-                std::cout << __FILE__ << "#" << __LINE__ << " (handler:push_value): map" << std::endl;
                 yaml_value_map* yvm = static_cast<yaml_value_map*>(cur.node);
 
                 yvm->key_order.push_back(std::move(cur.key));
@@ -161,7 +195,6 @@ class handler
                     std::make_pair(
                         yvm->key_order.back().get(), std::move(value)));
 
-                std::cout << __FILE__ << "#" << __LINE__ << " (handler:push_value): " << r.first->second.get() << std::endl;
                 return r.first->second.get();
             }
             break;
@@ -230,7 +263,6 @@ public:
         if (m_root)
         {
             yaml_value* yv = push_value(make_unique<yaml_value_map>());
-            std::cout << __FILE__ << "#" << __LINE__ << " (handler:begin_map): yv = " << yv << ", type = " << (int)yv->type << std::endl;
             assert(yv && yv->type == yaml_value_type::map);
             m_stack.push_back(parser_stack(yv));
         }
@@ -278,37 +310,57 @@ public:
         {
             yaml_value* yv = push_value(make_unique<yaml_value_string>(p, n));
             assert(yv && yv->type == yaml_value_type::string);
-            m_stack.push_back(parser_stack(yv));
         }
         else
-        {
             m_root = make_unique<yaml_value_string>(p, n);
-            m_stack.push_back(parser_stack(m_root.get()));
-        }
     }
 
     void number(double val)
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:number): v=" << val << std::endl;
-        push_value(make_unique<yaml_value_number>(val));
+        if (m_root)
+        {
+            yaml_value* yv = push_value(make_unique<yaml_value_number>(val));
+            assert(yv && yv->type == yaml_value_type::number);
+        }
+        else
+            m_root = make_unique<yaml_value_number>(val);
     }
 
     void boolean_true()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:boolean_true): " << std::endl;
-        push_value(make_unique<yaml_value>(yaml_value_type::boolean_true));
+        if (m_root)
+        {
+            yaml_value* yv = push_value(make_unique<yaml_value>(yaml_value_type::boolean_true));
+            assert(yv && yv->type == yaml_value_type::boolean_true);
+        }
+        else
+            m_root = make_unique<yaml_value>(yaml_value_type::boolean_true);
     }
 
     void boolean_false()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:boolean_false): " << std::endl;
-        push_value(make_unique<yaml_value>(yaml_value_type::boolean_false));
+        if (m_root)
+        {
+            yaml_value* yv = push_value(make_unique<yaml_value>(yaml_value_type::boolean_false));
+            assert(yv && yv->type == yaml_value_type::boolean_false);
+        }
+        else
+            m_root = make_unique<yaml_value>(yaml_value_type::boolean_false);
     }
 
     void null()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:null): " << std::endl;
-        push_value(make_unique<yaml_value>(yaml_value_type::null));
+        if (m_root)
+        {
+            yaml_value* yv = push_value(make_unique<yaml_value>(yaml_value_type::null));
+            assert(yv && yv->type == yaml_value_type::null);
+        }
+        else
+            m_root = make_unique<yaml_value>(yaml_value_type::null);
     }
 };
 
