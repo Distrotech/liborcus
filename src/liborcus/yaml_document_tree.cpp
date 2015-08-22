@@ -148,18 +148,17 @@ struct parser_stack
     parser_stack(yaml_value* _node) : node(_node) {}
 };
 
-}
+typedef std::unique_ptr<yaml_value> document_root_type;
 
 class handler
 {
-    typedef std::unique_ptr<yaml_value> root_type;
-    std::vector<root_type> m_docs;
+    std::vector<document_root_type> m_docs;
 
     std::vector<parser_stack> m_stack;
     std::vector<parser_stack> m_key_stack;
 
-    root_type m_root;
-    root_type m_key_root;
+    document_root_type m_root;
+    document_root_type m_key_root;
 
     void print_stack()
     {
@@ -231,6 +230,7 @@ public:
     void end_document()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:end_document): " << std::endl;
+        m_docs.push_back(std::move(m_root));
     }
 
     void begin_sequence()
@@ -362,9 +362,21 @@ public:
         else
             m_root = make_unique<yaml_value>(yaml_value_type::null);
     }
+
+    void swap(std::vector<document_root_type>& docs)
+    {
+        m_docs.swap(docs);
+    }
 };
 
-yaml_document_tree::yaml_document_tree() {}
+}
+
+struct yaml_document_tree::impl
+{
+    std::vector<document_root_type> m_docs;
+};
+
+yaml_document_tree::yaml_document_tree() : mp_impl(make_unique<impl>()) {}
 yaml_document_tree::~yaml_document_tree() {}
 
 void yaml_document_tree::load(const std::string& strm)
@@ -372,6 +384,7 @@ void yaml_document_tree::load(const std::string& strm)
     handler hdl;
     yaml_parser<handler> parser(strm.data(), strm.size(), hdl);
     parser.parse();
+    hdl.swap(mp_impl->m_docs);
 }
 
 }

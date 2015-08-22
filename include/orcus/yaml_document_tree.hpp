@@ -11,11 +11,15 @@
 #include "orcus/env.hpp"
 
 #include <string>
+#include <memory>
 
 namespace orcus {
 
 class ORCUS_DLLPUBLIC yaml_document_tree
 {
+    struct impl;
+    std::unique_ptr<impl> mp_impl;
+
 public:
     yaml_document_tree();
     ~yaml_document_tree();
