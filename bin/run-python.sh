@@ -14,6 +14,8 @@ PROGDIR=`dirname $0`
 _PYTHONPATH="$PROGDIR/../src/python/.libs"
 
 export PYTHONPATH=$_PYTHONPATH:$PYTHONPATH
+export LD_LIBRARY_PATH="$PROGDIR/../src/liborcus/.libs:$PROGDIR/../src/parser/.libs"
+export DYLD_LIBRARY_PATH=$LD_LIBRARY_PATH
 exec $PWD/"$1"
 
 
