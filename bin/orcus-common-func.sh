@@ -35,9 +35,10 @@ orcus_exec()
     EXECDIR="$1"
     shift
     PROGDIR="$PWD/"`dirname $0`
-    ROOTDIR=$PROGDIR/..
-    EXECPATH=$ROOTDIR/src/$EXEC
-    export LD_LIBRARY_PATH=$ROOTDIR/src/liborcus/.libs:$ROOTDIR/src/mso/.libs:$ROOTDIR/src/parser/.libs:$ROOTDIR/src/spreadsheet/.libs:
+    ROOTDIR="$PROGDIR/.."
+    EXECPATH="$ROOTDIR/src/$EXEC"
+    export LD_LIBRARY_PATH="$ROOTDIR/src/liborcus/.libs:$ROOTDIR/src/mso/.libs:$ROOTDIR/src/parser/.libs:$ROOTDIR/src/spreadsheet/.libs:"
+    export DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH"
     cd $EXECDIR
 
     common_exec "$@"
@@ -50,9 +51,10 @@ parser_test_exec()
     EXECDIR="$1"
     shift
     PROGDIR="$PWD/"`dirname $0`
-    ROOTDIR=$PROGDIR/..
-    EXECPATH=$ROOTDIR/src/parser/.libs/$EXEC
-    export LD_LIBRARY_PATH=$ROOTDIR/src/parser/.libs:
+    ROOTDIR="$PROGDIR/.."
+    EXECPATH="$ROOTDIR/src/parser/.libs/$EXEC"
+    export LD_LIBRARY_PATH="$ROOTDIR/src/parser/.libs:"
+    export DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH"
     cd $EXECDIR
 
     common_exec "$@"
@@ -65,9 +67,10 @@ liborcus_test_exec()
     EXECDIR="$1"
     shift
     PROGDIR="$PWD/"`dirname $0`
-    ROOTDIR=$PROGDIR/..
-    EXECPATH=$ROOTDIR/src/liborcus/.libs/$EXEC
-    export LD_LIBRARY_PATH=$ROOTDIR/src/liborcus/.libs:$ROOTDIR/src/mso/.libs:$ROOTDIR/src/parser/.libs:$ROOTDIR/src/spreadsheet/.libs:
+    ROOTDIR="$PROGDIR/.."
+    EXECPATH="$ROOTDIR/src/liborcus/.libs/$EXEC"
+    export LD_LIBRARY_PATH="$ROOTDIR/src/liborcus/.libs:$ROOTDIR/src/mso/.libs:$ROOTDIR/src/parser/.libs:$ROOTDIR/src/spreadsheet/.libs:"
+    export DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH"
     cd $EXECDIR
 
     common_exec "$@"
