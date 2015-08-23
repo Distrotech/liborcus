@@ -248,13 +248,11 @@ struct scope
     scope(const xml_map_tree::element& _elem) :
         element(_elem), opened(false)
     {
+        end_child_pos = element.child_elements->end();
         current_child_pos = end_child_pos;
 
         if (element.elem_type == xml_map_tree::element_unlinked)
-        {
             current_child_pos = element.child_elements->begin();
-            end_child_pos = element.child_elements->end();
-        }
     }
 };
 
