@@ -8,10 +8,10 @@ orcus_la_LDFLAGS = -module -avoid-version -export-symbols-regex PyInit_orcus
 orcus_la_CPPFLAGS = -I$(top_srcdir)/include $(PYTHON_CFLAGS) $(MDDS_CFLAGS)
 orcus_la_LIBADD = \
 	../liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	$(PYTHON_LIBS)
 
-AM_TESTS_ENVIRONMENT = PYTHONPATH=.libs$${PYTHONPATH:+:$${PYTHONPATH}}; export PYTHONPATH;
 TESTS = \
-	../../test/python/module.py
+	../../test/python/run-all.sh
 
 endif
