@@ -23,6 +23,13 @@ common_exec()
         exit 0
     fi
 
+    if [ "$ARG_ONE" == "lldb" ]; then
+        shift
+        # execute inside lldb.
+        lldb $EXECPATH "$@"|| exit 1
+        exit 0
+    fi
+
     # normal execution
     exec $EXECPATH "$@" || exit 1
     exit 0
