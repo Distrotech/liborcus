@@ -27,9 +27,25 @@ public:
 
 namespace yaml { namespace detail {
 
+class map_keys;
+
+enum class node_t
+{
+    unset,
+    document_list,
+    string,
+    number,
+    map,
+    sequence,
+    boolean_true,
+    boolean_false,
+    null
+};
+
 class ORCUS_DLLPUBLIC tree_walker
 {
     friend class ::orcus::yaml_document_tree;
+    friend class map_keys;
 
     struct impl;
     std::unique_ptr<impl> mp_impl;
@@ -37,19 +53,6 @@ class ORCUS_DLLPUBLIC tree_walker
     tree_walker(const yaml_document_tree& parent);
 
 public:
-
-    enum class node_type
-    {
-        unset,
-        document_list,
-        string,
-        number,
-        map,
-        sequence,
-        boolean_true,
-        boolean_false,
-        null
-    };
 
     tree_walker() = delete;
     tree_walker(const tree_walker&) = delete;
@@ -63,14 +66,39 @@ public:
      *
      * @return current node type.
      */
-    node_type type() const;
+    node_t type() const;
 
     size_t child_count() const;
 
     void first_child();
+
+    map_keys keys() const;
+};
+
+class ORCUS_DLLPUBLIC map_keys
+{
+    friend class tree_walker;
+
+    struct impl;
+    std::unique_ptr<impl> mp_impl;
+
+    map_keys(const tree_walker& parent);
+
+public:
+    map_keys() = delete;
+    map_keys(const map_keys&) = delete;
+
+    map_keys(map_keys&& rhs);
+    ~map_keys();
+
+    node_t type() const;
+
+    size_t child_count() const;
 };
 
 }}
+
+using yaml_node_t = yaml::detail::node_t;
 
 class ORCUS_DLLPUBLIC yaml_document_tree
 {
@@ -80,7 +108,8 @@ class ORCUS_DLLPUBLIC yaml_document_tree
     std::unique_ptr<impl> mp_impl;
 
 public:
-    typedef yaml::detail::tree_walker walker;
+    using walker = yaml::detail::tree_walker;
+    using map_keys = yaml::detail::map_keys;
 
     yaml_document_tree();
     ~yaml_document_tree();

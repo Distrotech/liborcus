@@ -383,14 +383,37 @@ struct yaml_document_tree::impl
 
 namespace yaml { namespace detail {
 
+node_t to_public_node_type(yaml_value_type type)
+{
+    switch (type)
+    {
+        case yaml_value_type::string:
+            return node_t::string;
+        case yaml_value_type::number:
+            return node_t::number;
+        case yaml_value_type::map:
+            return node_t::map;
+        case yaml_value_type::sequence:
+            return node_t::sequence;
+        case yaml_value_type::boolean_true:
+            return node_t::boolean_true;
+        case yaml_value_type::boolean_false:
+            return node_t::boolean_false;
+        case yaml_value_type::null:
+            return node_t::null;
+        case yaml_value_type::unset:
+            return node_t::unset;
+        default:
+            throw yaml_document_error("to_public_node_type: unknown node type.");
+    }
+}
+
 struct tree_walker::impl
 {
-    using node_type = tree_walker::node_type;
-
     const std::vector<document_root_type>& m_docs;
 
     const yaml_value* m_node;
-    node_type m_node_type;
+    node_t m_node_type;
 
     impl() = delete;
     impl(const impl&) = delete;
@@ -399,38 +422,12 @@ struct tree_walker::impl
     impl(std::vector<document_root_type>& docs) :
         m_docs(docs),
         m_node(nullptr),
-        m_node_type(node_type::document_list) {}
+        m_node_type(node_t::document_list) {}
 
     void set_node(const yaml_value* node)
     {
         m_node = node;
-        switch (m_node->type)
-        {
-            case yaml_value_type::string:
-                m_node_type = node_type::string;
-            break;
-            case yaml_value_type::number:
-                m_node_type = node_type::number;
-            break;
-            case yaml_value_type::map:
-                m_node_type = node_type::map;
-            break;
-            case yaml_value_type::sequence:
-                m_node_type = node_type::sequence;
-            break;
-            case yaml_value_type::boolean_true:
-                m_node_type = node_type::boolean_true;
-            break;
-            case yaml_value_type::boolean_false:
-                m_node_type = node_type::boolean_false;
-            break;
-            case yaml_value_type::null:
-                m_node_type = node_type::null;
-            break;
-            case yaml_value_type::unset:
-            default:
-                throw yaml_document_error("set_node: invalid node is being set.");
-        }
+        m_node_type = to_public_node_type(node->type);
     }
 };
 
@@ -442,7 +439,7 @@ tree_walker::tree_walker(tree_walker&& rhs) :
 
 tree_walker::~tree_walker() {}
 
-tree_walker::node_type tree_walker::type() const
+node_t tree_walker::type() const
 {
     return mp_impl->m_node_type;
 }
@@ -451,9 +448,9 @@ size_t tree_walker::child_count() const
 {
     switch (mp_impl->m_node_type)
     {
-        case node_type::document_list:
+        case node_t::document_list:
             return mp_impl->m_docs.size();
-        case node_type::map:
+        case node_t::map:
         {
             const yaml_value_map* node = static_cast<const yaml_value_map*>(mp_impl->m_node);
             return node->value_map.size();
@@ -469,7 +466,7 @@ void tree_walker::first_child()
 {
     switch (mp_impl->m_node_type)
     {
-        case node_type::document_list:
+        case node_t::document_list:
             if (mp_impl->m_docs.empty())
                 throw yaml_document_error("first_child: document list is empty.");
             mp_impl->set_node(mp_impl->m_docs[0].get());
@@ -477,6 +474,49 @@ void tree_walker::first_child()
         default:
             ;
     }
+}
+
+map_keys tree_walker::keys() const
+{
+    if (mp_impl->m_node_type != node_t::map)
+        throw yaml_document_error("keys: current node type is not map.");
+
+    return map_keys(*this);
+}
+
+struct map_keys::impl
+{
+    const yaml_value_map* m_root;
+
+    const yaml_value* m_node;
+
+    impl(const yaml_value_map* node) : m_root(node), m_node(nullptr) {}
+};
+
+map_keys::map_keys(const tree_walker& parent) :
+    mp_impl(
+        make_unique<impl>(
+            static_cast<const yaml_value_map*>(parent.mp_impl->m_node))) {}
+
+map_keys::map_keys(map_keys&& rhs) :
+    mp_impl(std::move(rhs.mp_impl)) {}
+
+map_keys::~map_keys() {}
+
+node_t map_keys::type() const
+{
+    return to_public_node_type(
+        mp_impl->m_node ? mp_impl->m_node->type : mp_impl->m_root->type);
+}
+
+size_t map_keys::child_count() const
+{
+    if (mp_impl->m_node)
+    {
+        return 0;
+    }
+
+    return mp_impl->m_root->value_map.size();
 }
 
 }}
