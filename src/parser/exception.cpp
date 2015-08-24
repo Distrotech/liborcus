@@ -7,6 +7,8 @@
 
 #include "orcus/exception.hpp"
 
+#include <sstream>
+
 using namespace std;
 
 namespace orcus {
@@ -14,6 +16,13 @@ namespace orcus {
 general_error::general_error(const string& msg) :
     m_msg(msg)
 {
+}
+
+general_error::general_error(const std::string& cls, const std::string& msg)
+{
+    ostringstream os;
+    os << cls << ": " << msg;
+    m_msg = os.str();
 }
 
 general_error::~general_error() throw()

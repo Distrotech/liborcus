@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_EXCEPTION_HPP__
-#define __ORCUS_EXCEPTION_HPP__
+#ifndef INCLUDED_ORCUS_EXCEPTION_HPP
+#define INCLUDED_ORCUS_EXCEPTION_HPP
 
 #include <exception>
 #include <string>
@@ -18,7 +18,8 @@ namespace orcus {
 class ORCUS_PSR_DLLPUBLIC general_error : public ::std::exception
 {
 public:
-    explicit general_error(const ::std::string& msg);
+    explicit general_error(const std::string& msg);
+    explicit general_error(const std::string& cls, const std::string& msg);
     virtual ~general_error() throw();
     virtual const char* what() const throw();
 private:

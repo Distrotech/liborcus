@@ -20,6 +20,11 @@
 
 namespace orcus {
 
+yaml_document_error::yaml_document_error(const std::string& msg) :
+    general_error("yaml_document_error", msg) {}
+
+yaml_document_error::~yaml_document_error() throw() {}
+
 namespace {
 
 enum class yaml_value_type
@@ -376,6 +381,106 @@ struct yaml_document_tree::impl
     std::vector<document_root_type> m_docs;
 };
 
+namespace yaml { namespace detail {
+
+struct tree_walker::impl
+{
+    using node_type = tree_walker::node_type;
+
+    const std::vector<document_root_type>& m_docs;
+
+    const yaml_value* m_node;
+    node_type m_node_type;
+
+    impl() = delete;
+    impl(const impl&) = delete;
+    impl(impl&& rhs) = default;
+
+    impl(std::vector<document_root_type>& docs) :
+        m_docs(docs),
+        m_node(nullptr),
+        m_node_type(node_type::document_list) {}
+
+    void set_node(const yaml_value* node)
+    {
+        m_node = node;
+        switch (m_node->type)
+        {
+            case yaml_value_type::string:
+                m_node_type = node_type::string;
+            break;
+            case yaml_value_type::number:
+                m_node_type = node_type::number;
+            break;
+            case yaml_value_type::map:
+                m_node_type = node_type::map;
+            break;
+            case yaml_value_type::sequence:
+                m_node_type = node_type::sequence;
+            break;
+            case yaml_value_type::boolean_true:
+                m_node_type = node_type::boolean_true;
+            break;
+            case yaml_value_type::boolean_false:
+                m_node_type = node_type::boolean_false;
+            break;
+            case yaml_value_type::null:
+                m_node_type = node_type::null;
+            break;
+            case yaml_value_type::unset:
+            default:
+                throw yaml_document_error("set_node: invalid node is being set.");
+        }
+    }
+};
+
+tree_walker::tree_walker(const yaml_document_tree& parent) :
+    mp_impl(make_unique<impl>(parent.mp_impl->m_docs)) {}
+
+tree_walker::tree_walker(tree_walker&& rhs) :
+    mp_impl(std::move(rhs.mp_impl)) {}
+
+tree_walker::~tree_walker() {}
+
+tree_walker::node_type tree_walker::type() const
+{
+    return mp_impl->m_node_type;
+}
+
+size_t tree_walker::child_count() const
+{
+    switch (mp_impl->m_node_type)
+    {
+        case node_type::document_list:
+            return mp_impl->m_docs.size();
+        case node_type::map:
+        {
+            const yaml_value_map* node = static_cast<const yaml_value_map*>(mp_impl->m_node);
+            return node->value_map.size();
+        }
+        default:
+            ;
+    }
+
+    return 0;
+}
+
+void tree_walker::first_child()
+{
+    switch (mp_impl->m_node_type)
+    {
+        case node_type::document_list:
+            if (mp_impl->m_docs.empty())
+                throw yaml_document_error("first_child: document list is empty.");
+            mp_impl->set_node(mp_impl->m_docs[0].get());
+        break;
+        default:
+            ;
+    }
+}
+
+}}
+
 yaml_document_tree::yaml_document_tree() : mp_impl(make_unique<impl>()) {}
 yaml_document_tree::~yaml_document_tree() {}
 
@@ -385,6 +490,11 @@ void yaml_document_tree::load(const std::string& strm)
     yaml_parser<handler> parser(strm.data(), strm.size(), hdl);
     parser.parse();
     hdl.swap(mp_impl->m_docs);
+}
+
+yaml_document_tree::walker yaml_document_tree::get_walker() const
+{
+    return walker(*this);
 }
 
 }
