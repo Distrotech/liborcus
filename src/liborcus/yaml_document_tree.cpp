@@ -25,26 +25,14 @@ yaml_document_error::yaml_document_error(const std::string& msg) :
 
 yaml_document_error::~yaml_document_error() throw() {}
 
-namespace {
-
-enum class yaml_value_type
-{
-    unset,
-    string,
-    number,
-    map,
-    sequence,
-    boolean_true,
-    boolean_false,
-    null
-};
+namespace yaml { namespace detail {
 
 struct yaml_value
 {
-    yaml_value_type type;
+    node_t type;
 
-    yaml_value() : type(yaml_value_type::unset) {}
-    yaml_value(yaml_value_type _type) : type(_type) {}
+    yaml_value() : type(node_t::unset) {}
+    yaml_value(node_t _type) : type(_type) {}
     virtual ~yaml_value() {}
 
     virtual size_t get_hash() const
@@ -58,28 +46,28 @@ struct yaml_value
         os << "type: ";
         switch (type)
         {
-            case yaml_value_type::unset:
+            case node_t::unset:
                 os << "unset";
             break;
-            case yaml_value_type::string:
+            case node_t::string:
                 os << "string";
             break;
-            case yaml_value_type::number:
+            case node_t::number:
                 os << "number";
             break;
-            case yaml_value_type::map:
+            case node_t::map:
                 os << "map";
             break;
-            case yaml_value_type::sequence:
+            case node_t::sequence:
                 os << "sequence";
             break;
-            case yaml_value_type::boolean_true:
+            case node_t::boolean_true:
                 os << "true";
             break;
-            case yaml_value_type::boolean_false:
+            case node_t::boolean_false:
                 os << "false";
             break;
-            case yaml_value_type::null:
+            case node_t::null:
                 os << "null";
             break;
         }
@@ -95,13 +83,20 @@ struct yaml_value
     };
 };
 
+}}
+
+namespace {
+
+using node_t = yaml::detail::node_t;
+using yaml_value = yaml::detail::yaml_value;
+
 struct yaml_value_string : public yaml_value
 {
     std::string value_string;
 
-    yaml_value_string() : yaml_value(yaml_value_type::string) {}
-    yaml_value_string(const std::string& s) : yaml_value(yaml_value_type::string), value_string(s) {}
-    yaml_value_string(const char* p, size_t n) : yaml_value(yaml_value_type::string), value_string(p, n) {}
+    yaml_value_string() : yaml_value(node_t::string) {}
+    yaml_value_string(const std::string& s) : yaml_value(node_t::string), value_string(s) {}
+    yaml_value_string(const char* p, size_t n) : yaml_value(node_t::string), value_string(p, n) {}
     virtual ~yaml_value_string() {}
 
     virtual std::string print() const
@@ -116,8 +111,8 @@ struct yaml_value_number : public yaml_value
 {
     double value_number;
 
-    yaml_value_number() : yaml_value(yaml_value_type::number) {}
-    yaml_value_number(double num) : yaml_value(yaml_value_type::number), value_number(num) {}
+    yaml_value_number() : yaml_value(node_t::number) {}
+    yaml_value_number(double num) : yaml_value(node_t::number), value_number(num) {}
     virtual ~yaml_value_number() {}
 
     virtual std::string print() const
@@ -132,7 +127,7 @@ struct yaml_value_sequence : public yaml_value
 {
     std::vector<std::unique_ptr<yaml_value>> value_sequence;
 
-    yaml_value_sequence() : yaml_value(yaml_value_type::sequence) {}
+    yaml_value_sequence() : yaml_value(node_t::sequence) {}
     virtual ~yaml_value_sequence() {}
 };
 
@@ -141,7 +136,7 @@ struct yaml_value_map : public yaml_value
     std::vector<std::unique_ptr<yaml_value>> key_order;  // owns the key instances.
     std::unordered_map<const yaml_value*, std::unique_ptr<yaml_value>> value_map;
 
-    yaml_value_map() : yaml_value(yaml_value_type::map) {}
+    yaml_value_map() : yaml_value(node_t::map) {}
     virtual ~yaml_value_map() {}
 };
 
@@ -182,14 +177,14 @@ class handler
 
         switch (cur.node->type)
         {
-            case yaml_value_type::sequence:
+            case node_t::sequence:
             {
                 yaml_value_sequence* yvs = static_cast<yaml_value_sequence*>(cur.node);
                 yvs->value_sequence.push_back(std::move(value));
                 return yvs->value_sequence.back().get();
             }
             break;
-            case yaml_value_type::map:
+            case node_t::map:
             {
                 yaml_value_map* yvm = static_cast<yaml_value_map*>(cur.node);
 
@@ -245,7 +240,7 @@ public:
         if (m_root)
         {
             yaml_value* yv = push_value(make_unique<yaml_value_sequence>());
-            assert(yv && yv->type == yaml_value_type::sequence);
+            assert(yv && yv->type == node_t::sequence);
             m_stack.push_back(parser_stack(yv));
         }
         else
@@ -268,7 +263,7 @@ public:
         if (m_root)
         {
             yaml_value* yv = push_value(make_unique<yaml_value_map>());
-            assert(yv && yv->type == yaml_value_type::map);
+            assert(yv && yv->type == node_t::map);
             m_stack.push_back(parser_stack(yv));
         }
         else
@@ -314,7 +309,7 @@ public:
         if (m_root)
         {
             yaml_value* yv = push_value(make_unique<yaml_value_string>(p, n));
-            assert(yv && yv->type == yaml_value_type::string);
+            assert(yv && yv->type == node_t::string);
         }
         else
             m_root = make_unique<yaml_value_string>(p, n);
@@ -326,7 +321,7 @@ public:
         if (m_root)
         {
             yaml_value* yv = push_value(make_unique<yaml_value_number>(val));
-            assert(yv && yv->type == yaml_value_type::number);
+            assert(yv && yv->type == node_t::number);
         }
         else
             m_root = make_unique<yaml_value_number>(val);
@@ -337,11 +332,11 @@ public:
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:boolean_true): " << std::endl;
         if (m_root)
         {
-            yaml_value* yv = push_value(make_unique<yaml_value>(yaml_value_type::boolean_true));
-            assert(yv && yv->type == yaml_value_type::boolean_true);
+            yaml_value* yv = push_value(make_unique<yaml_value>(node_t::boolean_true));
+            assert(yv && yv->type == node_t::boolean_true);
         }
         else
-            m_root = make_unique<yaml_value>(yaml_value_type::boolean_true);
+            m_root = make_unique<yaml_value>(node_t::boolean_true);
     }
 
     void boolean_false()
@@ -349,11 +344,11 @@ public:
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:boolean_false): " << std::endl;
         if (m_root)
         {
-            yaml_value* yv = push_value(make_unique<yaml_value>(yaml_value_type::boolean_false));
-            assert(yv && yv->type == yaml_value_type::boolean_false);
+            yaml_value* yv = push_value(make_unique<yaml_value>(node_t::boolean_false));
+            assert(yv && yv->type == node_t::boolean_false);
         }
         else
-            m_root = make_unique<yaml_value>(yaml_value_type::boolean_false);
+            m_root = make_unique<yaml_value>(node_t::boolean_false);
     }
 
     void null()
@@ -361,11 +356,11 @@ public:
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:null): " << std::endl;
         if (m_root)
         {
-            yaml_value* yv = push_value(make_unique<yaml_value>(yaml_value_type::null));
-            assert(yv && yv->type == yaml_value_type::null);
+            yaml_value* yv = push_value(make_unique<yaml_value>(node_t::null));
+            assert(yv && yv->type == node_t::null);
         }
         else
-            m_root = make_unique<yaml_value>(yaml_value_type::null);
+            m_root = make_unique<yaml_value>(node_t::null);
     }
 
     void swap(std::vector<document_root_type>& docs)
@@ -383,52 +378,16 @@ struct yaml_document_tree::impl
 
 namespace yaml { namespace detail {
 
-node_t to_public_node_type(yaml_value_type type)
-{
-    switch (type)
-    {
-        case yaml_value_type::string:
-            return node_t::string;
-        case yaml_value_type::number:
-            return node_t::number;
-        case yaml_value_type::map:
-            return node_t::map;
-        case yaml_value_type::sequence:
-            return node_t::sequence;
-        case yaml_value_type::boolean_true:
-            return node_t::boolean_true;
-        case yaml_value_type::boolean_false:
-            return node_t::boolean_false;
-        case yaml_value_type::null:
-            return node_t::null;
-        case yaml_value_type::unset:
-            return node_t::unset;
-        default:
-            throw yaml_document_error("to_public_node_type: unknown node type.");
-    }
-}
-
 struct tree_walker::impl
 {
     const std::vector<document_root_type>& m_docs;
-
-    const yaml_value* m_node;
-    node_t m_node_type;
 
     impl() = delete;
     impl(const impl&) = delete;
     impl(impl&& rhs) = default;
 
     impl(std::vector<document_root_type>& docs) :
-        m_docs(docs),
-        m_node(nullptr),
-        m_node_type(node_t::document_list) {}
-
-    void set_node(const yaml_value* node)
-    {
-        m_node = node;
-        m_node_type = to_public_node_type(node->type);
-    }
+        m_docs(docs) {}
 };
 
 tree_walker::tree_walker(const yaml_document_tree& parent) :
@@ -439,84 +398,86 @@ tree_walker::tree_walker(tree_walker&& rhs) :
 
 tree_walker::~tree_walker() {}
 
-node_t tree_walker::type() const
-{
-    return mp_impl->m_node_type;
-}
-
 size_t tree_walker::child_count() const
 {
-    switch (mp_impl->m_node_type)
+    return mp_impl->m_docs.size();
+}
+
+node tree_walker::first_child() const
+{
+    if (mp_impl->m_docs.empty())
+        throw yaml_document_error("first_child: document list is empty.");
+
+    return node(mp_impl->m_docs[0].get());
+}
+
+struct node::impl
+{
+    const yaml_value* m_node;
+
+    impl(const yaml_value* yv) : m_node(yv) {}
+};
+
+node::node(const yaml_value* yv) : mp_impl(make_unique<impl>(yv)) {}
+node::node(const node& other) : mp_impl(make_unique<impl>(other.mp_impl->m_node)) {}
+node::node(node&& rhs) : mp_impl(std::move(rhs.mp_impl)) {}
+node::~node() {}
+
+node& node::operator=(const node& other)
+{
+    if (this == &other)
+        return *this;
+
+    node tmp(other);
+    mp_impl.swap(tmp.mp_impl);
+    return *this;
+}
+
+node_t node::type() const
+{
+    return mp_impl->m_node->type;
+}
+
+size_t node::child_count() const
+{
+    switch (mp_impl->m_node->type)
     {
-        case node_t::document_list:
-            return mp_impl->m_docs.size();
         case node_t::map:
-        {
-            const yaml_value_map* node = static_cast<const yaml_value_map*>(mp_impl->m_node);
-            return node->value_map.size();
-        }
+            return static_cast<const yaml_value_map*>(mp_impl->m_node)->value_map.size();
+        case node_t::sequence:
+            return static_cast<const yaml_value_sequence*>(mp_impl->m_node)->value_sequence.size();
+        case node_t::string:
+        case node_t::number:
+        case node_t::boolean_true:
+        case node_t::boolean_false:
+        case node_t::null:
+        case node_t::unset:
         default:
             ;
     }
-
     return 0;
 }
 
-void tree_walker::first_child()
+node node::key(size_t index) const
 {
-    switch (mp_impl->m_node_type)
-    {
-        case node_t::document_list:
-            if (mp_impl->m_docs.empty())
-                throw yaml_document_error("first_child: document list is empty.");
-            mp_impl->set_node(mp_impl->m_docs[0].get());
-        break;
-        default:
-            ;
-    }
+    if (mp_impl->m_node->type != node_t::map)
+        throw yaml_document_error("node::key: current node is not of map type.");
+
+    const yaml_value_map* yvm = static_cast<const yaml_value_map*>(mp_impl->m_node);
+    if (index >= yvm->key_order.size())
+        throw std::out_of_range("node::key: index is out-of-range.");
+
+    return node(yvm->key_order[index].get());
 }
 
-map_keys tree_walker::keys() const
+pstring node::string_value() const
 {
-    if (mp_impl->m_node_type != node_t::map)
-        throw yaml_document_error("keys: current node type is not map.");
+    if (mp_impl->m_node->type != node_t::string)
+        throw yaml_document_error("node::key: current node is not of string type.");
 
-    return map_keys(*this);
-}
-
-struct map_keys::impl
-{
-    const yaml_value_map* m_root;
-
-    const yaml_value* m_node;
-
-    impl(const yaml_value_map* node) : m_root(node), m_node(nullptr) {}
-};
-
-map_keys::map_keys(const tree_walker& parent) :
-    mp_impl(
-        make_unique<impl>(
-            static_cast<const yaml_value_map*>(parent.mp_impl->m_node))) {}
-
-map_keys::map_keys(map_keys&& rhs) :
-    mp_impl(std::move(rhs.mp_impl)) {}
-
-map_keys::~map_keys() {}
-
-node_t map_keys::type() const
-{
-    return to_public_node_type(
-        mp_impl->m_node ? mp_impl->m_node->type : mp_impl->m_root->type);
-}
-
-size_t map_keys::child_count() const
-{
-    if (mp_impl->m_node)
-    {
-        return 0;
-    }
-
-    return mp_impl->m_root->value_map.size();
+    const yaml_value_string* yvs = static_cast<const yaml_value_string*>(mp_impl->m_node);
+    const std::string& str = yvs->value_string;
+    return pstring(str.data(), str.size());
 }
 
 }}

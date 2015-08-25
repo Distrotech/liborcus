@@ -16,6 +16,7 @@
 
 namespace orcus {
 
+class pstring;
 class yaml_document_tree;
 
 class ORCUS_DLLPUBLIC yaml_document_error : public general_error
@@ -27,12 +28,12 @@ public:
 
 namespace yaml { namespace detail {
 
-class map_keys;
+class node;
+struct yaml_value;
 
 enum class node_t
 {
     unset,
-    document_list,
     string,
     number,
     map,
@@ -61,39 +62,36 @@ public:
 
     ~tree_walker();
 
-    /**
-     * Returns the type of current node.
-     *
-     * @return current node type.
-     */
-    node_t type() const;
-
     size_t child_count() const;
 
-    void first_child();
-
-    map_keys keys() const;
+    node first_child() const;
 };
 
-class ORCUS_DLLPUBLIC map_keys
+class ORCUS_DLLPUBLIC node
 {
     friend class tree_walker;
 
     struct impl;
     std::unique_ptr<impl> mp_impl;
 
-    map_keys(const tree_walker& parent);
+    node(const yaml_value* yv);
 
 public:
-    map_keys() = delete;
-    map_keys(const map_keys&) = delete;
+    node() = delete;
 
-    map_keys(map_keys&& rhs);
-    ~map_keys();
+    node(const node& other);
+    node(node&& rhs);
+    ~node();
 
     node_t type() const;
 
     size_t child_count() const;
+
+    node key(size_t index) const;
+
+    pstring string_value() const;
+
+    node& operator=(const node& other);
 };
 
 }}
@@ -109,7 +107,7 @@ class ORCUS_DLLPUBLIC yaml_document_tree
 
 public:
     using walker = yaml::detail::tree_walker;
-    using map_keys = yaml::detail::map_keys;
+    using node = yaml::detail::node;
 
     yaml_document_tree();
     ~yaml_document_tree();
