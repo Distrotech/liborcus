@@ -30,9 +30,10 @@ namespace yaml { namespace detail {
 struct yaml_value
 {
     node_t type;
+    yaml_value* parent;
 
-    yaml_value() : type(node_t::unset) {}
-    yaml_value(node_t _type) : type(_type) {}
+    yaml_value() : type(node_t::unset), parent(nullptr) {}
+    yaml_value(node_t _type) : type(_type), parent(nullptr) {}
     virtual ~yaml_value() {}
 
     virtual size_t get_hash() const
@@ -180,6 +181,7 @@ class handler
             case node_t::sequence:
             {
                 yaml_value_sequence* yvs = static_cast<yaml_value_sequence*>(cur.node);
+                value->parent = yvs;
                 yvs->value_sequence.push_back(std::move(value));
                 return yvs->value_sequence.back().get();
             }
@@ -187,6 +189,7 @@ class handler
             case node_t::map:
             {
                 yaml_value_map* yvm = static_cast<yaml_value_map*>(cur.node);
+                value->parent = yvm;
 
                 yvm->key_order.push_back(std::move(cur.key));
 
