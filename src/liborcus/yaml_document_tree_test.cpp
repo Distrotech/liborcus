@@ -47,6 +47,38 @@ void test_yaml_parse()
     key = root.key(3);
     assert(key.type() == yaml_node_t::string);
     assert(key.string_value() == "string");
+
+    // first child is a map.
+    yaml_document_tree::node node = root.child(0);
+    assert(node.type() == yaml_node_t::map);
+    assert(node.child_count() == 3);
+
+    key = node.key(0);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "a");
+
+    key = node.key(1);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "b");
+
+    key = node.key(2);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "c");
+
+    // TODO : values of 'a' and 'b' are supposed to be numeric.
+    // Test those after adding support for numeric values in the parser.
+
+    node = node.child(2);
+    assert(node.type() == yaml_node_t::sequence);
+    assert(node.child_count() == 2);
+    yaml_document_tree::node child = node.child(0);
+    assert(child.type() == yaml_node_t::string);
+    assert(child.string_value() == "foo");
+    child = node.child(1);
+    assert(child.type() == yaml_node_t::string);
+    assert(child.string_value() == "bar");
+
+    // TODO : add more tests.
 }
 
 int main()

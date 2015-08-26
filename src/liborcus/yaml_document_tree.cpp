@@ -461,13 +461,49 @@ size_t node::child_count() const
 node node::key(size_t index) const
 {
     if (mp_impl->m_node->type != node_t::map)
-        throw yaml_document_error("node::key: current node is not of map type.");
+        throw yaml_document_error("node::key: this node is not of map type.");
 
     const yaml_value_map* yvm = static_cast<const yaml_value_map*>(mp_impl->m_node);
     if (index >= yvm->key_order.size())
         throw std::out_of_range("node::key: index is out-of-range.");
 
     return node(yvm->key_order[index].get());
+}
+
+node node::child(size_t index) const
+{
+    switch (mp_impl->m_node->type)
+    {
+        case node_t::map:
+        {
+            const yaml_value_map* yvm = static_cast<const yaml_value_map*>(mp_impl->m_node);
+            if (index >= yvm->key_order.size())
+                throw std::out_of_range("node::child: index is out-of-range");
+
+            const yaml_value* key = yvm->key_order[index].get();
+            auto it = yvm->value_map.find(key);
+            assert(it != yvm->value_map.end());
+            return node(it->second.get());
+        }
+        break;
+        case node_t::sequence:
+        {
+            const yaml_value_sequence* yvs = static_cast<const yaml_value_sequence*>(mp_impl->m_node);
+            if (index >= yvs->value_sequence.size())
+                throw std::out_of_range("node::child: index is out-of-range");
+
+            return node(yvs->value_sequence[index].get());
+        }
+        break;
+        case node_t::string:
+        case node_t::number:
+        case node_t::boolean_true:
+        case node_t::boolean_false:
+        case node_t::null:
+        case node_t::unset:
+        default:
+            throw yaml_document_error("node::child: this node cannot have child nodes.");
+    }
 }
 
 pstring node::string_value() const

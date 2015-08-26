@@ -89,6 +89,8 @@ public:
 
     node key(size_t index) const;
 
+    node child(size_t index) const;
+
     pstring string_value() const;
 
     node& operator=(const node& other);
