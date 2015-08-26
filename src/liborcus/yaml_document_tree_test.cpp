@@ -78,7 +78,19 @@ void test_yaml_parse()
     assert(child.type() == yaml_node_t::string);
     assert(child.string_value() == "bar");
 
-    // TODO : add more tests.
+    // Go up to the root node.
+    node = node.parent().parent();
+    assert(node.type() == yaml_node_t::map);
+
+    node = node.child(1);
+    assert(node.type() == yaml_node_t::sequence);
+    assert(node.child_count() == 3);
+
+    // TODO : Add test for 1 and 2 numeric child nodes.
+
+    node = node.child(2);
+    assert(node.type() == yaml_node_t::map);
+    assert(node.child_count() == 3);
 }
 
 int main()

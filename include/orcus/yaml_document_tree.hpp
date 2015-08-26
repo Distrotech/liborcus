@@ -91,6 +91,8 @@ public:
 
     node child(size_t index) const;
 
+    node parent() const;
+
     pstring string_value() const;
 
     node& operator=(const node& other);

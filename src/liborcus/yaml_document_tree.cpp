@@ -509,6 +509,14 @@ node node::child(size_t index) const
     }
 }
 
+node node::parent() const
+{
+    if (!mp_impl->m_node->parent)
+        throw yaml_document_error("node::parent: this node has no parent.");
+
+    return node(mp_impl->m_node->parent);
+}
+
 pstring node::string_value() const
 {
     if (mp_impl->m_node->type != node_t::string)
