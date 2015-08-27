@@ -205,6 +205,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	ods_content_xml_handler.cpp \
 	ods_session_data.hpp \
 	ods_session_data.cpp \
+	odf_helper.hpp \
+	odf_helper.cpp \
 	orcus_ods.cpp
 
 endif # WITH_ODS_FILTER

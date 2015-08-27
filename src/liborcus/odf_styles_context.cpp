@@ -8,6 +8,7 @@
 #include "odf_styles_context.hpp"
 #include "odf_namespace_types.hpp"
 #include "odf_token_constants.hpp"
+#include "odf_helper.hpp"
 
 #include "orcus/measurement.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
@@ -95,9 +96,14 @@ class text_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
     length_t m_font_size;
     bool m_bold;
     bool m_italic;
+    bool m_color;
+
+    spreadsheet::color_elem_t m_red;
+    spreadsheet::color_elem_t m_green;
+    spreadsheet::color_elem_t m_blue;
 
 public:
-    text_prop_attr_parser() : m_bold(false), m_italic(false) {}
+    text_prop_attr_parser() : m_bold(false), m_italic(false), m_color(false) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -125,6 +131,10 @@ public:
                 case XML_font_weight:
                     m_bold = attr.value == "bold";
                 break;
+                case XML_color:
+                    m_color = odf_helper::convert_fo_color(attr.value,
+                            m_red, m_green, m_blue);
+                break;
                 default:
                     ;
             }
@@ -135,6 +145,14 @@ public:
     length_t get_font_size() const { return m_font_size; }
     bool is_bold() const { return m_bold; }
     bool is_italic() const { return m_italic; }
+    bool has_color() const { return m_color; }
+    void get_color(spreadsheet::color_elem_t& red, spreadsheet::color_elem_t& green,
+            spreadsheet::color_elem_t& blue)
+    {
+        red = m_red;
+        green = m_green;
+        blue = m_blue;
+    }
 };
 
 }
@@ -266,6 +284,13 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
 
                     if (func.is_italic())
                         styles->set_font_italic(true);
+
+                    if (func.has_color())
+                    {
+                        spreadsheet::color_elem_t red, green, blue;
+                        func.get_color(red, green, blue);
+                        styles->set_font_color(0, red, green, blue);
+                    }
 
                     size_t font_id = styles->commit_font();
 
