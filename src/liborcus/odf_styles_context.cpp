@@ -368,6 +368,7 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
             case XML_table_cell_properties:
             {
                 xml_element_expected(parent, NS_odf_style, XML_style);
+                assert(m_current_style->family == style_family_table_cell);
                 spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
                 if (styles)
                 {
@@ -381,7 +382,18 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
                         styles->set_fill_bg_color(0, red, green, blue);
                     }
 
-                    styles->commit_fill();
+                    size_t fill = styles->commit_fill();
+                    switch (m_current_style->family)
+                    {
+                        case style_family_table_cell:
+                        {
+                            odf_style::cell* data = m_current_style->cell_data;
+                            data->fill = fill;
+                        }
+                        break;
+                        default:
+                        ;
+                    }
                 }
             }
             break;

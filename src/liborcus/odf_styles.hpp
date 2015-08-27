@@ -46,6 +46,10 @@ struct odf_style
     struct cell
     {
         size_t font;
+        size_t fill;
+        size_t border;
+
+        cell() : font(0), fill(0), border(0) {}
     };
 
     struct table
