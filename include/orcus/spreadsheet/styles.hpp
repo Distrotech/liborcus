@@ -124,6 +124,7 @@ struct ORCUS_SPM_DLLPUBLIC cell_style_t
     pstring name;
     size_t xf;
     size_t builtin;
+    pstring parent_name;
 
     cell_style_t();
     void reset();
@@ -189,6 +190,7 @@ public:
     virtual void set_cell_style_name(const char* s, size_t n);
     virtual void set_cell_style_xf(size_t index);
     virtual void set_cell_style_builtin(size_t index);
+    virtual void set_cell_style_parent_name(const char* s, size_t n);
     virtual size_t commit_cell_style();
 
     const font_t* get_font(size_t index) const;

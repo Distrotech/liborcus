@@ -146,6 +146,7 @@ public:
     virtual void set_cell_style_name(const char* s, size_t n) = 0;
     virtual void set_cell_style_xf(size_t index) = 0;
     virtual void set_cell_style_builtin(size_t index) = 0;
+    virtual void set_cell_style_parent_name(const char* s, size_t n) = 0;
     virtual size_t commit_cell_style() = 0;
 };
 

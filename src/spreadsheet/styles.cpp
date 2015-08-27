@@ -393,6 +393,11 @@ void import_styles::set_cell_style_builtin(size_t index)
     m_cur_cell_style.builtin = index;
 }
 
+void import_styles::set_cell_style_parent_name(const char* s, size_t n)
+{
+    m_cur_cell_style.parent_name = m_string_pool.intern(s, n).first;
+}
+
 size_t import_styles::commit_cell_style()
 {
     m_cell_styles.push_back(m_cur_cell_style);
