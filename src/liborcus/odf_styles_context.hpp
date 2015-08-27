@@ -35,10 +35,10 @@ public:
 /**
  * Context that handles <office:automatic-styles> scope.
  */
-class automatic_styles_context : public xml_context_base
+class styles_context : public xml_context_base
 {
 public:
-    automatic_styles_context(
+    styles_context(
         session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles, spreadsheet::iface::import_factory* factory);
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
@@ -58,6 +58,9 @@ private:
     style_value_converter m_converter;
 
     std::unique_ptr<odf_style> m_current_style;
+
+    // an automatic style corresponds to a cell format and not a real style
+    bool m_automatic_styles;
 };
 
 }

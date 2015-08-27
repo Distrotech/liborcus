@@ -29,10 +29,9 @@ class style_attr_parser : public std::unary_function<xml_token_attr_t, void>
     odf_style_family m_family;
 
     pstring m_parent_name;
-    bool m_parent;
 public:
     style_attr_parser(const style_value_converter* converter) :
-        m_converter(converter), m_family(style_family_unknown), m_parent(false) {}
+        m_converter(converter), m_family(style_family_unknown) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -48,7 +47,6 @@ public:
                 break;
                 case XML_parent_style_name:
                     m_parent_name = attr.value;
-                    m_parent = true;
             }
         }
     }
@@ -56,7 +54,6 @@ public:
     const pstring& get_name() const { return m_name; }
     odf_style_family get_family() const { return m_family; }
     const pstring& get_parent() const { return m_parent_name; }
-    bool has_parent() const { return m_parent; }
 };
 
 class col_prop_attr_parser : public std::unary_function<xml_token_attr_t, void>
@@ -232,31 +229,32 @@ odf_style_family style_value_converter::to_style_family(const pstring& val) cons
     return it == m_style_families.end() ? style_family_unknown : it->second;
 }
 
-automatic_styles_context::automatic_styles_context(
+styles_context::styles_context(
     session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles,
     spreadsheet::iface::import_factory* factory) :
     xml_context_base(session_cxt, tk),
     mp_factory(factory),
-    m_styles(styles)
+    m_styles(styles),
+    m_automatic_styles(false)
 {
     commit_default_styles();
 }
 
-bool automatic_styles_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
+bool styles_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
 {
     return true;
 }
 
-xml_context_base* automatic_styles_context::create_child_context(xmlns_id_t ns, xml_token_t name)
+xml_context_base* styles_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
     return NULL;
 }
 
-void automatic_styles_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+void styles_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
 {
 }
 
-void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::vector<xml_token_attr_t>& attrs)
+void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::vector<xml_token_attr_t>& attrs)
 {
     xml_token_pair_t parent = push_stack(ns, name);
     if (ns == NS_odf_office)
@@ -265,6 +263,10 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
         {
             case XML_automatic_styles:
                 xml_element_expected(parent, XMLNS_UNKNOWN_ID, XML_UNKNOWN_TOKEN);
+                m_automatic_styles = true;
+            break;
+            case XML_styles:
+                m_automatic_styles = false;
             break;
             default:
                 warn_unhandled();
@@ -279,13 +281,7 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 xml_element_expected(parent, NS_odf_office, XML_automatic_styles);
                 style_attr_parser func(&m_converter);
                 func = std::for_each(attrs.begin(), attrs.end(), func);
-                spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
-                if (styles && func.has_parent())
-                {
-                    pstring parent_name = func.get_parent();
-                    styles->set_cell_style_parent_name(parent_name.get(), parent_name.size());
-                }
-                m_current_style.reset(new odf_style(func.get_name(), func.get_family()));
+                m_current_style.reset(new odf_style(func.get_name(), func.get_family(), func.get_parent(), m_automatic_styles));
             }
             break;
             case XML_table_column_properties:
@@ -405,7 +401,7 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
         warn_unhandled();
 }
 
-bool automatic_styles_context::end_element(xmlns_id_t ns, xml_token_t name)
+bool styles_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
     if (ns == NS_odf_style)
     {
@@ -429,11 +425,11 @@ bool automatic_styles_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void automatic_styles_context::characters(const pstring& str, bool transient)
+void styles_context::characters(const pstring& str, bool transient)
 {
 }
 
-void automatic_styles_context::commit_default_styles()
+void styles_context::commit_default_styles()
 {
     spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
     if (!styles)

@@ -315,7 +315,7 @@ xml_context_base* ods_content_xml_context::create_child_context(xmlns_id_t ns, x
 
     if (ns == NS_odf_office && name == XML_automatic_styles)
     {
-        mp_child.reset(new automatic_styles_context(get_session_context(), get_tokens(), m_styles, mp_factory));
+        mp_child.reset(new styles_context(get_session_context(), get_tokens(), m_styles, mp_factory));
         mp_child->transfer_common(*this);
         return mp_child.get();
     }
@@ -354,7 +354,23 @@ void ods_content_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name,
                     if (styles)
                     {
                         styles->set_xf_font(cell.font);
-                        size_t xf_id = styles->commit_cell_xf();
+                        styles->set_xf_fill(cell.fill);
+                        styles->set_xf_border(cell.border);
+                        size_t xf_id = 0;
+                        if (it->second->automatic_style)
+                            xf_id = styles->commit_cell_xf();
+                        else
+                        {
+                            size_t style_xf_id = styles->commit_cell_style_xf();
+                            const odf_style& style = *it->second;
+                            styles->set_cell_style_name(style.name.get(), style.name.size());
+                            styles->set_cell_style_xf(style_xf_id);
+                            styles->set_cell_style_parent_name(style.parent_name.get(), style.parent_name.size());
+
+                            // TODO: Actually we need a boolean flag to see if it is an automatic style or a real style
+                            //  currently we have no way to set a real style to a cell anyway
+                            xf_id = styles->commit_cell_style();
+                        }
                         m_cell_format_map.insert(name2id_type::value_type(it->first, xf_id));
                     }
                 }

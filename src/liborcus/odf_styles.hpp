@@ -71,6 +71,8 @@ struct odf_style
 
     pstring name;
     odf_style_family family;
+    pstring parent_name;
+    bool automatic_style;
 
     union {
         column* column_data;
@@ -86,7 +88,7 @@ struct odf_style
     odf_style& operator=(const odf_style&) = delete;
 
     odf_style();
-    odf_style(const pstring& _name, odf_style_family _family);
+    odf_style(const pstring& _name, odf_style_family _family, const pstring& parent, bool auto_style);
 
     ~odf_style();
 };
