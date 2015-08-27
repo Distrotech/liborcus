@@ -15,7 +15,7 @@
 using namespace orcus;
 using namespace std;
 
-void test_yaml_parse()
+void test_yaml_parse_basic1()
 {
     const char* filepath = SRCDIR"/test/yaml/basic1/input.yaml";
     cout << filepath << endl;
@@ -157,7 +157,7 @@ void test_yaml_parse()
 
 int main()
 {
-    test_yaml_parse();
+    test_yaml_parse_basic1();
 
     return EXIT_SUCCESS;
 }
