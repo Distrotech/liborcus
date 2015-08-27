@@ -155,6 +155,42 @@ public:
     }
 };
 
+class cell_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
+{
+
+    spreadsheet::color_elem_t m_background_red;
+    spreadsheet::color_elem_t m_background_green;
+    spreadsheet::color_elem_t m_background_blue;
+    bool m_background_color;
+
+public:
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns == NS_odf_fo)
+        {
+            switch (attr.name)
+            {
+                case XML_background_color:
+                    m_background_color = odf_helper::convert_fo_color(attr.value, m_background_red,
+                            m_background_green, m_background_blue);
+                break;
+                default:
+                    ;
+            }
+        }
+    }
+
+    bool has_background_color() { return m_background_color; }
+    void get_background_color(spreadsheet::color_elem_t& red,
+            spreadsheet::color_elem_t& green, spreadsheet::color_elem_t& blue)
+    {
+        red = m_background_red;
+        green = m_background_green;
+        blue = m_background_blue;
+    }
+};
+
 }
 
 style_value_converter::style_value_converter()
@@ -311,6 +347,26 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
                         default:
                             ;
                     }
+                }
+            }
+            break;
+            case XML_table_cell_properties:
+            {
+                xml_element_expected(parent, NS_odf_style, XML_style);
+                spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
+                if (styles)
+                {
+                    cell_prop_attr_parser func;
+                    func = std::for_each(attrs.begin(), attrs.end(), func);
+
+                    if (func.has_background_color())
+                    {
+                        spreadsheet::color_elem_t red, green, blue;
+                        func.get_background_color(red, green, blue);
+                        styles->set_fill_bg_color(0, red, green, blue);
+                    }
+
+                    styles->commit_fill();
                 }
             }
             break;
