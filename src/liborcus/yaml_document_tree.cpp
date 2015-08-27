@@ -527,6 +527,15 @@ pstring node::string_value() const
     return pstring(str.data(), str.size());
 }
 
+double node::numeric_value() const
+{
+    if (mp_impl->m_node->type != node_t::number)
+        throw yaml_document_error("node::key: current node is not of numeric type.");
+
+    const yaml_value_number* yvn = static_cast<const yaml_value_number*>(mp_impl->m_node);
+    return yvn->value_number;
+}
+
 }}
 
 yaml_document_tree::yaml_document_tree() : mp_impl(make_unique<impl>()) {}

@@ -65,8 +65,15 @@ void test_yaml_parse()
     assert(key.type() == yaml_node_t::string);
     assert(key.string_value() == "c");
 
-    // TODO : values of 'a' and 'b' are supposed to be numeric.
-    // Test those after adding support for numeric values in the parser.
+    node = node.child(0);
+    assert(node.type() == yaml_node_t::number);
+    assert(node.numeric_value() == 1.0);
+    node = node.parent();
+
+    node = node.child(1);
+    assert(node.type() == yaml_node_t::number);
+    assert(node.numeric_value() == 2.0);
+    node = node.parent();
 
     node = node.child(2);
     assert(node.type() == yaml_node_t::sequence);
@@ -86,11 +93,66 @@ void test_yaml_parse()
     assert(node.type() == yaml_node_t::sequence);
     assert(node.child_count() == 3);
 
-    // TODO : Add test for 1 and 2 numeric child nodes.
+    node = node.child(0);
+    assert(node.type() == yaml_node_t::number);
+    assert(node.numeric_value() == 1.0);
+    node = node.parent();
+
+    node = node.child(1);
+    assert(node.type() == yaml_node_t::number);
+    assert(node.numeric_value() == 2.0);
+    node = node.parent();
 
     node = node.child(2);
     assert(node.type() == yaml_node_t::map);
     assert(node.child_count() == 3);
+
+    key = node.key(0);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "a");
+
+    key = node.key(1);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "b");
+
+    key = node.key(2);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "c");
+
+    node = node.child(0);
+    assert(node.type() == yaml_node_t::number);
+    assert(node.numeric_value() == 1.1);
+    node = node.parent();
+
+    node = node.child(1);
+    assert(node.type() == yaml_node_t::number);
+    assert(node.numeric_value() == 1.2);
+    node = node.parent();
+
+    node = node.child(2);
+    assert(node.type() == yaml_node_t::number);
+    assert(node.numeric_value() == 1.3);
+    node = node.parent();
+
+    node = node.parent().parent();  // back to the root.
+
+    key = node.key(2);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "number");
+
+    key = node.key(3);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "string");
+
+    node = node.child(2);
+    assert(node.type() == yaml_node_t::number);
+    assert(node.numeric_value() == 12.3);
+    node = node.parent();
+
+    node = node.child(3);
+    assert(node.type() == yaml_node_t::string);
+    assert(node.string_value() == "foo");
+    node = node.parent();
 }
 
 int main()

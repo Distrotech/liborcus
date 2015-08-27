@@ -94,6 +94,7 @@ public:
     node parent() const;
 
     pstring string_value() const;
+    double numeric_value() const;
 
     node& operator=(const node& other);
 };
