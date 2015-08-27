@@ -9,6 +9,7 @@
 #define INCLUDED_ORCUS_YAML_PARSER_HPP
 
 #include "orcus/yaml_parser_base.hpp"
+#include "orcus/parser_global.hpp"
 
 namespace orcus {
 
@@ -23,6 +24,7 @@ public:
     void parse();
 
 private:
+    void parse_value(const char* p, size_t len);
     void parse_line(const char* p, size_t len);
     void parse_dict_key(const char* p, size_t len);
 
@@ -89,6 +91,19 @@ void yaml_parser<_Handler>::parse()
 }
 
 template<typename _Handler>
+void yaml_parser<_Handler>::parse_value(const char* p, size_t len)
+{
+    const char* p0 = p;
+    const char* p_end = p + len;
+    double val = parse_numeric(p, len);
+    if (p == p_end)
+        m_handler.number(val);
+    else
+        // Failed to parse it as a number.  It must be a string.
+        m_handler.string(p0, len);
+}
+
+template<typename _Handler>
 void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
 {
     const char* p_end = p + len;
@@ -145,7 +160,7 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
                 size_t scope_width = get_scope() + 1 + n;
                 push_scope(scope_width);
 
-                m_handler.string(p, p_end-p);
+                parse_value(p, p_end-p);
             }
             break;
         }
@@ -183,7 +198,7 @@ void yaml_parser<_Handler>::parse_dict_key(const char* p, size_t len)
     }
 
     m_handler.begin_map_key();
-    m_handler.string(p0, n);
+    parse_value(p0, n);
     m_handler.end_map_key();
 
     ++p;  // skip the ':'.
@@ -210,7 +225,7 @@ void yaml_parser<_Handler>::parse_dict_key(const char* p, size_t len)
             throw yaml::parse_error("parse_dict_key: nested inline dictionary key is not allowed.");
     }
 
-    m_handler.string(p0, n);
+    parse_value(p0, n);
 }
 
 }
