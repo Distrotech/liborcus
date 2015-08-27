@@ -27,8 +27,12 @@ class style_attr_parser : public std::unary_function<xml_token_attr_t, void>
 
     pstring m_name;
     odf_style_family m_family;
+
+    pstring m_parent_name;
+    bool m_parent;
 public:
-    style_attr_parser(const style_value_converter* converter) : m_converter(converter), m_family(style_family_unknown) {}
+    style_attr_parser(const style_value_converter* converter) :
+        m_converter(converter), m_family(style_family_unknown), m_parent(false) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -42,12 +46,17 @@ public:
                 case XML_family:
                     m_family = m_converter->to_style_family(attr.value);
                 break;
+                case XML_parent_style_name:
+                    m_parent_name = attr.value;
+                    m_parent = true;
             }
         }
     }
 
     const pstring& get_name() const { return m_name; }
     odf_style_family get_family() const { return m_family; }
+    const pstring& get_parent() const { return m_parent_name; }
+    bool has_parent() const { return m_parent; }
 };
 
 class col_prop_attr_parser : public std::unary_function<xml_token_attr_t, void>
@@ -270,6 +279,12 @@ void automatic_styles_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 xml_element_expected(parent, NS_odf_office, XML_automatic_styles);
                 style_attr_parser func(&m_converter);
                 func = std::for_each(attrs.begin(), attrs.end(), func);
+                spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
+                if (styles && func.has_parent())
+                {
+                    pstring parent_name = func.get_parent();
+                    styles->set_cell_style_parent_name(parent_name.get(), parent_name.size());
+                }
                 m_current_style.reset(new odf_style(func.get_name(), func.get_family()));
             }
             break;
