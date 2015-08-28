@@ -231,9 +231,9 @@ odf_style_family style_value_converter::to_style_family(const pstring& val) cons
 
 styles_context::styles_context(
     session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles,
-    spreadsheet::iface::import_factory* factory) :
+    spreadsheet::iface::import_styles* iface_styles) :
     xml_context_base(session_cxt, tk),
-    mp_factory(factory),
+    mp_styles(iface_styles),
     m_styles(styles),
     m_automatic_styles(false)
 {
@@ -311,8 +311,7 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
             case XML_text_properties:
             {
                 xml_element_expected(parent, NS_odf_style, XML_style);
-                spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
-                if (styles)
+                if (mp_styles)
                 {
                     text_prop_attr_parser func;
                     func = std::for_each(attrs.begin(), attrs.end(), func);
@@ -320,26 +319,26 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                     // Commit the font data.
                     pstring font_name = func.get_font_name();
                     if (!font_name.empty())
-                        styles->set_font_name(font_name.get(), font_name.size());
+                        mp_styles->set_font_name(font_name.get(), font_name.size());
 
                     length_t font_size = func.get_font_size();
                     if (font_size.unit == length_unit_t::point)
-                        styles->set_font_size(font_size.value);
+                        mp_styles->set_font_size(font_size.value);
 
                     if (func.is_bold())
-                        styles->set_font_bold(true);
+                        mp_styles->set_font_bold(true);
 
                     if (func.is_italic())
-                        styles->set_font_italic(true);
+                        mp_styles->set_font_italic(true);
 
                     if (func.has_color())
                     {
                         spreadsheet::color_elem_t red, green, blue;
                         func.get_color(red, green, blue);
-                        styles->set_font_color(0, red, green, blue);
+                        mp_styles->set_font_color(0, red, green, blue);
                     }
 
-                    size_t font_id = styles->commit_font();
+                    size_t font_id = mp_styles->commit_font();
 
                     switch (m_current_style->family)
                     {
@@ -365,8 +364,7 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
             {
                 xml_element_expected(parent, NS_odf_style, XML_style);
                 assert(m_current_style->family == style_family_table_cell);
-                spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
-                if (styles)
+                if (mp_styles)
                 {
                     cell_prop_attr_parser func;
                     func = std::for_each(attrs.begin(), attrs.end(), func);
@@ -375,10 +373,10 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                     {
                         spreadsheet::color_elem_t red, green, blue;
                         func.get_background_color(red, green, blue);
-                        styles->set_fill_bg_color(0, red, green, blue);
+                        mp_styles->set_fill_bg_color(0, red, green, blue);
                     }
 
-                    size_t fill = styles->commit_fill();
+                    size_t fill = mp_styles->commit_fill();
                     switch (m_current_style->family)
                     {
                         case style_family_table_cell:
@@ -431,20 +429,19 @@ void styles_context::characters(const pstring& str, bool transient)
 
 void styles_context::commit_default_styles()
 {
-    spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
-    if (!styles)
+    if (!mp_styles)
         return;
 
     // Set default styles. Default styles must be associated with an index of 0.
     // Set empty styles for all style types before importing real styles.
-    styles->commit_font();
-    styles->commit_fill();
-    styles->commit_border();
-    styles->commit_cell_protection();
-    styles->commit_number_format();
-    styles->commit_cell_style();
-    styles->commit_cell_style_xf();
-    styles->commit_cell_xf();
+    mp_styles->commit_font();
+    mp_styles->commit_fill();
+    mp_styles->commit_border();
+    mp_styles->commit_cell_protection();
+    mp_styles->commit_number_format();
+    mp_styles->commit_cell_style();
+    mp_styles->commit_cell_style_xf();
+    mp_styles->commit_cell_xf();
 }
 
 }

@@ -18,7 +18,7 @@
 namespace orcus {
 
 namespace spreadsheet { namespace iface {
-    class import_factory;
+    class import_styles;
 }}
 
 class style_value_converter
@@ -39,7 +39,7 @@ class styles_context : public xml_context_base
 {
 public:
     styles_context(
-        session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles, spreadsheet::iface::import_factory* factory);
+        session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles, spreadsheet::iface::import_styles* iface_styles);
 
     virtual bool can_handle_element(xmlns_id_t ns, xml_token_t name) const;
     virtual xml_context_base* create_child_context(xmlns_id_t ns, xml_token_t name);
@@ -52,7 +52,7 @@ private:
     void commit_default_styles();
 
 private:
-    spreadsheet::iface::import_factory* mp_factory;
+    spreadsheet::iface::import_styles* mp_styles;
     odf_styles_map_type& m_styles;
 
     style_value_converter m_converter;
