@@ -44,7 +44,8 @@ liborcus_HEADERS = \
 if WITH_ODS_FILTER
 
 liborcus_HEADERS += \
-	orcus_ods.hpp
+	orcus_ods.hpp \
+	orcus_import_ods.hpp
 
 endif # WITH_ODS_FILTER
 
