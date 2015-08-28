@@ -163,7 +163,26 @@ void test_yaml_parse_basic2()
     yaml_document_tree doc;
     doc.load(strm);
 
+    assert(doc.get_document_count() == 1);
+    yaml_document_tree::node node = doc.get_document_root(0);
 
+    assert(node.type() == yaml_node_t::sequence);
+    assert(node.child_count() == 3);
+
+    node = node.child(0);
+    assert(node.type() == yaml_node_t::number);
+    assert(node.numeric_value() == 1);
+    node = node.parent();
+
+    node = node.child(1);
+    assert(node.type() == yaml_node_t::number);
+    assert(node.numeric_value() == 2);
+    node = node.parent();
+
+    node = node.child(2);
+    assert(node.type() == yaml_node_t::number);
+    assert(node.numeric_value() == 3);
+    node = node.parent();
 }
 
 int main()
