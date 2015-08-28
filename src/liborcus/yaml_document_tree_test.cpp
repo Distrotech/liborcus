@@ -24,11 +24,10 @@ void test_yaml_parse_basic1()
     yaml_document_tree doc;
     doc.load(strm);
 
-    yaml_document_tree::walker walker = doc.get_walker();
-    assert(walker.child_count() == 1);
+    assert(doc.get_document_count() == 1);
 
     // Document root is a map node with 4 elements.
-    yaml_document_tree::node root = walker.first_child();
+    yaml_document_tree::node root = doc.get_document_root(0);
     assert(root.type() == yaml_node_t::map);
     assert(root.child_count() == 4);
 

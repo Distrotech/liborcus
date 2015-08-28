@@ -394,39 +394,6 @@ struct yaml_document_tree::impl
 
 namespace yaml { namespace detail {
 
-struct tree_walker::impl
-{
-    const std::vector<document_root_type>& m_docs;
-
-    impl() = delete;
-    impl(const impl&) = delete;
-    impl(impl&& rhs) = default;
-
-    impl(std::vector<document_root_type>& docs) :
-        m_docs(docs) {}
-};
-
-tree_walker::tree_walker(const yaml_document_tree& parent) :
-    mp_impl(make_unique<impl>(parent.mp_impl->m_docs)) {}
-
-tree_walker::tree_walker(tree_walker&& rhs) :
-    mp_impl(std::move(rhs.mp_impl)) {}
-
-tree_walker::~tree_walker() {}
-
-size_t tree_walker::child_count() const
-{
-    return mp_impl->m_docs.size();
-}
-
-node tree_walker::first_child() const
-{
-    if (mp_impl->m_docs.empty())
-        throw yaml_document_error("first_child: document list is empty.");
-
-    return node(mp_impl->m_docs[0].get());
-}
-
 struct node::impl
 {
     const yaml_value* m_node;
@@ -562,9 +529,14 @@ void yaml_document_tree::load(const std::string& strm)
     hdl.swap(mp_impl->m_docs);
 }
 
-yaml_document_tree::walker yaml_document_tree::get_walker() const
+size_t yaml_document_tree::get_document_count() const
 {
-    return walker(*this);
+    return mp_impl->m_docs.size();
+}
+
+yaml_document_tree::node yaml_document_tree::get_document_root(size_t index) const
+{
+    return node(mp_impl->m_docs[index].get());
 }
 
 }
