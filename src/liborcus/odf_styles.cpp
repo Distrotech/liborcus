@@ -11,10 +11,9 @@ namespace orcus {
 
 odf_style::odf_style() : family(style_family_unknown), column_data(NULL) {}
 odf_style::odf_style(const pstring& _name, odf_style_family _family,
-        const pstring& parent, bool auto_style) :
+        const pstring& parent) :
     name(_name), family(_family),
-    parent_name(parent), automatic_style(auto_style),
-    column_data(NULL)
+    parent_name(parent), column_data(NULL)
 {
     switch (family)
     {

@@ -284,7 +284,7 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                 xml_element_expected(parent, expected_parents);
                 style_attr_parser func(&m_converter);
                 func = std::for_each(attrs.begin(), attrs.end(), func);
-                m_current_style.reset(new odf_style(func.get_name(), func.get_family(), func.get_parent(), m_automatic_styles));
+                m_current_style.reset(new odf_style(func.get_name(), func.get_family(), func.get_parent()));
             }
             break;
             case XML_table_column_properties:
@@ -367,6 +367,7 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
             {
                 xml_element_expected(parent, NS_odf_style, XML_style);
                 assert(m_current_style->family == style_family_table_cell);
+                m_current_style->cell_data->automatic_style = m_automatic_styles;
                 if (mp_styles)
                 {
                     cell_prop_attr_parser func;
@@ -412,6 +413,29 @@ bool styles_context::end_element(xmlns_id_t ns, xml_token_t name)
             {
                 if (m_current_style)
                 {
+                    if (mp_styles && m_current_style->family == style_family_table_cell)
+                    {
+                        odf_style::cell& cell = *m_current_style->cell_data;
+                        mp_styles->set_xf_font(cell.font);
+                        mp_styles->set_xf_fill(cell.fill);
+                        mp_styles->set_xf_border(cell.border);
+                        size_t xf_id = 0;
+                        if (cell.automatic_style)
+                            xf_id = mp_styles->commit_cell_xf();
+                        else
+                        {
+                            size_t style_xf_id = mp_styles->commit_cell_style_xf();
+                            mp_styles->set_cell_style_name(
+                                    m_current_style->name.get(), m_current_style->name.size());
+                            mp_styles->set_cell_style_xf(style_xf_id);
+                            mp_styles->set_cell_style_parent_name(
+                                    m_current_style->parent_name.get(), m_current_style->parent_name.size());
+
+                            xf_id = mp_styles->commit_cell_style();
+                        }
+                        cell.xf = xf_id;
+                    }
+
                     // ptr_map's first argument must be a non-const reference.
                     pstring name = m_current_style->name;
                     m_styles.insert(

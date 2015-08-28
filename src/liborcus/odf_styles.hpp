@@ -49,7 +49,11 @@ struct odf_style
         size_t fill;
         size_t border;
 
-        cell() : font(0), fill(0), border(0) {}
+        size_t xf;
+        bool automatic_style;
+
+        cell() : font(0), fill(0), border(0),
+                xf(0), automatic_style(false) {}
     };
 
     struct table
@@ -72,7 +76,6 @@ struct odf_style
     pstring name;
     odf_style_family family;
     pstring parent_name;
-    bool automatic_style;
 
     union {
         column* column_data;
@@ -88,7 +91,7 @@ struct odf_style
     odf_style& operator=(const odf_style&) = delete;
 
     odf_style();
-    odf_style(const pstring& _name, odf_style_family _family, const pstring& parent, bool auto_style);
+    odf_style(const pstring& _name, odf_style_family _family, const pstring& parent);
 
     ~odf_style();
 };

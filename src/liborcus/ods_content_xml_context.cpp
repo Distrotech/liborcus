@@ -349,29 +349,13 @@ void ods_content_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name,
                 case style_family_table_cell:
                 {
                     const odf_style::cell& cell = *it->second->cell_data;
-                    cout << "font ID: " << cell.font;
+                    cout << "xf ID: " << cell.xf;
                     spreadsheet::iface::import_styles* styles = mp_factory->get_styles();
                     if (styles)
                     {
-                        styles->set_xf_font(cell.font);
-                        styles->set_xf_fill(cell.fill);
-                        styles->set_xf_border(cell.border);
-                        size_t xf_id = 0;
-                        if (it->second->automatic_style)
-                            xf_id = styles->commit_cell_xf();
-                        else
-                        {
-                            size_t style_xf_id = styles->commit_cell_style_xf();
-                            const odf_style& style = *it->second;
-                            styles->set_cell_style_name(style.name.get(), style.name.size());
-                            styles->set_cell_style_xf(style_xf_id);
-                            styles->set_cell_style_parent_name(style.parent_name.get(), style.parent_name.size());
-
-                            // TODO: Actually we need a boolean flag to see if it is an automatic style or a real style
-                            //  currently we have no way to set a real style to a cell anyway
-                            xf_id = styles->commit_cell_style();
-                        }
-                        m_cell_format_map.insert(name2id_type::value_type(it->first, xf_id));
+                        // TODO: Actually we need a boolean flag to see if it is an automatic style or a real style
+                        //  currently we have no way to set a real style to a cell anyway
+                        m_cell_format_map.insert(name2id_type::value_type(it->first, cell.xf));
                     }
                 }
                 break;
