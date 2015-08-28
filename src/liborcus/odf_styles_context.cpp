@@ -278,7 +278,10 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
         {
             case XML_style:
             {
-                xml_element_expected(parent, NS_odf_office, XML_automatic_styles);
+                xml_elem_stack_t expected_parents;
+                expected_parents.push_back(std::pair<xmlns_id_t, xml_token_t>(NS_odf_office, XML_automatic_styles));
+                expected_parents.push_back(std::pair<xmlns_id_t, xml_token_t>(NS_odf_office, XML_styles));
+                xml_element_expected(parent, expected_parents);
                 style_attr_parser func(&m_converter);
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style.reset(new odf_style(func.get_name(), func.get_family(), func.get_parent(), m_automatic_styles));
