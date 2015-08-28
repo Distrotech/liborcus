@@ -34,7 +34,7 @@ void import_ods::read_styles(const char* p, size_t n, spreadsheet::iface::import
     odf_styles_map_type styles_map;
     auto context = make_unique<styles_context>(cxt, odf_tokens, styles_map, styles);
 
-    xml_simple_stream_handler stream_handler(context.get());
+    xml_simple_stream_handler stream_handler(context.release());
 
     xmlns_repository ns_repo;
     ns_repo.add_predefined_values(NS_odf_all);
