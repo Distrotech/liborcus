@@ -437,5 +437,90 @@ const border_t* import_styles::get_border(size_t index) const
     return &m_borders[index];
 }
 
+const protection_t* import_styles::get_protection(size_t index) const
+{
+    if (index >= m_protections.size())
+        return NULL;
+
+    return &m_protections[index];
+}
+
+const number_format_t* import_styles::get_number_format(size_t index) const
+{
+    if (index >= m_number_formats.size())
+        return NULL;
+
+    return &m_number_formats[index];
+}
+
+const cell_format_t* import_styles::get_cell_style_format(size_t index) const
+{
+    if (index >= m_cell_style_formats.size())
+        return NULL;
+
+    return &m_cell_style_formats[index];
+}
+
+const cell_format_t* import_styles::get_dxf_format(size_t index) const
+{
+    if (index >= m_dxf_formats.size())
+        return NULL;
+
+    return &m_dxf_formats[index];
+}
+
+const cell_style_t* import_styles::get_cell_style(size_t index) const
+{
+    if (index >= m_cell_styles.size())
+        return NULL;
+
+    return &m_cell_styles[index];
+}
+
+size_t import_styles::get_font_count() const
+{
+    return m_fonts.size();
+}
+
+size_t import_styles::get_fill_count() const
+{
+    return m_fills.size();
+}
+
+size_t import_styles::get_border_count() const
+{
+    return m_borders.size();
+}
+
+size_t import_styles::get_protection_count() const
+{
+    return m_protections.size();
+}
+
+size_t import_styles::get_number_format_count() const
+{
+    return m_number_formats.size();
+}
+
+size_t import_styles::get_cell_formats_count() const
+{
+    return m_cell_formats.size();
+}
+
+size_t import_styles::get_cell_style_formats_count() const
+{
+    return m_cell_style_formats.size();
+}
+
+size_t import_styles::get_dxf_count() const
+{
+    return m_dxf_formats.size();
+}
+
+size_t import_styles::get_cell_styles_count() const
+{
+    return m_cell_styles.size();
+}
+
 }}
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

@@ -194,9 +194,24 @@ public:
     virtual size_t commit_cell_style();
 
     const font_t* get_font(size_t index) const;
-    const cell_format_t* get_cell_format(size_t index) const;
     const fill_t* get_fill(size_t index) const;
     const border_t* get_border(size_t index) const;
+    const protection_t* get_protection(size_t index) const;
+    const number_format_t* get_number_format(size_t index) const;
+    const cell_format_t* get_cell_format(size_t index) const;
+    const cell_format_t* get_cell_style_format(size_t index) const;
+    const cell_format_t* get_dxf_format(size_t index) const;
+    const cell_style_t* get_cell_style(size_t index) const;
+
+    size_t get_font_count() const;
+    size_t get_fill_count() const;
+    size_t get_border_count() const;
+    size_t get_protection_count() const;
+    size_t get_number_format_count() const;
+    size_t get_cell_formats_count() const;
+    size_t get_cell_style_formats_count() const;
+    size_t get_dxf_count() const;
+    size_t get_cell_styles_count() const;
 
 private:
     string_pool& m_string_pool;
