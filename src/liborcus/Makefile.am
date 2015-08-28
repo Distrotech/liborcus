@@ -210,6 +210,33 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	orcus_ods.cpp \
 	orcus_import_ods.cpp
 
+if BUILD_SPREADSHEET_MODEL
+
+# orcus-odf-styles-context-test
+
+EXTRA_PROGRAMS += \
+	orcus-odf-styles-context-test
+
+orcus_odf_styles_context_test_SOURCES = \
+	odf_styles_context_test.cpp \
+	session_context.cpp \
+	xml_context_base.cpp \
+	xml_context_global.cpp \
+	global.cpp \
+	spreadsheet_interface.cpp
+
+orcus_odf_styles_context_test_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la \
+	../spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
+orcus_odf_styles_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
+
+TESTS += \
+	 orcus-odf-styles-context-test
+
+endif
+
 endif # WITH_ODS_FILTER
 
 if WITH_GNUMERIC_FILTER
