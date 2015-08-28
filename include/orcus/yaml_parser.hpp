@@ -24,9 +24,11 @@ public:
     void parse();
 
 private:
+    size_t end_scope();
+    void check_or_begin_document();
     void parse_value(const char* p, size_t len);
     void parse_line(const char* p, size_t len);
-    void parse_dict_key(const char* p, size_t len);
+    void parse_map_key(const char* p, size_t len);
 
 private:
     handler_type& m_handler;
@@ -60,17 +62,7 @@ void yaml_parser<_Handler>::parse()
             // Current indent is less than the current scope level.
             do
             {
-                switch (get_scope_type())
-                {
-                    case yaml::scope_t::map:
-                        m_handler.end_map();
-                    break;
-                    case yaml::scope_t::sequence:
-                        m_handler.end_sequence();
-                    default:
-                        ;
-                }
-                cur_scope = pop_scope();
+                cur_scope = end_scope();
                 if (cur_scope < indent)
                     throw yaml::parse_error("parse: invalid indent level.");
             }
@@ -84,6 +76,11 @@ void yaml_parser<_Handler>::parse()
         parse_line(line.get(), line.size());
     }
 
+    // End all remaining scopes.
+    size_t cur_scope = get_scope();
+    while (cur_scope != scope_empty)
+        cur_scope = end_scope();
+
     if (get_doc_hash())
         m_handler.end_document();
 
@@ -91,8 +88,36 @@ void yaml_parser<_Handler>::parse()
 }
 
 template<typename _Handler>
+size_t yaml_parser<_Handler>::end_scope()
+{
+    switch (get_scope_type())
+    {
+        case yaml::scope_t::map:
+            m_handler.end_map();
+        break;
+        case yaml::scope_t::sequence:
+            m_handler.end_sequence();
+        default:
+            ;
+    }
+    return pop_scope();
+}
+
+template<typename _Handler>
+void yaml_parser<_Handler>::check_or_begin_document()
+{
+    if (!get_doc_hash())
+    {
+        set_doc_hash(mp_char);
+        m_handler.begin_document();
+    }
+}
+
+template<typename _Handler>
 void yaml_parser<_Handler>::parse_value(const char* p, size_t len)
 {
+    check_or_begin_document();
+
     const char* p0 = p;
     const char* p_end = p + len;
     double val = parse_numeric(p, len);
@@ -116,6 +141,7 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
             // List item start.
             if (get_scope_type() == yaml::scope_t::unset)
             {
+                check_or_begin_document();
                 m_handler.begin_sequence();
                 set_scope_type(yaml::scope_t::sequence);
             }
@@ -143,6 +169,7 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
             {
                 if (get_scope_type() == yaml::scope_t::unset)
                 {
+                    check_or_begin_document();
                     m_handler.begin_sequence();
                     set_scope_type(yaml::scope_t::sequence);
                 }
@@ -169,11 +196,11 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
     }
 
     // If the line doesn't start with a '-', it must be a dictionary key.
-    parse_dict_key(p, len);
+    parse_map_key(p, len);
 }
 
 template<typename _Handler>
-void yaml_parser<_Handler>::parse_dict_key(const char* p, size_t len)
+void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
 {
     const char* p0 = p;
     const char* p_end = p + len;
@@ -189,10 +216,15 @@ void yaml_parser<_Handler>::parse_dict_key(const char* p, size_t len)
     }
 
     if (!has_key)
-        throw yaml::parse_error("parse_dict_key: no key found.");
+    {
+        // No map key found.
+        parse_value(p0, len);
+        return;
+    }
 
     if (get_scope_type() == yaml::scope_t::unset)
     {
+        check_or_begin_document();
         set_scope_type(yaml::scope_t::map);
         m_handler.begin_map();
     }

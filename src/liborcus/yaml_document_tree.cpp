@@ -161,6 +161,8 @@ class handler
     document_root_type m_root;
     document_root_type m_key_root;
 
+    bool m_in_document;
+
     void print_stack()
     {
         std::ostringstream os;
@@ -212,7 +214,7 @@ class handler
     }
 
 public:
-    handler() {}
+    handler() : m_in_document(false) {}
 
     void begin_parse()
     {
@@ -226,18 +228,23 @@ public:
 
     void begin_document()
     {
+        assert(!m_in_document);
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:begin_document): " << std::endl;
+        m_in_document = true;
         m_root.reset();
     }
 
     void end_document()
     {
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:end_document): " << std::endl;
+        assert(m_stack.empty());
+        m_in_document = false;
         m_docs.push_back(std::move(m_root));
     }
 
     void begin_sequence()
     {
+        assert(m_in_document);
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:begin_sequence): " << std::endl;
 
         if (m_root)
@@ -262,6 +269,7 @@ public:
 
     void begin_map()
     {
+        assert(m_in_document);
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:begin_map): " << std::endl;
         if (m_root)
         {
@@ -307,6 +315,7 @@ public:
 
     void string(const char* p, size_t n)
     {
+        assert(m_in_document);
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:string): s='" << pstring(p, n) << "'" << std::endl;
 
         if (m_root)
@@ -320,6 +329,7 @@ public:
 
     void number(double val)
     {
+        assert(m_in_document);
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:number): v=" << val << std::endl;
         if (m_root)
         {
@@ -332,6 +342,7 @@ public:
 
     void boolean_true()
     {
+        assert(m_in_document);
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:boolean_true): " << std::endl;
         if (m_root)
         {
@@ -344,6 +355,7 @@ public:
 
     void boolean_false()
     {
+        assert(m_in_document);
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:boolean_false): " << std::endl;
         if (m_root)
         {
@@ -356,6 +368,7 @@ public:
 
     void null()
     {
+        assert(m_in_document);
         std::cout << __FILE__ << "#" << __LINE__ << " (handler:null): " << std::endl;
         if (m_root)
         {
