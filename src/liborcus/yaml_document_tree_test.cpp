@@ -185,10 +185,22 @@ void test_yaml_parse_basic2()
     node = node.parent();
 }
 
+void test_yaml_parse_null()
+{
+    const char* filepath = SRCDIR"/test/yaml/null/input.yaml";
+    cout << filepath << endl;
+    string strm = load_file_content(filepath);
+    cout << strm << endl;
+    yaml_document_tree doc;
+    doc.load(strm);
+
+}
+
 int main()
 {
     test_yaml_parse_basic1();
     test_yaml_parse_basic2();
+    test_yaml_parse_null();
 
     return EXIT_SUCCESS;
 }

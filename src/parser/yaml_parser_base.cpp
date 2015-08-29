@@ -8,8 +8,11 @@
 #include "orcus/yaml_parser_base.hpp"
 #include "orcus/global.hpp"
 
+#include <mdds/sorted_string_map.hpp>
+
 #include <limits>
 #include <vector>
+#include <iostream>
 
 namespace orcus { namespace yaml {
 
@@ -151,6 +154,28 @@ const char* parser_base::get_doc_hash() const
 void parser_base::set_doc_hash(const char* hash)
 {
     mp_impl->m_document = hash;
+}
+
+namespace {
+
+mdds::sorted_string_map<keyword_t>::entry keyword_entries[] = {
+    { ORCUS_ASCII("NULL"), keyword_t::null },
+    { ORCUS_ASCII("Null"), keyword_t::null },
+    { ORCUS_ASCII("null"), keyword_t::null },
+    { ORCUS_ASCII("~"),    keyword_t::null },
+};
+
+}
+
+keyword_t parser_base::parse_keyword(const char* p, size_t len)
+{
+    static mdds::sorted_string_map<keyword_t> map(
+        keyword_entries,
+        ORCUS_N_ELEMENTS(keyword_entries),
+        keyword_t::unknown);
+
+    keyword_t value = map.find(p, len);
+    return value;
 }
 
 }}

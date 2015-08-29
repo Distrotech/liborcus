@@ -122,10 +122,35 @@ void yaml_parser<_Handler>::parse_value(const char* p, size_t len)
     const char* p_end = p + len;
     double val = parse_numeric(p, len);
     if (p == p_end)
+    {
         m_handler.number(val);
-    else
-        // Failed to parse it as a number.  It must be a string.
-        m_handler.string(p0, len);
+        return;
+    }
+
+    yaml::keyword_t kw = parse_keyword(p0, len);
+
+    if (kw != yaml::keyword_t::unknown)
+    {
+        switch (kw)
+        {
+            case yaml::keyword_t::null:
+                m_handler.null();
+            break;
+            case yaml::keyword_t::boolean_true:
+                m_handler.boolean_true();
+            break;
+            case yaml::keyword_t::boolean_false:
+                m_handler.boolean_false();
+            break;
+            default:
+                ;
+        }
+
+        return;
+    }
+
+    // Failed to parse it as a number or a keyword.  It must be a string.
+    m_handler.string(p0, len);
 }
 
 template<typename _Handler>

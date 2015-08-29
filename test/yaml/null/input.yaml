@@ -1,0 +1,10 @@
+--- # Handle null keywords.
+# These are all valid null values.
+- null
+- Null
+- NULL
+- ~
+# However, these are not null values but string values according to the spec.
+- nULL
+- NUll
+

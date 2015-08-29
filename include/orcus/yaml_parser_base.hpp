@@ -32,6 +32,14 @@ enum class scope_t
     map
 };
 
+enum class keyword_t
+{
+    unknown,
+    boolean_true,
+    boolean_false,
+    null
+};
+
 class ORCUS_PSR_DLLPUBLIC parser_base : public ::orcus::parser_base
 {
     struct impl;
@@ -103,6 +111,8 @@ protected:
      * @param hash hash value of a document.
      */
     void set_doc_hash(const char* hash);
+
+    keyword_t parse_keyword(const char* p, size_t len);
 };
 
 }}
