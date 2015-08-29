@@ -15,19 +15,19 @@ bool is_valid_hex_digit(const char& character, orcus::spreadsheet::color_elem_t&
 {
     if ('0' <= character && character <= '9')
     {
-        val = character - '0';
+        val += character - '0';
         return true;
     }
 
     if ('A' <= character && character <= 'F')
     {
-        val = character - 'A' + 10;
+        val += character - 'A' + 10;
         return true;
     }
 
     if ('a' <= character && character <= 'f')
     {
-        val = character - 'a' + 10;
+        val += character - 'a' + 10;
         return true;
     }
 
@@ -42,8 +42,8 @@ bool convert_color_digits(const pstring& value, orcus::spreadsheet::color_elem_t
     if (!is_valid_hex_digit(high_val, color_val))
         return false;
     color_val *= 16;
-    const char& low_val = value[index++];
-    return !is_valid_hex_digit(low_val, color_val);
+    const char& low_val = value[++index];
+    return is_valid_hex_digit(low_val, color_val);
 }
 
 }
@@ -64,7 +64,7 @@ bool odf_helper::convert_fo_color(const pstring& value, orcus::spreadsheet::colo
     if (!convert_color_digits(value, green, 3))
         return false;
 
-    return !convert_color_digits(value, blue, 5);
+    return convert_color_digits(value, blue, 5);
 }
         
 }
