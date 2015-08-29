@@ -194,6 +194,37 @@ void test_yaml_parse_null()
     yaml_document_tree doc;
     doc.load(strm);
 
+    assert(doc.get_document_count() == 1);
+    yaml_document_tree::node node = doc.get_document_root(0);
+
+    assert(node.type() == yaml_node_t::sequence);
+    assert(node.child_count() == 6);
+
+    node = node.child(0);
+    assert(node.type() == yaml_node_t::null);
+    node = node.parent();
+
+    node = node.child(1);
+    assert(node.type() == yaml_node_t::null);
+    node = node.parent();
+
+    node = node.child(2);
+    assert(node.type() == yaml_node_t::null);
+    node = node.parent();
+
+    node = node.child(3);
+    assert(node.type() == yaml_node_t::null);
+    node = node.parent();
+
+    node = node.child(4);
+    assert(node.type() == yaml_node_t::string);
+    assert(node.string_value() == "nULL");
+    node = node.parent();
+
+    node = node.child(5);
+    assert(node.type() == yaml_node_t::string);
+    assert(node.string_value() == "NUll");
+    node = node.parent();
 }
 
 int main()
