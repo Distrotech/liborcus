@@ -210,6 +210,23 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	orcus_ods.cpp \
 	orcus_import_ods.cpp
 
+# orcus-odf-helper-test
+
+EXTRA_PROGRAMS += \
+	orcus-odf-helper-test
+
+orcus_odf_helper_test_SOURCES = \
+	odf_helper.cpp \
+	odf_helper_test.cpp
+
+orcus_odf_helper_test_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la
+
+orcus_odf_helper_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
+
+TESTS += \
+	 orcus-odf-helper-test
+
 if BUILD_SPREADSHEET_MODEL
 
 # orcus-odf-styles-context-test
