@@ -159,10 +159,32 @@ void parser_base::set_doc_hash(const char* hash)
 namespace {
 
 mdds::sorted_string_map<keyword_t>::entry keyword_entries[] = {
-    { ORCUS_ASCII("NULL"), keyword_t::null },
-    { ORCUS_ASCII("Null"), keyword_t::null },
-    { ORCUS_ASCII("null"), keyword_t::null },
-    { ORCUS_ASCII("~"),    keyword_t::null },
+    { ORCUS_ASCII("FALSE"), keyword_t::boolean_false },
+    { ORCUS_ASCII("False"), keyword_t::boolean_false },
+    { ORCUS_ASCII("N"),     keyword_t::boolean_false },
+    { ORCUS_ASCII("NO"),    keyword_t::boolean_false },
+    { ORCUS_ASCII("NULL"),  keyword_t::null          },
+    { ORCUS_ASCII("No"),    keyword_t::boolean_false },
+    { ORCUS_ASCII("Null"),  keyword_t::null          },
+    { ORCUS_ASCII("OFF"),   keyword_t::boolean_false },
+    { ORCUS_ASCII("ON"),    keyword_t::boolean_true  },
+    { ORCUS_ASCII("Off"),   keyword_t::boolean_false },
+    { ORCUS_ASCII("On"),    keyword_t::boolean_true  },
+    { ORCUS_ASCII("TRUE"),  keyword_t::boolean_true  },
+    { ORCUS_ASCII("True"),  keyword_t::boolean_true  },
+    { ORCUS_ASCII("Y"),     keyword_t::boolean_true  },
+    { ORCUS_ASCII("YES"),   keyword_t::boolean_true  },
+    { ORCUS_ASCII("Yes"),   keyword_t::boolean_true  },
+    { ORCUS_ASCII("false"), keyword_t::boolean_false },
+    { ORCUS_ASCII("n"),     keyword_t::boolean_false },
+    { ORCUS_ASCII("no"),    keyword_t::boolean_false },
+    { ORCUS_ASCII("null"),  keyword_t::null          },
+    { ORCUS_ASCII("off"),   keyword_t::boolean_false },
+    { ORCUS_ASCII("on"),    keyword_t::boolean_true  },
+    { ORCUS_ASCII("true"),  keyword_t::boolean_true  },
+    { ORCUS_ASCII("y"),     keyword_t::boolean_true  },
+    { ORCUS_ASCII("yes"),   keyword_t::boolean_true  },
+    { ORCUS_ASCII("~"),     keyword_t::null          },
 };
 
 }

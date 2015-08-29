@@ -8,6 +8,7 @@
 #include "orcus/yaml_document_tree.hpp"
 #include "orcus/stream.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/global.hpp"
 
 #include <cassert>
 #include <iostream>
@@ -227,11 +228,84 @@ void test_yaml_parse_null()
     node = node.parent();
 }
 
+void test_yaml_parse_boolean()
+{
+    const char* filepath = SRCDIR"/test/yaml/boolean/input.yaml";
+    cout << filepath << endl;
+    string strm = load_file_content(filepath);
+    cout << strm << endl;
+    yaml_document_tree doc;
+    doc.load(strm);
+
+    assert(doc.get_document_count() == 1);
+    yaml_document_tree::node node = doc.get_document_root(0);
+
+    assert(node.type() == yaml_node_t::map);
+    assert(node.child_count() == 3);
+
+    yaml_document_tree::node key = node.key(0);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "positive");
+
+    key = node.key(1);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "negative");
+
+    key = node.key(2);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "non boolean");
+
+    // list of boolean true's.
+    node = node.child(0);
+    assert(node.type() == yaml_node_t::sequence);
+    assert(node.child_count() == 11);
+    for (size_t i = 0; i < node.child_count(); ++i)
+    {
+        yaml_document_tree::node child = node.child(i);
+        assert(child.type() == yaml_node_t::boolean_true);
+    }
+    node = node.parent();
+
+    // list of boolean false's.
+    node = node.child(1);
+    assert(node.type() == yaml_node_t::sequence);
+    assert(node.child_count() == 11);
+    for (size_t i = 0; i < node.child_count(); ++i)
+    {
+        yaml_document_tree::node child = node.child(i);
+        assert(child.type() == yaml_node_t::boolean_false);
+    }
+    node = node.parent();
+
+    // list of strings.
+    const char* values[] = {
+        "yES",
+        "nO",
+        "tRUE",
+        "faLSE",
+        "oN",
+        "oFF"
+    };
+
+    node = node.child(2);
+    assert(node.type() == yaml_node_t::sequence);
+    assert(node.child_count() == ORCUS_N_ELEMENTS(values));
+
+    for (size_t i = 0; i < ORCUS_N_ELEMENTS(values); ++i)
+    {
+        node = node.child(i);
+        assert(node.type() == yaml_node_t::string);
+        assert(node.string_value() == values[i]);
+        node = node.parent();
+    }
+}
+
 int main()
 {
     test_yaml_parse_basic1();
     test_yaml_parse_basic2();
     test_yaml_parse_null();
+    test_yaml_parse_boolean();
 
     return EXIT_SUCCESS;
 }

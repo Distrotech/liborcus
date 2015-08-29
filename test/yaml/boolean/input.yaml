@@ -1,0 +1,33 @@
+---
+positive:
+  - y
+  - Y
+  - yes
+  - Yes
+  - YES
+  - true
+  - True
+  - TRUE
+  - on
+  - On
+  - ON
+negative:
+  - n
+  - N
+  - no
+  - No
+  - NO
+  - false
+  - False
+  - FALSE
+  - off
+  - Off
+  - OFF
+non boolean:
+  - yES
+  - nO
+  - tRUE
+  - faLSE
+  - oN
+  - oFF
+
