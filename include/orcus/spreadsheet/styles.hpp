@@ -58,7 +58,7 @@ struct ORCUS_SPM_DLLPUBLIC fill_t
 
 struct ORCUS_SPM_DLLPUBLIC border_attrs_t
 {
-    pstring style;
+    border_style_t style;
     color_t border_color;
 
     border_attrs_t();
@@ -154,6 +154,7 @@ public:
 
     virtual void set_border_count(size_t n);
     virtual void set_border_style(border_direction_t dir, const char* s, size_t n);
+    virtual void set_border_style(border_direction_t dir, border_style_t style);
     virtual void set_border_color(
         border_direction_t dir, color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
     virtual size_t commit_border();

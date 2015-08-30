@@ -104,7 +104,10 @@ public:
     // border
 
     virtual void set_border_count(size_t n) = 0;
+
+    /// @deprecated: use set_border_style(border_direction, border_style_t) instead
     virtual void set_border_style(orcus::spreadsheet::border_direction_t dir, const char* s, size_t n) = 0;
+    virtual void set_border_style(orcus::spreadsheet::border_direction_t dir, border_style_t style) = 0;
     virtual void set_border_color(
         orcus::spreadsheet::border_direction_t dir, color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue) = 0;
     virtual size_t commit_border() = 0;

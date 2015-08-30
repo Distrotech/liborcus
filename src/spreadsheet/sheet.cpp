@@ -1060,59 +1060,59 @@ void print_formatted_text(ostream& strm, const string& text, const format_runs_t
 void build_border_style(ostringstream& os, const char* style_name, const border_attrs_t& attrs)
 {
     os << style_name << ": ";
-    if (attrs.style == "thin")
+    if (attrs.style == border_style_t::thin)
     {
         os << "solid 1px ";
     }
-    else if (attrs.style == "medium")
+    else if (attrs.style == border_style_t::medium)
     {
         os << "solid 2px ";
     }
-    else if (attrs.style == "thick")
+    else if (attrs.style == border_style_t::thick)
     {
         os << "solid 3px ";
     }
-    else if (attrs.style == "hair")
+    else if (attrs.style == border_style_t::hair)
     {
         os << "solid 0.5px ";
     }
-    else if (attrs.style == "dotted")
+    else if (attrs.style == border_style_t::dotted)
     {
         os << "dotted 1px ";
     }
-    else if (attrs.style == "dashed")
+    else if (attrs.style == border_style_t::dashed)
     {
         os << "dashed 1px ";
     }
-    else if (attrs.style == "double")
+    else if (attrs.style == border_style_t::double_border)
     {
         os << "3px double ";
     }
-    else if (attrs.style == "dashDot")
+    else if (attrs.style == border_style_t::dash_dot)
     {
         // CSS doesn't support dash-dot.
         os << "dashed 1px ";
     }
-    else if (attrs.style == "dashDotDot")
+    else if (attrs.style == border_style_t::dash_dot_dot)
     {
         // CSS doesn't support dash-dot-dot.
         os << "dashed 1px ";
     }
-    else if (attrs.style == "mediumDashed")
+    else if (attrs.style == border_style_t::medium_dashed)
     {
         os << "dashed 2px ";
     }
-    else if (attrs.style == "mediumDashDot")
+    else if (attrs.style == border_style_t::medium_dash_dot)
     {
         // CSS doesn't support dash-dot.
         os << "dashed 2px ";
     }
-    else if (attrs.style == "mediumDashDotDot")
+    else if (attrs.style == border_style_t::medium_dash_dot_dot)
     {
         // CSS doesn't support dash-dot-dot.
         os << "dashed 2px ";
     }
-    else if (attrs.style == "slantDashDot")
+    else if (attrs.style == border_style_t::slant_dash_dot)
     {
         // CSS doesn't support dash-dot.
         os << "dashed 2px ";

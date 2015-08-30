@@ -35,6 +35,25 @@ enum class border_direction_t
     diagonal
 };
 
+enum class border_style_t
+{
+    unknown = 0,
+    none,
+    dash_dot,
+    dash_dot_dot,
+    dashed,
+    dotted,
+    double_border,
+    hair,
+    medium,
+    medium_dash_dot,
+    medium_dash_dot_dot,
+    medium_dashed,
+    slant_dash_dot,
+    thick,
+    thin
+};
+
 enum class formula_grammar_t
 {
     unknown = 0,

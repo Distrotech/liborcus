@@ -19,6 +19,9 @@
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/measurement.hpp"
 
+#include <mdds/sorted_string_map.hpp>
+#include <mdds/global.hpp>
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -246,6 +249,26 @@ void xlsx_shared_strings_context::characters(const pstring& str, bool transient)
 
 namespace {
 
+typedef mdds::sorted_string_map<spreadsheet::border_style_t> border_style_map;
+
+border_style_map::entry border_style_type_entries[] =
+{
+    {MDDS_ASCII("dashDot"), spreadsheet::border_style_t::dash_dot},
+    {MDDS_ASCII("dashDotDot"), spreadsheet::border_style_t::dash_dot_dot},
+    {MDDS_ASCII("dashed"), spreadsheet::border_style_t::dashed},
+    {MDDS_ASCII("dotted"), spreadsheet::border_style_t::dotted},
+    {MDDS_ASCII("double"), spreadsheet::border_style_t::double_border},
+    {MDDS_ASCII("hair"), spreadsheet::border_style_t::hair},
+    {MDDS_ASCII("medium"), spreadsheet::border_style_t::medium},
+    {MDDS_ASCII("mediumDashDot"), spreadsheet::border_style_t::medium_dash_dot},
+    {MDDS_ASCII("mediumDashDotDot"), spreadsheet::border_style_t::medium_dash_dot_dot},
+    {MDDS_ASCII("mediumDashed"), spreadsheet::border_style_t::medium_dashed},
+    {MDDS_ASCII("none"), spreadsheet::border_style_t::none},
+    {MDDS_ASCII("slantDashDot"), spreadsheet::border_style_t::slant_dash_dot},
+    {MDDS_ASCII("thick"), spreadsheet::border_style_t::thick},
+    {MDDS_ASCII("thin"), spreadsheet::border_style_t::thin}
+};
+
 class border_attr_parser : public unary_function<xml_token_attr_t, void>
 {
     spreadsheet::border_direction_t m_dir;
@@ -259,7 +282,11 @@ public:
         switch (attr.name)
         {
             case XML_style:
-                m_styles.set_border_style(m_dir, attr.value.get(), attr.value.size());
+            {
+                border_style_map type_map(border_style_type_entries, ORCUS_N_ELEMENTS(border_style_type_entries), spreadsheet::border_style_t::none);
+                  m_styles.set_border_style(m_dir,
+                          type_map.find(attr.value.get(), attr.value.size()));
+            }
             break;
         }
     }
