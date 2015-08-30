@@ -16,6 +16,13 @@ namespace orcus {
 
 class cell_buffer;
 
+enum class string_escape_char_t
+{
+    invalid,
+    valid,
+    control_char
+};
+
 /**
  * Stores state of string parsing.  Upon successful parsing the str points
  * to the first character of the string and the length stores the size of
@@ -56,6 +63,17 @@ ORCUS_PSR_DLLPUBLIC long parse_integer(const char*& p, size_t max_length);
 
 ORCUS_PSR_DLLPUBLIC parse_quoted_string_state parse_quoted_string(
     const char*& p, size_t max_length, cell_buffer& buffer);
+
+/**
+ * Given a character that occurs immediately after the escape character '\',
+ * return what type this character is.
+ *
+ * @param c character that occurs immediately after the escape character
+ *          '\'.
+ *
+ * @return enum value representing the type of escape character.
+ */
+ORCUS_PSR_DLLPUBLIC string_escape_char_t get_string_escape_char_type(char c);
 
 /**
  * Clip input value to specified range in case it falls outside the range.

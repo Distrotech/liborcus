@@ -148,44 +148,28 @@ long parse_integer(const char*& p, size_t max_length)
     return negative_sign ? -ret : ret;
 }
 
-namespace {
-
-enum class escape_char_t
-{
-    illegal,
-    legal,
-    control_char
-};
-
-/**
- * Given a character that occurs immediately after the escape character '\',
- * return what type this character is.
- *
- * @param c character that occurs immediately after the escape character
- *          '\'.
- *
- * @return enum value representing the type of escape character.
- */
-escape_char_t get_escape_char_type(char c)
+string_escape_char_t get_string_escape_char_type(char c)
 {
     switch (c)
     {
         case '"':
         case '\\':
         case '/':
-            return escape_char_t::legal;
+            return string_escape_char_t::valid;
         case 'b': // backspace
         case 'f': // formfeed
         case 'n': // newline
         case 'r': // carriage return
         case 't': // horizontal tab
-            return escape_char_t::control_char;
+            return string_escape_char_t::control_char;
         default:
             ;
     }
 
-    return escape_char_t::illegal;
+    return string_escape_char_t::invalid;
 }
+
+namespace {
 
 parse_quoted_string_state parse_string_with_escaped_char(
     const char*& p, size_t max_length, const char* p_parsed, size_t n_parsed, char c,
@@ -222,19 +206,19 @@ parse_quoted_string_state parse_string_with_escaped_char(
         {
             escape = false;
 
-            switch (get_escape_char_type(c))
+            switch (get_string_escape_char_type(c))
             {
-                case escape_char_t::legal:
+                case string_escape_char_t::valid:
                     buffer.append(p_head, len-1);
                     buffer.append(&c, 1);
                     ++p;
                     len = 0;
                     p_head = p;
                 break;
-                case escape_char_t::control_char:
+                case string_escape_char_t::control_char:
                     // do nothing on control characters.
                 break;
-                case escape_char_t::illegal:
+                case string_escape_char_t::invalid:
                 default:
                     ret.length = parse_quoted_string_state::error_illegal_escape_char;
                     return ret;
@@ -295,14 +279,14 @@ parse_quoted_string_state parse_quoted_string(
             char c = *p;
             escape = false;
 
-            switch (get_escape_char_type(c))
+            switch (get_string_escape_char_type(c))
             {
-                case escape_char_t::legal:
+                case string_escape_char_t::valid:
                     return parse_string_with_escaped_char(p, max_length, ret.str, ret.length-1, c, buffer);
-                case escape_char_t::control_char:
+                case string_escape_char_t::control_char:
                     // do nothing on control characters.
                 break;
-                case escape_char_t::illegal:
+                case string_escape_char_t::invalid:
                 default:
                     ret.str = nullptr;
                     ret.length = parse_quoted_string_state::error_illegal_escape_char;

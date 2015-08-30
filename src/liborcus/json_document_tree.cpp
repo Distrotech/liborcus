@@ -116,7 +116,7 @@ void dump_string(std::ostringstream& os, const std::string& s)
         {
             // Escape a '\' if and only if the next character is not one of control characters.
             auto itnext = it + 1;
-            if (itnext == ite || json::get_escape_char_type(*itnext) != json::escape_char_t::control_char)
+            if (itnext == ite || get_string_escape_char_type(*itnext) != string_escape_char_t::control_char)
                 os << backslash;
         }
         os << c;
