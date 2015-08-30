@@ -106,144 +106,18 @@ double parser_base::parse_double_or_throw()
     return v;
 }
 
-parser_base::parse_string_state parser_base::parse_string()
+parse_quoted_string_state parser_base::parse_string()
 {
     assert(cur_char() == '"');
-    next();
+    size_t max_length = remaining_size();
+    const char* p = mp_char;
+    parse_quoted_string_state ret = parse_quoted_string(p, max_length, mp_impl->m_buffer);
+    m_pos += p - mp_char;
+    mp_char = p;
 
-    parse_string_state ret;
-    ret.str = mp_char;
-    ret.length = 0;
+    if (ret.str)
+        skip_blanks();
 
-    if (!has_char())
-    {
-        ret.str = NULL;
-        ret.length = parse_string_error_no_closing_quote;
-        return ret;
-    }
-
-    bool escape = false;
-
-    for (; has_char(); next(), ++ret.length)
-    {
-        if (escape)
-        {
-            char c = cur_char();
-            escape = false;
-
-            switch (json::get_escape_char_type(c))
-            {
-                case json::escape_char_t::legal:
-                    return parse_string_with_escaped_char(ret.str, ret.length-1, c);
-                case json::escape_char_t::control_char:
-                    // do nothing on control characters.
-                break;
-                case json::escape_char_t::illegal:
-                default:
-                    ret.str = NULL;
-                    ret.length = parse_string_error_illegal_escape_char;
-                    return ret;
-            }
-        }
-
-        switch (cur_char())
-        {
-            case '"':
-                // closing quote.
-                next(); // skip the quote.
-                skip_blanks();
-                return ret;
-            break;
-            case '\\':
-            {
-                escape = true;
-                continue;
-            }
-            break;
-            default:
-                ;
-        }
-    }
-
-    ret.str = NULL;
-    ret.length = parse_string_error_no_closing_quote;
-    return ret;
-}
-
-parser_base::parse_string_state parser_base::parse_string_with_escaped_char(
-    const char* p, size_t n, char c)
-{
-    parse_string_state ret;
-    ret.str = NULL;
-    ret.length = 0;
-
-    // Start the buffer with the string we've parsed so far.
-    mp_impl->m_buffer.reset();
-    if (p && n)
-        mp_impl->m_buffer.append(p, n);
-    mp_impl->m_buffer.append(&c, 1);
-
-    next();
-    if (!has_char())
-    {
-        ret.length = parse_string_error_no_closing_quote;
-        return ret;
-    }
-
-    size_t len = 0;
-    p = mp_char;
-    bool escape = false;
-
-    for (; has_char(); next(), ++len)
-    {
-        char c = cur_char();
-
-        if (escape)
-        {
-            escape = false;
-
-            switch (json::get_escape_char_type(c))
-            {
-                case json::escape_char_t::legal:
-                    mp_impl->m_buffer.append(p, len-1);
-                    mp_impl->m_buffer.append(&c, 1);
-                    next();
-                    len = 0;
-                    p = mp_char;
-                break;
-                case json::escape_char_t::control_char:
-                    // do nothing on control characters.
-                break;
-                case json::escape_char_t::illegal:
-                default:
-                    ret.length = parse_string_error_illegal_escape_char;
-                    return ret;
-            }
-        }
-
-        switch (cur_char())
-        {
-            case '"':
-                // closing quote.
-                mp_impl->m_buffer.append(p, len);
-                next(); // skip the quote.
-                skip_blanks();
-                ret.str = mp_impl->m_buffer.get();
-                ret.length = mp_impl->m_buffer.size();
-                return ret;
-            break;
-            case '\\':
-            {
-                escape = true;
-                continue;
-            }
-            break;
-            default:
-                ;
-        }
-    }
-
-    ret.length = parse_string_error_no_closing_quote;
     return ret;
 }
 

@@ -14,6 +14,23 @@
 
 namespace orcus {
 
+class cell_buffer;
+
+/**
+ * Stores state of string parsing.  Upon successful parsing the str points
+ * to the first character of the string and the length stores the size of
+ * the string.  When the parsing fails, the str value becomes nullptr and
+ * the length stores the error code.
+ */
+struct parse_quoted_string_state
+{
+    static constexpr size_t error_no_closing_quote    = 1;
+    static constexpr size_t error_illegal_escape_char = 2;
+
+    const char* str;
+    size_t length;
+};
+
 ORCUS_PSR_DLLPUBLIC bool is_blank(char c);
 ORCUS_PSR_DLLPUBLIC bool is_alpha(char c);
 ORCUS_PSR_DLLPUBLIC bool is_name_char(char c);
@@ -36,6 +53,9 @@ ORCUS_PSR_DLLPUBLIC void write_to(std::ostringstream& os, const char* p, size_t 
 ORCUS_PSR_DLLPUBLIC double parse_numeric(const char*& p, size_t max_length);
 
 ORCUS_PSR_DLLPUBLIC long parse_integer(const char*& p, size_t max_length);
+
+ORCUS_PSR_DLLPUBLIC parse_quoted_string_state parse_quoted_string(
+    const char*& p, size_t max_length, cell_buffer& buffer);
 
 /**
  * Clip input value to specified range in case it falls outside the range.
