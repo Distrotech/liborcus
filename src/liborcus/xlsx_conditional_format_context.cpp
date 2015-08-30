@@ -126,23 +126,23 @@ typedef mdds::sorted_string_map<xlsx_cond_format_date> cond_format_date_map;
 
 cond_format_type_map::entry cond_format_type_entries[] =
 {
-    { MDDS_ASCII("expression"), expression },
+    { MDDS_ASCII("aboveAverage"), aboveAverage },
+    { MDDS_ASCII("beginsWith"), beginsWith },
     { MDDS_ASCII("cellIs"), cellIs },
     { MDDS_ASCII("colorScale"), colorScale },
-    { MDDS_ASCII("dataBar"), dataBar },
-    { MDDS_ASCII("iconSet"), iconSet },
-    { MDDS_ASCII("top10"), top10 },
-    { MDDS_ASCII("uniqueValues"), uniqueValues },
-    { MDDS_ASCII("duplicateValues"), duplicateValues },
-    { MDDS_ASCII("containsText"), containsText },
-    { MDDS_ASCII("notContainsText"), notContainsText },
-    { MDDS_ASCII("beginsWith"), beginsWith },
-    { MDDS_ASCII("endsWith"), endsWith },
     { MDDS_ASCII("containsBlanks"), containsBlanks },
     { MDDS_ASCII("containsErrors"), containsErrors },
+    { MDDS_ASCII("containsText"), containsText },
+    { MDDS_ASCII("dataBar"), dataBar },
+    { MDDS_ASCII("duplicateValues"), duplicateValues },
+    { MDDS_ASCII("endsWith"), endsWith },
+    { MDDS_ASCII("expression"), expression },
+    { MDDS_ASCII("iconSet"), iconSet },
     { MDDS_ASCII("notContainsErrors"), notContainsErrors },
+    { MDDS_ASCII("notContainsText"), notContainsText },
     { MDDS_ASCII("timePeriod"), timePeriod },
-    { MDDS_ASCII("aboveAverage"), aboveAverage },
+    { MDDS_ASCII("top10"), top10 },
+    { MDDS_ASCII("uniqueValues"), uniqueValues }
 };
 
 cond_format_operator_map::entry cond_format_operator_entries[] =
@@ -171,15 +171,15 @@ cond_format_date_map::entry cond_format_date_entries[] =
     { MDDS_ASCII("thisWeek"), date_thisWeek },
     { MDDS_ASCII("today"), date_today },
     { MDDS_ASCII("tomorrow"), date_tomorrow },
-    { MDDS_ASCII("yesterday"), date_yesterday },
+    { MDDS_ASCII("yesterday"), date_yesterday }
 };
 
 cond_format_boolean_map::entry cond_format_boolean_entries[] =
 {
     { MDDS_ASCII("0"), boolean_false },
     { MDDS_ASCII("1"), boolean_true },
-    { MDDS_ASCII("true"), boolean_false },
-    { MDDS_ASCII("false"), boolean_true }
+    { MDDS_ASCII("false"), boolean_true },
+    { MDDS_ASCII("true"), boolean_false }
 };
 
 bool parse_boolean_flag(const xml_token_attr_t& attr, bool default_value)
