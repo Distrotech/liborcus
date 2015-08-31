@@ -27,6 +27,7 @@ private:
     size_t end_scope();
     void check_or_begin_document();
     void check_or_begin_map();
+    void check_or_begin_sequence();
     void parse_value(const char* p, size_t len);
     void parse_line(const char* p, size_t len);
     void parse_map_key(const char* p, size_t len);
@@ -126,6 +127,17 @@ void yaml_parser<_Handler>::check_or_begin_map()
 }
 
 template<typename _Handler>
+void yaml_parser<_Handler>::check_or_begin_sequence()
+{
+    if (get_scope_type() == yaml::scope_t::unset)
+    {
+        check_or_begin_document();
+        set_scope_type(yaml::scope_t::sequence);
+        m_handler.begin_sequence();
+    }
+}
+
+template<typename _Handler>
 void yaml_parser<_Handler>::parse_value(const char* p, size_t len)
 {
     check_or_begin_document();
@@ -176,13 +188,7 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
         if (p == p_end)
         {
             // List item start.
-            if (get_scope_type() == yaml::scope_t::unset)
-            {
-                check_or_begin_document();
-                m_handler.begin_sequence();
-                set_scope_type(yaml::scope_t::sequence);
-            }
-
+            check_or_begin_sequence();
             return;
         }
 
@@ -204,12 +210,7 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
             break;
             case ' ':
             {
-                if (get_scope_type() == yaml::scope_t::unset)
-                {
-                    check_or_begin_document();
-                    m_handler.begin_sequence();
-                    set_scope_type(yaml::scope_t::sequence);
-                }
+                check_or_begin_sequence();
 
                 // list item start with inline first item content.
                 ++p;
