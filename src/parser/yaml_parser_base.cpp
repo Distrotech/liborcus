@@ -7,12 +7,15 @@
 
 #include "orcus/yaml_parser_base.hpp"
 #include "orcus/global.hpp"
+#include "orcus/cell_buffer.hpp"
+#include "orcus/parser_global.hpp"
 
 #include <mdds/sorted_string_map.hpp>
 
 #include <limits>
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 namespace orcus { namespace yaml {
 
@@ -39,6 +42,7 @@ struct scope
 
 struct parser_base::impl
 {
+    cell_buffer m_buffer;
     std::vector<scope> m_scopes;
     const char* m_document;
 
@@ -198,6 +202,33 @@ keyword_t parser_base::parse_keyword(const char* p, size_t len)
 
     keyword_t value = map.find(p, len);
     return value;
+}
+
+pstring parser_base::parse_quoted_string_value(const char*& p, size_t max_length)
+{
+    parse_quoted_string_state ret =
+        parse_quoted_string(p, max_length, mp_impl->m_buffer);
+
+    if (!ret.str)
+    {
+        std::ostringstream os;
+        os << "parse_quoted_string_value: failed to parse ";
+        switch (ret.length)
+        {
+            case parse_quoted_string_state::error_illegal_escape_char:
+                os << " due to the presence of illegal escape character.";
+            break;
+            case parse_quoted_string_state::error_no_closing_quote:
+                os << "because the closing quote was not found.";
+            break;
+            default:
+                os << " due to unknown reason.";
+
+        }
+        throw parse_error(os.str());
+    }
+
+    return pstring(ret.str, ret.length);
 }
 
 }}

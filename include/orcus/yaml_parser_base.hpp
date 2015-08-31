@@ -113,6 +113,8 @@ protected:
     void set_doc_hash(const char* hash);
 
     keyword_t parse_keyword(const char* p, size_t len);
+
+    pstring parse_quoted_string_value(const char*& p, size_t max_length);
 };
 
 }}

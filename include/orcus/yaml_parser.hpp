@@ -26,6 +26,7 @@ public:
 private:
     size_t end_scope();
     void check_or_begin_document();
+    void check_or_begin_map();
     void parse_value(const char* p, size_t len);
     void parse_line(const char* p, size_t len);
     void parse_map_key(const char* p, size_t len);
@@ -110,6 +111,17 @@ void yaml_parser<_Handler>::check_or_begin_document()
     {
         set_doc_hash(mp_char);
         m_handler.begin_document();
+    }
+}
+
+template<typename _Handler>
+void yaml_parser<_Handler>::check_or_begin_map()
+{
+    if (get_scope_type() == yaml::scope_t::unset)
+    {
+        check_or_begin_document();
+        set_scope_type(yaml::scope_t::map);
+        m_handler.begin_map();
     }
 }
 
@@ -212,7 +224,16 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
                 size_t scope_width = get_scope() + 1 + n;
                 push_scope(scope_width);
 
-                parse_value(p, p_end-p);
+                if (*p == '"')
+                {
+                    pstring quoted_str = parse_quoted_string_value(p, p_end-p);
+                    if (p != p_end)
+                        throw yaml::parse_error("parse_line: unexpected trailing string segment after the quoted string.");
+
+                    m_handler.string(quoted_str.get(), quoted_str.size());
+                }
+                else
+                    parse_value(p, p_end-p);
             }
             break;
         }
@@ -227,36 +248,61 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
 template<typename _Handler>
 void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
 {
-    const char* p0 = p;
     const char* p_end = p + len;
     size_t n = 0;
-    bool has_key = false;
-    for (; p != p_end; ++p, ++n)
+
+    if (*p == '"')
     {
-        if (*p == ':')
+        pstring quoted_str = parse_quoted_string_value(p, len);
+
+        if (p == p_end)
         {
-            has_key = true;
-            break;
+            m_handler.string(quoted_str.get(), quoted_str.size());
+            return;
         }
-    }
 
-    if (!has_key)
+        // Skip all white spaces.
+        for (; p != p_end && *p == ' '; ++p)
+            ;
+
+        if (*p != ':')
+            throw yaml::parse_error("parse_map_key: ':' is expected after the quoted string key.");
+
+        check_or_begin_map();
+        m_handler.begin_map_key();
+        m_handler.string(quoted_str.get(), quoted_str.size());
+        m_handler.end_map_key();
+    }
+    else
     {
-        // No map key found.
-        parse_value(p0, len);
-        return;
-    }
+        const char* p0 = p;  // Save the original head position.
+        bool has_key = false;
+        const char* p_last_non_blank = nullptr;
+        for (; p != p_end; ++p)
+        {
+            if (*p == ':')
+            {
+                has_key = true;
+                break;
+            }
 
-    if (get_scope_type() == yaml::scope_t::unset)
-    {
-        check_or_begin_document();
-        set_scope_type(yaml::scope_t::map);
-        m_handler.begin_map();
-    }
+            if (*p != ' ')
+                p_last_non_blank = p;
+        }
 
-    m_handler.begin_map_key();
-    parse_value(p0, n);
-    m_handler.end_map_key();
+        if (!has_key)
+        {
+            // No map key found.
+            parse_value(p0, len);
+            return;
+        }
+
+        check_or_begin_map();
+        m_handler.begin_map_key();
+        n = p_last_non_blank - p0 + 1;
+        parse_value(p0, n);
+        m_handler.end_map_key();
+    }
 
     ++p;  // skip the ':'.
     if (p == p_end)
@@ -270,19 +316,30 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
     size_t scope_width = get_scope() + 1 + n;
     push_scope(scope_width);
 
-    // inline dictionary item.
+    // inline map item.
     if (*p == '-')
-        throw yaml::parse_error("parse_dict_key: sequence entry is not allowed as an inline dictionary item.");
+        throw yaml::parse_error("parse_map_key: sequence entry is not allowed as an inline map item.");
 
-    n = 0;
-    p0 = p;
-    for (; p != p_end; ++p, ++n)
+    if (*p == '"')
     {
-        if (*p == ':')
-            throw yaml::parse_error("parse_dict_key: nested inline dictionary key is not allowed.");
-    }
+        pstring quoted_str = parse_quoted_string_value(p, p_end-p);
+        if (p != p_end)
+            throw yaml::parse_error("parse_map_key: unexpected trailing string segment after the quoted string.");
 
-    parse_value(p0, n);
+        m_handler.string(quoted_str.get(), quoted_str.size());
+    }
+    else
+    {
+        n = 0;
+        const char* p0 = p;
+        for (; p != p_end; ++p, ++n)
+        {
+            if (*p == ':')
+                throw yaml::parse_error("parse_map_key: nested inline map key is not allowed.");
+        }
+
+        parse_value(p0, n);
+    }
 }
 
 }

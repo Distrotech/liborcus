@@ -300,12 +300,26 @@ void test_yaml_parse_boolean()
     }
 }
 
+void test_yaml_parse_quoted_string()
+{
+    const char* filepath = SRCDIR"/test/yaml/quoted-string/input.yaml";
+    cout << filepath << endl;
+    string strm = load_file_content(filepath);
+    cout << strm << endl;
+    yaml_document_tree doc;
+    doc.load(strm);
+
+    assert(doc.get_document_count() == 1);
+    yaml_document_tree::node node = doc.get_document_root(0);
+}
+
 int main()
 {
     test_yaml_parse_basic1();
     test_yaml_parse_basic2();
     test_yaml_parse_null();
     test_yaml_parse_boolean();
+    test_yaml_parse_quoted_string();
 
     return EXIT_SUCCESS;
 }
