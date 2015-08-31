@@ -311,6 +311,42 @@ void test_yaml_parse_quoted_string()
 
     assert(doc.get_document_count() == 1);
     yaml_document_tree::node node = doc.get_document_root(0);
+
+    assert(node.type() == yaml_node_t::map);
+    assert(node.child_count() == 2);
+
+    yaml_document_tree::node key = node.key(0);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "I am quoted: ~ ");
+
+    key = node.key(1);
+    assert(key.type() == yaml_node_t::string);
+    assert(key.string_value() == "list with quoted string values");
+
+    node = node.child(0);
+    assert(node.type() == yaml_node_t::string);
+    assert(node.string_value() == "Here is another quote.");
+    node = node.parent();
+
+    node = node.child(1);
+    assert(node.type() == yaml_node_t::sequence);
+    assert(node.child_count() == 4);
+
+    // list of strings.
+    const char* values[] = {
+        "1 2 3",
+        "null",
+        "true",
+        "false",
+    };
+
+    for (size_t i = 0; i < ORCUS_N_ELEMENTS(values); ++i)
+    {
+        node = node.child(i);
+        assert(node.type() == yaml_node_t::string);
+        assert(node.string_value() == values[i]);
+        node = node.parent();
+    }
 }
 
 int main()
