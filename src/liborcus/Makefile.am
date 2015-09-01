@@ -71,7 +71,9 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	xls_xml_namespace_types.cpp \
 	session_context.hpp \
 	session_context.cpp \
-	spreadsheet_types.cpp
+	spreadsheet_types.cpp \
+	string_helper.hpp \
+	string_helper.cpp
 
 if WITH_XLSX_FILTER
 
@@ -217,6 +219,7 @@ EXTRA_PROGRAMS += \
 
 orcus_odf_helper_test_SOURCES = \
 	odf_helper.cpp \
+	string_helper.cpp \
 	odf_helper_test.cpp
 
 orcus_odf_helper_test_LDADD = \
@@ -327,7 +330,8 @@ orcus_gnumeric_sheet_context_test_SOURCES = \
 	odf_namespace_types.cpp \
 	spreadsheet_interface.cpp \
 	mock_spreadsheet.hpp \
-	mock_spreadsheet.cpp
+	mock_spreadsheet.cpp \
+	string_helper.cpp
 
 orcus_gnumeric_sheet_context_test_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la \
@@ -340,7 +344,9 @@ TESTS += orcus-gnumeric-sheet-context-test
 # orcus-gnumeric-helper-test
 
 orcus_gnumeric_helper_test_SOURCES = \
-	gnumeric_helper_test.cpp
+	gnumeric_helper_test.cpp \
+	string_helper.hpp \
+	string_helper.cpp
 
 orcus_gnumeric_helper_test_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la \

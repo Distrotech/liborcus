@@ -6,6 +6,7 @@
  */
 
 #include "gnumeric_helper.hpp"
+#include "string_helper.hpp"
 
 #include <cstdlib>
 #include <vector>
@@ -16,32 +17,6 @@ namespace orcus {
 using ::orcus::spreadsheet::color_elem_t;
 
 namespace {
-
-std::vector<pstring> split_string(pstring str, char sep)
-{
-    std::vector<pstring> ret;
-
-    size_t len = 0;
-    const char* start = str.get();
-    for (size_t i = 0, n = str.size(); i < n; ++i)
-    {
-        if (str[i] == sep)
-        {
-            ret.push_back( pstring( start, len ) );
-
-            // if not at the end move the start string
-            if (i < n-1)
-                start = start + len + 1;
-
-            len = 0;
-        }
-        else
-            ++len;
-    }
-    ret.push_back( pstring( start, len ) );
-
-    return ret;
-}
 
 size_t parse_color_string(pstring str)
 {
@@ -57,7 +32,7 @@ size_t parse_color_string(pstring str)
 
 bool gnumeric_helper::parse_RGB_color_attribute(color_elem_t& red, color_elem_t& green, color_elem_t& blue, const pstring& attr)
 {
-    std::vector<pstring> color = split_string(attr, ':');
+    std::vector<pstring> color = string_helper::split_string(attr, ':');
 
     if (color.size() != 3)
         return false;

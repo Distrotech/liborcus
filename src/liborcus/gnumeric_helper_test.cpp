@@ -5,15 +5,17 @@
 
 namespace {
 
+/*
 void test_split_string()
 {
     orcus::pstring str("str1:str2:str3");
-    std::vector<orcus::pstring> res = orcus::split_string(str, ':');
+    std::vector<orcus::pstring> res = string_helper::split_string(str, ':');
     assert(res.size() == 3);
     assert(res[0] == "str1");
     assert(res[1] == "str2");
     assert(res[2] == "str3");
 }
+*/
 
 void test_parse_color_string()
 {
@@ -33,6 +35,5 @@ void test_parse_color_string()
 
 int main()
 {
-    test_split_string();
     test_parse_color_string();
 }
