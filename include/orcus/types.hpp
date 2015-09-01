@@ -65,10 +65,12 @@ enum class length_unit_t
 {
     unknown = 0,
     centimeter,
+    millimeter,
     xlsx_column_digit,
     inch,
     point,
-    twip
+    twip,
+    pixel
 
     // TODO: Add more.
 };

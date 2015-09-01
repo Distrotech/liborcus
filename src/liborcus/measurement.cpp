@@ -115,8 +115,12 @@ length_t to_length(const pstring& str)
         ret.unit = length_unit_t::inch;
     else if (tail == "cm")
         ret.unit = length_unit_t::centimeter;
+    else if (tail == "mm")
+        ret.unit = length_unit_t::millimeter;
     else if (tail == "pt")
         ret.unit = length_unit_t::point;
+    else if (tail == "px")
+        ret.unit = length_unit_t::pixel;
 
     return ret;
 }
