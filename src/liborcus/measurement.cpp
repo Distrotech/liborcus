@@ -10,6 +10,10 @@
 #include "orcus/exception.hpp"
 #include "orcus/parser_global.hpp"
 
+#include <mdds/sorted_string_map.hpp>
+#include <mdds/global.hpp>
+#include <orcus/global.hpp>
+
 #include <sstream>
 
 using namespace std;
@@ -98,6 +102,21 @@ bool to_bool(const pstring& s)
     return false;
 }
 
+namespace {
+
+typedef mdds::sorted_string_map<length_unit_t> length_map;
+
+length_map::entry length_map_entries[] =
+{
+    {MDDS_ASCII("cm"), length_unit_t::centimeter},
+    {MDDS_ASCII("in"), length_unit_t::inch},
+    {MDDS_ASCII("mm"), length_unit_t::millimeter},
+    {MDDS_ASCII("pt"), length_unit_t::point},
+    {MDDS_ASCII("px"), length_unit_t::pixel}
+};
+
+}
+
 length_t to_length(const pstring& str)
 {
     length_t ret;
@@ -109,18 +128,9 @@ length_t to_length(const pstring& str)
     const char* p_end = p_start + str.size();
     ret.value = parse_numeric(p, p_end-p);
 
-    // TODO: See if this part can be optimized.
+    static const length_map units(length_map_entries, ORCUS_N_ELEMENTS(length_map_entries), length_unit_t::unknown);
     pstring tail(p, p_end-p);
-    if (tail == "in")
-        ret.unit = length_unit_t::inch;
-    else if (tail == "cm")
-        ret.unit = length_unit_t::centimeter;
-    else if (tail == "mm")
-        ret.unit = length_unit_t::millimeter;
-    else if (tail == "pt")
-        ret.unit = length_unit_t::point;
-    else if (tail == "px")
-        ret.unit = length_unit_t::pixel;
+    ret.unit = units.find(tail.get(), tail.size());
 
     return ret;
 }
