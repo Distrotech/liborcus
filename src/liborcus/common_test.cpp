@@ -87,6 +87,9 @@ void test_measurement_conversion()
 
         { "12.345in", 12.345, 3, length_unit_t::inch },
         { "120.30001cm", 120.30001, 5, length_unit_t::centimeter },
+        { "3.12mm", 3.12, 2, length_unit_t::millimeter },
+        { "32.681pt", 32.681, 2, length_unit_t::point },
+        { "0.1234px", 0.1234, 4, length_unit_t::pixel },
     };
 
     for (size_t i = 0, n = sizeof(tests)/sizeof(tests[0]); i < n; ++i)
