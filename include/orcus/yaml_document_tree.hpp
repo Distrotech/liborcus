@@ -95,6 +95,8 @@ public:
     size_t get_document_count() const;
 
     node get_document_root(size_t index) const;
+
+    std::string dump_yaml() const;
 };
 
 }

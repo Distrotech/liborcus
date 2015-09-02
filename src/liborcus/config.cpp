@@ -18,6 +18,11 @@ json_config::json_config() :
 
 json_config::~json_config() {}
 
+yaml_config::yaml_config() :
+    output_format(output_format_type::none) {}
+
+yaml_config::~yaml_config() {}
+
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

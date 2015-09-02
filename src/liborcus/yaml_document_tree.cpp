@@ -539,6 +539,11 @@ yaml_document_tree::node yaml_document_tree::get_document_root(size_t index) con
     return node(mp_impl->m_docs[index].get());
 }
 
+std::string yaml_document_tree::dump_yaml() const
+{
+    return "foo";
+}
+
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
