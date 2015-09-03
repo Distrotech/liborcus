@@ -224,17 +224,7 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
 
                 size_t scope_width = get_scope() + 1 + n;
                 push_scope(scope_width);
-
-                if (*p == '"')
-                {
-                    pstring quoted_str = parse_quoted_string_value(p, p_end-p);
-                    if (p != p_end)
-                        throw yaml::parse_error("parse_line: unexpected trailing string segment after the quoted string.");
-
-                    m_handler.string(quoted_str.get(), quoted_str.size());
-                }
-                else
-                    parse_value(p, p_end-p);
+                parse_line(p, p_end-p);
             }
             break;
         }
