@@ -16,6 +16,7 @@
 #include <memory>
 #include <unordered_map>
 #include <sstream>
+#include <algorithm>
 
 #include <boost/current_function.hpp>
 
