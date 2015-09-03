@@ -15,6 +15,7 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include <sstream>
 
 #include <boost/current_function.hpp>
 
@@ -539,9 +540,159 @@ yaml_document_tree::node yaml_document_tree::get_document_root(size_t index) con
     return node(mp_impl->m_docs[index].get());
 }
 
+namespace {
+
+const char* indent = "    ";
+
+void dump_indent(std::ostringstream& os, size_t scope)
+{
+    for (size_t i = 0; i < scope; ++i)
+        os << indent;
+}
+
+void dump_yaml_map(std::ostringstream& os, const yaml_value& node, size_t scope);
+void dump_yaml_sequence(std::ostringstream& os, const yaml_value& node, size_t scope);
+
+void dump_yaml_node(std::ostringstream& os, const yaml_value& node, size_t scope)
+{
+    switch (node.type)
+    {
+        case yaml_node_t::map:
+            dump_yaml_map(os, node, scope);
+        break;
+        case yaml_node_t::sequence:
+            dump_yaml_sequence(os, node, scope);
+        break;
+        case yaml_node_t::boolean_true:
+            dump_indent(os, scope);
+            os << "true" << std::endl;
+        break;
+        case yaml_node_t::boolean_false:
+            dump_indent(os, scope);
+            os << "false" << std::endl;
+        break;
+        case yaml_node_t::null:
+            dump_indent(os, scope);
+            os << "~" << std::endl;
+        break;
+        case yaml_node_t::number:
+            dump_indent(os, scope);
+            os << static_cast<const yaml_value_number&>(node).value_number << std::endl;
+        break;
+        case yaml_node_t::string:
+            dump_indent(os, scope);
+            os << static_cast<const yaml_value_string&>(node).value_string << std::endl;
+        break;
+        case yaml_node_t::unset:
+        default:
+            ;
+    }
+}
+
+void dump_yaml_container_item(std::ostringstream& os, const yaml_value& node, size_t scope)
+{
+    switch (node.type)
+    {
+        case yaml_node_t::map:
+        case yaml_node_t::sequence:
+            // End the line and dump this child container in the next scope.
+            os << std::endl;
+            dump_yaml_node(os, node, scope+1);
+        break;
+        default:
+            // Dump inline.
+            os << " ";
+            dump_yaml_node(os, node, 0);
+    }
+}
+
+void dump_yaml_map(std::ostringstream& os, const yaml_value& node, size_t scope)
+{
+    const yaml_value_map& yvm = static_cast<const yaml_value_map&>(node);
+
+    std::for_each(yvm.key_order.begin(), yvm.key_order.end(),
+        [&](const std::unique_ptr<yaml_value>& pkey)
+        {
+            const yaml_value* key = pkey.get();
+
+            switch (key->type)
+            {
+                case yaml_node_t::map:
+                    // TODO
+                break;
+                case yaml_node_t::sequence:
+                    // TODO
+                break;
+                case yaml_node_t::boolean_true:
+                    dump_indent(os, scope);
+                    os << "true";
+                break;
+                case yaml_node_t::boolean_false:
+                    dump_indent(os, scope);
+                    os << "false";
+                break;
+                case yaml_node_t::null:
+                    dump_indent(os, scope);
+                    os << "~";
+                break;
+                case yaml_node_t::number:
+                    dump_indent(os, scope);
+                    os << static_cast<const yaml_value_number*>(key)->value_number;
+                break;
+                case yaml_node_t::string:
+                    dump_indent(os, scope);
+                    os << static_cast<const yaml_value_string*>(key)->value_string;
+                break;
+                case yaml_node_t::unset:
+                default:
+                    ;
+            }
+
+            os << ":";
+            auto it = yvm.value_map.find(key);
+            assert(it != yvm.value_map.end());
+            const yaml_value& value = *it->second;
+            dump_yaml_container_item(os, value, scope);
+        }
+    );
+}
+
+void dump_yaml_sequence(std::ostringstream& os, const yaml_value& node, size_t scope)
+{
+    const yaml_value_sequence& yvs = static_cast<const yaml_value_sequence&>(node);
+
+    std::for_each(yvs.value_sequence.begin(), yvs.value_sequence.end(),
+        [&](const std::unique_ptr<yaml_value>& p)
+        {
+            const yaml_value& child = *p;
+            dump_indent(os, scope);
+            os << "-";
+            dump_yaml_container_item(os, child, scope);
+        }
+    );
+}
+
+void dump_yaml_document(std::ostringstream& os, const yaml_value& root)
+{
+    os << "---" << std::endl;
+    dump_yaml_node(os, root, 0);
+}
+
+}
+
 std::string yaml_document_tree::dump_yaml() const
 {
-    return "foo";
+    std::ostringstream os;
+
+    std::for_each(
+        mp_impl->m_docs.begin(), mp_impl->m_docs.end(),
+        [&](const document_root_type& root)
+        {
+            dump_yaml_document(os, *root);
+        }
+    );
+
+    return os.str();
 }
 
 }
