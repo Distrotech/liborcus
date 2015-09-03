@@ -543,6 +543,9 @@ yaml_document_tree::node yaml_document_tree::get_document_root(size_t index) con
 namespace {
 
 const char* indent = "    ";
+const char* kw_true = "true";
+const char* kw_false = "false";
+const char* kw_null = "~";
 
 void dump_indent(std::ostringstream& os, size_t scope)
 {
@@ -565,15 +568,15 @@ void dump_yaml_node(std::ostringstream& os, const yaml_value& node, size_t scope
         break;
         case yaml_node_t::boolean_true:
             dump_indent(os, scope);
-            os << "true" << std::endl;
+            os << kw_true << std::endl;
         break;
         case yaml_node_t::boolean_false:
             dump_indent(os, scope);
-            os << "false" << std::endl;
+            os << kw_false << std::endl;
         break;
         case yaml_node_t::null:
             dump_indent(os, scope);
-            os << "~" << std::endl;
+            os << kw_null << std::endl;
         break;
         case yaml_node_t::number:
             dump_indent(os, scope);
@@ -625,15 +628,15 @@ void dump_yaml_map(std::ostringstream& os, const yaml_value& node, size_t scope)
                 break;
                 case yaml_node_t::boolean_true:
                     dump_indent(os, scope);
-                    os << "true";
+                    os << kw_true;
                 break;
                 case yaml_node_t::boolean_false:
                     dump_indent(os, scope);
-                    os << "false";
+                    os << kw_false;
                 break;
                 case yaml_node_t::null:
                     dump_indent(os, scope);
-                    os << "~";
+                    os << kw_null;
                 break;
                 case yaml_node_t::number:
                     dump_indent(os, scope);
