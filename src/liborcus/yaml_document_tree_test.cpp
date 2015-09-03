@@ -16,6 +16,20 @@
 using namespace orcus;
 using namespace std;
 
+bool string_expected(const yaml_document_tree::node& node, const char* expected)
+{
+    if (node.type() != yaml_node_t::string)
+        return false;
+    return node.string_value() == expected;
+}
+
+bool number_expected(const yaml_document_tree::node& node, double expected)
+{
+    if (node.type() != yaml_node_t::number)
+        return false;
+    return node.numeric_value() == expected;
+}
+
 void test_yaml_parse_basic1()
 {
     const char* filepath = SRCDIR"/test/yaml/basic1/input.yaml";
@@ -186,6 +200,48 @@ void test_yaml_parse_basic2()
     node = node.parent();
 }
 
+void test_yaml_parse_basic3()
+{
+    const char* filepath = SRCDIR"/test/yaml/basic3/input.yaml";
+    cout << filepath << endl;
+    string strm = load_file_content(filepath);
+    cout << strm << endl;
+    yaml_document_tree doc;
+    doc.load(strm);
+
+    assert(doc.get_document_count() == 1);
+    yaml_document_tree::node node = doc.get_document_root(0);
+
+    assert(node.type() == yaml_node_t::sequence);
+    assert(node.child_count() == 2);
+
+    node = node.child(0);
+    assert(node.type() == yaml_node_t::map);
+    assert(node.child_count() == 3);
+
+    assert(string_expected(node.key(0), "a"));
+    assert(string_expected(node.key(1), "b"));
+    assert(string_expected(node.key(2), "c"));
+
+    assert(number_expected(node.child(0), 1));
+    assert(number_expected(node.child(1), 2));
+    assert(number_expected(node.child(2), 3));
+
+    node = node.parent();
+
+    node = node.child(1);
+    assert(node.type() == yaml_node_t::map);
+    assert(node.child_count() == 3);
+
+    assert(string_expected(node.key(0), "d"));
+    assert(string_expected(node.key(1), "e"));
+    assert(string_expected(node.key(2), "f"));
+
+    assert(number_expected(node.child(0), 4));
+    assert(number_expected(node.child(1), 5));
+    assert(number_expected(node.child(2), 6));
+}
+
 void test_yaml_parse_null()
 {
     const char* filepath = SRCDIR"/test/yaml/null/input.yaml";
@@ -353,6 +409,7 @@ int main()
 {
     test_yaml_parse_basic1();
     test_yaml_parse_basic2();
+    test_yaml_parse_basic3();
     test_yaml_parse_null();
     test_yaml_parse_boolean();
     test_yaml_parse_quoted_string();
