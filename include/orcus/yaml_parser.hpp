@@ -204,8 +204,21 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
                 if (*p != '-')
                     yaml::parse_error::throw_with("parse_line: '-' expected but '", *p, "' found.");
 
+                ++p; // Skip the '-'.
                 set_doc_hash(p);
                 m_handler.begin_document();
+
+                if (p != p_end)
+                {
+                    // Skip all white spaces.
+                    for (++p; *p == ' '; ++p)
+                        ;
+
+                    // Whatever comes after '---' is equivalent of first node.
+                    assert(p != p_end);
+                    push_scope(0);
+                    parse_line(p, p_end-p);
+                }
             }
             break;
             case ' ':
