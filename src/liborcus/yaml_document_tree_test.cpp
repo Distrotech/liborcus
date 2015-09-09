@@ -405,6 +405,16 @@ void test_yaml_parse_quoted_string()
     }
 }
 
+void test_yaml_parse_multi_line_1()
+{
+    const char* filepath = SRCDIR"/test/yaml/multi-line-1/input.yaml";
+    cout << filepath << endl;
+    string strm = load_file_content(filepath);
+    cout << strm << endl;
+    yaml_document_tree doc;
+    doc.load(strm);
+}
+
 int main()
 {
     test_yaml_parse_basic1();
@@ -413,6 +423,7 @@ int main()
     test_yaml_parse_null();
     test_yaml_parse_boolean();
     test_yaml_parse_quoted_string();
+    test_yaml_parse_multi_line_1();
 
     return EXIT_SUCCESS;
 }
