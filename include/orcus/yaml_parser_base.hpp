@@ -29,7 +29,8 @@ enum class scope_t
 {
     unset,
     sequence,
-    map
+    map,
+    multi_line_string
 };
 
 enum class keyword_t
@@ -94,6 +95,16 @@ protected:
      * @return new scope width after the pop.
      */
     size_t pop_scope();
+
+    void push_line_back(const char* p, size_t n);
+
+    pstring pop_line_front();
+
+    bool has_line_buffer() const;
+
+    size_t get_line_buffer_count() const;
+
+    pstring merge_line_buffer();
 
     /**
      * Get the hash value of current document, or nullptr if a document has

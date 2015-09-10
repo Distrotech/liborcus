@@ -29,6 +29,7 @@ private:
     void check_or_begin_map();
     void check_or_begin_sequence();
     void parse_value(const char* p, size_t len);
+    void push_value(const char* p, size_t len);
     void parse_line(const char* p, size_t len);
     void parse_map_key(const char* p, size_t len);
 
@@ -99,8 +100,22 @@ size_t yaml_parser<_Handler>::end_scope()
         break;
         case yaml::scope_t::sequence:
             m_handler.end_sequence();
+        break;
+        case yaml::scope_t::multi_line_string:
+        {
+            pstring merged = merge_line_buffer();
+            m_handler.string(merged.get(), merged.size());
+        }
+        break;
         default:
-            ;
+        {
+            if (has_line_buffer())
+            {
+                assert(get_line_buffer_count() == 1);
+                pstring line = pop_line_front();
+                parse_value(line.get(), line.size());
+            }
+        }
     }
     return pop_scope();
 }
@@ -175,6 +190,15 @@ void yaml_parser<_Handler>::parse_value(const char* p, size_t len)
 
     // Failed to parse it as a number or a keyword.  It must be a string.
     m_handler.string(p0, len);
+}
+
+template<typename _Handler>
+void yaml_parser<_Handler>::push_value(const char* p, size_t len)
+{
+    if (has_line_buffer() && get_scope_type() == yaml::scope_t::unset)
+        set_scope_type(yaml::scope_t::multi_line_string);
+
+    push_line_back(p, len);
 }
 
 template<typename _Handler>
@@ -297,7 +321,7 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
         if (!has_key)
         {
             // No map key found.
-            parse_value(p0, len);
+            push_value(p0, len);
             return;
         }
 
@@ -342,7 +366,7 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
                 throw yaml::parse_error("parse_map_key: nested inline map key is not allowed.");
         }
 
-        parse_value(p0, n);
+        push_value(p0, n);
     }
 }
 

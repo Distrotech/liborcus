@@ -14,8 +14,9 @@
 
 #include <limits>
 #include <vector>
-#include <iostream>
+#include <deque>
 #include <sstream>
+#include <algorithm>
 
 namespace orcus { namespace yaml {
 
@@ -44,6 +45,7 @@ struct parser_base::impl
 {
     cell_buffer m_buffer;
     std::vector<scope> m_scopes;
+    std::deque<pstring> m_line_buffer;
     const char* m_document;
 
     impl() : m_document(nullptr) {}
@@ -148,6 +150,54 @@ size_t parser_base::pop_scope()
     assert(!mp_impl->m_scopes.empty());
     mp_impl->m_scopes.pop_back();
     return get_scope();
+}
+
+void parser_base::push_line_back(const char* p, size_t n)
+{
+    mp_impl->m_line_buffer.emplace_back(p, n);
+}
+
+pstring parser_base::pop_line_front()
+{
+    assert(!mp_impl->m_line_buffer.empty());
+
+    pstring ret = mp_impl->m_line_buffer.front();
+    mp_impl->m_line_buffer.pop_front();
+    return ret;
+}
+
+bool parser_base::has_line_buffer() const
+{
+    return !mp_impl->m_line_buffer.empty();
+}
+
+size_t parser_base::get_line_buffer_count() const
+{
+    return mp_impl->m_line_buffer.size();
+}
+
+pstring parser_base::merge_line_buffer()
+{
+    assert(!mp_impl->m_line_buffer.empty());
+
+    cell_buffer& buf = mp_impl->m_buffer;
+    buf.reset();
+
+    auto it = mp_impl->m_line_buffer.begin();
+    buf.append(it->get(), it->size());
+    ++it;
+
+    std::for_each(it, mp_impl->m_line_buffer.end(),
+        [&](const pstring& line)
+        {
+            buf.append(" ", 1);
+            buf.append(line.get(), line.size());
+        }
+    );
+
+    mp_impl->m_line_buffer.clear();
+
+    return pstring(buf.get(), buf.size());
 }
 
 const char* parser_base::get_doc_hash() const

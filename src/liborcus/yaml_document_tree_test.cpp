@@ -413,6 +413,11 @@ void test_yaml_parse_multi_line_1()
     cout << strm << endl;
     yaml_document_tree doc;
     doc.load(strm);
+
+    assert(doc.get_document_count() == 1);
+    yaml_document_tree::node node = doc.get_document_root(0);
+    assert(string_expected(node, "1 2 3"));
+    assert(node.child_count() == 0);
 }
 
 int main()
