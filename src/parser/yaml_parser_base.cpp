@@ -180,6 +180,8 @@ pstring parser_base::merge_line_buffer()
 {
     assert(!mp_impl->m_line_buffer.empty());
 
+    static char blank = ' ';
+
     cell_buffer& buf = mp_impl->m_buffer;
     buf.reset();
 
@@ -190,7 +192,7 @@ pstring parser_base::merge_line_buffer()
     std::for_each(it, mp_impl->m_line_buffer.end(),
         [&](const pstring& line)
         {
-            buf.append(" ", 1);
+            buf.append(&blank, 1);
             buf.append(line.get(), line.size());
         }
     );
