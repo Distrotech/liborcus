@@ -56,6 +56,20 @@ void yaml_parser<_Handler>::parse()
             continue;
 
         size_t cur_scope = get_scope();
+
+        if (has_line_buffer() && indent >= cur_scope)
+        {
+            // This line is part of multi-line string.  Push the line to the
+            // buffer as-is.
+            if (get_scope_type() != yaml::scope_t::multi_line_string)
+                set_scope_type(yaml::scope_t::multi_line_string);
+
+            pstring line = parse_to_end_of_line();
+            assert(!line.empty());
+            push_line_back(line.get(), line.size());
+            continue;
+        }
+
         if (cur_scope == scope_empty || indent > cur_scope)
         {
             push_scope(indent);

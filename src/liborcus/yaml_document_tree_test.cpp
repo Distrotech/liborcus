@@ -420,6 +420,21 @@ void test_yaml_parse_multi_line_1()
     assert(node.child_count() == 0);
 }
 
+void test_yaml_parse_multi_line_2()
+{
+    const char* filepath = SRCDIR"/test/yaml/multi-line-2/input.yaml";
+    cout << filepath << endl;
+    string strm = load_file_content(filepath);
+    cout << strm << endl;
+    yaml_document_tree doc;
+    doc.load(strm);
+
+    assert(doc.get_document_count() == 1);
+    yaml_document_tree::node node = doc.get_document_root(0);
+    assert(string_expected(node, "1 - 2 - 3"));
+    assert(node.child_count() == 0);
+}
+
 int main()
 {
     test_yaml_parse_basic1();
@@ -429,6 +444,7 @@ int main()
     test_yaml_parse_boolean();
     test_yaml_parse_quoted_string();
     test_yaml_parse_multi_line_1();
+    test_yaml_parse_multi_line_2();
 
     return EXIT_SUCCESS;
 }

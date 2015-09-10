@@ -1,0 +1,6 @@
+# Once a multi-line string starts, everything becomes part of it.
+# This document has only one root value that has a string value of "1 - 2 - 3".
+---
+1
+- 2
+- 3
