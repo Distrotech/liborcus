@@ -371,18 +371,9 @@ void test_yaml_parse_quoted_string()
     assert(node.type() == yaml_node_t::map);
     assert(node.child_count() == 2);
 
-    yaml_document_tree::node key = node.key(0);
-    assert(key.type() == yaml_node_t::string);
-    assert(key.string_value() == "I am quoted: ~ ");
-
-    key = node.key(1);
-    assert(key.type() == yaml_node_t::string);
-    assert(key.string_value() == "list with quoted string values");
-
-    node = node.child(0);
-    assert(node.type() == yaml_node_t::string);
-    assert(node.string_value() == "Here is another quote.");
-    node = node.parent();
+    assert(string_expected(node.key(0), "I am quoted: ~ "));
+    assert(string_expected(node.key(1), "list with quoted string values"));
+    assert(string_expected(node.child(0), "Here is another quote."));
 
     node = node.child(1);
     assert(node.type() == yaml_node_t::sequence);
@@ -397,12 +388,7 @@ void test_yaml_parse_quoted_string()
     };
 
     for (size_t i = 0; i < ORCUS_N_ELEMENTS(values); ++i)
-    {
-        node = node.child(i);
-        assert(node.type() == yaml_node_t::string);
-        assert(node.string_value() == values[i]);
-        node = node.parent();
-    }
+        assert(string_expected(node.child(i), values[i]));
 }
 
 void test_yaml_parse_multi_line_1()
