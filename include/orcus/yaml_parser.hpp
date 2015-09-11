@@ -209,6 +209,8 @@ void yaml_parser<_Handler>::parse_value(const char* p, size_t len)
 template<typename _Handler>
 void yaml_parser<_Handler>::push_value(const char* p, size_t len)
 {
+    check_or_begin_document();
+
     if (has_line_buffer() && get_scope_type() == yaml::scope_t::unset)
         set_scope_type(yaml::scope_t::multi_line_string);
 
