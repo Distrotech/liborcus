@@ -1,0 +1,10 @@
+# Multi-line string where line breaks need to be preserved.
+
+# When the line begins with '|', the next line needs to be indented, and all
+# the other lines thereafter need to have indent level greater than that of
+# the first line.
+--- |
+ line 1
+ line 2
+ line 3
+
