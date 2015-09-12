@@ -5,4 +5,10 @@ list with quoted string values  :
   - "null"
   - "true"
   - "false"
-
+'single quoted string values' :
+  - '8.8.8.8'
+  - '''single quote inside'''
+  - 'prefix ''quoted'' suffix'
+  - '"double quote"'
+  - 'before "quote" after'
+  - 'http://www.google.com'

@@ -21,7 +21,11 @@ bool string_expected(const yaml_document_tree::node& node, const char* expected)
     if (node.type() != yaml_node_t::string)
         return false;
 
-    return node.string_value() == expected;
+    if (node.string_value() == expected)
+        return true;
+
+    cerr << "expected='" << expected << "', actual='" << node.string_value() << "'" << endl;
+    return false;
 }
 
 bool number_expected(const yaml_document_tree::node& node, double expected)
@@ -370,26 +374,49 @@ void test_yaml_parse_quoted_string()
     yaml_document_tree::node node = doc.get_document_root(0);
 
     assert(node.type() == yaml_node_t::map);
-    assert(node.child_count() == 2);
+    assert(node.child_count() == 3);
 
     assert(string_expected(node.key(0), "I am quoted: ~ "));
     assert(string_expected(node.key(1), "list with quoted string values"));
+    assert(string_expected(node.key(2), "list with quoted string values"));
+    assert(string_expected(node.key(3), "single quoted string values"));
     assert(string_expected(node.child(0), "Here is another quote."));
 
     node = node.child(1);
     assert(node.type() == yaml_node_t::sequence);
     assert(node.child_count() == 4);
 
-    // list of strings.
-    const char* values[] = {
-        "1 2 3",
-        "null",
-        "true",
-        "false",
-    };
+    {
+        // list of strings.
+        const char* values[] = {
+            "1 2 3",
+            "null",
+            "true",
+            "false",
+        };
 
-    for (size_t i = 0; i < ORCUS_N_ELEMENTS(values); ++i)
-        assert(string_expected(node.child(i), values[i]));
+        for (size_t i = 0; i < ORCUS_N_ELEMENTS(values); ++i)
+            assert(string_expected(node.child(i), values[i]));
+    }
+
+    node = node.parent().child(2);
+    assert(node.type() == yaml_node_t::sequence);
+    assert(node.child_count() == 6);
+
+    {
+        // list of strings.
+        const char* values[] = {
+            "8.8.8.8",
+            "'single quote inside'",
+            "prefix 'quoted' suffix",
+            "\"double quote\"",
+            "before \"quote\" after",
+            "http://www.google.com"
+        };
+
+        for (size_t i = 0; i < ORCUS_N_ELEMENTS(values); ++i)
+            assert(string_expected(node.child(i), values[i]));
+    }
 }
 
 void test_yaml_parse_multi_line_1()
