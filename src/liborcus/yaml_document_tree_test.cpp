@@ -438,6 +438,27 @@ void test_yaml_parse_literal_block_1()
     assert(node.child_count() == 0);
 }
 
+void test_yaml_parse_literal_block_2()
+{
+    const char* filepath = SRCDIR"/test/yaml/literal-block-2/input.yaml";
+    cout << filepath << endl;
+    string strm = load_file_content(filepath);
+    cout << strm << endl;
+    yaml_document_tree doc;
+    doc.load(strm);
+
+    assert(doc.get_document_count() == 1);
+    yaml_document_tree::node node = doc.get_document_root(0);
+
+    assert(node.type() == yaml_node_t::map);
+    assert(node.child_count() == 2);
+
+    assert(string_expected(node.key(0),   "literal block"));
+    assert(string_expected(node.child(0), "line 1\n line 2\n  line 3"));
+    assert(string_expected(node.key(1),   "multi line"));
+    assert(string_expected(node.child(1), "line 1 line 2 line 3"));
+}
+
 int main()
 {
     test_yaml_parse_basic1();
@@ -449,8 +470,10 @@ int main()
     test_yaml_parse_multi_line_1();
     test_yaml_parse_multi_line_2();
     test_yaml_parse_literal_block_1();
+    test_yaml_parse_literal_block_2();
 
     return EXIT_SUCCESS;
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
+

@@ -57,47 +57,46 @@ void yaml_parser<_Handler>::parse()
 
         size_t cur_scope = get_scope();
 
-        if (in_literal_block())
+        if (cur_scope <= indent)
         {
-            if (!has_line_buffer())
+            if (in_literal_block())
             {
-                // Start a new multi-line string scope.
+                if (!has_line_buffer())
+                {
+                    // Start a new multi-line string scope.
 
-                if (indent <= cur_scope)
-                    throw yaml::parse_error("parse: first line of a literal block must be indented.");
+                    if (indent == cur_scope)
+                        throw yaml::parse_error("parse: first line of a literal block must be indented.");
 
-                push_scope(indent);
-                set_scope_type(yaml::scope_t::multi_line_string);
+                    push_scope(indent);
+                    set_scope_type(yaml::scope_t::multi_line_string);
+                }
+                else
+                {
+                    // The current scope is already a multi-line scope.
+                    assert(get_scope_type() == yaml::scope_t::multi_line_string);
+                    size_t leading_indent = indent - cur_scope;
+                    prev(leading_indent);
+                }
+
+                pstring line = parse_to_end_of_line();
+                push_line_back(line.get(), line.size());
+                continue;
             }
-            else
+
+            if (has_line_buffer())
             {
-                if (indent < cur_scope)
-                    throw yaml::parse_error(
-                        "parse: line within a literal block should have an indent level equal to or greater than that of the first line.");
+                // This line is part of multi-line string.  Push the line to the
+                // buffer as-is.
+                if (get_scope_type() != yaml::scope_t::multi_line_string)
+                    set_scope_type(yaml::scope_t::multi_line_string);
 
-                // The current scope is already a multi-line scope.
-                assert(get_scope_type() == yaml::scope_t::multi_line_string);
-                size_t leading_indent = indent - cur_scope;
-                prev(leading_indent);
+                pstring line = parse_to_end_of_line();
+                line = line.trim();
+                assert(!line.empty());
+                push_line_back(line.get(), line.size());
+                continue;
             }
-
-            pstring line = parse_to_end_of_line();
-            push_line_back(line.get(), line.size());
-            continue;
-        }
-
-        if (has_line_buffer() && indent >= cur_scope)
-        {
-            // This line is part of multi-line string.  Push the line to the
-            // buffer as-is.
-            if (get_scope_type() != yaml::scope_t::multi_line_string)
-                set_scope_type(yaml::scope_t::multi_line_string);
-
-            pstring line = parse_to_end_of_line();
-            line = line.trim();
-            assert(!line.empty());
-            push_line_back(line.get(), line.size());
-            continue;
         }
 
         if (cur_scope == scope_empty || indent > cur_scope)
@@ -395,6 +394,12 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
     for (; *p == ' '; ++p, ++n)
         ;
 
+    if (*p == '|')
+    {
+        start_literal_block();
+        return;
+    }
+
     size_t scope_width = get_scope() + 1 + n;
     push_scope(scope_width);
 
@@ -413,7 +418,7 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
     else
     {
         n = 0;
-        const char* p0 = p;
+        const char* p0 = p; // store the original position.
         for (; p != p_end; ++p, ++n)
         {
             if (*p == ':')

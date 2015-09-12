@@ -1,0 +1,9 @@
+---
+literal block: |  # line breaks and white spaces are preserved.
+   line 1
+    line 2
+     line 3
+multi line:  # the lines are merged into "line 1 line 2 line 3"
+   line 1
+    line 2
+     line 3
