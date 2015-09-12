@@ -302,7 +302,7 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
 
     if (*p == '"')
     {
-        pstring quoted_str = parse_quoted_string_value(p, len);
+        pstring quoted_str = parse_double_quoted_string_value(p, len);
 
         if (p == p_end)
         {
@@ -384,7 +384,7 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
 
     if (*p == '"')
     {
-        pstring quoted_str = parse_quoted_string_value(p, p_end-p);
+        pstring quoted_str = parse_double_quoted_string_value(p, p_end-p);
         if (p != p_end)
             throw yaml::parse_error("parse_map_key: unexpected trailing string segment after the quoted string.");
 

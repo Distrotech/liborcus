@@ -257,7 +257,7 @@ keyword_t parser_base::parse_keyword(const char* p, size_t len)
     return value;
 }
 
-pstring parser_base::parse_quoted_string_value(const char*& p, size_t max_length)
+pstring parser_base::parse_double_quoted_string_value(const char*& p, size_t max_length)
 {
     parse_quoted_string_state ret =
         parse_double_quoted_string(p, max_length, mp_impl->m_buffer);
@@ -265,7 +265,7 @@ pstring parser_base::parse_quoted_string_value(const char*& p, size_t max_length
     if (!ret.str)
     {
         std::ostringstream os;
-        os << "parse_quoted_string_value: failed to parse ";
+        os << "parse_double_quoted_string_value: failed to parse ";
         switch (ret.length)
         {
             case parse_quoted_string_state::error_illegal_escape_char:
