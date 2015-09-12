@@ -252,7 +252,7 @@ parse_quoted_string_state parse_string_with_escaped_char(
 
 }
 
-parse_quoted_string_state parse_quoted_string(
+parse_quoted_string_state parse_double_quoted_string(
     const char*& p, size_t max_length, cell_buffer& buffer)
 {
     assert(*p == '"');

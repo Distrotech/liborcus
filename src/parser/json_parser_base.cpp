@@ -90,7 +90,7 @@ parse_quoted_string_state parser_base::parse_string()
     assert(cur_char() == '"');
     size_t max_length = remaining_size();
     const char* p = mp_char;
-    parse_quoted_string_state ret = parse_quoted_string(p, max_length, mp_impl->m_buffer);
+    parse_quoted_string_state ret = parse_double_quoted_string(p, max_length, mp_impl->m_buffer);
     m_pos += p - mp_char;
     mp_char = p;
 

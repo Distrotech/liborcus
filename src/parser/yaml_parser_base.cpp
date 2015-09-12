@@ -260,7 +260,7 @@ keyword_t parser_base::parse_keyword(const char* p, size_t len)
 pstring parser_base::parse_quoted_string_value(const char*& p, size_t max_length)
 {
     parse_quoted_string_state ret =
-        parse_quoted_string(p, max_length, mp_impl->m_buffer);
+        parse_double_quoted_string(p, max_length, mp_impl->m_buffer);
 
     if (!ret.str)
     {

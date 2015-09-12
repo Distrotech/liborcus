@@ -61,7 +61,7 @@ ORCUS_PSR_DLLPUBLIC double parse_numeric(const char*& p, size_t max_length);
 
 ORCUS_PSR_DLLPUBLIC long parse_integer(const char*& p, size_t max_length);
 
-ORCUS_PSR_DLLPUBLIC parse_quoted_string_state parse_quoted_string(
+ORCUS_PSR_DLLPUBLIC parse_quoted_string_state parse_double_quoted_string(
     const char*& p, size_t max_length, cell_buffer& buffer);
 
 /**
