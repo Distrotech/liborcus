@@ -64,7 +64,7 @@ void yaml_parser<_Handler>::parse()
                 // Start a new multi-line string scope.
 
                 if (indent <= cur_scope)
-                    throw yaml::parse_error("parse: wrong indent for multi-line string.");
+                    throw yaml::parse_error("parse: first line of a literal block must be indented.");
 
                 push_scope(indent);
                 set_scope_type(yaml::scope_t::multi_line_string);
@@ -72,7 +72,8 @@ void yaml_parser<_Handler>::parse()
             else
             {
                 if (indent < cur_scope)
-                    throw yaml::parse_error("parse: wrong indent for multi-line string.");
+                    throw yaml::parse_error(
+                        "parse: line within a literal block should have an indent level equal to or greater than that of the first line.");
 
                 // The current scope is already a multi-line scope.
                 assert(get_scope_type() == yaml::scope_t::multi_line_string);
