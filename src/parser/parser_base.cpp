@@ -11,6 +11,7 @@
 #include <sstream>
 #include <cstring>
 #include <limits>
+#include <cassert>
 
 namespace orcus {
 
@@ -54,6 +55,13 @@ void parser_base::next()
 {
     ++m_pos;
     ++mp_char;
+}
+
+void parser_base::prev(size_t dec)
+{
+    assert(m_pos > dec);
+    m_pos -= dec;
+    mp_char -= dec;
 }
 
 char parser_base::cur_char() const

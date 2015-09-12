@@ -48,7 +48,9 @@ struct parser_base::impl
     std::deque<pstring> m_line_buffer;
     const char* m_document;
 
-    impl() : m_document(nullptr) {}
+    bool m_in_literal_block;
+
+    impl() : m_document(nullptr), m_in_literal_block(false) {}
 };
 
 const size_t parser_base::parse_indent_blank_line    = std::numeric_limits<size_t>::max();
@@ -85,7 +87,6 @@ size_t parser_base::parse_indent()
 
 pstring parser_base::parse_to_end_of_line()
 {
-    assert(cur_char() != ' ');
     const char* p = mp_char;
     size_t len = 0;
     for (; has_char(); next(), ++len)
@@ -105,7 +106,6 @@ pstring parser_base::parse_to_end_of_line()
     }
 
     pstring ret(p, len);
-    ret = ret.trim();
     return ret;
 }
 
@@ -180,7 +180,7 @@ pstring parser_base::merge_line_buffer()
 {
     assert(!mp_impl->m_line_buffer.empty());
 
-    static char blank = ' ';
+    char sep = mp_impl->m_in_literal_block ? '\n' : ' ';
 
     cell_buffer& buf = mp_impl->m_buffer;
     buf.reset();
@@ -192,12 +192,13 @@ pstring parser_base::merge_line_buffer()
     std::for_each(it, mp_impl->m_line_buffer.end(),
         [&](const pstring& line)
         {
-            buf.append(&blank, 1);
+            buf.append(&sep, 1);
             buf.append(line.get(), line.size());
         }
     );
 
     mp_impl->m_line_buffer.clear();
+    mp_impl->m_in_literal_block = false;
 
     return pstring(buf.get(), buf.size());
 }
@@ -281,6 +282,16 @@ pstring parser_base::parse_quoted_string_value(const char*& p, size_t max_length
     }
 
     return pstring(ret.str, ret.length);
+}
+
+void parser_base::start_literal_block()
+{
+    mp_impl->m_in_literal_block = true;
+}
+
+bool parser_base::in_literal_block() const
+{
+    return mp_impl->m_in_literal_block;
 }
 
 }}

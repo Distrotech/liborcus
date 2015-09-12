@@ -57,6 +57,34 @@ void yaml_parser<_Handler>::parse()
 
         size_t cur_scope = get_scope();
 
+        if (in_literal_block())
+        {
+            if (!has_line_buffer())
+            {
+                // Start a new multi-line string scope.
+
+                if (indent <= cur_scope)
+                    throw yaml::parse_error("parse: wrong indent for multi-line string.");
+
+                push_scope(indent);
+                set_scope_type(yaml::scope_t::multi_line_string);
+            }
+            else
+            {
+                if (indent < cur_scope)
+                    throw yaml::parse_error("parse: wrong indent for multi-line string.");
+
+                // The current scope is already a multi-line scope.
+                assert(get_scope_type() == yaml::scope_t::multi_line_string);
+                size_t leading_indent = indent - cur_scope;
+                prev(leading_indent);
+            }
+
+            pstring line = parse_to_end_of_line();
+            push_line_back(line.get(), line.size());
+            continue;
+        }
+
         if (has_line_buffer() && indent >= cur_scope)
         {
             // This line is part of multi-line string.  Push the line to the
@@ -65,6 +93,7 @@ void yaml_parser<_Handler>::parse()
                 set_scope_type(yaml::scope_t::multi_line_string);
 
             pstring line = parse_to_end_of_line();
+            line = line.trim();
             assert(!line.empty());
             push_line_back(line.get(), line.size());
             continue;
@@ -88,6 +117,7 @@ void yaml_parser<_Handler>::parse()
 
         // Parse the rest of the line.
         pstring line = parse_to_end_of_line();
+        line = line.trim();
 
         assert(!line.empty());
         parse_line(line.get(), line.size());
@@ -337,7 +367,14 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
         if (!has_key)
         {
             // No map key found.
-            push_value(p0, len);
+            p = p0;
+            if (*p == '|')
+            {
+                start_literal_block();
+                return;
+            }
+
+            push_value(p, len);
             return;
         }
 

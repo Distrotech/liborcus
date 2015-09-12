@@ -39,6 +39,7 @@ protected:
     bool has_next() const { return m_pos + 1 < m_length; }
 
     void next();
+    void prev(size_t dec=1);
     char cur_char() const;
     char next_char() const;
 

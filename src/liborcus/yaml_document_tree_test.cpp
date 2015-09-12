@@ -20,6 +20,7 @@ bool string_expected(const yaml_document_tree::node& node, const char* expected)
 {
     if (node.type() != yaml_node_t::string)
         return false;
+
     return node.string_value() == expected;
 }
 
@@ -432,6 +433,9 @@ void test_yaml_parse_multi_line_3()
 
     assert(doc.get_document_count() == 1);
     yaml_document_tree::node node = doc.get_document_root(0);
+
+    assert(string_expected(node, "line 1\n  line 2\nline 3\n2 blanks follow  "));
+    assert(node.child_count() == 0);
 }
 
 int main()
