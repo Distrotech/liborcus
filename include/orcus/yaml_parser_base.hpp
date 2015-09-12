@@ -87,6 +87,7 @@ protected:
     void push_scope(size_t scope_width);
 
     scope_t get_scope_type() const;
+
     void set_scope_type(scope_t type);
 
     /**
@@ -128,7 +129,12 @@ protected:
     pstring parse_quoted_string_value(const char*& p, size_t max_length);
 
     void start_literal_block();
+
     bool in_literal_block() const;
+
+    void handle_line_in_literal(size_t indent);
+
+    void handle_line_in_multi_line_string();
 };
 
 }}
