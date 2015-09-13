@@ -56,6 +56,12 @@ protected:
 
     static const size_t scope_empty;
 
+    struct key_value
+    {
+        pstring key;
+        pstring value;
+    };
+
     parser_base() = delete;
     parser_base(const parser_base&) = delete;
     parser_base& operator=(const parser_base&) = delete;
@@ -126,9 +132,13 @@ protected:
 
     keyword_t parse_keyword(const char* p, size_t len);
 
+    key_value parse_key_value(const char* p, size_t len);
+
     pstring parse_single_quoted_string_value(const char*& p, size_t max_length);
 
     pstring parse_double_quoted_string_value(const char*& p, size_t max_length);
+
+    void skip_blanks(const char*& p, size_t len);
 
     void start_literal_block();
 

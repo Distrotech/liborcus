@@ -491,6 +491,34 @@ void test_yaml_parse_literal_block_2()
     assert(string_expected(node.child(1), "line 1 line 2 line 3"));
 }
 
+void test_yaml_parse_url()
+{
+    const char* filepath = SRCDIR"/test/yaml/url/input.yaml";
+    cout << filepath << endl;
+    string strm = load_file_content(filepath);
+    cout << strm << endl;
+    yaml_document_tree doc;
+    doc.load(strm);
+
+    assert(doc.get_document_count() == 1);
+    yaml_document_tree::node node = doc.get_document_root(0);
+
+    assert(node.type() == yaml_node_t::sequence);
+    assert(node.child_count() == 3);
+
+    assert(string_expected(node.child(0), "http://www.google.com/"));
+    assert(string_expected(node.child(1), "mailto:joe@joe-me.com"));
+
+    node = node.child(2);
+    assert(node.type() == yaml_node_t::map);
+    assert(node.child_count() == 2);
+
+    assert(string_expected(node.key(0), "orcus-url"));
+    assert(string_expected(node.key(1), "debian-bugs"));
+    assert(string_expected(node.child(0), "http://gitlab.com/orcus/orcus"));
+    assert(string_expected(node.child(1), "mailto:submit@bugs.debian.org"));
+}
+
 int main()
 {
     test_yaml_parse_basic1();
@@ -503,6 +531,7 @@ int main()
     test_yaml_parse_multi_line_2();
     test_yaml_parse_literal_block_1();
     test_yaml_parse_literal_block_2();
+    test_yaml_parse_url();
 
     return EXIT_SUCCESS;
 }

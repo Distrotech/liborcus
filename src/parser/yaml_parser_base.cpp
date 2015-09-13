@@ -276,6 +276,60 @@ keyword_t parser_base::parse_keyword(const char* p, size_t len)
     return value;
 }
 
+parser_base::key_value parser_base::parse_key_value(const char* p, size_t len)
+{
+    assert(*p != ' ');
+    assert(len);
+
+    const char* p_end = p + len;
+
+    key_value kv;
+
+    char last = 0;
+    bool in_key = true;
+
+    const char* p_head = p;
+
+    for (; p != p_end; ++p)
+    {
+        if (*p == ' ')
+        {
+            if (in_key)
+            {
+                if (last == ':')
+                {
+                    // Key found.
+                    kv.key = pstring(p_head, p-p_head-1).trim();
+                    in_key = false;
+                    p_head = nullptr;
+                }
+            }
+        }
+        else
+        {
+            if (!p_head)
+                p_head = p;
+        }
+
+        last = *p;
+    }
+
+    assert(p_head);
+
+    if (in_key && last == ':')
+    {
+        // Line only contains a key and ends with ':'.
+        kv.key = pstring(p_head, p-p_head-1).trim();
+    }
+    else
+    {
+        // Key has already been found and the value comes after the ':'.
+        kv.value = pstring(p_head, p-p_head);
+    }
+
+    return kv;
+}
+
 pstring parser_base::parse_single_quoted_string_value(const char*& p, size_t max_length)
 {
     parse_quoted_string_state ret =
@@ -296,6 +350,13 @@ pstring parser_base::parse_double_quoted_string_value(const char*& p, size_t max
         throw_quoted_string_parse_error("parse_double_quoted_string_value", ret);
 
     return pstring(ret.str, ret.length);
+}
+
+void parser_base::skip_blanks(const char*& p, size_t len)
+{
+    const char* p_end = p + len;
+    for (; p != p_end && *p == ' '; ++p)
+        ;
 }
 
 void parser_base::start_literal_block()

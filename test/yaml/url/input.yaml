@@ -1,0 +1,7 @@
+---
+- http://www.google.com/
+- mailto:joe@joe-me.com
+- orcus-url:
+    http://gitlab.com/orcus/orcus
+  debian-bugs: mailto:submit@bugs.debian.org
+

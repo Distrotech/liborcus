@@ -226,6 +226,7 @@ template<typename _Handler>
 void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
 {
     const char* p_end = p + len;
+    const char* p0 = p; // Save the original head position.
 
     if (*p == '-')
     {
@@ -255,9 +256,7 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
 
                 if (p != p_end)
                 {
-                    // Skip all white spaces.
-                    for (++p; *p == ' '; ++p)
-                        ;
+                    skip_blanks(p, p_end-p);
 
                     // Whatever comes after '---' is equivalent of first node.
                     assert(p != p_end);
@@ -275,12 +274,9 @@ void yaml_parser<_Handler>::parse_line(const char* p, size_t len)
                 if (p == p_end)
                     throw yaml::parse_error("parse_line: list item expected, but the line ended prematurely.");
 
-                // Skip all white spaces.
-                size_t n = 1;
-                for (; *p == ' '; ++p, ++n)
-                    ;
+                skip_blanks(p, p_end-p);
 
-                size_t scope_width = get_scope() + 1 + n;
+                size_t scope_width = get_scope() + (p-p0);
                 push_scope(scope_width);
                 parse_line(p, p_end-p);
             }
@@ -298,7 +294,7 @@ template<typename _Handler>
 void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
 {
     const char* p_end = p + len;
-    size_t n = 0;
+    const char* p0 = p; // Save the original head position.
 
     switch (*p)
     {
@@ -312,9 +308,7 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
                 return;
             }
 
-            // Skip all white spaces.
-            for (; p != p_end && *p == ' '; ++p)
-                ;
+            skip_blanks(p, p_end-p);
 
             if (*p != ':')
                 throw yaml::parse_error("parse_map_key: ':' is expected after the quoted string key.");
@@ -323,6 +317,13 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
             m_handler.begin_map_key();
             m_handler.string(quoted_str.get(), quoted_str.size());
             m_handler.end_map_key();
+
+            ++p;  // skip the ':'.
+            if (p == p_end)
+                return;
+
+            // Skip all white spaces.
+            skip_blanks(p, p_end-p);
         }
         break;
         case '\'':
@@ -335,9 +336,7 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
                 return;
             }
 
-            // Skip all white spaces.
-            for (; p != p_end && *p == ' '; ++p)
-                ;
+            skip_blanks(p, p_end-p);
 
             if (*p != ':')
                 throw yaml::parse_error("parse_map_key: ':' is expected after the quoted string key.");
@@ -346,29 +345,21 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
             m_handler.begin_map_key();
             m_handler.string(quoted_str.get(), quoted_str.size());
             m_handler.end_map_key();
+
+            ++p;  // skip the ':'.
+            if (p == p_end)
+                return;
+
+            skip_blanks(p, p_end-p);
         }
         break;
         default:
         {
-            const char* p0 = p;  // Save the original head position.
-            bool has_key = false;
-            const char* p_last_non_blank = nullptr;
-            for (; p != p_end; ++p)
-            {
-                if (*p == ':')
-                {
-                    has_key = true;
-                    break;
-                }
+            key_value kv = parse_key_value(p, p_end-p);
 
-                if (*p != ' ')
-                    p_last_non_blank = p;
-            }
-
-            if (!has_key)
+            if (kv.key.empty())
             {
                 // No map key found.
-                p = p0;
                 if (*p == '|')
                 {
                     start_literal_block();
@@ -381,20 +372,15 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
 
             check_or_begin_map();
             m_handler.begin_map_key();
-            n = p_last_non_blank - p0 + 1;
-            parse_value(p0, n);
+            parse_value(kv.key.get(), kv.key.size());
             m_handler.end_map_key();
+
+            if (kv.value.empty())
+                return;
+
+            p = kv.value.get();
         }
     }
-
-    ++p;  // skip the ':'.
-    if (p == p_end)
-        return;
-
-    // Skip all white spaces.
-    n = 1;
-    for (; *p == ' '; ++p, ++n)
-        ;
 
     if (*p == '|')
     {
@@ -406,7 +392,7 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
     if (*p == '-')
         throw yaml::parse_error("parse_map_key: sequence entry is not allowed as an inline map item.");
 
-    size_t scope_width = get_scope() + 1 + n;
+    size_t scope_width = get_scope() + (p-p0);
     push_scope(scope_width);
     parse_line(p, p_end-p);
 }
