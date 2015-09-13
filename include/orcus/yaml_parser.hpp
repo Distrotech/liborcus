@@ -402,33 +402,13 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
         return;
     }
 
-    size_t scope_width = get_scope() + 1 + n;
-    push_scope(scope_width);
-
     // inline map item.
     if (*p == '-')
         throw yaml::parse_error("parse_map_key: sequence entry is not allowed as an inline map item.");
 
-    if (*p == '"')
-    {
-        pstring quoted_str = parse_double_quoted_string_value(p, p_end-p);
-        if (p != p_end)
-            throw yaml::parse_error("parse_map_key: unexpected trailing string segment after the quoted string.");
-
-        m_handler.string(quoted_str.get(), quoted_str.size());
-    }
-    else
-    {
-        n = 0;
-        const char* p0 = p; // store the original position.
-        for (; p != p_end; ++p, ++n)
-        {
-            if (*p == ':')
-                throw yaml::parse_error("parse_map_key: nested inline map key is not allowed.");
-        }
-
-        push_value(p0, n);
-    }
+    size_t scope_width = get_scope() + 1 + n;
+    push_scope(scope_width);
+    parse_line(p, p_end-p);
 }
 
 }
