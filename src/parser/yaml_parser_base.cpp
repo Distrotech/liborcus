@@ -244,6 +244,25 @@ mdds::sorted_string_map<keyword_t>::entry keyword_entries[] = {
     { ORCUS_ASCII("~"),     keyword_t::null          },
 };
 
+void throw_quoted_string_parse_error(const char* func_name, const parse_quoted_string_state& ret)
+{
+    std::ostringstream os;
+    os << func_name << ": failed to parse ";
+    switch (ret.length)
+    {
+        case parse_quoted_string_state::error_illegal_escape_char:
+            os << "due to the presence of illegal escape character.";
+        break;
+        case parse_quoted_string_state::error_no_closing_quote:
+            os << "because the closing quote was not found.";
+        break;
+        default:
+            os << "due to unknown reason.";
+
+    }
+    throw parse_error(os.str());
+}
+
 }
 
 keyword_t parser_base::parse_keyword(const char* p, size_t len)
@@ -263,23 +282,7 @@ pstring parser_base::parse_single_quoted_string_value(const char*& p, size_t max
         parse_single_quoted_string(p, max_length, mp_impl->m_buffer);
 
     if (!ret.str)
-    {
-        std::ostringstream os;
-        os << "parse_single_quoted_string_value: failed to parse ";
-        switch (ret.length)
-        {
-            case parse_quoted_string_state::error_illegal_escape_char:
-                os << "due to the presence of illegal escape character.";
-            break;
-            case parse_quoted_string_state::error_no_closing_quote:
-                os << "because the closing quote was not found.";
-            break;
-            default:
-                os << "due to unknown reason.";
-
-        }
-        throw parse_error(os.str());
-    }
+        throw_quoted_string_parse_error("parse_single_quoted_string_value", ret);
 
     return pstring(ret.str, ret.length);
 }
@@ -290,23 +293,7 @@ pstring parser_base::parse_double_quoted_string_value(const char*& p, size_t max
         parse_double_quoted_string(p, max_length, mp_impl->m_buffer);
 
     if (!ret.str)
-    {
-        std::ostringstream os;
-        os << "parse_double_quoted_string_value: failed to parse ";
-        switch (ret.length)
-        {
-            case parse_quoted_string_state::error_illegal_escape_char:
-                os << "due to the presence of illegal escape character.";
-            break;
-            case parse_quoted_string_state::error_no_closing_quote:
-                os << "because the closing quote was not found.";
-            break;
-            default:
-                os << "due to unknown reason.";
-
-        }
-        throw parse_error(os.str());
-    }
+        throw_quoted_string_parse_error("parse_double_quoted_string_value", ret);
 
     return pstring(ret.str, ret.length);
 }
