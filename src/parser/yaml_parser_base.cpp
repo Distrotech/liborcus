@@ -257,6 +257,33 @@ keyword_t parser_base::parse_keyword(const char* p, size_t len)
     return value;
 }
 
+pstring parser_base::parse_single_quoted_string_value(const char*& p, size_t max_length)
+{
+    parse_quoted_string_state ret =
+        parse_single_quoted_string(p, max_length, mp_impl->m_buffer);
+
+    if (!ret.str)
+    {
+        std::ostringstream os;
+        os << "parse_single_quoted_string_value: failed to parse ";
+        switch (ret.length)
+        {
+            case parse_quoted_string_state::error_illegal_escape_char:
+                os << "due to the presence of illegal escape character.";
+            break;
+            case parse_quoted_string_state::error_no_closing_quote:
+                os << "because the closing quote was not found.";
+            break;
+            default:
+                os << "due to unknown reason.";
+
+        }
+        throw parse_error(os.str());
+    }
+
+    return pstring(ret.str, ret.length);
+}
+
 pstring parser_base::parse_double_quoted_string_value(const char*& p, size_t max_length)
 {
     parse_quoted_string_state ret =
@@ -269,13 +296,13 @@ pstring parser_base::parse_double_quoted_string_value(const char*& p, size_t max
         switch (ret.length)
         {
             case parse_quoted_string_state::error_illegal_escape_char:
-                os << " due to the presence of illegal escape character.";
+                os << "due to the presence of illegal escape character.";
             break;
             case parse_quoted_string_state::error_no_closing_quote:
                 os << "because the closing quote was not found.";
             break;
             default:
-                os << " due to unknown reason.";
+                os << "due to unknown reason.";
 
         }
         throw parse_error(os.str());

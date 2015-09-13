@@ -300,64 +300,91 @@ void yaml_parser<_Handler>::parse_map_key(const char* p, size_t len)
     const char* p_end = p + len;
     size_t n = 0;
 
-    if (*p == '"')
+    switch (*p)
     {
-        pstring quoted_str = parse_double_quoted_string_value(p, len);
-
-        if (p == p_end)
+        case '"':
         {
-            m_handler.string(quoted_str.get(), quoted_str.size());
-            return;
-        }
+            pstring quoted_str = parse_double_quoted_string_value(p, len);
 
-        // Skip all white spaces.
-        for (; p != p_end && *p == ' '; ++p)
-            ;
-
-        if (*p != ':')
-            throw yaml::parse_error("parse_map_key: ':' is expected after the quoted string key.");
-
-        check_or_begin_map();
-        m_handler.begin_map_key();
-        m_handler.string(quoted_str.get(), quoted_str.size());
-        m_handler.end_map_key();
-    }
-    else
-    {
-        const char* p0 = p;  // Save the original head position.
-        bool has_key = false;
-        const char* p_last_non_blank = nullptr;
-        for (; p != p_end; ++p)
-        {
-            if (*p == ':')
+            if (p == p_end)
             {
-                has_key = true;
-                break;
-            }
-
-            if (*p != ' ')
-                p_last_non_blank = p;
-        }
-
-        if (!has_key)
-        {
-            // No map key found.
-            p = p0;
-            if (*p == '|')
-            {
-                start_literal_block();
+                m_handler.string(quoted_str.get(), quoted_str.size());
                 return;
             }
 
-            push_value(p, len);
-            return;
-        }
+            // Skip all white spaces.
+            for (; p != p_end && *p == ' '; ++p)
+                ;
 
-        check_or_begin_map();
-        m_handler.begin_map_key();
-        n = p_last_non_blank - p0 + 1;
-        parse_value(p0, n);
-        m_handler.end_map_key();
+            if (*p != ':')
+                throw yaml::parse_error("parse_map_key: ':' is expected after the quoted string key.");
+
+            check_or_begin_map();
+            m_handler.begin_map_key();
+            m_handler.string(quoted_str.get(), quoted_str.size());
+            m_handler.end_map_key();
+        }
+        break;
+        case '\'':
+        {
+            pstring quoted_str = parse_single_quoted_string_value(p, len);
+
+            if (p == p_end)
+            {
+                m_handler.string(quoted_str.get(), quoted_str.size());
+                return;
+            }
+
+            // Skip all white spaces.
+            for (; p != p_end && *p == ' '; ++p)
+                ;
+
+            if (*p != ':')
+                throw yaml::parse_error("parse_map_key: ':' is expected after the quoted string key.");
+
+            check_or_begin_map();
+            m_handler.begin_map_key();
+            m_handler.string(quoted_str.get(), quoted_str.size());
+            m_handler.end_map_key();
+        }
+        break;
+        default:
+        {
+            const char* p0 = p;  // Save the original head position.
+            bool has_key = false;
+            const char* p_last_non_blank = nullptr;
+            for (; p != p_end; ++p)
+            {
+                if (*p == ':')
+                {
+                    has_key = true;
+                    break;
+                }
+
+                if (*p != ' ')
+                    p_last_non_blank = p;
+            }
+
+            if (!has_key)
+            {
+                // No map key found.
+                p = p0;
+                if (*p == '|')
+                {
+                    start_literal_block();
+                    return;
+                }
+
+                push_value(p, len);
+                return;
+            }
+
+            check_or_begin_map();
+            m_handler.begin_map_key();
+            n = p_last_non_blank - p0 + 1;
+            parse_value(p0, n);
+            m_handler.end_map_key();
+        }
     }
 
     ++p;  // skip the ':'.

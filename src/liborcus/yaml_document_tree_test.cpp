@@ -378,13 +378,10 @@ void test_yaml_parse_quoted_string()
 
     assert(string_expected(node.key(0), "I am quoted: ~ "));
     assert(string_expected(node.key(1), "list with quoted string values"));
-    assert(string_expected(node.key(2), "list with quoted string values"));
-    assert(string_expected(node.key(3), "single quoted string values"));
+    assert(string_expected(node.key(2), "single quoted string values"));
     assert(string_expected(node.child(0), "Here is another quote."));
 
     node = node.child(1);
-    assert(node.type() == yaml_node_t::sequence);
-    assert(node.child_count() == 4);
 
     {
         // list of strings.
@@ -395,13 +392,15 @@ void test_yaml_parse_quoted_string()
             "false",
         };
 
-        for (size_t i = 0; i < ORCUS_N_ELEMENTS(values); ++i)
+        size_t n = ORCUS_N_ELEMENTS(values);
+        assert(node.type() == yaml_node_t::sequence);
+        assert(node.child_count() == n);
+
+        for (size_t i = 0; i < n; ++i)
             assert(string_expected(node.child(i), values[i]));
     }
 
     node = node.parent().child(2);
-    assert(node.type() == yaml_node_t::sequence);
-    assert(node.child_count() == 6);
 
     {
         // list of strings.
@@ -411,10 +410,16 @@ void test_yaml_parse_quoted_string()
             "prefix 'quoted' suffix",
             "\"double quote\"",
             "before \"quote\" after",
-            "http://www.google.com"
+            "http://www.google.com",
+            "'''",
+            " ' ' ' "
         };
 
-        for (size_t i = 0; i < ORCUS_N_ELEMENTS(values); ++i)
+        size_t n = ORCUS_N_ELEMENTS(values);
+        assert(node.type() == yaml_node_t::sequence);
+        assert(node.child_count() == n);
+
+        for (size_t i = 0; i < n; ++i)
             assert(string_expected(node.child(i), values[i]));
     }
 }

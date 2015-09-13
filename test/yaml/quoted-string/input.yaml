@@ -12,3 +12,5 @@ list with quoted string values  :
   - '"double quote"'
   - 'before "quote" after'
   - 'http://www.google.com'
+  - ''''''''      # equivalent of "'''"
+  - ' '' '' '' '  # equivalent of " ' ' ' "

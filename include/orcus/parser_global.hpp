@@ -61,6 +61,12 @@ ORCUS_PSR_DLLPUBLIC double parse_numeric(const char*& p, size_t max_length);
 
 ORCUS_PSR_DLLPUBLIC long parse_integer(const char*& p, size_t max_length);
 
+/**
+ * Two single-quote characters ('') represent one single-quote character.
+ */
+ORCUS_PSR_DLLPUBLIC parse_quoted_string_state parse_single_quoted_string(
+    const char*& p, size_t max_length, cell_buffer& buffer);
+
 ORCUS_PSR_DLLPUBLIC parse_quoted_string_state parse_double_quoted_string(
     const char*& p, size_t max_length, cell_buffer& buffer);
 

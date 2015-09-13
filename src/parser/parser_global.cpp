@@ -250,6 +250,127 @@ parse_quoted_string_state parse_string_with_escaped_char(
     return ret;
 }
 
+parse_quoted_string_state parse_single_quoted_string_buffered(
+    const char*& p, const char* p_end, cell_buffer& buffer)
+{
+    const char* p0 = p;
+    size_t len = 0;
+    char last = 0;
+    char c = 0;
+
+    for (; p != p_end; ++p)
+    {
+        if (!p0)
+            p0 = p;
+
+        c = *p;
+        switch (c)
+        {
+            case '\'':
+            {
+                if (last == c)
+                {
+                    // Second "'" in series.  This is an encoded single quote.
+                    buffer.append(p0, len);
+                    p0 = nullptr;
+                    last = 0;
+                    len = 0;
+                    continue;
+                }
+            }
+            break;
+            default:
+            {
+                if (last == '\'')
+                {
+                    buffer.append(p0, len-1);
+                    parse_quoted_string_state ret;
+                    ret.str = buffer.get();
+                    ret.length = buffer.size();
+                    return ret;
+                }
+            }
+        }
+
+        last = c;
+        ++len;
+    }
+
+    if (last == '\'')
+    {
+        buffer.append(p0, len-1);
+        parse_quoted_string_state ret;
+        ret.str = buffer.get();
+        ret.length = buffer.size();
+        return ret;
+    }
+
+    parse_quoted_string_state ret;
+    ret.str = nullptr;
+    ret.length = parse_quoted_string_state::error_no_closing_quote;
+    return ret;
+}
+
+}
+
+parse_quoted_string_state parse_single_quoted_string(
+    const char*& p, size_t max_length, cell_buffer& buffer)
+{
+    assert(*p == '\'');
+    const char* p_end = p + max_length;
+    ++p;
+
+    parse_quoted_string_state ret;
+    ret.str = p;
+    ret.length = 0;
+
+    if (p == p_end)
+    {
+        ret.str = nullptr;
+        ret.length = parse_quoted_string_state::error_no_closing_quote;
+        return ret;
+    }
+
+    char last = 0;
+    char c = 0;
+    for (; p != p_end; last = c, ++p, ++ret.length)
+    {
+        c = *p;
+        switch (c)
+        {
+            case '\'':
+            {
+                if (last == c)
+                {
+                    // Encoded single quote.
+                    buffer.reset();
+                    buffer.append(ret.str, ret.length);
+                    ++p;
+                    return parse_single_quoted_string_buffered(p, p_end, buffer);
+                }
+            }
+            break;
+            default:
+            {
+                if (last == '\'')
+                {
+                    --ret.length;
+                    return ret;
+                }
+            }
+
+        }
+    }
+
+    if (last == '\'')
+    {
+        --ret.length;
+        return ret;
+    }
+
+    ret.str = nullptr;
+    ret.length = parse_quoted_string_state::error_no_closing_quote;
+    return ret;
 }
 
 parse_quoted_string_state parse_double_quoted_string(
