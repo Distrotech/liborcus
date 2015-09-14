@@ -373,6 +373,45 @@ parse_quoted_string_state parse_single_quoted_string(
     return ret;
 }
 
+const char* parse_to_closing_single_quote(const char* p, size_t max_length)
+{
+    assert(*p == '\'');
+    const char* p_end = p + max_length;
+    ++p;
+
+    if (p == p_end)
+        return nullptr;
+
+    char last = 0;
+    char c = 0;
+    for (; p != p_end; ++p)
+    {
+        c = *p;
+        switch (c)
+        {
+            case '\'':
+                if (last == '\'')
+                {
+                    last = 0;
+                    continue;
+                }
+            break;
+            default:
+            {
+                if (last == '\'')
+                    return p;
+            }
+        }
+
+        last = c;
+    }
+
+    if (last == '\'')
+        return p;
+
+    return nullptr;
+}
+
 parse_quoted_string_state parse_double_quoted_string(
     const char*& p, size_t max_length, cell_buffer& buffer)
 {

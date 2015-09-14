@@ -38,7 +38,7 @@ protected:
     bool has_char() const { return m_pos < m_length; }
     bool has_next() const { return m_pos + 1 < m_length; }
 
-    void next();
+    void next(size_t inc=1);
     void prev(size_t dec=1);
     char cur_char() const;
     char next_char() const;

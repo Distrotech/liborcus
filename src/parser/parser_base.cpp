@@ -51,10 +51,10 @@ std::string parse_error::build_message(
 parser_base::parser_base(const char* p, size_t n) :
     mp_char(p), m_pos(0), m_length(n) {}
 
-void parser_base::next()
+void parser_base::next(size_t inc)
 {
-    ++m_pos;
-    ++mp_char;
+    m_pos += inc;
+    mp_char += inc;
 }
 
 void parser_base::prev(size_t dec)

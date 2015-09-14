@@ -14,3 +14,5 @@ list with quoted string values  :
   - 'http://www.google.com'
   - ''''''''      # equivalent of "'''"
   - ' '' '' '' '  # equivalent of " ' ' ' "
+  - '#hashtag'
+

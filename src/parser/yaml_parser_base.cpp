@@ -96,6 +96,26 @@ pstring parser_base::parse_to_end_of_line()
             case '#':
                 skip_comment();
             break;
+            case '\'':
+            {
+                const char* p_open_quote = mp_char;
+
+                // character immediately after the closing quote.
+                const char* p_end =
+                    parse_to_closing_single_quote(mp_char, remaining_size());
+
+                if (!p_end)
+                    throw parse_error("parse_to_end_of_line: closing single quote was expected but not found.");
+
+                size_t diff = p_end - p_open_quote - 1;
+
+                // Move the cursor to the closing quote.
+                next(diff);
+                len += diff;
+                assert(cur_char() == '\'');
+                continue;
+            }
+            break;
             case '\n':
                 next();
             break;

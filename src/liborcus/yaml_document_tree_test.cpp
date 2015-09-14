@@ -412,7 +412,8 @@ void test_yaml_parse_quoted_string()
             "before \"quote\" after",
             "http://www.google.com",
             "'''",
-            " ' ' ' "
+            " ' ' ' ",
+            "#hashtag"
         };
 
         size_t n = ORCUS_N_ELEMENTS(values);
