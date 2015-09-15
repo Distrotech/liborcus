@@ -477,6 +477,45 @@ parse_quoted_string_state parse_double_quoted_string(
     return ret;
 }
 
+const char* parse_to_closing_double_quote(const char* p, size_t max_length)
+{
+    assert(*p == '"');
+    const char* p_end = p + max_length;
+    ++p;
+
+    if (p == p_end)
+        return nullptr;
+
+    bool escape = false;
+
+    for (; p != p_end; ++p)
+    {
+        if (escape)
+        {
+            char c = *p;
+            escape = false;
+
+            if (get_string_escape_char_type(c) == string_escape_char_t::invalid)
+                return nullptr;
+        }
+
+        switch (*p)
+        {
+            case '"':
+                // closing quote.
+                ++p; // skip the quote.
+                return p;
+            case '\\':
+                escape = true;
+            break;
+            default:
+                ;
+        }
+    }
+
+    return nullptr;
+}
+
 double clip(double input, double low, double high)
 {
     if (input < low)

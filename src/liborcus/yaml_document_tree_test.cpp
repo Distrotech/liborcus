@@ -390,6 +390,7 @@ void test_yaml_parse_quoted_string()
             "null",
             "true",
             "false",
+            "#hashtag"
         };
 
         size_t n = ORCUS_N_ELEMENTS(values);

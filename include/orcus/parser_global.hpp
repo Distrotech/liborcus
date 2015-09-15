@@ -68,9 +68,9 @@ ORCUS_PSR_DLLPUBLIC parse_quoted_string_state parse_single_quoted_string(
     const char*& p, size_t max_length, cell_buffer& buffer);
 
 /**
- * Parse string all the way to the closing quote.  Two single-quote
- * characters ('') will be interpreted as encoded one single-quote
- * character.
+ * Starting from the opening single quote position, parse string all the way
+ * to the closing quote. Two single-quote characters ('') will be
+ * interpreted as encoded one single-quote character.
  *
  * @param p it should point to the opening single quote character.
  * @param max_length maximum length to parse.
@@ -83,6 +83,20 @@ ORCUS_PSR_DLLPUBLIC const char* parse_to_closing_single_quote(
 
 ORCUS_PSR_DLLPUBLIC parse_quoted_string_state parse_double_quoted_string(
     const char*& p, size_t max_length, cell_buffer& buffer);
+
+/**
+ * Starting from the opening double quote position, parse string all the way
+ * to the closing quote. Two single-quote characters ('') will be
+ * interpreted as encoded one single-quote character.
+ *
+ * @param p it should point to the opening single quote character.
+ * @param max_length maximum length to parse.
+ *
+ * @return address of the character immediately after the closing quote, or
+ *         nullptr in case no closing quote is found.
+ */
+ORCUS_PSR_DLLPUBLIC const char* parse_to_closing_double_quote(
+    const char* p, size_t max_length);
 
 /**
  * Given a character that occurs immediately after the escape character '\',
