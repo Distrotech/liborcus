@@ -6,6 +6,9 @@ list with quoted string values  :
   - "true"
   - "false"
   - "#hashtag"
+  - "\"quoted inside\""
+  - "'single quote inside'"
+  - "Japan's finest beer"
 'single quoted string values' :
   - '8.8.8.8'
   - '''single quote inside'''

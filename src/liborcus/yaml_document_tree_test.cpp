@@ -390,7 +390,10 @@ void test_yaml_parse_quoted_string()
             "null",
             "true",
             "false",
-            "#hashtag"
+            "#hashtag",
+            "\"quoted inside\"",
+            "'single quote inside'",
+            "Japan's finest beer"
         };
 
         size_t n = ORCUS_N_ELEMENTS(values);
