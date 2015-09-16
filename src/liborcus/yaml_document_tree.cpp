@@ -10,7 +10,6 @@
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
 
-#include <iostream>
 #include <sstream>
 #include <vector>
 #include <memory>
@@ -19,6 +18,12 @@
 #include <algorithm>
 
 #include <boost/current_function.hpp>
+
+#define ORCUS_DEBUG_YAML_TREE 0
+
+#if ORCUS_DEBUG_YAML_TREE
+#include <iostream>
+#endif
 
 namespace orcus {
 
@@ -165,6 +170,7 @@ class handler
 
     bool m_in_document;
 
+#if ORCUS_DEBUG_YAML_TREE
     void print_stack()
     {
         std::ostringstream os;
@@ -174,6 +180,7 @@ class handler
         os << ')';
         std::cout << os.str() << std::endl;
     }
+#endif
 
     yaml_value* push_value(std::unique_ptr<yaml_value>&& value)
     {
@@ -220,25 +227,21 @@ public:
 
     void begin_parse()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:begin_parse): " << std::endl;
     }
 
     void end_parse()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:end_parse): " << std::endl;
     }
 
     void begin_document()
     {
         assert(!m_in_document);
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:begin_document): " << std::endl;
         m_in_document = true;
         m_root.reset();
     }
 
     void end_document()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:end_document): " << std::endl;
         assert(m_stack.empty());
         m_in_document = false;
         m_docs.push_back(std::move(m_root));
@@ -247,7 +250,6 @@ public:
     void begin_sequence()
     {
         assert(m_in_document);
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:begin_sequence): " << std::endl;
 
         if (m_root)
         {
@@ -264,7 +266,6 @@ public:
 
     void end_sequence()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:end_sequence): " << std::endl;
         assert(!m_stack.empty());
         m_stack.pop_back();
     }
@@ -272,7 +273,6 @@ public:
     void begin_map()
     {
         assert(m_in_document);
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:begin_map): " << std::endl;
         if (m_root)
         {
             yaml_value* yv = push_value(make_unique<yaml_value_map>());
@@ -288,7 +288,6 @@ public:
 
     void begin_map_key()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:begin_map_key): " << std::endl;
         assert(!m_key_root);
         assert(m_key_stack.empty());
         m_key_root.swap(m_root);
@@ -297,7 +296,6 @@ public:
 
     void end_map_key()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:end_map_key): " << std::endl;
         m_key_root.swap(m_root);
         m_key_stack.swap(m_stack);
 
@@ -310,7 +308,6 @@ public:
 
     void end_map()
     {
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:end_map): " << std::endl;
         assert(!m_stack.empty());
         m_stack.pop_back();
     }
@@ -318,7 +315,6 @@ public:
     void string(const char* p, size_t n)
     {
         assert(m_in_document);
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:string): s='" << pstring(p, n) << "'" << std::endl;
 
         if (m_root)
         {
@@ -332,7 +328,6 @@ public:
     void number(double val)
     {
         assert(m_in_document);
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:number): v=" << val << std::endl;
         if (m_root)
         {
             yaml_value* yv = push_value(make_unique<yaml_value_number>(val));
@@ -345,7 +340,6 @@ public:
     void boolean_true()
     {
         assert(m_in_document);
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:boolean_true): " << std::endl;
         if (m_root)
         {
             yaml_value* yv = push_value(make_unique<yaml_value>(node_t::boolean_true));
@@ -358,7 +352,6 @@ public:
     void boolean_false()
     {
         assert(m_in_document);
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:boolean_false): " << std::endl;
         if (m_root)
         {
             yaml_value* yv = push_value(make_unique<yaml_value>(node_t::boolean_false));
@@ -371,7 +364,6 @@ public:
     void null()
     {
         assert(m_in_document);
-        std::cout << __FILE__ << "#" << __LINE__ << " (handler:null): " << std::endl;
         if (m_root)
         {
             yaml_value* yv = push_value(make_unique<yaml_value>(node_t::null));
