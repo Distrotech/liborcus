@@ -367,6 +367,29 @@ orcus_test_ods_CPPFLAGS = $(AM_CPPFLAGS) \
 
 TESTS += orcus-test-ods
 
+# orcus-odf-styles-context-test
+
+EXTRA_PROGRAMS += \
+	orcus-odf-styles-context-test
+
+orcus_odf_styles_context_test_SOURCES = \
+	liborcus/odf_styles_context_test.cpp \
+	liborcus/session_context.cpp \
+	liborcus/xml_context_base.cpp \
+	liborcus/xml_context_global.cpp \
+	liborcus/global.cpp \
+	liborcus/spreadsheet_interface.cpp
+
+orcus_odf_styles_context_test_LDADD = \
+	liborcus/liborcus-@ORCUS_API_VERSION@.la \
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
+orcus_odf_styles_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
+
+TESTS += \
+	 orcus-odf-styles-context-test
+
 endif # WITH_ODS_FILTER
 
 if WITH_XLSX_FILTER
