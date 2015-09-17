@@ -309,6 +309,8 @@
                 <F N="../src/liborcus/interface.cpp"/>
                 <F N="../src/liborcus/json_document_tree.cpp"/>
                 <F N="../src/liborcus/json_document_tree_test.cpp"/>
+                <F N="../src/liborcus/json_util.cpp"/>
+                <F N="../src/liborcus/json_util.hpp"/>
                 <F N="../src/liborcus/measurement.cpp"/>
                 <F N="../src/liborcus/measurement.cpp"/>
                 <F N="../src/liborcus/mock_spreadsheet.cpp"/>

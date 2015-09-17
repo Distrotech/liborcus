@@ -12,6 +12,8 @@
 #include "orcus/config.hpp"
 #include "orcus/stream.hpp"
 
+#include "json_util.hpp"
+
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -103,27 +105,6 @@ void dump_repeat(std::ostringstream& os, const char* s, int repeat)
         os << s;
 }
 
-void dump_string(std::ostringstream& os, const std::string& s)
-{
-    os << quote;
-    for (auto it = s.begin(), ite = s.end(); it != ite; ++it)
-    {
-        char c = *it;
-        if (c == '"')
-            // Escape double quote, but not forward slash.
-            os << backslash;
-        else if (c == backslash)
-        {
-            // Escape a '\' if and only if the next character is not one of control characters.
-            auto itnext = it + 1;
-            if (itnext == ite || get_string_escape_char_type(*itnext) != string_escape_char_t::control_char)
-                os << backslash;
-        }
-        os << c;
-    }
-    os << quote;
-}
-
 void dump_item(
     std::ostringstream& os, const std::string* key, const json_value* val,
     int level, bool sep);
@@ -200,7 +181,7 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
         }
         break;
         case json_value_type::string:
-            dump_string(os, static_cast<const json_value_string*>(v)->value_string);
+            json::dump_string(os, static_cast<const json_value_string*>(v)->value_string);
         break;
         case json_value_type::unset:
         default:

@@ -43,6 +43,8 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 	info.cpp \
 	interface.cpp \
 	json_document_tree.cpp \
+	json_util.hpp \
+	json_util.cpp \
 	spreadsheet_interface.cpp \
 	orcus_csv.cpp \
 	orcus_xml.cpp \
@@ -347,6 +349,7 @@ liborcus_test_css_document_tree_LDADD = \
 
 liborcus_test_json_document_tree_SOURCES = \
 	json_document_tree.cpp \
+	json_util.cpp \
 	json_document_tree_test.cpp
 
 liborcus_test_json_document_tree_LDADD = \
@@ -358,6 +361,7 @@ liborcus_test_json_document_tree_LDADD = \
 
 liborcus_test_yaml_document_tree_SOURCES = \
 	yaml_document_tree.cpp \
+	json_util.cpp \
 	yaml_document_tree_test.cpp
 
 liborcus_test_yaml_document_tree_LDADD = \

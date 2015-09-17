@@ -10,11 +10,11 @@
 #include "orcus/pstring.hpp"
 #include "orcus/global.hpp"
 
-#include <sstream>
+#include "json_util.hpp"
+
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include <sstream>
 #include <algorithm>
 
 #include <boost/current_function.hpp>
@@ -542,7 +542,6 @@ const char* kw_tilde = "~";
 const char* kw_null = "null";
 
 constexpr char quote = '"';
-constexpr char backslash = '\\';
 
 void dump_indent(std::ostringstream& os, size_t scope)
 {
@@ -690,27 +689,6 @@ void dump_json_item(
     os << std::endl;
 }
 
-void dump_json_string(std::ostringstream& os, const std::string& s)
-{
-    os << quote;
-    for (auto it = s.begin(), ite = s.end(); it != ite; ++it)
-    {
-        char c = *it;
-        if (c == '"')
-            // Escape double quote, but not forward slash.
-            os << backslash;
-        else if (c == backslash)
-        {
-            // Escape a '\' if and only if the next character is not one of control characters.
-            auto itnext = it + 1;
-            if (itnext == ite || get_string_escape_char_type(*itnext) != string_escape_char_t::control_char)
-                os << backslash;
-        }
-        os << c;
-    }
-    os << quote;
-}
-
 void dump_json_node(std::ostringstream& os, const yaml_value& node, size_t scope, const std::string* key = nullptr)
 {
     dump_indent(os, scope);
@@ -776,7 +754,7 @@ void dump_json_node(std::ostringstream& os, const yaml_value& node, size_t scope
             os << static_cast<const yaml_value_number&>(node).value_number;
         break;
         case yaml_node_t::string:
-            dump_json_string(os, static_cast<const yaml_value_string&>(node).value_string);
+            json::dump_string(os, static_cast<const yaml_value_string&>(node).value_string);
         break;
         case yaml_node_t::unset:
         default:
