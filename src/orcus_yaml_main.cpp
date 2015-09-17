@@ -26,7 +26,10 @@ namespace fs = boost::filesystem;
 const char* help_program = "The FILE must specify a path to an existing file.";
 const char* err_no_input_file = "No input file.";
 const char* help_yaml_output = "Output file path.";
-const char* help_yaml_output_format = "Specify the format of output file.";
+const char* help_yaml_output_format =
+"Specify the format of output file.  Supported format types are:\n"
+"  1) yaml\n"
+"  2) json";
 
 void print_yaml_usage(std::ostream& os, const po::options_description& desc)
 {
@@ -88,6 +91,8 @@ std::unique_ptr<yaml_config> parse_yaml_args(int argc, char** argv)
             config->output_format = yaml_config::output_format_type::none;
         else if (outformat == "yaml")
             config->output_format = yaml_config::output_format_type::yaml;
+        else if (outformat == "json")
+            config->output_format = yaml_config::output_format_type::json;
         else
         {
             cerr << "Unknown output format type '" << outformat << "'." << endl;
@@ -153,6 +158,12 @@ int main(int argc, char** argv)
             {
                 ofstream fs(config->output_path.c_str());
                 fs << doc.dump_yaml();
+            }
+            break;
+            case yaml_config::output_format_type::json:
+            {
+                ofstream fs(config->output_path.c_str());
+                fs << doc.dump_json();
             }
             break;
             default:

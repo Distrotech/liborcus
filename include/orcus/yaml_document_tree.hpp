@@ -97,6 +97,8 @@ public:
     node get_document_root(size_t index) const;
 
     std::string dump_yaml() const;
+
+    std::string dump_json() const;
 };
 
 }

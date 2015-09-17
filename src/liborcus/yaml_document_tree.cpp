@@ -538,7 +538,11 @@ namespace {
 const char* indent = "    ";
 const char* kw_true = "true";
 const char* kw_false = "false";
-const char* kw_null = "~";
+const char* kw_tilde = "~";
+const char* kw_null = "null";
+
+constexpr char quote = '"';
+constexpr char backslash = '\\';
 
 void dump_indent(std::ostringstream& os, size_t scope)
 {
@@ -569,7 +573,7 @@ void dump_yaml_node(std::ostringstream& os, const yaml_value& node, size_t scope
         break;
         case yaml_node_t::null:
             dump_indent(os, scope);
-            os << kw_null << std::endl;
+            os << kw_tilde << std::endl;
         break;
         case yaml_node_t::number:
             dump_indent(os, scope);
@@ -629,7 +633,7 @@ void dump_yaml_map(std::ostringstream& os, const yaml_value& node, size_t scope)
                 break;
                 case yaml_node_t::null:
                     dump_indent(os, scope);
-                    os << kw_null;
+                    os << kw_tilde;
                 break;
                 case yaml_node_t::number:
                     dump_indent(os, scope);
@@ -674,6 +678,112 @@ void dump_yaml_document(std::ostringstream& os, const yaml_value& root)
     dump_yaml_node(os, root, 0);
 }
 
+void dump_json_node(std::ostringstream& os, const yaml_value& node, size_t scope, const std::string* key);
+
+void dump_json_item(
+    std::ostringstream& os, const std::string* key, const yaml_value& val,
+    size_t scope, bool sep)
+{
+    dump_json_node(os, val, scope+1, key);
+    if (sep)
+        os << ",";
+    os << std::endl;
+}
+
+void dump_json_string(std::ostringstream& os, const std::string& s)
+{
+    os << quote;
+    for (auto it = s.begin(), ite = s.end(); it != ite; ++it)
+    {
+        char c = *it;
+        if (c == '"')
+            // Escape double quote, but not forward slash.
+            os << backslash;
+        else if (c == backslash)
+        {
+            // Escape a '\' if and only if the next character is not one of control characters.
+            auto itnext = it + 1;
+            if (itnext == ite || get_string_escape_char_type(*itnext) != string_escape_char_t::control_char)
+                os << backslash;
+        }
+        os << c;
+    }
+    os << quote;
+}
+
+void dump_json_node(std::ostringstream& os, const yaml_value& node, size_t scope, const std::string* key = nullptr)
+{
+    dump_indent(os, scope);
+
+    if (key)
+    {
+        os << quote << *key << quote << ": ";
+    }
+
+    switch (node.type)
+    {
+        case yaml_node_t::map:
+        {
+            auto& key_order = static_cast<const yaml_value_map&>(node).key_order;
+            auto& vals = static_cast<const yaml_value_map&>(node).value_map;
+            os << "{" << std::endl;
+            size_t n = vals.size();
+
+            // Dump them based on key's original ordering.
+            size_t pos = 0;
+            for (auto it = key_order.begin(), ite = key_order.end(); it != ite; ++it, ++pos)
+            {
+                const yaml_value* key = it->get();
+                if (key->type != yaml_node_t::string)
+                    throw yaml_document_error("JSON doesn't support non-string key.");
+
+                auto val_pos = vals.find(key);
+                assert(val_pos != vals.end());
+
+                dump_json_item(
+                    os,
+                    &static_cast<const yaml_value_string*>(key)->value_string,
+                    *val_pos->second, scope, pos < (n-1));
+            }
+
+            dump_indent(os, scope);
+            os << "}";
+        }
+        break;
+        case yaml_node_t::sequence:
+        {
+            auto& vals = static_cast<const yaml_value_sequence&>(node).value_sequence;
+            os << "[" << std::endl;
+            size_t n = vals.size();
+            size_t pos = 0;
+            for (auto it = vals.begin(), ite = vals.end(); it != ite; ++it, ++pos)
+                dump_json_item(os, nullptr, **it, scope, pos < (n-1));
+
+            dump_indent(os, scope);
+            os << "]";
+        }
+        break;
+        case yaml_node_t::boolean_true:
+            os << kw_true;
+        break;
+        case yaml_node_t::boolean_false:
+            os << kw_false;
+        break;
+        case yaml_node_t::null:
+            os << kw_null;
+        break;
+        case yaml_node_t::number:
+            os << static_cast<const yaml_value_number&>(node).value_number;
+        break;
+        case yaml_node_t::string:
+            dump_json_string(os, static_cast<const yaml_value_string&>(node).value_string);
+        break;
+        case yaml_node_t::unset:
+        default:
+            ;
+    }
+}
+
 }
 
 std::string yaml_document_tree::dump_yaml() const
@@ -687,6 +797,21 @@ std::string yaml_document_tree::dump_yaml() const
             dump_yaml_document(os, *root);
         }
     );
+
+    return os.str();
+}
+
+std::string yaml_document_tree::dump_json() const
+{
+    if (mp_impl->m_docs.empty())
+        return std::string();
+
+    const yaml_value& root = *mp_impl->m_docs.front();
+
+    std::ostringstream os;
+    dump_json_node(os, root, 0);
+
+    os << std::endl;
 
     return os.str();
 }

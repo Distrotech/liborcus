@@ -58,7 +58,7 @@ struct ORCUS_DLLPUBLIC json_config
 
 struct ORCUS_DLLPUBLIC yaml_config
 {
-    enum class output_format_type { none, yaml };
+    enum class output_format_type { none, yaml, json };
 
     std::string input_path;
     std::string output_path;
