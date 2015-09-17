@@ -16,6 +16,7 @@
 #include <memory>
 #include <unordered_map>
 #include <algorithm>
+#include <iostream>
 
 #include <boost/current_function.hpp>
 
@@ -762,6 +763,10 @@ void dump_json_node(std::ostringstream& os, const yaml_value& node, size_t scope
     }
 }
 
+const char* warning_multiple_documents =
+"warning: this YAML file contains multiple documents.  Only the first document\n"
+"will be written.";
+
 }
 
 std::string yaml_document_tree::dump_yaml() const
@@ -783,6 +788,9 @@ std::string yaml_document_tree::dump_json() const
 {
     if (mp_impl->m_docs.empty())
         return std::string();
+
+    if (mp_impl->m_docs.size() > 1)
+        std::cerr << warning_multiple_documents << std::endl;
 
     const yaml_value& root = *mp_impl->m_docs.front();
 
