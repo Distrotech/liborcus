@@ -47,9 +47,11 @@ const char* help_json_output =
 "Output file path.";
 
 const char* help_json_output_format =
-"Specify the format of output file.  Supported format types are: "
-"1) XML (xml), 2) JSON (json), 3) special format used to verify tree content "
-"for unit tests (check), or 4) no output (none).";
+"Specify the format of output file.  Supported format types are:\n"
+"  1) XML (xml)\n"
+"  2) JSON (json)\n"
+"  3) flat tree dump (check)\n"
+"  4) no output (none).";
 
 const char* err_no_input_file = "No input file.";
 
