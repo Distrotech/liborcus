@@ -550,6 +550,31 @@ void dump_indent(std::ostringstream& os, size_t scope)
         os << indent;
 }
 
+bool needs_quoting(const std::string& s)
+{
+    // See if it contains certain characters...
+    for (auto it = s.begin(), ite = s.end(); it != ite; ++it)
+        if (is_in(*it, "#'"))
+            return true;
+
+    // See if the whole string is parsed as a number.
+    const char* p = s.data();
+    const char* p_end = p + s.size();
+    parse_numeric(p, s.size());
+    if (p == p_end)
+        return true;
+
+    return false;
+}
+
+void dump_yaml_string(std::ostringstream& os, const std::string& s)
+{
+    if (needs_quoting(s))
+        os << quote << s << quote;
+    else
+        os << s;
+}
+
 void dump_yaml_map(std::ostringstream& os, const yaml_value& node, size_t scope);
 void dump_yaml_sequence(std::ostringstream& os, const yaml_value& node, size_t scope);
 
@@ -581,7 +606,8 @@ void dump_yaml_node(std::ostringstream& os, const yaml_value& node, size_t scope
         break;
         case yaml_node_t::string:
             dump_indent(os, scope);
-            os << static_cast<const yaml_value_string&>(node).value_string << std::endl;
+            dump_yaml_string(os, static_cast<const yaml_value_string&>(node).value_string);
+            os << std::endl;
         break;
         case yaml_node_t::unset:
         default:
@@ -641,7 +667,7 @@ void dump_yaml_map(std::ostringstream& os, const yaml_value& node, size_t scope)
                 break;
                 case yaml_node_t::string:
                     dump_indent(os, scope);
-                    os << static_cast<const yaml_value_string*>(key)->value_string;
+                    dump_yaml_string(os, static_cast<const yaml_value_string*>(key)->value_string);
                 break;
                 case yaml_node_t::unset:
                 default:
