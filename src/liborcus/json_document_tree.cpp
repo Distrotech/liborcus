@@ -26,14 +26,20 @@ namespace fs = boost::filesystem;
 
 namespace orcus {
 
+json_document_error::json_document_error(const std::string& msg) :
+    general_error("json_document_error", msg) {}
+
+json_document_error::~json_document_error() throw() {}
+
 namespace json { namespace detail {
 
 struct json_value
 {
     node_t type;
+    json_value* parent;
 
-    json_value() : type(node_t::unset) {}
-    json_value(node_t _type) : type(_type) {}
+    json_value() : type(node_t::unset), parent(nullptr) {}
+    json_value(node_t _type) : type(_type), parent(nullptr) {}
     virtual ~json_value() {}
 };
 
@@ -377,6 +383,7 @@ class parser_handler
             case node_t::array:
             {
                 json_value_array* jva = static_cast<json_value_array*>(cur.node);
+                value->parent = jva;
                 jva->value_array.push_back(std::move(value));
                 return jva->value_array.back().get();
             }
@@ -385,6 +392,7 @@ class parser_handler
             {
                 const std::string& key = cur.key;
                 json_value_object* jvo = static_cast<json_value_object*>(cur.node);
+                value->parent = jvo;
 
                 if (m_config.resolve_references &&
                     key == "$ref" && value->type == node_t::string)
@@ -516,6 +524,134 @@ public:
 };
 
 }
+
+namespace json { namespace detail {
+
+struct node::impl
+{
+    const json_value* m_node;
+
+    impl(const json_value* jv) : m_node(jv) {}
+};
+
+node::node(const json_value* jv) : mp_impl(make_unique<impl>(jv)) {}
+node::node(const node& other) : mp_impl(make_unique<impl>(other.mp_impl->m_node)) {}
+node::node(node&& rhs) : mp_impl(std::move(rhs.mp_impl)) {}
+node::~node() {}
+
+node& node::operator=(const node& other)
+{
+    if (this == &other)
+        return *this;
+
+    node tmp(other);
+    mp_impl.swap(tmp.mp_impl);
+    return *this;
+}
+
+node_t node::type() const
+{
+    return mp_impl->m_node->type;
+}
+
+size_t node::child_count() const
+{
+    switch (mp_impl->m_node->type)
+    {
+        case node_t::object:
+            return static_cast<const json_value_object*>(mp_impl->m_node)->value_object.size();
+        case node_t::array:
+            return static_cast<const json_value_array*>(mp_impl->m_node)->value_array.size();
+        case node_t::string:
+        case node_t::number:
+        case node_t::boolean_true:
+        case node_t::boolean_false:
+        case node_t::null:
+        case node_t::unset:
+        default:
+            ;
+    }
+    return 0;
+}
+
+pstring node::key(size_t index) const
+{
+    if (mp_impl->m_node->type != node_t::object)
+        throw json_document_error("node::key: this node is not of object type.");
+
+    const json_value_object* jvo = static_cast<const json_value_object*>(mp_impl->m_node);
+    if (index >= jvo->key_order.size())
+        throw std::out_of_range("node::key: index is out-of-range.");
+
+    const std::string& s = jvo->key_order[index];
+    return pstring(s.data(), s.size());
+}
+
+node node::child(size_t index) const
+{
+    switch (mp_impl->m_node->type)
+    {
+        case node_t::object:
+        {
+            // This works only when the key order is preserved.
+            const json_value_object* jvo = static_cast<const json_value_object*>(mp_impl->m_node);
+            if (index >= jvo->key_order.size())
+                throw std::out_of_range("node::child: index is out-of-range");
+
+            const std::string& key = jvo->key_order[index];
+            auto it = jvo->value_object.find(key);
+            assert(it != jvo->value_object.end());
+            return node(it->second.get());
+        }
+        break;
+        case node_t::array:
+        {
+            const json_value_array* jva = static_cast<const json_value_array*>(mp_impl->m_node);
+            if (index >= jva->value_array.size())
+                throw std::out_of_range("node::child: index is out-of-range");
+
+            return node(jva->value_array[index].get());
+        }
+        break;
+        case node_t::string:
+        case node_t::number:
+        case node_t::boolean_true:
+        case node_t::boolean_false:
+        case node_t::null:
+        case node_t::unset:
+        default:
+            throw json_document_error("node::child: this node cannot have child nodes.");
+    }
+}
+
+node node::parent() const
+{
+    if (!mp_impl->m_node->parent)
+        throw json_document_error("node::parent: this node has no parent.");
+
+    return node(mp_impl->m_node->parent);
+}
+
+pstring node::string_value() const
+{
+    if (mp_impl->m_node->type != node_t::string)
+        throw json_document_error("node::key: current node is not of string type.");
+
+    const json_value_string* jvs = static_cast<const json_value_string*>(mp_impl->m_node);
+    const std::string& str = jvs->value_string;
+    return pstring(str.data(), str.size());
+}
+
+double node::numeric_value() const
+{
+    if (mp_impl->m_node->type != node_t::number)
+        throw json_document_error("node::key: current node is not of numeric type.");
+
+    const json_value_number* jvn = static_cast<const json_value_number*>(mp_impl->m_node);
+    return jvn->value_number;
+}
+
+}}
 
 struct json_document_tree::impl
 {

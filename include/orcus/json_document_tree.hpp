@@ -9,13 +9,23 @@
 #define INCLUDED_ORCUS_JSON_DOCUMENT_TREE_HPP
 
 #include "orcus/env.hpp"
+#include "orcus/exception.hpp"
 
 #include <string>
 #include <memory>
 
 namespace orcus {
 
+class ORCUS_DLLPUBLIC json_document_error : public general_error
+{
+public:
+    json_document_error(const std::string& msg);
+    virtual ~json_document_error() throw();
+};
+
 struct json_config;
+class json_document_tree;
+class pstring;
 
 namespace json { namespace detail {
 
@@ -31,6 +41,38 @@ enum class node_t
     boolean_true,
     boolean_false,
     null
+};
+
+class ORCUS_DLLPUBLIC node
+{
+    friend class ::orcus::json_document_tree;
+
+    struct impl;
+    std::unique_ptr<impl> mp_impl;
+
+    node(const json_value* jv);
+
+public:
+    node() = delete;
+
+    node(const node& other);
+    node(node&& rhs);
+    ~node();
+
+    node_t type() const;
+
+    size_t child_count() const;
+
+    pstring key(size_t index) const;
+
+    node child(size_t index) const;
+
+    node parent() const;
+
+    pstring string_value() const;
+    double numeric_value() const;
+
+    node& operator=(const node& other);
 };
 
 }}
