@@ -162,12 +162,25 @@ std::unique_ptr<json_document_tree> get_doc_tree(const char* filepath)
 
     cout << filepath << endl;
     string strm = load_file_content(filepath);
+    cout << "--- original" << endl;
     cout << strm << endl;
 
     auto doc = make_unique<json_document_tree>();
     doc->load(strm, test_config);
 
     return doc;
+}
+
+void dump_and_load(
+    const json_document_tree& doc, const std::function<void(json_document_tree::node)>& test_func)
+{
+    json_document_tree doc2;
+    std::string dumped = doc.dump();
+    cout << "--- dumped" << endl;
+    cout << dumped << endl;
+    doc2.load(dumped, json_config());
+    json_document_tree::node node = doc2.get_document_root();
+    test_func(node);
 }
 
 void test_json_traverse_basic1()
@@ -258,50 +271,60 @@ void test_json_traverse_basic4()
 
 void test_json_traverse_nested1()
 {
+    auto test_func = [](json_document_tree::node node)
+    {
+        uintptr_t root_id = node.identity();
+
+        assert(node.type() == json_node_t::object);
+        assert(node.child_count() == 1);
+
+        node = node.child(0);
+        assert(node.type() == json_node_t::array);
+        assert(node.child_count() == 3);
+
+        assert(number_expected(node.child(0), 1.0));
+        assert(number_expected(node.child(1), 2.0));
+        assert(number_expected(node.child(2), 3.0));
+
+        node = node.parent();
+        assert(node.identity() == root_id);
+    };
+
     const char* filepath = SRCDIR"/test/json/nested1/input.json";
     std::unique_ptr<json_document_tree> doc = get_doc_tree(filepath);
     json_document_tree::node node = doc->get_document_root();
-
-    uintptr_t root_id = node.identity();
-
-    assert(node.type() == json_node_t::object);
-    assert(node.child_count() == 1);
-
-    node = node.child(0);
-    assert(node.type() == json_node_t::array);
-    assert(node.child_count() == 3);
-
-    assert(number_expected(node.child(0), 1.0));
-    assert(number_expected(node.child(1), 2.0));
-    assert(number_expected(node.child(2), 3.0));
-
-    node = node.parent();
-    assert(node.identity() == root_id);
+    test_func(node);
+    dump_and_load(*doc, test_func);
 }
 
 void test_json_traverse_nested2()
 {
+    auto test_func = [](json_document_tree::node node)
+    {
+        assert(node.type() == json_node_t::array);
+        assert(node.child_count() == 3);
+
+        node = node.child(0);
+        assert(node.type() == json_node_t::object);
+        assert(number_expected(node.child("value"), 1.0));
+        node = node.parent();
+
+        node = node.child(1);
+        assert(node.type() == json_node_t::object);
+        assert(number_expected(node.child("value"), 2.0));
+        node = node.parent();
+
+        node = node.child(2);
+        assert(node.type() == json_node_t::object);
+        assert(number_expected(node.child("value"), 3.0));
+        node = node.parent();
+    };
+
     const char* filepath = SRCDIR"/test/json/nested2/input.json";
     std::unique_ptr<json_document_tree> doc = get_doc_tree(filepath);
     json_document_tree::node node = doc->get_document_root();
-
-    assert(node.type() == json_node_t::array);
-    assert(node.child_count() == 3);
-
-    node = node.child(0);
-    assert(node.type() == json_node_t::object);
-    assert(number_expected(node.child("value"), 1.0));
-    node = node.parent();
-
-    node = node.child(1);
-    assert(node.type() == json_node_t::object);
-    assert(number_expected(node.child("value"), 2.0));
-    node = node.parent();
-
-    node = node.child(2);
-    assert(node.type() == json_node_t::object);
-    assert(number_expected(node.child("value"), 3.0));
-    node = node.parent();
+    test_func(node);
+    dump_and_load(*doc, test_func);
 }
 
 int main()
@@ -314,6 +337,7 @@ int main()
     test_json_traverse_basic3();
     test_json_traverse_basic4();
     test_json_traverse_nested1();
+    test_json_traverse_nested2();
 
     return EXIT_SUCCESS;
 }
