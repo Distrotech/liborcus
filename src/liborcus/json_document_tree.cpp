@@ -85,8 +85,10 @@ struct json_value_array : public json_value
 
 struct json_value_object : public json_value
 {
+    using object_type = std::unordered_map<std::string, std::unique_ptr<json_value>>;
+
     std::vector<std::string> key_order;
-    std::unordered_map<std::string, std::unique_ptr<json_value>> value_object;
+    object_type value_object;
 
     bool has_ref;
 
@@ -579,6 +581,25 @@ size_t node::child_count() const
     return 0;
 }
 
+std::vector<pstring> node::keys() const
+{
+    if (mp_impl->m_node->type != node_t::object)
+        throw json_document_error("node::keys: this node is not of object type.");
+
+    const json_value_object* jvo = static_cast<const json_value_object*>(mp_impl->m_node);
+    std::vector<pstring> keys;
+    std::for_each(jvo->value_object.begin(), jvo->value_object.end(),
+        [&](const json_value_object::object_type::value_type& node)
+        {
+            const std::string& s = node.first;
+            pstring key(s.data(), s.size());
+            keys.push_back(key);
+        }
+    );
+
+    return keys;
+}
+
 pstring node::key(size_t index) const
 {
     if (mp_impl->m_node->type != node_t::object)
@@ -627,6 +648,23 @@ node node::child(size_t index) const
         default:
             throw json_document_error("node::child: this node cannot have child nodes.");
     }
+}
+
+node node::child(const pstring& key) const
+{
+    if (mp_impl->m_node->type != node_t::object)
+        throw json_document_error("node::child: this node is not of object type.");
+
+    const json_value_object* jvo = static_cast<const json_value_object*>(mp_impl->m_node);
+    auto it = jvo->value_object.find(key.str());
+    if (it == jvo->value_object.end())
+    {
+        std::ostringstream os;
+        os << "node::child: this object does not have a key labeled '" << key << "'";
+        throw json_document_error(os.str());
+    }
+
+    return node(it->second.get());
 }
 
 node node::parent() const

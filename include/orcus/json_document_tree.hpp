@@ -13,6 +13,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 namespace orcus {
 
@@ -63,9 +64,13 @@ public:
 
     size_t child_count() const;
 
+    std::vector<pstring> keys() const;
+
     pstring key(size_t index) const;
 
     node child(size_t index) const;
+
+    node child(const pstring& key) const;
 
     node parent() const;
 

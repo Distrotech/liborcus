@@ -232,6 +232,30 @@ void test_json_traverse_basic3()
     assert(number_expected(node.child(8), 11E2));
 }
 
+void test_json_traverse_basic4()
+{
+    const char* filepath = SRCDIR"/test/json/basic4/input.json";
+    std::unique_ptr<json_document_tree> doc = get_doc_tree(filepath);
+    json_document_tree::node node = doc->get_document_root();
+
+    assert(node.type() == json_node_t::object);
+    auto keys = node.keys();
+    assert(keys.size() == 3);
+    for (auto it = keys.begin(), ite = keys.end(); it != ite; ++it)
+    {
+        const pstring& key = *it;
+        json_document_tree::node child = node.child(key);
+        if (key == "int")
+            assert(number_expected(child, 12.0));
+        else if (key == "float")
+            assert(number_expected(child, 0.125));
+        else if (key == "string")
+            assert(string_expected(child, "blah..."));
+        else
+            assert(!"unexpected key");
+    }
+}
+
 int main()
 {
     test_json_parse();
@@ -240,6 +264,7 @@ int main()
     test_json_traverse_basic1();
     test_json_traverse_basic2();
     test_json_traverse_basic3();
+    test_json_traverse_basic4();
 
     return EXIT_SUCCESS;
 }
