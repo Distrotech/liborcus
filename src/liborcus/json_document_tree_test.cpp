@@ -256,6 +256,29 @@ void test_json_traverse_basic4()
     }
 }
 
+void test_json_traverse_nested1()
+{
+    const char* filepath = SRCDIR"/test/json/nested1/input.json";
+    std::unique_ptr<json_document_tree> doc = get_doc_tree(filepath);
+    json_document_tree::node node = doc->get_document_root();
+
+    uintptr_t root_id = node.identity();
+
+    assert(node.type() == json_node_t::object);
+    assert(node.child_count() == 1);
+
+    node = node.child(0);
+    assert(node.type() == json_node_t::array);
+    assert(node.child_count() == 3);
+
+    assert(number_expected(node.child(0), 1.0));
+    assert(number_expected(node.child(1), 2.0));
+    assert(number_expected(node.child(2), 3.0));
+
+    node = node.parent();
+    assert(node.identity() == root_id);
+}
+
 int main()
 {
     test_json_parse();
@@ -265,6 +288,7 @@ int main()
     test_json_traverse_basic2();
     test_json_traverse_basic3();
     test_json_traverse_basic4();
+    test_json_traverse_nested1();
 
     return EXIT_SUCCESS;
 }
