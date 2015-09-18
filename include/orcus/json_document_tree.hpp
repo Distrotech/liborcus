@@ -73,9 +73,13 @@ public:
     double numeric_value() const;
 
     node& operator=(const node& other);
+
+    uintptr_t identity() const;
 };
 
 }}
+
+using json_node_t = json::detail::node_t;
 
 class ORCUS_DLLPUBLIC json_document_tree
 {
@@ -83,6 +87,8 @@ class ORCUS_DLLPUBLIC json_document_tree
     std::unique_ptr<impl> mp_impl;
 
 public:
+    using node = json::detail::node;
+
     json_document_tree();
     ~json_document_tree();
 
@@ -93,6 +99,8 @@ public:
      * @param strm stream containing a JSON structure.
      */
     void load(const std::string& strm, const json_config& config);
+
+    node get_document_root() const;
 
     /**
      * Dump the JSON document tree to string.

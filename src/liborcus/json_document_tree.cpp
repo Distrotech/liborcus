@@ -549,6 +549,11 @@ node& node::operator=(const node& other)
     return *this;
 }
 
+uintptr_t node::identity() const
+{
+    return reinterpret_cast<uintptr_t>(mp_impl->m_node);
+}
+
 node_t node::type() const
 {
     return mp_impl->m_node->type;
@@ -701,6 +706,11 @@ void json_document_tree::load(const std::string& strm, const json_config& config
             }
         }
     }
+}
+
+json_document_tree::node json_document_tree::get_document_root() const
+{
+    return node(mp_impl->m_root.get());
 }
 
 std::string json_document_tree::dump() const

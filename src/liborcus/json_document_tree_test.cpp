@@ -34,6 +34,30 @@ const char* json_test_refs_dirs[] = {
     SRCDIR"/test/json/refs1/",
 };
 
+bool string_expected(const json_document_tree::node& node, const char* expected)
+{
+    if (node.type() != json_node_t::string)
+        return false;
+
+    if (node.string_value() == expected)
+        return true;
+
+    cerr << "expected='" << expected << "', actual='" << node.string_value() << "'" << endl;
+    return false;
+}
+
+bool number_expected(const json_document_tree::node& node, double expected)
+{
+    if (node.type() != json_node_t::number)
+        return false;
+
+    if (node.numeric_value() == expected)
+        return true;
+
+    cerr << "expected=" << expected << ", actual=" << node.numeric_value() << endl;
+    return false;
+}
+
 string dump_check_content(const json_document_tree& doc)
 {
     string xml_strm = doc.dump_xml();
@@ -126,10 +150,66 @@ void test_json_parse_invalid()
         catch (const json::parse_error& e)
         {
             // works as expected.
-            cout << "expression: " << invalid_json << endl;
-            cout << "error: " << e.what() << endl;
+            cout << "invalid expression tested: " << invalid_json << endl;
+            cout << "error message received: " << e.what() << endl;
         }
     }
+}
+
+std::unique_ptr<json_document_tree> get_doc_tree(const char* filepath)
+{
+    json_config test_config;
+
+    cout << filepath << endl;
+    string strm = load_file_content(filepath);
+    cout << strm << endl;
+
+    auto doc = make_unique<json_document_tree>();
+    doc->load(strm, test_config);
+
+    return doc;
+}
+
+void test_json_traverse_basic1()
+{
+    const char* filepath = SRCDIR"/test/json/basic1/input.json";
+    std::unique_ptr<json_document_tree> doc = get_doc_tree(filepath);
+    json_document_tree::node node = doc->get_document_root();
+
+    assert(node.type() == json_node_t::array);
+    assert(node.child_count() == 3);
+    assert(node.child(0).type() == json_node_t::boolean_true);
+    assert(node.child(1).type() == json_node_t::boolean_false);
+    assert(node.child(2).type() == json_node_t::null);
+
+    // Move to child node and move back.
+    json_document_tree::node node2 = node.child(0).parent();
+    assert(node.identity() == node2.identity());
+}
+
+void test_json_traverse_basic2()
+{
+    const char* filepath = SRCDIR"/test/json/basic2/input.json";
+    std::unique_ptr<json_document_tree> doc = get_doc_tree(filepath);
+    json_document_tree::node node = doc->get_document_root();
+
+    assert(node.type() == json_node_t::array);
+    assert(node.child_count() == 14);
+
+    assert(string_expected(node.child(0), "I am string"));
+    assert(string_expected(node.child(1), "me too"));
+    assert(string_expected(node.child(2), ""));
+    assert(string_expected(node.child(3), "\\"));
+    assert(string_expected(node.child(4), "/"));
+    assert(string_expected(node.child(5), "\\b"));
+    assert(string_expected(node.child(6), "\\f"));
+    assert(string_expected(node.child(7), "\\n"));
+    assert(string_expected(node.child(8), "\\r"));
+    assert(string_expected(node.child(9), "\\t"));
+    assert(string_expected(node.child(10), "\"quoted\""));
+    assert(string_expected(node.child(11), "http://www.google.com"));
+    assert(string_expected(node.child(12), "one \\n two \\n three"));
+    assert(string_expected(node.child(13), "front segment 'single quote' and \"double quote\" end segment"));
 }
 
 int main()
@@ -137,6 +217,8 @@ int main()
     test_json_parse();
     test_json_resolve_refs();
     test_json_parse_invalid();
+    test_json_traverse_basic1();
+    test_json_traverse_basic2();
 
     return EXIT_SUCCESS;
 }
