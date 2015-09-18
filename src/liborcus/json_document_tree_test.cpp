@@ -212,6 +212,26 @@ void test_json_traverse_basic2()
     assert(string_expected(node.child(13), "front segment 'single quote' and \"double quote\" end segment"));
 }
 
+void test_json_traverse_basic3()
+{
+    const char* filepath = SRCDIR"/test/json/basic3/input.json";
+    std::unique_ptr<json_document_tree> doc = get_doc_tree(filepath);
+    json_document_tree::node node = doc->get_document_root();
+
+    assert(node.type() == json_node_t::array);
+    assert(node.child_count() == 9);
+
+    assert(number_expected(node.child(0), 0.0));
+    assert(number_expected(node.child(1), 1.0));
+    assert(number_expected(node.child(2), 2.0));
+    assert(number_expected(node.child(3), 15.0));
+    assert(number_expected(node.child(4), 12.34));
+    assert(number_expected(node.child(5), -0.12));
+    assert(number_expected(node.child(6), 1.2e+22));
+    assert(number_expected(node.child(7), 1.11e-7));
+    assert(number_expected(node.child(8), 11E2));
+}
+
 int main()
 {
     test_json_parse();
@@ -219,6 +239,7 @@ int main()
     test_json_parse_invalid();
     test_json_traverse_basic1();
     test_json_traverse_basic2();
+    test_json_traverse_basic3();
 
     return EXIT_SUCCESS;
 }

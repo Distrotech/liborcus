@@ -20,10 +20,10 @@ ns0="http://schemas.kohei.us/orcus/2015/json"
 /ns0:array/ns0:item/ns0:number@ns0:value="-0.12"
 /ns0:array/ns0:item
 /ns0:array/ns0:item/ns0:number
-/ns0:array/ns0:item/ns0:number@ns0:value="55.2061"
+/ns0:array/ns0:item/ns0:number@ns0:value="1.2e+22"
 /ns0:array/ns0:item
 /ns0:array/ns0:item/ns0:number
-/ns0:array/ns0:item/ns0:number@ns0:value="0.481658"
+/ns0:array/ns0:item/ns0:number@ns0:value="1.11e-07"
 /ns0:array/ns0:item
 /ns0:array/ns0:item/ns0:number
-/ns0:array/ns0:item/ns0:number@ns0:value="121"
+/ns0:array/ns0:item/ns0:number@ns0:value="1100"

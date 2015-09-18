@@ -242,8 +242,8 @@ void json_parser<_Handler>::number_with_exp(double base)
         throw json::parse_error("number_with_exp: illegal exponent value.");
 
     long exp = parse_long_or_throw();
-    double v = std::pow(base, exp);
-    m_handler.number(v);
+    base *= std::pow(10.0, exp);
+    m_handler.number(base);
     skip_blanks();
 }
 
