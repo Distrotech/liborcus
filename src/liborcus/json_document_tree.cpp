@@ -26,7 +26,23 @@ namespace fs = boost::filesystem;
 
 namespace orcus {
 
+namespace json { namespace detail {
+
+struct json_value
+{
+    node_t type;
+
+    json_value() : type(node_t::unset) {}
+    json_value(node_t _type) : type(_type) {}
+    virtual ~json_value() {}
+};
+
+}}
+
 namespace {
+
+using json_value = json::detail::json_value;
+using node_t = json::detail::node_t;
 
 const char* tab = "    ";
 constexpr char quote = '"';
@@ -34,34 +50,13 @@ constexpr char backslash = '\\';
 
 const xmlns_id_t NS_orcus_json_xml = "http://schemas.kohei.us/orcus/2015/json";
 
-enum class json_value_type
-{
-    unset,
-    string,
-    number,
-    object,
-    array,
-    boolean_true,
-    boolean_false,
-    null
-};
-
-struct json_value
-{
-    json_value_type type;
-
-    json_value() : type(json_value_type::unset) {}
-    json_value(json_value_type _type) : type(_type) {}
-    virtual ~json_value() {}
-};
-
 struct json_value_string : public json_value
 {
     std::string value_string;
 
-    json_value_string() : json_value(json_value_type::string) {}
-    json_value_string(const std::string& s) : json_value(json_value_type::string), value_string(s) {}
-    json_value_string(const char* p, size_t n) : json_value(json_value_type::string), value_string(p, n) {}
+    json_value_string() : json_value(node_t::string) {}
+    json_value_string(const std::string& s) : json_value(node_t::string), value_string(s) {}
+    json_value_string(const char* p, size_t n) : json_value(node_t::string), value_string(p, n) {}
     virtual ~json_value_string() {}
 };
 
@@ -69,8 +64,8 @@ struct json_value_number : public json_value
 {
     double value_number;
 
-    json_value_number() : json_value(json_value_type::number) {}
-    json_value_number(double num) : json_value(json_value_type::number), value_number(num) {}
+    json_value_number() : json_value(node_t::number) {}
+    json_value_number(double num) : json_value(node_t::number), value_number(num) {}
     virtual ~json_value_number() {}
 };
 
@@ -78,7 +73,7 @@ struct json_value_array : public json_value
 {
     std::vector<std::unique_ptr<json_value>> value_array;
 
-    json_value_array() : json_value(json_value_type::array) {}
+    json_value_array() : json_value(node_t::array) {}
     virtual ~json_value_array() {}
 };
 
@@ -89,7 +84,7 @@ struct json_value_object : public json_value
 
     bool has_ref;
 
-    json_value_object() : json_value(json_value_type::object), has_ref(false) {}
+    json_value_object() : json_value(node_t::object), has_ref(false) {}
     virtual ~json_value_object() {}
 
     void swap(json_value_object& src)
@@ -118,7 +113,7 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
 
     switch (v->type)
     {
-        case json_value_type::array:
+        case node_t::array:
         {
             auto& vals = static_cast<const json_value_array*>(v)->value_array;
             os << "[" << std::endl;
@@ -131,19 +126,19 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
             os << "]";
         }
         break;
-        case json_value_type::boolean_false:
+        case node_t::boolean_false:
             os << "false";
         break;
-        case json_value_type::boolean_true:
+        case node_t::boolean_true:
             os << "true";
         break;
-        case json_value_type::null:
+        case node_t::null:
             os << "null";
         break;
-        case json_value_type::number:
+        case node_t::number:
             os << static_cast<const json_value_number*>(v)->value_number;
         break;
-        case json_value_type::object:
+        case node_t::object:
         {
             auto& key_order = static_cast<const json_value_object*>(v)->key_order;
             auto& vals = static_cast<const json_value_object*>(v)->value_object;
@@ -180,10 +175,10 @@ void dump_value(std::ostringstream& os, const json_value* v, int level, const st
             os << "}";
         }
         break;
-        case json_value_type::string:
+        case node_t::string:
             json::dump_string(os, static_cast<const json_value_string*>(v)->value_string);
         break;
-        case json_value_type::unset:
+        case node_t::unset:
         default:
             ;
     }
@@ -201,7 +196,7 @@ void dump_item(
 
 std::string dump_json_tree(const json_value* root)
 {
-    if (root->type == json_value_type::unset)
+    if (root->type == node_t::unset)
         return std::string();
 
     std::ostringstream os;
@@ -244,7 +239,7 @@ void dump_value_xml(std::ostringstream& os, const json_value* v, int level)
 {
     switch (v->type)
     {
-        case json_value_type::array:
+        case node_t::array:
         {
             os << "<array";
             if (level == 0)
@@ -263,21 +258,21 @@ void dump_value_xml(std::ostringstream& os, const json_value* v, int level)
             os << "</array>";
         }
         break;
-        case json_value_type::boolean_false:
+        case node_t::boolean_false:
             os << "<false/>";
         break;
-        case json_value_type::boolean_true:
+        case node_t::boolean_true:
             os << "<true/>";
         break;
-        case json_value_type::null:
+        case node_t::null:
             os << "<null/>";
         break;
-        case json_value_type::number:
+        case node_t::number:
             os << "<number value=\"";
             os << static_cast<const json_value_number*>(v)->value_number;
             os << "\"/>";
         break;
-        case json_value_type::object:
+        case node_t::object:
         {
             os << "<object";
             if (level == 0)
@@ -313,12 +308,12 @@ void dump_value_xml(std::ostringstream& os, const json_value* v, int level)
             os << "</object>";
         }
         break;
-        case json_value_type::string:
+        case node_t::string:
             os << "<string value=\"";
             dump_string_xml(os, static_cast<const json_value_string*>(v)->value_string);
             os << "\"/>";
         break;
-        case json_value_type::unset:
+        case node_t::unset:
         default:
             ;
     }
@@ -336,7 +331,7 @@ void dump_object_item_xml(
 
 std::string dump_xml_tree(const json_value* root)
 {
-    if (root->type == json_value_type::unset)
+    if (root->type == node_t::unset)
         return std::string();
 
     std::ostringstream os;
@@ -379,20 +374,20 @@ class parser_handler
 
         switch (cur.node->type)
         {
-            case json_value_type::array:
+            case node_t::array:
             {
                 json_value_array* jva = static_cast<json_value_array*>(cur.node);
                 jva->value_array.push_back(std::move(value));
                 return jva->value_array.back().get();
             }
             break;
-            case json_value_type::object:
+            case node_t::object:
             {
                 const std::string& key = cur.key;
                 json_value_object* jvo = static_cast<json_value_object*>(cur.node);
 
                 if (m_config.resolve_references &&
-                    key == "$ref" && value->type == json_value_type::string)
+                    key == "$ref" && value->type == node_t::string)
                 {
                     json_value_string* jvs = static_cast<json_value_string*>(value.get());
                     if (!jvo->has_ref && !jvs->value_string.empty() && jvs->value_string[0] != '#')
@@ -441,7 +436,7 @@ public:
         if (m_root)
         {
             json_value* jv = push_value(make_unique<json_value_array>());
-            assert(jv && jv->type == json_value_type::array);
+            assert(jv && jv->type == node_t::array);
             m_stack.push_back(parser_stack(jv));
         }
         else
@@ -462,7 +457,7 @@ public:
         if (m_root)
         {
             json_value* jv = push_value(make_unique<json_value_object>());
-            assert(jv && jv->type == json_value_type::object);
+            assert(jv && jv->type == node_t::object);
             m_stack.push_back(parser_stack(jv));
         }
         else
@@ -486,17 +481,17 @@ public:
 
     void boolean_true()
     {
-        push_value(make_unique<json_value>(json_value_type::boolean_true));
+        push_value(make_unique<json_value>(node_t::boolean_true));
     }
 
     void boolean_false()
     {
-        push_value(make_unique<json_value>(json_value_type::boolean_false));
+        push_value(make_unique<json_value>(node_t::boolean_false));
     }
 
     void null()
     {
-        push_value(make_unique<json_value>(json_value_type::null));
+        push_value(make_unique<json_value>(node_t::null));
     }
 
     void string(const char* p, size_t len)
@@ -557,7 +552,7 @@ void json_document_tree::load(const std::string& strm, const json_config& config
         doc.load(strm, ext_config);
 
         json_value* root = doc.mp_impl->m_root.get();
-        if (root->type == json_value_type::object)
+        if (root->type == node_t::object)
         {
             json_value_object* jvo_src = static_cast<json_value_object*>(root);
             json_value_object* jvo_dest = it->dest;

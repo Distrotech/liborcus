@@ -17,6 +17,24 @@ namespace orcus {
 
 struct json_config;
 
+namespace json { namespace detail {
+
+struct json_value;
+
+enum class node_t
+{
+    unset,
+    string,
+    number,
+    object,
+    array,
+    boolean_true,
+    boolean_false,
+    null
+};
+
+}}
+
 class ORCUS_DLLPUBLIC json_document_tree
 {
     struct impl;
