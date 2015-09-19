@@ -79,6 +79,13 @@ public:
 
     node& operator=(const node& other);
 
+    /**
+     * Return an indentifier of the JSON value object that the node
+     * represents.  The identifier is derived directly from the memory address
+     * of the value object.
+     *
+     * @return identifier of the JSON value object.
+     */
     uintptr_t identity() const;
 };
 
@@ -105,6 +112,11 @@ public:
      */
     void load(const std::string& strm, const json_config& config);
 
+    /**
+     * Get the root node of the document.
+     *
+     * @return root node of the document.
+     */
     node get_document_root() const;
 
     /**
@@ -116,7 +128,6 @@ public:
 
     /**
      * Dump the JSON document tree to an XML structure.
-     *
      *
      * @return a string containing an XML structure representing the JSON
      *         content.
