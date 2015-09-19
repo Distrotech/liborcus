@@ -18,6 +18,7 @@
 #include <vector>
 #include <unordered_map>
 #include <sstream>
+#include <limits>
 
 #include <boost/current_function.hpp>
 #include <boost/filesystem.hpp>
@@ -70,8 +71,12 @@ struct json_value_number : public json_value
 {
     double value_number;
 
-    json_value_number() : json_value(node_t::number) {}
+    json_value_number() :
+        json_value(node_t::number),
+        value_number(std::numeric_limits<double>::quiet_NaN()) {}
+
     json_value_number(double num) : json_value(node_t::number), value_number(num) {}
+
     virtual ~json_value_number() {}
 };
 
