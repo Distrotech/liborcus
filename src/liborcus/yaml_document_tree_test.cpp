@@ -48,27 +48,31 @@ void test_yaml_parse_basic1()
 
     // Document root is a map node with 4 elements.
     yaml_document_tree::node root = doc.get_document_root(0);
+    uintptr_t root_id = root.identity();
     assert(root.type() == yaml_node_t::map);
     assert(root.child_count() == 4);
 
-    yaml_document_tree::node key = root.key(0);
+    std::vector<yaml_document_tree::node> keys = root.keys();
+    assert(keys.size() == 4);
+
+    yaml_document_tree::node key = keys[0];
     assert(key.type() == yaml_node_t::string);
     assert(key.string_value() == "dict");
 
-    key = root.key(1);
+    key = keys[1];
     assert(key.type() == yaml_node_t::string);
     assert(key.string_value() == "list");
 
-    key = root.key(2);
+    key = keys[2];
     assert(key.type() == yaml_node_t::string);
     assert(key.string_value() == "number");
 
-    key = root.key(3);
+    key = keys[3];
     assert(key.type() == yaml_node_t::string);
     assert(key.string_value() == "string");
 
     // first child is a map.
-    yaml_document_tree::node node = root.child(0);
+    yaml_document_tree::node node = root.child(keys[0]);
     assert(node.type() == yaml_node_t::map);
     assert(node.child_count() == 3);
 
@@ -107,8 +111,9 @@ void test_yaml_parse_basic1()
     // Go up to the root node.
     node = node.parent().parent();
     assert(node.type() == yaml_node_t::map);
+    assert(node.identity() == root_id);
 
-    node = node.child(1);
+    node = node.child(keys[1]);
     assert(node.type() == yaml_node_t::sequence);
     assert(node.child_count() == 3);
 
@@ -154,6 +159,7 @@ void test_yaml_parse_basic1()
     node = node.parent();
 
     node = node.parent().parent();  // back to the root.
+    assert(node.identity() == root_id);
 
     key = node.key(2);
     assert(key.type() == yaml_node_t::string);

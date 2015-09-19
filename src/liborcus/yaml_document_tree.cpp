@@ -411,6 +411,11 @@ node& node::operator=(const node& other)
     return *this;
 }
 
+uintptr_t node::identity() const
+{
+    return reinterpret_cast<uintptr_t>(mp_impl->m_node);
+}
+
 node_t node::type() const
 {
     return mp_impl->m_node->type;
@@ -434,6 +439,23 @@ size_t node::child_count() const
             ;
     }
     return 0;
+}
+
+std::vector<node> node::keys() const
+{
+    if (mp_impl->m_node->type != node_t::map)
+        throw yaml_document_error("node::keys: this node is not of map type.");
+
+    const yaml_value_map* yvm = static_cast<const yaml_value_map*>(mp_impl->m_node);
+    std::vector<node> keys;
+    std::for_each(yvm->key_order.begin(), yvm->key_order.end(),
+        [&](const std::unique_ptr<yaml_value>& key)
+        {
+            keys.push_back(std::move(node(key.get())));
+        }
+    );
+
+    return keys;
 }
 
 node node::key(size_t index) const
@@ -482,6 +504,19 @@ node node::child(size_t index) const
         default:
             throw yaml_document_error("node::child: this node cannot have child nodes.");
     }
+}
+
+node node::child(const node& key) const
+{
+    if (mp_impl->m_node->type != node_t::map)
+        throw yaml_document_error("node::child: this node is not of map type.");
+
+    const yaml_value_map* yvm = static_cast<const yaml_value_map*>(mp_impl->m_node);
+    auto it = yvm->value_map.find(key.mp_impl->m_node);
+    if (it == yvm->value_map.end())
+        throw yaml_document_error("node::child: this map does not have the specified key.");
+
+    return node(it->second.get());
 }
 
 node node::parent() const

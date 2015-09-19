@@ -13,6 +13,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 namespace orcus {
 
@@ -63,9 +64,13 @@ public:
 
     size_t child_count() const;
 
+    std::vector<node> keys() const;
+
     node key(size_t index) const;
 
     node child(size_t index) const;
+
+    node child(const node& key) const;
 
     node parent() const;
 
@@ -73,6 +78,8 @@ public:
     double numeric_value() const;
 
     node& operator=(const node& other);
+
+    uintptr_t identity() const;
 };
 
 }}
