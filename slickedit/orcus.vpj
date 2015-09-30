@@ -565,6 +565,9 @@
                 <F N="../src/parser/zip_archive.cpp"/>
                 <F N="../src/parser/zip_archive_stream.cpp"/>
             </Folder>
+            <Folder Name="python">
+                <F N="../src/python/python.cpp"/>
+            </Folder>
             <Folder Name="spreadsheet">
                 <F N="../src/spreadsheet/auto_filter.cpp"/>
                 <F N="../src/spreadsheet/data_table.cpp"/>
