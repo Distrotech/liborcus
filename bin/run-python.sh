@@ -11,7 +11,7 @@ if [ ! -e "$1" ]; then
 fi
 
 PROGDIR=`dirname $0`
-_PYTHONPATH="$PROGDIR/../src/python/.libs"
+_PYTHONPATH="$PROGDIR/../src/python/.libs:$PROGDIR/../src/python"
 
 export PYTHONPATH=$_PYTHONPATH:$PYTHONPATH
 export LD_LIBRARY_PATH="$PROGDIR/../src/liborcus/.libs:$PROGDIR/../src/parser/.libs"

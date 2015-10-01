@@ -566,6 +566,7 @@
                 <F N="../src/parser/zip_archive_stream.cpp"/>
             </Folder>
             <Folder Name="python">
+                <F N="../src/python/json.cpp"/>
                 <F N="../src/python/python.cpp"/>
             </Folder>
             <Folder Name="spreadsheet">

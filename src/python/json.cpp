@@ -6,14 +6,11 @@
  */
 
 #include "orcus/env.hpp"
-#include "orcus/info.hpp"
 
 #include <iostream>
-#include <string>
 
 #include <Python.h>
 
-#define ORCUS_DEBUG_PYTHON 0
 #define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
 
 using namespace std;
@@ -21,38 +18,6 @@ using namespace std;
 namespace orcus { namespace python {
 
 namespace {
-
-#if ORCUS_DEBUG_PYTHON
-void print_args(PyObject* args)
-{
-    string args_str;
-    PyObject* repr = PyObject_Repr(args);
-    if (repr)
-    {
-        Py_INCREF(repr);
-        args_str = PyBytes_AsString(repr);
-        Py_DECREF(repr);
-    }
-    cout << args_str << "\n";
-}
-#endif
-
-PyObject* info(PyObject*, PyObject*)
-{
-    cout << "orcus version: "
-        << orcus::get_version_major() << '.'
-        << orcus::get_version_minor() << '.'
-        << orcus::get_version_micro() << endl;
-
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-PyMethodDef orcus_methods[] =
-{
-    { "info", (PyCFunction)info, METH_NOARGS, "Print orcus module information." },
-    { NULL, NULL, 0, NULL }
-};
 
 struct module_state
 {
@@ -71,12 +36,24 @@ int orcus_clear(PyObject* m)
     return 0;
 }
 
+PyObject* test(PyObject*, PyObject*)
+{
+    cout << "test" << endl;
+
+    Py_INCREF(Py_None);
+    return Py_None;
 }
+
+PyMethodDef orcus_methods[] =
+{
+    { "test", (PyCFunction)test, METH_NOARGS, "Test." },
+    { NULL, NULL, 0, NULL }
+};
 
 struct PyModuleDef moduledef =
 {
     PyModuleDef_HEAD_INIT,
-    "_orcus",
+    "_orcus_json",
     NULL,
     sizeof(struct module_state),
     orcus_methods,
@@ -86,11 +63,13 @@ struct PyModuleDef moduledef =
     NULL
 };
 
+}
+
 }}
 
 extern "C" {
 
-ORCUS_DLLPUBLIC PyObject* PyInit__orcus()
+ORCUS_DLLPUBLIC PyObject* PyInit__orcus_json()
 {
     PyObject* m = PyModule_Create(&orcus::python::moduledef);
     return m;
