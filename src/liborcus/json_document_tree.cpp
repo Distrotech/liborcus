@@ -729,11 +729,11 @@ void json_document_tree::load(const std::string& strm, const json_config& config
         extpath /= extfile;
 
         // Get the stream content from the path.
-        std::string strm = load_file_content(extpath.string().c_str());
+        std::string ext_strm = load_file_content(extpath.string().c_str());
 
         ext_config.input_path = extpath.string();
         json_document_tree doc;
-        doc.load(strm, ext_config);
+        doc.load(ext_strm, ext_config);
 
         json_value* root = doc.mp_impl->m_root.get();
         if (root->type == node_t::object)
