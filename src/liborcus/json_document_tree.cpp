@@ -711,8 +711,13 @@ json_document_tree::~json_document_tree() {}
 
 void json_document_tree::load(const std::string& strm, const json_config& config)
 {
+    load(strm.data(), strm.size(), config);
+}
+
+void json_document_tree::load(const char* p, size_t n, const json_config& config)
+{
     parser_handler hdl(config);
-    json_parser<parser_handler> parser(strm.data(), strm.size(), hdl);
+    json_parser<parser_handler> parser(p, n, hdl);
     parser.parse();
     hdl.swap(mp_impl->m_root);
 

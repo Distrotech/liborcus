@@ -109,7 +109,7 @@ PyObject* json_loads(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
 
     json_config conf;
     json_document_tree doc;
-    doc.load(stream, conf);
+    doc.load(stream, strlen(stream), conf);
 
     return to_pyobject(doc.get_document_root());
 }

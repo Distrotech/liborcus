@@ -112,6 +112,8 @@ public:
      */
     void load(const std::string& strm, const json_config& config);
 
+    void load(const char* p, size_t n, const json_config& config);
+
     /**
      * Get the root node of the document.
      *
