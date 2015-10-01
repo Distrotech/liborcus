@@ -109,6 +109,8 @@ PyObject* json_loads(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
     }
 
     json_config conf;
+    conf.persistent_string_values = false;
+
     json_document_tree doc;
     try
     {
