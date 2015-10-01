@@ -11,6 +11,7 @@
 #include "orcus/pstring.hpp"
 
 #include <algorithm>
+#include <sstream>
 
 #include <Python.h>
 
@@ -109,7 +110,17 @@ PyObject* json_loads(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
 
     json_config conf;
     json_document_tree doc;
-    doc.load(stream, strlen(stream), conf);
+    try
+    {
+        doc.load(stream, strlen(stream), conf);
+    }
+    catch (const json_document_error& e)
+    {
+        ostringstream os;
+        os << "failed to load this JSON string (reason: " << e.what() << ")";
+        PyErr_SetString(PyExc_TypeError, os.str().c_str());
+        return nullptr;
+    }
 
     return to_pyobject(doc.get_document_root());
 }
