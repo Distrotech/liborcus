@@ -180,6 +180,7 @@ parse_quoted_string_state parse_string_with_escaped_char(
     parse_quoted_string_state ret;
     ret.str = nullptr;
     ret.length = 0;
+    ret.transient = true;
 
     // Start the buffer with the string we've parsed so far.
     buffer.reset();
@@ -258,6 +259,9 @@ parse_quoted_string_state parse_single_quoted_string_buffered(
     char last = 0;
     char c = 0;
 
+    parse_quoted_string_state ret;
+    ret.transient = true;
+
     for (; p != p_end; ++p)
     {
         if (!p0)
@@ -284,7 +288,6 @@ parse_quoted_string_state parse_single_quoted_string_buffered(
                 if (last == '\'')
                 {
                     buffer.append(p0, len-1);
-                    parse_quoted_string_state ret;
                     ret.str = buffer.get();
                     ret.length = buffer.size();
                     return ret;
@@ -299,13 +302,11 @@ parse_quoted_string_state parse_single_quoted_string_buffered(
     if (last == '\'')
     {
         buffer.append(p0, len-1);
-        parse_quoted_string_state ret;
         ret.str = buffer.get();
         ret.length = buffer.size();
         return ret;
     }
 
-    parse_quoted_string_state ret;
     ret.str = nullptr;
     ret.length = parse_quoted_string_state::error_no_closing_quote;
     return ret;
@@ -323,6 +324,7 @@ parse_quoted_string_state parse_single_quoted_string(
     parse_quoted_string_state ret;
     ret.str = p;
     ret.length = 0;
+    ret.transient = false;
 
     if (p == p_end)
     {
@@ -422,6 +424,7 @@ parse_quoted_string_state parse_double_quoted_string(
     parse_quoted_string_state ret;
     ret.str = p;
     ret.length = 0;
+    ret.transient = false;
 
     if (p == p_end)
     {

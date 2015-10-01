@@ -36,6 +36,18 @@ struct parse_quoted_string_state
 
     const char* str;
     size_t length;
+
+    /**
+     * When true, the str pointer points to the temporary buffer storage
+     * provided by the caller instead of the original character stream.  The
+     * caller must allocate memory and copy the value to it before the buffer
+     * content changes if the parsed string value needs to be stored.
+     *
+     * When false, str points to a position in the original stream, and the
+     * caller doens't need to allocate memory to store the string value as
+     * long as the original character stream is alive.
+     */
+    bool transient;
 };
 
 ORCUS_PSR_DLLPUBLIC bool is_blank(char c);
