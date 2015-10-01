@@ -488,7 +488,10 @@ public:
     void object_key(const char* p, size_t len, bool transient)
     {
         parser_stack& cur = m_stack.back();
-        cur.key = m_pool.intern(p, len).first;
+        cur.key = pstring(p, len);
+        if (m_config.persistent_string_values || transient)
+            // The tree manages the life cycle of this string value.
+            cur.key = m_pool.intern(cur.key).first;
     }
 
     void end_object()
@@ -514,7 +517,11 @@ public:
 
     void string(const char* p, size_t len, bool transient)
     {
-        pstring s = m_pool.intern(p, len).first;
+        pstring s(p, len);
+        if (m_config.persistent_string_values || transient)
+            // The tree manages the life cycle of this string value.
+            s = m_pool.intern(s).first;
+
         push_value(make_unique<json_value_string>(s));
     }
 

@@ -14,7 +14,8 @@ config::config() : debug(false), structure_check(true) {}
 json_config::json_config() :
     output_format(output_format_type::none),
     preserve_object_order(true),
-    resolve_references(false) {}
+    resolve_references(false),
+    persistent_string_values(true) {}
 
 json_config::~json_config() {}
 

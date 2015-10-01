@@ -52,6 +52,14 @@ struct ORCUS_DLLPUBLIC json_config
      */
     bool resolve_references;
 
+    /**
+     * When true, the document tree should allocate memory and hold copies of
+     * string values in the tree.  When false, no extra memory is allocated
+     * for string values in the tree and the string values simply point to the
+     * original json string stream.
+     */
+    bool persistent_string_values;
+
     json_config();
     ~json_config();
 };
