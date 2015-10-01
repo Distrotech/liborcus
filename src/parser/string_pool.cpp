@@ -129,6 +129,11 @@ size_t string_pool::size() const
     return mp_impl->m_store.size();
 }
 
+void string_pool::swap(string_pool& other)
+{
+    std::swap(mp_impl, other.mp_impl);
+}
+
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

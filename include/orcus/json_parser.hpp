@@ -179,7 +179,7 @@ void json_parser<_Handler>::object()
             }
         }
 
-        m_handler.object_key(res.str, res.length);
+        m_handler.object_key(res.str, res.length, res.transient);
 
         skip_blanks();
         if (cur_char() != ':')
@@ -253,7 +253,7 @@ void json_parser<_Handler>::string()
     parse_quoted_string_state res = parse_string();
     if (res.str)
     {
-        m_handler.string(res.str, res.length);
+        m_handler.string(res.str, res.length, res.transient);
         return;
     }
 

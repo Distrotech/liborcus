@@ -21,10 +21,10 @@ namespace orcus {
  */
 class ORCUS_PSR_DLLPUBLIC string_pool
 {
+public:
     string_pool(const string_pool&) = delete;
     string_pool& operator=(const string_pool&) = delete;
 
-public:
     string_pool();
     ~string_pool();
 
@@ -62,6 +62,8 @@ public:
     void dump() const;
     void clear();
     size_t size() const;
+
+    void swap(string_pool& other);
 
 private:
     struct impl;
