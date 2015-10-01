@@ -17,6 +17,8 @@
 
 namespace orcus {
 
+class string_pool;
+
 class ORCUS_DLLPUBLIC json_document_error : public general_error
 {
 public:
@@ -102,6 +104,7 @@ public:
     using node = json::detail::node;
 
     json_document_tree();
+    json_document_tree(string_pool& pool);
     ~json_document_tree();
 
     /**

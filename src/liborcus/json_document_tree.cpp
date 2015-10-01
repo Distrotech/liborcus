@@ -381,7 +381,7 @@ class parser_handler
     std::vector<parser_stack> m_stack;
     std::vector<external_ref> m_external_refs;
 
-    string_pool m_pool;
+    string_pool& m_pool;
 
     json_value* push_value(std::unique_ptr<json_value>&& value)
     {
@@ -438,7 +438,8 @@ class parser_handler
     }
 
 public:
-    parser_handler(const json_config& config) : m_config(config) {}
+    parser_handler(const json_config& config, string_pool& pool) :
+        m_config(config), m_pool(pool) {}
 
     void begin_parse()
     {
@@ -530,10 +531,9 @@ public:
         push_value(make_unique<json_value_number>(val));
     }
 
-    void swap(std::unique_ptr<json_value>& other_root, string_pool& other_pool)
+    void swap(std::unique_ptr<json_value>& other_root)
     {
         other_root.swap(m_root);
-        other_pool.swap(m_pool);
     }
 
     const std::vector<external_ref>& get_external_refs() const
@@ -712,10 +712,15 @@ double node::numeric_value() const
 struct json_document_tree::impl
 {
     std::unique_ptr<json_value> m_root;
-    string_pool m_pool;
+    std::unique_ptr<string_pool> m_own_pool;
+    string_pool& m_pool;
+
+    impl() : m_own_pool(make_unique<string_pool>()), m_pool(*m_own_pool) {}
+    impl(string_pool& pool) : m_pool(pool) {}
 };
 
 json_document_tree::json_document_tree() : mp_impl(make_unique<impl>()) {}
+json_document_tree::json_document_tree(string_pool& pool) : mp_impl(make_unique<impl>(pool)) {}
 json_document_tree::~json_document_tree() {}
 
 void json_document_tree::load(const std::string& strm, const json_config& config)
@@ -725,14 +730,16 @@ void json_document_tree::load(const std::string& strm, const json_config& config
 
 void json_document_tree::load(const char* p, size_t n, const json_config& config)
 {
-    parser_handler hdl(config);
+    parser_handler hdl(config, mp_impl->m_pool);
     json_parser<parser_handler> parser(p, n, hdl);
     parser.parse();
-    hdl.swap(mp_impl->m_root, mp_impl->m_pool);
+    hdl.swap(mp_impl->m_root);
 
     auto& external_refs = hdl.get_external_refs();
 
     json_config ext_config = config;
+    // The stream will get destroyed after each parsing of an external json file.
+    ext_config.persistent_string_values = true;
 
     fs::path parent_dir = config.input_path;
     parent_dir = parent_dir.parent_path();
@@ -746,7 +753,7 @@ void json_document_tree::load(const char* p, size_t n, const json_config& config
         std::string ext_strm = load_file_content(extpath.string().c_str());
 
         ext_config.input_path = extpath.string();
-        json_document_tree doc;
+        json_document_tree doc(mp_impl->m_pool);
         doc.load(ext_strm, ext_config);
 
         json_value* root = doc.mp_impl->m_root.get();
