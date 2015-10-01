@@ -10,7 +10,6 @@
 #include "orcus/config.hpp"
 #include "orcus/pstring.hpp"
 
-#include <iostream>
 #include <algorithm>
 
 #include <Python.h>
@@ -107,8 +106,6 @@ PyObject* json_loads(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
         PyErr_SetString(PyExc_TypeError, "The method must be given a string.");
         return nullptr;
     }
-
-    cout << stream << endl;
 
     json_config conf;
     json_document_tree doc;
