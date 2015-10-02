@@ -57,6 +57,10 @@ struct ORCUS_DLLPUBLIC json_config
      * string values in the tree.  When false, no extra memory is allocated
      * for string values in the tree and the string values simply point to the
      * original json string stream.
+     *
+     * In other words, when this option is set to false, the caller must
+     * ensure that the json string stream instance stays alive for the entire
+     * life cycle of the document tree.
      */
     bool persistent_string_values;
 
