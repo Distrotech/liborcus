@@ -6,12 +6,14 @@
  */
 
 #include "orcus/env.hpp"
+#include "orcus/json_parser.hpp"
 #include "orcus/json_document_tree.hpp"
 #include "orcus/config.hpp"
 #include "orcus/pstring.hpp"
 
 #include <algorithm>
 #include <sstream>
+#include <boost/current_function.hpp>
 
 #include <Python.h>
 
@@ -40,63 +42,188 @@ int orcus_clear(PyObject* m)
     return 0;
 }
 
-PyObject* to_pyobject(const json_document_tree::node& node)
+struct parser_stack
 {
-    switch (node.type())
+    PyObject* key;
+    PyObject* node;
+    json_node_t type;
+
+    parser_stack(PyObject* _node, json_node_t _type) : node(_node), type(_type) {}
+};
+
+class json_parser_handler
+{
+    PyObject* m_root;
+    std::vector<parser_stack> m_stack;
+
+    PyObject* push_value(PyObject* value)
     {
-        case json_node_t::object:
+        if (!value)
         {
-            vector<pstring> keys = node.keys();
-            PyObject* o = PyDict_New();
-
-            std::for_each(keys.begin(), keys.end(),
-                [&](const pstring& key)
-                {
-                    PyObject* k = PyUnicode_FromStringAndSize(key.get(), key.size());
-                    PyObject* v = to_pyobject(node.child(key));
-                    PyDict_SetItem(o, k, v);
-                }
-            );
-            return o;
+            std::ostringstream os;
+            os << BOOST_CURRENT_FUNCTION << ": Empty value is passed.";
+            throw orcus::json::parse_error(os.str());
         }
-        case json_node_t::array:
+
+        if (m_stack.empty())
         {
-            size_t n = node.child_count();
-            PyObject* o = PyList_New(node.child_count());
-            for (size_t i = 0; i < n; ++i)
+            std::ostringstream os;
+            os << BOOST_CURRENT_FUNCTION << ": Stack is unexpectedly empty.";
+            throw orcus::json::parse_error(os.str());
+        }
+
+        parser_stack& cur = m_stack.back();
+
+        switch (cur.type)
+        {
+            case json_node_t::array:
             {
-                json_document_tree::node child = node.child(i);
-                PyObject* item = to_pyobject(child);
-                if (!item)
-                    return nullptr;
-
-                PyList_SetItem(o, i, item);
+                PyList_Append(cur.node, value);
+                return value;
             }
-            return o;
+            break;
+            case json_node_t::object:
+            {
+                assert(cur.key);
+                PyDict_SetItem(cur.node, cur.key, value);
+                cur.key = nullptr;
+                return value;
+            }
+            break;
+            default:
+                Py_DECREF(value);
         }
-        case json_node_t::number:
-            return PyFloat_FromDouble(node.numeric_value());
-        case json_node_t::string:
-        {
-            pstring sv = node.string_value();
-            return PyUnicode_FromStringAndSize(sv.get(), sv.size());
-        }
-        case json_node_t::boolean_true:
-            Py_INCREF(Py_True);
-            return Py_True;
-        case json_node_t::boolean_false:
-            Py_INCREF(Py_False);
-            return Py_False;
-        case json_node_t::null:
-            Py_INCREF(Py_None);
-            return Py_None;
-        default:
-            ;
+
+        std::ostringstream os;
+        os << BOOST_CURRENT_FUNCTION << ": unstackable JSON value type.";
+        throw orcus::json::parse_error(os.str());
     }
 
-    PyErr_SetString(PyExc_TypeError, "Unexpected JSON node type.");
-    return nullptr;
-}
+public:
+    json_parser_handler() : m_root(nullptr) {}
+
+    ~json_parser_handler()
+    {
+        if (m_root)
+            Py_XDECREF(m_root);
+
+        std::for_each(m_stack.begin(), m_stack.end(),
+            [](parser_stack& ps)
+            {
+                if (ps.key)
+                {
+                    Py_XDECREF(ps.key);
+                    ps.key = nullptr;
+                }
+            }
+        );
+    }
+
+    void begin_parse()
+    {
+        if (m_root)
+        {
+            std::ostringstream os;
+            os << BOOST_CURRENT_FUNCTION << ": Root JSON value already exists.";
+            throw orcus::json::parse_error(os.str());
+        }
+    }
+
+    void end_parse() {}
+
+    void begin_array()
+    {
+        if (m_root)
+        {
+            PyObject* array = push_value(PyList_New(0));
+            m_stack.push_back(parser_stack(array, json_node_t::array));
+        }
+        else
+        {
+            m_root = PyList_New(0);
+            m_stack.push_back(parser_stack(m_root, json_node_t::array));
+        }
+    }
+
+    void end_array()
+    {
+        if (m_stack.empty())
+        {
+            std::ostringstream os;
+            os << BOOST_CURRENT_FUNCTION << ": Stack is unexpectedly empty.";
+            throw orcus::json::parse_error(os.str());
+        }
+
+        m_stack.pop_back();
+    }
+
+    void begin_object()
+    {
+        if (m_root)
+        {
+            PyObject* dict = push_value(PyDict_New());
+            m_stack.push_back(parser_stack(dict, json_node_t::object));
+        }
+        else
+        {
+            m_root = PyDict_New();
+            m_stack.push_back(parser_stack(m_root, json_node_t::object));
+        }
+    }
+
+    void object_key(const char* p, size_t len, bool transient)
+    {
+        parser_stack& cur = m_stack.back();
+        cur.key = PyUnicode_FromStringAndSize(p, len);
+    }
+
+    void end_object()
+    {
+        if (m_stack.empty())
+        {
+            std::ostringstream os;
+            os << BOOST_CURRENT_FUNCTION << ": Stack is unexpectedly empty.";
+            throw orcus::json::parse_error(os.str());
+        }
+
+        m_stack.pop_back();
+    }
+
+    void boolean_true()
+    {
+        Py_INCREF(Py_True);
+        push_value(Py_True);
+    }
+
+    void boolean_false()
+    {
+        Py_INCREF(Py_False);
+        push_value(Py_False);
+    }
+
+    void null()
+    {
+        Py_INCREF(Py_None);
+        push_value(Py_None);
+    }
+
+    void string(const char* p, size_t len, bool transient)
+    {
+        push_value(PyUnicode_FromStringAndSize(p, len));
+    }
+
+    void number(double val)
+    {
+        push_value(PyFloat_FromDouble(val));
+    }
+
+    PyObject* get_root()
+    {
+        PyObject* o = m_root;
+        m_root = nullptr;
+        return o;
+    }
+};
 
 PyObject* json_loads(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
 {
@@ -108,23 +235,18 @@ PyObject* json_loads(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
         return nullptr;
     }
 
-    json_config conf;
-    conf.persistent_string_values = false;
-
-    json_document_tree doc;
+    json_parser_handler hdl;
+    orcus::json_parser<json_parser_handler> parser(stream, strlen(stream), hdl);
     try
     {
-        doc.load(stream, strlen(stream), conf);
+        parser.parse();
+        return hdl.get_root();
     }
-    catch (const json_document_error& e)
+    catch (const orcus::json::parse_error& e)
     {
-        ostringstream os;
-        os << "failed to load this JSON string (reason: " << e.what() << ")";
-        PyErr_SetString(PyExc_TypeError, os.str().c_str());
-        return nullptr;
+        PyErr_SetString(PyExc_TypeError, e.what());
     }
-
-    return to_pyobject(doc.get_document_root());
+    return nullptr;
 }
 
 PyMethodDef orcus_methods[] =
