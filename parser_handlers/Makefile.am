@@ -9,7 +9,8 @@ EXTRA_PROGRAMS = \
 	orcus-handler-test-csv \
 	orcus-handler-test-sax \
 	orcus-handler-test-sax-token \
-	orcus-handler-test-sax-ns
+	orcus-handler-test-sax-ns \
+	orcus-handler-test-json
 
 # orcus-handler-test-css
 
@@ -60,12 +61,23 @@ orcus_handler_test_sax_ns_SOURCES = \
 orcus_handler_test_sax_ns_LDADD = \
 	../src/parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
+# orcus-handler-test-json
+
+orcus_handler_test_json_SOURCES = \
+	json.hpp \
+	json_test.cpp
+
+orcus_handler_test_json_LDADD = \
+	../src/parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
 TESTS = \
 	orcus-handler-test-css \
 	orcus-handler-test-csv \
 	orcus-handler-test-sax \
 	orcus-handler-test-sax-token \
-	orcus-handler-test-sax-ns
+	orcus-handler-test-sax-ns \
+	orcus-handler-test-json
+
 
 distclean-local:
 	rm -rf $(TESTS)
