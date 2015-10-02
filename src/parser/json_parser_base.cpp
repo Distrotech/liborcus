@@ -102,7 +102,21 @@ parse_quoted_string_state parser_base::parse_string()
 
 void parser_base::skip_blanks()
 {
-    skip(" \t\n\r");
+    for (; has_char(); next())
+    {
+        switch (*mp_char)
+        {
+            case ' ':
+            case '\t':
+            case '\n':
+            case '\r':
+                continue;
+            default:
+                ;
+        }
+
+        break;
+    }
 }
 
 }}
