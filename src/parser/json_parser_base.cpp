@@ -100,21 +100,8 @@ parse_quoted_string_state parser_base::parse_string()
 
 void parser_base::skip_blanks()
 {
-    for (; has_char(); next())
-    {
-        switch (*mp_char)
-        {
-            case ' ':
-            case '\t':
-            case '\n':
-            case '\r':
-                continue;
-            default:
-                ;
-        }
-
-        break;
-    }
+    for (; mp_char != mp_end && *mp_char <= ' '; ++mp_char)
+        ;
 }
 
 }}
