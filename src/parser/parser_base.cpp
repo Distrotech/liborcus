@@ -49,18 +49,17 @@ std::string parse_error::build_message(
 }
 
 parser_base::parser_base(const char* p, size_t n) :
-    mp_char(p), m_pos(0), m_length(n) {}
+    mp_char(p), mp_end(p+n)
+{
+}
 
 void parser_base::next(size_t inc)
 {
-    m_pos += inc;
     mp_char += inc;
 }
 
 void parser_base::prev(size_t dec)
 {
-    assert(m_pos > dec);
-    m_pos -= dec;
     mp_char -= dec;
 }
 
@@ -106,14 +105,13 @@ double parser_base::parse_double()
     if (p == mp_char)
         return std::numeric_limits<double>::quiet_NaN();
 
-    m_pos += p - mp_char;
     mp_char = p;
     return val;
 }
 
 size_t parser_base::remaining_size() const
 {
-    return m_length - m_pos - 1;
+    return std::distance(mp_char, mp_end) - 1;
 }
 
 }

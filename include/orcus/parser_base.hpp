@@ -29,14 +29,13 @@ class ORCUS_PSR_DLLPUBLIC parser_base
 {
 protected:
     const char* mp_char;
-    size_t m_pos;
-    size_t m_length;
+    const char* mp_end;
 
 protected:
     parser_base(const char* p, size_t n);
 
-    bool has_char() const { return m_pos < m_length; }
-    bool has_next() const { return m_pos + 1 < m_length; }
+    bool has_char() const { return mp_char != mp_end; }
+    bool has_next() const { return (mp_char+1) != mp_end; }
 
     void next(size_t inc=1);
     void prev(size_t dec=1);

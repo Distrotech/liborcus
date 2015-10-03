@@ -67,7 +67,7 @@ void css_parser<_Handler>::parse()
 #if ORCUS_DEBUG_CSS
     std::cout << "compressed: '";
     const char* p = mp_char;
-    for (size_t i = m_pos; i < m_length; ++i, ++p)
+    for (; p != mp_end; ++p)
         std::cout << *p;
     std::cout << "'" << std::endl;
 #endif
@@ -87,7 +87,6 @@ void css_parser<_Handler>::rule()
             continue;
 
         char c = cur_char();
-
         if (is_alpha(c))
         {
             simple_selector_name();

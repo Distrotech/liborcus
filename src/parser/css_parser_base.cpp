@@ -141,7 +141,7 @@ void parser_base::skip_blanks()
 void parser_base::skip_blanks_reverse()
 {
     const char* p = mp_char + remaining_size();
-    for (; p != mp_char; --p, --m_length)
+    for (; p != mp_char; --p, --mp_end)
     {
         if (!is_blank(*p))
             break;
@@ -193,7 +193,7 @@ void parser_base::shrink_stream()
         if (*p != com_close[i-1])
             return;
     }
-    m_length -= com_close_len;
+    mp_end -= com_close_len;
 
     skip_blanks_reverse();
 }

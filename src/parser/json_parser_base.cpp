@@ -72,7 +72,6 @@ long parser_base::parse_long_or_throw()
     if (p == mp_char)
         throw parse_error("parse_integer_or_throw: failed to parse long integer value.");
 
-    m_pos += p - mp_char;
     mp_char = p;
     return v;
 }
@@ -91,7 +90,6 @@ parse_quoted_string_state parser_base::parse_string()
     size_t max_length = remaining_size();
     const char* p = mp_char;
     parse_quoted_string_state ret = parse_double_quoted_string(p, max_length, mp_impl->m_buffer);
-    m_pos += p - mp_char;
     mp_char = p;
 
     if (ret.str)
