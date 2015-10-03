@@ -75,6 +75,7 @@ void test_css_simple_selector_equality()
 void test_css_parse_basic1()
 {
     const char* path = SRCDIR"/test/css/basic1.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -104,6 +105,7 @@ void test_css_parse_basic1()
 void test_css_parse_basic2()
 {
     const char* path = SRCDIR"/test/css/basic2.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -130,6 +132,7 @@ void test_css_parse_basic2()
 void test_css_parse_basic3()
 {
     const char* path = SRCDIR"/test/css/basic3.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -168,6 +171,7 @@ void test_css_parse_basic3()
 void test_css_parse_basic4()
 {
     const char* path = SRCDIR"/test/css/basic4.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -208,6 +212,7 @@ void test_css_parse_basic4()
 void test_css_parse_basic5()
 {
     const char* path = SRCDIR"/test/css/basic5.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -224,6 +229,7 @@ void test_css_parse_basic5()
 void test_css_parse_basic6()
 {
     const char* path = SRCDIR"/test/css/basic6.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -254,6 +260,7 @@ void test_css_parse_basic6()
 void test_css_parse_basic7()
 {
     const char* path = SRCDIR"/test/css/basic7.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -306,6 +313,7 @@ void test_css_parse_basic7()
 void test_css_parse_basic8()
 {
     const char* path = SRCDIR"/test/css/basic8.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -367,6 +375,7 @@ void test_css_parse_basic8()
 void test_css_parse_basic9()
 {
     const char* path = SRCDIR"/test/css/basic9.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -402,6 +411,7 @@ void test_css_parse_basic9()
 void test_css_parse_basic10()
 {
     const char* path = SRCDIR"/test/css/basic10.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -419,6 +429,7 @@ void test_css_parse_basic10()
 void test_css_parse_basic11()
 {
     const char* path = SRCDIR"/test/css/basic11.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -439,6 +450,7 @@ void test_css_parse_basic11()
 void test_css_parse_basic12()
 {
     const char* path = SRCDIR"/test/css/basic12.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -477,6 +489,7 @@ void test_css_parse_basic12()
 void test_css_parse_basic13()
 {
     const char* path = SRCDIR"/test/css/basic13.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -511,6 +524,7 @@ void test_css_parse_basic13()
 void test_css_parse_basic14()
 {
     const char* path = SRCDIR"/test/css/basic14.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -545,6 +559,7 @@ void test_css_parse_basic14()
 void test_css_parse_chained1()
 {
     const char* path = SRCDIR"/test/css/chained1.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
@@ -579,6 +594,7 @@ void test_css_parse_chained1()
 void test_css_parse_chained2()
 {
     const char* path = SRCDIR"/test/css/chained2.css";
+    cout << path << endl;
     string strm = load_file_content(path);
     css_document_tree doc;
     doc.load(strm);
