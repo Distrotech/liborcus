@@ -754,7 +754,19 @@ void json_document_tree::load(const char* p, size_t n, const json_config& config
 
         ext_config.input_path = extpath.string();
         json_document_tree doc(mp_impl->m_pool);
-        doc.load(ext_strm, ext_config);
+        try
+        {
+            doc.load(ext_strm, ext_config);
+        }
+        catch (const json::parse_error& e)
+        {
+            std::cerr << "Error while parsing " << extpath.string() << std::endl;
+            std::cerr << create_parse_error_output(ext_strm, e.offset());
+
+            // Re-throw as general_error to avoid getting caught as parse
+            // error by the parent caller.
+            throw general_error(e.what());
+        }
 
         json_value* root = doc.mp_impl->m_root.get();
         if (root->type == node_t::object)
