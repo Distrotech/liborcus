@@ -20,6 +20,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <limits>
+#include <iostream>
 
 #include <boost/current_function.hpp>
 #include <boost/filesystem.hpp>
