@@ -18,10 +18,13 @@ namespace orcus { namespace json {
 class ORCUS_PSR_DLLPUBLIC parse_error : public ::orcus::parse_error
 {
 public:
-    parse_error(const std::string& msg);
+    parse_error(const std::string& msg, std::ptrdiff_t offset);
 
-    static void throw_with(const char* msg_before, char c, const char* msg_after);
-    static void throw_with(const char* msg_before, const char* p, size_t n, const char* msg_after);
+    static void throw_with(
+        const char* msg_before, char c, const char* msg_after, std::ptrdiff_t offset);
+
+    static void throw_with(
+        const char* msg_before, const char* p, size_t n, const char* msg_after, std::ptrdiff_t offset);
 };
 
 class ORCUS_PSR_DLLPUBLIC parser_base : public ::orcus::parser_base

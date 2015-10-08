@@ -15,17 +15,19 @@
 
 namespace orcus { namespace json {
 
-parse_error::parse_error(const std::string& msg) : ::orcus::parse_error(msg) {}
+parse_error::parse_error(const std::string& msg, std::ptrdiff_t offset) :
+    ::orcus::parse_error(msg, offset) {}
 
-void parse_error::throw_with(const char* msg_before, char c, const char* msg_after)
+void parse_error::throw_with(
+    const char* msg_before, char c, const char* msg_after, std::ptrdiff_t offset)
 {
-    throw parse_error(build_message(msg_before, c, msg_after));
+    throw parse_error(build_message(msg_before, c, msg_after), offset);
 }
 
 void parse_error::throw_with(
-    const char* msg_before, const char* p, size_t n, const char* msg_after)
+    const char* msg_before, const char* p, size_t n, const char* msg_after, std::ptrdiff_t offset)
 {
-    throw parse_error(build_message(msg_before, p, n, msg_after));
+    throw parse_error(build_message(msg_before, p, n, msg_after), offset);
 }
 
 struct parser_base::impl
@@ -42,7 +44,7 @@ void parser_base::parse_true()
 {
     static const char* expected = "true";
     if (!parse_expected(expected))
-        throw parse_error("parse_true: boolean 'true' expected.");
+        throw parse_error("parse_true: boolean 'true' expected.", offset());
 
     skip_blanks();
 }
@@ -51,7 +53,7 @@ void parser_base::parse_false()
 {
     static const char* expected = "false";
     if (!parse_expected(expected))
-        throw parse_error("parse_false: boolean 'false' expected.");
+        throw parse_error("parse_false: boolean 'false' expected.", offset());
 
     skip_blanks();
 }
@@ -60,7 +62,7 @@ void parser_base::parse_null()
 {
     static const char* expected = "null";
     if (!parse_expected(expected))
-        throw parse_error("parse_null: null expected.");
+        throw parse_error("parse_null: null expected.", offset());
 
     skip_blanks();
 }
@@ -70,7 +72,7 @@ long parser_base::parse_long_or_throw()
     const char* p = mp_char;
     long v = parse_integer(p, remaining_size());
     if (p == mp_char)
-        throw parse_error("parse_integer_or_throw: failed to parse long integer value.");
+        throw parse_error("parse_integer_or_throw: failed to parse long integer value.", offset());
 
     mp_char = p;
     return v;
@@ -80,7 +82,7 @@ double parser_base::parse_double_or_throw()
 {
     double v = parse_double();
     if (std::isnan(v))
-        throw parse_error("parse_double_or_throw: failed to parse double precision value.");
+        throw parse_error("parse_double_or_throw: failed to parse double precision value.", offset());
     return v;
 }
 

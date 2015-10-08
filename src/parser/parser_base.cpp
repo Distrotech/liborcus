@@ -15,7 +15,13 @@
 
 namespace orcus {
 
-parse_error::parse_error(const std::string& msg) : general_error(msg) {}
+parse_error::parse_error(const std::string& msg, std::ptrdiff_t offset) :
+    general_error(msg), m_offset(offset) {}
+
+std::ptrdiff_t parse_error::offset() const
+{
+    return m_offset;
+}
 
 std::string parse_error::build_message(const char* msg_before, char c, const char* msg_after)
 {
@@ -49,7 +55,7 @@ std::string parse_error::build_message(
 }
 
 parser_base::parser_base(const char* p, size_t n) :
-    mp_char(p), mp_end(p+n)
+    mp_begin(p), mp_char(p), mp_end(p+n)
 {
 }
 
@@ -112,6 +118,11 @@ double parser_base::parse_double()
 size_t parser_base::remaining_size() const
 {
     return std::distance(mp_char, mp_end) - 1;
+}
+
+std::ptrdiff_t parser_base::offset() const
+{
+    return std::distance(mp_begin, mp_char);
 }
 
 }

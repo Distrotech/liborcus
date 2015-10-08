@@ -25,6 +25,12 @@ namespace orcus { namespace python {
 
 namespace {
 
+class python_json_error : public general_error
+{
+public:
+    python_json_error(const std::string& msg) : general_error("python_json_error", msg) {}
+};
+
 struct module_state
 {
     PyObject* error;
@@ -62,14 +68,14 @@ class json_parser_handler
         {
             std::ostringstream os;
             os << BOOST_CURRENT_FUNCTION << ": Empty value is passed.";
-            throw orcus::json::parse_error(os.str());
+            throw python_json_error(os.str());
         }
 
         if (m_stack.empty())
         {
             std::ostringstream os;
             os << BOOST_CURRENT_FUNCTION << ": Stack is unexpectedly empty.";
-            throw orcus::json::parse_error(os.str());
+            throw python_json_error(os.str());
         }
 
         parser_stack& cur = m_stack.back();
@@ -96,7 +102,7 @@ class json_parser_handler
 
         std::ostringstream os;
         os << BOOST_CURRENT_FUNCTION << ": unstackable JSON value type.";
-        throw orcus::json::parse_error(os.str());
+        throw python_json_error(os.str());
     }
 
 public:
@@ -125,7 +131,7 @@ public:
         {
             std::ostringstream os;
             os << BOOST_CURRENT_FUNCTION << ": Root JSON value already exists.";
-            throw orcus::json::parse_error(os.str());
+            throw python_json_error(os.str());
         }
     }
 
@@ -151,7 +157,7 @@ public:
         {
             std::ostringstream os;
             os << BOOST_CURRENT_FUNCTION << ": Stack is unexpectedly empty.";
-            throw orcus::json::parse_error(os.str());
+            throw python_json_error(os.str());
         }
 
         m_stack.pop_back();
@@ -183,7 +189,7 @@ public:
         {
             std::ostringstream os;
             os << BOOST_CURRENT_FUNCTION << ": Stack is unexpectedly empty.";
-            throw orcus::json::parse_error(os.str());
+            throw python_json_error(os.str());
         }
 
         m_stack.pop_back();

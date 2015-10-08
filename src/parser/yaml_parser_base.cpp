@@ -20,7 +20,8 @@
 
 namespace orcus { namespace yaml {
 
-parse_error::parse_error(const std::string& msg) : ::orcus::parse_error(msg) {}
+parse_error::parse_error(const std::string& msg) :
+    ::orcus::parse_error(msg, 0) {}
 
 void parse_error::throw_with(const char* msg_before, char c, const char* msg_after)
 {

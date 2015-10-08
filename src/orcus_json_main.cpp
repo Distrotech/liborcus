@@ -6,19 +6,37 @@
  */
 
 #include "orcus/json_document_tree.hpp"
+#include "orcus/json_parser_base.hpp"
 #include "orcus/config.hpp"
 #include "orcus/stream.hpp"
 #include "orcus/xml_namespace.hpp"
 #include "orcus/dom_tree.hpp"
+#include "orcus/global.hpp"
 
 #include "orcus_filter_global.hpp"
 
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <memory>
 
 using namespace std;
 using namespace orcus;
+
+std::unique_ptr<json_document_tree> load_doc(const std::string& strm, const json_config& config)
+{
+    std::unique_ptr<json_document_tree> doc(make_unique<json_document_tree>());
+    try
+    {
+        doc->load(strm, config);
+    }
+    catch (const json::parse_error& e)
+    {
+        cerr << create_parse_error_output(strm, e.offset());
+        throw;
+    }
+    return doc;
+}
 
 int main(int argc, char** argv)
 {
@@ -29,27 +47,25 @@ int main(int argc, char** argv)
     try
     {
         std::string strm = load_file_content(config->input_path.c_str());
-
-        json_document_tree doc;
-        doc.load(strm, *config);
+        std::unique_ptr<json_document_tree> doc = load_doc(strm, *config);
 
         switch (config->output_format)
         {
             case json_config::output_format_type::xml:
             {
                 ofstream fs(config->output_path.c_str());
-                fs << doc.dump_xml();
+                fs << doc->dump_xml();
             }
             break;
             case json_config::output_format_type::json:
             {
                 ofstream fs(config->output_path.c_str());
-                fs << doc.dump();
+                fs << doc->dump();
             }
             break;
             case json_config::output_format_type::check:
             {
-                string xml_strm = doc.dump_xml();
+                string xml_strm = doc->dump_xml();
                 xmlns_repository repo;
                 xmlns_context cxt = repo.create_context();
                 dom_tree dom(cxt);

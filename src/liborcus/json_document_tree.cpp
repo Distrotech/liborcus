@@ -430,7 +430,7 @@ class parser_handler
             {
                 std::ostringstream os;
                 os << BOOST_CURRENT_FUNCTION << ": unstackable JSON value type.";
-                throw json::parse_error(os.str());
+                throw json_document_error(os.str());
             }
         }
 

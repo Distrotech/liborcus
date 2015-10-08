@@ -53,7 +53,7 @@ void json_parser<_Handler>::parse()
         root_value();
 
     if (has_char())
-        throw json::parse_error("parse: unexpected trailing string segment.");
+        throw json::parse_error("parse: unexpected trailing string segment.", offset());
 
     m_handler.end_parse();
 }
@@ -73,7 +73,7 @@ void json_parser<_Handler>::root_value()
         break;
         default:
             json::parse_error::throw_with(
-                "root_value: either '[' or '{' was expected, but '", cur_char(), "' was found.");
+                "root_value: either '[' or '{' was expected, but '", cur_char(), "' was found.", offset());
     }
 }
 
@@ -114,7 +114,7 @@ void json_parser<_Handler>::value()
             string();
         break;
         default:
-            json::parse_error::throw_with("value: failed to parse '", cur_char(), "'.");
+            json::parse_error::throw_with("value: failed to parse '", cur_char(), "'.", offset());
     }
 }
 
@@ -141,12 +141,13 @@ void json_parser<_Handler>::array()
                 case ',':
                     continue;
                 default:
-                    json::parse_error::throw_with("array: either ']' or ',' expected, but '", cur_char(), "' found.");
+                    json::parse_error::throw_with(
+                        "array: either ']' or ',' expected, but '", cur_char(), "' found.", offset());
             }
         }
     }
 
-    throw json::parse_error("array: failed to parse array.");
+    throw json::parse_error("array: failed to parse array.", offset());
 }
 
 template<typename _Handler>
@@ -159,10 +160,11 @@ void json_parser<_Handler>::object()
     {
         skip_blanks();
         if (!has_char())
-            throw json::parse_error("object: stream ended prematurely before reaching a key.");
+            throw json::parse_error("object: stream ended prematurely before reaching a key.", offset());
 
         if (cur_char() != '"')
-            json::parse_error::throw_with("object: '\"' was expected, but '", cur_char(), "' found.");
+            json::parse_error::throw_with(
+                "object: '\"' was expected, but '", cur_char(), "' found.", offset());
 
         parse_quoted_string_state res = parse_string();
         if (!res.str)
@@ -171,11 +173,12 @@ void json_parser<_Handler>::object()
             switch (res.length)
             {
                 case parse_quoted_string_state::error_no_closing_quote:
-                    throw json::parse_error("object: stream ended prematurely before reaching the closing quote of a key.");
+                    throw json::parse_error("object: stream ended prematurely before reaching the closing quote of a key.", offset());
                 case parse_quoted_string_state::error_illegal_escape_char:
-                    json::parse_error::throw_with("object: illegal escape character '", cur_char(), "' in key value.");
+                    json::parse_error::throw_with(
+                        "object: illegal escape character '", cur_char(), "' in key value.", offset());
                 default:
-                    throw json::parse_error("object: unknown error while parsing a key value.");
+                    throw json::parse_error("object: unknown error while parsing a key value.", offset());
             }
         }
 
@@ -183,19 +186,20 @@ void json_parser<_Handler>::object()
 
         skip_blanks();
         if (cur_char() != ':')
-            json::parse_error::throw_with("object: ':' was expected, but '", cur_char(), "' found.");
+            json::parse_error::throw_with(
+                "object: ':' was expected, but '", cur_char(), "' found.", offset());
 
         next();
         skip_blanks();
 
         if (!has_char())
-            throw json::parse_error("object: stream ended prematurely before reaching a value.");
+            throw json::parse_error("object: stream ended prematurely before reaching a value.", offset());
 
         value();
 
         skip_blanks();
         if (!has_char())
-            throw json::parse_error("object: stream ended prematurely before reaching either ']' or ','.");
+            throw json::parse_error("object: stream ended prematurely before reaching either ']' or ','.", offset());
 
         switch (cur_char())
         {
@@ -207,11 +211,12 @@ void json_parser<_Handler>::object()
             case ',':
                 continue;
             default:
-                json::parse_error::throw_with("object: either ']' or ',' expected, but '", cur_char(), "' found.");
+                json::parse_error::throw_with(
+                    "object: either ']' or ',' expected, but '", cur_char(), "' found.", offset());
         }
     }
 
-    throw json::parse_error("object: closing '}' was never reached.");
+    throw json::parse_error("object: closing '}' was never reached.", offset());
 }
 
 template<typename _Handler>
@@ -239,7 +244,7 @@ void json_parser<_Handler>::number_with_exp(double base)
     assert(cur_char() == 'e' || cur_char() == 'E');
     next();
     if (!has_char())
-        throw json::parse_error("number_with_exp: illegal exponent value.");
+        throw json::parse_error("number_with_exp: illegal exponent value.", offset());
 
     long exp = parse_long_or_throw();
     base *= std::pow(10.0, exp);
@@ -261,11 +266,11 @@ void json_parser<_Handler>::string()
     switch (res.length)
     {
         case parse_quoted_string_state::error_no_closing_quote:
-            throw json::parse_error("string: stream ended prematurely before reaching the closing quote.");
+            throw json::parse_error("string: stream ended prematurely before reaching the closing quote.", offset());
         case parse_quoted_string_state::error_illegal_escape_char:
-            json::parse_error::throw_with("string: illegal escape character '", cur_char(), "'.");
+            json::parse_error::throw_with("string: illegal escape character '", cur_char(), "'.", offset());
         default:
-            throw json::parse_error("string: unknown error.");
+            throw json::parse_error("string: unknown error.", offset());
     }
 }
 

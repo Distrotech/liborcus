@@ -13,21 +13,27 @@
 
 #include <string>
 #include <cstdlib>
+#include <cstddef>
 
 namespace orcus {
 
 class ORCUS_PSR_DLLPUBLIC parse_error : public general_error
 {
+    std::ptrdiff_t m_offset;  /// offset in the stream where the error occurred.
 protected:
-    parse_error(const std::string& msg);
+    parse_error(const std::string& msg, std::ptrdiff_t offset);
 
     static std::string build_message(const char* msg_before, char c, const char* msg_after);
     static std::string build_message(const char* msg_before, const char* p, size_t n, const char* msg_after);
+
+public:
+    std::ptrdiff_t offset() const;
 };
 
 class ORCUS_PSR_DLLPUBLIC parser_base
 {
 protected:
+    const char* mp_begin;
     const char* mp_char;
     const char* mp_end;
 
@@ -64,6 +70,13 @@ protected:
     double parse_double();
 
     size_t remaining_size() const;
+
+    /**
+     * Return the current offset from the beginning of the character stream.
+     *
+     * @return current offset from the beginning of the character stream.
+     */
+    std::ptrdiff_t offset() const;
 };
 
 }

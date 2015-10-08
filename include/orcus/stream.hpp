@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_STREAM_HPP__
-#define __ORCUS_STREAM_HPP__
+#ifndef INCLUDED_ORCUS_STREAM_HPP
+#define INCLUDED_ORCUS_STREAM_HPP
 
 #include "env.hpp"
 
@@ -21,6 +21,18 @@ namespace orcus {
  * @return content of the file
  */
 ORCUS_PSR_DLLPUBLIC std::string load_file_content(const char* filepath);
+
+/**
+ * Generate a sensible error output for parse error including the line where
+ * the error occurred and the offset of the error position on that line.
+ *
+ * @param strm entire character stream where the error occurred.
+ * @param offset offset of the error position within the stream.
+ *
+ * @return ORCUS_PSR_DLLPUBLIC std::string
+ */
+ORCUS_PSR_DLLPUBLIC std::string create_parse_error_output(
+    const std::string& strm, std::ptrdiff_t offset);
 
 }
 
