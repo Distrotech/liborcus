@@ -101,8 +101,9 @@ class ORCUS_PSR_DLLPUBLIC parser_base
     parser_base(const parser_base&) = delete;
     parser_base& operator=(const parser_base&) = delete;
 protected:
-    const char* m_content;
-    const char* m_char;
+    const char* mp_begin;
+    const char* mp_char;
+    const char* mp_end;
     const size_t m_size;
     size_t m_pos;
     size_t m_nest_level;
@@ -113,7 +114,7 @@ protected:
     parser_base(const char* content, size_t size);
     ~parser_base();
 
-    void next() { ++m_pos; ++m_char; }
+    void next() { ++m_pos; ++mp_char; }
 
     void next_check()
     {
@@ -155,7 +156,7 @@ protected:
         if (m_pos >= m_size)
             throw malformed_xml_error("xml stream ended prematurely.");
 #endif
-        return *m_char;
+        return *mp_char;
     }
 
     char cur_char_checked() const
@@ -163,7 +164,7 @@ protected:
         if (!has_char())
             throw malformed_xml_error("xml stream ended prematurely.");
 
-        return *m_char;
+        return *mp_char;
     }
 
     char next_char()
@@ -173,7 +174,7 @@ protected:
         if (m_pos >= m_size)
             throw malformed_xml_error("xml stream ended prematurely.");
 #endif
-        return *m_char;
+        return *mp_char;
     }
 
     char next_char_checked()
@@ -182,7 +183,7 @@ protected:
         if (!has_char())
             throw malformed_xml_error("xml stream ended prematurely.");
 
-        return *m_char;
+        return *mp_char;
     }
 
     cell_buffer& get_cell_buffer();

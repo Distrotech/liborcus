@@ -79,7 +79,7 @@ void sax_parser<_Handler,_Config>::parse()
 {
     m_pos = 0;
     m_nest_level = 0;
-    m_char = m_content;
+    mp_char = mp_begin;
     header();
     blank();
     body();
@@ -129,7 +129,7 @@ template<typename _Handler, typename _Config>
 void sax_parser<_Handler,_Config>::element()
 {
     assert(cur_char() == '<');
-    const char* pos = m_char;
+    const char* pos = mp_char;
     char c = next_char_checked();
     switch (c)
     {
@@ -167,7 +167,7 @@ void sax_parser<_Handler,_Config>::element_open(const char* begin_pos)
             if (next_char() != '>')
                 throw sax::malformed_xml_error("expected '/>' to self-close the element.");
             next();
-            elem.end_pos = m_char;
+            elem.end_pos = mp_char;
             m_handler.start_element(elem);
             reset_buffer_pos();
             m_handler.end_element(elem);
@@ -180,7 +180,7 @@ void sax_parser<_Handler,_Config>::element_open(const char* begin_pos)
         {
             // End of opening element: <element>
             next();
-            elem.end_pos = m_char;
+            elem.end_pos = mp_char;
             nest_up();
             m_handler.start_element(elem);
             reset_buffer_pos();
@@ -206,7 +206,7 @@ void sax_parser<_Handler,_Config>::element_close(const char* begin_pos)
     if (cur_char() != '>')
         throw sax::malformed_xml_error("expected '>' to close the element.");
     next();
-    elem.end_pos = m_char;
+    elem.end_pos = mp_char;
 
     m_handler.end_element(elem);
 #if ORCUS_DEBUG_SAX_PARSER
@@ -310,7 +310,7 @@ void sax_parser<_Handler,_Config>::cdata()
     assert(len > 3);
 
     // Parse until we reach ']]>'.
-    const char* p0 = m_char;
+    const char* p0 = mp_char;
     size_t i = 0, match = 0;
     for (char c = cur_char(); i < len; ++i, c = next_char())
     {
@@ -411,7 +411,7 @@ template<typename _Handler, typename _Config>
 void sax_parser<_Handler,_Config>::characters()
 {
     size_t first = m_pos;
-    const char* p0 = m_char;
+    const char* p0 = mp_char;
     for (; has_char(); next())
     {
         if (cur_char() == '<')
@@ -435,7 +435,7 @@ void sax_parser<_Handler,_Config>::characters()
     if (m_pos > first)
     {
         size_t size = m_pos - first;
-        pstring val(m_content + first, size);
+        pstring val(mp_begin + first, size);
         m_handler.characters(val, false);
     }
 }

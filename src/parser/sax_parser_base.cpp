@@ -61,8 +61,9 @@ struct parser_base::impl
 
 parser_base::parser_base(const char* content, size_t size) :
     mp_impl(make_unique<impl>()),
-    m_content(content),
-    m_char(content),
+    mp_begin(content),
+    mp_char(content),
+    mp_end(content+size),
     m_size(size),
     m_pos(0),
     m_nest_level(0),
@@ -167,13 +168,13 @@ void parser_base::parse_encoded_char(cell_buffer& buf)
 {
     assert(cur_char() == '&');
     next();
-    const char* p0 = m_char;
+    const char* p0 = mp_char;
     for (; has_char(); next())
     {
         if (cur_char() != ';')
             continue;
 
-        size_t n = m_char - p0;
+        size_t n = mp_char - p0;
         if (!n)
             throw malformed_xml_error("empty encoded character.");
 
@@ -194,7 +195,7 @@ void parser_base::parse_encoded_char(cell_buffer& buf)
             cout << "sax_parser::parse_encoded_char: not a known encoding name. Use the original." << endl;
 #endif
             // Unexpected encoding name. Use the original text.
-            buf.append(p0, m_char-p0);
+            buf.append(p0, mp_char-p0);
         }
 
         return;
@@ -216,7 +217,7 @@ void parser_base::value_with_encoded_char(cell_buffer& buf, pstring& str)
         if (cur_char() == '&')
         {
             if (m_pos > first)
-                buf.append(m_content+first, m_pos-first);
+                buf.append(mp_begin+first, m_pos-first);
 
             parse_encoded_char(buf);
             first = m_pos;
@@ -230,7 +231,7 @@ void parser_base::value_with_encoded_char(cell_buffer& buf, pstring& str)
     }
 
     if (m_pos > first)
-        buf.append(m_content+first, m_pos-first);
+        buf.append(mp_begin+first, m_pos-first);
 
     if (!buf.empty())
         str = pstring(buf.get(), buf.size());
@@ -248,7 +249,7 @@ bool parser_base::value(pstring& str, bool decode)
 
     c = next_char_checked();
     size_t first = m_pos;
-    const char* p0 = m_char;
+    const char* p0 = mp_char;
 
     for (; c != '"'; c = next_char_checked())
     {
@@ -286,7 +287,7 @@ void parser_base::name(pstring& str)
         c = next_char_checked();
 
     size_t size = m_pos - first;
-    str = pstring(m_content+first, size);
+    str = pstring(mp_begin+first, size);
 }
 
 void parser_base::element_name(parser_element& elem, const char* begin_pos)
@@ -325,7 +326,7 @@ void parser_base::characters_with_encoded_char(cell_buffer& buf)
         if (cur_char() == '&')
         {
             if (m_pos > first)
-                buf.append(m_content+first, m_pos-first);
+                buf.append(mp_begin+first, m_pos-first);
 
             parse_encoded_char(buf);
             first = m_pos;
@@ -339,7 +340,7 @@ void parser_base::characters_with_encoded_char(cell_buffer& buf)
     }
 
     if (m_pos > first)
-        buf.append(m_content+first, m_pos-first);
+        buf.append(mp_begin+first, m_pos-first);
 }
 
 }}
