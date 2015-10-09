@@ -69,6 +69,14 @@ protected:
      */
     double parse_double();
 
+    /**
+     * Determine the number of characters remaining <strong>after</strong> the
+     * current character.  For instance, if the current character is on the
+     * last character in the stream, this method will return 0, whereas if
+     * it's on the first character, it will return the total length - 1.
+     *
+     * @return number of characters remaining after the current character.
+     */
     size_t remaining_size() const;
 
     /**

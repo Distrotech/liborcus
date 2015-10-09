@@ -60,10 +60,8 @@ struct parser_base::impl
 };
 
 parser_base::parser_base(const char* content, size_t size) :
+    ::orcus::parser_base(content, size),
     mp_impl(make_unique<impl>()),
-    mp_begin(content),
-    mp_char(content),
-    mp_end(content+size),
     m_nest_level(0),
     m_buffer_pos(0),
     m_root_elem_open(true)
@@ -106,7 +104,7 @@ void parser_base::comment()
     char c = cur_char();
     size_t i = 0;
     bool hyphen = false;
-    for (; i < len; ++i, c = next_char())
+    for (; i < len; ++i, c = next_and_char())
     {
         if (c == '-')
         {
@@ -121,7 +119,7 @@ void parser_base::comment()
             hyphen = false;
     }
 
-    if (len - i < 2 || next_char() != '>')
+    if (len - i < 2 || next_and_char() != '>')
         throw malformed_xml_error("'--' should not occur in comment other than in the closing tag.");
 
     next();
@@ -137,8 +135,8 @@ void parser_base::skip_bom()
     unsigned char c = static_cast<unsigned char>(cur_char());
     if (c != '<')
     {
-        if (c != 0xef || static_cast<unsigned char>(next_char()) != 0xbb ||
-            static_cast<unsigned char>(next_char()) != 0xbf || next_char() != '<')
+        if (c != 0xef || static_cast<unsigned char>(next_and_char()) != 0xbb ||
+            static_cast<unsigned char>(next_and_char()) != 0xbf || next_and_char() != '<')
             throw malformed_xml_error("unsupported encoding. only 8 bit encodings are supported");
     }
 }
@@ -150,8 +148,8 @@ void parser_base::expects_next(const char* p, size_t n)
 
     const char* p0 = p;
     const char* p_end = p + n;
-    char c = next_char();
-    for (; p != p_end; ++p, c = next_char())
+    char c = next_and_char();
+    for (; p != p_end; ++p, c = next_and_char())
     {
         if (c == *p)
             continue;

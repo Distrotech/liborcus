@@ -5,13 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef ORCUS_SAX_PARSER_BASE_HPP
-#define ORCUS_SAX_PARSER_BASE_HPP
+#ifndef INCLUDED_ORCUS_SAX_PARSER_BASE_HPP
+#define INCLUDED_ORCUS_SAX_PARSER_BASE_HPP
 
 #include "env.hpp"
 #include "pstring.hpp"
 #include "cell_buffer.hpp"
 #include "parser_global.hpp"
+#include "parser_base.hpp"
 
 #include <cassert>
 #include <cstdlib>
@@ -92,7 +93,7 @@ struct parser_attribute
     bool transient;  // whether or not the attribute value is on a temporary buffer.
 };
 
-class ORCUS_PSR_DLLPUBLIC parser_base
+class ORCUS_PSR_DLLPUBLIC parser_base : public ::orcus::parser_base
 {
     struct impl;
     std::unique_ptr<impl> mp_impl;
@@ -101,9 +102,6 @@ class ORCUS_PSR_DLLPUBLIC parser_base
     parser_base(const parser_base&) = delete;
     parser_base& operator=(const parser_base&) = delete;
 protected:
-    const char* mp_begin;
-    const char* mp_char;
-    const char* mp_end;
     size_t m_nest_level;
     size_t m_buffer_pos;
     bool m_root_elem_open:1;
@@ -111,8 +109,6 @@ protected:
 protected:
     parser_base(const char* content, size_t size);
     ~parser_base();
-
-    void next() { ++mp_char; }
 
     void next_check()
     {
@@ -131,14 +127,19 @@ protected:
     void inc_buffer_pos();
     void reset_buffer_pos() { m_buffer_pos = 0; }
 
-    bool has_char() const { return mp_char != mp_end; }
-
     void has_char_throw(const char* msg) const
     {
         if (!has_char())
             throw malformed_xml_error(msg);
     }
 
+    /**
+     * Determine the number of remaining characters <strong>including</strong>
+     * the current character.
+     *
+     *
+     * @return number of remaining characters including the current character.
+     */
     inline size_t remains() const
     {
 #if ORCUS_DEBUG_SAX_PARSER
@@ -146,15 +147,6 @@ protected:
             throw malformed_xml_error("xml stream ended prematurely.");
 #endif
         return mp_end - mp_char;
-    }
-
-    char cur_char() const
-    {
-#if ORCUS_DEBUG_SAX_PARSER
-        if (mp_char >= mp_end)
-            throw malformed_xml_error("xml stream ended prematurely.");
-#endif
-        return *mp_char;
     }
 
     char cur_char_checked() const
@@ -165,7 +157,7 @@ protected:
         return *mp_char;
     }
 
-    char next_char()
+    char next_and_char()
     {
         next();
 #if ORCUS_DEBUG_SAX_PARSER

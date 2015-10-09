@@ -163,7 +163,7 @@ void sax_parser<_Handler,_Config>::element_open(const char* begin_pos)
         if (c == '/')
         {
             // Self-closing element: <element/>
-            if (next_char() != '>')
+            if (next_and_char() != '>')
                 throw sax::malformed_xml_error("expected '/>' to self-close the element.");
             next();
             elem.end_pos = mp_char;
@@ -224,12 +224,12 @@ void sax_parser<_Handler,_Config>::special_tag()
     if (len < 2)
         throw sax::malformed_xml_error("special tag too short.");
 
-    switch (next_char())
+    switch (next_and_char())
     {
         case '-':
         {
             // Possibly comment.
-            if (next_char() != '-')
+            if (next_and_char() != '-')
                 throw sax::malformed_xml_error("comment expected.");
 
             len -= 2;
@@ -311,7 +311,7 @@ void sax_parser<_Handler,_Config>::cdata()
     // Parse until we reach ']]>'.
     const char* p0 = mp_char;
     size_t i = 0, match = 0;
-    for (char c = cur_char(); i < len; ++i, c = next_char())
+    for (char c = cur_char(); i < len; ++i, c = next_and_char())
     {
         if (c == ']')
         {
@@ -356,14 +356,14 @@ void sax_parser<_Handler,_Config>::doctype()
     char c = cur_char();
     if (c == 'P')
     {
-        if (next_char() != 'U' || next_char() != 'B' || next_char() != 'L' || next_char() != 'I' || next_char() != 'C')
+        if (next_and_char() != 'U' || next_and_char() != 'B' || next_and_char() != 'L' || next_and_char() != 'I' || next_and_char() != 'C')
             throw sax::malformed_xml_error("malformed DOCTYPE section.");
 
         param.keyword = sax::doctype_declaration::keyword_type::dtd_public;
     }
     else if (c == 'S')
     {
-        if (next_char() != 'Y' || next_char() != 'S' || next_char() != 'T' || next_char() != 'E' || next_char() != 'M')
+        if (next_and_char() != 'Y' || next_and_char() != 'S' || next_and_char() != 'T' || next_and_char() != 'E' || next_and_char() != 'M')
             throw sax::malformed_xml_error("malformed DOCTYPE section.");
     }
 
