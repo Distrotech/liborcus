@@ -104,7 +104,6 @@ protected:
     const char* mp_begin;
     const char* mp_char;
     const char* mp_end;
-    size_t m_pos;
     size_t m_nest_level;
     size_t m_buffer_pos;
     bool m_root_elem_open:1;
@@ -113,7 +112,7 @@ protected:
     parser_base(const char* content, size_t size);
     ~parser_base();
 
-    void next() { ++m_pos; ++mp_char; }
+    void next() { ++mp_char; }
 
     void next_check()
     {

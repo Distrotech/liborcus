@@ -64,7 +64,6 @@ parser_base::parser_base(const char* content, size_t size) :
     mp_begin(content),
     mp_char(content),
     mp_end(content+size),
-    m_pos(0),
     m_nest_level(0),
     m_buffer_pos(0),
     m_root_elem_open(true)

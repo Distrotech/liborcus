@@ -77,7 +77,6 @@ sax_parser<_Handler,_Config>::~sax_parser()
 template<typename _Handler, typename _Config>
 void sax_parser<_Handler,_Config>::parse()
 {
-    m_pos = 0;
     m_nest_level = 0;
     mp_char = mp_begin;
     header();
