@@ -316,17 +316,17 @@ void parser_base::characters_with_encoded_char(cell_buffer& buf)
     assert(cur_char() == '&');
     parse_encoded_char(buf);
 
-    size_t first = m_pos;
+    const char* p0 = mp_char;
 
     while (has_char())
     {
         if (cur_char() == '&')
         {
-            if (m_pos > first)
-                buf.append(mp_begin+first, m_pos-first);
+            if (mp_char > p0)
+                buf.append(p0, mp_char-p0);
 
             parse_encoded_char(buf);
-            first = m_pos;
+            p0 = mp_char;
         }
 
         if (cur_char() == '<')
@@ -336,9 +336,10 @@ void parser_base::characters_with_encoded_char(cell_buffer& buf)
             next();
     }
 
-    if (m_pos > first)
-        buf.append(mp_begin+first, m_pos-first);
+    if (mp_char > p0)
+        buf.append(p0, mp_char-p0);
 }
 
 }}
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
