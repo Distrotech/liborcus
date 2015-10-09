@@ -209,17 +209,17 @@ void parser_base::value_with_encoded_char(cell_buffer& buf, pstring& str)
     parse_encoded_char(buf);
     assert(cur_char() != ';');
 
-    size_t first = m_pos;
+    const char* p0 = mp_char;
 
     while (has_char())
     {
         if (cur_char() == '&')
         {
-            if (m_pos > first)
-                buf.append(mp_begin+first, m_pos-first);
+            if (mp_char > p0)
+                buf.append(p0, mp_char-p0);
 
             parse_encoded_char(buf);
-            first = m_pos;
+            p0 = mp_char;
         }
 
         if (cur_char() == '"')
@@ -229,8 +229,8 @@ void parser_base::value_with_encoded_char(cell_buffer& buf, pstring& str)
             next();
     }
 
-    if (m_pos > first)
-        buf.append(mp_begin+first, m_pos-first);
+    if (mp_char > p0)
+        buf.append(p0, mp_char-p0);
 
     if (!buf.empty())
         str = pstring(buf.get(), buf.size());
@@ -247,9 +247,8 @@ bool parser_base::value(pstring& str, bool decode)
         throw malformed_xml_error("value must be quoted");
 
     c = next_char_checked();
-    size_t first = m_pos;
-    const char* p0 = mp_char;
 
+    const char* p0 = mp_char;
     for (; c != '"'; c = next_char_checked())
     {
         if (decode && c == '&')
@@ -257,13 +256,13 @@ bool parser_base::value(pstring& str, bool decode)
             // This value contains one or more encoded characters.
             cell_buffer& buf = get_cell_buffer();
             buf.reset();
-            buf.append(p0, m_pos-first);
+            buf.append(p0, mp_char-p0);
             value_with_encoded_char(buf, str);
             return true;
         }
     }
 
-    str = pstring(p0, m_pos-first);
+    str = pstring(p0, mp_char-p0);
 
     // Skip the closing quote.
     next();
@@ -273,7 +272,7 @@ bool parser_base::value(pstring& str, bool decode)
 
 void parser_base::name(pstring& str)
 {
-    size_t first = m_pos;
+    const char* p0 = mp_char;
     char c = cur_char();
     if (!is_alpha(c))
     {
@@ -285,8 +284,7 @@ void parser_base::name(pstring& str)
     while (is_alpha(c) || is_numeric(c) || is_name_char(c))
         c = next_char_checked();
 
-    size_t size = m_pos - first;
-    str = pstring(mp_begin+first, size);
+    str = pstring(p0, mp_char-p0);
 }
 
 void parser_base::element_name(parser_element& elem, const char* begin_pos)
