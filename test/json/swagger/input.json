@@ -212,7 +212,7 @@
                 "code",
                 "message"
             ],
-            "properties": {aa
+            "properties": {
                 "code": {
                     "type": "integer",
                     "format": "int32"
