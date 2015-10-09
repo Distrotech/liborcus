@@ -410,7 +410,6 @@ void sax_parser<_Handler,_Config>::doctype()
 template<typename _Handler, typename _Config>
 void sax_parser<_Handler,_Config>::characters()
 {
-    size_t first = m_pos;
     const char* p0 = mp_char;
     for (; has_char(); next())
     {
@@ -422,7 +421,7 @@ void sax_parser<_Handler,_Config>::characters()
             // Text span with one or more encoded characters. Parse using cell buffer.
             cell_buffer& buf = get_cell_buffer();
             buf.reset();
-            buf.append(p0, m_pos-first);
+            buf.append(p0, mp_char-p0);
             characters_with_encoded_char(buf);
             if (buf.empty())
                 m_handler.characters(pstring(), false);
@@ -432,10 +431,9 @@ void sax_parser<_Handler,_Config>::characters()
         }
     }
 
-    if (m_pos > first)
+    if (mp_char > p0)
     {
-        size_t size = m_pos - first;
-        pstring val(mp_begin + first, size);
+        pstring val(p0, mp_char-p0);
         m_handler.characters(val, false);
     }
 }
