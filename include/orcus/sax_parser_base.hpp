@@ -201,7 +201,7 @@ protected:
     void value_with_encoded_char(cell_buffer& buf, pstring& str);
 
     /**
-     * Parse quoted value.  Note that the retreived string may be stored in
+     * Parse quoted value.  Note that the retrieved string may be stored in
      * the temporary cell buffer if the decode parameter is true. Use the
      * string immediately after this call before the buffer becomes invalid.
      *
