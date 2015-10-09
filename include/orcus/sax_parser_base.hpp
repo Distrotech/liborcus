@@ -104,7 +104,6 @@ protected:
     const char* mp_begin;
     const char* mp_char;
     const char* mp_end;
-    const size_t m_size;
     size_t m_pos;
     size_t m_nest_level;
     size_t m_buffer_pos;
@@ -133,7 +132,7 @@ protected:
     void inc_buffer_pos();
     void reset_buffer_pos() { m_buffer_pos = 0; }
 
-    bool has_char() const { return m_pos < m_size; }
+    bool has_char() const { return mp_char != mp_end; }
 
     void has_char_throw(const char* msg) const
     {
@@ -144,16 +143,16 @@ protected:
     inline size_t remains() const
     {
 #if ORCUS_DEBUG_SAX_PARSER
-        if (m_pos >= m_size)
+        if (mp_char >= mp_end)
             throw malformed_xml_error("xml stream ended prematurely.");
 #endif
-        return m_size - m_pos;
+        return mp_end - mp_char;
     }
 
     char cur_char() const
     {
 #if ORCUS_DEBUG_SAX_PARSER
-        if (m_pos >= m_size)
+        if (mp_char >= mp_end)
             throw malformed_xml_error("xml stream ended prematurely.");
 #endif
         return *mp_char;
@@ -171,7 +170,7 @@ protected:
     {
         next();
 #if ORCUS_DEBUG_SAX_PARSER
-        if (m_pos >= m_size)
+        if (mp_char >= mp_end)
             throw malformed_xml_error("xml stream ended prematurely.");
 #endif
         return *mp_char;
