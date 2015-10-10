@@ -106,6 +106,11 @@ pstring pstring::trim() const
     return pstring(p, p_end-p);
 }
 
+void pstring::resize(size_t new_size)
+{
+    m_size = new_size;
+}
+
 std::string operator+ (const std::string& left, const pstring& right)
 {
     std::string ret = left;

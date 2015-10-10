@@ -54,7 +54,7 @@ int main(int argc, char** argv)
     }
     catch (const sax::malformed_xml_error& e)
     {
-        cerr << create_parse_error_output(strm, e.offset());
+        cerr << create_parse_error_output(strm, e.offset()) << endl;
         cerr << e.what() << endl;
         return EXIT_FAILURE;
     }

@@ -32,7 +32,7 @@ std::unique_ptr<json_document_tree> load_doc(const std::string& strm, const json
     }
     catch (const json::parse_error& e)
     {
-        cerr << create_parse_error_output(strm, e.offset());
+        cerr << create_parse_error_output(strm, e.offset()) << endl;
         throw;
     }
     return doc;

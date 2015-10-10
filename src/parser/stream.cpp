@@ -7,6 +7,7 @@
 
 #include "orcus/stream.hpp"
 #include "orcus/exception.hpp"
+#include "orcus/pstring.hpp"
 
 #include <sstream>
 #include <fstream>
@@ -17,7 +18,7 @@ namespace orcus {
 
 namespace {
 
-std::tuple<std::string, size_t, size_t> find_line_with_offset(
+std::tuple<pstring, size_t, size_t> find_line_with_offset(
     const std::string& strm, std::ptrdiff_t offset)
 {
     const char* p0 = strm.data();
@@ -54,7 +55,7 @@ std::tuple<std::string, size_t, size_t> find_line_with_offset(
 
     assert(p_line_start <= p_offset);
     size_t offset_on_line = std::distance(p_line_start, p_offset);
-    std::string line(p_line_start, p_line_end - p_line_start);
+    pstring line(p_line_start, p_line_end - p_line_start);
 
     return std::make_tuple(line, line_num, offset_on_line);
 }
@@ -84,19 +85,54 @@ std::string create_parse_error_output(const std::string& strm, std::ptrdiff_t of
     if (offset < 0)
         return std::string();
 
+    constexpr size_t max_line_length = 60;
+
     auto line_info = find_line_with_offset(strm, offset);
-    std::string line = std::get<0>(line_info);
+    pstring line = std::get<0>(line_info);
     size_t line_num = std::get<1>(line_info);
     size_t offset_on_line = std::get<2>(line_info);
+
+    if (offset_on_line < 30)
+    {
+        std::ostringstream os;
+        os << line_num << ":" << (offset_on_line+1) << ": ";
+        size_t line_num_width = os.str().size();
+
+        // Truncate line if it's too long.
+        if (line.size() > max_line_length)
+            line.resize(max_line_length);
+
+        os << line << std::endl;
+
+        for (size_t i = 0; i < (offset_on_line+line_num_width); ++i)
+            os << ' ';
+        os << '^';
+        return os.str();
+    }
+
+    // The error line is too long.  Only show a segment of the line where the
+    // error occurred.
+
+    constexpr size_t fixed_offset = 20;
+
+    size_t line_start = offset_on_line - fixed_offset;
+    size_t line_end = line_start + max_line_length;
+    if (line_end > line.size())
+        line_end = line.size();
+
+    size_t line_length = line_end - line_start;
+
+    line = pstring(line.get()+line_start, line_length);
+
     std::ostringstream os;
-    os << line_num << ": ";
+    os << line_num << ":" << (line_start+1) << ": ";
     size_t line_num_width = os.str().size();
 
     os << line << std::endl;
 
-    for (size_t i = 0; i < (offset_on_line+line_num_width); ++i)
+    for (size_t i = 0; i < (fixed_offset+line_num_width); ++i)
         os << ' ';
-    os << '^' << std::endl;
+    os << '^';
 
     return os.str();
 }

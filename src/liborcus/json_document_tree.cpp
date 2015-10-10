@@ -763,7 +763,7 @@ void json_document_tree::load(const char* p, size_t n, const json_config& config
         {
             std::ostringstream os;
             os << "Error while parsing " << extpath.string() << std::endl;
-            os << create_parse_error_output(ext_strm, e.offset());
+            os << create_parse_error_output(ext_strm, e.offset()) << std::endl;
             os << e.what();
 
             // Re-throw as general_error to avoid getting caught as parse

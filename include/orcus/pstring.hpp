@@ -71,6 +71,8 @@ public:
         m_size = 0;
     }
 
+    void resize(size_t new_size);
+
     struct ORCUS_PSR_DLLPUBLIC hash
     {
         size_t operator() (const pstring& val) const;
