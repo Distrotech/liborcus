@@ -63,7 +63,17 @@ orcus_csv::orcus_csv(spreadsheet::iface::import_factory* factory) : mp_factory(f
 void orcus_csv::read_file(const string& filepath)
 {
     string strm = load_file_content(filepath.c_str());
-    parse(strm);
+    parse(&strm[0], strm.size());
+
+    mp_factory->finalize();
+}
+
+void orcus_csv::read_stream(const char* content, size_t len)
+{
+    if (!content)
+        return;
+
+    parse(content, len);
 
     mp_factory->finalize();
 }
@@ -74,16 +84,16 @@ const char* orcus_csv::get_name() const
     return name;
 }
 
-void orcus_csv::parse(const string& strm)
+void orcus_csv::parse(const char* content, size_t len)
 {
-    if (strm.empty())
+    if (!len)
         return;
 
     csv_handler handler(*mp_factory);
     csv::parser_config config;
     config.delimiters.push_back(',');
     config.text_qualifier = '"';
-    csv_parser<csv_handler> parser(&strm[0], strm.size(), handler, config);
+    csv_parser<csv_handler> parser(content, len, handler, config);
     try
     {
         parser.parse();

@@ -118,10 +118,22 @@ bool orcus_ods::detect(const unsigned char* blob, size_t size)
     return true;
 }
 
-void orcus_ods::read_file(const string& filepath)
+void orcus_ods::read_file(const std::string& filepath)
 {
-    zip_archive_stream_fd stream(filepath.c_str());
-    zip_archive archive(&stream);
+    zip_archive_stream_fd stream(filepath.data());
+    read_file_impl(&stream);
+}
+
+void orcus_ods::read_stream(const char* content, size_t len)
+{
+    zip_archive_stream_blob stream(
+            reinterpret_cast<const unsigned char*>(content), len);
+    read_file_impl(&stream);
+}
+
+void orcus_ods::read_file_impl(zip_archive_stream* stream)
+{
+    zip_archive archive(stream);
     archive.load();
     list_content(archive);
 

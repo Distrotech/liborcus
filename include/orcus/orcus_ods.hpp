@@ -18,6 +18,7 @@ namespace spreadsheet { namespace iface { class import_factory; }}
 
 struct orcus_ods_impl;
 class zip_archive;
+class zip_archive_stream;
 
 class ORCUS_DLLPUBLIC orcus_ods : public iface::import_filter
 {
@@ -31,12 +32,17 @@ public:
     static bool detect(const unsigned char* blob, size_t size);
 
     virtual void read_file(const std::string& filepath);
+
+    virtual void read_stream(const char* content, size_t len);
+
     virtual const char* get_name() const;
 
 private:
     static void list_content(const zip_archive& archive);
     void read_content(const zip_archive& archive);
     void read_content_xml(const unsigned char* p, size_t size);
+
+    void read_file_impl(zip_archive_stream* stream);
 
 private:
     orcus_ods_impl* mp_impl;

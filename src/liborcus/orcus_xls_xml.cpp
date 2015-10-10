@@ -81,8 +81,16 @@ void orcus_xls_xml::read_file(const string& filepath)
     if (strm.empty())
         return;
 
+    read_stream(&strm[0], strm.size());
+}
+
+void orcus_xls_xml::read_stream(const char* content, size_t len)
+{
+    if (!content || !len)
+        return;
+
     xml_stream_parser parser(
-        get_config(), mp_impl->m_ns_repo, xls_xml_tokens, &strm[0], strm.size());
+        get_config(), mp_impl->m_ns_repo, xls_xml_tokens, content, len);
 
     auto handler = make_unique<xls_xml_handler>(
         mp_impl->m_cxt, xls_xml_tokens, mp_impl->mp_factory);

@@ -73,12 +73,9 @@ opc_reader::opc_reader(const config& opt, xmlns_repository& ns_repo, session_con
     m_handler(handler),
     m_opc_rel_handler(new opc_relations_context(m_session_cxt, opc_tokens)) {}
 
-void opc_reader::read_file(const char* fpath)
+void opc_reader::read_file(std::unique_ptr<zip_archive_stream>&& stream)
 {
-    if (m_config.debug)
-        cout << "reading " << fpath << endl;
-
-    m_archive_stream.reset(new zip_archive_stream_fd(fpath));
+    m_archive_stream.reset(stream.release());
     m_archive.reset(new zip_archive(m_archive_stream.get()));
 
     m_archive->load();

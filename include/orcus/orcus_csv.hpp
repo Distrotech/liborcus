@@ -25,10 +25,12 @@ public:
     orcus_csv(spreadsheet::iface::import_factory* factory);
 
     virtual void read_file(const std::string& filepath);
+    virtual void read_stream(const char* content, size_t len);
+
     virtual const char* get_name() const;
 
 private:
-    void parse(const std::string& strm);
+    void parse(const char* content, size_t len);
 
 private:
     spreadsheet::iface::import_factory* mp_factory;

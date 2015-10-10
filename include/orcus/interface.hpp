@@ -26,7 +26,13 @@ class ORCUS_DLLPUBLIC import_filter
 public:
     import_filter();
     virtual ~import_filter();
+
+    /// expects a system path to a local file
     virtual void read_file(const std::string& filepath) = 0;
+
+    /// expects the whole content of the file
+    virtual void read_stream(const char* content, size_t len) = 0;
+
     virtual const char* get_name() const = 0;
 
     void set_config(const orcus::config& v);
