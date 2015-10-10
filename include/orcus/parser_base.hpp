@@ -22,6 +22,7 @@ class ORCUS_PSR_DLLPUBLIC parse_error : public general_error
     std::ptrdiff_t m_offset;  /// offset in the stream where the error occurred.
 protected:
     parse_error(const std::string& msg, std::ptrdiff_t offset);
+    parse_error(const std::string& cls, const std::string& msg, std::ptrdiff_t offset);
 
     static std::string build_message(const char* msg_before, char c, const char* msg_after);
     static std::string build_message(const char* msg_before, const char* p, size_t n, const char* msg_after);

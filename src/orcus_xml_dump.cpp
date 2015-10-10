@@ -52,6 +52,12 @@ int main(int argc, char** argv)
         hdl.dump_compact(os);
         cout << os.str();
     }
+    catch (const sax::malformed_xml_error& e)
+    {
+        cerr << create_parse_error_output(strm, e.offset());
+        cerr << e.what() << endl;
+        return EXIT_FAILURE;
+    }
     catch (const std::exception& e)
     {
         cerr << "exception caught while parsing file: " << e.what() << endl;

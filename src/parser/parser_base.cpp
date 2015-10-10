@@ -18,6 +18,9 @@ namespace orcus {
 parse_error::parse_error(const std::string& msg, std::ptrdiff_t offset) :
     general_error(msg), m_offset(offset) {}
 
+parse_error::parse_error(const std::string& cls, const std::string& msg, std::ptrdiff_t offset) :
+    general_error(cls, msg), m_offset(offset) {}
+
 std::ptrdiff_t parse_error::offset() const
 {
     return m_offset;

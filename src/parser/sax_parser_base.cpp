@@ -15,7 +15,7 @@
 namespace orcus { namespace sax {
 
 malformed_xml_error::malformed_xml_error(const std::string& msg, std::ptrdiff_t offset) :
-    ::orcus::parse_error(msg, offset) {}
+    ::orcus::parse_error("malformed_xml_error", msg, offset) {}
 
 malformed_xml_error::~malformed_xml_error() throw() {}
 
