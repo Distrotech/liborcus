@@ -30,13 +30,12 @@ using std::endl;
 
 namespace orcus { namespace sax {
 
-class ORCUS_PSR_DLLPUBLIC malformed_xml_error : public std::exception
+class ORCUS_PSR_DLLPUBLIC malformed_xml_error : public ::orcus::parse_error
 {
-    std::string m_msg;
 public:
-    malformed_xml_error(const std::string& msg);
+    malformed_xml_error() = delete;
+    malformed_xml_error(const std::string& msg, std::ptrdiff_t offset);
     virtual ~malformed_xml_error() throw();
-    virtual const char* what() const throw();
 };
 
 /**
@@ -114,7 +113,7 @@ protected:
     {
         next();
         if (!has_char())
-            throw malformed_xml_error("xml stream ended prematurely.");
+            throw malformed_xml_error("xml stream ended prematurely.", offset());
     }
 
     void nest_up() { ++m_nest_level; }
@@ -130,7 +129,7 @@ protected:
     void has_char_throw(const char* msg) const
     {
         if (!has_char())
-            throw malformed_xml_error(msg);
+            throw malformed_xml_error(msg, offset());
     }
 
     /**
@@ -144,7 +143,7 @@ protected:
     {
 #if ORCUS_DEBUG_SAX_PARSER
         if (mp_char >= mp_end)
-            throw malformed_xml_error("xml stream ended prematurely.");
+            throw malformed_xml_error("xml stream ended prematurely.", offset());
 #endif
         return mp_end - mp_char;
     }
@@ -152,7 +151,7 @@ protected:
     char cur_char_checked() const
     {
         if (!has_char())
-            throw malformed_xml_error("xml stream ended prematurely.");
+            throw malformed_xml_error("xml stream ended prematurely.", offset());
 
         return *mp_char;
     }
@@ -162,7 +161,7 @@ protected:
         next();
 #if ORCUS_DEBUG_SAX_PARSER
         if (mp_char >= mp_end)
-            throw malformed_xml_error("xml stream ended prematurely.");
+            throw malformed_xml_error("xml stream ended prematurely.", offset());
 #endif
         return *mp_char;
     }
@@ -171,7 +170,7 @@ protected:
     {
         next();
         if (!has_char())
-            throw malformed_xml_error("xml stream ended prematurely.");
+            throw malformed_xml_error("xml stream ended prematurely.", offset());
 
         return *mp_char;
     }

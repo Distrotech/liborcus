@@ -14,14 +14,10 @@
 
 namespace orcus { namespace sax {
 
-malformed_xml_error::malformed_xml_error(const std::string& msg) : m_msg(msg) {}
+malformed_xml_error::malformed_xml_error(const std::string& msg, std::ptrdiff_t offset) :
+    ::orcus::parse_error(msg, offset) {}
 
 malformed_xml_error::~malformed_xml_error() throw() {}
-
-const char* malformed_xml_error::what() const throw()
-{
-    return m_msg.c_str();
-}
 
 char decode_xml_encoded_char(const char* p, size_t n)
 {
@@ -120,7 +116,8 @@ void parser_base::comment()
     }
 
     if (len - i < 2 || next_and_char() != '>')
-        throw malformed_xml_error("'--' should not occur in comment other than in the closing tag.");
+        throw malformed_xml_error(
+            "'--' should not occur in comment other than in the closing tag.", offset());
 
     next();
 }
@@ -137,14 +134,16 @@ void parser_base::skip_bom()
     {
         if (c != 0xef || static_cast<unsigned char>(next_and_char()) != 0xbb ||
             static_cast<unsigned char>(next_and_char()) != 0xbf || next_and_char() != '<')
-            throw malformed_xml_error("unsupported encoding. only 8 bit encodings are supported");
+            throw malformed_xml_error(
+                "unsupported encoding. only 8 bit encodings are supported", offset());
     }
 }
 
 void parser_base::expects_next(const char* p, size_t n)
 {
     if (remains() < n+1)
-        throw malformed_xml_error("not enough stream left to check for an expected string segment.");
+        throw malformed_xml_error(
+            "not enough stream left to check for an expected string segment.", offset());
 
     const char* p0 = p;
     const char* p_end = p + n;
@@ -156,7 +155,7 @@ void parser_base::expects_next(const char* p, size_t n)
 
         std::ostringstream os;
         os << "'" << std::string(p0, n) << "' was expected, but not found.";
-        throw malformed_xml_error("sadf");
+        throw malformed_xml_error(os.str(), offset());
     }
 }
 
@@ -172,7 +171,7 @@ void parser_base::parse_encoded_char(cell_buffer& buf)
 
         size_t n = mp_char - p0;
         if (!n)
-            throw malformed_xml_error("empty encoded character.");
+            throw malformed_xml_error("empty encoded character.", offset());
 
 #if ORCUS_DEBUG_SAX_PARSER
         cout << "sax_parser::parse_encoded_char: raw='" << std::string(p0, n) << "'" << endl;
@@ -197,7 +196,8 @@ void parser_base::parse_encoded_char(cell_buffer& buf)
         return;
     }
 
-    throw malformed_xml_error("error parsing encoded character: terminating character is not found.");
+    throw malformed_xml_error(
+        "error parsing encoded character: terminating character is not found.", offset());
 }
 
 void parser_base::value_with_encoded_char(cell_buffer& buf, pstring& str)
@@ -241,7 +241,7 @@ bool parser_base::value(pstring& str, bool decode)
 {
     char c = cur_char();
     if (c != '"')
-        throw malformed_xml_error("value must be quoted");
+        throw malformed_xml_error("value must be quoted", offset());
 
     c = next_char_checked();
 
@@ -275,7 +275,7 @@ void parser_base::name(pstring& str)
     {
         ::std::ostringstream os;
         os << "name must begin with an alphabet, but got this instead '" << c << "'";
-        throw malformed_xml_error(os.str());
+        throw malformed_xml_error(os.str(), offset());
     }
 
     while (is_alpha(c) || is_numeric(c) || is_name_char(c))

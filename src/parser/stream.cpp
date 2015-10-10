@@ -81,6 +81,9 @@ std::string load_file_content(const char* filepath)
 
 std::string create_parse_error_output(const std::string& strm, std::ptrdiff_t offset)
 {
+    if (offset < 0)
+        return std::string();
+
     auto line_info = find_line_with_offset(strm, offset);
     std::string line = std::get<0>(line_info);
     size_t line_num = std::get<1>(line_info);
