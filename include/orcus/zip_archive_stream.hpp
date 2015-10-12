@@ -33,9 +33,8 @@ class ORCUS_PSR_DLLPUBLIC zip_archive_stream_fd : public zip_archive_stream
 {
     FILE* m_stream;
 
-    zip_archive_stream_fd(); // disabled
-
 public:
+    zip_archive_stream_fd() = delete;
     zip_archive_stream_fd(const char* filepath);
     virtual ~zip_archive_stream_fd();
 
@@ -54,10 +53,10 @@ class ORCUS_PSR_DLLPUBLIC zip_archive_stream_blob : public zip_archive_stream
     const unsigned char* m_cur;
     size_t m_size;
 
-    zip_archive_stream_blob(); // disabled
-
 public:
+    zip_archive_stream_blob() = delete;
     zip_archive_stream_blob(const unsigned char* blob, size_t size);
+    virtual ~zip_archive_stream_blob();
 
     virtual size_t size() const;
     virtual size_t tell() const;
