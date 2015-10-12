@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
+#include <vector>
 
 #include "orcus/zip_archive_stream.hpp"
 
@@ -29,7 +30,8 @@ void test_zip_archive_stream(zip_archive_stream* const strm, const unsigned char
     assert(strm->size() == length);
     assert(strm->tell() == 0);
 
-    unsigned char buf[length] = {0};
+    std::vector<unsigned char> buffer(length, 0);
+    unsigned char* buf = buffer.data();
 
     strm->read(buf, 2);
     assert(equal(data, data + 2, buf));
