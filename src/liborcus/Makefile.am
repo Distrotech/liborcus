@@ -8,6 +8,7 @@ EXTRA_PROGRAMS = \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-structure-tree \
 	liborcus-test-common \
+	liborcus-test-zip-archive \
 	liborcus-test-format-detection
 
 TESTS =
@@ -401,6 +402,14 @@ liborcus_test_common_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
+# liborcus-test-zip-archive
+
+liborcus_test_zip_archive_SOURCES = \
+	zip_archive_test.cpp
+
+liborcus_test_zip_archive_LDADD = \
+	liborcus-@ORCUS_API_VERSION@.la
+
 # liborcus-test-format-detection
 
 liborcus_test_format_detection_SOURCES = \
@@ -417,6 +426,7 @@ TESTS += \
 	liborcus-test-xml-map-tree \
 	liborcus-test-xml-structure-tree \
 	liborcus-test-common \
+	liborcus-test-zip-archive \
 	liborcus-test-format-detection
 
 distclean-local:
