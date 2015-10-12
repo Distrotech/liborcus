@@ -86,6 +86,12 @@ size_t zip_archive_stream_blob::tell() const
 
 void zip_archive_stream_blob::seek(size_t pos)
 {
+    if (pos > m_size)
+    {
+        ostringstream os;
+        os << "failed to seek position to " << pos << ".";
+        throw zip_error(os.str());
+    }
     m_cur = m_blob + pos;
 }
 
@@ -94,10 +100,7 @@ void zip_archive_stream_blob::read(unsigned char* buffer, size_t length) const
     if (!length)
         return;
     // First, make sure we have enough blob to satisfy the requested stream length.
-    const size_t pos = tell();
-    if (pos > m_size)
-        throw zip_error("Stream is seeked past end. No data available");
-    const size_t length_available = m_size - pos;
+    const size_t length_available = m_size - tell();
     if (length_available < length)
         throw zip_error("There is not enough stream left to fill requested length.");
 
