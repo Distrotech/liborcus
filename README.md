@@ -27,8 +27,7 @@ These parsers are all implemented as C++ templates and require a handler class
 passed as a template argument so that the handler class receives various
 callbacks from the parser as the file is being parsed.
 
-Download source packages
-========================
+## Download source packages
 
 | Version | Release Date | Download | Checksum |
 |---------|--------------|----------|----------|
@@ -44,3 +43,33 @@ Download source packages
 | 0.5.0 | 2013-04-11 | [liborcus-0.5.0.tar.bz2](http://kohei.us/files/orcus/src/liborcus-0.5.0.tar.bz2) | md5sum: 8a43b3de758dcd529b16ac96b46069fb<br/>sha1sum: ad76bed79b123e331f0b6dced6e9085a81b92449 |
 | 0.3.0 | 2012-11-28 | [liborcus_0.3.0.tar.bz2](http://kohei.us/files/orcus/src/liborcus_0.3.0.tar.bz2) | md5sum: 8755aac23317494a9028569374dc87b2<br/>sha1sum: 73b8fae832453fd517015f5dfae36448658af1a9 |
 | 0.1.0 | 2012-09-07 | [liborcus_0.1.0.tar.bz2](http://kohei.us/files/orcus/src/liborcus_0.1.0.tar.bz2) | md5sum: 46d9f4cf8b145c21ce1056e116d2ce71<br/>sha1sum: 7c961dd8f0bdd7ed039f305d6419be3cbdcc6cc6 |
+
+## Building from source code
+
+Orcus uses autoconf and automake as its build system.  As such, building it
+from sources should be familiar to those who are used to these tools.
+
+In short, run the following command:
+
+```bash
+./autogen.sh
+make
+make install
+```
+
+at the root directory after either cloning from the repository or unpacking
+the source package.
+
+### Build dependencies
+
+Orcus has build-time dependency on the following libraries:
+
+* [boost](http://boost.org)
+* [mdds](http://gitlab.com/mdds/mdds)
+* [ixion](http://gitlab.com/ixion/ixion)
+* [zlib](http://www.zlib.net/)
+
+Note that when you are building from the master branch of the git repository,
+we recommend that you also use the latest mdds source code from its git
+repository for the build as well as the latest ixion library built from its
+git repository, else you may encounter build issues or test failures.
