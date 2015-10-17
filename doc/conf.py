@@ -45,7 +45,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'orcus'
+project = 'Orcus'
 copyright = '2015, Kohei Yoshida'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -111,7 +111,7 @@ html_theme_options = {
     'navbar_pagenav': False,
     'bootswatch_theme': "simplex",
     'navbar_links': [
-        ("orcus on GitLab", "http://gitlab.com/orcus/orcus", True)
+        ("Orcus on GitLab", "http://gitlab.com/orcus/orcus", True)
     ]
 }
 
@@ -206,7 +206,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'orcus.tex', 'orcus Documentation',
+  ('index', 'orcus.tex', 'Orcus Documentation',
    'Kohei Yoshida', 'manual'),
 ]
 
@@ -236,7 +236,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'orcus', 'orcus Documentation',
+    ('index', 'orcus', 'Orcus Documentation',
      ['Kohei Yoshida'], 1)
 ]
 
@@ -250,8 +250,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'orcus', 'orcus Documentation',
-   'Kohei Yoshida', 'orcus', 'One line description of project.',
+  ('index', 'orcus', 'Orcus Documentation',
+   'Kohei Yoshida', 'Orcus', 'One line description of project.',
    'Miscellaneous'),
 ]
 

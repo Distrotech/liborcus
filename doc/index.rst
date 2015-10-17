@@ -3,16 +3,28 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-orcus documentation
+Orcus documentation
 ===================
 
-
+Orcus is a library that provides a collection of standalone file processing
+filters and utilities. It was originally focused on providing filters for
+spreadsheet documents, but filters for other types of documents have been
+added to the mix.
 
 Contents:
 
 .. toctree::
    :maxdepth: 3
 
+   xlsx.rst
+   xls-xml.rst
+   ods.rst
+   gnumeric.rst
+   xml.rst
+   csv.rst
+   css.rst
+   json.rst
+   yaml.rst
 
 Indices and tables
 ==================
