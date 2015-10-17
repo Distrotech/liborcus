@@ -15,14 +15,29 @@
 
 namespace orcus {
 
+/**
+ * Low-level JSON parser.  The caller must provide a handler class to
+ * receive callbacks.
+ */
 template<typename _Handler>
 class json_parser : public json::parser_base
 {
 public:
     typedef _Handler handler_type;
 
+    /**
+     * Constructor.
+     *
+     *
+     * @param p pointer to a string stream containing JSON string.
+     * @param n size of the stream.
+     * @param hdl handler class instance.
+     */
     json_parser(const char* p, size_t n, handler_type& hdl);
 
+    /**
+     * Call this method to start parsing.
+     */
     void parse();
 
 private:

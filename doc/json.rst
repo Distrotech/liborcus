@@ -1,6 +1,10 @@
 JSON
 ====
 
+The JSON part of orcus consists of a low-level parser class that handles
+parsing of JSON strings and a document class that stores parsed JSON
+structures.
+
 Parser
 ------
 
@@ -15,3 +19,7 @@ Document Tree
 
 .. doxygenstruct:: orcus::json_config
    :members:
+
+.. doxygenclass:: orcus::json::detail::node
+   :members:
+

@@ -46,6 +46,10 @@ enum class node_t
     null
 };
 
+/**
+ * Each node instance represents a JSON value object stored in the document
+ * tree.
+ */
 class ORCUS_DLLPUBLIC node
 {
     friend class ::orcus::json_document_tree;
@@ -93,15 +97,18 @@ public:
 
 }}
 
-using json_node_t = json::detail::node_t;
+typedef json::detail::node_t json_node_t;
 
+/**
+ * This class stores a parsed JSON document tree structure.
+ */
 class ORCUS_DLLPUBLIC json_document_tree
 {
     struct impl;
     std::unique_ptr<impl> mp_impl;
 
 public:
-    using node = json::detail::node;
+    typedef json::detail::node node;
 
     json_document_tree();
     json_document_tree(string_pool& pool);
@@ -112,9 +119,18 @@ public:
      * document tree.
      *
      * @param strm stream containing a JSON structure.
+     * @param config configuration object.
      */
     void load(const std::string& strm, const json_config& config);
 
+    /**
+     * Load raw string stream containing a JSON structure to populate the
+     * document tree.
+     *
+     * @param p pointer to the stream containing a JSON structure.
+     * @param n size of the stream.
+     * @param config configuration object.
+     */
     void load(const char* p, size_t n, const json_config& config);
 
     /**
