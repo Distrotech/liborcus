@@ -73,3 +73,13 @@ Note that when you are building from the master branch of the git repository,
 we recommend that you also use the latest mdds source code from its git
 repository for the build as well as the latest ixion library built from its
 git repository, else you may encounter build issues or test failures.
+
+### Building documentation
+
+Orcus uses a combination of [Doxygen](http://www.stack.nl/~dimitri/doxygen/),
+(Sphinx)[http://sphinx-doc.org/] and (Breathe)[https://github.com/michaeljones/breathe]
+to build its documentation.  It also use (Sphinx Bootstrap Theme)[https://ryan-roemer.github.io/sphinx-bootstrap-theme/]
+for the page layout and theme.
+
+Most distros package Doxygen, and Sphinx, Breathe and Sphinx Bootstrap Theme
+can be installed via pip.
