@@ -605,6 +605,10 @@ std::vector<pstring> node::keys() const
         throw json_document_error("node::keys: this node is not of object type.");
 
     const json_value_object* jvo = static_cast<const json_value_object*>(mp_impl->m_node);
+    if (!jvo->key_order.empty())
+        // Prefer to use key_order when it's populated.
+        return jvo->key_order;
+
     std::vector<pstring> keys;
     std::for_each(jvo->value_object.begin(), jvo->value_object.end(),
         [&](const json_value_object::object_type::value_type& node)
