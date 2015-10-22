@@ -26,6 +26,9 @@ Example
 
 Using the document tree
 ```````````````````````
+The following code snippet shows an example of how to populate an instance of
+:cpp:class:`~orcus::json_document_tree` from a JSON string, and navigate the
+tree afterward.
 
 ::
 
@@ -51,6 +54,8 @@ Using the document tree
         orcus::json_config config; // Use default configuration.
 
         orcus::json_document_tree doc;
+
+        // Load JSON string into a document tree.
         doc.load(json_string, config);
 
         // Root is an object containing three key-value pairs.
@@ -88,7 +93,9 @@ Using the document tree
         return EXIT_SUCCESS;
     }
 
-You'll see the following output when executing this code::
+You'll see the following output when executing this code:
+
+.. code-block:: text
 
     name: John Doe
     occupation: Software Engineer
@@ -100,6 +107,103 @@ You'll see the following output when executing this code::
 Using the low-level parser
 ``````````````````````````
 
+::
+
+    class json_parser_handler
+    {
+    public:
+        void begin_parse()
+        {
+            cout << "begin parse" << endl;
+        }
+
+        void end_parse()
+        {
+            cout << "end parse" << endl;
+        }
+
+        void begin_array()
+        {
+            cout << "begin array" << endl;
+        }
+
+        void end_array()
+        {
+            cout << "end array" << endl;
+        }
+
+        void begin_object()
+        {
+            cout << "begin object" << endl;
+        }
+
+        void object_key(const char* p, size_t len, bool transient)
+        {
+            cout << "object key: " << orcus::pstring(p, len) << endl;
+        }
+
+        void end_object()
+        {
+            cout << "end object" << endl;
+        }
+
+        void boolean_true()
+        {
+            cout << "true" << endl;
+        }
+
+        void boolean_false()
+        {
+            cout << "false" << endl;
+        }
+
+        void null()
+        {
+            cout << "null" << endl;
+        }
+
+        void string(const char* p, size_t len, bool transient)
+        {
+            cout << "string: " << orcus::pstring(p, len) << endl;
+        }
+
+        void number(double val)
+        {
+            cout << "number: " << val << endl;
+        }
+    };
+
+    int main()
+    {
+        const char* test_code = "{\"key1\": [1,2,3,4,5], \"key2\": 12.3}";
+        size_t n = strlen(test_code);
+
+        cout << "JSON string: " << test_code << endl;
+        json_parser_handler hdl;
+        orcus::json_parser<json_parser_handler> parser(test_code, n, hdl);
+        parser.parse();
+        return 0;
+    }
+
+.. code-block:: text
+
+    JSON string: {"key1": [1,2,3,4,5], "key2": 12.3}
+    begin parse
+    begin object
+    object key: key1
+    begin array
+    number: 1
+    number: 2
+    number: 3
+    number: 4
+    number: 5
+    end array
+    object key: key2
+    number: 12.3
+    end object
+    end parse
+
+
 Public interface
 ----------------
 
@@ -107,6 +211,12 @@ Parser
 ``````
 
 .. doxygenclass:: orcus::json_parser
+   :members:
+
+Parser handler
+``````````````
+
+.. doxygenclass:: json_parser_handler
    :members:
 
 Document tree

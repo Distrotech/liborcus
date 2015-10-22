@@ -30,36 +30,86 @@
 
 #include <orcus/css_types.hpp>
 
-/**
- * Skeleton handler for json_parser.  Feel free to copy this as a starting
- * point for your own JSON handler.
- */
 class json_parser_handler
 {
 public:
+    /**
+     * Called when the parsing begins.
+     */
     void begin_parse() {}
 
+    /**
+     * Called when the parsing ends.
+     */
     void end_parse() {}
 
+    /**
+     * Called when the opening brace of an array is encountered.
+     */
     void begin_array() {}
 
+    /**
+     * Called when the closing brace of an array is encountered.
+     */
     void end_array() {}
 
+    /**
+     * Called when the opening curly brace of an object is encountered.
+     */
     void begin_object() {}
 
-    void object_key(const char* /*p*/, size_t /*len*/, bool /*transient*/) {}
+    /**
+     * Called when a key value string of an object is encountered.
+     *
+     * @param p pointer to the first character of the key value string.
+     * @param len length of the key value string.
+     * @param transient true if the string value is stored in a temporary
+     *                  buffer which is not guaranteed to hold the string
+     *                  value after the end of this callback. When false, the
+     *                  pointer points to somewhere in the JSON stream being
+     *                  parsed.
+     */
+    void object_key(const char* p, size_t len, bool transient) {}
 
+    /**
+     * Called when the closing curly brace of an object is encountered.
+     */
     void end_object() {}
 
+    /**
+     * Called when a boolean 'true' keyword is encountered.
+     */
     void boolean_true() {}
 
+    /**
+     * Called when a boolean 'false' keyword is encountered.
+     */
     void boolean_false() {}
 
+    /**
+     * Called when a 'null' keyword is encountered.
+     */
     void null() {}
 
-    void string(const char* /*p*/, size_t /*len*/, bool /*transient*/) {}
+    /**
+     * Called when a string value is encountered.
+     *
+     * @param p pointer to the first character of the string value.
+     * @param len length of the string value.
+     * @param transient true if the string value is stored in a temporary
+     *                  buffer which is not guaranteed to hold the string
+     *                  value after the end of this callback. When false, the
+     *                  pointer points to somewhere in the JSON stream being
+     *                  parsed.
+     */
+    void string(const char* p, size_t len, bool transient) {}
 
-    void number(double /*val*/) {}
+    /**
+     * Called when a numeric value is encountered.
+     *
+     * @param val numeric value.
+     */
+    void number(double val) {}
 };
 
 #endif
