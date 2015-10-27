@@ -9,26 +9,28 @@ structures.
 
 There are two approaches to process JSON strings using the orcus library.  One
 approach is to utilize the :cpp:class:`~orcus::json_document_tree` class to
-load and populate the JSON structure via the
-:cpp:func:`~orcus::json_document_tree::load()` method and traverse its content
-via the :cpp:func:`~orcus::json_document_tree::get_document_root()` method.
-This method is handy if you want a quick way to parse and access the content
-of the JSON structure with minimal effort.
+load and populate the JSON structure tree via its
+:cpp:func:`~orcus::json_document_tree::load()` method and traverse the tree
+through its :cpp:func:`~orcus::json_document_tree::get_document_root()` method.
+This approach is ideal if you want a quick way to parse and access the content
+of a JSON document with minimal effort.
 
-Another approach is to use the low-level :cpp:class:`~orcus::json_parser`
+The other approach is to use the low-level :cpp:class:`~orcus::json_parser`
 class directly by providing your own handler class to receive callbacks from
 the parser.  This method requires a bit more effort on your part to provide
 and populate your own data structure, but if you already have a data structure
-to store the content of JSON, then this approach is ideal.
+to store the content of JSON, then this approach is ideal.  The
+:cpp:class:`~orcus::json_document_tree` class internally uses
+:cpp:class:`~orcus::json_parser` to parse JSON contents.
 
 Example
 -------
 
-Using the document tree
-```````````````````````
+Populating a document tree
+``````````````````````````
 The following code snippet shows an example of how to populate an instance of
-:cpp:class:`~orcus::json_document_tree` from a JSON string, and navigate the
-tree afterward.
+:cpp:class:`~orcus::json_document_tree` from a JSON string, and navigate its
+content tree afterward.
 
 ::
 
@@ -106,8 +108,8 @@ You'll see the following output when executing this code:
 
 Using the low-level parser
 ``````````````````````````
-
-::
+The following code snippet shows how to use the low-level :cpp:class:`~orcus::json_parser`
+class by providing an own handler class and passing it as a template argument::
 
     class json_parser_handler
     {
@@ -179,11 +181,18 @@ Using the low-level parser
         size_t n = strlen(test_code);
 
         cout << "JSON string: " << test_code << endl;
+
+        // Instantiate the parser with an own handler.
         json_parser_handler hdl;
         orcus::json_parser<json_parser_handler> parser(test_code, n, hdl);
+
+        // Parse the string.
         parser.parse();
+
         return 0;
     }
+
+Executing this code will generate the following output:
 
 .. code-block:: text
 
