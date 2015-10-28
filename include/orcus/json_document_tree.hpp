@@ -36,13 +36,32 @@ struct json_value;
 
 enum class node_t
 {
+    /** node type is not set.  */
     unset,
+    /** JSON string node.  A node of this type contains a string value. */
     string,
+    /** JSON number node. A node of this type contains a numeric value. */
     number,
+    /**
+     * JSON object node.  A node of this type contains one or more key-value
+     * pairs.
+     */
     object,
+    /**
+     * JSON array node.  A node of this type contains one or more child nodes.
+     */
     array,
+    /**
+     * JSON boolean node containing a value of 'true'.
+     */
     boolean_true,
+    /**
+     * JSON boolean node containing a value of 'false'.
+     */
     boolean_false,
+    /**
+     * JSON node containing a 'null' value.
+     */
     null
 };
 
@@ -66,21 +85,100 @@ public:
     node(node&& rhs);
     ~node();
 
+    /**
+     * Get the type of a node.
+     *
+     * @return node type.
+     */
     node_t type() const;
 
+    /**
+     * Get the number of child nodes if any.
+     *
+     * @return number of child nodes.
+     */
     size_t child_count() const;
 
+    /**
+     * Get a list of keys stored in a JSON object node.
+     *
+     * @exception orcus::json_document_error if the node is not of the object
+     *                 type.
+     * @return a list of keys.
+     */
     std::vector<pstring> keys() const;
 
+    /**
+     * Get the key by index in a JSON object node.  This method works only
+     * when the <b>preserve object order</b> option is set.
+     *
+     * @param index 0-based key index.
+     *
+     * @exception orcus::json_document_error if the node is not of the object
+     *                 type.
+     *
+     * @exception std::out_of_range if the index is equal to or greater than
+     *               the number of keys stored in the node.
+     *
+     * @return key value.
+     */
     pstring key(size_t index) const;
 
+    /**
+     * Get a child node by index.
+     *
+     * @param index 0-based index of a child node.
+     *
+     * @exception orcus::json_document_error if the node is not one of the
+     *                 object or array types.
+     *
+     * @exception std::out_of_range if the index is equal to or greater than
+     *               the number of child nodes that the node has.
+     *
+     * @return child node instance.
+     */
     node child(size_t index) const;
 
+    /**
+     * Get a child node by textural key value.
+     *
+     * @param key textural key value to get a child node by.
+     *
+     * @exception orcus::json_document_error if the node is not of the object
+     *                 type, or the node doesn't have the specified key.
+     *
+     * @return child node instance.
+     */
     node child(const pstring& key) const;
 
+    /**
+     * Get the parent node.
+     *
+     * @exception orcus::json_document_error if the node doesn't have a parent
+     *                 node which implies that the node is a root node.
+     *
+     * @return parent node instance.
+     */
     node parent() const;
 
+    /**
+     * Get the string value of a JSON string node.
+     *
+     * @exception orcus::json_document_error if the node is not of the string
+     *                 type.
+     *
+     * @return string value.
+     */
     pstring string_value() const;
+
+    /**
+     * Get the numeric value of a JSON number node.
+     *
+     * @exception orcus::json_document_error if the node is not of the number
+     *                 type.
+     *
+     * @return numeric value.
+     */
     double numeric_value() const;
 
     node& operator=(const node& other);

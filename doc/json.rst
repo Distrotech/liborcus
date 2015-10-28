@@ -240,3 +240,5 @@ Document tree
 .. doxygenclass:: orcus::json::detail::node
    :members:
 
+.. doxygenenum:: orcus::json::detail::node_t
+   :project: orcus
