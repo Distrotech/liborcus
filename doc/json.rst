@@ -189,7 +189,7 @@ class by providing an own handler class and passing it as a template argument::
         // Parse the string.
         parser.parse();
 
-        return 0;
+        return EXIT_SUCCESS;
     }
 
 Executing this code will generate the following output:

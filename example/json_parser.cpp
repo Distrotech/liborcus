@@ -76,8 +76,13 @@ int main()
     size_t n = strlen(test_code);
 
     cout << "JSON string: " << test_code << endl;
+
+    // Instantiate the parser with an own handler.
     json_parser_handler hdl;
     orcus::json_parser<json_parser_handler> parser(test_code, n, hdl);
+
+    // Parse the string.
     parser.parse();
-    return 0;
+
+    return EXIT_SUCCESS;
 }
