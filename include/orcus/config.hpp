@@ -33,10 +33,33 @@ struct ORCUS_DLLPUBLIC config
 
 struct ORCUS_DLLPUBLIC json_config
 {
-    enum class output_format_type { none, xml, json, check };
+    enum class output_format_type {
+        /** Output format is not specified.  */
+        none,
+        /** Output format is XML. */
+        xml,
+        /** Output format is JSON. */
+        json,
+        /** Special output format used in unit tests to verify content. */
+        check
+    };
 
+    /**
+     * Path of the JSON file being parsed, in case the JSON string originates
+     * from a file.  This parameter is required if external JSON files need to
+     * be resolved.  Otherwise it's optional.
+     */
     std::string input_path;
+
+    /**
+     * Path of the file to which output is written to.  Used only from the
+     * orcus-json command line tool.
+     */
     std::string output_path;
+
+    /**
+     * Output format type.  Used only from the orcus-json command line tool.
+     */
     output_format_type output_format;
 
     /**
