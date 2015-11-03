@@ -141,9 +141,18 @@ void json_parser<_Handler>::array()
     m_handler.begin_array();
     for (next(); has_char(); next())
     {
+        if (cur_char() == ']')
+        {
+            m_handler.end_array();
+            next();
+            skip_blanks();
+            return;
+        }
+
         skip_blanks();
         value();
         skip_blanks();
+
         if (has_char())
         {
             switch (cur_char())
@@ -177,9 +186,19 @@ void json_parser<_Handler>::object()
         if (!has_char())
             throw json::parse_error("object: stream ended prematurely before reaching a key.", offset());
 
-        if (cur_char() != '"')
-            json::parse_error::throw_with(
-                "object: '\"' was expected, but '", cur_char(), "' found.", offset());
+        switch (cur_char())
+        {
+            case '}':
+                m_handler.end_object();
+                next();
+                skip_blanks();
+                return;
+            case '"':
+                break;
+            default:
+                json::parse_error::throw_with(
+                    "object: '\"' was expected, but '", cur_char(), "' found.", offset());
+        }
 
         parse_quoted_string_state res = parse_string();
         if (!res.str)

@@ -11,7 +11,6 @@
 
 #include <cassert>
 #include <cmath>
-#include <iostream>
 
 namespace orcus { namespace json {
 

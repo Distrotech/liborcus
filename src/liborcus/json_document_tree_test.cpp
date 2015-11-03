@@ -124,6 +124,34 @@ void test_json_resolve_refs()
     }
 }
 
+void test_json_parse_empty()
+{
+    json_config test_config;
+
+    const char* tests[] = {
+        "{}",
+        "[]",
+        "{\"key1\": {}, \"key2\": {}}"
+    };
+
+    for (size_t i = 0; i < ORCUS_N_ELEMENTS(tests); ++i)
+    {
+        const char* test = tests[i];
+        cout << "JSON stream: '" << test << "' (" << strlen(test) << ")" << endl;
+        json_document_tree doc;
+        try
+        {
+            doc.load(test, strlen(test), test_config);
+        }
+        catch (const json::parse_error& e)
+        {
+            cout << create_parse_error_output(test, e.offset()) << endl;
+            cout << e.what() << endl;
+            assert(false);
+        }
+    }
+}
+
 void test_json_parse_invalid()
 {
     json_config test_config;
@@ -351,6 +379,7 @@ int main()
 {
     test_json_parse();
     test_json_resolve_refs();
+    test_json_parse_empty();
     test_json_parse_invalid();
     test_json_traverse_basic1();
     test_json_traverse_basic2();
