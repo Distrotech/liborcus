@@ -3,18 +3,19 @@
 
 AC_PREREQ([2.65])
 
-# ====================
-# Version informations
-# ====================
+# ===================
+# Version information
+# ===================
 m4_define([orcus_major_version], [0])
 m4_define([orcus_minor_version], [11])
 m4_define([orcus_micro_version], [0])
 m4_define([orcus_version], [orcus_major_version.orcus_minor_version.orcus_micro_version])
 
-# ================
-# API informations
-# ================
-m4_define([orcus_minor_api_version], [m4_eval(orcus_minor_version + orcus_minor_version%2)])
+# ===============
+# API information
+# ===============
+m4_define([orcus_major_api_version], [0])
+m4_define([orcus_minor_api_version], [11])
 m4_define([orcus_api_version], [orcus_major_version.orcus_minor_api_version])
 
 # =============
@@ -188,7 +189,7 @@ AS_IF([test "x$with_tools" != "xno"], [
 # ============
 # mdds support
 # ============
-PKG_CHECK_MODULES([MDDS],[mdds-1.0 >= 0.13.0])
+PKG_CHECK_MODULES([MDDS],[mdds-1.0 >= 1.0.0])
 CXXFLAGS="$CXXFLAGS -DMDDS_HASH_CONTAINER_BOOST $MDDS_CFLAGS"
 
 # =================
