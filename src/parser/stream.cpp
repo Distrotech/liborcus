@@ -38,11 +38,11 @@ std::tuple<pstring, size_t, size_t> find_line_with_offset(
     for (; p0 <= p_line_start; --p_line_start)
     {
         if (*p_line_start == '\n')
-        {
-            ++p_line_start;  // 1st char of the line.
             break;
-        }
     }
+
+    ++p_line_start;
+    assert(p0 <= p_line_start);
 
     // Determine the end of the line.
     const char* p_line_end = p_offset;

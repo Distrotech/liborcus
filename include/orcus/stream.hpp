@@ -29,7 +29,7 @@ ORCUS_PSR_DLLPUBLIC std::string load_file_content(const char* filepath);
  * @param strm entire character stream where the error occurred.
  * @param offset offset of the error position within the stream.
  *
- * @return ORCUS_PSR_DLLPUBLIC std::string
+ * @return string formatted to be usable as an error message for stdout.
  */
 ORCUS_PSR_DLLPUBLIC std::string create_parse_error_output(
     const std::string& strm, std::ptrdiff_t offset);
