@@ -554,6 +554,7 @@
                 <F N="../src/parser/sax_token_parser.cpp"/>
                 <F N="../src/parser/sax_token_parser_test.cpp"/>
                 <F N="../src/parser/stream.cpp"/>
+                <F N="../src/parser/stream_test.cpp"/>
                 <F N="../src/parser/string_pool.cpp"/>
                 <F N="../src/parser/string_pool_test.cpp"/>
                 <F N="../src/parser/tokens.cpp"/>

@@ -9,7 +9,7 @@ case $NAME in
     csv|ods|xml|xml-mapped|xls-xml|xlsx)
         LOCATION=orcus
         ;;
-    base64|sax-token-parser|string-pool|xml-namespace)
+    base64|sax-token-parser|stream|string-pool|xml-namespace|zip-archive)
         LOCATION=parser
         ;;
 esac
@@ -36,8 +36,10 @@ if [ "$LOCATION" = "" ]; then
     echo
     echo "  * base64"
     echo "  * sax-token-parser"
+    echo "  * stream"
     echo "  * string-pool"
     echo "  * xml-namespace"
+    echo "  * zip-archive"
     echo ""
 
     exit 1

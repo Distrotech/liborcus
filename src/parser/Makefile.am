@@ -36,6 +36,7 @@ EXTRA_PROGRAMS = \
 	parser-test-xml-namespace \
 	parser-test-base64 \
 	parser-test-sax-token-parser \
+	parser-test-stream \
 	parser-test-zip-archive
 
 # parser-test-string-pool
@@ -73,6 +74,14 @@ parser_test_sax_token_parser_SOURCES = \
 parser_test_sax_token_parser_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
 parser_test_sax_token_parser_CPPFLAGS = $(AM_CPPFLAGS)
 
+# parser-test-stream
+
+parser_test_stream_SOURCES = \
+	stream_test.cpp
+
+parser_test_stream_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
+parser_test_stream_CPPFLAGS = $(AM_CPPFLAGS)
+
 # parser-test-zip-archive
 
 parser_test_zip_archive_SOURCES = \
@@ -86,6 +95,7 @@ TESTS = \
 	parser-test-xml-namespace \
 	parser-test-base64 \
 	parser-test-sax-token-parser \
+	parser-test-stream \
 	parser-test-zip-archive
 
 distclean-local:
