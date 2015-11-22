@@ -350,7 +350,7 @@ void sax_parser<_Handler,_Config>::doctype()
     // Either PUBLIC or SYSTEM.
     size_t len = remains();
     if (len < 6)
-        sax::malformed_xml_error("DOCTYPE section too short.", offset());
+        throw sax::malformed_xml_error("DOCTYPE section too short.", offset());
 
     param.keyword = sax::doctype_declaration::keyword_type::dtd_private;
     char c = cur_char();
