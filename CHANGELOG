@@ -1,3 +1,21 @@
+orcus 0.11.0
+
+  * remove boost dependency from the public headers.
+
+  * implement JSON parser and document storage model.
+
+  * implement YAML parser and document storage model.
+
+  * add orcus-json.
+
+  * add orcus-yaml.
+
+  * improve parse error output from the XML parser.
+
+  * use enum class in import_style::set_border_style().
+
+  * support non-local file import.
+
 orcus 0.1.0
 
   * initial release.
