@@ -122,7 +122,6 @@ test_data = \
     test/ods/test.ods \
     test/python/json.py \
     test/python/module.py \
-    test/python/run-all.sh \
     test/xls-xml/basic/check.txt \
     test/xls-xml/basic/input.xml \
     test/xlsx/background-color/standard.xlsx \
