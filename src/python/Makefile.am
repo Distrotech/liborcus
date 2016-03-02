@@ -28,6 +28,6 @@ orcus_PYTHON = \
 	./orcus/json.py
 
 TESTS = \
-	../../test/python/run-all.sh
+	$(abs_top_srcdir)/test/python/run-all.sh
 
 endif

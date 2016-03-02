@@ -229,7 +229,7 @@ orcus_odf_helper_test_SOURCES = \
 orcus_odf_helper_test_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la
 
-orcus_odf_helper_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
+orcus_odf_helper_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 TESTS += \
 	 orcus-odf-helper-test
@@ -357,6 +357,8 @@ liborcus_test_json_document_tree_LDADD = \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	$(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 
+liborcus_test_json_document_tree_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
+
 # liborcus-test-yaml-document-tree
 
 liborcus_test_yaml_document_tree_SOURCES = \
@@ -367,6 +369,8 @@ liborcus_test_yaml_document_tree_SOURCES = \
 liborcus_test_yaml_document_tree_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
+
+liborcus_test_yaml_document_tree_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 # liborcus-test-xml-map-tree
 
@@ -385,7 +389,7 @@ liborcus_test_xml_structure_tree_SOURCES = \
 	xml_structure_tree.cpp \
 	xml_structure_tree_test.cpp
 
-liborcus_test_xml_structure_tree_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
+liborcus_test_xml_structure_tree_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
 liborcus_test_xml_structure_tree_LDADD = \
 	liborcus-@ORCUS_API_VERSION@.la \
