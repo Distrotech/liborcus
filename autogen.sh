@@ -54,6 +54,10 @@ autoheader || {
 automake -a -c --foreign || {
     echo "warning: automake failed"
 }
+automake --add-missing || {
+    echo "error: failed to add missing stuff"
+    exit 1
+}
 autoconf || {
     echo "error: autoconf failed"
     exit 1

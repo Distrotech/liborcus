@@ -10,26 +10,37 @@ pkgconfig_DATA = $(pcfiles)
 pkgconfigdir = $(libdir)/pkgconfig
 
 doc_data = \
-    doc/rfc4180-csv.txt \
-    doc/class_diagram.odg \
-    doc/column-width-and-row-height.txt \
-    doc/zlib-in-memory-gzip.txt
+    doc/conf.py \
+    doc/css.rst \
+    doc/csv.rst \
+    doc/doxygen.conf \
+    doc/gnumeric.rst \
+    doc/index.rst \
+    doc/json.rst \
+    doc/ods.rst \
+    doc/xls-xml.rst \
+    doc/xlsx.rst \
+    doc/xml.rst \
+    doc/yaml.rst
 
 bin_data = \
-    bin/orcus-xls-xml.sh \
-    bin/orcus-detect.sh \
-    bin/orcus-test-csv.sh \
-    bin/orcus-xml.sh \
-    bin/orcus-xml-dump.sh \
-    bin/orcus-csv.sh \
-    bin/orcus-test-xml-mapped.sh \
-    bin/orcus-mso-encryption.sh \
-    bin/orcus-xlsx.sh \
-    bin/orcus-ods.sh \
-    bin/orcus-gnumeric.sh \
-    bin/orcus-zip-dump.sh \
+    bin/env-osx.sh \
     bin/orcus-common-func.sh \
-    bin/orcus-test-xml.sh
+    bin/orcus-css-dump.sh \
+    bin/orcus-csv.sh \
+    bin/orcus-detect.sh \
+    bin/orcus-gnumeric.sh \
+    bin/orcus-json.sh \
+    bin/orcus-mso-encryption.sh \
+    bin/orcus-ods.sh \
+    bin/orcus-test.sh \
+    bin/orcus-xls-xml.sh \
+    bin/orcus-xlsx.sh \
+    bin/orcus-xml-dump.sh \
+    bin/orcus-xml.sh \
+    bin/orcus-yaml.sh \
+    bin/orcus-zip-dump.sh \
+    bin/run-python.sh
 
 misc_data = \
     misc/OpenDocument-v1.2-os-schema.rng \

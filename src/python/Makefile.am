@@ -23,7 +23,7 @@ _orcus_json_la_LIBADD = \
 	$(PYTHON_LIBS)
 
 orcusdir = $(pythondir)/orcus
-orcus_DATA = \
+orcus_PYTHON = \
 	./orcus/__init__.py \
 	./orcus/json.py
 
