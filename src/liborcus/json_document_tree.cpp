@@ -55,7 +55,6 @@ using node_t = json::detail::node_t;
 
 const char* tab = "    ";
 constexpr char quote = '"';
-constexpr char backslash = '\\';
 
 const xmlns_id_t NS_orcus_json_xml = "http://schemas.kohei.us/orcus/2015/json";
 
@@ -455,13 +454,13 @@ public:
     {
         if (m_root)
         {
-            json_value* jv = push_value(make_unique<json_value_array>());
+            json_value* jv = push_value(orcus::make_unique<json_value_array>());
             assert(jv && jv->type == node_t::array);
             m_stack.push_back(parser_stack(jv));
         }
         else
         {
-            m_root = make_unique<json_value_array>();
+            m_root = orcus::make_unique<json_value_array>();
             m_stack.push_back(parser_stack(m_root.get()));
         }
     }
@@ -476,13 +475,13 @@ public:
     {
         if (m_root)
         {
-            json_value* jv = push_value(make_unique<json_value_object>());
+            json_value* jv = push_value(orcus::make_unique<json_value_object>());
             assert(jv && jv->type == node_t::object);
             m_stack.push_back(parser_stack(jv));
         }
         else
         {
-            m_root = make_unique<json_value_object>();
+            m_root = orcus::make_unique<json_value_object>();
             m_stack.push_back(parser_stack(m_root.get()));
         }
     }
@@ -504,17 +503,17 @@ public:
 
     void boolean_true()
     {
-        push_value(make_unique<json_value>(node_t::boolean_true));
+        push_value(orcus::make_unique<json_value>(node_t::boolean_true));
     }
 
     void boolean_false()
     {
-        push_value(make_unique<json_value>(node_t::boolean_false));
+        push_value(orcus::make_unique<json_value>(node_t::boolean_false));
     }
 
     void null()
     {
-        push_value(make_unique<json_value>(node_t::null));
+        push_value(orcus::make_unique<json_value>(node_t::null));
     }
 
     void string(const char* p, size_t len, bool transient)
@@ -524,12 +523,12 @@ public:
             // The tree manages the life cycle of this string value.
             s = m_pool.intern(s).first;
 
-        push_value(make_unique<json_value_string>(s));
+        push_value(orcus::make_unique<json_value_string>(s));
     }
 
     void number(double val)
     {
-        push_value(make_unique<json_value_number>(val));
+        push_value(orcus::make_unique<json_value_number>(val));
     }
 
     void swap(std::unique_ptr<json_value>& other_root)
@@ -554,8 +553,8 @@ struct node::impl
     impl(const json_value* jv) : m_node(jv) {}
 };
 
-node::node(const json_value* jv) : mp_impl(make_unique<impl>(jv)) {}
-node::node(const node& other) : mp_impl(make_unique<impl>(other.mp_impl->m_node)) {}
+node::node(const json_value* jv) : mp_impl(orcus::make_unique<impl>(jv)) {}
+node::node(const node& other) : mp_impl(orcus::make_unique<impl>(other.mp_impl->m_node)) {}
 node::node(node&& rhs) : mp_impl(std::move(rhs.mp_impl)) {}
 node::~node() {}
 
@@ -720,12 +719,12 @@ struct json_document_tree::impl
     std::unique_ptr<string_pool> m_own_pool;
     string_pool& m_pool;
 
-    impl() : m_own_pool(make_unique<string_pool>()), m_pool(*m_own_pool) {}
+    impl() : m_own_pool(orcus::make_unique<string_pool>()), m_pool(*m_own_pool) {}
     impl(string_pool& pool) : m_pool(pool) {}
 };
 
-json_document_tree::json_document_tree() : mp_impl(make_unique<impl>()) {}
-json_document_tree::json_document_tree(string_pool& pool) : mp_impl(make_unique<impl>(pool)) {}
+json_document_tree::json_document_tree() : mp_impl(orcus::make_unique<impl>()) {}
+json_document_tree::json_document_tree(string_pool& pool) : mp_impl(orcus::make_unique<impl>(pool)) {}
 json_document_tree::~json_document_tree() {}
 
 void json_document_tree::load(const std::string& strm, const json_config& config)

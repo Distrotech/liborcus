@@ -76,7 +76,7 @@ std::unique_ptr<yaml_config> parse_yaml_args(int argc, char** argv)
         return nullptr;
     }
 
-    std::unique_ptr<yaml_config> config = make_unique<yaml_config>();
+    std::unique_ptr<yaml_config> config = orcus::make_unique<yaml_config>();
 
     if (vm.count("input"))
         config->input_path = vm["input"].as<string>();

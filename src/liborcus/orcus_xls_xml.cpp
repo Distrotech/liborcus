@@ -92,7 +92,7 @@ void orcus_xls_xml::read_stream(const char* content, size_t len)
     xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, xls_xml_tokens, content, len);
 
-    auto handler = make_unique<xls_xml_handler>(
+    auto handler = orcus::make_unique<xls_xml_handler>(
         mp_impl->m_cxt, xls_xml_tokens, mp_impl->mp_factory);
 
     parser.set_handler(handler.get());

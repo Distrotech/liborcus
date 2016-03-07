@@ -666,7 +666,7 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         {
             // Insert a new element of this name.
             children.push_back(
-                make_unique<element>(
+                orcus::make_unique<element>(
                     token.ns, m_names.intern(token.name.get(), token.name.size()).first,
                     element_unlinked, reference_unknown));
             cur_element = children.back().get();
@@ -695,7 +695,7 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
             throw xpath_error("This attribute is already linked.  You can't link the same attribute twice.");
 
         attrs.push_back(
-            make_unique<attribute>(
+            orcus::make_unique<attribute>(
                 token.ns, m_names.intern(token.name.get(), token.name.size()).first, ref_type));
 
         ret = attrs.back().get();
@@ -710,7 +710,7 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
         {
             // No element of that name exists.
             children.push_back(
-                make_unique<element>(
+                orcus::make_unique<element>(
                     token.ns, m_names.intern(token.name.get(), token.name.size()).first,
                     element_linked, ref_type));
 

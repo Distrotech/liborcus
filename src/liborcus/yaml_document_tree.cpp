@@ -254,13 +254,13 @@ public:
 
         if (m_root)
         {
-            yaml_value* yv = push_value(make_unique<yaml_value_sequence>());
+            yaml_value* yv = push_value(orcus::make_unique<yaml_value_sequence>());
             assert(yv && yv->type == node_t::sequence);
             m_stack.push_back(parser_stack(yv));
         }
         else
         {
-            m_root = make_unique<yaml_value_sequence>();
+            m_root = orcus::make_unique<yaml_value_sequence>();
             m_stack.push_back(parser_stack(m_root.get()));
         }
     }
@@ -276,13 +276,13 @@ public:
         assert(m_in_document);
         if (m_root)
         {
-            yaml_value* yv = push_value(make_unique<yaml_value_map>());
+            yaml_value* yv = push_value(orcus::make_unique<yaml_value_map>());
             assert(yv && yv->type == node_t::map);
             m_stack.push_back(parser_stack(yv));
         }
         else
         {
-            m_root = make_unique<yaml_value_map>();
+            m_root = orcus::make_unique<yaml_value_map>();
             m_stack.push_back(parser_stack(m_root.get()));
         }
     }
@@ -319,11 +319,11 @@ public:
 
         if (m_root)
         {
-            yaml_value* yv = push_value(make_unique<yaml_value_string>(p, n));
+            yaml_value* yv = push_value(orcus::make_unique<yaml_value_string>(p, n));
             assert(yv && yv->type == node_t::string);
         }
         else
-            m_root = make_unique<yaml_value_string>(p, n);
+            m_root = orcus::make_unique<yaml_value_string>(p, n);
     }
 
     void number(double val)
@@ -331,11 +331,11 @@ public:
         assert(m_in_document);
         if (m_root)
         {
-            yaml_value* yv = push_value(make_unique<yaml_value_number>(val));
+            yaml_value* yv = push_value(orcus::make_unique<yaml_value_number>(val));
             assert(yv && yv->type == node_t::number);
         }
         else
-            m_root = make_unique<yaml_value_number>(val);
+            m_root = orcus::make_unique<yaml_value_number>(val);
     }
 
     void boolean_true()
@@ -343,11 +343,11 @@ public:
         assert(m_in_document);
         if (m_root)
         {
-            yaml_value* yv = push_value(make_unique<yaml_value>(node_t::boolean_true));
+            yaml_value* yv = push_value(orcus::make_unique<yaml_value>(node_t::boolean_true));
             assert(yv && yv->type == node_t::boolean_true);
         }
         else
-            m_root = make_unique<yaml_value>(node_t::boolean_true);
+            m_root = orcus::make_unique<yaml_value>(node_t::boolean_true);
     }
 
     void boolean_false()
@@ -355,11 +355,11 @@ public:
         assert(m_in_document);
         if (m_root)
         {
-            yaml_value* yv = push_value(make_unique<yaml_value>(node_t::boolean_false));
+            yaml_value* yv = push_value(orcus::make_unique<yaml_value>(node_t::boolean_false));
             assert(yv && yv->type == node_t::boolean_false);
         }
         else
-            m_root = make_unique<yaml_value>(node_t::boolean_false);
+            m_root = orcus::make_unique<yaml_value>(node_t::boolean_false);
     }
 
     void null()
@@ -367,11 +367,11 @@ public:
         assert(m_in_document);
         if (m_root)
         {
-            yaml_value* yv = push_value(make_unique<yaml_value>(node_t::null));
+            yaml_value* yv = push_value(orcus::make_unique<yaml_value>(node_t::null));
             assert(yv && yv->type == node_t::null);
         }
         else
-            m_root = make_unique<yaml_value>(node_t::null);
+            m_root = orcus::make_unique<yaml_value>(node_t::null);
     }
 
     void swap(std::vector<document_root_type>& docs)
@@ -396,8 +396,8 @@ struct node::impl
     impl(const yaml_value* yv) : m_node(yv) {}
 };
 
-node::node(const yaml_value* yv) : mp_impl(make_unique<impl>(yv)) {}
-node::node(const node& other) : mp_impl(make_unique<impl>(other.mp_impl->m_node)) {}
+node::node(const yaml_value* yv) : mp_impl(orcus::make_unique<impl>(yv)) {}
+node::node(const node& other) : mp_impl(orcus::make_unique<impl>(other.mp_impl->m_node)) {}
 node::node(node&& rhs) : mp_impl(std::move(rhs.mp_impl)) {}
 node::~node() {}
 
@@ -548,7 +548,7 @@ double node::numeric_value() const
 
 }}
 
-yaml_document_tree::yaml_document_tree() : mp_impl(make_unique<impl>()) {}
+yaml_document_tree::yaml_document_tree() : mp_impl(orcus::make_unique<impl>()) {}
 yaml_document_tree::~yaml_document_tree() {}
 
 void yaml_document_tree::load(const std::string& strm)

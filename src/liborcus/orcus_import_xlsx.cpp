@@ -33,7 +33,7 @@ void import_xlsx::read_table(const char* p, size_t n, spreadsheet::iface::import
         return;
 
     session_context cxt;
-    auto handler = make_unique<xlsx_table_xml_handler>(cxt, ooxml_tokens, *table);
+    auto handler = orcus::make_unique<xlsx_table_xml_handler>(cxt, ooxml_tokens, *table);
 
     xmlns_repository ns_repo;
     ns_repo.add_predefined_values(NS_ooxml_all);

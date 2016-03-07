@@ -244,7 +244,7 @@ void opc_reader::read_content_types()
         m_config, m_ns_repo, opc_tokens,
         reinterpret_cast<const char*>(&buffer[0]), buffer.size());
 
-    auto handler = make_unique<xml_simple_stream_handler>(
+    auto handler = orcus::make_unique<xml_simple_stream_handler>(
         new opc_content_types_context(m_session_cxt, opc_tokens));
 
     parser.set_handler(handler.get());

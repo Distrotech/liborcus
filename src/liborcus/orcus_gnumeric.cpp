@@ -82,7 +82,7 @@ void orcus_gnumeric::read_content_xml(const char* p, size_t size)
 {
     xml_stream_parser parser(get_config(), mp_impl->m_ns_repo, gnumeric_tokens, p, size);
 
-    auto handler = make_unique<gnumeric_content_xml_handler>(
+    auto handler = orcus::make_unique<gnumeric_content_xml_handler>(
         mp_impl->m_cxt, gnumeric_tokens, mp_impl->mp_factory);
 
     parser.set_handler(handler.get());

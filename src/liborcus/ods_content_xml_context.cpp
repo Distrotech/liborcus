@@ -588,7 +588,7 @@ void ods_content_xml_context::push_cell_value()
         ods_session_data& ods_data =
             static_cast<ods_session_data&>(*get_session_context().mp_data);
         ods_data.m_formulas.push_back(
-            make_unique<ods_session_data::formula>(
+            orcus::make_unique<ods_session_data::formula>(
                 m_tables.size()-1, m_row, m_col, m_cell_attr.formula_grammar, m_cell_attr.formula));
 
         ods_session_data::formula& formula_data = *ods_data.m_formulas.back();

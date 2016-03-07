@@ -547,7 +547,7 @@ void xlsx_sheet_context::end_element_cell()
         {
             // shared formula expression
             session_data.m_shared_formulas.push_back(
-                make_unique<xlsx_session_data::shared_formula>(
+                orcus::make_unique<xlsx_session_data::shared_formula>(
                     m_sheet_id, m_cur_row, m_cur_col, m_cur_formula.shared_id,
                     m_cur_formula.str.str(), m_cur_formula.ref.str()));
         }
@@ -555,14 +555,14 @@ void xlsx_sheet_context::end_element_cell()
         {
             // array formula expression
             session_data.m_formulas.push_back(
-                make_unique<xlsx_session_data::formula>(
+                orcus::make_unique<xlsx_session_data::formula>(
                     m_sheet_id, m_cur_row, m_cur_col, m_cur_formula.str.str(), m_cur_formula.ref.str()));
         }
         else
         {
             // normal (non-shared) formula expression
             session_data.m_formulas.push_back(
-                make_unique<xlsx_session_data::formula>(
+                orcus::make_unique<xlsx_session_data::formula>(
                     m_sheet_id, m_cur_row, m_cur_col, m_cur_formula.str.str()));
         }
     }
@@ -570,7 +570,7 @@ void xlsx_sheet_context::end_element_cell()
     {
         // shared formula without formula expression
         session_data.m_shared_formulas.push_back(
-            make_unique<xlsx_session_data::shared_formula>(
+            orcus::make_unique<xlsx_session_data::shared_formula>(
                 m_sheet_id, m_cur_row, m_cur_col, m_cur_formula.shared_id));
     }
     else if (m_cur_formula.type == spreadsheet::formula_t::data_table)

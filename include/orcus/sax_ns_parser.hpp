@@ -142,7 +142,7 @@ private:
 
         void start_element(const sax::parser_element& elem)
         {
-            m_scopes.push_back(make_unique<__sax::elem_scope>());
+            m_scopes.push_back(orcus::make_unique<__sax::elem_scope>());
             __sax::elem_scope& scope = *m_scopes.back();
             scope.ns = m_ns_cxt.get(elem.ns);
             scope.name = elem.name;

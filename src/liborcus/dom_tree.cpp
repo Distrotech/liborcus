@@ -177,7 +177,7 @@ void dom_tree::content::print(ostream& os, const xmlns_context& /*cxt*/) const
 dom_tree::content::~content() {}
 
 dom_tree::dom_tree(xmlns_context& cxt) :
-    mp_impl(make_unique<dom_tree_impl>(cxt)) {}
+    mp_impl(orcus::make_unique<dom_tree_impl>(cxt)) {}
 
 dom_tree::~dom_tree() {}
 
@@ -242,7 +242,7 @@ void dom_tree::start_element(xmlns_id_t ns, const pstring& name)
 
     // Append new element as a child element of the current element.
     p = mp_impl->m_elem_stack.back();
-    p->child_nodes.push_back(make_unique<element>(ns, name_safe));
+    p->child_nodes.push_back(orcus::make_unique<element>(ns, name_safe));
     p = static_cast<element*>(p->child_nodes.back().get());
     p->attrs.swap(mp_impl->m_cur_attrs);
     mp_impl->m_elem_stack.push_back(p);
@@ -269,7 +269,7 @@ void dom_tree::set_characters(const pstring& val)
 
     element* p = mp_impl->m_elem_stack.back();
     val2 = mp_impl->m_pool.intern(val2).first; // Make sure the string is persistent.
-    p->child_nodes.push_back(make_unique<content>(val2));
+    p->child_nodes.push_back(orcus::make_unique<content>(val2));
 }
 
 void dom_tree::set_attribute(xmlns_id_t ns, const pstring& name, const pstring& val)
@@ -283,7 +283,7 @@ void dom_tree::set_attribute(xmlns_id_t ns, const pstring& name, const pstring& 
 
 void dom_tree::set_doctype(const sax::doctype_declaration& dtd)
 {
-    mp_impl->m_doctype = make_unique<sax::doctype_declaration>(dtd);  // make a copy.
+    mp_impl->m_doctype = orcus::make_unique<sax::doctype_declaration>(dtd);  // make a copy.
 
     sax::doctype_declaration& this_dtd = *mp_impl->m_doctype;
     string_pool& pool = mp_impl->m_pool;
@@ -360,7 +360,7 @@ void dom_tree::dump_compact(ostream& os) const
 
     scopes_type scopes;
 
-    scopes.push_back(make_unique<scope>(string(), mp_impl->m_root));
+    scopes.push_back(orcus::make_unique<scope>(string(), mp_impl->m_root));
     while (!scopes.empty())
     {
         bool new_scope = false;
@@ -418,7 +418,7 @@ void dom_tree::dump_compact(ostream& os) const
             ++cur_scope.current_pos;
             ostringstream elem_name;
             elem->print(elem_name, mp_impl->m_ns_cxt);
-            scopes.push_back(make_unique<scope>(elem_name.str()));
+            scopes.push_back(orcus::make_unique<scope>(elem_name.str()));
             scope& child_scope = *scopes.back();
             child_scope.nodes.swap(nodes);
             child_scope.current_pos = child_scope.nodes.begin();

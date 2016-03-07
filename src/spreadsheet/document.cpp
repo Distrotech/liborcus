@@ -448,7 +448,7 @@ sheet* document::append_sheet(const pstring& sheet_name, row_t row_size, col_t c
     sheet_t sheet_index = static_cast<sheet_t>(mp_impl->m_sheets.size());
 
     mp_impl->m_sheets.push_back(
-        make_unique<sheet_item>(
+        orcus::make_unique<sheet_item>(
             *this, sheet_name_safe, sheet_index, row_size, col_size));
 
     mp_impl->m_context.append_sheet(

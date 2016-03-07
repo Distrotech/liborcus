@@ -451,7 +451,7 @@ void xml_structure_tree::dump_compact(ostream& os) const
     cxt.dump(os);
 
     element_ref ref(mp_impl->mp_root->name, &mp_impl->mp_root->prop);
-    scopes.push_back(make_unique<scope>(entity_name(), false, ref));
+    scopes.push_back(orcus::make_unique<scope>(entity_name(), false, ref));
     while (!scopes.empty())
     {
         bool new_scope = false;
@@ -505,7 +505,7 @@ void xml_structure_tree::dump_compact(ostream& os) const
 
             // Push a new scope, and restart the loop with the new scope.
             ++cur_scope.current_pos;
-            scopes.push_back(make_unique<scope>(this_elem.name, this_elem.prop->repeat));
+            scopes.push_back(orcus::make_unique<scope>(this_elem.name, this_elem.prop->repeat));
             scope& child_scope = *scopes.back();
             child_scope.elements.swap(elems);
             child_scope.current_pos = child_scope.elements.begin();

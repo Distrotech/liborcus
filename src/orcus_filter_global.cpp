@@ -239,7 +239,7 @@ std::unique_ptr<json_config> parse_json_args(int argc, char** argv)
         return nullptr;
     }
 
-    std::unique_ptr<json_config> config = make_unique<json_config>();
+    std::unique_ptr<json_config> config = orcus::make_unique<json_config>();
 
     if (vm.count("input"))
         config->input_path = vm["input"].as<string>();

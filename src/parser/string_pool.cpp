@@ -61,7 +61,7 @@ struct string_pool::impl
     string_store_type m_store;
 };
 
-string_pool::string_pool() : mp_impl(make_unique<impl>()) {}
+string_pool::string_pool() : mp_impl(orcus::make_unique<impl>()) {}
 
 string_pool::~string_pool()
 {
@@ -82,7 +82,7 @@ pair<pstring, bool> string_pool::intern(const char* str, size_t n)
     if (itr == mp_impl->m_set.end())
     {
         // This string has not been interned.  Intern it.
-        mp_impl->m_store.push_back(make_unique<string>(str, n));
+        mp_impl->m_store.push_back(orcus::make_unique<string>(str, n));
         pair<string_set_type::iterator,bool> r = mp_impl->m_set.insert(pstring(mp_impl->m_store.back()->data(), n));
         if (!r.second)
             throw general_error("failed to intern a new string instance.");

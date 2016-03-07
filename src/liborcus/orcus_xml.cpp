@@ -343,7 +343,7 @@ void write_range_reference_group(
     scopes_type scopes;
     for (spreadsheet::row_t current_row = 0; current_row < ref.row_size; ++current_row)
     {
-        scopes.push_back(make_unique<scope>(root)); // root element
+        scopes.push_back(orcus::make_unique<scope>(root)); // root element
 
         while (!scopes.empty())
         {
@@ -378,7 +378,7 @@ void write_range_reference_group(
                     // This is a non-leaf element.  Push a new scope with this
                     // element and re-start the loop.
                     ++cur_scope.current_child_pos;
-                    scopes.push_back(make_unique<scope>(child_elem));
+                    scopes.push_back(orcus::make_unique<scope>(child_elem));
                     new_scope = true;
                     break;
                 }
