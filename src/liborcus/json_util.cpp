@@ -11,8 +11,8 @@ namespace orcus { namespace json {
 
 namespace {
 
-constexpr char quote = '"';
-constexpr char backslash = '\\';
+const char quote = '"';
+const char backslash = '\\';
 
 }
 

@@ -54,7 +54,7 @@ using json_value = json::detail::json_value;
 using node_t = json::detail::node_t;
 
 const char* tab = "    ";
-constexpr char quote = '"';
+const char quote = '"';
 
 const xmlns_id_t NS_orcus_json_xml = "http://schemas.kohei.us/orcus/2015/json";
 

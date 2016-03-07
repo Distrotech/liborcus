@@ -12,6 +12,9 @@
 
 namespace orcus {
 
+const size_t parse_quoted_string_state::error_no_closing_quote = 1;
+const size_t parse_quoted_string_state::error_illegal_escape_char = 2;
+
 bool is_blank(char c)
 {
     return is_in(c, " \t\n\r");

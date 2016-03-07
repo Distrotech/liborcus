@@ -155,6 +155,8 @@ struct parser_stack
     yaml_value* node;
 
     parser_stack(yaml_value* _node) : node(_node) {}
+    parser_stack(const parser_stack&) = delete;
+    parser_stack(parser_stack&& r) : key(std::move(r.key)), node(r.node) {}
 };
 
 typedef std::unique_ptr<yaml_value> document_root_type;
@@ -577,7 +579,7 @@ const char* kw_false = "false";
 const char* kw_tilde = "~";
 const char* kw_null = "null";
 
-constexpr char quote = '"';
+const char quote = '"';
 
 void dump_indent(std::ostringstream& os, size_t scope)
 {

@@ -204,16 +204,13 @@ void json_parser<_Handler>::object()
         if (!res.str)
         {
             // Parsing was unsuccessful.
-            switch (res.length)
-            {
-                case parse_quoted_string_state::error_no_closing_quote:
-                    throw json::parse_error("object: stream ended prematurely before reaching the closing quote of a key.", offset());
-                case parse_quoted_string_state::error_illegal_escape_char:
-                    json::parse_error::throw_with(
-                        "object: illegal escape character '", cur_char(), "' in key value.", offset());
-                default:
-                    throw json::parse_error("object: unknown error while parsing a key value.", offset());
-            }
+            if (res.length == parse_quoted_string_state::error_no_closing_quote)
+                throw json::parse_error("object: stream ended prematurely before reaching the closing quote of a key.", offset());
+            else if (res.length == parse_quoted_string_state::error_illegal_escape_char)
+                json::parse_error::throw_with(
+                    "object: illegal escape character '", cur_char(), "' in key value.", offset());
+            else
+                throw json::parse_error("object: unknown error while parsing a key value.", offset());
         }
 
         m_handler.object_key(res.str, res.length, res.transient);
@@ -297,15 +294,12 @@ void json_parser<_Handler>::string()
     }
 
     // Parsing was unsuccessful.
-    switch (res.length)
-    {
-        case parse_quoted_string_state::error_no_closing_quote:
-            throw json::parse_error("string: stream ended prematurely before reaching the closing quote.", offset());
-        case parse_quoted_string_state::error_illegal_escape_char:
-            json::parse_error::throw_with("string: illegal escape character '", cur_char(), "'.", offset());
-        default:
-            throw json::parse_error("string: unknown error.", offset());
-    }
+    if (res.length == parse_quoted_string_state::error_no_closing_quote)
+        throw json::parse_error("string: stream ended prematurely before reaching the closing quote.", offset());
+    else if (res.length == parse_quoted_string_state::error_illegal_escape_char)
+        json::parse_error::throw_with("string: illegal escape character '", cur_char(), "'.", offset());
+    else
+        throw json::parse_error("string: unknown error.", offset());
 }
 
 }

@@ -31,8 +31,8 @@ enum class string_escape_char_t
  */
 struct parse_quoted_string_state
 {
-    static constexpr size_t error_no_closing_quote    = 1;
-    static constexpr size_t error_illegal_escape_char = 2;
+    ORCUS_PSR_DLLPUBLIC static const size_t error_no_closing_quote;
+    ORCUS_PSR_DLLPUBLIC static const size_t error_illegal_escape_char;
 
     const char* str;
     size_t length;

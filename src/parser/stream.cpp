@@ -85,7 +85,7 @@ std::string create_parse_error_output(const std::string& strm, std::ptrdiff_t of
     if (offset < 0)
         return std::string();
 
-    constexpr size_t max_line_length = 60;
+    const size_t max_line_length = 60;
 
     auto line_info = find_line_with_offset(strm, offset);
     pstring line = std::get<0>(line_info);
@@ -113,7 +113,7 @@ std::string create_parse_error_output(const std::string& strm, std::ptrdiff_t of
     // The error line is too long.  Only show a segment of the line where the
     // error occurred.
 
-    constexpr size_t fixed_offset = 20;
+    const size_t fixed_offset = 20;
 
     size_t line_start = offset_on_line - fixed_offset;
     size_t line_end = line_start + max_line_length;

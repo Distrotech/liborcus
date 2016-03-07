@@ -289,18 +289,13 @@ void throw_quoted_string_parse_error(const char* func_name, const parse_quoted_s
 {
     std::ostringstream os;
     os << func_name << ": failed to parse ";
-    switch (ret.length)
-    {
-        case parse_quoted_string_state::error_illegal_escape_char:
-            os << "due to the presence of illegal escape character.";
-        break;
-        case parse_quoted_string_state::error_no_closing_quote:
-            os << "because the closing quote was not found.";
-        break;
-        default:
-            os << "due to unknown reason.";
+    if (ret.length == parse_quoted_string_state::error_illegal_escape_char)
+        os << "due to the presence of illegal escape character.";
+    else if (ret.length == parse_quoted_string_state::error_no_closing_quote)
+        os << "because the closing quote was not found.";
+    else
+        os << "due to unknown reason.";
 
-    }
     throw parse_error(os.str());
 }
 
