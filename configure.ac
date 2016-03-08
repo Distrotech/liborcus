@@ -82,6 +82,7 @@ AC_SUBST(ORCUS_MINOR_VERSION)
 AC_SUBST(ORCUS_MICRO_VERSION)
 
 BOOST_REQUIRE([1.36])
+BOOST_FILESYSTEM
 BOOST_SYSTEM
 
 # ==============
@@ -182,7 +183,6 @@ AS_IF([test "x$with_gnumeric_filter" != "xno"], [
 
 AS_IF([test "x$with_tools" != "xno"], [
         BOOST_PROGRAM_OPTIONS
-        BOOST_FILESYSTEM
         BOOST_SYSTEM
 ])
 
