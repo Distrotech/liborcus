@@ -232,6 +232,9 @@ vsprojects_data = \
     vsprojects/orcus-gnumeric/orcus-gnumeric.vcproj
 
 EXTRA_DIST = \
+	CHANGELOG \
+	LICENSE \
+	README.md \
 	liborcus.pc.in \
 	autogen.sh \
 	$(bin_data) \
