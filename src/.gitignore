@@ -1,10 +1,12 @@
 orcus-csv
 orcus-detect
 orcus-gnumeric
+orcus-json
 orcus-mso-encryption
 orcus-ods
 orcus-xls-xml
 orcus-xlsx
 orcus-xml
+orcus-yaml
 orcus-*-dump
 orcus-test-*
