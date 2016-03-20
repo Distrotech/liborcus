@@ -7,13 +7,32 @@
 
 #include "xlsx.hpp"
 
+#if defined(__ORCUS_XLSX) && defined(__ORCUS_SPREADSHEET_MODEL)
+#include "orcus/orcus_xlsx.hpp"
+#endif
+
+#include <iostream>
+
 namespace orcus { namespace python {
+
+#if defined(__ORCUS_XLSX) && defined(__ORCUS_SPREADSHEET_MODEL)
 
 PyObject* xlsx_read_file(PyObject*, PyObject*)
 {
     Py_INCREF(Py_None);
     return Py_None;
 }
+
+#else
+
+PyObject* xlsx_read_file(PyObject*, PyObject*)
+{
+    // TODO : raise a python exception here.
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+#endif
 
 }}
 

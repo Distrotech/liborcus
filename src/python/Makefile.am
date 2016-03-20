@@ -18,6 +18,13 @@ _orcus_la_LIBADD = \
 	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
 	$(PYTHON_LIBS)
 
+if BUILD_SPREADSHEET_MODEL
+
+_orcus_la_LIBADD += \
+	../spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
+
+endif # BUILD_SPREADSHEET_MODEL
+
 _orcus_json_la_SOURCES = \
 	json.cpp
 
@@ -43,4 +50,4 @@ TESTS = \
 	../../test/python/json.py \
 	../../test/python/module.py
 
-endif
+endif # BUILD_PYTHON

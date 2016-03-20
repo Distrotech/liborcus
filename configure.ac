@@ -177,7 +177,20 @@ AM_CONDITIONAL([WITH_XLS_XML_FILTER], [test "x$with_xls_xml_filter" != "xno"])
 AM_CONDITIONAL([WITH_GNUMERIC_FILTER], [test "x$with_gnumeric_filter" != "xno"])
 AM_CONDITIONAL([WITH_TOOLS], [test "x$with_tools" != "xno"])
 
+AS_IF([test "x$with_ods_filter" != "xno"], [
+	CXXFLAGS="$CXXFLAGS -D__ORCUS_ODS"
+])
+
+AS_IF([test "x$with_xlsx_filter" != "xno"], [
+	CXXFLAGS="$CXXFLAGS -D__ORCUS_XLSX"
+])
+
+AS_IF([test "x$with_xls_xml_filter" != "xno"], [
+	CXXFLAGS="$CXXFLAGS -D__ORCUS_XLS_XML"
+])
+
 AS_IF([test "x$with_gnumeric_filter" != "xno"], [
+	CXXFLAGS="$CXXFLAGS -D__ORCUS_GNUMERIC"
         BOOST_IOSTREAMS
 ])
 
@@ -203,6 +216,7 @@ AC_ARG_ENABLE(spreadsheet-model,
 )
 AS_IF([test "x$enable_spreadsheet_model" != "xno"], [
 	PKG_CHECK_MODULES([LIBIXION],[libixion-$IXION_REQUIRED_API_VERSION])
+	CXXFLAGS="$CXXFLAGS -D__ORCUS_SPREADSHEET_MODEL"
 ])
 AM_CONDITIONAL([BUILD_SPREADSHEET_MODEL], [test "x$enable_spreadsheet_model" != "xno"])
 

@@ -81,7 +81,6 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES = \
 
 if WITH_XLSX_FILTER
 
-AM_CPPFLAGS += -D__ORCUS_XLSX
 EXTRA_PROGRAMS += \
 	orcus-xlsx-sheet-context-test
 
@@ -171,8 +170,6 @@ endif # WITH_XLSX_FILTER
 
 if WITH_XLS_XML_FILTER
 
-AM_CPPFLAGS += -D__ORCUS_XLS_XML
-
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	xls_xml_tokens.hpp \
 	xls_xml_tokens.inl \
@@ -190,8 +187,6 @@ liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 endif # WITH_XLS_XML_FILTER
 
 if WITH_ODS_FILTER
-
-AM_CPPFLAGS += -D__ORCUS_ODS
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	odf_para_context.hpp \
@@ -237,8 +232,6 @@ TESTS += \
 endif # WITH_ODS_FILTER
 
 if WITH_GNUMERIC_FILTER
-
-AM_CPPFLAGS += -D__ORCUS_GNUMERIC
 
 liborcus_@ORCUS_API_VERSION@_la_SOURCES += \
 	gnumeric_cell_context.hpp \
