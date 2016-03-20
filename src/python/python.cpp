@@ -9,6 +9,7 @@
 #include "orcus/info.hpp"
 
 #include "root.hpp"
+#include "xlsx.hpp"
 
 #include <iostream>
 #include <string>
@@ -42,7 +43,11 @@ void print_args(PyObject* args)
 PyMethodDef orcus_methods[] =
 {
     { "info", (PyCFunction)info, METH_NOARGS, "Print orcus module information." },
-    { NULL, NULL, 0, NULL }
+
+    { "_xlsx_read_file", (PyCFunction)xlsx_read_file, METH_VARARGS | METH_KEYWORDS,
+      "Load specified xlsx file into a document model." },
+
+    { nullptr, nullptr, 0, nullptr }
 };
 
 struct module_state
@@ -68,13 +73,13 @@ struct PyModuleDef moduledef =
 {
     PyModuleDef_HEAD_INIT,
     "_orcus",
-    NULL,
+    nullptr,
     sizeof(struct module_state),
     orcus_methods,
-    NULL,
+    nullptr,
     orcus_traverse,
     orcus_clear,
-    NULL
+    nullptr
 };
 
 }}

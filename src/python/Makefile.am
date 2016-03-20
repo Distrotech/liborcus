@@ -7,7 +7,9 @@ pyexec_LTLIBRARIES = _orcus.la _orcus_json.la
 _orcus_la_SOURCES = \
 	python.cpp \
 	root.hpp \
-	root.cpp
+	root.cpp \
+	xlsx.hpp \
+	xlsx.cpp
 
 _orcus_la_LDFLAGS = -module -avoid-version -export-symbols-regex PyInit__orcus
 _orcus_la_CPPFLAGS = -I$(top_srcdir)/include $(AM_CPPFLAGS)

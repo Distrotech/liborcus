@@ -432,6 +432,7 @@
                 <F N="../src/python/python.cpp"/>
                 <F N="../src/python/root.cpp"/>
                 <F N="../src/python/root.hpp"/>
+                <F N="../src/python/xlsx.hpp"/>
             </Folder>
             <Folder Name="spreadsheet">
                 <F N="../src/spreadsheet/auto_filter.cpp"/>
