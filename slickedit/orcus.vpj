@@ -430,6 +430,8 @@
             <Folder Name="python">
                 <F N="../src/python/json.cpp"/>
                 <F N="../src/python/python.cpp"/>
+                <F N="../src/python/root.cpp"/>
+                <F N="../src/python/root.hpp"/>
             </Folder>
             <Folder Name="spreadsheet">
                 <F N="../src/spreadsheet/auto_filter.cpp"/>

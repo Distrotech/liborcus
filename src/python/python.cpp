@@ -8,6 +8,8 @@
 #include "orcus/env.hpp"
 #include "orcus/info.hpp"
 
+#include "root.hpp"
+
 #include <iostream>
 #include <string>
 
@@ -36,17 +38,6 @@ void print_args(PyObject* args)
     cout << args_str << "\n";
 }
 #endif
-
-PyObject* info(PyObject*, PyObject*)
-{
-    cout << "orcus version: "
-        << orcus::get_version_major() << '.'
-        << orcus::get_version_minor() << '.'
-        << orcus::get_version_micro() << endl;
-
-    Py_INCREF(Py_None);
-    return Py_None;
-}
 
 PyMethodDef orcus_methods[] =
 {
