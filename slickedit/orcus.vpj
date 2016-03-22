@@ -428,6 +428,8 @@
                 <F N="../src/parser/zip_archive_test.cpp"/>
             </Folder>
             <Folder Name="python">
+                <F N="../src/python/document.cpp"/>
+                <F N="../src/python/document.hpp"/>
                 <F N="../src/python/json.cpp"/>
                 <F N="../src/python/python.cpp"/>
                 <F N="../src/python/root.cpp"/>

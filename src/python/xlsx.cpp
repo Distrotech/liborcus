@@ -50,8 +50,6 @@ PyObject* xlsx_read_file(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
 
     doc_type->tp_init(obj_doc, args, 0);
 
-    // TODO : return a python document object.
-
     Py_INCREF(obj_doc);
     return obj_doc;
 }
