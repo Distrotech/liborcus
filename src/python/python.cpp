@@ -10,6 +10,7 @@
 
 #include "root.hpp"
 #include "xlsx.hpp"
+#include "document.hpp"
 
 #include <iostream>
 #include <string>
@@ -88,7 +89,15 @@ extern "C" {
 
 ORCUS_DLLPUBLIC PyObject* PyInit__orcus()
 {
+    PyTypeObject* doc_type = orcus::python::get_document_type();
+    if (PyType_Ready(doc_type) < 0)
+        return nullptr;
+
     PyObject* m = PyModule_Create(&orcus::python::moduledef);
+
+    Py_INCREF(doc_type);
+    PyModule_AddObject(m, "Document", reinterpret_cast<PyObject*>(doc_type));
+
     return m;
 }
 
