@@ -5,26 +5,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef INCLUDED_ORCUS_PYTHON_DOCUMENT_HPP
-#define INCLUDED_ORCUS_PYTHON_DOCUMENT_HPP
-
-#include "orcus/spreadsheet/document.hpp"
+#ifndef INCLUDED_ORCUS_PYTHON_SHEET_HPP
+#define INCLUDED_ORCUS_PYTHON_SHEET_HPP
 
 #include <Python.h>
 
 namespace orcus { namespace python {
 
-/** non-python part of the document object. */
-struct document_data
+/** non-python part of the sheet object. */
+struct sheet_data
 {
-    spreadsheet::document m_doc;
-
-    ~document_data();
+    ~sheet_data();
 };
-
-document_data* get_document_data(PyObject* self);
-
-void store_document(PyObject* self, spreadsheet::document& doc);
 
 PyTypeObject* get_document_type();
 

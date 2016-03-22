@@ -22,7 +22,9 @@ if BUILD_SPREADSHEET_MODEL
 
 _orcus_la_SOURCES += \
 	document.hpp \
-	document.cpp
+	document.cpp \
+	sheet.hpp \
+	sheet.cpp
 
 _orcus_la_LIBADD += \
 	../spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
