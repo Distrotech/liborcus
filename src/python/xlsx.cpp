@@ -50,6 +50,9 @@ PyObject* xlsx_read_file(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
 
     doc_type->tp_init(obj_doc, args, 0);
 
+    document_data* doc_data = get_document_data(obj_doc);
+    doc_data->m_doc.swap(doc);
+
     Py_INCREF(obj_doc);
     return obj_doc;
 }

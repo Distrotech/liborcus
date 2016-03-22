@@ -8,9 +8,21 @@
 #ifndef INCLUDED_ORCUS_PYTHON_DOCUMENT_HPP
 #define INCLUDED_ORCUS_PYTHON_DOCUMENT_HPP
 
+#include "orcus/spreadsheet/document.hpp"
+
 #include <Python.h>
 
 namespace orcus { namespace python {
+
+/** non-python part of the document data */
+struct document_data
+{
+    spreadsheet::document m_doc;
+
+    ~document_data();
+};
+
+document_data* get_document_data(PyObject* self);
 
 PyTypeObject* get_document_type();
 

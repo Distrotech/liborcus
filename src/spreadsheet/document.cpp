@@ -365,13 +365,9 @@ struct document_impl
     }
 };
 
-document::document() :
-    mp_impl(new document_impl(*this)) {}
+document::document() : mp_impl(new document_impl(*this)) {}
 
-document::~document()
-{
-    delete mp_impl;
-}
+document::~document() {}
 
 import_shared_strings* document::get_shared_strings()
 {
@@ -492,13 +488,12 @@ void document::calc_formulas()
 
 void document::swap(document& other)
 {
-    std::swap(mp_impl, other.mp_impl);
+    mp_impl.swap(other.mp_impl);
 }
 
 void document::clear()
 {
-    delete mp_impl;
-    mp_impl = new document_impl(*this);
+    mp_impl.reset(new document_impl(*this));
 }
 
 void document::dump_flat(const string& outdir) const

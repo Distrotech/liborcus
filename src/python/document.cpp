@@ -9,13 +9,11 @@
 
 namespace orcus { namespace python {
 
-namespace {
-
-/** non-python part of the document data */
-struct document_data
+document_data::~document_data()
 {
-    ~document_data();
-};
+}
+
+namespace {
 
 struct free_pyobj
 {
@@ -25,10 +23,9 @@ struct free_pyobj
     }
 };
 
-document_data::~document_data()
-{
-}
-
+/**
+ * Python object for orcus.Document.
+ */
 struct document
 {
     PyObject_HEAD
@@ -101,6 +98,11 @@ PyTypeObject document_type =
     document_new,                             // tp_new
 };
 
+}
+
+document_data* get_document_data(PyObject* self)
+{
+    return reinterpret_cast<document*>(self)->m_data;
 }
 
 PyTypeObject* get_document_type()

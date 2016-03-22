@@ -5,14 +5,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_SPREADSHEET_DOCUMENT_HPP__
-#define __ORCUS_SPREADSHEET_DOCUMENT_HPP__
+#ifndef INCLUDED_ORCUS_SPREADSHEET_DOCUMENT_HPP
+#define INCLUDED_ORCUS_SPREADSHEET_DOCUMENT_HPP
 
 #include "orcus/env.hpp"
 #include "orcus/interface.hpp"
 #include "orcus/spreadsheet/types.hpp"
 
 #include <ostream>
+#include <memory>
 
 namespace ixion {
 
@@ -45,10 +46,10 @@ class ORCUS_SPM_DLLPUBLIC document : public orcus::iface::document_dumper
 {
     friend class sheet;
 
-    document(const document&); // disabled
-    document& operator= (const document&); // disabled
-
 public:
+    document(const document&) = delete;
+    document& operator= (const document&) = delete;
+
     document();
     ~document();
 
@@ -125,7 +126,7 @@ private:
     void insert_dirty_cell(const ixion::abs_address_t& pos);
 
 private:
-    document_impl* mp_impl;
+    std::unique_ptr<document_impl> mp_impl;
 };
 
 }}

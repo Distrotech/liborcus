@@ -9,9 +9,7 @@ _orcus_la_SOURCES = \
 	root.hpp \
 	root.cpp \
 	xlsx.hpp \
-	xlsx.cpp \
-	document.hpp \
-	document.cpp
+	xlsx.cpp
 
 _orcus_la_LDFLAGS = -module -avoid-version -export-symbols-regex PyInit__orcus
 _orcus_la_CPPFLAGS = -I$(top_srcdir)/include $(AM_CPPFLAGS)
@@ -21,6 +19,10 @@ _orcus_la_LIBADD = \
 	$(PYTHON_LIBS)
 
 if BUILD_SPREADSHEET_MODEL
+
+_orcus_la_SOURCES += \
+	document.hpp \
+	document.cpp
 
 _orcus_la_LIBADD += \
 	../spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
