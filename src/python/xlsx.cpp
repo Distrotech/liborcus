@@ -6,6 +6,7 @@
  */
 
 #include "xlsx.hpp"
+#include "document.hpp"
 
 #if defined(__ORCUS_XLSX) && defined(__ORCUS_SPREADSHEET_MODEL)
 #include "orcus/orcus_xlsx.hpp"
@@ -39,10 +40,20 @@ PyObject* xlsx_read_file(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
 
     app.read_file(filepath);
 
+    PyTypeObject* doc_type = get_document_type();
+    if (!doc_type)
+        return nullptr;
+
+    PyObject* obj_doc = doc_type->tp_new(doc_type, args, 0);
+    if (!obj_doc)
+        return nullptr;
+
+    doc_type->tp_init(obj_doc, args, 0);
+
     // TODO : return a python document object.
 
-    Py_INCREF(Py_None);
-    return Py_None;
+    Py_INCREF(obj_doc);
+    return obj_doc;
 }
 
 #else
