@@ -24,6 +24,8 @@ struct document_data
 
 document_data* get_document_data(PyObject* self);
 
+void store_document(PyObject* self, spreadsheet::document& doc);
+
 PyTypeObject* get_document_type();
 
 }}

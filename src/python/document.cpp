@@ -6,6 +6,11 @@
  */
 
 #include "document.hpp"
+#include "orcus/pstring.hpp"
+
+#include <iostream>
+
+using namespace std;
 
 namespace orcus { namespace python {
 
@@ -103,6 +108,18 @@ PyTypeObject document_type =
 document_data* get_document_data(PyObject* self)
 {
     return reinterpret_cast<document*>(self)->m_data;
+}
+
+void store_document(PyObject* self, spreadsheet::document& doc)
+{
+    document* pydoc = reinterpret_cast<document*>(self);
+    document_data* doc_data = pydoc->m_data;
+    doc_data->m_doc.swap(doc);
+
+    // TODO : Create a tuple of sheet names and store it with the pydoc instance.
+    size_t sheet_size = doc_data->m_doc.sheet_size();
+    for (size_t i = 0; i < sheet_size; ++i)
+        cout << "sheet: " << doc_data->m_doc.get_sheet_name(i) << endl;
 }
 
 PyTypeObject* get_document_type()
