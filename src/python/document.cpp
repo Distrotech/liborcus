@@ -10,7 +10,6 @@
 #include "orcus/pstring.hpp"
 
 #include <structmember.h>
-#include <iostream>
 
 using namespace std;
 
@@ -147,16 +146,20 @@ void store_document(PyObject* self, spreadsheet::document& doc)
 
     for (size_t i = 0; i < sheet_size; ++i)
     {
-        cout << "sheet: " << pydoc_data->m_doc.get_sheet_name(i) << endl;
-
-        PyObject* obj = sheet_type->tp_new(sheet_type, nullptr, nullptr);
-        if (!obj)
+        spreadsheet::sheet* sheet = pydoc_data->m_doc.get_sheet(i);
+        if (!sheet)
             continue;
 
-        sheet_type->tp_init(obj, nullptr, nullptr);
+        PyObject* pysheet = sheet_type->tp_new(sheet_type, nullptr, nullptr);
+        if (!pysheet)
+            continue;
 
-        Py_INCREF(obj);
-        PyTuple_SetItem(pydoc->sheets, i, obj);
+        sheet_type->tp_init(pysheet, nullptr, nullptr);
+
+        Py_INCREF(pysheet);
+        PyTuple_SetItem(pydoc->sheets, i, pysheet);
+
+        store_sheet(pysheet, pydoc_data->m_doc, sheet);
     }
 }
 

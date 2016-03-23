@@ -10,15 +10,29 @@
 
 #include <Python.h>
 
-namespace orcus { namespace python {
+namespace orcus {
+
+namespace spreadsheet {
+
+class sheet;
+class document;
+
+}
+
+namespace python {
 
 /** non-python part of the sheet object. */
 struct sheet_data
 {
+    spreadsheet::sheet* m_sheet;
+
     ~sheet_data();
 };
 
 PyTypeObject* get_sheet_type();
+
+void store_sheet(
+    PyObject* self, const spreadsheet::document& doc, spreadsheet::sheet* orcus_sheet);
 
 }}
 

@@ -7,6 +7,12 @@
 
 #include "sheet.hpp"
 
+#include "orcus/spreadsheet/types.hpp"
+#include "orcus/spreadsheet/sheet.hpp"
+#include "orcus/spreadsheet/document.hpp"
+
+#include <structmember.h>
+
 namespace orcus { namespace python {
 
 sheet_data::~sheet_data()
@@ -30,12 +36,17 @@ struct sheet
 {
     PyObject_HEAD
 
+    PyObject* name;
+
     sheet_data* m_data;
 };
 
 void sheet_dealloc(sheet* self)
 {
     delete self->m_data;
+
+    Py_XDECREF(self->name);
+
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
@@ -53,6 +64,12 @@ int sheet_init(sheet* self, PyObject* /*args*/, PyObject* /*kwargs*/)
 
 PyMethodDef sheet_methods[] =
 {
+    { nullptr }
+};
+
+PyMemberDef sheet_members[] =
+{
+    { (char*)"name", T_OBJECT_EX, offsetof(sheet, name), READONLY, (char*)"sheet name" },
     { nullptr }
 };
 
@@ -86,7 +103,7 @@ PyTypeObject sheet_type =
     0,		                                  // tp_iter
     0,		                                  // tp_iternext
     sheet_methods,                            // tp_methods
-    0,                                        // tp_members
+    sheet_members,                            // tp_members
     0,                                        // tp_getset
     0,                                        // tp_base
     0,                                        // tp_dict
@@ -108,6 +125,18 @@ sheet_data* get_sheet_data(PyObject* self)
 PyTypeObject* get_sheet_type()
 {
     return &sheet_type;
+}
+
+void store_sheet(
+    PyObject* self, const spreadsheet::document& doc, spreadsheet::sheet* orcus_sheet)
+{
+    sheet* pysheet = reinterpret_cast<sheet*>(self);
+    pysheet->m_data->m_sheet = orcus_sheet;
+
+    // Populate the python members.
+    spreadsheet::sheet_t sid = orcus_sheet->get_index();
+    pstring name = doc.get_sheet_name(sid);
+    pysheet->name = PyUnicode_FromStringAndSize(name.get(), name.size());
 }
 
 }}
