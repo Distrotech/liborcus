@@ -18,7 +18,7 @@ struct sheet_data
     ~sheet_data();
 };
 
-PyTypeObject* get_document_type();
+PyTypeObject* get_sheet_type();
 
 }}
 
