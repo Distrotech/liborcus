@@ -44,11 +44,11 @@ PyObject* xlsx_read_file(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
     if (!doc_type)
         return nullptr;
 
-    PyObject* obj_doc = doc_type->tp_new(doc_type, args, 0);
+    PyObject* obj_doc = doc_type->tp_new(doc_type, nullptr, nullptr);
     if (!obj_doc)
         return nullptr;
 
-    doc_type->tp_init(obj_doc, args, 0);
+    doc_type->tp_init(obj_doc, nullptr, nullptr);
 
     store_document(obj_doc, doc);
 

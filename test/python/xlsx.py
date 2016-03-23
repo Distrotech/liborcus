@@ -5,3 +5,4 @@ from orcus import xlsx
 filepath = "./test/xlsx/raw-values-1/input.xlsx"
 doc = xlsx.read_file(filepath)
 print(doc)
+print("number of sheets: {}".format(len(doc.sheets)))

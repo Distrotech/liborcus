@@ -6,8 +6,10 @@
  */
 
 #include "document.hpp"
+#include "sheet.hpp"
 #include "orcus/pstring.hpp"
 
+#include <structmember.h>
 #include <iostream>
 
 using namespace std;
@@ -35,12 +37,24 @@ struct document
 {
     PyObject_HEAD
 
+    PyObject* sheets; // tuple of sheet objects.
+
     document_data* m_data;
 };
 
 void document_dealloc(document* self)
 {
     delete self->m_data;
+
+    // Destroy all sheet objects.
+    Py_ssize_t n = PyTuple_Size(self->sheets);
+    for (Py_ssize_t i = 0; i < n; ++i)
+    {
+        PyObject* o = PyTuple_GetItem(self->sheets, i);
+        Py_XDECREF(o);
+    }
+    Py_XDECREF(self->sheets);  // and the tuple containing the sheets.
+
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
 
@@ -58,6 +72,12 @@ int document_init(document* self, PyObject* /*args*/, PyObject* /*kwargs*/)
 
 PyMethodDef document_methods[] =
 {
+    { nullptr }
+};
+
+PyMemberDef document_members[] =
+{
+    { (char*)"sheets", T_OBJECT_EX, offsetof(document, sheets), READONLY, (char*)"sheet objects" },
     { nullptr }
 };
 
@@ -91,7 +111,7 @@ PyTypeObject document_type =
     0,		                                  // tp_iter
     0,		                                  // tp_iternext
     document_methods,                         // tp_methods
-    0,                                        // tp_members
+    document_members,                         // tp_members
     0,                                        // tp_getset
     0,                                        // tp_base
     0,                                        // tp_dict
@@ -113,13 +133,31 @@ document_data* get_document_data(PyObject* self)
 void store_document(PyObject* self, spreadsheet::document& doc)
 {
     document* pydoc = reinterpret_cast<document*>(self);
-    document_data* doc_data = pydoc->m_data;
-    doc_data->m_doc.swap(doc);
+    document_data* pydoc_data = pydoc->m_data;
+    pydoc_data->m_doc.swap(doc);
+
+    PyTypeObject* sheet_type = get_sheet_type();
+    if (!sheet_type)
+        return;
 
     // TODO : Create a tuple of sheet names and store it with the pydoc instance.
-    size_t sheet_size = doc_data->m_doc.sheet_size();
+    size_t sheet_size = pydoc_data->m_doc.sheet_size();
+
+    pydoc->sheets = PyTuple_New(sheet_size);
+
     for (size_t i = 0; i < sheet_size; ++i)
-        cout << "sheet: " << doc_data->m_doc.get_sheet_name(i) << endl;
+    {
+        cout << "sheet: " << pydoc_data->m_doc.get_sheet_name(i) << endl;
+
+        PyObject* obj = sheet_type->tp_new(sheet_type, nullptr, nullptr);
+        if (!obj)
+            continue;
+
+        sheet_type->tp_init(obj, nullptr, nullptr);
+
+        Py_INCREF(obj);
+        PyTuple_SetItem(pydoc->sheets, i, obj);
+    }
 }
 
 PyTypeObject* get_document_type()
