@@ -285,6 +285,12 @@ struct sheet_impl
         for_each(m_overlapped_ranges.begin(), m_overlapped_ranges.end(),
                  overlapped_cells_tree_builder());
     }
+
+    ixion::abs_range_t get_data_range() const
+    {
+        const ixion::model_context& cxt = m_doc.get_model_context();
+        return cxt.get_data_range(m_sheet);
+    }
 };
 
 const row_t sheet::max_row_limit = 1048575;
@@ -621,6 +627,11 @@ void sheet::set_auto_filter_data(auto_filter_t* p)
     mp_impl->mp_auto_filter_data.reset(p);
 }
 
+ixion::abs_range_t sheet::get_data_range() const
+{
+    return mp_impl->get_data_range();
+}
+
 row_t sheet::row_size() const
 {
     return mp_impl->m_row_size;
@@ -645,12 +656,12 @@ void sheet::finalize()
 
 void sheet::dump_flat(std::ostream& os) const
 {
-    const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
-    ixion::abs_range_t range = cxt.get_data_range(mp_impl->m_sheet);
+    ixion::abs_range_t range = mp_impl->get_data_range();
     if (!range.valid())
         // Sheet is empty.  Nothing to print.
         return;
 
+    const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     const ixion::formula_name_resolver* resolver = mp_impl->m_doc.get_formula_name_resolver();
 
     size_t row_count = range.last.row + 1;
@@ -811,12 +822,12 @@ string escape_chars(const string& str)
 
 void sheet::dump_check(ostream& os, const pstring& sheet_name) const
 {
-    const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
-    ixion::abs_range_t range = cxt.get_data_range(mp_impl->m_sheet);
+    ixion::abs_range_t range = mp_impl->get_data_range();
     if (!range.valid())
         // Sheet is empty.  Nothing to print.
         return;
 
+    const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
     const ixion::formula_name_resolver* resolver = mp_impl->m_doc.get_formula_name_resolver();
 
     size_t row_count = range.last.row + 1;
@@ -1275,8 +1286,7 @@ void sheet::dump_html(const string& filepath) const
     const char* p_tr    = "tr";
     const char* p_td    = "td";
 
-    const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
-    ixion::abs_range_t range = cxt.get_data_range(mp_impl->m_sheet);
+    ixion::abs_range_t range = mp_impl->get_data_range();
 
     if (!mp_impl->m_col_widths.is_tree_valid())
         mp_impl->m_col_widths.build_tree();
@@ -1294,6 +1304,7 @@ void sheet::dump_html(const string& filepath) const
             // Sheet is empty.  Nothing to print.
             return;
 
+        const ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
         const ixion::formula_name_resolver* resolver = mp_impl->m_doc.get_formula_name_resolver();
         const import_shared_strings* sstrings = mp_impl->m_doc.get_shared_strings();
 

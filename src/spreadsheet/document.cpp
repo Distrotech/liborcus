@@ -486,11 +486,6 @@ void document::calc_formulas()
     ixion::calculate_cells(cxt, mp_impl->m_dirty_cells, 0);
 }
 
-void document::swap(document& other)
-{
-    mp_impl.swap(other.mp_impl);
-}
-
 void document::clear()
 {
     mp_impl.reset(new document_impl(*this));

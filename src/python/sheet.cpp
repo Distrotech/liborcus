@@ -12,6 +12,7 @@
 #include "orcus/spreadsheet/document.hpp"
 
 #include <structmember.h>
+#include <iostream>
 
 namespace orcus { namespace python {
 
@@ -37,6 +38,8 @@ struct sheet
     PyObject_HEAD
 
     PyObject* name;
+    PyObject* sheet_size;
+    PyObject* data_size;
 
     sheet_data* m_data;
 };
@@ -46,6 +49,8 @@ void sheet_dealloc(sheet* self)
     delete self->m_data;
 
     Py_XDECREF(self->name);
+    Py_XDECREF(self->sheet_size);
+    Py_XDECREF(self->data_size);
 
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
@@ -69,7 +74,9 @@ PyMethodDef sheet_methods[] =
 
 PyMemberDef sheet_members[] =
 {
-    { (char*)"name", T_OBJECT_EX, offsetof(sheet, name), READONLY, (char*)"sheet name" },
+    { (char*)"name",       T_OBJECT_EX, offsetof(sheet, name),       READONLY, (char*)"sheet name" },
+    { (char*)"sheet_size", T_OBJECT_EX, offsetof(sheet, sheet_size), READONLY, (char*)"sheet size" },
+    { (char*)"data_size",  T_OBJECT_EX, offsetof(sheet, data_size),  READONLY, (char*)"data size" },
     { nullptr }
 };
 
@@ -137,6 +144,23 @@ void store_sheet(
     spreadsheet::sheet_t sid = orcus_sheet->get_index();
     pstring name = doc.get_sheet_name(sid);
     pysheet->name = PyUnicode_FromStringAndSize(name.get(), name.size());
+
+    ixion::abs_range_t range = orcus_sheet->get_data_range();
+    if (range.valid())
+    {
+        pysheet->data_size = PyDict_New();
+        PyDict_SetItemString(pysheet->data_size, "column", PyLong_FromLong(range.last.column));
+        PyDict_SetItemString(pysheet->data_size, "row", PyLong_FromLong(range.last.row));
+    }
+    else
+    {
+        Py_INCREF(Py_None);
+        pysheet->data_size = Py_None;
+    }
+
+    pysheet->sheet_size = PyDict_New();
+    PyDict_SetItemString(pysheet->sheet_size, "column", PyLong_FromLong(orcus_sheet->col_size()));
+    PyDict_SetItemString(pysheet->sheet_size, "row", PyLong_FromLong(orcus_sheet->row_size()));
 }
 
 }}

@@ -12,6 +12,7 @@
 #include "orcus/orcus_xlsx.hpp"
 #include "orcus/spreadsheet/document.hpp"
 #include "orcus/spreadsheet/factory.hpp"
+#include "orcus/global.hpp"
 #define XLSX_ENABLED 1
 #else
 #define XLSX_ENABLED 0
@@ -34,8 +35,8 @@ PyObject* xlsx_read_file(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s", const_cast<char**>(kwlist), &filepath))
         return nullptr;
 
-    spreadsheet::document doc;
-    spreadsheet::import_factory fact(doc);
+    std::unique_ptr<spreadsheet::document> doc = orcus::make_unique<spreadsheet::document>();
+    spreadsheet::import_factory fact(*doc);
     orcus_xlsx app(&fact);
 
     app.read_file(filepath);
@@ -50,7 +51,7 @@ PyObject* xlsx_read_file(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
 
     doc_type->tp_init(obj_doc, nullptr, nullptr);
 
-    store_document(obj_doc, doc);
+    store_document(obj_doc, std::move(doc));
 
     Py_INCREF(obj_doc);
     return obj_doc;

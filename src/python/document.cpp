@@ -129,24 +129,24 @@ document_data* get_document_data(PyObject* self)
     return reinterpret_cast<document*>(self)->m_data;
 }
 
-void store_document(PyObject* self, spreadsheet::document& doc)
+void store_document(PyObject* self, std::unique_ptr<spreadsheet::document>&& doc)
 {
     document* pydoc = reinterpret_cast<document*>(self);
     document_data* pydoc_data = pydoc->m_data;
-    pydoc_data->m_doc.swap(doc);
+    pydoc_data->m_doc = std::move(doc);
 
     PyTypeObject* sheet_type = get_sheet_type();
     if (!sheet_type)
         return;
 
     // TODO : Create a tuple of sheet names and store it with the pydoc instance.
-    size_t sheet_size = pydoc_data->m_doc.sheet_size();
+    size_t sheet_size = pydoc_data->m_doc->sheet_size();
 
     pydoc->sheets = PyTuple_New(sheet_size);
 
     for (size_t i = 0; i < sheet_size; ++i)
     {
-        spreadsheet::sheet* sheet = pydoc_data->m_doc.get_sheet(i);
+        spreadsheet::sheet* sheet = pydoc_data->m_doc->get_sheet(i);
         if (!sheet)
             continue;
 
@@ -159,7 +159,7 @@ void store_document(PyObject* self, spreadsheet::document& doc)
         Py_INCREF(pysheet);
         PyTuple_SetItem(pydoc->sheets, i, pysheet);
 
-        store_sheet(pysheet, pydoc_data->m_doc, sheet);
+        store_sheet(pysheet, *pydoc_data->m_doc, sheet);
     }
 }
 

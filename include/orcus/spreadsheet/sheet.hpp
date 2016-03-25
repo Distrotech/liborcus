@@ -5,14 +5,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_SPREADSHEET_ODSTABLE_HPP__
-#define __ORCUS_SPREADSHEET_ODSTABLE_HPP__
+#ifndef INCLUDED_ORCUS_SPREADSHEET_ODSTABLE_HPP
+#define INCLUDED_ORCUS_SPREADSHEET_ODSTABLE_HPP
 
 #include "orcus/spreadsheet/import_interface.hpp"
 #include "orcus/spreadsheet/export_interface.hpp"
 #include "orcus/env.hpp"
 
 #include <ostream>
+#include <ixion/address.hpp>
 
 namespace orcus {
 
@@ -89,6 +90,10 @@ public:
     auto_filter_t* get_auto_filter_data();
     const auto_filter_t* get_auto_filter_data() const;
     void set_auto_filter_data(auto_filter_t* p);
+
+    // Sheet dimension methods
+
+    ixion::abs_range_t get_data_range() const;
 
     row_t row_size() const;
     col_t col_size() const;

@@ -10,6 +10,7 @@
 
 #include "orcus/spreadsheet/document.hpp"
 
+#include <memory>
 #include <Python.h>
 
 namespace orcus { namespace python {
@@ -17,14 +18,14 @@ namespace orcus { namespace python {
 /** non-python part of the document object. */
 struct document_data
 {
-    spreadsheet::document m_doc;
+    std::unique_ptr<spreadsheet::document> m_doc;
 
     ~document_data();
 };
 
 document_data* get_document_data(PyObject* self);
 
-void store_document(PyObject* self, spreadsheet::document& doc);
+void store_document(PyObject* self, std::unique_ptr<spreadsheet::document>&& doc);
 
 PyTypeObject* get_document_type();
 
