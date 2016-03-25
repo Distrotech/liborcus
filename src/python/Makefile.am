@@ -24,7 +24,9 @@ _orcus_la_SOURCES += \
 	document.hpp \
 	document.cpp \
 	sheet.hpp \
-	sheet.cpp
+	sheet.cpp \
+	sheet_rows.hpp \
+	sheet_rows.cpp
 
 _orcus_la_LIBADD += \
 	../spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
