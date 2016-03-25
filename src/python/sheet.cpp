@@ -141,10 +141,13 @@ void store_sheet(
     pysheet->m_data->m_sheet = orcus_sheet;
 
     // Populate the python members.
+
+    // Sheet name
     spreadsheet::sheet_t sid = orcus_sheet->get_index();
     pstring name = doc.get_sheet_name(sid);
     pysheet->name = PyUnicode_FromStringAndSize(name.get(), name.size());
 
+    // Data size - size of the data area.
     ixion::abs_range_t range = orcus_sheet->get_data_range();
     if (range.valid())
     {
@@ -158,6 +161,7 @@ void store_sheet(
         pysheet->data_size = Py_None;
     }
 
+    // Sheet size - size of the entire sheet.
     pysheet->sheet_size = PyDict_New();
     PyDict_SetItemString(pysheet->sheet_size, "column", PyLong_FromLong(orcus_sheet->col_size()));
     PyDict_SetItemString(pysheet->sheet_size, "row", PyLong_FromLong(orcus_sheet->row_size()));
