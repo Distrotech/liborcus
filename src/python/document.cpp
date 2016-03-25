@@ -42,9 +42,9 @@ void document_dealloc(document* self)
     for (Py_ssize_t i = 0; i < n; ++i)
     {
         PyObject* o = PyTuple_GetItem(self->sheets, i);
-        Py_XDECREF(o);
+        Py_CLEAR(o);
     }
-    Py_XDECREF(self->sheets);  // and the tuple containing the sheets.
+    Py_CLEAR(self->sheets);  // and the tuple containing the sheets.
 
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }

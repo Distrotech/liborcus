@@ -40,9 +40,9 @@ void sheet_dealloc(sheet* self)
 {
     delete self->m_data;
 
-    Py_XDECREF(self->name);
-    Py_XDECREF(self->sheet_size);
-    Py_XDECREF(self->data_size);
+    Py_CLEAR(self->name);
+    Py_CLEAR(self->sheet_size);
+    Py_CLEAR(self->data_size);
 
     Py_TYPE(self)->tp_free(reinterpret_cast<PyObject*>(self));
 }
