@@ -21,14 +21,6 @@ document_data::~document_data()
 
 namespace {
 
-struct free_pyobj
-{
-    void operator() (PyObject* p)
-    {
-        Py_XDECREF(p);
-    }
-};
-
 /**
  * Python object for orcus.Document.
  */

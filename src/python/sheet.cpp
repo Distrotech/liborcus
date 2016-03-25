@@ -22,14 +22,6 @@ sheet_data::~sheet_data()
 
 namespace {
 
-struct free_pyobj
-{
-    void operator() (PyObject* p)
-    {
-        Py_XDECREF(p);
-    }
-};
-
 /**
  * Python object for orcus.Sheet.
  */
