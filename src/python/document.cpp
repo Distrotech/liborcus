@@ -139,7 +139,7 @@ void store_document(PyObject* self, std::unique_ptr<spreadsheet::document>&& doc
     if (!sheet_type)
         return;
 
-    // TODO : Create a tuple of sheet names and store it with the pydoc instance.
+    // Create a tuple of sheet objects and store it with the pydoc instance.
     size_t sheet_size = pydoc_data->m_doc->sheet_size();
 
     pydoc->sheets = PyTuple_New(sheet_size);
