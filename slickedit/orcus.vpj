@@ -436,6 +436,8 @@
                 <F N="../src/python/root.hpp"/>
                 <F N="../src/python/sheet.cpp"/>
                 <F N="../src/python/sheet.hpp"/>
+                <F N="../src/python/sheet_rows.cpp"/>
+                <F N="../src/python/sheet_rows.hpp"/>
                 <F N="../src/python/xlsx.cpp"/>
                 <F N="../src/python/xlsx.hpp"/>
             </Folder>

@@ -6,6 +6,7 @@
  */
 
 #include "sheet.hpp"
+#include "sheet_rows.hpp"
 
 #include "orcus/spreadsheet/types.hpp"
 #include "orcus/spreadsheet/sheet.hpp"
@@ -59,8 +60,22 @@ int sheet_init(sheet* self, PyObject* /*args*/, PyObject* /*kwargs*/)
     return 0;
 }
 
+PyObject* sheet_get_rows(PyObject* self, PyObject* args, PyObject* kwargs)
+{
+    PyTypeObject* sr_type = get_sheet_rows_type();
+
+    PyObject* rows = sr_type->tp_new(sr_type, nullptr, nullptr);
+    if (!rows)
+        return nullptr;
+
+    sr_type->tp_init(rows, nullptr, nullptr);
+    Py_INCREF(rows);
+    return rows;
+}
+
 PyMethodDef sheet_methods[] =
 {
+    { "get_rows", (PyCFunction)sheet_get_rows, METH_VARARGS, "Get a sheet row iterator." },
     { nullptr }
 };
 

@@ -12,6 +12,7 @@
 #include "xlsx.hpp"
 #include "document.hpp"
 #include "sheet.hpp"
+#include "sheet_rows.hpp"
 
 #include <iostream>
 #include <string>
@@ -107,6 +108,12 @@ ORCUS_DLLPUBLIC PyObject* PyInit__orcus()
         PyModule_AddObject(m, "Sheet", reinterpret_cast<PyObject*>(sheet_type));
     }
 
+    PyTypeObject* sheet_rows_type = orcus::python::get_sheet_rows_type();
+    if (!PyType_Ready(sheet_rows_type))
+    {
+        Py_INCREF(sheet_rows_type);
+        PyModule_AddObject(m, "SheetRows", reinterpret_cast<PyObject*>(sheet_rows_type));
+    }
 #endif
 
     return m;
