@@ -6,8 +6,13 @@
  */
 
 #include "sheet_rows.hpp"
+#include "orcus/spreadsheet/sheet.hpp"
 
 namespace orcus { namespace python {
+
+sheet_rows_data::sheet_rows_data() :
+    m_range(ixion::abs_range_t::invalid),
+    m_current_row(-1) {}
 
 sheet_rows_data::~sheet_rows_data() {}
 
@@ -42,6 +47,38 @@ int sheet_rows_init(sheet_rows* self, PyObject* /*args*/, PyObject* /*kwargs*/)
     return 0;
 }
 
+PyObject* sheet_rows_iter(PyObject* self)
+{
+    sheet_rows_data* data = reinterpret_cast<sheet_rows*>(self)->m_data;
+    data->m_current_row = 0;
+
+    Py_INCREF(self);
+    return self;
+}
+
+PyObject* sheet_rows_iternext(PyObject* self)
+{
+    sheet_rows_data* data = reinterpret_cast<sheet_rows*>(self)->m_data;
+
+    if (data->m_current_row >= data->m_range.last.row)
+    {
+        // No more elements.  Stop the iteration.
+        PyErr_SetNone(PyExc_StopIteration);
+        return nullptr;
+    }
+
+    ++data->m_current_row;
+
+    PyObject* row = PyTuple_New(data->m_range.last.column);
+    for (ixion::col_t i = 0; i < data->m_range.last.column; ++i)
+    {
+        // TODO : Store the real cell value.
+        PyTuple_SetItem(row, i, PyLong_FromLong(i));
+    }
+
+    return row;
+}
+
 PyTypeObject sheet_rows_type =
 {
     PyVarObject_HEAD_INIT(nullptr, 0)
@@ -69,8 +106,8 @@ PyTypeObject sheet_rows_type =
     0,		                                  // tp_clear
     0,		                                  // tp_richcompare
     0,		                                  // tp_weaklistoffset
-    0,		                                  // tp_iter
-    0,		                                  // tp_iternext
+    (getiterfunc)sheet_rows_iter,		      // tp_iter
+    (iternextfunc)sheet_rows_iternext,        // tp_iternext
     0,                                        // tp_methods
     0,                                        // tp_members
     0,                                        // tp_getset
@@ -89,6 +126,13 @@ PyTypeObject sheet_rows_type =
 PyTypeObject* get_sheet_rows_type()
 {
     return &sheet_rows_type;
+}
+
+void store_sheet_rows_data(PyObject* self, const spreadsheet::sheet* orcus_sheet)
+{
+    sheet_rows_data* data = reinterpret_cast<sheet_rows*>(self)->m_data;
+    data->m_sheet = orcus_sheet;
+    data->m_range = orcus_sheet->get_data_range();
 }
 
 }}

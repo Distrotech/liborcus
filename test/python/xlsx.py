@@ -14,4 +14,6 @@ for sheet in doc.sheets:
     print("- data size: (column:{column}, row:{row})".format(**sheet.data_size))
     rows = sheet.get_rows()
     print(rows)
+    for row in rows:
+        print(row)
 

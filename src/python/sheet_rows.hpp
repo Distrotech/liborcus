@@ -9,15 +9,32 @@
 #define INCLUDED_ORCUS_PYTHON_SHEET_ROWS_HPP
 
 #include <Python.h>
+#include <ixion/address.hpp>
 
-namespace orcus { namespace python {
+namespace orcus {
+
+namespace spreadsheet {
+
+class sheet;
+class document;
+
+}
+
+namespace python {
 
 struct sheet_rows_data
 {
+    const spreadsheet::sheet* m_sheet;
+    ixion::abs_range_t m_range;
+    ixion::row_t m_current_row;
+
+    sheet_rows_data();
     ~sheet_rows_data();
 };
 
 PyTypeObject* get_sheet_rows_type();
+
+void store_sheet_rows_data(PyObject* self, const spreadsheet::sheet* orcus_sheet);
 
 }}
 

@@ -69,6 +69,10 @@ PyObject* sheet_get_rows(PyObject* self, PyObject* args, PyObject* kwargs)
         return nullptr;
 
     sr_type->tp_init(rows, nullptr, nullptr);
+
+    // Populate the sheet rows data.
+    store_sheet_rows_data(rows, reinterpret_cast<sheet*>(self)->m_data->m_sheet);
+
     Py_INCREF(rows);
     return rows;
 }
