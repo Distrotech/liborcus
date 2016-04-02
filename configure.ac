@@ -7,8 +7,8 @@ AC_PREREQ([2.65])
 # Version information
 # ===================
 m4_define([orcus_major_version], [0])
-m4_define([orcus_minor_version], [11])
-m4_define([orcus_micro_version], [1])
+m4_define([orcus_minor_version], [12])
+m4_define([orcus_micro_version], [0])
 m4_define([orcus_version], [orcus_major_version.orcus_minor_version.orcus_micro_version])
 
 # ===============
@@ -151,9 +151,9 @@ AC_ARG_WITH(xlsx-filter,
 	[with_xlsx_filter=yes]
 )
 
-# ===================
+# ======================
 # xls xml filter support
-# ===================
+# ======================
 AC_ARG_WITH(xls-xml-filter,
             AS_HELP_STRING([--without-xls-xml-filter],
                            [Disables the Microsoft Excel XML import filter.]),
@@ -202,7 +202,7 @@ AS_IF([test "x$with_tools" != "xno"], [
 # ============
 # mdds support
 # ============
-PKG_CHECK_MODULES([MDDS],[mdds-1.0 >= 1.0.0])
+PKG_CHECK_MODULES([MDDS],[mdds-1.2 >= 1.2.0])
 CXXFLAGS="$CXXFLAGS $MDDS_CFLAGS"
 
 # =================
