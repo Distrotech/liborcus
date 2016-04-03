@@ -51,6 +51,8 @@ PyObject* sheet_rows_iter(PyObject* self)
 {
     sheet_rows_data* data = reinterpret_cast<sheet_rows*>(self)->m_data;
     data->m_current_row = 0;
+    data->m_row_pos = data->m_sheet_range.row_begin();
+    data->m_row_end = data->m_sheet_range.row_end();
 
     Py_INCREF(self);
     return self;
@@ -59,21 +61,22 @@ PyObject* sheet_rows_iter(PyObject* self)
 PyObject* sheet_rows_iternext(PyObject* self)
 {
     sheet_rows_data* data = reinterpret_cast<sheet_rows*>(self)->m_data;
+    auto& row_pos = data->m_row_pos;
+    const auto& row_end = data->m_row_end;
 
-    if (data->m_current_row >= data->m_range.last.row)
+    if (row_pos == row_end)
     {
         // No more elements.  Stop the iteration.
         PyErr_SetNone(PyExc_StopIteration);
         return nullptr;
     }
 
-    ++data->m_current_row;
-
-    PyObject* row = PyTuple_New(data->m_range.last.column);
-    for (ixion::col_t i = 0; i < data->m_range.last.column; ++i)
+    size_t row_position = row_pos->position;
+    PyObject* row = PyTuple_New(data->m_range.last.column+1);
+    for (ixion::col_t i = 0; row_pos != row_end && row_position == row_pos->position; ++i)
     {
-        // TODO : Store the real cell value.
         PyTuple_SetItem(row, i, PyLong_FromLong(i));
+        ++row_pos;
     }
 
     return row;
@@ -133,6 +136,10 @@ void store_sheet_rows_data(PyObject* self, const spreadsheet::sheet* orcus_sheet
     sheet_rows_data* data = reinterpret_cast<sheet_rows*>(self)->m_data;
     data->m_sheet = orcus_sheet;
     data->m_range = orcus_sheet->get_data_range();
+
+    const ixion::abs_range_t& range = data->m_range;
+    data->m_sheet_range = orcus_sheet->get_sheet_range(
+        0, 0, range.last.row, range.last.column);
 }
 
 }}

@@ -164,6 +164,7 @@
                     <F N="../include/orcus/spreadsheet/shared_strings.hpp"/>
                     <F N="../include/orcus/spreadsheet/sheet.hpp"/>
                     <F N="../include/orcus/spreadsheet/sheet_properties.hpp"/>
+                    <F N="../include/orcus/spreadsheet/sheet_range.hpp"/>
                     <F N="../include/orcus/spreadsheet/styles.hpp"/>
                     <F N="../include/orcus/spreadsheet/types.hpp"/>
                 </Folder>
@@ -453,6 +454,7 @@
                 <F N="../src/spreadsheet/shared_strings.cpp"/>
                 <F N="../src/spreadsheet/sheet.cpp"/>
                 <F N="../src/spreadsheet/sheet_properties.cpp"/>
+                <F N="../src/spreadsheet/sheet_range.cpp"/>
                 <F N="../src/spreadsheet/styles.cpp"/>
                 <F N="../src/spreadsheet/table.cpp"/>
                 <F N="../src/spreadsheet/table.hpp"/>

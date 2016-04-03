@@ -15,6 +15,7 @@ liborcus_HEADERS += \
 	shared_strings.hpp \
 	sheet.hpp \
 	sheet_properties.hpp \
+	sheet_range.hpp \
 	styles.hpp
 
 endif

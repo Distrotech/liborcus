@@ -163,8 +163,8 @@ void store_sheet(
     if (range.valid())
     {
         pysheet->data_size = PyDict_New();
-        PyDict_SetItemString(pysheet->data_size, "column", PyLong_FromLong(range.last.column));
-        PyDict_SetItemString(pysheet->data_size, "row", PyLong_FromLong(range.last.row));
+        PyDict_SetItemString(pysheet->data_size, "column", PyLong_FromLong(range.last.column+1));
+        PyDict_SetItemString(pysheet->data_size, "row", PyLong_FromLong(range.last.row+1));
     }
     else
     {
