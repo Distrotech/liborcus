@@ -72,14 +72,44 @@ PyObject* sheet_rows_iternext(PyObject* self)
     }
 
     size_t row_position = row_pos->position;
-    PyObject* row = PyTuple_New(data->m_range.last.column+1);
-    for (ixion::col_t i = 0; row_pos != row_end && row_position == row_pos->position; ++i)
+    PyObject* pyobj_row = PyTuple_New(data->m_range.last.column+1);
+    for (; row_pos != row_end && row_position == row_pos->position; ++row_pos)
     {
-        PyTuple_SetItem(row, i, PyLong_FromLong(i));
-        ++row_pos;
+        size_t col_pos = row_pos->index;
+
+        switch (row_pos->type)
+        {
+            case ixion::element_type_empty:
+            {
+                Py_INCREF(Py_None);
+                PyTuple_SetItem(pyobj_row, col_pos, Py_None);
+            }
+            break;
+            case ixion::element_type_boolean:
+                // TODO: This doesn't work currently due to the vector<bool> situation...
+            break;
+            case ixion::element_type_string:
+            {
+                ixion::string_id_t sid = row_pos->get<ixion::string_element_block>();
+                const std::string* ps = data->m_sheet_range.get_string(sid);
+                if (ps)
+                    PyTuple_SetItem(pyobj_row, col_pos, PyUnicode_FromStringAndSize(ps->data(), ps->size()));
+            }
+            break;
+            case ixion::element_type_numeric:
+                PyTuple_SetItem(
+                    pyobj_row, col_pos,
+                    PyFloat_FromDouble(row_pos->get<ixion::numeric_element_block>()));
+            break;
+            case ixion::element_type_formula:
+                // TODO
+            break;
+            default:
+                ;
+        }
     }
 
-    return row;
+    return pyobj_row;
 }
 
 PyTypeObject sheet_rows_type =

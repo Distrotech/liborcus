@@ -9,25 +9,28 @@
 #include "orcus/global.hpp"
 #include "orcus/exception.hpp"
 
+#include <ixion/model_context.hpp>
 #include <mdds/multi_type_vector/collection.hpp>
 
 namespace orcus { namespace spreadsheet {
 
 struct sheet_range::impl
 {
+    const ixion::model_context* m_cxt;
     mdds::mtv::collection<ixion::column_store_t> m_columns;
 
-    impl() {}
-    impl(const impl& other) {}
+    impl(const ixion::model_context* cxt) : m_cxt(cxt) {}
+    impl(const impl& other) : m_cxt(other.m_cxt), m_columns(other.m_columns) {}
     ~impl() {}
 };
 
-sheet_range::sheet_range() : mp_impl(orcus::make_unique<impl>()) {}
+sheet_range::sheet_range() : mp_impl(orcus::make_unique<impl>(nullptr)) {}
 
 sheet_range::sheet_range(
+    const ixion::model_context& cxt,
     const ixion::column_stores_t& stores,
     row_t row_start, col_t col_start, row_t row_end, col_t col_end) :
-    mp_impl(orcus::make_unique<impl>())
+    mp_impl(orcus::make_unique<impl>(&cxt))
 {
     mdds::mtv::collection<ixion::column_store_t> cols(stores.begin(), stores.end());
     cols.set_element_range(row_start, row_end-row_start+1);
@@ -62,6 +65,11 @@ sheet_range::const_row_iterator sheet_range::row_begin() const
 sheet_range::const_row_iterator sheet_range::row_end() const
 {
     return mp_impl->m_columns.end();
+}
+
+const std::string* sheet_range::get_string(ixion::string_id_t sid) const
+{
+    return mp_impl->m_cxt->get_string(sid);
 }
 
 }}

@@ -11,8 +11,14 @@
 #include "orcus/env.hpp"
 #include "orcus/spreadsheet/types.hpp"
 #include <memory>
-#include <ixion/column_store_type.hpp>
 #include <mdds/multi_type_vector/collection.hpp>
+#include <ixion/column_store_type.hpp>
+
+namespace ixion {
+
+class model_context;
+
+}
 
 namespace orcus { namespace spreadsheet {
 
@@ -28,6 +34,7 @@ class ORCUS_SPM_DLLPUBLIC sheet_range
     std::unique_ptr<impl> mp_impl;
 
     sheet_range(
+        const ixion::model_context& cxt,
         const ixion::column_stores_t& stores,
         row_t row_start, col_t col_start, row_t row_end, col_t col_end);
 
@@ -45,6 +52,8 @@ public:
 
     const_row_iterator row_begin() const;
     const_row_iterator row_end() const;
+
+    const std::string* get_string(ixion::string_id_t sid) const;
 };
 
 }}

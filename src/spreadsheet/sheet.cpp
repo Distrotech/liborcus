@@ -645,7 +645,7 @@ sheet_range sheet::get_sheet_range(
         throw orcus::general_error(
             "sheet::get_sheet_range: failed to get column stores from the model.");
 
-    return sheet_range(*stores, row_start, col_start, row_end, col_end);
+    return sheet_range(cxt, *stores, row_start, col_start, row_end, col_end);
 }
 
 row_t sheet::row_size() const
