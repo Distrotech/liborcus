@@ -24,7 +24,7 @@ namespace {
 /**
  * Python object for orcus.Document.
  */
-struct document
+struct pyobj_document
 {
     PyObject_HEAD
 
@@ -33,7 +33,7 @@ struct document
     document_data* m_data;
 };
 
-void document_dealloc(document* self)
+void document_dealloc(pyobj_document* self)
 {
     delete self->m_data;
 
@@ -51,12 +51,12 @@ void document_dealloc(document* self)
 
 PyObject* document_new(PyTypeObject* type, PyObject* /*args*/, PyObject* /*kwargs*/)
 {
-    document* self = (document*)type->tp_alloc(type, 0);
+    pyobj_document* self = (pyobj_document*)type->tp_alloc(type, 0);
     self->m_data = new document_data;
     return reinterpret_cast<PyObject*>(self);
 }
 
-int document_init(document* self, PyObject* /*args*/, PyObject* /*kwargs*/)
+int document_init(pyobj_document* self, PyObject* /*args*/, PyObject* /*kwargs*/)
 {
     return 0;
 }
@@ -68,7 +68,7 @@ PyMethodDef document_methods[] =
 
 PyMemberDef document_members[] =
 {
-    { (char*)"sheets", T_OBJECT_EX, offsetof(document, sheets), READONLY, (char*)"sheet objects" },
+    { (char*)"sheets", T_OBJECT_EX, offsetof(pyobj_document, sheets), READONLY, (char*)"sheet objects" },
     { nullptr }
 };
 
@@ -76,7 +76,7 @@ PyTypeObject document_type =
 {
     PyVarObject_HEAD_INIT(nullptr, 0)
     "orcus.Document",                         // tp_name
-    sizeof(document),                         // tp_basicsize
+    sizeof(pyobj_document),                         // tp_basicsize
     0,                                        // tp_itemsize
     (destructor)document_dealloc,             // tp_dealloc
     0,                                        // tp_print
@@ -118,12 +118,12 @@ PyTypeObject document_type =
 
 document_data* get_document_data(PyObject* self)
 {
-    return reinterpret_cast<document*>(self)->m_data;
+    return reinterpret_cast<pyobj_document*>(self)->m_data;
 }
 
 void store_document(PyObject* self, std::unique_ptr<spreadsheet::document>&& doc)
 {
-    document* pydoc = reinterpret_cast<document*>(self);
+    pyobj_document* pydoc = reinterpret_cast<pyobj_document*>(self);
     document_data* pydoc_data = pydoc->m_data;
     pydoc_data->m_doc = std::move(doc);
 

@@ -24,14 +24,14 @@ namespace {
 /**
  * Python object for orcus.SheetRows.
  */
-struct sheet_rows
+struct pyobj_sheet_rows
 {
     PyObject_HEAD
 
     sheet_rows_data* m_data;
 };
 
-void sheet_rows_dealloc(sheet_rows* self)
+void sheet_rows_dealloc(pyobj_sheet_rows* self)
 {
     delete self->m_data;
 
@@ -40,19 +40,19 @@ void sheet_rows_dealloc(sheet_rows* self)
 
 PyObject* sheet_rows_new(PyTypeObject* type, PyObject* /*args*/, PyObject* /*kwargs*/)
 {
-    sheet_rows* self = (sheet_rows*)type->tp_alloc(type, 0);
+    pyobj_sheet_rows* self = (pyobj_sheet_rows*)type->tp_alloc(type, 0);
     self->m_data = new sheet_rows_data;
     return reinterpret_cast<PyObject*>(self);
 }
 
-int sheet_rows_init(sheet_rows* self, PyObject* /*args*/, PyObject* /*kwargs*/)
+int sheet_rows_init(pyobj_sheet_rows* self, PyObject* /*args*/, PyObject* /*kwargs*/)
 {
     return 0;
 }
 
 PyObject* sheet_rows_iter(PyObject* self)
 {
-    sheet_rows_data* data = reinterpret_cast<sheet_rows*>(self)->m_data;
+    sheet_rows_data* data = reinterpret_cast<pyobj_sheet_rows*>(self)->m_data;
     data->m_current_row = 0;
     data->m_row_pos = data->m_sheet_range.row_begin();
     data->m_row_end = data->m_sheet_range.row_end();
@@ -63,7 +63,7 @@ PyObject* sheet_rows_iter(PyObject* self)
 
 PyObject* sheet_rows_iternext(PyObject* self)
 {
-    sheet_rows_data* data = reinterpret_cast<sheet_rows*>(self)->m_data;
+    sheet_rows_data* data = reinterpret_cast<pyobj_sheet_rows*>(self)->m_data;
     auto& row_pos = data->m_row_pos;
     const auto& row_end = data->m_row_end;
 
@@ -154,7 +154,7 @@ PyTypeObject sheet_rows_type =
 {
     PyVarObject_HEAD_INIT(nullptr, 0)
     "orcus.SheetRows",                        // tp_name
-    sizeof(sheet_rows),                       // tp_basicsize
+    sizeof(pyobj_sheet_rows),                       // tp_basicsize
     0,                                        // tp_itemsize
     (destructor)sheet_rows_dealloc,           // tp_dealloc
     0,                                        // tp_print
@@ -201,7 +201,7 @@ PyTypeObject* get_sheet_rows_type()
 
 void store_sheet_rows_data(PyObject* self, const spreadsheet::sheet* orcus_sheet)
 {
-    sheet_rows_data* data = reinterpret_cast<sheet_rows*>(self)->m_data;
+    sheet_rows_data* data = reinterpret_cast<pyobj_sheet_rows*>(self)->m_data;
     data->m_sheet = orcus_sheet;
     data->m_range = orcus_sheet->get_data_range();
 

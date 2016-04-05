@@ -26,7 +26,7 @@ namespace {
 /**
  * Python object for orcus.Sheet.
  */
-struct sheet
+struct pyobj_sheet
 {
     PyObject_HEAD
 
@@ -37,7 +37,7 @@ struct sheet
     sheet_data* m_data;
 };
 
-void sheet_dealloc(sheet* self)
+void sheet_dealloc(pyobj_sheet* self)
 {
     delete self->m_data;
 
@@ -50,12 +50,12 @@ void sheet_dealloc(sheet* self)
 
 PyObject* sheet_new(PyTypeObject* type, PyObject* /*args*/, PyObject* /*kwargs*/)
 {
-    sheet* self = (sheet*)type->tp_alloc(type, 0);
+    pyobj_sheet* self = (pyobj_sheet*)type->tp_alloc(type, 0);
     self->m_data = new sheet_data;
     return reinterpret_cast<PyObject*>(self);
 }
 
-int sheet_init(sheet* self, PyObject* /*args*/, PyObject* /*kwargs*/)
+int sheet_init(pyobj_sheet* self, PyObject* /*args*/, PyObject* /*kwargs*/)
 {
     return 0;
 }
@@ -71,7 +71,7 @@ PyObject* sheet_get_rows(PyObject* self, PyObject* args, PyObject* kwargs)
     sr_type->tp_init(rows, nullptr, nullptr);
 
     // Populate the sheet rows data.
-    store_sheet_rows_data(rows, reinterpret_cast<sheet*>(self)->m_data->m_sheet);
+    store_sheet_rows_data(rows, reinterpret_cast<pyobj_sheet*>(self)->m_data->m_sheet);
 
     Py_INCREF(rows);
     return rows;
@@ -85,9 +85,9 @@ PyMethodDef sheet_methods[] =
 
 PyMemberDef sheet_members[] =
 {
-    { (char*)"name",       T_OBJECT_EX, offsetof(sheet, name),       READONLY, (char*)"sheet name" },
-    { (char*)"sheet_size", T_OBJECT_EX, offsetof(sheet, sheet_size), READONLY, (char*)"sheet size" },
-    { (char*)"data_size",  T_OBJECT_EX, offsetof(sheet, data_size),  READONLY, (char*)"data size" },
+    { (char*)"name",       T_OBJECT_EX, offsetof(pyobj_sheet, name),       READONLY, (char*)"sheet name" },
+    { (char*)"sheet_size", T_OBJECT_EX, offsetof(pyobj_sheet, sheet_size), READONLY, (char*)"sheet size" },
+    { (char*)"data_size",  T_OBJECT_EX, offsetof(pyobj_sheet, data_size),  READONLY, (char*)"data size" },
     { nullptr }
 };
 
@@ -95,7 +95,7 @@ PyTypeObject sheet_type =
 {
     PyVarObject_HEAD_INIT(nullptr, 0)
     "orcus.Sheet",                            // tp_name
-    sizeof(sheet),                            // tp_basicsize
+    sizeof(pyobj_sheet),                            // tp_basicsize
     0,                                        // tp_itemsize
     (destructor)sheet_dealloc,                // tp_dealloc
     0,                                        // tp_print
@@ -137,7 +137,7 @@ PyTypeObject sheet_type =
 
 sheet_data* get_sheet_data(PyObject* self)
 {
-    return reinterpret_cast<sheet*>(self)->m_data;
+    return reinterpret_cast<pyobj_sheet*>(self)->m_data;
 }
 
 PyTypeObject* get_sheet_type()
@@ -148,7 +148,7 @@ PyTypeObject* get_sheet_type()
 void store_sheet(
     PyObject* self, const spreadsheet::document& doc, spreadsheet::sheet* orcus_sheet)
 {
-    sheet* pysheet = reinterpret_cast<sheet*>(self);
+    pyobj_sheet* pysheet = reinterpret_cast<pyobj_sheet*>(self);
     pysheet->m_data->m_sheet = orcus_sheet;
 
     // Populate the python members.
