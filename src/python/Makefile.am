@@ -56,6 +56,7 @@ AM_TESTS_ENVIRONMENT = PYTHONPATH=$(top_srcdir)/src/python:.libs$${PYTHONPATH:+:
 
 TESTS = \
 	../../test/python/json.py \
-	../../test/python/module.py
+	../../test/python/module.py \
+	../../test/python/xlsx.py
 
 endif # BUILD_PYTHON
