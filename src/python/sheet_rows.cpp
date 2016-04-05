@@ -8,6 +8,9 @@
 #include "sheet_rows.hpp"
 #include "orcus/spreadsheet/sheet.hpp"
 
+#include <ixion/cell.hpp>
+#include <ixion/formula_result.hpp>
+
 namespace orcus { namespace python {
 
 sheet_rows_data::sheet_rows_data() :
@@ -93,7 +96,11 @@ PyObject* sheet_rows_iternext(PyObject* self)
                 ixion::string_id_t sid = row_pos->get<ixion::string_element_block>();
                 const std::string* ps = data->m_sheet_range.get_string(sid);
                 if (ps)
-                    PyTuple_SetItem(pyobj_row, col_pos, PyUnicode_FromStringAndSize(ps->data(), ps->size()));
+                {
+                    PyTuple_SetItem(
+                        pyobj_row, col_pos,
+                        PyUnicode_FromStringAndSize(ps->data(), ps->size()));
+                }
             }
             break;
             case ixion::element_type_numeric:
@@ -102,7 +109,38 @@ PyObject* sheet_rows_iternext(PyObject* self)
                     PyFloat_FromDouble(row_pos->get<ixion::numeric_element_block>()));
             break;
             case ixion::element_type_formula:
-                // TODO
+            {
+                const ixion::formula_cell* fc = row_pos->get<ixion::formula_element_block>();
+                const ixion::formula_result* res = fc->get_result_cache();
+                switch (res->get_type())
+                {
+                    case ixion::formula_result::rt_value:
+                        PyTuple_SetItem(
+                            pyobj_row, col_pos,
+                            PyFloat_FromDouble(res->get_value()));
+                    break;
+                    case ixion::formula_result::rt_string:
+                    {
+                        ixion::string_id_t sid = res->get_string();
+                        const std::string* ps = data->m_sheet_range.get_string(sid);
+                        if (ps)
+                        {
+                            PyTuple_SetItem(
+                                pyobj_row, col_pos,
+                                PyUnicode_FromStringAndSize(ps->data(), ps->size()));
+                        }
+                    }
+                    break;
+                    case ixion::formula_result::rt_error:
+                    {
+                        ixion::formula_error_t fe = res->get_error();
+                        const char* fename = ixion::get_formula_error_name(fe);
+                        if (fename)
+                            PyTuple_SetItem(pyobj_row, col_pos, PyUnicode_FromString(fename));
+                    }
+                    break;
+                }
+            }
             break;
             default:
                 ;
