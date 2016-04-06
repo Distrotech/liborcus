@@ -14,17 +14,12 @@ added to the mix.
 Contents:
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
-   xlsx.rst
-   xls-xml.rst
-   ods.rst
-   gnumeric.rst
-   xml.rst
-   csv.rst
-   css.rst
-   json.rst
-   yaml.rst
+   cpp/index.rst
+   python/index.rst
+   cli/index.rst
+
 
 Indices and tables
 ==================
