@@ -27,6 +27,11 @@ These parsers are all implemented as C++ templates and require a handler class
 passed as a template argument so that the handler class receives various
 callbacks from the parser as the file is being parsed.
 
+## API Documentation
+
+* [Official API documentation](http://kohei.us/files/orcus/doc/)
+* [Doxygen code documentation](http://kohei.us/files/orcus/doxygen/)
+
 ## Download source packages
 
 | Version | API Version | Release Date | Download | Checksum | File Size (bytes) |
