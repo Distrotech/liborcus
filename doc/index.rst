@@ -14,8 +14,9 @@ added to the mix.
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
+   overview/index.rst
    cpp/index.rst
    python/index.rst
    cli/index.rst

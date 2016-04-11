@@ -1,3 +1,4 @@
+
 .. highlight:: cpp
 
 JSON
@@ -23,11 +24,10 @@ to store the content of JSON, then this approach is ideal.  The
 :cpp:class:`~orcus::json_document_tree` class internally uses
 :cpp:class:`~orcus::json_parser` to parse JSON contents.
 
-Example
--------
 
 Populating a document tree
-``````````````````````````
+--------------------------
+
 The following code snippet shows an example of how to populate an instance of
 :cpp:class:`~orcus::json_document_tree` from a JSON string, and navigate its
 content tree afterward.
@@ -106,8 +106,10 @@ You'll see the following output when executing this code:
       - 67
       - 90
 
+
 Using the low-level parser
-``````````````````````````
+--------------------------
+
 The following code snippet shows how to use the low-level :cpp:class:`~orcus::json_parser`
 class by providing an own handler class and passing it as a template argument::
 
@@ -211,34 +213,3 @@ Executing this code will generate the following output:
     number: 12.3
     end object
     end parse
-
-
-Public interface
-----------------
-
-Parser
-``````
-
-.. doxygenclass:: orcus::json_parser
-   :members:
-
-Parser handler
-``````````````
-
-.. doxygenclass:: json_parser_handler
-   :members:
-
-Document tree
-`````````````
-
-.. doxygenclass:: orcus::json_document_tree
-   :members:
-
-.. doxygenstruct:: orcus::json_config
-   :members:
-
-.. doxygenclass:: orcus::json::detail::node
-   :members:
-
-.. doxygenenum:: orcus::json::detail::node_t
-   :project: orcus

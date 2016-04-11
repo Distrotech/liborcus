@@ -3,14 +3,8 @@ C++ API
 =======
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   xlsx.rst
-   xls-xml.rst
-   ods.rst
-   gnumeric.rst
-   xml.rst
-   csv.rst
-   css.rst
-   json.rst
-   yaml.rst
+   parser/index.rst
+   filter/index.rst
+   model/index.rst
