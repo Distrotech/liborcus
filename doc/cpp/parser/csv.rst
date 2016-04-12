@@ -1,13 +1,16 @@
 .. highlight:: cpp
 
-CSV
-===
+CSV Parser
+==========
 
 .. doxygenclass:: orcus::csv_parser
    :members:
 
-Parser handler
-``````````````
+.. doxygenstruct:: orcus::csv::parser_config
+   :members:
+
+Parser Handler
+--------------
 
 .. doxygenclass:: csv_parser_handler
    :members:

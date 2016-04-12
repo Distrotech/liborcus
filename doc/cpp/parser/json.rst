@@ -1,13 +1,13 @@
 .. highlight:: cpp
 
-JSON
-====
+JSON Parser
+===========
 
 .. doxygenclass:: orcus::json_parser
    :members:
 
-Parser handler
-``````````````
+Parser Handler
+--------------
 
 .. doxygenclass:: json_parser_handler
    :members:

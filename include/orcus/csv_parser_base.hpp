@@ -30,10 +30,25 @@ using std::endl;
 
 namespace orcus { namespace csv {
 
+/**
+ * Run-time configuration object for orcus::csv_parser.
+ */
 struct ORCUS_PSR_DLLPUBLIC parser_config
 {
+    /**
+     * One or more characters that serve as cell boundaries.
+     */
     std::string delimiters;
+
+    /**
+     * A single character used as a text quote value.
+     */
     char text_qualifier;
+
+    /**
+     * When true, the value of each cell gets trimmed i.e. any leading or
+     * trailing white spaces will get ignored.
+     */
     bool trim_cell_value:1;
 
     parser_config();

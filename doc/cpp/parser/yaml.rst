@@ -1,13 +1,13 @@
 .. highlight:: cpp
 
-YAML
-====
+YAML Parser
+===========
 
 .. doxygenclass:: orcus::yaml_parser
    :members:
 
-Parser handler
-``````````````
+Parser Handler
+--------------
 
 .. doxygenclass:: yaml_parser_handler
    :members:
