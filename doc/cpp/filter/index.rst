@@ -3,8 +3,8 @@ Spreadsheet Import Filter
 =========================
 
 
-CSV
----
+Plain Text
+----------
 
 .. doxygenclass:: orcus::orcus_csv
    :members:
