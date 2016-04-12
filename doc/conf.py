@@ -108,8 +108,8 @@ html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 # documentation.
 html_theme_options = {
     'navbar_site_name': "Sections",
-    'navbar_pagenav': False,
-    'bootswatch_theme': "simplex",
+    'navbar_pagenav': "Page",
+    'bootswatch_theme': "sandstone",
     'navbar_links': [
         ("Orcus on GitLab", "http://gitlab.com/orcus/orcus", True)
     ]
