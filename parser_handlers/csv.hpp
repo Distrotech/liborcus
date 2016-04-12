@@ -30,22 +30,36 @@
 
 #include <cstdlib>
 
-/**
- * Skeleton handler for csv_parser.  Feel free to copy this as a starting
- * point for your own CSV handler.
- */
 class csv_parser_handler
 {
 public:
+    /**
+     * Called when the parser starts parsing a stream.
+     */
     void begin_parse() {}
 
+    /**
+     * Called when the parser finishes parsing a stream.
+     */
     void end_parse() {}
 
+    /**
+     * Called at the beginning of every row.
+     */
     void begin_row() {}
 
+    /**
+     * Called at the end of every row.
+     */
     void end_row() {}
 
-    void cell(const char* /*p*/, size_t /*n*/) {}
+    /**
+     * Called after every cell is parsed.
+     *
+     * @param p pointer to the first character of a cell content.
+     * @param n number of characters the cell content consists of.
+     */
+    void cell(const char* p, size_t n) {}
 };
 
 #endif
