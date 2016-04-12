@@ -11,10 +11,10 @@
 #include <cstring>
 
 const char* test_code =
-"section-one:"
-"  - item 1"
-"  - item 2"
-"";
+"section-one:\n"
+"  - item 1\n"
+"  - item 2\n"
+"\n";
 
 int main()
 {

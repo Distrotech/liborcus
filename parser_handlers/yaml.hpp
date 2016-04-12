@@ -28,6 +28,8 @@
 #ifndef INCLUDED_ORCUS_PARSER_HANDLERS_YAML_HPP
 #define INCLUDED_ORCUS_PARSER_HANDLERS_YAML_HPP
 
+#include <cstdlib>
+
 class yaml_parser_handler
 {
 public:

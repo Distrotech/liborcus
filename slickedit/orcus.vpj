@@ -233,6 +233,8 @@
             <F N="../parser_handlers/sax_test.cpp"/>
             <F N="../parser_handlers/sax_token.hpp"/>
             <F N="../parser_handlers/sax_token_test.cpp"/>
+            <F N="../parser_handlers/yaml.hpp"/>
+            <F N="../parser_handlers/yaml_test.cpp"/>
         </Folder>
         <Folder Name="../src">
             <Folder Name="liborcus">
