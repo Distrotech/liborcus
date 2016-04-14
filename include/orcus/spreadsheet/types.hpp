@@ -8,19 +8,20 @@
 #ifndef ORCUS_SPREADSHEET_TYPES_HPP
 #define ORCUS_SPREADSHEET_TYPES_HPP
 
-#include "../env.hpp"
+#include "orcus/env.hpp"
 #include <cstdlib>
+#include <cstdint>
 
 // NB: This header should only use primitive data types and enums.
 
 namespace orcus { namespace spreadsheet {
 
-typedef int row_t;
-typedef int col_t;
-typedef int sheet_t;
-typedef unsigned char color_elem_t;
-typedef unsigned short col_width_t;
-typedef unsigned short row_height_t;
+typedef int32_t row_t;
+typedef int32_t col_t;
+typedef int32_t sheet_t;
+typedef uint8_t color_elem_t;
+typedef uint16_t col_width_t;
+typedef uint16_t row_height_t;
 
 ORCUS_DLLPUBLIC col_width_t get_default_column_width();
 ORCUS_DLLPUBLIC row_height_t get_default_row_height();
