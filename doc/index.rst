@@ -14,7 +14,7 @@ added to the mix.
 Contents:
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
 
    overview/index.rst
    cpp/index.rst
