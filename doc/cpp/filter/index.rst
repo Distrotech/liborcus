@@ -94,6 +94,12 @@ Spreadsheet Interface
 .. doxygenclass:: orcus::spreadsheet::iface::import_table
    :members:
 
+.. doxygenclass:: orcus::spreadsheet::iface::export_factory
+   :members:
+
+.. doxygenclass:: orcus::spreadsheet::iface::export_sheet
+   :members:
+
 
 Spreadsheet Type
 ----------------
