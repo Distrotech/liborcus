@@ -79,7 +79,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @WITH_ODS_FILTER_TRUE@am__append_1 = \
-@WITH_ODS_FILTER_TRUE@	orcus_ods.hpp
+@WITH_ODS_FILTER_TRUE@	orcus_ods.hpp \
+@WITH_ODS_FILTER_TRUE@	orcus_import_ods.hpp
 
 @WITH_XLSX_FILTER_TRUE@am__append_2 = \
 @WITH_XLSX_FILTER_TRUE@	orcus_xlsx.hpp \
@@ -95,10 +96,11 @@ subdir = include/orcus
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(am__liborcus_HEADERS_DIST)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/boost.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_cxx_compile_stdcxx_11.m4 \
+	$(top_srcdir)/m4/boost.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -133,15 +135,20 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 am__liborcus_HEADERS_DIST = base64.hpp cell_buffer.hpp config.hpp \
-	css_parser.hpp csv_parser.hpp csv_parser_base.hpp dom_tree.hpp \
-	env.hpp exception.hpp format_detection.hpp global.hpp \
-	interface.hpp measurement.hpp orcus_csv.hpp orcus_xml.hpp \
+	css_document_tree.hpp css_parser.hpp css_parser_base.hpp \
+	css_selector.hpp css_types.hpp csv_parser.hpp \
+	csv_parser_base.hpp dom_tree.hpp env.hpp exception.hpp \
+	format_detection.hpp global.hpp info.hpp interface.hpp \
+	json_document_tree.hpp json_parser.hpp json_parser_base.hpp \
+	measurement.hpp orcus_csv.hpp orcus_xml.hpp parser_base.hpp \
 	parser_global.hpp pstring.hpp sax_parser.hpp \
 	sax_parser_base.hpp sax_ns_parser.hpp sax_token_parser.hpp \
 	stream.hpp string_pool.hpp tokens.hpp types.hpp \
-	xml_namespace.hpp xml_structure_tree.hpp zip_archive.hpp \
-	zip_archive_stream.hpp orcus_ods.hpp orcus_xlsx.hpp \
-	orcus_import_xlsx.hpp orcus_xls_xml.hpp orcus_gnumeric.hpp
+	xml_namespace.hpp xml_structure_tree.hpp \
+	yaml_document_tree.hpp yaml_parser.hpp yaml_parser_base.hpp \
+	zip_archive.hpp zip_archive_stream.hpp orcus_ods.hpp \
+	orcus_import_ods.hpp orcus_xlsx.hpp orcus_import_xlsx.hpp \
+	orcus_xls_xml.hpp orcus_gnumeric.hpp
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -272,6 +279,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GREP = @GREP@
+HAVE_CXX11 = @HAVE_CXX11@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -298,6 +306,9 @@ NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORCUS_API_VERSION = @ORCUS_API_VERSION@
+ORCUS_MAJOR_VERSION = @ORCUS_MAJOR_VERSION@
+ORCUS_MICRO_VERSION = @ORCUS_MICRO_VERSION@
+ORCUS_MINOR_VERSION = @ORCUS_MINOR_VERSION@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -312,6 +323,13 @@ PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POW_LIB = @POW_LIB@
+PYTHON = @PYTHON@
+PYTHON_CFLAGS = @PYTHON_CFLAGS@
+PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
+PYTHON_LIBS = @PYTHON_LIBS@
+PYTHON_PLATFORM = @PYTHON_PLATFORM@
+PYTHON_PREFIX = @PYTHON_PREFIX@
+PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -362,9 +380,13 @@ mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgpyexecdir = @pkgpyexecdir@
+pkgpythondir = @pkgpythondir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+pyexecdir = @pyexecdir@
+pythondir = @pythondir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
@@ -376,15 +398,19 @@ top_srcdir = @top_srcdir@
 SUBDIRS = mso spreadsheet
 liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus
 liborcus_HEADERS = base64.hpp cell_buffer.hpp config.hpp \
-	css_parser.hpp csv_parser.hpp csv_parser_base.hpp dom_tree.hpp \
-	env.hpp exception.hpp format_detection.hpp global.hpp \
-	interface.hpp measurement.hpp orcus_csv.hpp orcus_xml.hpp \
+	css_document_tree.hpp css_parser.hpp css_parser_base.hpp \
+	css_selector.hpp css_types.hpp csv_parser.hpp \
+	csv_parser_base.hpp dom_tree.hpp env.hpp exception.hpp \
+	format_detection.hpp global.hpp info.hpp interface.hpp \
+	json_document_tree.hpp json_parser.hpp json_parser_base.hpp \
+	measurement.hpp orcus_csv.hpp orcus_xml.hpp parser_base.hpp \
 	parser_global.hpp pstring.hpp sax_parser.hpp \
 	sax_parser_base.hpp sax_ns_parser.hpp sax_token_parser.hpp \
 	stream.hpp string_pool.hpp tokens.hpp types.hpp \
-	xml_namespace.hpp xml_structure_tree.hpp zip_archive.hpp \
-	zip_archive_stream.hpp $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4)
+	xml_namespace.hpp xml_structure_tree.hpp \
+	yaml_document_tree.hpp yaml_parser.hpp yaml_parser_base.hpp \
+	zip_archive.hpp zip_archive_stream.hpp $(am__append_1) \
+	$(am__append_2) $(am__append_3) $(am__append_4)
 all: all-recursive
 
 .SUFFIXES:

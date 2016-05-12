@@ -79,17 +79,22 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 EXTRA_PROGRAMS = parser-test-string-pool$(EXEEXT) \
-	parser-test-xml-namespace$(EXEEXT) parser-test-base64$(EXEEXT)
+	parser-test-xml-namespace$(EXEEXT) parser-test-base64$(EXEEXT) \
+	parser-test-sax-token-parser$(EXEEXT) \
+	parser-test-stream$(EXEEXT) parser-test-zip-archive$(EXEEXT)
 TESTS = parser-test-string-pool$(EXEEXT) \
-	parser-test-xml-namespace$(EXEEXT) parser-test-base64$(EXEEXT)
+	parser-test-xml-namespace$(EXEEXT) parser-test-base64$(EXEEXT) \
+	parser-test-sax-token-parser$(EXEEXT) \
+	parser-test-stream$(EXEEXT) parser-test-zip-archive$(EXEEXT)
 subdir = src/parser
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp $(top_srcdir)/test-driver
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/boost.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_cxx_compile_stdcxx_11.m4 \
+	$(top_srcdir)/m4/boost.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -129,9 +134,11 @@ am__DEPENDENCIES_1 =
 liborcus_parser_@ORCUS_API_VERSION@_la_DEPENDENCIES =  \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_liborcus_parser_@ORCUS_API_VERSION@_la_OBJECTS = base64.lo \
-	cell_buffer.lo csv_parser_base.lo exception.lo \
-	parser_global.lo pstring.lo sax_parser_base.lo stream.lo \
-	string_pool.lo types.lo xml_namespace.lo zip_archive.lo \
+	cell_buffer.lo css_parser_base.lo css_types.lo \
+	csv_parser_base.lo exception.lo json_parser_base.lo \
+	parser_base.lo parser_global.lo pstring.lo sax_parser_base.lo \
+	sax_token_parser.lo stream.lo string_pool.lo tokens.lo \
+	types.lo xml_namespace.lo yaml_parser_base.lo zip_archive.lo \
 	zip_archive_stream.lo
 liborcus_parser_@ORCUS_API_VERSION@_la_OBJECTS =  \
 	$(am_liborcus_parser_@ORCUS_API_VERSION@_la_OBJECTS)
@@ -147,7 +154,19 @@ liborcus_parser_@ORCUS_API_VERSION@_la_LINK = $(LIBTOOL) $(AM_V_lt) \
 am_parser_test_base64_OBJECTS = parser_test_base64-base64.$(OBJEXT) \
 	parser_test_base64-base64_test.$(OBJEXT)
 parser_test_base64_OBJECTS = $(am_parser_test_base64_OBJECTS)
-parser_test_base64_LDADD = $(LDADD)
+parser_test_base64_DEPENDENCIES =  \
+	liborcus-parser-@ORCUS_API_VERSION@.la
+am_parser_test_sax_token_parser_OBJECTS =  \
+	parser_test_sax_token_parser-sax_token_parser_test.$(OBJEXT)
+parser_test_sax_token_parser_OBJECTS =  \
+	$(am_parser_test_sax_token_parser_OBJECTS)
+parser_test_sax_token_parser_DEPENDENCIES =  \
+	liborcus-parser-@ORCUS_API_VERSION@.la
+am_parser_test_stream_OBJECTS =  \
+	parser_test_stream-stream_test.$(OBJEXT)
+parser_test_stream_OBJECTS = $(am_parser_test_stream_OBJECTS)
+parser_test_stream_DEPENDENCIES =  \
+	liborcus-parser-@ORCUS_API_VERSION@.la
 am_parser_test_string_pool_OBJECTS =  \
 	parser_test_string_pool-string_pool.$(OBJEXT) \
 	parser_test_string_pool-string_pool_test.$(OBJEXT)
@@ -161,6 +180,12 @@ am_parser_test_xml_namespace_OBJECTS =  \
 parser_test_xml_namespace_OBJECTS =  \
 	$(am_parser_test_xml_namespace_OBJECTS)
 parser_test_xml_namespace_DEPENDENCIES =  \
+	liborcus-parser-@ORCUS_API_VERSION@.la
+am_parser_test_zip_archive_OBJECTS =  \
+	parser_test_zip_archive-zip_archive_test.$(OBJEXT)
+parser_test_zip_archive_OBJECTS =  \
+	$(am_parser_test_zip_archive_OBJECTS)
+parser_test_zip_archive_DEPENDENCIES =  \
 	liborcus-parser-@ORCUS_API_VERSION@.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -216,12 +241,18 @@ am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES) \
 	$(parser_test_base64_SOURCES) \
+	$(parser_test_sax_token_parser_SOURCES) \
+	$(parser_test_stream_SOURCES) \
 	$(parser_test_string_pool_SOURCES) \
-	$(parser_test_xml_namespace_SOURCES)
+	$(parser_test_xml_namespace_SOURCES) \
+	$(parser_test_zip_archive_SOURCES)
 DIST_SOURCES = $(liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES) \
 	$(parser_test_base64_SOURCES) \
+	$(parser_test_sax_token_parser_SOURCES) \
+	$(parser_test_stream_SOURCES) \
 	$(parser_test_string_pool_SOURCES) \
-	$(parser_test_xml_namespace_SOURCES)
+	$(parser_test_xml_namespace_SOURCES) \
+	$(parser_test_zip_archive_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -471,6 +502,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GREP = @GREP@
+HAVE_CXX11 = @HAVE_CXX11@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -497,6 +529,9 @@ NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORCUS_API_VERSION = @ORCUS_API_VERSION@
+ORCUS_MAJOR_VERSION = @ORCUS_MAJOR_VERSION@
+ORCUS_MICRO_VERSION = @ORCUS_MICRO_VERSION@
+ORCUS_MINOR_VERSION = @ORCUS_MINOR_VERSION@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -511,6 +546,13 @@ PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POW_LIB = @POW_LIB@
+PYTHON = @PYTHON@
+PYTHON_CFLAGS = @PYTHON_CFLAGS@
+PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
+PYTHON_LIBS = @PYTHON_LIBS@
+PYTHON_PLATFORM = @PYTHON_PLATFORM@
+PYTHON_PREFIX = @PYTHON_PREFIX@
+PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -561,9 +603,13 @@ mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgpyexecdir = @pkgpyexecdir@
+pkgpythondir = @pkgpythondir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+pyexecdir = @pyexecdir@
+pythondir = @pythondir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
@@ -572,29 +618,35 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-INCLUDES = -I$(top_srcdir)/include
-COMMON_CPPFLAGS = $(BOOST_SYSTEM_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/include $(BOOST_CPPFLAGS) -D__ORCUS_PSR_BUILDING_DLL
 lib_LTLIBRARIES = liborcus-parser-@ORCUS_API_VERSION@.la
 liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	win_stdint.h \
 	base64.cpp \
 	cell_buffer.cpp \
+	css_parser_base.cpp \
+	css_types.cpp \
 	csv_parser_base.cpp \
 	exception.cpp \
+	json_parser_base.cpp \
+	parser_base.cpp \
 	parser_global.cpp \
 	pstring.cpp \
 	sax_parser_base.cpp \
+	sax_token_parser.cpp \
 	stream.cpp \
 	string_pool.cpp \
+	tokens.cpp \
 	types.cpp \
 	xml_namespace.cpp \
+	yaml_parser_base.cpp \
 	zip_archive.cpp \
 	zip_archive_stream.cpp
 
-liborcus_parser_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
+liborcus_parser_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined $(BOOST_SYSTEM_LDFLAGS)
 liborcus_parser_@ORCUS_API_VERSION@_la_LIBADD = \
-						$(BOOST_SYSTEM_LIBS) \
-						$(ZLIB_LIBS)
+	$(BOOST_SYSTEM_LIBS) \
+	$(ZLIB_LIBS)
 
 
 # parser-test-string-pool
@@ -603,7 +655,7 @@ parser_test_string_pool_SOURCES = \
 	string_pool_test.cpp
 
 parser_test_string_pool_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
-parser_test_string_pool_CPPFLAGS = $(COMMON_CPPFLAGS)
+parser_test_string_pool_CPPFLAGS = $(AM_CPPFLAGS)
 
 # parser-test-xml-namespace
 parser_test_xml_namespace_SOURCES = \
@@ -611,14 +663,36 @@ parser_test_xml_namespace_SOURCES = \
 	xml_namespace_test.cpp
 
 parser_test_xml_namespace_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
-parser_test_xml_namespace_CPPFLAGS = $(COMMON_CPPFLAGS)
+parser_test_xml_namespace_CPPFLAGS = $(AM_CPPFLAGS)
 
 # parser-test-base64
 parser_test_base64_SOURCES = \
 	base64.cpp \
 	base64_test.cpp
 
-parser_test_base64_CPPFLAGS = $(COMMON_CPPFLAGS)
+parser_test_base64_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
+parser_test_base64_CPPFLAGS = $(AM_CPPFLAGS)
+
+# parser-test-sax-token-parser
+parser_test_sax_token_parser_SOURCES = \
+	sax_token_parser_test.cpp
+
+parser_test_sax_token_parser_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
+parser_test_sax_token_parser_CPPFLAGS = $(AM_CPPFLAGS)
+
+# parser-test-stream
+parser_test_stream_SOURCES = \
+	stream_test.cpp
+
+parser_test_stream_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
+parser_test_stream_CPPFLAGS = $(AM_CPPFLAGS)
+
+# parser-test-zip-archive
+parser_test_zip_archive_SOURCES = \
+	zip_archive_test.cpp
+
+parser_test_zip_archive_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
+parser_test_zip_archive_CPPFLAGS = $(AM_CPPFLAGS)
 all: all-am
 
 .SUFFIXES:
@@ -696,6 +770,14 @@ parser-test-base64$(EXEEXT): $(parser_test_base64_OBJECTS) $(parser_test_base64_
 	@rm -f parser-test-base64$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(parser_test_base64_OBJECTS) $(parser_test_base64_LDADD) $(LIBS)
 
+parser-test-sax-token-parser$(EXEEXT): $(parser_test_sax_token_parser_OBJECTS) $(parser_test_sax_token_parser_DEPENDENCIES) $(EXTRA_parser_test_sax_token_parser_DEPENDENCIES) 
+	@rm -f parser-test-sax-token-parser$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(parser_test_sax_token_parser_OBJECTS) $(parser_test_sax_token_parser_LDADD) $(LIBS)
+
+parser-test-stream$(EXEEXT): $(parser_test_stream_OBJECTS) $(parser_test_stream_DEPENDENCIES) $(EXTRA_parser_test_stream_DEPENDENCIES) 
+	@rm -f parser-test-stream$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(parser_test_stream_OBJECTS) $(parser_test_stream_LDADD) $(LIBS)
+
 parser-test-string-pool$(EXEEXT): $(parser_test_string_pool_OBJECTS) $(parser_test_string_pool_DEPENDENCIES) $(EXTRA_parser_test_string_pool_DEPENDENCIES) 
 	@rm -f parser-test-string-pool$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(parser_test_string_pool_OBJECTS) $(parser_test_string_pool_LDADD) $(LIBS)
@@ -703,6 +785,10 @@ parser-test-string-pool$(EXEEXT): $(parser_test_string_pool_OBJECTS) $(parser_te
 parser-test-xml-namespace$(EXEEXT): $(parser_test_xml_namespace_OBJECTS) $(parser_test_xml_namespace_DEPENDENCIES) $(EXTRA_parser_test_xml_namespace_DEPENDENCIES) 
 	@rm -f parser-test-xml-namespace$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(parser_test_xml_namespace_OBJECTS) $(parser_test_xml_namespace_LDADD) $(LIBS)
+
+parser-test-zip-archive$(EXEEXT): $(parser_test_zip_archive_OBJECTS) $(parser_test_zip_archive_DEPENDENCIES) $(EXTRA_parser_test_zip_archive_DEPENDENCIES) 
+	@rm -f parser-test-zip-archive$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(parser_test_zip_archive_OBJECTS) $(parser_test_zip_archive_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -712,21 +798,31 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cell_buffer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/css_parser_base.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/css_types.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csv_parser_base.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exception.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/json_parser_base.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_base.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_global.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_test_base64-base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_test_base64-base64_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_test_sax_token_parser-sax_token_parser_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_test_stream-stream_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_test_string_pool-string_pool.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_test_string_pool-string_pool_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_test_xml_namespace-xml_namespace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_test_xml_namespace-xml_namespace_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_test_zip_archive-zip_archive_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pstring.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sax_parser_base.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sax_token_parser.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/string_pool.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tokens.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xml_namespace.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/yaml_parser_base.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_archive.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_archive_stream.Plo@am__quote@
 
@@ -778,6 +874,34 @@ parser_test_base64-base64_test.obj: base64_test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='base64_test.cpp' object='parser_test_base64-base64_test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_base64_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o parser_test_base64-base64_test.obj `if test -f 'base64_test.cpp'; then $(CYGPATH_W) 'base64_test.cpp'; else $(CYGPATH_W) '$(srcdir)/base64_test.cpp'; fi`
+
+parser_test_sax_token_parser-sax_token_parser_test.o: sax_token_parser_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_sax_token_parser_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT parser_test_sax_token_parser-sax_token_parser_test.o -MD -MP -MF $(DEPDIR)/parser_test_sax_token_parser-sax_token_parser_test.Tpo -c -o parser_test_sax_token_parser-sax_token_parser_test.o `test -f 'sax_token_parser_test.cpp' || echo '$(srcdir)/'`sax_token_parser_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/parser_test_sax_token_parser-sax_token_parser_test.Tpo $(DEPDIR)/parser_test_sax_token_parser-sax_token_parser_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sax_token_parser_test.cpp' object='parser_test_sax_token_parser-sax_token_parser_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_sax_token_parser_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o parser_test_sax_token_parser-sax_token_parser_test.o `test -f 'sax_token_parser_test.cpp' || echo '$(srcdir)/'`sax_token_parser_test.cpp
+
+parser_test_sax_token_parser-sax_token_parser_test.obj: sax_token_parser_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_sax_token_parser_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT parser_test_sax_token_parser-sax_token_parser_test.obj -MD -MP -MF $(DEPDIR)/parser_test_sax_token_parser-sax_token_parser_test.Tpo -c -o parser_test_sax_token_parser-sax_token_parser_test.obj `if test -f 'sax_token_parser_test.cpp'; then $(CYGPATH_W) 'sax_token_parser_test.cpp'; else $(CYGPATH_W) '$(srcdir)/sax_token_parser_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/parser_test_sax_token_parser-sax_token_parser_test.Tpo $(DEPDIR)/parser_test_sax_token_parser-sax_token_parser_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sax_token_parser_test.cpp' object='parser_test_sax_token_parser-sax_token_parser_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_sax_token_parser_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o parser_test_sax_token_parser-sax_token_parser_test.obj `if test -f 'sax_token_parser_test.cpp'; then $(CYGPATH_W) 'sax_token_parser_test.cpp'; else $(CYGPATH_W) '$(srcdir)/sax_token_parser_test.cpp'; fi`
+
+parser_test_stream-stream_test.o: stream_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_stream_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT parser_test_stream-stream_test.o -MD -MP -MF $(DEPDIR)/parser_test_stream-stream_test.Tpo -c -o parser_test_stream-stream_test.o `test -f 'stream_test.cpp' || echo '$(srcdir)/'`stream_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/parser_test_stream-stream_test.Tpo $(DEPDIR)/parser_test_stream-stream_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='stream_test.cpp' object='parser_test_stream-stream_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_stream_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o parser_test_stream-stream_test.o `test -f 'stream_test.cpp' || echo '$(srcdir)/'`stream_test.cpp
+
+parser_test_stream-stream_test.obj: stream_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_stream_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT parser_test_stream-stream_test.obj -MD -MP -MF $(DEPDIR)/parser_test_stream-stream_test.Tpo -c -o parser_test_stream-stream_test.obj `if test -f 'stream_test.cpp'; then $(CYGPATH_W) 'stream_test.cpp'; else $(CYGPATH_W) '$(srcdir)/stream_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/parser_test_stream-stream_test.Tpo $(DEPDIR)/parser_test_stream-stream_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='stream_test.cpp' object='parser_test_stream-stream_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_stream_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o parser_test_stream-stream_test.obj `if test -f 'stream_test.cpp'; then $(CYGPATH_W) 'stream_test.cpp'; else $(CYGPATH_W) '$(srcdir)/stream_test.cpp'; fi`
 
 parser_test_string_pool-string_pool.o: string_pool.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_string_pool_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT parser_test_string_pool-string_pool.o -MD -MP -MF $(DEPDIR)/parser_test_string_pool-string_pool.Tpo -c -o parser_test_string_pool-string_pool.o `test -f 'string_pool.cpp' || echo '$(srcdir)/'`string_pool.cpp
@@ -834,6 +958,20 @@ parser_test_xml_namespace-xml_namespace_test.obj: xml_namespace_test.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='xml_namespace_test.cpp' object='parser_test_xml_namespace-xml_namespace_test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_xml_namespace_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o parser_test_xml_namespace-xml_namespace_test.obj `if test -f 'xml_namespace_test.cpp'; then $(CYGPATH_W) 'xml_namespace_test.cpp'; else $(CYGPATH_W) '$(srcdir)/xml_namespace_test.cpp'; fi`
+
+parser_test_zip_archive-zip_archive_test.o: zip_archive_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_zip_archive_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT parser_test_zip_archive-zip_archive_test.o -MD -MP -MF $(DEPDIR)/parser_test_zip_archive-zip_archive_test.Tpo -c -o parser_test_zip_archive-zip_archive_test.o `test -f 'zip_archive_test.cpp' || echo '$(srcdir)/'`zip_archive_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/parser_test_zip_archive-zip_archive_test.Tpo $(DEPDIR)/parser_test_zip_archive-zip_archive_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='zip_archive_test.cpp' object='parser_test_zip_archive-zip_archive_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_zip_archive_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o parser_test_zip_archive-zip_archive_test.o `test -f 'zip_archive_test.cpp' || echo '$(srcdir)/'`zip_archive_test.cpp
+
+parser_test_zip_archive-zip_archive_test.obj: zip_archive_test.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_zip_archive_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT parser_test_zip_archive-zip_archive_test.obj -MD -MP -MF $(DEPDIR)/parser_test_zip_archive-zip_archive_test.Tpo -c -o parser_test_zip_archive-zip_archive_test.obj `if test -f 'zip_archive_test.cpp'; then $(CYGPATH_W) 'zip_archive_test.cpp'; else $(CYGPATH_W) '$(srcdir)/zip_archive_test.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/parser_test_zip_archive-zip_archive_test.Tpo $(DEPDIR)/parser_test_zip_archive-zip_archive_test.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='zip_archive_test.cpp' object='parser_test_zip_archive-zip_archive_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(parser_test_zip_archive_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o parser_test_zip_archive-zip_archive_test.obj `if test -f 'zip_archive_test.cpp'; then $(CYGPATH_W) 'zip_archive_test.cpp'; else $(CYGPATH_W) '$(srcdir)/zip_archive_test.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1051,6 +1189,27 @@ parser-test-xml-namespace.log: parser-test-xml-namespace$(EXEEXT)
 parser-test-base64.log: parser-test-base64$(EXEEXT)
 	@p='parser-test-base64$(EXEEXT)'; \
 	b='parser-test-base64'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+parser-test-sax-token-parser.log: parser-test-sax-token-parser$(EXEEXT)
+	@p='parser-test-sax-token-parser$(EXEEXT)'; \
+	b='parser-test-sax-token-parser'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+parser-test-stream.log: parser-test-stream$(EXEEXT)
+	@p='parser-test-stream$(EXEEXT)'; \
+	b='parser-test-stream'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+parser-test-zip-archive.log: parser-test-zip-archive$(EXEEXT)
+	@p='parser-test-zip-archive$(EXEEXT)'; \
+	b='parser-test-zip-archive'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

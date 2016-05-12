@@ -83,10 +83,11 @@ subdir = src/spreadsheet
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/boost.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_cxx_compile_stdcxx_11.m4 \
+	$(top_srcdir)/m4/boost.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -150,9 +151,7 @@ am__v_lt_0 = --silent
 am__v_lt_1 = 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_LINK = $(LIBTOOL) \
 	$(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CXXLD) \
-	$(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) \
-	$(CXXFLAGS) \
+	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @BUILD_SPREADSHEET_MODEL_TRUE@am_liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_rpath =  \
@@ -266,6 +265,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GREP = @GREP@
+HAVE_CXX11 = @HAVE_CXX11@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -292,6 +292,9 @@ NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORCUS_API_VERSION = @ORCUS_API_VERSION@
+ORCUS_MAJOR_VERSION = @ORCUS_MAJOR_VERSION@
+ORCUS_MICRO_VERSION = @ORCUS_MICRO_VERSION@
+ORCUS_MINOR_VERSION = @ORCUS_MINOR_VERSION@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -306,6 +309,13 @@ PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POW_LIB = @POW_LIB@
+PYTHON = @PYTHON@
+PYTHON_CFLAGS = @PYTHON_CFLAGS@
+PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
+PYTHON_LIBS = @PYTHON_LIBS@
+PYTHON_PLATFORM = @PYTHON_PLATFORM@
+PYTHON_PREFIX = @PYTHON_PREFIX@
+PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -356,9 +366,13 @@ mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgpyexecdir = @pkgpyexecdir@
+pkgpythondir = @pkgpythondir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+pyexecdir = @pyexecdir@
+pythondir = @pythondir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
@@ -367,8 +381,11 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@BUILD_SPREADSHEET_MODEL_TRUE@INCLUDES = -I$(top_srcdir)/include
-@BUILD_SPREADSHEET_MODEL_TRUE@COMMON_CPPFLAGS = $(am__append_1)
+@BUILD_SPREADSHEET_MODEL_TRUE@AM_CPPFLAGS = -I$(top_srcdir)/include \
+@BUILD_SPREADSHEET_MODEL_TRUE@	-D__ORCUS_SPM_BUILDING_DLL \
+@BUILD_SPREADSHEET_MODEL_TRUE@	$(BOOST_CPPFLAGS) \
+@BUILD_SPREADSHEET_MODEL_TRUE@	$(am__append_1)
+@BUILD_SPREADSHEET_MODEL_TRUE@COMMON_CPPFLAGS = $(AM_CPPFLAGS)
 @BUILD_SPREADSHEET_MODEL_TRUE@lib_LTLIBRARIES = liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 @BUILD_SPREADSHEET_MODEL_TRUE@liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_SOURCES = \
 @BUILD_SPREADSHEET_MODEL_TRUE@	auto_filter.cpp \
@@ -386,8 +403,7 @@ top_srcdir = @top_srcdir@
 @BUILD_SPREADSHEET_MODEL_TRUE@	table.cpp \
 @BUILD_SPREADSHEET_MODEL_TRUE@	global_settings.cpp
 
-@BUILD_SPREADSHEET_MODEL_TRUE@liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS = $(COMMON_CPPFLAGS)
-@BUILD_SPREADSHEET_MODEL_TRUE@liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS = $(LIBIXION_CFLAGS) $(MDDS_CFLAGS)
+@BUILD_SPREADSHEET_MODEL_TRUE@liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBIXION_CFLAGS)
 @BUILD_SPREADSHEET_MODEL_TRUE@liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_LDFLAGS = -no-undefined
 @BUILD_SPREADSHEET_MODEL_TRUE@liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_LIBADD = $(LIBIXION_LIBS) \
 @BUILD_SPREADSHEET_MODEL_TRUE@	../parser/liborcus-parser-@ORCUS_API_VERSION@.la \
@@ -506,81 +522,81 @@ distclean-compile:
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.lo: auto_filter.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.lo `test -f 'auto_filter.cpp' || echo '$(srcdir)/'`auto_filter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.lo `test -f 'auto_filter.cpp' || echo '$(srcdir)/'`auto_filter.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.Tpo $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='auto_filter.cpp' object='liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.lo `test -f 'auto_filter.cpp' || echo '$(srcdir)/'`auto_filter.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-auto_filter.lo `test -f 'auto_filter.cpp' || echo '$(srcdir)/'`auto_filter.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.lo: data_table.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.lo `test -f 'data_table.cpp' || echo '$(srcdir)/'`data_table.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.lo `test -f 'data_table.cpp' || echo '$(srcdir)/'`data_table.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.Tpo $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='data_table.cpp' object='liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.lo `test -f 'data_table.cpp' || echo '$(srcdir)/'`data_table.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-data_table.lo `test -f 'data_table.cpp' || echo '$(srcdir)/'`data_table.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.lo: document.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.lo `test -f 'document.cpp' || echo '$(srcdir)/'`document.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.lo `test -f 'document.cpp' || echo '$(srcdir)/'`document.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.Tpo $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='document.cpp' object='liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.lo `test -f 'document.cpp' || echo '$(srcdir)/'`document.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-document.lo `test -f 'document.cpp' || echo '$(srcdir)/'`document.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.lo: factory.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.lo `test -f 'factory.cpp' || echo '$(srcdir)/'`factory.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.lo `test -f 'factory.cpp' || echo '$(srcdir)/'`factory.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.Tpo $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='factory.cpp' object='liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.lo `test -f 'factory.cpp' || echo '$(srcdir)/'`factory.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-factory.lo `test -f 'factory.cpp' || echo '$(srcdir)/'`factory.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.lo: formula_global.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.lo `test -f 'formula_global.cpp' || echo '$(srcdir)/'`formula_global.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.lo `test -f 'formula_global.cpp' || echo '$(srcdir)/'`formula_global.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.Tpo $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='formula_global.cpp' object='liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.lo `test -f 'formula_global.cpp' || echo '$(srcdir)/'`formula_global.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-formula_global.lo `test -f 'formula_global.cpp' || echo '$(srcdir)/'`formula_global.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.lo: shared_strings.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.lo `test -f 'shared_strings.cpp' || echo '$(srcdir)/'`shared_strings.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.lo `test -f 'shared_strings.cpp' || echo '$(srcdir)/'`shared_strings.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.Tpo $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='shared_strings.cpp' object='liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.lo `test -f 'shared_strings.cpp' || echo '$(srcdir)/'`shared_strings.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-shared_strings.lo `test -f 'shared_strings.cpp' || echo '$(srcdir)/'`shared_strings.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.lo: sheet.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.lo `test -f 'sheet.cpp' || echo '$(srcdir)/'`sheet.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.lo `test -f 'sheet.cpp' || echo '$(srcdir)/'`sheet.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.Tpo $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sheet.cpp' object='liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.lo `test -f 'sheet.cpp' || echo '$(srcdir)/'`sheet.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet.lo `test -f 'sheet.cpp' || echo '$(srcdir)/'`sheet.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.lo: sheet_properties.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.lo `test -f 'sheet_properties.cpp' || echo '$(srcdir)/'`sheet_properties.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.lo `test -f 'sheet_properties.cpp' || echo '$(srcdir)/'`sheet_properties.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.Tpo $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sheet_properties.cpp' object='liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.lo `test -f 'sheet_properties.cpp' || echo '$(srcdir)/'`sheet_properties.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-sheet_properties.lo `test -f 'sheet_properties.cpp' || echo '$(srcdir)/'`sheet_properties.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.lo: styles.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.lo `test -f 'styles.cpp' || echo '$(srcdir)/'`styles.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.lo `test -f 'styles.cpp' || echo '$(srcdir)/'`styles.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.Tpo $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='styles.cpp' object='liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.lo `test -f 'styles.cpp' || echo '$(srcdir)/'`styles.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-styles.lo `test -f 'styles.cpp' || echo '$(srcdir)/'`styles.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.lo: table.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.lo `test -f 'table.cpp' || echo '$(srcdir)/'`table.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.lo `test -f 'table.cpp' || echo '$(srcdir)/'`table.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.Tpo $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='table.cpp' object='liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.lo `test -f 'table.cpp' || echo '$(srcdir)/'`table.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-table.lo `test -f 'table.cpp' || echo '$(srcdir)/'`table.cpp
 
 liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.lo: global_settings.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.lo `test -f 'global_settings.cpp' || echo '$(srcdir)/'`global_settings.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.lo -MD -MP -MF $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.Tpo -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.lo `test -f 'global_settings.cpp' || echo '$(srcdir)/'`global_settings.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.Tpo $(DEPDIR)/liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='global_settings.cpp' object='liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.lo `test -f 'global_settings.cpp' || echo '$(srcdir)/'`global_settings.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la-global_settings.lo `test -f 'global_settings.cpp' || echo '$(srcdir)/'`global_settings.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

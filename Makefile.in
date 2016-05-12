@@ -84,13 +84,14 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in $(srcdir)/liborcus.pc.in \
 	$(srcdir)/liborcus-spreadsheet-model.pc.in \
-	$(srcdir)/VERSION.in AUTHORS COPYING NEWS README compile \
-	config.guess config.sub depcomp install-sh missing ltmain.sh
+	$(srcdir)/VERSION.in AUTHORS compile config.guess config.sub \
+	depcomp install-sh missing ltmain.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/boost.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_cxx_compile_stdcxx_11.m4 \
+	$(top_srcdir)/m4/boost.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -274,6 +275,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GREP = @GREP@
+HAVE_CXX11 = @HAVE_CXX11@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -300,6 +302,9 @@ NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORCUS_API_VERSION = @ORCUS_API_VERSION@
+ORCUS_MAJOR_VERSION = @ORCUS_MAJOR_VERSION@
+ORCUS_MICRO_VERSION = @ORCUS_MICRO_VERSION@
+ORCUS_MINOR_VERSION = @ORCUS_MINOR_VERSION@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -314,6 +319,13 @@ PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POW_LIB = @POW_LIB@
+PYTHON = @PYTHON@
+PYTHON_CFLAGS = @PYTHON_CFLAGS@
+PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
+PYTHON_LIBS = @PYTHON_LIBS@
+PYTHON_PLATFORM = @PYTHON_PLATFORM@
+PYTHON_PREFIX = @PYTHON_PREFIX@
+PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -364,9 +376,13 @@ mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgpyexecdir = @pkgpyexecdir@
+pkgpythondir = @pkgpythondir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+pyexecdir = @pyexecdir@
+pythondir = @pythondir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
@@ -375,32 +391,43 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = src include
+SUBDIRS = src include parser_handlers
 ACLOCAL_AMFLAGS = -I m4
 pcfiles = liborcus-@ORCUS_API_VERSION@.pc $(am__append_1)
 pkgconfig_DATA = $(pcfiles)
 pkgconfigdir = $(libdir)/pkgconfig
 doc_data = \
-    doc/rfc4180-csv.txt \
-    doc/class_diagram.odg \
-    doc/column-width-and-row-height.txt \
-    doc/zlib-in-memory-gzip.txt
+    doc/conf.py \
+    doc/css.rst \
+    doc/csv.rst \
+    doc/doxygen.conf \
+    doc/gnumeric.rst \
+    doc/index.rst \
+    doc/json.rst \
+    doc/ods.rst \
+    doc/xls-xml.rst \
+    doc/xlsx.rst \
+    doc/xml.rst \
+    doc/yaml.rst
 
 bin_data = \
-    bin/orcus-xls-xml.sh \
-    bin/orcus-detect.sh \
-    bin/orcus-test-csv.sh \
-    bin/orcus-xml.sh \
-    bin/orcus-xml-dump.sh \
-    bin/orcus-csv.sh \
-    bin/orcus-test-xml-mapped.sh \
-    bin/orcus-mso-encryption.sh \
-    bin/orcus-xlsx.sh \
-    bin/orcus-ods.sh \
-    bin/orcus-gnumeric.sh \
-    bin/orcus-zip-dump.sh \
+    bin/env-osx.sh \
     bin/orcus-common-func.sh \
-    bin/orcus-test-xml.sh
+    bin/orcus-css-dump.sh \
+    bin/orcus-csv.sh \
+    bin/orcus-detect.sh \
+    bin/orcus-gnumeric.sh \
+    bin/orcus-json.sh \
+    bin/orcus-mso-encryption.sh \
+    bin/orcus-ods.sh \
+    bin/orcus-test.sh \
+    bin/orcus-xls-xml.sh \
+    bin/orcus-xlsx.sh \
+    bin/orcus-xml-dump.sh \
+    bin/orcus-xml.sh \
+    bin/orcus-yaml.sh \
+    bin/orcus-zip-dump.sh \
+    bin/run-python.sh
 
 misc_data = \
     misc/OpenDocument-v1.2-os-schema.rng \
@@ -423,106 +450,155 @@ slickedit_data = \
     slickedit/orcus.vpj
 
 test_data = \
-    test/xml-mapped/attribute-single-element/check.txt \
-    test/xml-mapped/attribute-single-element/map.xml \
-    test/xml-mapped/attribute-single-element/input.xml \
-    test/xml-mapped/attribute-range-self-close/check.txt \
-    test/xml-mapped/attribute-range-self-close/map.xml \
-    test/xml-mapped/attribute-range-self-close/input.xml \
-    test/xml-mapped/content-namespace/check.txt \
-    test/xml-mapped/content-namespace/map.xml \
-    test/xml-mapped/content-namespace/input.xml \
-    test/xml-mapped/content-namespace-2/check.txt \
-    test/xml-mapped/content-namespace-2/map.xml \
-    test/xml-mapped/content-namespace-2/input.xml \
-    test/xml-mapped/attribute-basic/check.txt \
-    test/xml-mapped/attribute-basic/map.xml \
-    test/xml-mapped/attribute-basic/input.xml \
-    test/xml-mapped/attribute-single-element-2/check.txt \
-    test/xml-mapped/attribute-single-element-2/map.xml \
-    test/xml-mapped/attribute-single-element-2/input.xml \
-    test/xml-mapped/attribute-namespace/check.txt \
-    test/xml-mapped/attribute-namespace/map.xml \
-    test/xml-mapped/attribute-namespace/input.xml \
-    test/xml-mapped/content-basic/check.txt \
-    test/xml-mapped/content-basic/map.xml \
-    test/xml-mapped/content-basic/input.xml \
-    test/xlsx/table/autofilter.xlsx \
-    test/xlsx/table/table-2.xlsx \
-    test/xlsx/table/table-1.xlsx \
-    test/xlsx/pivot-table/two-pivot-caches.xlsx \
-    test/xlsx/pivot-table/two-tables-one-source.xlsx \
-    test/xlsx/pivot-table/many-fields.xlsx \
-    test/xlsx/formula-simple.xlsx \
-    test/xlsx/date-cell/input.xlsx \
-    test/xlsx/data-table/multi-table.xlsx \
-    test/xlsx/data-table/one-variable.xlsx \
-    test/xlsx/raw-values-1/check.txt \
-    test/xlsx/raw-values-1/input.xlsx \
-    test/xlsx/empty-shared-strings/check.txt \
-    test/xlsx/empty-shared-strings/input.xlsx \
-    test/xlsx/formatted-text/bold-and-italic.xlsx \
-    test/xlsx/formatted-text/colored-text.xlsx \
-    test/xlsx/borders/grid-box.xlsx \
-    test/xlsx/borders/single-cells.xlsx \
-    test/xlsx/background-color/standard.xlsx \
-    test/xlsx/test.xlsx \
-    test/xlsx/revision/cell-change-basic.xlsx \
-    test/xlsx/column-width-row-height/input.xlsx \
-    test/xlsx/formula-shared.xlsx \
-    test/css/test-complex.css \
+    test/css/basic1.css \
+    test/css/basic10.css \
+    test/css/basic11.css \
+    test/css/basic12.css \
+    test/css/basic13.css \
+    test/css/basic14.css \
+    test/css/basic2.css \
+    test/css/basic3.css \
+    test/css/basic4.css \
+    test/css/basic5.css \
+    test/css/basic6.css \
+    test/css/basic7.css \
+    test/css/basic8.css \
+    test/css/basic9.css \
+    test/css/chained1.css \
+    test/css/chained2.css \
+    test/css/complex/callout.css \
+    test/css/complex/excel-html.css \
     test/css/test.css \
-    test/xml/encoded-char/check.txt \
-    test/xml/encoded-char/input.xml \
-    test/xml/default-ns/check.txt \
-    test/xml/default-ns/input.xml \
-    test/xml/parse-only/rss/input.xml \
-    test/xml/encoded-attrs/test1.xml \
-    test/xml/ns-alias-1/check.txt \
-    test/xml/ns-alias-1/input.xml \
-    test/xml/cdata-1/check.txt \
-    test/xml/cdata-1/input.xml \
-    test/xml/custom-decl-1/check.txt \
-    test/xml/custom-decl-1/input.xml \
-    test/xml/bom/check.txt \
-    test/xml/bom/input.xml \
-    test/xml/doctype/html.xml \
-    test/xml/simple/check.txt \
-    test/xml/simple/input.xml \
-    test/gnumeric/test.gnumeric \
-    test/xls-xml/basic/check.txt \
-    test/xls-xml/basic/input.xml \
+    test/csv/double-quotes/check.txt \
+    test/csv/double-quotes/input.csv \
     test/csv/normal-quotes/check.txt \
     test/csv/normal-quotes/input.csv \
     test/csv/quoted-with-delim/check.txt \
     test/csv/quoted-with-delim/input.csv \
     test/csv/simple-numbers/check.txt \
     test/csv/simple-numbers/input.csv \
-    test/csv/double-quotes/check.txt \
-    test/csv/double-quotes/input.csv \
-    test/ods/date-cell/input.ods \
-    test/ods/raw-values-1/check.txt \
-    test/ods/raw-values-1/input.ods \
-    test/ods/japanese.ods \
-    test/ods/formatted-text/bold-and-italic.ods \
+    test/gnumeric/test.gnumeric \
+    test/json/basic1/check.txt \
+    test/json/basic1/input.json \
+    test/json/basic2/check.txt \
+    test/json/basic2/input.json \
+    test/json/basic3/check.txt \
+    test/json/basic3/input.json \
+    test/json/basic4/check.txt \
+    test/json/basic4/input.json \
+    test/json/nested1/check.txt \
+    test/json/nested1/input.json \
+    test/json/nested2/check.txt \
+    test/json/nested2/input.json \
+    test/json/refs1/check.txt \
+    test/json/refs1/input.json \
+    test/json/refs1/ref.json \
+    test/json/swagger/check.txt \
+    test/json/swagger/input.json \
     test/ods/borders/grid-box.ods \
     test/ods/borders/single-cells.ods \
-    test/ods/test.ods \
     test/ods/column-width-row-height/input.ods \
+    test/ods/date-cell/input.ods \
+    test/ods/formatted-text/bold-and-italic.ods \
     test/ods/formula-1/check.txt \
     test/ods/formula-1/input.ods \
+    test/ods/japanese.ods \
+    test/ods/raw-values-1/check.txt \
+    test/ods/raw-values-1/input.ods \
+    test/ods/styles/cell-styles.xml \
+    test/ods/test.ods \
+    test/python/json.py \
+    test/python/module.py \
+    test/xls-xml/basic/check.txt \
+    test/xls-xml/basic/input.xml \
+    test/xlsx/background-color/standard.xlsx \
+    test/xlsx/borders/grid-box.xlsx \
+    test/xlsx/borders/single-cells.xlsx \
+    test/xlsx/column-width-row-height/input.xlsx \
+    test/xlsx/data-table/multi-table.xlsx \
+    test/xlsx/data-table/one-variable.xlsx \
+    test/xlsx/date-cell/input.xlsx \
+    test/xlsx/empty-shared-strings/check.txt \
+    test/xlsx/empty-shared-strings/input.xlsx \
+    test/xlsx/formatted-text/bold-and-italic.xlsx \
+    test/xlsx/formatted-text/colored-text.xlsx \
+    test/xlsx/formula-shared.xlsx \
+    test/xlsx/formula-simple.xlsx \
+    test/xlsx/pivot-table/many-fields.xlsx \
+    test/xlsx/pivot-table/two-pivot-caches.xlsx \
+    test/xlsx/pivot-table/two-tables-one-source.xlsx \
+    test/xlsx/raw-values-1/check.txt \
+    test/xlsx/raw-values-1/input.xlsx \
+    test/xlsx/revision/cell-change-basic.xlsx \
+    test/xlsx/table/autofilter.xlsx \
+    test/xlsx/table/table-1.xlsx \
+    test/xlsx/table/table-2.xlsx \
+    test/xlsx/test.xlsx \
+    test/xml-mapped/attribute-basic/check.txt \
+    test/xml-mapped/attribute-basic/input.xml \
+    test/xml-mapped/attribute-basic/map.xml \
+    test/xml-mapped/attribute-namespace/check.txt \
+    test/xml-mapped/attribute-namespace/input.xml \
+    test/xml-mapped/attribute-namespace/map.xml \
+    test/xml-mapped/attribute-range-self-close/check.txt \
+    test/xml-mapped/attribute-range-self-close/input.xml \
+    test/xml-mapped/attribute-range-self-close/map.xml \
+    test/xml-mapped/attribute-single-element-2/check.txt \
+    test/xml-mapped/attribute-single-element-2/input.xml \
+    test/xml-mapped/attribute-single-element-2/map.xml \
+    test/xml-mapped/attribute-single-element/check.txt \
+    test/xml-mapped/attribute-single-element/input.xml \
+    test/xml-mapped/attribute-single-element/map.xml \
+    test/xml-mapped/content-basic/check.txt \
+    test/xml-mapped/content-basic/input.xml \
+    test/xml-mapped/content-basic/map.xml \
+    test/xml-mapped/content-namespace-2/check.txt \
+    test/xml-mapped/content-namespace-2/input.xml \
+    test/xml-mapped/content-namespace-2/map.xml \
+    test/xml-mapped/content-namespace/check.txt \
+    test/xml-mapped/content-namespace/input.xml \
+    test/xml-mapped/content-namespace/map.xml \
     test/xml-structure/attribute-1/check.txt \
     test/xml-structure/attribute-1/input.xml \
+    test/xml-structure/basic-1/check.txt \
+    test/xml-structure/basic-1/input.xml \
     test/xml-structure/basic-2/check.txt \
     test/xml-structure/basic-2/input.xml \
-    test/xml-structure/nested-repeat-1/check.txt \
-    test/xml-structure/nested-repeat-1/input.xml \
     test/xml-structure/basic-3/check.txt \
     test/xml-structure/basic-3/input.xml \
     test/xml-structure/namespace-default/check.txt \
     test/xml-structure/namespace-default/input.xml \
-    test/xml-structure/basic-1/check.txt \
-    test/xml-structure/basic-1/input.xml
+    test/xml-structure/nested-repeat-1/check.txt \
+    test/xml-structure/nested-repeat-1/input.xml \
+    test/xml/bom/check.txt \
+    test/xml/bom/input.xml \
+    test/xml/cdata-1/check.txt \
+    test/xml/cdata-1/input.xml \
+    test/xml/custom-decl-1/check.txt \
+    test/xml/custom-decl-1/input.xml \
+    test/xml/default-ns/check.txt \
+    test/xml/default-ns/input.xml \
+    test/xml/doctype/html.xml \
+    test/xml/encoded-attrs/test1.xml \
+    test/xml/encoded-char/check.txt \
+    test/xml/encoded-char/input.xml \
+    test/xml/ns-alias-1/check.txt \
+    test/xml/ns-alias-1/input.xml \
+    test/xml/parse-only/rss/input.xml \
+    test/xml/simple/check.txt \
+    test/xml/simple/input.xml \
+    test/yaml/basic1/input.yaml \
+    test/yaml/basic2/input.yaml \
+    test/yaml/basic3/input.yaml \
+    test/yaml/boolean/input.yaml \
+    test/yaml/literal-block-1/input.yaml \
+    test/yaml/literal-block-2/input.yaml \
+    test/yaml/multi-line-1/input.yaml \
+    test/yaml/multi-line-2/input.yaml \
+    test/yaml/null/input.yaml \
+    test/yaml/quoted-string/input.yaml \
+    test/yaml/swagger/input.yaml \
+    test/yaml/url/input.yaml
 
 vsprojects_data = \
     vsprojects/orcus-csv/orcus-csv.vcproj \
@@ -543,6 +619,9 @@ vsprojects_data = \
     vsprojects/orcus-gnumeric/orcus-gnumeric.vcproj
 
 EXTRA_DIST = \
+	CHANGELOG \
+	LICENSE \
+	README.md \
 	liborcus.pc.in \
 	autogen.sh \
 	$(bin_data) \
@@ -1067,6 +1146,16 @@ distclean-local:
 
 dist-hook:
 	git log --date=short --pretty="format:@%cd  %an  <%ae>  [%H]%n%n%s%n%n%e%b" | sed -e "s|^\([^@]\)|\t\1|" -e "s|^@||" >$(distdir)/ChangeLog
+
+build-doc-doxygen:
+	@echo "Building documentation by doxygen..."
+	@cd doc && doxygen doxygen.conf
+
+build-doc-sphinx:
+	@echo "Building documentation by sphinx..."
+	@sphinx-build -b html ./doc/ ./doc/_build
+
+build-doc: build-doc-doxygen build-doc-sphinx
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
