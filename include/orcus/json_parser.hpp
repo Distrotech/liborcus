@@ -28,7 +28,6 @@ public:
     /**
      * Constructor.
      *
-     *
      * @param p pointer to a string stream containing JSON string.
      * @param n size of the stream.
      * @param hdl handler class instance.

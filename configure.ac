@@ -29,7 +29,7 @@ AM_INIT_AUTOMAKE([1.11 foreign dist-bzip2 dist-xz])
 AM_SILENT_RULES([yes])
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11
-CXXFLAGS="$CXXFLAGS -fvisibility=hidden -Wall"
+CXXFLAGS="$CXXFLAGS -fvisibility=hidden -Wall -pthread"
 
 # ===========================
 # Find required base packages

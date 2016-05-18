@@ -11,6 +11,7 @@ liborcus_parser_@ORCUS_API_VERSION@_la_SOURCES = \
 	csv_parser_base.cpp \
 	exception.cpp \
 	json_parser_base.cpp \
+	json_parser_thread.cpp \
 	parser_base.cpp \
 	parser_global.cpp \
 	pstring.cpp \
@@ -37,6 +38,7 @@ EXTRA_PROGRAMS = \
 	parser-test-base64 \
 	parser-test-sax-token-parser \
 	parser-test-stream \
+	parser-test-threaded-json-parser \
 	parser-test-zip-archive
 
 # parser-test-string-pool
@@ -74,6 +76,14 @@ parser_test_sax_token_parser_SOURCES = \
 parser_test_sax_token_parser_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
 parser_test_sax_token_parser_CPPFLAGS = $(AM_CPPFLAGS)
 
+# parser-test-threaded-json-parser
+
+parser_test_threaded_json_parser_SOURCES = \
+	threaded_json_parser_test.cpp
+
+parser_test_threaded_json_parser_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
+parser_test_threaded_json_parser_CPPFLAGS = $(AM_CPPFLAGS)
+
 # parser-test-stream
 
 parser_test_stream_SOURCES = \
@@ -95,6 +105,7 @@ TESTS = \
 	parser-test-xml-namespace \
 	parser-test-base64 \
 	parser-test-sax-token-parser \
+	parser-test-threaded-json-parser \
 	parser-test-stream \
 	parser-test-zip-archive
 

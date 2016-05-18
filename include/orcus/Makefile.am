@@ -22,6 +22,7 @@ liborcus_HEADERS = \
 	json_document_tree.hpp \
 	json_parser.hpp \
 	json_parser_base.hpp \
+	json_parser_thread.hpp \
 	measurement.hpp \
 	orcus_csv.hpp \
 	orcus_xml.hpp \
@@ -34,6 +35,7 @@ liborcus_HEADERS = \
 	sax_token_parser.hpp \
 	stream.hpp \
 	string_pool.hpp \
+	threaded_json_parser.hpp \
 	tokens.hpp \
 	types.hpp \
 	xml_namespace.hpp \
