@@ -37,6 +37,8 @@ public:
 private:
     void thread_parse();
 
+    void process_tokens(json::parse_tokens_t& tokens);
+
 private:
     json::parser_thread m_parser_thread;
     handler_type& m_handler;
@@ -51,14 +53,29 @@ template<typename _Handler>
 void threaded_json_parser<_Handler>::parse()
 {
     std::thread t(&threaded_json_parser::thread_parse, this);
+
+    json::parse_tokens_t tokens;
+
+    while (m_parser_thread.next_tokens(tokens))
+        process_tokens(tokens);
+
+    if (!tokens.empty())
+        process_tokens(tokens);
+
     t.join();
 }
 
 template<typename _Handler>
 void threaded_json_parser<_Handler>::thread_parse()
 {
-    // Start a parser thread.
+    // Start parsing.
     m_parser_thread.start();
+}
+
+template<typename _Handler>
+void threaded_json_parser<_Handler>::process_tokens(json::parse_tokens_t& tokens)
+{
+    // TODO : implement this.
 }
 
 }

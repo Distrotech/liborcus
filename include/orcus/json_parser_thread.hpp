@@ -11,8 +11,55 @@
 #include "orcus/env.hpp"
 
 #include <memory>
+#include <deque>
 
 namespace orcus { namespace json {
+
+enum class parse_token_t
+{
+    unknown,
+    begin_parse,
+    end_parse,
+    begin_array,
+    end_array,
+    begin_object,
+    object_key,
+    end_object,
+    boolean_true,
+    boolean_false,
+    null,
+    string,
+    number,
+    parse_error,
+};
+
+struct parse_token
+{
+    parse_token_t type;
+
+    union
+    {
+        struct
+        {
+            const char* p;
+            size_t len;
+
+        } string_value;
+
+        double numeric_value;
+    };
+
+    parse_token();
+    parse_token(parse_token_t _type);
+    parse_token(parse_token_t _type, const char* p, size_t len);
+    parse_token(double value);
+
+    parse_token(const parse_token&) = delete;
+    parse_token(parse_token&&) = delete;
+    parse_token& operator= (parse_token) = delete;
+};
+
+typedef std::deque<parse_token> parse_tokens_t;
 
 class ORCUS_PSR_DLLPUBLIC parser_thread
 {
@@ -24,6 +71,16 @@ public:
     ~parser_thread();
 
     void start();
+
+    /**
+     * Wait until new set of tokens becomes available.
+     *
+     * @param tokens new set of tokens.
+     *
+     * @return true if the parsing is still in progress (therefore more tokens
+     *         to come), false if it's done i.e. this is the last token set.
+     */
+    bool next_tokens(parse_tokens_t& tokens);
 };
 
 }}
