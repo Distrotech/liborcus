@@ -79,7 +79,7 @@ class ORCUS_PSR_DLLPUBLIC parser_thread
     std::unique_ptr<impl> mp_impl;
 
 public:
-    parser_thread(const char* p, size_t n);
+    parser_thread(const char* p, size_t n, size_t max_token_size);
     ~parser_thread();
 
     void start();

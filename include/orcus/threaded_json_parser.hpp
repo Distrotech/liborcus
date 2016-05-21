@@ -29,7 +29,7 @@ public:
      * @param n size of the stream.
      * @param hdl handler class instance.
      */
-    threaded_json_parser(const char* p, size_t n, handler_type& hdl);
+    threaded_json_parser(const char* p, size_t n, handler_type& hdl, size_t max_token_size);
 
     /**
      * Call this method to start parsing.
@@ -48,8 +48,8 @@ private:
 
 template<typename _Handler>
 threaded_json_parser<_Handler>::threaded_json_parser(
-    const char* p, size_t n, handler_type& hdl) :
-    m_parser_thread(p, n), m_handler(hdl) {}
+    const char* p, size_t n, handler_type& hdl, size_t max_token_size) :
+    m_parser_thread(p, n, max_token_size), m_handler(hdl) {}
 
 template<typename _Handler>
 void threaded_json_parser<_Handler>::parse()

@@ -87,7 +87,8 @@ struct parser_thread::impl
     size_t m_size;
     size_t m_max_token_size;
 
-    impl(const char* p, size_t n) : m_in_progress(true), mp_char(p), m_size(n), m_max_token_size(500) {}
+    impl(const char* p, size_t n, size_t max_token_size) :
+        m_in_progress(true), mp_char(p), m_size(n), m_max_token_size(max_token_size) {}
 
     void start()
     {
@@ -223,8 +224,8 @@ struct parser_thread::impl
     }
 };
 
-parser_thread::parser_thread(const char* p, size_t n) :
-    mp_impl(orcus::make_unique<parser_thread::impl>(p, n)) {}
+parser_thread::parser_thread(const char* p, size_t n, size_t max_token_size) :
+    mp_impl(orcus::make_unique<parser_thread::impl>(p, n, max_token_size)) {}
 
 parser_thread::~parser_thread() {}
 
