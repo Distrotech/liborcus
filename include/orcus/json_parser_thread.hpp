@@ -33,7 +33,7 @@ enum class parse_token_t
     parse_error,
 };
 
-struct parse_token
+struct ORCUS_PSR_DLLPUBLIC parse_token
 {
     parse_token_t type;
 
@@ -46,12 +46,21 @@ struct parse_token
 
         } string_value;
 
+        struct
+        {
+            const char* p;
+            size_t len;
+            std::ptrdiff_t offset;
+
+        } error_value;
+
         double numeric_value;
     };
 
     parse_token();
     parse_token(parse_token_t _type);
     parse_token(parse_token_t _type, const char* p, size_t len);
+    parse_token(parse_token_t _type, const char* p, size_t len, std::ptrdiff_t offset);
     parse_token(double value);
 
     parse_token(const parse_token&) = delete;

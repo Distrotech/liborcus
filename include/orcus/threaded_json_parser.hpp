@@ -9,8 +9,10 @@
 #define INCLUDED_ORCUS_THREADED_JSON_PARSER_HPP
 
 #include "orcus/json_parser_thread.hpp"
+#include "orcus/json_parser_base.hpp"
 
 #include <thread>
+#include <algorithm>
 
 namespace orcus {
 
@@ -75,7 +77,55 @@ void threaded_json_parser<_Handler>::thread_parse()
 template<typename _Handler>
 void threaded_json_parser<_Handler>::process_tokens(json::parse_tokens_t& tokens)
 {
-    // TODO : implement this.
+    std::for_each(tokens.begin(), tokens.end(),
+        [this](const json::parse_token& t)
+        {
+            switch (t.type)
+            {
+                case json::parse_token_t::begin_array:
+                    m_handler.begin_array();
+                    break;
+                case json::parse_token_t::begin_object:
+                    m_handler.begin_object();
+                    break;
+                case json::parse_token_t::begin_parse:
+                    m_handler.begin_parse();
+                    break;
+                case json::parse_token_t::boolean_false:
+                    m_handler.boolean_false();
+                    break;
+                case json::parse_token_t::boolean_true:
+                    m_handler.boolean_true();
+                    break;
+                case json::parse_token_t::end_array:
+                    m_handler.end_array();
+                    break;
+                case json::parse_token_t::end_object:
+                    m_handler.end_object();
+                    break;
+                case json::parse_token_t::end_parse:
+                    m_handler.end_parse();
+                    break;
+                case json::parse_token_t::null:
+                    m_handler.null();
+                    break;
+                case json::parse_token_t::number:
+                    m_handler.number(t.numeric_value);
+                    break;
+                case json::parse_token_t::object_key:
+                    m_handler.object_key(t.string_value.p, t.string_value.len, false);
+                    break;
+                case json::parse_token_t::string:
+                    m_handler.string(t.string_value.p, t.string_value.len, false);
+                    break;
+                case json::parse_token_t::parse_error:
+                    throw json::parse_error(std::string(t.error_value.p, t.error_value.len), t.error_value.offset);
+                case json::parse_token_t::unknown:
+                default:
+                    throw general_error("unknown token type encountered.");
+            }
+        }
+    );
 }
 
 }

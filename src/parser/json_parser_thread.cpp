@@ -26,6 +26,14 @@ parse_token::parse_token(parse_token_t _type, const char* p, size_t len) :
     string_value.len = len;
 }
 
+parse_token::parse_token(parse_token_t _type, const char* p, size_t len, std::ptrdiff_t offset) :
+    type(_type)
+{
+    error_value.p = p;
+    error_value.len = len;
+    error_value.offset = offset;
+}
+
 parse_token::parse_token(double value) :
     type(parse_token_t::number), numeric_value(value) {}
 
@@ -60,7 +68,7 @@ struct parser_thread::impl
         catch (const parse_error& e)
         {
             pstring s = m_pool.intern(e.what()).first;
-            m_parser_tokens.emplace_back(parse_token_t::parse_error, s.get(), s.size());
+            m_parser_tokens.emplace_back(parse_token_t::parse_error, s.get(), s.size(), e.offset());
         }
 
         notify_and_finish();
