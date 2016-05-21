@@ -224,6 +224,68 @@ struct parser_thread::impl
     }
 };
 
+std::ostream& operator<< (std::ostream& os, const parse_tokens_t& tokens)
+{
+    using std::endl;
+
+    os << "token size: " << tokens.size() << endl;
+
+    std::for_each(tokens.begin(), tokens.end(),
+        [&](const parse_token& t)
+        {
+            switch (t.type)
+            {
+                case parse_token_t::begin_array:
+                    os << "- begin_array" << endl;
+                    break;
+                case parse_token_t::begin_object:
+                    os << "- begin_object" << endl;
+                    break;
+                case parse_token_t::begin_parse:
+                    os << "- begin_parse" << endl;
+                    break;
+                case parse_token_t::boolean_false:
+                    os << "- boolean_false" << endl;
+                    break;
+                case parse_token_t::boolean_true:
+                    os << "- boolean_true" << endl;
+                    break;
+                case parse_token_t::end_array:
+                    os << "- end_array" << endl;
+                    break;
+                case parse_token_t::end_object:
+                    os << "- end_object" << endl;
+                    break;
+                case parse_token_t::end_parse:
+                    os << "- end_parse" << endl;
+                    break;
+                case parse_token_t::null:
+                    os << "- null" << endl;
+                    break;
+                case parse_token_t::number:
+                    os << "- number (v=" << t.numeric_value << ")" << endl;
+                    break;
+                case parse_token_t::object_key:
+                    os << "- object_key (v=" << pstring(t.string_value.p, t.string_value.len) << ")" << endl;
+                    break;
+                case parse_token_t::parse_error:
+                    os << "- parse_error (v=" << pstring(t.error_value.p, t.error_value.len) << ", offset=" << t.error_value.offset << ")" << endl;
+                    break;
+                case parse_token_t::string:
+                    os << "- string (" << pstring(t.string_value.p, t.string_value.len) << ")" << endl;
+                    break;
+                case parse_token_t::unknown:
+                    os << "- unknown" << endl;
+                    break;
+                default:
+                    ;
+            }
+        }
+    );
+
+    return os;
+}
+
 parser_thread::parser_thread(const char* p, size_t n, size_t max_token_size) :
     mp_impl(orcus::make_unique<parser_thread::impl>(p, n, max_token_size)) {}
 

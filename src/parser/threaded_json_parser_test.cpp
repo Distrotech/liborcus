@@ -12,6 +12,7 @@
 #include <iostream>
 
 using namespace orcus;
+using namespace std;
 
 class handler
 {
@@ -92,7 +93,14 @@ void test_parser(const char* src, const json::parse_tokens_t& expected)
     threaded_json_parser<handler> parser(src, std::strlen(src), hdl, 5);
     parser.parse();
 
-    assert(hdl.get_tokens() == expected);
+    if (hdl.get_tokens() != expected)
+    {
+        cout << "Expected tokens:" << endl;
+        cout << expected;
+        cout << "Actual tokens:" << endl;
+        cout << hdl.get_tokens();
+        abort();
+    }
 }
 
 void test_threaded_json_parser_1()

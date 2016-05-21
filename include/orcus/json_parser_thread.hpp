@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <deque>
+#include <ostream>
 
 namespace orcus { namespace json {
 
@@ -72,6 +73,8 @@ struct ORCUS_PSR_DLLPUBLIC parse_token
 };
 
 typedef std::deque<parse_token> parse_tokens_t;
+
+ORCUS_PSR_DLLPUBLIC std::ostream& operator<< (std::ostream& os, const parse_tokens_t& tokens);
 
 class ORCUS_PSR_DLLPUBLIC parser_thread
 {
