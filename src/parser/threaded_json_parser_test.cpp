@@ -8,6 +8,8 @@
 #include <orcus/threaded_json_parser.hpp>
 
 #include <cassert>
+#include <cstring>
+#include <iostream>
 
 using namespace orcus;
 
@@ -77,13 +79,36 @@ public:
     {
         m_tokens.emplace_back(val);
     }
+
+    const json::parse_tokens_t& get_tokens() const
+    {
+        return m_tokens;
+    }
 };
+
+void test_parser(const char* src, const json::parse_tokens_t& expected)
+{
+    handler hdl;
+    threaded_json_parser<handler> parser(src, std::strlen(src), hdl);
+    parser.parse();
+
+    assert(hdl.get_tokens() == expected);
+}
 
 void test_threaded_json_parser_1()
 {
-    handler hdl;
-    threaded_json_parser<handler> parser(nullptr, 0, hdl);
-    parser.parse();
+    const char* src = "[1,2,3]";
+
+    json::parse_tokens_t expected;
+    expected.emplace_back(json::parse_token_t::begin_parse);
+    expected.emplace_back(json::parse_token_t::begin_array);
+    expected.emplace_back(1.0);
+    expected.emplace_back(2.0);
+    expected.emplace_back(3.0);
+    expected.emplace_back(json::parse_token_t::end_array);
+    expected.emplace_back(json::parse_token_t::end_parse);
+
+    test_parser(src, expected);
 }
 
 int main()

@@ -12,6 +12,8 @@
 
 #include <mutex>
 #include <condition_variable>
+#include <sstream>
+#include <algorithm>
 
 namespace orcus { namespace json {
 
@@ -36,6 +38,35 @@ parse_token::parse_token(parse_token_t _type, const char* p, size_t len, std::pt
 
 parse_token::parse_token(double value) :
     type(parse_token_t::number), numeric_value(value) {}
+
+bool parse_token::operator== (const parse_token& other) const
+{
+    if (type != other.type)
+        return false;
+
+    switch (type)
+    {
+        case parse_token_t::object_key:
+        case parse_token_t::string:
+            return pstring(string_value.p, string_value.len) == pstring(other.string_value.p, other.string_value.len);
+        case parse_token_t::number:
+            return numeric_value == other.numeric_value;
+        case parse_token_t::parse_error:
+            if (pstring(error_value.p, error_value.len) != pstring(other.error_value.p, other.error_value.len))
+                return false;
+            if (error_value.offset != error_value.offset)
+                return false;
+            break;
+        default:
+            ;
+    }
+    return true;
+}
+
+bool parse_token::operator!= (const parse_token& other) const
+{
+    return !operator== (other);
+}
 
 /**
  * This impl class also acts as a handler for the parser.

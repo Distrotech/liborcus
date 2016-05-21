@@ -66,6 +66,9 @@ struct ORCUS_PSR_DLLPUBLIC parse_token
     parse_token(const parse_token&) = delete;
     parse_token(parse_token&&) = delete;
     parse_token& operator= (parse_token) = delete;
+
+    bool operator== (const parse_token& other) const;
+    bool operator!= (const parse_token& other) const;
 };
 
 typedef std::deque<parse_token> parse_tokens_t;

@@ -82,6 +82,7 @@ parser_test_threaded_json_parser_SOURCES = \
 	threaded_json_parser_test.cpp
 
 parser_test_threaded_json_parser_LDADD = liborcus-parser-@ORCUS_API_VERSION@.la
+parser_test_threaded_json_parser_LDFLAGS = -pthread
 parser_test_threaded_json_parser_CPPFLAGS = $(AM_CPPFLAGS)
 
 # parser-test-stream
