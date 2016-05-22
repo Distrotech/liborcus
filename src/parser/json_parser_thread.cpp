@@ -90,12 +90,12 @@ struct parser_thread::impl
 
     const char* mp_char;
     size_t m_size;
-    size_t m_max_token_size;
+    size_t m_min_token_size;
 
-    impl(const char* p, size_t n, size_t max_token_size) :
+    impl(const char* p, size_t n, size_t min_token_size) :
         m_parsing_progress(true),
         mp_char(p), m_size(n),
-        m_max_token_size(max_token_size) {}
+        m_min_token_size(min_token_size) {}
 
     void start()
     {
@@ -201,7 +201,7 @@ struct parser_thread::impl
 
     void check_and_notify()
     {
-        if (m_parser_tokens.size() < m_max_token_size || !m_tokens.empty())
+        if (m_parser_tokens.size() < m_min_token_size || !m_tokens.empty())
             // Still below the threshold.
             return;
 
@@ -316,8 +316,8 @@ std::ostream& operator<< (std::ostream& os, const parse_tokens_t& tokens)
     return os;
 }
 
-parser_thread::parser_thread(const char* p, size_t n, size_t max_token_size) :
-    mp_impl(orcus::make_unique<parser_thread::impl>(p, n, max_token_size)) {}
+parser_thread::parser_thread(const char* p, size_t n, size_t min_token_size) :
+    mp_impl(orcus::make_unique<parser_thread::impl>(p, n, min_token_size)) {}
 
 parser_thread::~parser_thread() {}
 
