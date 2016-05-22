@@ -61,8 +61,7 @@ void threaded_json_parser<_Handler>::parse()
     while (m_parser_thread.next_tokens(tokens))
         process_tokens(tokens);
 
-    if (!tokens.empty())
-        process_tokens(tokens);
+    process_tokens(tokens);
 
     t.join();
 }
@@ -126,6 +125,8 @@ void threaded_json_parser<_Handler>::process_tokens(json::parse_tokens_t& tokens
             }
         }
     );
+
+    tokens.clear();
 }
 
 }

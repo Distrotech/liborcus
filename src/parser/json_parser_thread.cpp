@@ -10,6 +10,7 @@
 #include "orcus/json_parser.hpp"
 #include "orcus/string_pool.hpp"
 
+#include <atomic>
 #include <mutex>
 #include <condition_variable>
 #include <sstream>
@@ -76,19 +77,25 @@ struct parser_thread::impl
 {
     string_pool m_pool;
 
-    std::mutex m_mtx;
-    std::condition_variable m_cv;
-    parse_tokens_t m_client_tokens; // token buffer used to hand over tokens to the client.
-    bool m_in_progress;
+    std::atomic<bool> m_parsing_progress;
 
-    parse_tokens_t m_parser_tokens; // token buffer for the parser.
+    std::mutex m_mtx_tokens_ready;
+    std::condition_variable m_cv_tokens_ready;
+    parse_tokens_t m_tokens; // token buffer used to hand over tokens to the client.
+
+    parse_tokens_t m_parser_tokens; // token buffer for the parser thread.
+
+    std::mutex m_mtx_tokens_empty;
+    std::condition_variable m_cv_tokens_empty;
 
     const char* mp_char;
     size_t m_size;
     size_t m_max_token_size;
 
     impl(const char* p, size_t n, size_t max_token_size) :
-        m_in_progress(true), mp_char(p), m_size(n), m_max_token_size(max_token_size) {}
+        m_parsing_progress(true),
+        mp_char(p), m_size(n),
+        m_max_token_size(max_token_size) {}
 
     void start()
     {
@@ -194,33 +201,56 @@ struct parser_thread::impl
 
     void check_and_notify()
     {
-        if (m_parser_tokens.size() <= m_max_token_size)
+        if (m_parser_tokens.size() < m_max_token_size || !m_tokens.empty())
             // Still below the threshold.
             return;
 
-        std::unique_lock<std::mutex> lock(m_mtx);
-        m_client_tokens.swap(m_parser_tokens);
-        m_cv.notify_one();
+        assert(m_tokens.empty());
+        std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
+        m_tokens.swap(m_parser_tokens);
+        m_cv_tokens_ready.notify_one();
     }
 
     void notify_and_finish()
     {
-        std::unique_lock<std::mutex> lock(m_mtx);
-        m_client_tokens.swap(m_parser_tokens);
-        m_in_progress = false;
-        m_cv.notify_one();
+        {
+            // Wait until the client tokens get used up.
+            std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
+            while (!m_tokens.empty())
+                m_cv_tokens_empty.wait(lock_empty);
+        }
+
+        assert(m_tokens.empty());
+        std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
+        m_tokens.swap(m_parser_tokens);
+        m_parsing_progress = false;
+        m_cv_tokens_ready.notify_one();
     }
 
     bool next_tokens(parse_tokens_t& tokens)
     {
-        tokens.clear(); // This ensures that m_parser_tokens will eventually become empty.
+        assert(tokens.empty());
 
-        std::unique_lock<std::mutex> lock(m_mtx);
-        while (m_client_tokens.empty())
-            m_cv.wait(lock);
+        if (!m_parsing_progress)
+        {
+            // Parsing has completed.
+            tokens.swap(m_tokens);
+            return false;
+        }
 
-        tokens.swap(m_client_tokens);
-        return m_in_progress;
+        // Wait until the parser passes a new set of tokens.
+        std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
+        while (m_tokens.empty())
+            m_cv_tokens_ready.wait(lock);
+
+        {
+            // Get the new tokens and notify the parser.
+            std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
+            tokens.swap(m_tokens);
+            m_cv_tokens_empty.notify_one();
+        }
+
+        return m_parsing_progress;
     }
 };
 
