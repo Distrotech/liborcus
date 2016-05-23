@@ -15,6 +15,7 @@
 #include <condition_variable>
 #include <sstream>
 #include <algorithm>
+#include <limits>
 
 namespace orcus { namespace json {
 
@@ -75,6 +76,9 @@ bool parse_token::operator!= (const parse_token& other) const
  */
 struct parser_thread::impl
 {
+    static const size_t token_size_threshold_min = 1;
+    static const size_t token_size_threshold_max = std::numeric_limits<size_t>::max() - 10;
+
     string_pool m_pool;
 
     std::atomic<bool> m_parsing_progress;
@@ -90,12 +94,13 @@ struct parser_thread::impl
 
     const char* mp_char;
     size_t m_size;
-    size_t m_min_token_size;
+    size_t m_token_size_threshold;
 
     impl(const char* p, size_t n, size_t min_token_size) :
         m_parsing_progress(true),
         mp_char(p), m_size(n),
-        m_min_token_size(min_token_size) {}
+        m_token_size_threshold(std::max(min_token_size, token_size_threshold_min))
+    {}
 
     void start()
     {
@@ -201,9 +206,21 @@ struct parser_thread::impl
 
     void check_and_notify()
     {
-        if (m_parser_tokens.size() < m_min_token_size || !m_tokens.empty())
+        if (m_parser_tokens.size() < m_token_size_threshold)
             // Still below the threshold.
             return;
+
+        {
+            // If the client token buffer is still not empty, double the
+            // threshold and bail out.
+            std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
+            if (!m_tokens.empty())
+            {
+                if (m_token_size_threshold < (token_size_threshold_max/2))
+                    m_token_size_threshold *= 2;
+                return;
+            }
+        }
 
         assert(m_tokens.empty());
         std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
