@@ -211,14 +211,20 @@ struct parser_thread::impl
             return;
 
         {
-            // If the client token buffer is still not empty, double the
-            // threshold and bail out.
             std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
             if (!m_tokens.empty())
             {
                 if (m_token_size_threshold < (token_size_threshold_max/2))
+                {
+                    // Double the threshold and continue to parse.
                     m_token_size_threshold *= 2;
-                return;
+                    return;
+                }
+
+                // We cannot increase the threshold any more.  Wait for the
+                // client to finish.
+                while (!m_tokens.empty())
+                    m_cv_tokens_empty.wait(lock_empty);
             }
         }
 
