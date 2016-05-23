@@ -76,8 +76,8 @@ bool parse_token::operator!= (const parse_token& other) const
  */
 struct parser_thread::impl
 {
-    static const size_t token_size_threshold_min = 1;
-    static const size_t token_size_threshold_max = std::numeric_limits<size_t>::max() - 10;
+    static constexpr const size_t token_size_threshold_min = 1;
+    static constexpr const size_t token_size_threshold_max = std::numeric_limits<size_t>::max() - 10;
 
     string_pool m_pool;
 
