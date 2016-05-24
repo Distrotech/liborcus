@@ -64,8 +64,8 @@ struct ORCUS_PSR_DLLPUBLIC parse_token
     parse_token(parse_token_t _type, const char* p, size_t len, std::ptrdiff_t offset);
     parse_token(double value);
 
-    parse_token(const parse_token&) = delete;
-    parse_token(parse_token&&) = delete;
+    parse_token(const parse_token& other);
+
     parse_token& operator= (parse_token) = delete;
 
     bool operator== (const parse_token& other) const;

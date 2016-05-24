@@ -41,6 +41,29 @@ parse_token::parse_token(parse_token_t _type, const char* p, size_t len, std::pt
 parse_token::parse_token(double value) :
     type(parse_token_t::number), numeric_value(value) {}
 
+parse_token::parse_token(const parse_token& other) :
+    type(other.type)
+{
+    switch (type)
+    {
+        case parse_token_t::object_key:
+        case parse_token_t::string:
+            string_value.p = other.string_value.p;
+            string_value.len = other.string_value.len;
+            break;
+        case parse_token_t::number:
+            numeric_value = other.numeric_value;
+            break;
+        case parse_token_t::parse_error:
+            error_value.p = other.error_value.p;
+            error_value.len = other.error_value.len;
+            error_value.offset = other.error_value.offset;
+            break;
+        default:
+            ;
+    }
+}
+
 bool parse_token::operator== (const parse_token& other) const
 {
     if (type != other.type)

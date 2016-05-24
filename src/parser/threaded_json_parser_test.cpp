@@ -107,14 +107,15 @@ void test_threaded_json_parser_1()
 {
     const char* src = "[1,2,3]";
 
-    json::parse_tokens_t expected;
-    expected.emplace_back(json::parse_token_t::begin_parse);
-    expected.emplace_back(json::parse_token_t::begin_array);
-    expected.emplace_back(1.0);
-    expected.emplace_back(2.0);
-    expected.emplace_back(3.0);
-    expected.emplace_back(json::parse_token_t::end_array);
-    expected.emplace_back(json::parse_token_t::end_parse);
+    json::parse_tokens_t expected {
+        { json::parse_token_t::begin_parse },
+        { json::parse_token_t::begin_array },
+        { 1.0 },
+        { 2.0 },
+        { 3.0 },
+        { json::parse_token_t::end_array },
+        { json::parse_token_t::end_parse },
+    };
 
     test_parser(src, expected);
 }
