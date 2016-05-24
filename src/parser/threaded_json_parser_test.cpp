@@ -6,6 +6,7 @@
  */
 
 #include <orcus/threaded_json_parser.hpp>
+#include <orcus/global.hpp>
 
 #include <cassert>
 #include <cstring>
@@ -89,6 +90,8 @@ public:
 
 void test_parser(const char* src, const json::parse_tokens_t& expected)
 {
+    cout << "source: " << src << endl;
+
     handler hdl;
     threaded_json_parser<handler> parser(src, std::strlen(src), hdl, 5);
     parser.parse();
@@ -103,26 +106,52 @@ void test_parser(const char* src, const json::parse_tokens_t& expected)
     }
 }
 
-void test_threaded_json_parser_1()
+void test_threaded_json_parser_basic()
 {
-    const char* src = "[1,2,3]";
-
-    json::parse_tokens_t expected {
-        { json::parse_token_t::begin_parse },
-        { json::parse_token_t::begin_array },
-        { 1.0 },
-        { 2.0 },
-        { 3.0 },
-        { json::parse_token_t::end_array },
-        { json::parse_token_t::end_parse },
+    struct test_case
+    {
+        const char* source;
+        json::parse_tokens_t expected;
     };
 
-    test_parser(src, expected);
+    test_case tcs[] =
+    {
+        {
+            "[1,2,3]",
+            {
+                { json::parse_token_t::begin_parse },
+                { json::parse_token_t::begin_array },
+                { 1.0 },
+                { 2.0 },
+                { 3.0 },
+                { json::parse_token_t::end_array },
+                { json::parse_token_t::end_parse },
+            }
+        },
+        {
+            "{\"foo\": [true, false, null]}",
+            {
+                { json::parse_token_t::begin_parse },
+                { json::parse_token_t::begin_object },
+                { json::parse_token_t::object_key, ORCUS_ASCII("foo") },
+                { json::parse_token_t::begin_array },
+                { json::parse_token_t::boolean_true },
+                { json::parse_token_t::boolean_false },
+                { json::parse_token_t::null },
+                { json::parse_token_t::end_array },
+                { json::parse_token_t::end_object },
+                { json::parse_token_t::end_parse },
+            }
+        }
+    };
+
+    for (size_t i = 0, n = ORCUS_N_ELEMENTS(tcs); i < n; ++i)
+        test_parser(tcs[i].source, tcs[i].expected);
 }
 
 int main()
 {
-    test_threaded_json_parser_1();
+    test_threaded_json_parser_basic();
     return EXIT_SUCCESS;
 }
 
