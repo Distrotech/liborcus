@@ -149,9 +149,40 @@ void test_threaded_json_parser_basic()
         test_parser(tcs[i].source, tcs[i].expected);
 }
 
+void test_threaded_json_parser_invalid()
+{
+    const char* invalids[] = {
+        "[foo]",
+        "[qwerty]",
+        "[1,2] null",
+        "{\"key\" 1: 12}",
+        "[1,,2]",
+        "\"key\": {\"inner\": 12}"
+    };
+
+    for (size_t i = 0; i < ORCUS_N_ELEMENTS(invalids); ++i)
+    {
+        const char* src = invalids[i];
+
+        try
+        {
+            handler hdl;
+            threaded_json_parser<handler> parser(src, std::strlen(src), hdl, 1);
+            parser.parse();
+            assert(false);
+        }
+        catch (const json::parse_error& e)
+        {
+            // works as expected.
+            cout << "invalid source: " << src << endl;
+        }
+    }
+}
+
 int main()
 {
     test_threaded_json_parser_basic();
+    test_threaded_json_parser_invalid();
     return EXIT_SUCCESS;
 }
 

@@ -151,6 +151,9 @@
         </Folder>
         <Folder Name="../include">
             <Folder Name="orcus">
+                <Folder Name="detail">
+                    <F N="../include/orcus/detail/thread.hpp"/>
+                </Folder>
                 <Folder Name="mso">
                     <F N="../include/orcus/mso/encryption_info.hpp"/>
                 </Folder>

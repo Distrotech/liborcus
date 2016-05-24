@@ -10,8 +10,8 @@
 
 #include "orcus/json_parser_thread.hpp"
 #include "orcus/json_parser_base.hpp"
+#include "orcus/detail/thread.hpp"
 
-#include <thread>
 #include <algorithm>
 
 namespace orcus {
@@ -55,6 +55,7 @@ template<typename _Handler>
 void threaded_json_parser<_Handler>::parse()
 {
     std::thread t(&threaded_json_parser::thread_parse, this);
+    detail::thread::scoped_guard guard(std::move(t));
 
     json::parse_tokens_t tokens;
 
@@ -62,8 +63,6 @@ void threaded_json_parser<_Handler>::parse()
         process_tokens(tokens);
 
     process_tokens(tokens);
-
-    t.join();
 }
 
 template<typename _Handler>
