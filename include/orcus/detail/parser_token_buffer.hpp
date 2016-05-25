@@ -118,7 +118,7 @@ public:
      */
     bool next_tokens(tokens_type& tokens)
     {
-        assert(tokens.empty());
+        tokens.clear();
 
         if (!m_parsing_progress)
         {

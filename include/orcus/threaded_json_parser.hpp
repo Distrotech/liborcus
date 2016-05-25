@@ -144,8 +144,6 @@ void threaded_json_parser<_Handler>::process_tokens(json::parse_tokens_t& tokens
             }
         }
     );
-
-    tokens.clear();
 }
 
 }
