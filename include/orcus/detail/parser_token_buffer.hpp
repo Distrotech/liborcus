@@ -13,7 +13,6 @@
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
-#include <chrono>
 
 namespace orcus { namespace detail { namespace thread {
 
@@ -129,16 +128,8 @@ public:
 
         // Wait until the parser passes a new set of tokens.
         std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
-        while (m_tokens.empty())
-        {
-            if (!m_parsing_progress)
-            {
-                // Parsing is done and no more leftover tokens.
-                return false;
-            }
-
-            m_cv_tokens_ready.wait_for(lock, std::chrono::seconds(1));
-        }
+        while (m_tokens.empty() && m_parsing_progress)
+            m_cv_tokens_ready.wait(lock);
 
         {
             // Get the new tokens and notify the parser.
