@@ -152,6 +152,7 @@
         <Folder Name="../include">
             <Folder Name="orcus">
                 <Folder Name="detail">
+                    <F N="../include/orcus/detail/parser_token_buffer.hpp"/>
                     <F N="../include/orcus/detail/thread.hpp"/>
                 </Folder>
                 <Folder Name="mso">
