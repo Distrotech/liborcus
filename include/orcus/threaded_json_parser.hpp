@@ -28,8 +28,23 @@ public:
      * @param p pointer to a string stream containing JSON string.
      * @param n size of the stream.
      * @param hdl handler class instance.
+     * @param min_token_size minimum size of the internal token buffer.
      */
-    threaded_json_parser(const char* p, size_t n, handler_type& hdl, size_t min_token_size);
+    threaded_json_parser(
+        const char* p, size_t n, handler_type& hdl, size_t min_token_size);
+
+    /**
+     * Constructor.
+     *
+     * @param p pointer to a string stream containing JSON string.
+     * @param n size of the stream.
+     * @param hdl handler class instance.
+     * @param min_token_size minimum size of the internal token buffer.
+     * @param max_token_size maximum size of the internal token buffer.
+     */
+    threaded_json_parser(
+        const char* p, size_t n, handler_type& hdl, size_t min_token_size,
+        size_t max_token_size);
 
     /**
      * Call this method to start parsing.
@@ -50,6 +65,11 @@ template<typename _Handler>
 threaded_json_parser<_Handler>::threaded_json_parser(
     const char* p, size_t n, handler_type& hdl, size_t min_token_size) :
     m_parser_thread(p, n, min_token_size), m_handler(hdl) {}
+
+template<typename _Handler>
+threaded_json_parser<_Handler>::threaded_json_parser(
+    const char* p, size_t n, handler_type& hdl, size_t min_token_size, size_t max_token_size) :
+    m_parser_thread(p, n, min_token_size, max_token_size), m_handler(hdl) {}
 
 template<typename _Handler>
 void threaded_json_parser<_Handler>::parse()

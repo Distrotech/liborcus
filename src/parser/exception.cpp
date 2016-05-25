@@ -34,6 +34,11 @@ const char* general_error::what() const throw()
     return m_msg.c_str();
 }
 
+invalid_arg_error::invalid_arg_error(const std::string& msg) :
+    general_error(msg) {}
+
+invalid_arg_error::~invalid_arg_error() throw() {}
+
 xml_structure_error::xml_structure_error(const string& msg) :
     general_error(msg) {}
 

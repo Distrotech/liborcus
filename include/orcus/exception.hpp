@@ -26,6 +26,13 @@ private:
     ::std::string m_msg;
 };
 
+class ORCUS_PSR_DLLPUBLIC invalid_arg_error : public general_error
+{
+public:
+    explicit invalid_arg_error(const std::string& msg);
+    virtual ~invalid_arg_error() throw();
+};
+
 class ORCUS_PSR_DLLPUBLIC xml_structure_error : public general_error
 {
 public:

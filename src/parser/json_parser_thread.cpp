@@ -99,9 +99,6 @@ bool parse_token::operator!= (const parse_token& other) const
  */
 struct parser_thread::impl
 {
-    static constexpr const size_t token_size_threshold_min = 1;
-    static constexpr const size_t token_size_threshold_max = std::numeric_limits<size_t>::max() - 10;
-
     string_pool m_pool;
 
     std::atomic<bool> m_parsing_progress;
@@ -118,12 +115,18 @@ struct parser_thread::impl
     const char* mp_char;
     size_t m_size;
     size_t m_token_size_threshold;
+    const size_t m_max_token_size;
 
-    impl(const char* p, size_t n, size_t min_token_size) :
+    impl(const char* p, size_t n, size_t min_token_size, size_t max_token_size) :
         m_parsing_progress(true),
         mp_char(p), m_size(n),
-        m_token_size_threshold(std::max(min_token_size, token_size_threshold_min))
-    {}
+        m_token_size_threshold(std::max<size_t>(min_token_size, 1)),
+        m_max_token_size(max_token_size)
+    {
+        if (m_token_size_threshold > m_max_token_size)
+            throw invalid_arg_error(
+                "initial token size threshold is already larger than the max token size.");
+    }
 
     void start()
     {
@@ -237,7 +240,7 @@ struct parser_thread::impl
             std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
             if (!m_tokens.empty())
             {
-                if (m_token_size_threshold < (token_size_threshold_max/2))
+                if (m_token_size_threshold < (m_max_token_size/2))
                 {
                     // Double the threshold and continue to parse.
                     m_token_size_threshold *= 2;
@@ -363,7 +366,12 @@ std::ostream& operator<< (std::ostream& os, const parse_tokens_t& tokens)
 }
 
 parser_thread::parser_thread(const char* p, size_t n, size_t min_token_size) :
-    mp_impl(orcus::make_unique<parser_thread::impl>(p, n, min_token_size)) {}
+    mp_impl(orcus::make_unique<parser_thread::impl>(
+        p, n, min_token_size, std::numeric_limits<size_t>::max()/2)) {}
+
+parser_thread::parser_thread(const char* p, size_t n, size_t min_token_size, size_t max_token_size) :
+    mp_impl(orcus::make_unique<parser_thread::impl>(
+        p, n, min_token_size, max_token_size)) {}
 
 parser_thread::~parser_thread() {}
 
