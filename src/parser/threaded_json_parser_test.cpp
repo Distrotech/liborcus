@@ -93,7 +93,7 @@ void test_parser(const char* src, const json::parse_tokens_t& expected)
     cout << "source: " << src << endl;
 
     handler hdl;
-    threaded_json_parser<handler> parser(src, std::strlen(src), hdl, 5);
+    threaded_json_parser<handler> parser(src, std::strlen(src), hdl, 5, 5);
     parser.parse();
 
     if (hdl.get_tokens() != expected)
