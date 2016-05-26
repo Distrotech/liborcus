@@ -252,6 +252,7 @@ AC_CONFIG_FILES([Makefile
         src/python/Makefile
 	src/spreadsheet/Makefile
         parser_handlers/Makefile
+        benchmark/Makefile
 ])
 AC_OUTPUT
 
