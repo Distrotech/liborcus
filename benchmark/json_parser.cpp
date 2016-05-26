@@ -18,34 +18,28 @@ class stack_printer
 {
 public:
     explicit stack_printer(const char* msg) :
-        msMsg(msg)
+        m_msg(msg)
     {
-        fprintf(stdout, "%s: --begin\n", msMsg.c_str());
-        mfStartTime = getTime();
+        fprintf(stdout, "%s: --begin\n", m_msg.c_str());
+        m_start_time = get_time();
     }
 
     ~stack_printer()
     {
-        double fEndTime = getTime();
-        fprintf(stdout, "%s: --end (duration: %g sec)\n", msMsg.c_str(), (fEndTime-mfStartTime));
-    }
-
-    void printTime(int line) const
-    {
-        double fEndTime = getTime();
-        fprintf(stdout, "%s: --(%d) (duration: %g sec)\n", msMsg.c_str(), line, (fEndTime-mfStartTime));
+        double end_time = get_time();
+        fprintf(stdout, "%s: --end (duration: %g sec)\n", m_msg.c_str(), (end_time-m_start_time));
     }
 
 private:
-    double getTime() const
+    double get_time() const
     {
         timeval tv;
         gettimeofday(&tv, NULL);
         return tv.tv_sec + tv.tv_usec / 1000000.0;
     }
 
-    ::std::string msMsg;
-    double mfStartTime;
+    ::std::string m_msg;
+    double m_start_time;
 };
 
 }
