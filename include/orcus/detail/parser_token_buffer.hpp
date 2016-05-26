@@ -53,6 +53,8 @@ public:
      * Check the size of the parser token buffer, and if it exceeds specified
      * threshold, move it to the client buffer.
      *
+     * Call this from the parser thread.
+     *
      * @param parser_tokens parser token buffer.
      */
     void check_and_notify(tokens_type& parser_tokens)
@@ -89,6 +91,8 @@ public:
      * Move the current parser token buffer to the client buffer, and signal
      * the end of parsing.
      *
+     * Call this from the parser thread.
+     *
      * @param parser_tokens parser token buffer.
      */
     void notify_and_finish(tokens_type& parser_tokens)
@@ -109,6 +113,8 @@ public:
 
     /**
      * Retrieve the tokens currently in the client token buffer.
+     *
+     * Call this from the client (non-parser) thread.
      *
      * @param tokens place to move the tokens in the client token buffer to.
      *
