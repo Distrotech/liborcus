@@ -4,6 +4,7 @@
 #include <orcus/json_parser_thread.hpp>
 #include <orcus/string_pool.hpp>
 
+#include <vector>
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -48,31 +49,47 @@ class handler
 {
     string_pool m_pool;
     json::parse_tokens_t m_tokens;
+    std::vector<double> m_results;
+
+    void do_work()
+    {
+        double f = m_results.empty() ? 0.0 : m_results.back();
+
+        for (size_t i = 0; i < 1000000; ++i)
+            f += 0.1;
+
+        m_results.push_back(f);
+    }
 
 public:
     void begin_parse()
     {
         m_tokens.emplace_back(json::parse_token_t::begin_parse);
+        do_work();
     }
 
     void end_parse()
     {
         m_tokens.emplace_back(json::parse_token_t::end_parse);
+        do_work();
     }
 
     void begin_array()
     {
         m_tokens.emplace_back(json::parse_token_t::begin_array);
+        do_work();
     }
 
     void end_array()
     {
         m_tokens.emplace_back(json::parse_token_t::end_array);
+        do_work();
     }
 
     void begin_object()
     {
         m_tokens.emplace_back(json::parse_token_t::begin_object);
+        do_work();
     }
 
     void object_key(const char* p, size_t len, bool transient)
@@ -85,26 +102,31 @@ public:
         }
 
         m_tokens.emplace_back(json::parse_token_t::object_key, p, len);
+        do_work();
     }
 
     void end_object()
     {
         m_tokens.emplace_back(json::parse_token_t::end_object);
+        do_work();
     }
 
     void boolean_true()
     {
         m_tokens.emplace_back(json::parse_token_t::boolean_true);
+        do_work();
     }
 
     void boolean_false()
     {
         m_tokens.emplace_back(json::parse_token_t::boolean_false);
+        do_work();
     }
 
     void null()
     {
         m_tokens.emplace_back(json::parse_token_t::null);
+        do_work();
     }
 
     void string(const char* p, size_t len, bool transient)
@@ -117,16 +139,23 @@ public:
         }
 
         m_tokens.emplace_back(json::parse_token_t::string, p, len);
+        do_work();
     }
 
     void number(double val)
     {
         m_tokens.emplace_back(val);
+        do_work();
     }
 
     size_t token_size() const
     {
         return m_tokens.size();
+    }
+
+    double work_value() const
+    {
+        return m_results.back();
     }
 };
 
@@ -147,6 +176,7 @@ int main(int argc, char** argv)
     }
 
     cout << "parsed token count: " << hdl.token_size() << endl;
+    cout << "work value: " << hdl.work_value() << endl;
 
     return EXIT_SUCCESS;
 }
