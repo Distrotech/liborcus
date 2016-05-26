@@ -167,6 +167,8 @@ int main(int argc, char** argv)
     const char* filepath = argv[1];
     string content = orcus::load_file_content(filepath);
 
+    cout << "file: " << filepath << endl;
+
     handler hdl;
 
     {
