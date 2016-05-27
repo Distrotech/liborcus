@@ -9,7 +9,6 @@
 #include "odf_namespace_types.hpp"
 #include "odf_token_constants.hpp"
 #include "odf_helper.hpp"
-
 #include "orcus/measurement.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
 
@@ -163,11 +162,18 @@ public:
 
 class cell_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
 {
+public:
+    typedef std::map<spreadsheet::border_direction_t, odf_helper::odf_border_details> border_map_t;
+
+private:
 
     spreadsheet::color_elem_t m_background_red;
     spreadsheet::color_elem_t m_background_green;
     spreadsheet::color_elem_t m_background_blue;
+
     bool m_background_color;
+
+    border_map_t m_border_style_dir_pair;
 
 public:
 
@@ -181,6 +187,45 @@ public:
                     m_background_color = odf_helper::convert_fo_color(attr.value, m_background_red,
                             m_background_green, m_background_blue);
                 break;
+
+                case XML_border:
+                {
+                    odf_helper::odf_border_details border_details = odf_helper::extract_border_details(attr.value);
+                    m_border_style_dir_pair.insert(std::make_pair(spreadsheet::border_direction_t::top, border_details));
+                    m_border_style_dir_pair.insert(std::make_pair(spreadsheet::border_direction_t::bottom, border_details));
+                    m_border_style_dir_pair.insert(std::make_pair(spreadsheet::border_direction_t::left, border_details));
+                    m_border_style_dir_pair.insert(std::make_pair(spreadsheet::border_direction_t::right, border_details));
+                }
+                break;
+
+                case XML_border_top:
+                {
+                    odf_helper::odf_border_details border_details = odf_helper::extract_border_details(attr.value);
+                    m_border_style_dir_pair.insert(std::make_pair(spreadsheet::border_direction_t::top, border_details));
+                }
+                break;
+
+                case XML_border_bottom:
+                {
+                    odf_helper::odf_border_details border_details = odf_helper::extract_border_details(attr.value);
+                    m_border_style_dir_pair.insert(std::make_pair(spreadsheet::border_direction_t::bottom, border_details));
+                }
+                break;
+
+                case XML_border_left:
+                {
+                    odf_helper::odf_border_details border_details = odf_helper::extract_border_details(attr.value);
+                    m_border_style_dir_pair.insert(std::make_pair(spreadsheet::border_direction_t::left, border_details));
+                }
+                break;
+
+                case XML_border_right:
+                {
+                    odf_helper::odf_border_details border_details = odf_helper::extract_border_details(attr.value);
+                    m_border_style_dir_pair.insert(std::make_pair(spreadsheet::border_direction_t::right, border_details));
+                }
+                break;
+
                 default:
                     ;
             }
@@ -188,6 +233,7 @@ public:
     }
 
     bool has_background_color() { return m_background_color; }
+
     void get_background_color(spreadsheet::color_elem_t& red,
             spreadsheet::color_elem_t& green, spreadsheet::color_elem_t& blue)
     {
@@ -195,6 +241,14 @@ public:
         green = m_background_green;
         blue = m_background_blue;
     }
+
+    bool has_border() { return !m_border_style_dir_pair.empty(); }
+
+    border_map_t& get_border_attrib()
+    {
+        return m_border_style_dir_pair;
+    }
+
 };
 
 }
@@ -370,9 +424,9 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                 m_current_style->cell_data->automatic_style = m_automatic_styles;
                 if (mp_styles)
                 {
+
                     cell_prop_attr_parser func;
                     func = std::for_each(attrs.begin(), attrs.end(), func);
-
                     if (func.has_background_color())
                     {
                         spreadsheet::color_elem_t red, green, blue;
@@ -380,15 +434,31 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                         mp_styles->set_fill_bg_color(0, red, green, blue);
                     }
 
-                    size_t fill = mp_styles->commit_fill();
+                    size_t fill_id = mp_styles->commit_fill();
+
+                    if(func.has_border())
+                    {
+                        const cell_prop_attr_parser::border_map_t& border_map = func.get_border_attrib();
+                        for (cell_prop_attr_parser::border_map_t::const_iterator itr = border_map.begin(); itr != border_map.end(); ++itr)
+                        {
+                            mp_styles->set_border_color(itr->first, 0, itr->second.red, itr->second.green, itr->second.blue);
+                            mp_styles->set_border_style(itr->first, itr->second.border_style);
+                            mp_styles->set_border_width(itr->first, itr->second.border_width);
+                        }
+                    }
+
+                    size_t border_id = mp_styles->commit_border();
                     switch (m_current_style->family)
                     {
                         case style_family_table_cell:
                         {
                             odf_style::cell* data = m_current_style->cell_data;
-                            data->fill = fill;
+                            data->fill = fill_id;
+                            data->border=border_id;
                         }
+
                         break;
+
                         default:
                         ;
                     }

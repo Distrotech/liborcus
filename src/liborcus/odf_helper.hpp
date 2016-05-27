@@ -11,6 +11,7 @@
 #include <orcus/pstring.hpp>
 #include <orcus/spreadsheet/types.hpp>
 #include <orcus/measurement.hpp>
+#include <orcus/spreadsheet/styles.hpp>
 
 namespace orcus {
 
