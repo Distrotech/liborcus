@@ -23,6 +23,7 @@ odf_border_style_map::entry odf_border_style_entries[] =
 {
     { MDDS_ASCII("unknown"), spreadsheet::border_style_t::unknown},
     { MDDS_ASCII("none"), spreadsheet::border_style_t::none},
+    { MDDS_ASCII("solid"), spreadsheet::border_style_t::solid},
     { MDDS_ASCII("dash_dot"), spreadsheet::border_style_t::dash_dot},
     { MDDS_ASCII("dash_dot_dot"), spreadsheet::border_style_t::dash_dot_dot},
     { MDDS_ASCII("dashed"), spreadsheet::border_style_t::dashed},
@@ -107,11 +108,9 @@ orcus::odf_helper::odf_border_details odf_helper::extract_border_details(const o
     for(auto& sub_detail : detail)
     {
         if(sub_detail[0] == '#')
-            convert_fo_color(sub_detail,border_details.red , border_details.green , border_details.blue);
-
+            convert_fo_color(sub_detail, border_details.red, border_details.green, border_details.blue);
         else if(sub_detail[0] >= '0' && sub_detail[0] <='9')
             border_details.border_width = orcus::to_length(sub_detail);
-
         else    //  This has to be a style
         {
             odf_border_style_map border_style_map(odf_border_style_entries , ORCUS_N_ELEMENTS(odf_border_style_entries) , spreadsheet::border_style_t::none);

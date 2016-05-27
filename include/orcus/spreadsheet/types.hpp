@@ -40,6 +40,7 @@ enum class border_style_t
 {
     unknown = 0,
     none,
+    solid,
     dash_dot,
     dash_dot_dot,
     dashed,
