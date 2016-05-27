@@ -146,6 +146,20 @@ public:
 
         return m_parsing_progress;
     }
+
+    /**
+     * Return the current token size threshold.  Call this only after the
+     * parsing has finished.
+     *
+     * @return current token size threshold.
+     */
+    size_t token_size_threshold() const
+    {
+        if (m_parsing_progress)
+            return 0;
+
+        return m_token_size_threshold;
+    }
 };
 
 }}}

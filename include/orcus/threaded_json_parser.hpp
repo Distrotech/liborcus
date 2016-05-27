@@ -20,6 +20,7 @@ template<typename _Handler>
 class threaded_json_parser
 {
 public:
+
     typedef _Handler handler_type;
 
     /**
@@ -50,6 +51,14 @@ public:
      * Call this method to start parsing.
      */
     void parse();
+
+    /**
+     * Get statistics on the parsing session.  Call this only after the
+     * parsing has finished.
+     *
+     * @return structure containing statistics of the parsing session.
+     */
+    json::parser_stats get_stats() const;
 
 private:
     void thread_parse();
@@ -83,6 +92,12 @@ void threaded_json_parser<_Handler>::parse()
         process_tokens(tokens);
 
     process_tokens(tokens);
+}
+
+template<typename _Handler>
+json::parser_stats threaded_json_parser<_Handler>::get_stats() const
+{
+    return m_parser_thread.get_stats();
 }
 
 template<typename _Handler>

@@ -9,6 +9,8 @@
 #include <string>
 #include <sys/time.h>
 
+#define SIMULATE_PROCESSING_OVERHEAD 0
+
 using namespace std;
 using namespace orcus;
 
@@ -52,12 +54,14 @@ class handler
 
     void do_work()
     {
+#if SIMULATE_PROCESSING_OVERHEAD
         double f = m_results.empty() ? 0.0 : m_results.back();
 
-        for (size_t i = 0; i < 1000000; ++i)
+        for (size_t i = 0; i < 1000; ++i)
             f += 0.1;
 
         m_results.push_back(f);
+#endif
     }
 
 public:
@@ -186,15 +190,21 @@ int main(int argc, char** argv)
     cout << "max token size: " << max_token_size << endl;
 
     handler hdl;
-
+    orcus::json::parser_stats stats;
     {
         stack_printer __stack_printer__("parsing");
         orcus::threaded_json_parser<handler> parser(content.data(), content.size(), hdl, min_token_size, max_token_size);
         parser.parse();
+
+        stats = parser.get_stats();
     }
 
+    cout << "final token buffer size threshold: " << stats.token_buffer_size_threshold << endl;
+
     cout << "parsed token count: " << hdl.token_size() << endl;
+#if SIMULATE_PROCESSING_OVERHEAD
     cout << "work value: " << hdl.work_value() << endl;
+#endif
 
     return EXIT_SUCCESS;
 }

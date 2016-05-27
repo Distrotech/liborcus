@@ -224,6 +224,13 @@ struct parser_thread::impl
     {
         return m_token_buffer.next_tokens(tokens);
     }
+
+    parser_stats get_stats() const
+    {
+        parser_stats stats;
+        stats.token_buffer_size_threshold = m_token_buffer.token_size_threshold();
+        return stats;
+    }
 };
 
 std::ostream& operator<< (std::ostream& os, const parse_tokens_t& tokens)
@@ -306,6 +313,11 @@ void parser_thread::start()
 bool parser_thread::next_tokens(parse_tokens_t& tokens)
 {
     return mp_impl->next_tokens(tokens);
+}
+
+parser_stats parser_thread::get_stats() const
+{
+    return mp_impl->get_stats();
 }
 
 }}

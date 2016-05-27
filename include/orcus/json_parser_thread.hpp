@@ -16,6 +16,11 @@
 
 namespace orcus { namespace json {
 
+struct ORCUS_PSR_DLLPUBLIC parser_stats
+{
+    size_t token_buffer_size_threshold;
+};
+
 enum class parse_token_t
 {
     unknown,
@@ -97,6 +102,8 @@ public:
      *         to come), false if it's done i.e. this is the last token set.
      */
     bool next_tokens(parse_tokens_t& tokens);
+
+    parser_stats get_stats() const;
 };
 
 }}
