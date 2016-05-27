@@ -81,7 +81,6 @@ public:
             }
         }
 
-        assert(m_tokens.empty());
         std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
         m_tokens.swap(parser_tokens);
         m_cv_tokens_ready.notify_one();
@@ -104,7 +103,6 @@ public:
                 m_cv_tokens_empty.wait(lock_empty);
         }
 
-        assert(m_tokens.empty());
         std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
         m_tokens.swap(parser_tokens);
         m_parsing_progress = false;
