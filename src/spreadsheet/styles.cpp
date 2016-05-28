@@ -218,6 +218,12 @@ border_attrs_t* get_border_attrs(border_t& cur_border, border_direction_t dir)
         case border_direction_t::diagonal:
             p = &cur_border.diagonal;
         break;
+        case border_direction_t::diagonal_bl_tr:
+            p = &cur_border.diagonal_bl_tr;
+        break;
+        case border_direction_t::diagonal_tl_br:
+            p = &cur_border.diagonal_tl_br;
+        break;
         default:
             ;
     }

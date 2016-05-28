@@ -33,7 +33,9 @@ enum class border_direction_t
     bottom,
     left,
     right,
-    diagonal
+    diagonal,
+    diagonal_bl_tr,
+    diagonal_tl_br
 };
 
 enum class border_style_t
