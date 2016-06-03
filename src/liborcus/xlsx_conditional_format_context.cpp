@@ -207,6 +207,9 @@ struct cfRule_attr_parser : public std::unary_function<xml_token_attr_t, void>
 
     cfRule_attr_parser(spreadsheet::iface::import_conditional_format& cond_format):
         m_cond_format(cond_format),
+        m_type(none),
+        m_operator(operator_default),
+        m_date(date_default),
         m_above_average(true),
         m_equal_average(false),
         m_percent(false),
