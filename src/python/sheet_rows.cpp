@@ -14,6 +14,7 @@
 namespace orcus { namespace python {
 
 sheet_rows_data::sheet_rows_data() :
+    m_sheet(nullptr),
     m_range(ixion::abs_range_t::invalid),
     m_current_row(-1) {}
 
