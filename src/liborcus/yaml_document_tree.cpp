@@ -120,7 +120,6 @@ struct yaml_value_number : public yaml_value
 {
     double value_number;
 
-    yaml_value_number() : yaml_value(node_t::number) {}
     yaml_value_number(double num) : yaml_value(node_t::number), value_number(num) {}
     virtual ~yaml_value_number() {}
 
