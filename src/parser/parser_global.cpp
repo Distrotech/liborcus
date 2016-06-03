@@ -260,7 +260,6 @@ parse_quoted_string_state parse_single_quoted_string_buffered(
     const char* p0 = p;
     size_t len = 0;
     char last = 0;
-    char c = 0;
 
     parse_quoted_string_state ret;
     ret.transient = true;
@@ -270,7 +269,7 @@ parse_quoted_string_state parse_single_quoted_string_buffered(
         if (!p0)
             p0 = p;
 
-        c = *p;
+        char c = *p;
         switch (c)
         {
             case '\'':
@@ -388,10 +387,9 @@ const char* parse_to_closing_single_quote(const char* p, size_t max_length)
         return nullptr;
 
     char last = 0;
-    char c = 0;
     for (; p != p_end; ++p)
     {
-        c = *p;
+        char c = *p;
         switch (c)
         {
             case '\'':
