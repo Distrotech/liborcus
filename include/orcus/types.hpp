@@ -75,6 +75,16 @@ enum class length_unit_t
     // TODO: Add more.
 };
 
+struct ORCUS_DLLPUBLIC length_t
+{
+    length_unit_t unit;
+    double value;
+
+    length_t();
+
+    std::string print() const;
+};
+
 struct ORCUS_PSR_DLLPUBLIC date_time_t
 {
     int year;

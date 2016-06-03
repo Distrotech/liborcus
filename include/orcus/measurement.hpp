@@ -18,16 +18,6 @@ namespace orcus {
 
 class pstring;
 
-struct ORCUS_DLLPUBLIC length_t
-{
-    length_unit_t unit;
-    double value;
-
-    length_t();
-
-    std::string print() const;
-};
-
 ORCUS_DLLPUBLIC double to_double(const char* p, const char* p_end, const char** p_parse_ended = NULL);
 ORCUS_DLLPUBLIC double to_double(const pstring& s);
 ORCUS_DLLPUBLIC long to_long(const char* p, const char* p_end, const char** p_parse_ended = NULL);

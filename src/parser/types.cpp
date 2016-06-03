@@ -29,6 +29,35 @@ xml_token_attr_t::xml_token_attr_t(
     xmlns_id_t _ns, xml_token_t _name, const pstring& _raw_name, const pstring& _value, bool _transient) :
     ns(_ns), name(_name), raw_name(_raw_name), value(_value), transient(_transient) {}
 
+length_t::length_t() : unit(length_unit_t::unknown), value(0.0) {}
+
+std::string length_t::print() const
+{
+    std::ostringstream os;
+    os << value;
+
+    switch (unit)
+    {
+        case length_unit_t::centimeter:
+            os << " cm";
+        break;
+        case length_unit_t::inch:
+            os << " in";
+        break;
+        case length_unit_t::point:
+            os << " pt";
+        break;
+        case length_unit_t::twip:
+            os << " twip";
+        break;
+        case length_unit_t::unknown:
+        default:
+            ;
+    }
+
+    return os.str();
+}
+
 date_time_t::date_time_t() :
     year(0), month(0), day(0), hour(0), minute(0), second(0.0) {}
 

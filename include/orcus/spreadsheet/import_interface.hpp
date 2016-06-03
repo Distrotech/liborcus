@@ -10,10 +10,9 @@
 
 #include <cstdlib>
 
-#include "types.hpp"
+#include "orcus/spreadsheet/types.hpp"
 #include "orcus/types.hpp"
 #include "orcus/env.hpp"
-#include <orcus/measurement.hpp>
 
 // NB: This header must not depend on ixion, as it needs to be usable for
 // those clients that provide their own formula engine.  Other headers in

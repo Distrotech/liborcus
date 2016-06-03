@@ -14,40 +14,9 @@
 #include <mdds/global.hpp>
 #include <orcus/global.hpp>
 
-#include <sstream>
-
 using namespace std;
 
 namespace orcus {
-
-length_t::length_t() : unit(length_unit_t::unknown), value(0.0) {}
-
-std::string length_t::print() const
-{
-    ostringstream os;
-    os << value;
-
-    switch (unit)
-    {
-        case length_unit_t::centimeter:
-            os << " cm";
-        break;
-        case length_unit_t::inch:
-            os << " in";
-        break;
-        case length_unit_t::point:
-            os << " pt";
-        break;
-        case length_unit_t::twip:
-            os << " twip";
-        break;
-        case length_unit_t::unknown:
-        default:
-            ;
-    }
-
-    return os.str();
-}
 
 double to_double(const char* p, const char* p_end, const char** p_parse_ended)
 {
