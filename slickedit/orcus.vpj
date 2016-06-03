@@ -145,6 +145,10 @@
             Filters=""></Folder>
     </CustomFolders>
     <Files AutoFolders="DirectoryView">
+        <Folder Name="../benchmark">
+            <F N="../benchmark/json_parser.cpp"/>
+            <F N="../benchmark/threaded_json_parser.cpp"/>
+        </Folder>
         <Folder Name="../example">
             <F N="../example/json.cpp"/>
             <F N="../example/json_parser.cpp"/>
@@ -471,6 +475,7 @@
             </Folder>
             <F N="../src/dom_tree_sax_handler.cpp"/>
             <F N="../src/dom_tree_sax_handler.hpp"/>
+            <F N="../src/odf_styles_context_test.cpp"/>
             <F N="../src/orcus_css_dump.cpp"/>
             <F N="../src/orcus_csv_main.cpp"/>
             <F N="../src/orcus_detect_main.cpp"/>
