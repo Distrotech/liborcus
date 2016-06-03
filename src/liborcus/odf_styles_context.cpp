@@ -448,7 +448,7 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
 
                     size_t fill_id = mp_styles->commit_fill();
 
-                    if(func.has_border())
+                    if (func.has_border())
                     {
                         const cell_prop_attr_parser::border_map_t& border_map = func.get_border_attrib();
                         for (cell_prop_attr_parser::border_map_t::const_iterator itr = border_map.begin(); itr != border_map.end(); ++itr)

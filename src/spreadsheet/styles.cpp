@@ -261,7 +261,7 @@ void import_styles::set_border_color(
 void import_styles::set_border_width(border_direction_t dir, length_t width)
 {
     border_attrs_t* p = get_border_attrs(m_cur_border, dir);
-    if(p)
+    if (p)
         p->border_width = width;
 }
 

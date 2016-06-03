@@ -103,16 +103,16 @@ orcus::odf_helper::odf_border_details odf_helper::extract_border_details(const o
 
     std::vector<pstring> detail = orcus::string_helper::split_string(value,' ');
 
-    for(auto& sub_detail : detail)
+    for (auto& sub_detail : detail)
     {
-        if(sub_detail[0] == '#')
+        if (sub_detail[0] == '#')
             convert_fo_color(sub_detail, border_details.red, border_details.green, border_details.blue);
-        else if(sub_detail[0] >= '0' && sub_detail[0] <='9')
+        else if (sub_detail[0] >= '0' && sub_detail[0] <='9')
             border_details.border_width = orcus::to_length(sub_detail);
         else    //  This has to be a style
         {
-            odf_border_style_map border_style_map(odf_border_style_entries , ORCUS_N_ELEMENTS(odf_border_style_entries) , spreadsheet::border_style_t::none);
-            border_details.border_style = border_style_map.find(sub_detail.get() , sub_detail.size());
+            odf_border_style_map border_style_map(odf_border_style_entries, ORCUS_N_ELEMENTS(odf_border_style_entries), spreadsheet::border_style_t::none);
+            border_details.border_style = border_style_map.find(sub_detail.get(), sub_detail.size());
         }
 
     }
