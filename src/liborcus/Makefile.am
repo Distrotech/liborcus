@@ -222,7 +222,8 @@ orcus_odf_helper_test_SOURCES = \
 	odf_helper_test.cpp
 
 orcus_odf_helper_test_LDADD = \
-	liborcus-@ORCUS_API_VERSION@.la
+	liborcus-@ORCUS_API_VERSION@.la \
+	../parser/liborcus-parser-@ORCUS_API_VERSION@.la
 
 orcus_odf_helper_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS)
 
