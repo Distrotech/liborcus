@@ -218,7 +218,6 @@ std::ostream& operator<< (std::ostream& os, const css_property_value_t& v)
         case css::property_value_t::url:
             os << "url(" << pstring(v.str, v.length) << ")";
         break;
-        break;
         case css::property_value_t::none:
         default:
             ;
