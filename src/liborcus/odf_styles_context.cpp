@@ -163,7 +163,7 @@ public:
 class cell_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
 {
 public:
-    typedef std::map<spreadsheet::border_direction_t, odf_helper::odf_border_details> border_map_t;
+    typedef std::map<spreadsheet::border_direction_t, odf_helper::odf_border_details> border_map_type;
 
     cell_prop_attr_parser():
         m_background_red(0),
@@ -180,7 +180,7 @@ private:
 
     bool m_background_color;
 
-    border_map_t m_border_style_dir_pair;
+    border_map_type m_border_style_dir_pair;
 
 public:
 
@@ -263,7 +263,7 @@ public:
 
     bool has_border() { return !m_border_style_dir_pair.empty(); }
 
-    border_map_t& get_border_attrib()
+    border_map_type& get_border_attrib()
     {
         return m_border_style_dir_pair;
     }
@@ -457,8 +457,8 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
 
                     if (func.has_border())
                     {
-                        const cell_prop_attr_parser::border_map_t& border_map = func.get_border_attrib();
-                        for (cell_prop_attr_parser::border_map_t::const_iterator itr = border_map.begin(); itr != border_map.end(); ++itr)
+                        const cell_prop_attr_parser::border_map_type& border_map = func.get_border_attrib();
+                        for (cell_prop_attr_parser::border_map_type::const_iterator itr = border_map.begin(); itr != border_map.end(); ++itr)
                         {
                             mp_styles->set_border_color(itr->first, 0, itr->second.red, itr->second.green, itr->second.blue);
                             mp_styles->set_border_style(itr->first, itr->second.border_style);
