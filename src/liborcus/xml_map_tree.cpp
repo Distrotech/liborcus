@@ -119,7 +119,7 @@ public:
                     // convert the namespace to a proper ID.
                     pstring ns_name(p0, len);
                     ns = m_cxt.get(ns_name);
-                    p0 = NULL; // reset the name.
+                    p0 = nullptr; // reset the name.
                 }
                 break;
                 default:
@@ -157,7 +157,7 @@ xml_map_tree::cell_position::cell_position(const cell_position& r) :
     sheet(r.sheet), row(r.row), col(r.col) {}
 
 xml_map_tree::element_position::element_position() :
-    open_begin(NULL), open_end(NULL), close_begin(NULL), close_end(NULL) {}
+    open_begin(nullptr), open_end(nullptr), close_begin(nullptr), close_end(nullptr) {}
 
 xml_map_tree::cell_reference::cell_reference() {}
 
@@ -203,7 +203,7 @@ xml_map_tree::element::element(
     linkable(_ns, _name, node_element),
     elem_type(_elem_type),
     ref_type(_ref_type),
-    range_parent(NULL)
+    range_parent(nullptr)
 {
     if (elem_type == element_unlinked)
     {
@@ -252,14 +252,14 @@ xml_map_tree::element::~element()
 const xml_map_tree::element* xml_map_tree::element::get_child(xmlns_id_t _ns, const pstring& _name) const
 {
     if (elem_type != element_unlinked)
-        return NULL;
+        return nullptr;
 
     assert(child_elements);
 
     auto it = std::find_if(
         child_elements->begin(), child_elements->end(), find_by_name<element>(_ns, _name));
 
-    return it == child_elements->end() ? NULL : it->get();
+    return it == child_elements->end() ? nullptr : it->get();
 }
 
 bool xml_map_tree::element::unlinked_attribute_anchor() const
@@ -284,7 +284,7 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(xmlns_id_t ns, c
     {
         // We're still in the unlinked region.
         m_unlinked_stack.push_back(xml_name_t(ns, name));
-        return NULL;
+        return nullptr;
     }
 
     if (m_stack.empty())
@@ -293,7 +293,7 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(xmlns_id_t ns, c
         {
             // Tree is empty.
             m_unlinked_stack.push_back(xml_name_t(ns, name));
-            return NULL;
+            return nullptr;
         }
 
         const element* p = m_parent.mp_root;
@@ -301,7 +301,7 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(xmlns_id_t ns, c
         {
             // Names differ.
             m_unlinked_stack.push_back(xml_name_t(ns, name));
-            return NULL;
+            return nullptr;
         }
 
         m_stack.push_back(p);
@@ -320,7 +320,7 @@ const xml_map_tree::element* xml_map_tree::walker::push_element(xmlns_id_t ns, c
     }
 
     m_unlinked_stack.push_back(xml_name_t(ns, name));
-    return NULL;
+    return nullptr;
 }
 
 const xml_map_tree::element* xml_map_tree::walker::pop_element(xmlns_id_t ns, const pstring& name)
@@ -335,9 +335,9 @@ const xml_map_tree::element* xml_map_tree::walker::pop_element(xmlns_id_t ns, co
 
         if (!m_unlinked_stack.empty())
             // We are still in the unlinked region.
-            return NULL;
+            return nullptr;
 
-        return m_stack.empty() ? NULL : m_stack.back();
+        return m_stack.empty() ? nullptr : m_stack.back();
     }
 
     if (m_stack.empty())
@@ -347,11 +347,11 @@ const xml_map_tree::element* xml_map_tree::walker::pop_element(xmlns_id_t ns, co
         throw general_error("Closing element has a different name than the opening element. (linked stack)");
 
     m_stack.pop_back();
-    return m_stack.empty() ? NULL : m_stack.back();
+    return m_stack.empty() ? nullptr : m_stack.back();
 }
 
 xml_map_tree::xml_map_tree(xmlns_repository& xmlns_repo) :
-    m_xmlns_cxt(xmlns_repo.create_context()), mp_cur_range_ref(NULL), mp_root(NULL) {}
+    m_xmlns_cxt(xmlns_repo.create_context()), mp_cur_range_ref(nullptr), mp_root(nullptr) {}
 
 xml_map_tree::~xml_map_tree()
 {
@@ -388,7 +388,7 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
     linkable* node = get_element_stack(xpath, reference_cell, elem_stack);
     assert(node);
     assert(!elem_stack.empty());
-    cell_reference* cell_ref = NULL;
+    cell_reference* cell_ref = nullptr;
     switch (node->node_type)
     {
         case node_element:
@@ -409,7 +409,7 @@ void xml_map_tree::set_cell_link(const pstring& xpath, const cell_position& ref)
 void xml_map_tree::start_range()
 {
     m_cur_range_parent.clear();
-    mp_cur_range_ref = NULL;
+    mp_cur_range_ref = nullptr;
 }
 
 void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_position& pos)
@@ -417,7 +417,7 @@ void xml_map_tree::append_range_field_link(const pstring& xpath, const cell_posi
     if (xpath.empty())
         return;
 
-    range_reference* range_ref = NULL;
+    range_reference* range_ref = nullptr;
     range_ref_map_type::iterator it = m_field_refs.lower_bound(pos);
     if (it == m_field_refs.end() || m_field_refs.key_comp()(pos, it->first))
     {
@@ -534,10 +534,10 @@ void xml_map_tree::commit_range()
 const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
 {
     if (!mp_root)
-        return NULL;
+        return nullptr;
 
     if (xpath.empty())
-        return NULL;
+        return nullptr;
 
 #if ORCUS_DEBUG_XML_MAP_TREE
     cout << "xml_map_tree::get_link: xpath = '" << xpath << "'" << endl;
@@ -550,7 +550,7 @@ const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
     xpath_parser::token token = parser.next();
     if (cur_node->ns != token.ns || cur_node->name != token.name)
         // Root element name doesn't match.
-        return NULL;
+        return nullptr;
 
 #if ORCUS_DEBUG_XML_MAP_TREE
     cout << "xml_map_tree::get_link: root = (ns=" << token.ns << ", name=" << token.name << ")" << endl;
@@ -561,7 +561,7 @@ const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
         {
             // The current node should be an element and should have an attribute of the same name.
             if (cur_node->node_type != node_element)
-                return NULL;
+                return nullptr;
 
             const element* elem = static_cast<const element*>(cur_node);
             const attribute_store_type& attrs = elem->attributes;
@@ -570,7 +570,7 @@ const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
 
             if (it == attrs.end())
                 // No such attribute exists.
-                return NULL;
+                return nullptr;
 
             return it->get();
         }
@@ -578,14 +578,14 @@ const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
         // See if an element of this name exists below the current element.
 
         if (cur_node->node_type != node_element)
-            return NULL;
+            return nullptr;
 
         const element* elem = static_cast<const element*>(cur_node);
         if (elem->elem_type != element_unlinked)
-            return NULL;
+            return nullptr;
 
         if (!elem->child_elements)
-            return NULL;
+            return nullptr;
 
         auto it = std::find_if(
             elem->child_elements->begin(), elem->child_elements->end(),
@@ -593,14 +593,14 @@ const xml_map_tree::linkable* xml_map_tree::get_link(const pstring& xpath) const
 
         if (it == elem->child_elements->end())
             // No such child element exists.
-            return NULL;
+            return nullptr;
 
         cur_node = it->get();
     }
 
     if (cur_node->node_type != node_element || static_cast<const element*>(cur_node)->elem_type == element_unlinked)
         // Non-leaf elements are not links.
-        return NULL;
+        return nullptr;
 
     return cur_node;
 }
@@ -682,7 +682,7 @@ xml_map_tree::linkable* xml_map_tree::get_element_stack(
 
     // Insert a leaf node.
 
-    linkable* ret = NULL;
+    linkable* ret = nullptr;
     if (token.attribute)
     {
         // This is an attribute.  Insert it into the current element.
