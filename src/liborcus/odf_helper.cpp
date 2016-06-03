@@ -99,9 +99,6 @@ bool odf_helper::convert_fo_color(const pstring& value, orcus::spreadsheet::colo
 
 orcus::odf_helper::odf_border_details odf_helper::extract_border_details(const orcus::pstring &value)
 {
-    orcus::pstring color_code;
-    orcus::pstring width;
-    orcus::pstring style;
     orcus::odf_helper::odf_border_details border_details;
 
     std::vector<pstring> detail = orcus::string_helper::split_string(value,' ');
