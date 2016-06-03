@@ -54,7 +54,7 @@ struct parser_stack
     PyObject* node;
     json_node_t type;
 
-    parser_stack(PyObject* _node, json_node_t _type) : node(_node), type(_type) {}
+    parser_stack(PyObject* _node, json_node_t _type) : key(nullptr), node(_node), type(_type) {}
 };
 
 class json_parser_handler
