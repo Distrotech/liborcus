@@ -42,7 +42,7 @@ class xpath_parser
     const char* mp_char;
     const char* mp_end;
 
-    enum token_type { element, attribute };
+    enum class token_type { element, attribute };
     token_type m_next_token_type;
 
 public:
@@ -66,7 +66,7 @@ public:
     };
 
     xpath_parser(const xmlns_context& cxt, const char* p, size_t n) :
-        m_cxt(cxt), mp_char(p), mp_end(p+n), m_next_token_type(element)
+        m_cxt(cxt), mp_char(p), mp_end(p+n), m_next_token_type(token_type::element)
     {
         if (!n)
             throw xml_map_tree::xpath_error("empty path");
@@ -82,7 +82,7 @@ public:
         if (mp_char == mp_end)
             return token();
 
-        const char* p0 = NULL;
+        const char* p0 = nullptr;
         size_t len = 0;
         xmlns_id_t ns = XMLNS_UNKNOWN_ID;
 
@@ -99,17 +99,17 @@ public:
                 case '/':
                 {
                     // '/' encountered.  Next token is an element name.
-                    if (m_next_token_type == attribute)
+                    if (m_next_token_type == token_type::attribute)
                         throw xml_map_tree::xpath_error("attribute name should not contain '/'.");
 
-                    m_next_token_type = element;
+                    m_next_token_type = token_type::element;
                     ++mp_char; // skip the '/'.
                     return token(ns, pstring(p0, len), false);
                 }
                 case '@':
                 {
                     // '@' encountered.  Next token is an attribute name.
-                    m_next_token_type = attribute;
+                    m_next_token_type = token_type::attribute;
                     ++mp_char; // skip the '@'.
                     return token(ns, pstring(p0, len), false);
                 }
@@ -128,7 +128,7 @@ public:
         }
 
         // '/' has never been encountered.  It must be the last name in the path.
-        return token(ns, pstring(p0, len), m_next_token_type == attribute);
+        return token(ns, pstring(p0, len), m_next_token_type == token_type::attribute);
     }
 };
 
