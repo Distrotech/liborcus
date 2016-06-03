@@ -251,7 +251,7 @@ public:
         }
     }
 
-    bool has_background_color() { return m_background_color; }
+    bool has_background_color() const { return m_background_color; }
 
     void get_background_color(spreadsheet::color_elem_t& red,
             spreadsheet::color_elem_t& green, spreadsheet::color_elem_t& blue)
@@ -261,9 +261,9 @@ public:
         blue = m_background_blue;
     }
 
-    bool has_border() { return !m_border_style_dir_pair.empty(); }
+    bool has_border() const { return !m_border_style_dir_pair.empty(); }
 
-    border_map_type& get_border_attrib()
+    const border_map_type& get_border_attrib() const
     {
         return m_border_style_dir_pair;
     }
@@ -443,7 +443,6 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                 m_current_style->cell_data->automatic_style = m_automatic_styles;
                 if (mp_styles)
                 {
-
                     cell_prop_attr_parser func;
                     func = std::for_each(attrs.begin(), attrs.end(), func);
                     if (func.has_background_color())
@@ -473,13 +472,11 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                         {
                             odf_style::cell* data = m_current_style->cell_data;
                             data->fill = fill_id;
-                            data->border=border_id;
+                            data->border = border_id;
                         }
-
                         break;
-
                         default:
-                        ;
+                            ;
                     }
                 }
             }
