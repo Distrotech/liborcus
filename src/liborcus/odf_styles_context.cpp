@@ -165,6 +165,13 @@ class cell_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
 public:
     typedef std::map<spreadsheet::border_direction_t, odf_helper::odf_border_details> border_map_t;
 
+    cell_prop_attr_parser():
+        m_background_red(0),
+        m_background_green(0),
+        m_background_blue(0),
+        m_background_color(false)
+    {}
+
 private:
 
     spreadsheet::color_elem_t m_background_red;
