@@ -25,11 +25,9 @@ class parser_token_buffer
 {
     typedef _TokensT tokens_type;
 
-    mutable std::mutex m_mtx_tokens_ready;
-    std::condition_variable m_cv_tokens_ready;
-
-    mutable std::mutex m_mtx_tokens_empty;
+    mutable std::mutex m_mtx_tokens;
     std::condition_variable m_cv_tokens_empty;
+    std::condition_variable m_cv_tokens_ready;
 
     tokens_type m_tokens; // token buffer used to hand over tokens to the client.
 
@@ -40,13 +38,13 @@ class parser_token_buffer
 
     bool tokens_empty() const
     {
-        std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
+        std::unique_lock<std::mutex> lock_empty(m_mtx_tokens);
         return m_tokens.empty();
     }
 
     void wait_until_tokens_empty()
     {
-        std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
+        std::unique_lock<std::mutex> lock_empty(m_mtx_tokens);
         while (!m_tokens.empty())
             m_cv_tokens_empty.wait(lock_empty);
     }
@@ -90,7 +88,7 @@ public:
             wait_until_tokens_empty();
         }
 
-        std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
+        std::unique_lock<std::mutex> lock(m_mtx_tokens);
         m_tokens.swap(parser_tokens);
         lock.unlock();
         m_cv_tokens_ready.notify_one();
@@ -109,7 +107,7 @@ public:
         // Wait until the client tokens get used up.
         wait_until_tokens_empty();
 
-        std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
+        std::unique_lock<std::mutex> lock(m_mtx_tokens);
         m_tokens.swap(parser_tokens);
         m_parsing_progress = false;
         lock.unlock();
@@ -137,17 +135,16 @@ public:
             return false;
         }
 
-        // Wait until the parser passes a new set of tokens.
-        std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
-        while (m_tokens.empty() && m_parsing_progress)
-            m_cv_tokens_ready.wait(lock);
-
         {
+            // Wait until the parser passes a new set of tokens.
+            std::unique_lock<std::mutex> lock(m_mtx_tokens);
+            while (m_tokens.empty() && m_parsing_progress)
+                m_cv_tokens_ready.wait(lock);
+
             // Get the new tokens and notify the parser.
-            std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
             tokens.swap(m_tokens);
-            m_cv_tokens_empty.notify_one();
         }
+        m_cv_tokens_empty.notify_one();
 
         return m_parsing_progress;
     }
