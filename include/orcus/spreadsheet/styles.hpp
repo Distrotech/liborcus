@@ -84,6 +84,7 @@ struct ORCUS_SPM_DLLPUBLIC protection_t
 {
     bool locked;
     bool hidden;
+    bool print_content;
 
     protection_t();
     void reset();
@@ -165,6 +166,7 @@ public:
 
     virtual void set_cell_hidden(bool b);
     virtual void set_cell_locked(bool b);
+    virtual void set_cell_print_content(bool b);
     virtual size_t commit_cell_protection();
 
     virtual void set_number_format_count(size_t n);

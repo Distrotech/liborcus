@@ -68,7 +68,7 @@ void border_t::reset()
 }
 
 protection_t::protection_t() :
-    locked(false), hidden(false)
+    locked(false), hidden(false), print_content(false)
 {
 }
 
@@ -280,6 +280,11 @@ void import_styles::set_cell_hidden(bool b)
 void import_styles::set_cell_locked(bool b)
 {
     m_cur_protection.locked = b;
+}
+
+void import_styles::set_cell_print_content(bool b)
+{
+    m_cur_protection.print_content = b;
 }
 
 size_t import_styles::commit_cell_protection()

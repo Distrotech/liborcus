@@ -116,6 +116,7 @@ public:
     // cell protection
     virtual void set_cell_hidden(bool b) = 0;
     virtual void set_cell_locked(bool b) = 0;
+    virtual void set_cell_print_content(bool b) = 0;
     virtual size_t commit_cell_protection() = 0;
 
     // number format
