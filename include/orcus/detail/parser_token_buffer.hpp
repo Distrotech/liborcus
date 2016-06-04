@@ -38,15 +38,21 @@ class parser_token_buffer
 
     bool tokens_empty() const
     {
-        std::unique_lock<std::mutex> lock_empty(m_mtx_tokens);
+        std::unique_lock<std::mutex> lock(m_mtx_tokens);
         return m_tokens.empty();
     }
 
+    /**
+     * Only to be called from the parser thread.
+     *
+     * Wait until the processor thread takes the new tokens and makes the
+     * token buffer empty.
+     */
     void wait_until_tokens_empty()
     {
-        std::unique_lock<std::mutex> lock_empty(m_mtx_tokens);
+        std::unique_lock<std::mutex> lock(m_mtx_tokens);
         while (!m_tokens.empty())
-            m_cv_tokens_empty.wait(lock_empty);
+            m_cv_tokens_empty.wait(lock);
     }
 
 public:
@@ -127,13 +133,6 @@ public:
     bool next_tokens(tokens_type& tokens)
     {
         tokens.clear();
-
-        if (!m_parsing_progress)
-        {
-            // Parsing has completed.
-            tokens.swap(m_tokens);
-            return false;
-        }
 
         {
             // Wait until the parser passes a new set of tokens.
