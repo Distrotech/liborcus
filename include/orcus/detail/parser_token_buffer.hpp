@@ -37,7 +37,7 @@ class parser_token_buffer
 
     bool tokens_empty() const
     {
-        std::unique_lock<std::mutex> lock(m_mtx_tokens);
+        std::lock_guard<std::mutex> lock(m_mtx_tokens);
         return m_tokens.empty();
     }
 
@@ -112,10 +112,11 @@ public:
         // Wait until the client tokens get used up.
         wait_until_tokens_empty();
 
-        std::unique_lock<std::mutex> lock(m_mtx_tokens);
-        m_tokens.swap(parser_tokens);
-        m_parsing_progress = false;
-        lock.unlock();
+        {
+            std::lock_guard<std::mutex> lock(m_mtx_tokens);
+            m_tokens.swap(parser_tokens);
+            m_parsing_progress = false;
+        }
         m_cv_tokens_ready.notify_one();
     }
 
