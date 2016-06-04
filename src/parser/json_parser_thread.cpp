@@ -106,7 +106,10 @@ struct parser_thread::impl
 
     impl(const char* p, size_t n, size_t min_token_size, size_t max_token_size) :
         m_token_buffer(min_token_size, max_token_size),
-        mp_char(p), m_size(n) {}
+        mp_char(p), m_size(n)
+    {
+        m_parser_tokens.reserve(min_token_size);
+    }
 
     void start()
     {

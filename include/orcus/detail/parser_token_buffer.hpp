@@ -25,10 +25,10 @@ class parser_token_buffer
 {
     typedef _TokensT tokens_type;
 
-    std::mutex m_mtx_tokens_ready;
+    mutable std::mutex m_mtx_tokens_ready;
     std::condition_variable m_cv_tokens_ready;
 
-    std::mutex m_mtx_tokens_empty;
+    mutable std::mutex m_mtx_tokens_empty;
     std::condition_variable m_cv_tokens_empty;
 
     tokens_type m_tokens; // token buffer used to hand over tokens to the client.
@@ -37,6 +37,19 @@ class parser_token_buffer
     const size_t m_max_token_size;
 
     std::atomic<bool> m_parsing_progress;
+
+    bool tokens_empty() const
+    {
+        std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
+        return m_tokens.empty();
+    }
+
+    void wait_until_tokens_empty()
+    {
+        std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
+        while (!m_tokens.empty())
+            m_cv_tokens_empty.wait(lock_empty);
+    }
 
 public:
     parser_token_buffer(size_t min_token_size, size_t max_token_size) :
@@ -63,26 +76,23 @@ public:
             // Still below the threshold.
             return;
 
+        if (!tokens_empty())
         {
-            std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
-            if (!m_tokens.empty())
+            if (m_token_size_threshold < (m_max_token_size/2))
             {
-                if (m_token_size_threshold < (m_max_token_size/2))
-                {
-                    // Double the threshold and continue to parse.
-                    m_token_size_threshold *= 2;
-                    return;
-                }
-
-                // We cannot increase the threshold any more.  Wait for the
-                // client to finish.
-                while (!m_tokens.empty())
-                    m_cv_tokens_empty.wait(lock_empty);
+                // Double the threshold and continue to parse.
+                m_token_size_threshold *= 2;
+                return;
             }
+
+            // We cannot increase the threshold any more.  Wait for the
+            // client to finish.
+            wait_until_tokens_empty();
         }
 
         std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
         m_tokens.swap(parser_tokens);
+        lock.unlock();
         m_cv_tokens_ready.notify_one();
     }
 
@@ -96,16 +106,13 @@ public:
      */
     void notify_and_finish(tokens_type& parser_tokens)
     {
-        {
-            // Wait until the client tokens get used up.
-            std::unique_lock<std::mutex> lock_empty(m_mtx_tokens_empty);
-            while (!m_tokens.empty())
-                m_cv_tokens_empty.wait(lock_empty);
-        }
+        // Wait until the client tokens get used up.
+        wait_until_tokens_empty();
 
         std::unique_lock<std::mutex> lock(m_mtx_tokens_ready);
         m_tokens.swap(parser_tokens);
         m_parsing_progress = false;
+        lock.unlock();
         m_cv_tokens_ready.notify_one();
     }
 

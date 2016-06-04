@@ -11,7 +11,7 @@
 #include "orcus/env.hpp"
 
 #include <memory>
-#include <deque>
+#include <vector>
 #include <ostream>
 
 namespace orcus { namespace json {
@@ -77,7 +77,7 @@ struct ORCUS_PSR_DLLPUBLIC parse_token
     bool operator!= (const parse_token& other) const;
 };
 
-typedef std::deque<parse_token> parse_tokens_t;
+typedef std::vector<parse_token> parse_tokens_t;
 
 ORCUS_PSR_DLLPUBLIC std::ostream& operator<< (std::ostream& os, const parse_tokens_t& tokens);
 
