@@ -10,7 +10,6 @@
 
 #include "orcus/exception.hpp"
 
-#include <atomic>
 #include <mutex>
 #include <condition_variable>
 
@@ -34,7 +33,7 @@ class parser_token_buffer
     size_t m_token_size_threshold;
     const size_t m_max_token_size;
 
-    std::atomic<bool> m_parsing_progress;
+    bool m_parsing_progress;
 
     bool tokens_empty() const
     {
@@ -134,18 +133,20 @@ public:
     {
         tokens.clear();
 
-        {
-            // Wait until the parser passes a new set of tokens.
-            std::unique_lock<std::mutex> lock(m_mtx_tokens);
-            while (m_tokens.empty() && m_parsing_progress)
-                m_cv_tokens_ready.wait(lock);
+        // Wait until the parser passes a new set of tokens.
+        std::unique_lock<std::mutex> lock(m_mtx_tokens);
+        while (m_tokens.empty() && m_parsing_progress)
+            m_cv_tokens_ready.wait(lock);
 
-            // Get the new tokens and notify the parser.
-            tokens.swap(m_tokens);
-        }
+        // Get the new tokens and notify the parser.
+        tokens.swap(m_tokens);
+        bool parsing_progress = m_parsing_progress; // Make a copy so that lock can be released safely.
+
+        lock.unlock();
+
         m_cv_tokens_empty.notify_one();
 
-        return m_parsing_progress;
+        return parsing_progress;
     }
 
     /**
