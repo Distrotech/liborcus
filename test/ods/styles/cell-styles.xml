@@ -12,4 +12,13 @@
   <style:style style:name="Name4" style:family="table-cell" style:parent-style-name="Text">
 <style:table-cell-properties fo:border-top="0.74pt double_border #000000" fo:border-bottom="none" fo:border-left="0.74pt hair #000000" fo:border-right="0.74pt medium #000000"/>
   </style:style>
+  <style:style style:name="Name5" style:family="table-cell" style:parent-style-name="Text">
+<style:table-cell-properties style:cell-protect="hidden-and-protected" style:print-content="true"/>
+  </style:style>
+  <style:style style:name="Name6" style:family="table-cell" style:parent-style-name="Text">
+<style:table-cell-properties style:cell-protect="protected formula-hidden" style:print-content="false"/>
+  </style:style>
+  <style:style style:name="Name7" style:family="table-cell" style:parent-style-name="Text">
+<style:table-cell-properties style:cell-protect="none" style:print-content="true"/>
+  </style:style>
 </office:styles>

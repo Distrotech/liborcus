@@ -58,7 +58,7 @@ int main()
 /*  Test for Border Styles
     =====================================================
 */
-    assert(styles.get_border_count() == 5);
+    assert(styles.get_border_count() == 8);
 
     /* Test that border style applies to all the sides when not specified */
     style = find_cell_style_by_name("Name1", &styles);
@@ -111,6 +111,48 @@ int main()
     assert(cell_border->diagonal_bl_tr.border_color.red == 0xff);
     assert(cell_border->diagonal_tl_br.border_color.green == 0x00);
     assert(cell_border->diagonal_tl_br.border_width.value == 0.74);
+
+/*  Test for Cell Protection
+    ========================================================
+*/
+    /* Test that Cell is only protected and not hidden , Print Content is true */
+    style = find_cell_style_by_name("Name5", &styles);
+    xf = style->xf;
+    cell_format = styles.get_cell_style_format(xf);
+    size_t protection = cell_format->protection;
+    assert(cell_format);
+
+    const orcus::spreadsheet::protection_t* cell_protection = styles.get_protection(protection);
+    assert(cell_protection->locked == true);
+    assert(cell_protection->hidden == true);
+    assert(cell_protection->print_content == true);
+    assert(cell_protection->formula_hidden == false);
+
+    /* Test that Cell is  protected and formula is hidden , Print Content is false */
+    style = find_cell_style_by_name("Name6", &styles);
+    xf = style->xf;
+    cell_format = styles.get_cell_style_format(xf);
+    protection = cell_format->protection;
+    assert(cell_format);
+
+    cell_protection = styles.get_protection(protection);
+    assert(cell_protection->locked == true);
+    assert(cell_protection->hidden == false);
+    assert(cell_protection->print_content == false);
+    assert(cell_protection->formula_hidden == true);
+
+    /* Test that Cell is not protected by any way, Print Content is false */
+    style = find_cell_style_by_name("Name7", &styles);
+    xf = style->xf;
+    cell_format = styles.get_cell_style_format(xf);
+    protection = cell_format->protection;
+    assert(cell_format);
+
+    cell_protection = styles.get_protection(protection);
+    assert(cell_protection->locked == false);
+    assert(cell_protection->hidden == false);
+    assert(cell_protection->print_content == true);
+    assert(cell_protection->formula_hidden == false);
 
     return 0;
 }
