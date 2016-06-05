@@ -102,7 +102,8 @@ cell_format_t::cell_format_t() :
     apply_font(false),
     apply_fill(false),
     apply_border(false),
-    apply_alignment(false)
+    apply_alignment(false),
+    apply_protection(false)
 {
 }
 

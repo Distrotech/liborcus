@@ -48,11 +48,12 @@ struct odf_style
         size_t font;
         size_t fill;
         size_t border;
+        size_t protection;
 
         size_t xf;
         bool automatic_style;
 
-        cell() : font(0), fill(0), border(0),
+        cell() : font(0), fill(0), border(0), protection(0),
                 xf(0), automatic_style(false) {}
     };
 
