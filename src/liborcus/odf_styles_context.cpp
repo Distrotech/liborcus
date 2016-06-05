@@ -515,6 +515,15 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                     }
 
                     size_t border_id = mp_styles->commit_border();
+
+                    if (func.has_protection())
+                    {
+                        mp_styles->set_cell_hidden(func.is_hidden());
+                        mp_styles->set_cell_locked(func.is_locked());
+                        mp_styles->set_cell_print_content(func.is_print_content());
+                        mp_styles->set_cell_formula_hidden(func.is_formula_hidden());
+                    }
+                    size_t cell_protection_id = mp_styles->commit_cell_protection();
                     switch (m_current_style->family)
                     {
                         case style_family_table_cell:
@@ -522,6 +531,7 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                             odf_style::cell* data = m_current_style->cell_data;
                             data->fill = fill_id;
                             data->border = border_id;
+                            data->protection = cell_protection_id;
                         }
                         break;
                         default:
@@ -554,6 +564,7 @@ bool styles_context::end_element(xmlns_id_t ns, xml_token_t name)
                         mp_styles->set_xf_font(cell.font);
                         mp_styles->set_xf_fill(cell.fill);
                         mp_styles->set_xf_border(cell.border);
+                        mp_styles->set_xf_protection(cell.protection);
                         size_t xf_id = 0;
                         if (cell.automatic_style)
                             xf_id = mp_styles->commit_cell_xf();
