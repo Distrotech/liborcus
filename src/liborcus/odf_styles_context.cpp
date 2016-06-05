@@ -169,7 +169,12 @@ public:
         m_background_red(0),
         m_background_green(0),
         m_background_blue(0),
-        m_background_color(false)
+        m_background_color(false),
+        m_locked(false),
+        m_hidden(false),
+        m_formula_hidden(false),
+        m_print_content(false),
+        m_cell_protection(false)
     {}
 
 private:
@@ -179,6 +184,11 @@ private:
     spreadsheet::color_elem_t m_background_blue;
 
     bool m_background_color;
+    bool m_locked;
+    bool m_hidden;
+    bool m_formula_hidden;
+    bool m_print_content;
+    bool m_cell_protection;
 
     border_map_type m_border_style_dir_pair;
 
@@ -249,6 +259,39 @@ public:
                     ;
             }
         }
+
+        else if(attr.ns == NS_odf_style)
+        {
+            switch(attr.name)
+            {
+                case XML_print_content:
+                {
+                    m_cell_protection = true;
+                    m_print_content = attr.value == "true";
+                }
+                break;
+                case XML_cell_protect:
+                {
+                    m_cell_protection = true;
+                    if (attr.value == "protected")
+                        m_locked = true;
+                    else if (attr.value == "hidden-and-protected")
+                    {
+                        m_locked = true;
+                        m_hidden = true;
+                    }
+                    else if (attr.value == "formula-hidden")
+                        m_formula_hidden = true;
+                    else if (attr.value == "protected formula-hidden" || attr.value == "formula-hidden protected")
+                    {
+                        m_formula_hidden = true;
+                        m_locked = true;
+                    }
+                }
+                default:
+                    ;
+            }
+        }
     }
 
     bool has_background_color() const { return m_background_color; }
@@ -262,6 +305,12 @@ public:
     }
 
     bool has_border() const { return !m_border_style_dir_pair.empty(); }
+
+    bool has_protection() const { return m_cell_protection; }
+    bool is_locked() const { return m_locked; }
+    bool is_hidden() const { return m_hidden; }
+    bool is_formula_hidden() const { return m_formula_hidden; }
+    bool is_print_content() const { return m_print_content; }
 
     const border_map_type& get_border_attrib() const
     {
