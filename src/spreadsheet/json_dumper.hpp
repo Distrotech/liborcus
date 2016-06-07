@@ -10,6 +10,8 @@
 
 #include <string>
 
+#include <ixion/types.hpp>
+
 namespace orcus { namespace spreadsheet {
 
 class document;
@@ -23,7 +25,7 @@ class json_dumper
 public:
     json_dumper(const document& doc);
 
-    void dump(const std::string& filepath) const;
+    void dump(const std::string& filepath, ixion::sheet_t sheet_id) const;
 };
 
 }}}

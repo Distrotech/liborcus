@@ -6,15 +6,20 @@
  */
 
 #include "json_dumper.hpp"
+#include "orcus/spreadsheet/document.hpp"
+
+#include <ixion/model_context.hpp>
+#include <mdds/multi_type_vector/collection.hpp>
 
 #include <fstream>
+#include <sstream>
 #include <iostream>
 
 namespace orcus { namespace spreadsheet { namespace detail {
 
 json_dumper::json_dumper(const document& doc) : m_doc(doc) {}
 
-void json_dumper::dump(const std::string& filepath) const
+void json_dumper::dump(const std::string& filepath, ixion::sheet_t sheet_id) const
 {
     std::ofstream file(filepath.c_str());
     if (!file)
@@ -23,7 +28,59 @@ void json_dumper::dump(const std::string& filepath) const
         return;
     }
 
-    // TODO : implement this.
+    const ixion::model_context& cxt = m_doc.get_model_context();
+    ixion::abs_range_t data_range = cxt.get_data_range(sheet_id);
+
+    const ixion::column_stores_t* p = cxt.get_columns(sheet_id);
+    if (!p)
+        return;
+
+    using columns_type = mdds::mtv::collection<ixion::column_store_t>;
+    columns_type columns(p->begin(), p->end());
+
+    // Only iterate through the data range.
+    columns.set_collection_range(0, data_range.last.column+1);
+    columns.set_element_range(0, data_range.last.row+1);
+
+    columns_type::const_iterator it = columns.begin();
+
+    file << "[" << std::endl;
+
+    size_t row = it->position;
+    size_t col = it->index;
+
+    file << "{";
+    file << "\"" << col << "\": null";
+
+    size_t last_col = col;
+    size_t last_row = row;
+
+    std::for_each(++it, columns.end(),
+        [&](const columns_type::const_iterator::value_type& node)
+        {
+            size_t row = node.position;
+            size_t col = node.index;
+
+            if (row > last_row)
+                file << "}," << std::endl;
+
+            if (col == 0)
+                file << "{";
+            else
+                file << ", ";
+
+            // TODO : Convert column index to textural column address.
+            file << "\"" << col << "\": ";
+
+            // TODO : Get the real cell value.
+            file << "null";
+
+            last_col = node.index;
+            last_row = node.position;
+        }
+    );
+
+    file << "}" << std::endl << "]" << std::endl;
 }
 
 }}}
