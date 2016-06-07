@@ -19,6 +19,8 @@ liborcus_spreadsheet_model_@ORCUS_API_VERSION@_la_SOURCES = \
 	factory.cpp \
 	formula_global.hpp \
 	formula_global.cpp \
+	json_dumper.hpp \
+	json_dumper.cpp \
 	shared_strings.cpp \
 	sheet.cpp \
 	sheet_properties.cpp \

@@ -465,6 +465,8 @@
                 <F N="../src/spreadsheet/formula_global.cpp"/>
                 <F N="../src/spreadsheet/formula_global.hpp"/>
                 <F N="../src/spreadsheet/global_settings.cpp"/>
+                <F N="../src/spreadsheet/json_dumper.cpp"/>
+                <F N="../src/spreadsheet/json_dumper.hpp"/>
                 <F N="../src/spreadsheet/shared_strings.cpp"/>
                 <F N="../src/spreadsheet/sheet.cpp"/>
                 <F N="../src/spreadsheet/sheet_properties.cpp"/>

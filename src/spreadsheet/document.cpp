@@ -512,6 +512,17 @@ void document::dump_html(const string& outdir) const
     for_each(mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), sheet_item::html_printer(outdir));
 }
 
+void document::dump_json(const string& outdir) const
+{
+    for_each(mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(),
+        [&outdir](const std::unique_ptr<sheet_item>& item)
+        {
+            string this_file = outdir + '/' + item->name.str() + ".json";
+            item->data.dump_json(this_file);
+        }
+    );
+}
+
 sheet_t document::get_sheet_index(const pstring& name) const
 {
     auto it = std::find_if(

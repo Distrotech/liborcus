@@ -184,6 +184,8 @@ bool parse_import_filter_args(
         doc.dump_flat(outdir);
     else if (outformat == "html")
         doc.dump_html(outdir);
+    else if (outformat == "json")
+        doc.dump_json(outdir);
     else
     {
         // Do nothing, but warning about unknown output format type.

@@ -126,6 +126,7 @@ public:
     void dump_flat(std::ostream& os) const;
     void dump_check(std::ostream& os, const pstring& sheet_name) const;
     void dump_html(const ::std::string& filepath) const;
+    void dump_json(const ::std::string& filepath) const;
 
     /**
      * Get the cell format ID of specified cell.

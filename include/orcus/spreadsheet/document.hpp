@@ -84,6 +84,8 @@ public:
      */
     virtual void dump_html(const ::std::string& outdir) const;
 
+    virtual void dump_json(const ::std::string& outdir) const;
+
     /**
      * Dump document content to stdout in the special format used for content
      * verification during unit test.

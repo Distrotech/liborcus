@@ -22,6 +22,7 @@
 #include "data_table.hpp"
 #include "table.hpp"
 #include "formula_global.hpp"
+#include "json_dumper.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -1471,6 +1472,12 @@ void sheet::dump_html(const string& filepath) const
             }
         }
     }
+}
+
+void sheet::dump_json(const string& filepath) const
+{
+    detail::json_dumper dumper(mp_impl->m_doc);
+    dumper.dump(filepath);
 }
 
 size_t sheet::get_cell_format(row_t row, col_t col) const
