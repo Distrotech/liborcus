@@ -81,7 +81,48 @@ enum class underline_t
     single_line,
     single_accounting, // unique to xlsx
     double_line,
-    double_accounting // unique to xlsx
+    double_accounting, // unique to xlsx
+    solid,
+    dotted,
+    dash,
+    long_dash,
+    dot_dash,
+    dot_dot_dot_dash,
+    wave
+};
+
+enum class underline_width_t
+{
+    none = 0,
+    normal,
+    bold,
+    thin,
+    medium,
+    thick,
+    positive_integer,
+    percent,
+    positive_length
+};
+
+enum class underline_mode_t
+{
+    continuos = 0,
+    skip_white_space
+};
+
+enum class underline_type_t
+{
+    none = 0,
+    single,
+    double_type            //necessary to not call it "double", since it is a reserved word
+};
+
+struct underline_attrs_t
+{
+    underline_t underline_style;
+    underline_width_t underline_width;
+    underline_mode_t underline_mode;
+    underline_type_t underline_type;
 };
 
 enum class hor_alignment_t
