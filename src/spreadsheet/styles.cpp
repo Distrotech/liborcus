@@ -15,7 +15,10 @@ namespace orcus { namespace spreadsheet {
 
 font_t::font_t() :
     size(0.0), bold(false),
-    italic(false), underline(underline_t::none),
+    italic(false), underline_style(underline_t::none),
+    underline_width(underline_width_t::none),
+    underline_mode(underline_mode_t::continuos),
+    underline_type(underline_type_t::none),
     color()
 {
 }
@@ -155,7 +158,27 @@ void import_styles::set_font_size(double point)
 
 void import_styles::set_font_underline(underline_t e)
 {
-    m_cur_font.underline = e;
+    m_cur_font.underline_style = e;
+}
+
+void import_styles::set_font_underline_width(underline_width_t e)
+{
+    m_cur_font.underline_width = e;
+}
+
+void import_styles::set_font_underline_mode(underline_mode_t e)
+{
+    m_cur_font.underline_mode = e;
+}
+
+void import_styles::set_font_underline_type(underline_type_t e)
+{
+    m_cur_font.underline_type = e;
+}
+
+void import_styles::set_font_underline_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)
+{
+    m_cur_font.underline_color = color_t(alpha, red, green, blue);
 }
 
 void import_styles::set_font_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue)

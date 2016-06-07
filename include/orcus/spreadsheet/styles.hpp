@@ -39,7 +39,11 @@ struct ORCUS_SPM_DLLPUBLIC font_t
     double size;
     bool bold:1;
     bool italic:1;
-    underline_t underline;
+    underline_t underline_style;
+    underline_width_t underline_width;
+    underline_mode_t underline_mode;
+    underline_type_t underline_type;
+    color_t underline_color;
     color_t color;
 
     font_t();
@@ -149,6 +153,10 @@ public:
     virtual void set_font_name(const char* s, size_t n);
     virtual void set_font_size(double point);
     virtual void set_font_underline(underline_t e);
+    virtual void set_font_underline_width(underline_width_t e);
+    virtual void set_font_underline_mode(underline_mode_t e);
+    virtual void set_font_underline_type(underline_type_t e);
+    virtual void set_font_underline_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
     virtual void set_font_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
     virtual size_t commit_font();
 
