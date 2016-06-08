@@ -38,6 +38,8 @@ public:
     static orcus::odf_helper::odf_border_details extract_border_details(const orcus::pstring& value);
 
     static orcus::spreadsheet::underline_width_t extract_underline_width(const orcus::pstring& value);
+
+    static orcus::spreadsheet::underline_t extract_underline_style(const orcus::pstring& value);
 };
 
 }

@@ -55,6 +55,19 @@ odf_underline_width_map::entry odf_underline_width_entries[] =
     { MDDS_ASCII("thin"), spreadsheet::underline_width_t::thin},
 };
 
+typedef mdds::sorted_string_map<spreadsheet::underline_t> odf_underline_style_map;
+
+odf_underline_style_map::entry odf_underline_style_entries[] =
+{
+    { MDDS_ASCII("dash"), spreadsheet::underline_t::dash},
+    { MDDS_ASCII("dot-dash"), spreadsheet::underline_t::dot_dash},
+    { MDDS_ASCII("dot-dot-dot-dash"), spreadsheet::underline_t::dot_dot_dot_dash},
+    { MDDS_ASCII("dotted"), spreadsheet::underline_t::dotted},
+    { MDDS_ASCII("long-dash"), spreadsheet::underline_t::long_dash},
+    { MDDS_ASCII("none"), spreadsheet::underline_t::none},
+    { MDDS_ASCII("solid"), spreadsheet::underline_t::solid},
+    { MDDS_ASCII("wave"), spreadsheet::underline_t::wave}
+};
 
 bool is_valid_hex_digit(const char& character, orcus::spreadsheet::color_elem_t& val)
 {
@@ -143,6 +156,17 @@ orcus::spreadsheet::underline_width_t odf_helper::extract_underline_width(const 
 
     return underline_width;
 }
+
+orcus::spreadsheet::underline_t odf_helper::extract_underline_style(const orcus::pstring& value)
+{
+    spreadsheet::underline_t underline_style;
+
+    odf_underline_style_map underline_style_map(odf_underline_style_entries, ORCUS_N_ELEMENTS(odf_underline_style_entries), spreadsheet::underline_t::none);
+    underline_style = underline_style_map.find(value.get(), value.size());
+
+    return underline_style;
+}
+
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
