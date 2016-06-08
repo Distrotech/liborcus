@@ -9,6 +9,7 @@
 #include "orcus/spreadsheet/document.hpp"
 
 #include <ixion/model_context.hpp>
+#include <ixion/formula_name_resolver.hpp>
 #include <mdds/multi_type_vector/collection.hpp>
 
 #include <fstream>
@@ -29,6 +30,7 @@ void json_dumper::dump(const std::string& filepath, ixion::sheet_t sheet_id) con
     }
 
     const ixion::model_context& cxt = m_doc.get_model_context();
+
     ixion::abs_range_t data_range = cxt.get_data_range(sheet_id);
 
     const ixion::column_stores_t* p = cxt.get_columns(sheet_id);
@@ -42,6 +44,14 @@ void json_dumper::dump(const std::string& filepath, ixion::sheet_t sheet_id) con
     columns.set_collection_range(0, data_range.last.column+1);
     columns.set_element_range(0, data_range.last.row+1);
 
+    std::vector<std::string> column_labels;
+    column_labels.reserve(data_range.last.column+1);
+
+    // Get the column labels.
+    auto resolver = ixion::formula_name_resolver::get(ixion::formula_name_resolver_t::excel_a1, &cxt);
+    for (ixion::col_t i = 0; i <= data_range.last.column; ++i)
+        column_labels.emplace_back(resolver->get_column_name(i));
+
     columns_type::const_iterator it = columns.begin();
 
     file << "[" << std::endl;
@@ -49,8 +59,8 @@ void json_dumper::dump(const std::string& filepath, ixion::sheet_t sheet_id) con
     size_t row = it->position;
     size_t col = it->index;
 
-    file << "{";
-    file << "\"" << col << "\": null";
+    file << "    {";
+    file << "\"" << column_labels[col] << "\": null";
 
     size_t last_col = col;
     size_t last_row = row;
@@ -65,12 +75,11 @@ void json_dumper::dump(const std::string& filepath, ixion::sheet_t sheet_id) con
                 file << "}," << std::endl;
 
             if (col == 0)
-                file << "{";
+                file << "    {";
             else
                 file << ", ";
 
-            // TODO : Convert column index to textural column address.
-            file << "\"" << col << "\": ";
+            file << "\"" << column_labels[col] << "\": ";
 
             // TODO : Get the real cell value.
             file << "null";
