@@ -107,8 +107,25 @@ class text_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
     spreadsheet::color_elem_t m_green;
     spreadsheet::color_elem_t m_blue;
 
+    bool m_underline_is_text_color;
+    bool m_underline;
+
+    spreadsheet::color_elem_t m_underline_red;
+    spreadsheet::color_elem_t m_underline_green;
+    spreadsheet::color_elem_t m_underline_blue;
+
+    spreadsheet::underline_mode_t m_underline_mode;
+    spreadsheet::underline_width_t m_underline_width;
+    spreadsheet::underline_t m_underline_style;
+    spreadsheet::underline_type_t m_underline_type;
+
 public:
-    text_prop_attr_parser() : m_bold(false), m_italic(false), m_color(false) {}
+    text_prop_attr_parser() : m_bold(false), m_italic(false), m_color(false),
+                            m_underline_is_text_color(false), m_underline(false),
+                            m_underline_mode(spreadsheet::underline_mode_t::continuos),
+                            m_underline_width(spreadsheet::underline_width_t::none),
+                            m_underline_style(spreadsheet::underline_t::none),
+                            m_underline_type(spreadsheet::underline_type_t::none) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -118,6 +135,43 @@ public:
             {
                 case XML_font_name:
                     m_font_name = attr.value;
+                break;
+                case XML_text_underline_color:
+                    if (!odf_helper::convert_fo_color(attr.value, m_underline_red, m_underline_green, m_underline_blue))
+                    {
+                        m_underline = true;
+                        m_underline_is_text_color = true;
+                    }
+                break;
+                case XML_text_underline_mode:
+                    m_underline = true;
+                    if (attr.value == "skip-white-space")
+                        m_underline_mode = spreadsheet::underline_mode_t::skip_white_space;
+                    else
+                        m_underline_mode = spreadsheet::underline_mode_t::continuos;
+                break;
+                case XML_text_underline_width:
+                {
+                    m_underline = true;
+                    m_underline_width = odf_helper::extract_underline_width(attr.value);
+                }
+                break;
+                case XML_text_underline_style:
+                {
+                    m_underline = true;
+                    m_underline_style = odf_helper::extract_underline_style(attr.value);
+                }
+                break;
+                case XML_text_underline_type:
+                {
+                    m_underline = true;
+                    if (attr.value == "none")
+                        m_underline_type = spreadsheet::underline_type_t::none;
+                    if (attr.value == "single")
+                        m_underline_type = spreadsheet::underline_type_t::single;
+                    if (attr.value == "double")
+                        m_underline_type = spreadsheet::underline_type_t::double_type;
+                }
                 break;
                 default:
                     ;
@@ -157,6 +211,19 @@ public:
         red = m_red;
         green = m_green;
         blue = m_blue;
+    }
+    bool has_underline() const { return m_underline; }
+    bool underline_is_text_color() const { return m_underline_is_text_color; }
+    const spreadsheet::underline_width_t get_underline_width() const { return m_underline_width; }
+    const spreadsheet::underline_mode_t get_underline_mode() const { return m_underline_mode; }
+    const spreadsheet::underline_type_t get_underline_type() const { return m_underline_type; }
+    const spreadsheet::underline_t get_underline_style() const { return m_underline_style; }
+    void get_underline_color(spreadsheet::color_elem_t& red, spreadsheet::color_elem_t& green,
+            spreadsheet::color_elem_t& blue)
+    {
+        red = m_underline_red;
+        green = m_underline_green;
+        blue = m_underline_blue;
     }
 };
 
