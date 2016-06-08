@@ -40,6 +40,21 @@ odf_border_style_map::entry odf_border_style_entries[] =
     { MDDS_ASCII("unknown"), spreadsheet::border_style_t::unknown}
 };
 
+typedef mdds::sorted_string_map<spreadsheet::underline_width_t> odf_underline_width_map;
+
+odf_underline_width_map::entry odf_underline_width_entries[] =
+{
+    { MDDS_ASCII("bold"), spreadsheet::underline_width_t::bold},
+    { MDDS_ASCII("medium"), spreadsheet::underline_width_t::medium},
+    { MDDS_ASCII("none"), spreadsheet::underline_width_t::none},
+    { MDDS_ASCII("normal"), spreadsheet::underline_width_t::normal},
+    { MDDS_ASCII("percent"), spreadsheet::underline_width_t::percent},
+    { MDDS_ASCII("positiveInteger"), spreadsheet::underline_width_t::positive_integer},
+    { MDDS_ASCII("positiveLength"), spreadsheet::underline_width_t::positive_length},
+    { MDDS_ASCII("thick"), spreadsheet::underline_width_t::thick},
+    { MDDS_ASCII("thin"), spreadsheet::underline_width_t::thin},
+};
+
 
 bool is_valid_hex_digit(const char& character, orcus::spreadsheet::color_elem_t& val)
 {
@@ -117,6 +132,16 @@ orcus::odf_helper::odf_border_details odf_helper::extract_border_details(const o
 
     }
     return border_details;
+}
+
+orcus::spreadsheet::underline_width_t odf_helper::extract_underline_width(const orcus::pstring& value)
+{
+    orcus::spreadsheet::underline_width_t underline_width;
+
+    odf_underline_width_map underline_width_map(odf_underline_width_entries, ORCUS_N_ELEMENTS(odf_underline_width_entries), spreadsheet::underline_width_t::none);
+    underline_width = underline_width_map.find(value.get(), value.size());
+
+    return underline_width;
 }
 }
 
