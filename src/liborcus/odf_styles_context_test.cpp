@@ -152,5 +152,46 @@ int main()
     assert(cell_protection->print_content == true);
     assert(cell_protection->formula_hidden == false);
 
+/*  Test for Font and underline
+    ==================================================
+*/
+    style = find_cell_style_by_name("Name8", &styles);
+    xf = style->xf;
+    cell_format = styles.get_cell_style_format(xf);
+    size_t font = cell_format->font;
+    assert(cell_format);
+
+    const orcus::spreadsheet::font_t* cell_font = styles.get_font(font);
+    assert(cell_font->name == "Liberation Sans");
+    assert(cell_font->size == 24);
+    assert(cell_font->bold == true);
+    assert(cell_font->italic == true);
+    assert(cell_font->underline_style == orcus::spreadsheet::underline_t::solid);
+    assert(cell_font->underline_width == orcus::spreadsheet::underline_width_t::thick);
+    assert(cell_font->underline_mode == orcus::spreadsheet::underline_mode_t::continuos);
+    assert(cell_font->underline_type == orcus::spreadsheet::underline_type_t::none);
+    assert(cell_font->underline_color.red == (int)0x80);
+    assert(cell_font->underline_color.green == (int)0x80);
+    assert(cell_font->underline_color.blue == (int)0x80);
+
+    style = find_cell_style_by_name("Name9", &styles);
+    xf = style->xf;
+    cell_format = styles.get_cell_style_format(xf);
+    font = cell_format->font;
+    assert(cell_format);
+
+    cell_font = styles.get_font(font);
+    assert(cell_font->name == "Tahoma");
+    assert(cell_font->size == 00);
+    assert(cell_font->bold == true);
+    assert(cell_font->italic == false);
+    assert(cell_font->underline_style == orcus::spreadsheet::underline_t::dash);
+    assert(cell_font->underline_width == orcus::spreadsheet::underline_width_t::bold);
+    assert(cell_font->underline_mode == orcus::spreadsheet::underline_mode_t::continuos);
+    assert(cell_font->underline_type == orcus::spreadsheet::underline_type_t::none);
+    assert(cell_font->underline_color.red == (int)0x18);
+    assert(cell_font->underline_color.green == (int)0x56);
+    assert(cell_font->underline_color.blue == (int)0xff);
+
     return 0;
 }
