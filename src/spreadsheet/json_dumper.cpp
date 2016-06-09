@@ -6,6 +6,8 @@
  */
 
 #include "json_dumper.hpp"
+
+#include "orcus/json_global.hpp"
 #include "orcus/spreadsheet/document.hpp"
 
 #include <ixion/model_context.hpp>
@@ -25,8 +27,7 @@ namespace {
 
 void dump_string(std::ofstream& file, const std::string& s)
 {
-    // TODO : escape this string for json.
-    file << '"' << s << '"';
+    file << '"' << json::escape_string(s) << '"';
 }
 
 void dump_cell_value(

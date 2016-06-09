@@ -5,36 +5,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "orcus/parser_global.hpp"
+#include "orcus/json_global.hpp"
+
+#include <sstream>
 
 namespace orcus { namespace json {
 
 namespace {
 
 const char quote = '"';
-const char backslash = '\\';
 
 }
 
 void dump_string(std::ostringstream& os, const std::string& s)
 {
-    os << quote;
-    for (auto it = s.begin(), ite = s.end(); it != ite; ++it)
-    {
-        char c = *it;
-        if (c == '"')
-            // Escape double quote, but not forward slash.
-            os << backslash;
-        else if (c == backslash)
-        {
-            // Escape a '\' if and only if the next character is not one of control characters.
-            auto itnext = it + 1;
-            if (itnext == ite || get_string_escape_char_type(*itnext) != string_escape_char_t::control_char)
-                os << backslash;
-        }
-        os << c;
-    }
-    os << quote;
+    os << quote << escape_string(s) << quote;
 }
 
 }}

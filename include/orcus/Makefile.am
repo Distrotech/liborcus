@@ -20,6 +20,7 @@ liborcus_HEADERS = \
 	info.hpp \
 	interface.hpp \
 	json_document_tree.hpp \
+	json_global.hpp \
 	json_parser.hpp \
 	json_parser_base.hpp \
 	json_parser_thread.hpp \
