@@ -86,17 +86,15 @@ int main()
     assert(cell_format);
 
     cell_border = styles.get_border(border);
-    assert(cell_border->top.style == orcus::spreadsheet::border_style_t::dashed);
+    assert(cell_border->top.style == orcus::spreadsheet::border_style_t::solid);
     assert(cell_border->bottom.style == orcus::spreadsheet::border_style_t::thin);
     assert(cell_border->left.style == orcus::spreadsheet::border_style_t::none);
-    assert(cell_border->right.style == orcus::spreadsheet::border_style_t::thin);
+    assert(cell_border->right.style == orcus::spreadsheet::border_style_t::dash_dot_dot);
     assert(cell_border->top.border_color.red == 0xff);
     assert(cell_border->bottom.border_color.green == 0xee);
     assert(cell_border->left.border_color.blue == 0x11);
     assert(cell_border->right.border_width.value == 0.22);
     assert(cell_border->bottom.border_width.value == 1.74);
-
-    //TODO : These border styles dont work :- solid,dash_dot,dash_dot_dot ...and some others
 
     /*Test that border applies to the diagonal*/
     style = find_cell_style_by_name("Name3", &styles);
@@ -106,8 +104,8 @@ int main()
     assert(cell_format);
 
     cell_border = styles.get_border(border);
-    assert(cell_border->diagonal_bl_tr.style == orcus::spreadsheet::border_style_t::thick);
-    assert(cell_border->diagonal_tl_br.style == orcus::spreadsheet::border_style_t::thin);
+    assert(cell_border->diagonal_bl_tr.style == orcus::spreadsheet::border_style_t::medium);
+    assert(cell_border->diagonal_tl_br.style == orcus::spreadsheet::border_style_t::medium_dash_dot);
     assert(cell_border->diagonal_bl_tr.border_color.red == 0xff);
     assert(cell_border->diagonal_tl_br.border_color.green == 0x00);
     assert(cell_border->diagonal_tl_br.border_width.value == 0.74);
