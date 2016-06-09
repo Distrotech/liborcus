@@ -22,22 +22,22 @@ typedef mdds::sorted_string_map<spreadsheet::border_style_t> odf_border_style_ma
 
 odf_border_style_map::entry odf_border_style_entries[] =
 {
-    { MDDS_ASCII("unknown"), spreadsheet::border_style_t::unknown},
-    { MDDS_ASCII("none"), spreadsheet::border_style_t::none},
-    { MDDS_ASCII("solid"), spreadsheet::border_style_t::solid},
-    { MDDS_ASCII("dash_dot"), spreadsheet::border_style_t::dash_dot},
-    { MDDS_ASCII("dash_dot_dot"), spreadsheet::border_style_t::dash_dot_dot},
+    { MDDS_ASCII("dash-dot"), spreadsheet::border_style_t::dash_dot},
+    { MDDS_ASCII("dash-dot-dot"), spreadsheet::border_style_t::dash_dot_dot},
     { MDDS_ASCII("dashed"), spreadsheet::border_style_t::dashed},
     { MDDS_ASCII("dotted"), spreadsheet::border_style_t::dotted},
-    { MDDS_ASCII("double_border"), spreadsheet::border_style_t::double_border},
+    { MDDS_ASCII("double-border"), spreadsheet::border_style_t::double_border},
     { MDDS_ASCII("hair"), spreadsheet::border_style_t::hair},
     { MDDS_ASCII("medium"), spreadsheet::border_style_t::medium},
-    { MDDS_ASCII("medium_dash_dot"), spreadsheet::border_style_t::medium_dash_dot},
-    { MDDS_ASCII("medium_dash_dot_dot"), spreadsheet::border_style_t::medium_dash_dot_dot},
-    { MDDS_ASCII("medium_dashed"), spreadsheet::border_style_t::medium_dashed},
-    { MDDS_ASCII("slant_dash_dot"), spreadsheet::border_style_t::slant_dash_dot},
+    { MDDS_ASCII("medium-dash-dot"), spreadsheet::border_style_t::medium_dash_dot},
+    { MDDS_ASCII("medium-dash-dot-dot"), spreadsheet::border_style_t::medium_dash_dot_dot},
+    { MDDS_ASCII("medium-dashed"), spreadsheet::border_style_t::medium_dashed},
+    { MDDS_ASCII("none"), spreadsheet::border_style_t::none},
+    { MDDS_ASCII("slant-dash-dot"), spreadsheet::border_style_t::slant_dash_dot},
+    { MDDS_ASCII("solid"), spreadsheet::border_style_t::solid},
     { MDDS_ASCII("thick"), spreadsheet::border_style_t::thick},
-    { MDDS_ASCII("thin"), spreadsheet::border_style_t::thin}
+    { MDDS_ASCII("thin"), spreadsheet::border_style_t::thin},
+    { MDDS_ASCII("unknown"), spreadsheet::border_style_t::unknown}
 };
 
 
