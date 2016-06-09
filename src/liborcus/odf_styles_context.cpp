@@ -530,6 +530,33 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                         mp_styles->set_font_color(0, red, green, blue);
                     }
 
+                    if (func.has_underline())
+                    {
+                        if (func.underline_is_text_color() && func.has_color())
+                        {
+                            spreadsheet::color_elem_t red, green, blue;
+                            func.get_color(red, green, blue);
+                            mp_styles->set_font_underline_color(0, red, green, blue);
+                        }
+                        else
+                        {
+                            spreadsheet::color_elem_t red, green, blue;
+                            func.get_underline_color(red, green, blue);
+                            mp_styles->set_font_underline_color(0, red, green, blue);
+                        }
+                        spreadsheet::underline_width_t width = func.get_underline_width();
+                        mp_styles->set_font_underline_width(width);
+
+                        spreadsheet::underline_t style = func.get_underline_style();
+                        mp_styles->set_font_underline(style);
+
+                        spreadsheet::underline_type_t type = func.get_underline_type();
+                        mp_styles->set_font_underline_type(type);
+
+                        spreadsheet::underline_mode_t mode = func.get_underline_mode();
+                        mp_styles->set_font_underline_mode(mode);
+                    }
+
                     size_t font_id = mp_styles->commit_font();
 
                     switch (m_current_style->family)
