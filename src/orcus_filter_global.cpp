@@ -34,8 +34,11 @@ const char* help_output =
 "Output directory path, or output file when --dump-check option is used.";
 
 const char* help_output_format =
-"Specify the format of output file.  Supported format types are: "
-"1) flat text format (flat), 2) HTML format (html), or 3) no output (none).";
+"Specify the format of output file.  Supported format types are:\n"
+"  1) flat text format (flat)\n"
+"  2) HTML format (html)\n"
+"  3) JSON (json)\n"
+"  4) no output (none)";
 
 const char* help_dump_check =
 "Dump the the content to stdout in a special format used for content verification in unit tests.";
@@ -51,7 +54,7 @@ const char* help_json_output_format =
 "  1) XML (xml)\n"
 "  2) JSON (json)\n"
 "  3) flat tree dump (check)\n"
-"  4) no output (none).";
+"  4) no output (none)";
 
 const char* err_no_input_file = "No input file.";
 
