@@ -75,5 +75,12 @@ odf_style::~odf_style()
     }
 }
 
+number_formatting_style::number_formatting_style(const pstring& style_name, const bool volatile_style)
+{
+    name = style_name;
+    is_volatile = volatile_style;
+}
+
+
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

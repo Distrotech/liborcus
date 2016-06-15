@@ -97,6 +97,22 @@ struct odf_style
     ~odf_style();
 };
 
+struct number_formatting_style
+{
+    size_t number_formatting;
+
+    pstring name;
+    std::string number_formatting_code;
+    bool is_volatile;
+    pstring character_stream;
+
+    number_formatting_style():
+        is_volatile(false)
+    {}
+
+    number_formatting_style(const pstring& style_name, const bool volatile_style);
+};
+
 typedef std::map<pstring, std::unique_ptr<odf_style>> odf_styles_map_type;
 
 }

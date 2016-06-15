@@ -11,7 +11,7 @@
 #include "odf_helper.hpp"
 #include "orcus/measurement.hpp"
 #include "orcus/spreadsheet/import_interface.hpp"
-
+#include "odf_number_formatting_context.hpp"
 #include <iostream>
 
 using namespace std;
@@ -431,16 +431,28 @@ styles_context::styles_context(
 
 bool styles_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
 {
+    if (ns == NS_odf_number)
+        return false;
+
     return true;
 }
 
 xml_context_base* styles_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
-    return NULL;
+    number_formatting_style* number_formatting = new number_formatting_style;
+    if (ns == NS_odf_number )
+    {
+        mp_child.reset(new number_formatting_context(get_session_context(), get_tokens(), m_styles, mp_styles, number_formatting));
+        mp_child->transfer_common(*this);
+        return mp_child.get();
+    }
+
+    return nullptr;
 }
 
 void styles_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
 {
+    return;
 }
 
 void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::vector<xml_token_attr_t>& attrs)
