@@ -31,7 +31,7 @@ class xml_stream_handler
     xml_stream_handler(); // disabled
 public:
     xml_stream_handler(xml_context_base* root_context);
-    virtual ~xml_stream_handler() = 0;
+    virtual ~xml_stream_handler() ;
 
     virtual void start_document();
     virtual void end_document();
