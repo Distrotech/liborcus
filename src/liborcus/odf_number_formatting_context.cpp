@@ -661,6 +661,58 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
                 m_current_style->is_volatile = func.is_volatile();
             }
             break;
+            case XML_scientific_number:
+            {
+                scientific_number_attr_parser func;
+                func = std::for_each(attrs.begin(), attrs.end(), func);
+
+                if (func.is_grouped())
+                {
+                    if (func.get_min_int_digits() < 4)
+                    {
+                        m_current_style->number_formatting_code += "#,";
+                        for (size_t i = 0; i < 3 - func.get_min_int_digits(); i++)
+                        {
+                            m_current_style->number_formatting_code += "#";
+                        }
+                        for (size_t i = 0; i < func.get_min_int_digits(); i++)
+                        {
+                            m_current_style->number_formatting_code += "0";
+                        }
+                    }
+                    else
+                    {
+                        std:: string temporary_code;
+                        for(size_t i = 0; i < func.get_min_int_digits(); i++)
+                        {
+                            if (i % 3 == 0 && i != 0)
+                                temporary_code += ",";
+                            temporary_code += "0";
+                        }
+                        std::reverse(temporary_code.begin(), temporary_code.end());
+                        m_current_style->number_formatting_code += temporary_code;
+                    }
+                }
+                else
+                {
+                    if (func.get_min_int_digits() == 0)
+                        m_current_style->number_formatting_code += "#";
+
+                    for (size_t i = 0; i < func.get_min_int_digits(); i++)
+                    {
+                        m_current_style->number_formatting_code += "0";
+                    }
+                }
+
+                m_current_style->number_formatting_code += ".";
+                for(size_t i = 0; i < func.get_decimal_places() ; i++)
+                    m_current_style->number_formatting_code += "0";
+
+                m_current_style->number_formatting_code += "E+";
+                for(size_t i = 0; i < func.get_min_exp_digits() ; i++)
+                    m_current_style->number_formatting_code += "0";
+            }
+            break;
             default:
                 ;
         }
