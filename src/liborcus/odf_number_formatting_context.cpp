@@ -271,7 +271,7 @@ public:
     {
         if (attr.ns == NS_odf_number)
             if (attr.name == XML_style)
-                m_style_name = attr.value == "true";
+                m_style_name = attr.value == "long";
     }
 
     bool has_long() const { return m_style_name;}
@@ -291,7 +291,7 @@ public:
     {
         if (attr.ns == NS_odf_number)
             if (attr.name == XML_style)
-                m_style_name = attr.value =="true";
+                m_style_name = attr.value =="long";
     }
 
     bool has_long() const { return m_style_name;}
@@ -313,7 +313,7 @@ public:
         if (attr.ns == NS_odf_number)
         {
             if (attr.name == XML_style)
-                m_style_name = attr.value == "true";
+                m_style_name = attr.value == "long";
             if (attr.name == XML_textual)
                 m_textual = attr.value == "true";
         }
@@ -362,14 +362,14 @@ class hours_attr_parser : std::unary_function<xml_token_attr_t, void>
 
 public:
     hours_attr_parser():
-        m_style_name()
+        m_style_name(false)
     {}
 
     void operator() (const xml_token_attr_t& attr)
     {
         if (attr.ns == NS_odf_number)
             if (attr.name == XML_style)
-                m_style_name = attr.value == "true";
+                m_style_name = attr.value == "long";
     }
 
     bool has_long() const { return m_style_name;}
@@ -388,7 +388,7 @@ public:
     {
         if (attr.ns == NS_odf_number)
             if (attr.name == XML_style)
-                m_style_name = attr.value == "true";
+                m_style_name = attr.value == "long";
     }
 
     bool has_long() const { return m_style_name;}
@@ -396,21 +396,33 @@ public:
 
 class seconds_attr_parser : std::unary_function<xml_token_attr_t, void>
 {
+    size_t m_decimal_places;
     bool m_style_name;
+    bool m_has_decimal_places;
 
 public:
     seconds_attr_parser():
-        m_style_name(false)
+        m_style_name(false),
+        m_has_decimal_places(false)
     {}
 
     void operator() (const xml_token_attr_t& attr)
     {
         if (attr.ns == NS_odf_number)
+        {
             if (attr.name == XML_style)
-                m_style_name = attr.value == "true";
+                m_style_name = attr.value == "long";
+            if (attr.name == XML_decimal_places)
+            {
+                m_decimal_places = to_long(attr.value);
+                m_has_decimal_places = true;
+            }
+        }
     }
 
     bool has_long() const { return m_style_name;}
+    size_t get_decimal_places() const { return m_decimal_places;}
+    bool has_decimal_places() const { return m_has_decimal_places;}
 };
 
 
@@ -801,6 +813,49 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
                     m_current_style->number_formatting_code += "YY";
             }
             break;
+            case XML_time_style:
+            {
+                time_style_attr_parser func;
+                func = std::for_each(attrs.begin(), attrs.end(), func);
+                m_current_style->name = func.get_style_name();
+                m_current_style->is_volatile = func.is_volatile();
+            }
+            break;
+            case XML_hours:
+            {
+                hours_attr_parser func;
+                func = std::for_each(attrs.begin(), attrs.end(), func);
+                m_current_style->number_formatting_code += "H";
+                if (func.has_long())
+                    m_current_style->number_formatting_code += "H";
+            }
+            break;
+            case XML_minutes:
+            {
+                minutes_attr_parser func;
+                func = std::for_each(attrs.begin(), attrs.end(), func);
+                m_current_style->number_formatting_code += "M";
+                if (func.has_long())
+                    m_current_style->number_formatting_code += "M";
+            }
+            break;
+            case XML_seconds:
+            {
+                seconds_attr_parser func;
+                func = std::for_each(attrs.begin(), attrs.end(), func);
+                m_current_style->number_formatting_code += "S";
+                if (func.has_long())
+                    m_current_style->number_formatting_code += "S";
+                if (func.has_decimal_places())
+                    for (size_t i = 0; i < func.get_decimal_places(); i++)
+                        m_current_style->number_formatting_code += "S";
+            }
+            break;
+            case XML_am_pm:
+            {
+                m_current_style->number_formatting_code += " AM/PM";
+            }
+            break;
             case XML_text_style:
             {
                 text_style_attr_parser func;
@@ -841,7 +896,8 @@ bool number_formatting_context::end_element(xmlns_id_t ns, xml_token_t name)
     if (ns == NS_odf_number)
     {
         if (name == XML_number_style || name == XML_currency_style || name == XML_percentage_style
-            || name == XML_text_style || name == XML_boolean_style || name == XML_date_style)
+            || name == XML_text_style || name == XML_boolean_style || name == XML_date_style
+            || name == XML_time_style)
         {
             if (m_current_style->is_volatile)
             {
@@ -866,6 +922,7 @@ bool number_formatting_context::end_element(xmlns_id_t ns, xml_token_t name)
         else if (name == XML_text)
                 m_current_style->number_formatting_code += m_current_style->character_stream;
         }
+    m_current_style->character_stream.clear();
     return false;
 }
 
