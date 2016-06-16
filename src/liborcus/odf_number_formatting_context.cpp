@@ -583,6 +583,39 @@ public:
     bool has_color() const { return !color_absent;}
 };
 
+class map_attr_parser : std::unary_function<xml_token_attr_t, void>
+{
+    string m_value;
+    string m_sign;
+    bool m_has_map;
+
+public:
+    map_attr_parser():
+        m_has_map(false)
+    {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns == NS_odf_style)
+        {
+            if (attr.name == XML_condition)
+            {
+                for (size_t i = 0; i < attr.value.size(); i++)
+                {
+                    if (attr.value[i] == '<' || attr.value[i] == '>' || attr.value[i] == '=')
+                        m_sign = m_sign + attr.value[i];
+                    if (isdigit(attr.value[i]))
+                        m_value = m_value + attr.value[i];
+                }
+                m_has_map = true;
+            }
+        }
+    }
+    string get_value() const { return m_value;}
+    string get_sign() const { return m_sign;}
+    bool has_map() const { return m_has_map;}
+};
+
 }
 
 number_formatting_context::number_formatting_context(
@@ -883,6 +916,17 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 if (func.has_color())
                     m_current_style->number_formatting_code = m_current_style->number_formatting_code + "[" + func.get_color() + "]";
+            }
+            break;
+            case XML_map:
+            {
+                map_attr_parser func;
+                func = std::for_each(attrs.begin(), attrs.end(), func);
+                if (func.has_map())
+                {
+                    m_current_style->number_formatting_code = "[" + func.get_sign() + func.get_value() + "]"
+                        + m_current_style->number_formatting_code;
+                }
             }
             break;
             default:
