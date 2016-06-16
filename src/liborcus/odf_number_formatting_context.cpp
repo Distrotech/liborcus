@@ -762,6 +762,45 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
                         m_current_style->number_formatting_code += "?";
             }
             break;
+            case XML_date_style:
+            {
+                date_style_attr_parser func;
+                func = std::for_each(attrs.begin(), attrs.end(), func);
+                m_current_style->name = func.get_style_name();
+                m_current_style->is_volatile = func.is_volatile();
+            }
+            break;
+            case XML_day:
+            {
+                day_attr_parser func;
+                func = std::for_each(attrs.begin(), attrs.end(), func);
+                m_current_style->number_formatting_code += "D";
+                if (func.has_long())
+                    m_current_style->number_formatting_code += "D";
+            }
+            break;
+            case XML_month:
+            {
+                month_attr_parser func;
+                func = std::for_each(attrs.begin(), attrs.end(), func);
+                m_current_style->number_formatting_code += "M";
+                if (func.has_long())
+                    m_current_style->number_formatting_code += "M";
+                if (func.is_textual())
+                    m_current_style->number_formatting_code += "M";
+                if (func.has_long() && func.is_textual())
+                    m_current_style->number_formatting_code += "M";
+            }
+            break;
+            case XML_year:
+            {
+                year_attr_parser func;
+                func = std::for_each(attrs.begin(), attrs.end(), func);
+                m_current_style->number_formatting_code += "YY";
+                if (func.has_long())
+                    m_current_style->number_formatting_code += "YY";
+            }
+            break;
             case XML_text_style:
             {
                 text_style_attr_parser func;
@@ -802,7 +841,7 @@ bool number_formatting_context::end_element(xmlns_id_t ns, xml_token_t name)
     if (ns == NS_odf_number)
     {
         if (name == XML_number_style || name == XML_currency_style || name == XML_percentage_style
-            || name == XML_text_style || name == XML_boolean_style)
+            || name == XML_text_style || name == XML_boolean_style || name == XML_date_style)
         {
             if (m_current_style->is_volatile)
             {
