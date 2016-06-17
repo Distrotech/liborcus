@@ -59,6 +59,18 @@ struct ORCUS_PSR_DLLPUBLIC xml_token_attr_t
         const pstring& _value, bool _transient);
 };
 
+/**
+ * Element properties passed to its handler via start_element() and
+ * end_element() calls.
+ */
+struct ORCUS_PSR_DLLPUBLIC sax_token_parser_element
+{
+    xmlns_id_t ns;
+    xml_token_t name;
+    pstring raw_name;
+    std::vector<xml_token_attr_t> attrs;
+};
+
 // Other types
 
 enum class length_unit_t

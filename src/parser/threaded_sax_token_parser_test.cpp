@@ -5,12 +5,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "orcus/sax_token_parser.hpp"
+#include "orcus/threaded_sax_token_parser.hpp"
 #include "orcus/tokens.hpp"
 #include "orcus/global.hpp"
 #include "orcus/xml_namespace.hpp"
 
 #include <cstring>
+#include <cassert>
 
 using namespace std;
 using namespace orcus;
@@ -100,7 +101,7 @@ void test_sax_token_parser_1()
     tokens token_map(token_names, token_count);
     xmlns_repository ns_repo;
     xmlns_context ns_cxt = ns_repo.create_context();
-    sax_token_parser<handler> parser(content, content_size, token_map, ns_cxt, hdl);
+    threaded_sax_token_parser<handler> parser(content, content_size, token_map, ns_cxt, hdl, 1, 100);
     parser.parse();
 
     assert(hdl.get_token_count() == ORCUS_N_ELEMENTS(checks));

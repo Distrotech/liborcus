@@ -214,9 +214,11 @@
                 <F N="../include/orcus/sax_parser.hpp"/>
                 <F N="../include/orcus/sax_parser_base.hpp"/>
                 <F N="../include/orcus/sax_token_parser.hpp"/>
+                <F N="../include/orcus/sax_token_parser_thread.hpp"/>
                 <F N="../include/orcus/stream.hpp"/>
                 <F N="../include/orcus/string_pool.hpp"/>
                 <F N="../include/orcus/threaded_json_parser.hpp"/>
+                <F N="../include/orcus/threaded_sax_token_parser.hpp"/>
                 <F N="../include/orcus/tokens.hpp"/>
                 <F N="../include/orcus/types.hpp"/>
                 <F N="../include/orcus/xml_namespace.hpp"/>
@@ -429,6 +431,7 @@
                 <F N="../src/parser/sax_parser_base.cpp"/>
                 <F N="../src/parser/sax_token_parser.cpp"/>
                 <F N="../src/parser/sax_token_parser_test.cpp"/>
+                <F N="../src/parser/sax_token_parser_thread.cpp"/>
                 <F N="../src/parser/stream.cpp"/>
                 <F N="../src/parser/stream_test.cpp"/>
                 <F N="../src/parser/string_pool.cpp"/>
