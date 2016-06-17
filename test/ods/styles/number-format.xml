@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<office:styles xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0">
+<number:number-style style:name="Name10">
+  <number:number number:min-integer-digits="0" number:decimal-places="6" />
+</number:number-style>
+<number:currency-style style:name="N60106P0" style:volatile="true" number:language="hi" number:country="IN">
+	<number:currency-symbol number:language="en" number:country="IN">₹</number:currency-symbol>
+	<number:number number:decimal-places="2" number:min-integer-digits="1" number:grouping="true"/>
+</number:currency-style>
+<number:currency-style style:name="Name11" number:language="hi" number:country="IN">
+	<style:text-properties fo:color="#ff0000"/>
+	<number:text>-</number:text>
+	<number:currency-symbol number:language="en" number:country="IN">₹</number:currency-symbol>
+	<number:number number:decimal-places="2" number:min-integer-digits="1" number:grouping="true"/>
+</number:currency-style>
+<number:percentage-style style:name="Name12">
+	<number:number number:decimal-places="2" loext:min-decimal-places="2" number:min-integer-digits="1"/>
+	<number:text>%</number:text>
+</number:percentage-style>
+<number:number-style style:name="Name13">
+	<number:scientific-number number:decimal-places="2" loext:min-decimal-places="2" number:min-integer-digits="0" number:min-exponent-digits="2"/>
+</number:number-style>
+<number:text-style style:name="Name14">
+	<number:text-content/>
+	<number:text>December</number:text>
+</number:text-style>
+<number:boolean-style style:name="Name15">
+	<number:boolean/>
+</number:boolean-style>
+<number:number-style style:name="Name16">
+	<number:fraction number:min-integer-digits="4" number:min-numerator-digits="1" number:denominator-value="11"number:min-denominator-digits="1"/>
+</number:number-style>
+<number:date-style style:name="Name17" number:automatic-order="true">
+	<number:month number:style="long"/>
+	<number:text>/</number:text>
+	<number:day number:style="long"/>
+	<number:text>/</number:text>
+	<number:year/>
+</number:date-style>
+<number:time-style style:name="Name18">
+	<number:hours number:style="long"/>
+	<number:text>:</number:text>
+	<number:minutes number:style="long"/>
+	<number:text>:</number:text>
+	<number:seconds number:style="long"/>
+<number:text></number:text>
+	<number:am-pm/>
+</number:time-style>
+<number:number-style style:name="N123P0" style:volatile="true">
+	<number:number number:decimal-places="2" loext:min-decimal-places="2" number:min-integer-digits="1"/>
+</number:number-style>
+<number:number-style style:name="Name19">
+	<style:text-properties fo:color="#ff0000"/>
+	<number:text>-</number:text>
+	<number:number number:decimal-places="2" loext:min-decimal-places="2" number:min-integer-digits="1"/>
+	<style:map style:condition="value()>=0" style:apply-style-name="N123P0"/>
+</number:number-style>
+</office:styles>
