@@ -18,6 +18,8 @@
 
 namespace orcus {
 
+class xmlns_context;
+
 template<typename _Handler>
 class threaded_sax_token_parser
 {
@@ -73,13 +75,13 @@ template<typename _Handler>
 threaded_sax_token_parser<_Handler>::threaded_sax_token_parser(
     const char* p, size_t n, const tokens& tks, xmlns_context& ns_cxt,
     handler_type& hdl, size_t min_token_size) :
-    m_parser_thread(p, n, min_token_size), m_handler(hdl) {}
+    m_parser_thread(p, n, tks, ns_cxt, min_token_size), m_handler(hdl) {}
 
 template<typename _Handler>
 threaded_sax_token_parser<_Handler>::threaded_sax_token_parser(
     const char* p, size_t n, const tokens& tks, xmlns_context& ns_cxt, handler_type& hdl,
     size_t min_token_size, size_t max_token_size) :
-    m_parser_thread(p, n, min_token_size, max_token_size), m_handler(hdl) {}
+    m_parser_thread(p, n, tks, ns_cxt, min_token_size, max_token_size), m_handler(hdl) {}
 
 template<typename _Handler>
 void threaded_sax_token_parser<_Handler>::parse()

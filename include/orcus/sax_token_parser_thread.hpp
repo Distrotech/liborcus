@@ -14,7 +14,12 @@
 #include <vector>
 #include <ostream>
 
-namespace orcus { namespace sax {
+namespace orcus {
+
+class tokens;
+class xmlns_context;
+
+namespace sax {
 
 enum class parse_token_t
 {
@@ -49,8 +54,8 @@ class ORCUS_PSR_DLLPUBLIC parser_thread
     std::unique_ptr<impl> mp_impl;
 
 public:
-    parser_thread(const char* p, size_t n, size_t min_token_size);
-    parser_thread(const char* p, size_t n, size_t min_token_size, size_t max_token_size);
+    parser_thread(const char* p, size_t n, const orcus::tokens& tks, xmlns_context& ns_cxt, size_t min_token_size);
+    parser_thread(const char* p, size_t n, const orcus::tokens& tks, xmlns_context& ns_cxt, size_t min_token_size, size_t max_token_size);
     ~parser_thread();
 
     void start();

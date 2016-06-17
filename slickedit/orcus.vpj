@@ -437,6 +437,7 @@
                 <F N="../src/parser/string_pool.cpp"/>
                 <F N="../src/parser/string_pool_test.cpp"/>
                 <F N="../src/parser/threaded_json_parser_test.cpp"/>
+                <F N="../src/parser/threaded_sax_token_parser_test.cpp"/>
                 <F N="../src/parser/tokens.cpp"/>
                 <F N="../src/parser/types.cpp"/>
                 <F N="../src/parser/win_stdint.h"/>
