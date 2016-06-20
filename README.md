@@ -94,3 +94,17 @@ for the page layout and theme.
 
 Most distros package Doxygen, and Sphinx, Breathe and Sphinx Bootstrap Theme
 can be installed via pip.
+
+## Debugging test programs
+
+Orcus uses libtool to manage linking of executables.  When you have a test
+failure and you wish to debug it by running it under, say, `gdb`, you need
+to use `libtool` to wrap the libtool wrapper script that wraps the actual
+executable binary.  For instance, the following command executes the test
+program named `parser-test-threaded-sax-token-parser` under `gdb` with the
+help of `libtool`:
+
+```bash
+libtool --mode=execute gdb src/parser/parser-test-threaded-sax-token-parser
+```
+
