@@ -63,19 +63,19 @@ struct ORCUS_PSR_DLLPUBLIC xml_token_attr_t
  * Element properties passed to its handler via start_element() and
  * end_element() calls.
  */
-struct ORCUS_PSR_DLLPUBLIC sax_token_parser_element
+struct ORCUS_PSR_DLLPUBLIC xml_token_element_t
 {
     xmlns_id_t ns;
     xml_token_t name;
     pstring raw_name;
     std::vector<xml_token_attr_t> attrs;
 
-    sax_token_parser_element(const sax_token_parser_element&) = delete;
-    sax_token_parser_element& operator= (sax_token_parser_element) = delete;
+    xml_token_element_t(const xml_token_element_t&) = delete;
+    xml_token_element_t& operator= (xml_token_element_t) = delete;
 
-    sax_token_parser_element();
-    sax_token_parser_element(xmlns_id_t _ns, xml_token_t _name, const pstring& _raw_name, std::vector<xml_token_attr_t>&& _attrs);
-    sax_token_parser_element(sax_token_parser_element&& other);
+    xml_token_element_t();
+    xml_token_element_t(xmlns_id_t _ns, xml_token_t _name, const pstring& _raw_name, std::vector<xml_token_attr_t>&& _attrs);
+    xml_token_element_t(xml_token_element_t&& other);
 };
 
 // Other types

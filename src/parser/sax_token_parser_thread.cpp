@@ -54,13 +54,13 @@ struct parser_thread::impl
         m_token_buffer.notify_and_finish(m_parser_tokens);
     }
 
-    void start_element(const orcus::sax_token_parser_element& elem)
+    void start_element(const orcus::xml_token_element_t& elem)
     {
         m_parser_tokens.emplace_back(parse_token_t::start_element);
         check_and_notify();
     }
 
-    void end_element(const orcus::sax_token_parser_element& elem)
+    void end_element(const orcus::xml_token_element_t& elem)
     {
         m_parser_tokens.emplace_back(parse_token_t::end_element);
         check_and_notify();

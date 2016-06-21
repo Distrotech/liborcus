@@ -29,13 +29,13 @@ xml_token_attr_t::xml_token_attr_t(
     xmlns_id_t _ns, xml_token_t _name, const pstring& _raw_name, const pstring& _value, bool _transient) :
     ns(_ns), name(_name), raw_name(_raw_name), value(_value), transient(_transient) {}
 
-sax_token_parser_element::sax_token_parser_element() : ns(nullptr), name(XML_UNKNOWN_TOKEN) {}
+xml_token_element_t::xml_token_element_t() : ns(nullptr), name(XML_UNKNOWN_TOKEN) {}
 
-sax_token_parser_element::sax_token_parser_element(
+xml_token_element_t::xml_token_element_t(
     xmlns_id_t _ns, xml_token_t _name, const pstring& _raw_name, std::vector<xml_token_attr_t>&& _attrs)  :
     ns(_ns), name(_name), raw_name(_raw_name), attrs(std::move(_attrs)) {}
 
-sax_token_parser_element::sax_token_parser_element(sax_token_parser_element&& other) :
+xml_token_element_t::xml_token_element_t(xml_token_element_t&& other) :
     ns(other.ns), name(other.name), raw_name(other.raw_name), attrs(std::move(other.attrs)) {}
 
 length_t::length_t() : unit(length_unit_t::unknown), value(0.0) {}

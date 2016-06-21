@@ -30,7 +30,7 @@
 
 namespace orcus {
 
-struct sax_token_parser_element;
+struct xml_token_element_t;
 
 }
 
@@ -47,7 +47,7 @@ public:
      * @param elem struct containing the element's information as well as all
      *             the attributes that belong to the element.
      */
-    void start_element(const orcus::sax_token_parser_element& elem) {}
+    void start_element(const orcus::xml_token_element_t& elem) {}
 
     /**
      * Called at the end of each element.
@@ -55,7 +55,7 @@ public:
      * @param elem struct containing the element's information as well as all
      *             the attributes that belong to the element.
      */
-    void end_element(const orcus::sax_token_parser_element& elem) {}
+    void end_element(const orcus::xml_token_element_t& elem) {}
 
     /**
      * Called when a segment of a text content is parsed.  Each text content

@@ -36,8 +36,8 @@ public:
     virtual void start_document();
     virtual void end_document();
 
-    virtual void start_element(const sax_token_parser_element& elem);
-    virtual void end_element(const sax_token_parser_element& elem);
+    virtual void start_element(const xml_token_element_t& elem);
+    virtual void end_element(const xml_token_element_t& elem);
     virtual void characters(const pstring& str, bool transient);
 
     void set_ns_context(const xmlns_context* p);

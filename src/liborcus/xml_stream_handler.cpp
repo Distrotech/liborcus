@@ -32,7 +32,7 @@ void xml_stream_handler::end_document()
 {
 }
 
-void xml_stream_handler::start_element(const sax_token_parser_element& elem)
+void xml_stream_handler::start_element(const xml_token_element_t& elem)
 {
     xml_context_base& cur = get_current_context();
     if (!cur.can_handle_element(elem.ns, elem.name))
@@ -44,7 +44,7 @@ void xml_stream_handler::start_element(const sax_token_parser_element& elem)
     get_current_context().start_element(elem.ns, elem.name, elem.attrs);
 }
 
-void xml_stream_handler::end_element(const sax_token_parser_element& elem)
+void xml_stream_handler::end_element(const xml_token_element_t& elem)
 {
     bool ended = get_current_context().end_element(elem.ns, elem.name);
 

@@ -73,7 +73,7 @@ void test_sax_token_parser_1()
     public:
         handler(const check* p) : mp_head(p), mp_check(p) {}
 
-        void start_element(const orcus::sax_token_parser_element& elem)
+        void start_element(const orcus::xml_token_element_t& elem)
         {
             assert(pstring(mp_check->raw_name) == elem.raw_name);
             assert(mp_check->token == elem.name);
@@ -81,7 +81,7 @@ void test_sax_token_parser_1()
             ++mp_check;
         }
 
-        void end_element(const orcus::sax_token_parser_element& elem)
+        void end_element(const orcus::xml_token_element_t& elem)
         {
             assert(pstring(mp_check->raw_name) == elem.raw_name);
             assert(mp_check->token == elem.name);
