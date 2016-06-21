@@ -27,7 +27,7 @@ class ORCUS_PSR_DLLPUBLIC pstring
 
 public:
 
-    pstring() : m_pos(NULL), m_size(0) {}
+    pstring() : m_pos(nullptr), m_size(0) {}
     pstring(const char* _pos) : m_pos(_pos) { m_size = std::strlen(_pos); }
     pstring(const char* _pos, size_t _size) : m_pos(_pos), m_size(_size) {}
 
