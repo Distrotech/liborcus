@@ -35,6 +35,9 @@ xml_token_element_t::xml_token_element_t(
     xmlns_id_t _ns, xml_token_t _name, const pstring& _raw_name, std::vector<xml_token_attr_t>&& _attrs)  :
     ns(_ns), name(_name), raw_name(_raw_name), attrs(std::move(_attrs)) {}
 
+xml_token_element_t::xml_token_element_t(const xml_token_element_t& other) :
+    ns(other.ns), name(other.name), raw_name(other.raw_name), attrs(other.attrs) {}
+
 xml_token_element_t::xml_token_element_t(xml_token_element_t&& other) :
     ns(other.ns), name(other.name), raw_name(other.raw_name), attrs(std::move(other.attrs)) {}
 

@@ -18,19 +18,58 @@
 
 namespace orcus { namespace sax {
 
-parse_token::parse_token() :
-    type(parse_token_t::unknown) {}
+parse_token::parse_token() : type(parse_token_t::unknown) {}
 
-parse_token::parse_token(parse_token_t _type) :
-    type(_type) {}
+parse_token::parse_token(const pstring& _characters) :
+    type(parse_token_t::characters)
+{
+    characters.p = _characters.get();
+    characters.n = _characters.size();
+}
+
+parse_token::parse_token(parse_token_t _type, const xml_token_element_t* _element) :
+    type(_type), element(_element)
+{
+}
 
 parse_token::parse_token(const parse_token& other) :
-    type(other.type) {}
+    type(other.type)
+{
+    switch (type)
+    {
+        case parse_token_t::start_element:
+        case parse_token_t::end_element:
+            element = other.element;
+            break;
+        case parse_token_t::characters:
+            characters.p = other.characters.p;
+            characters.n = other.characters.n;
+            break;
+        case parse_token_t::unknown:
+        default:
+            ;
+    }
+}
+
+bool parse_token::operator== (const parse_token& other) const
+{
+    if (type != other.type)
+        return false;
+
+    return true;
+}
+
+bool parse_token::operator!= (const parse_token& other) const
+{
+    return !operator==(other);
+}
 
 struct parser_thread::impl
 {
     detail::thread::parser_token_buffer<parse_tokens_t> m_token_buffer;
     string_pool m_pool;
+    std::vector<std::unique_ptr<xml_token_element_t>> m_element_store;
+
     parse_tokens_t m_parser_tokens; // token buffer for the parser thread.
 
     const char* mp_char;
@@ -56,19 +95,41 @@ struct parser_thread::impl
 
     void start_element(const orcus::xml_token_element_t& elem)
     {
-        m_parser_tokens.emplace_back(parse_token_t::start_element);
+        m_element_store.emplace_back(orcus::make_unique<orcus::xml_token_element_t>(elem));
+        orcus::xml_token_element_t& this_elem = *m_element_store.back();
+
+        // Go through all attributes and intern transient strings.
+        std::for_each(this_elem.attrs.begin(), this_elem.attrs.end(),
+            [&](xml_token_attr_t& attr)
+            {
+                if (attr.transient)
+                {
+                    attr.value = m_pool.intern(attr.value).first;
+                    attr.transient = false;
+                }
+            }
+        );
+
+        m_parser_tokens.emplace_back(parse_token_t::start_element, m_element_store.back().get());
         check_and_notify();
     }
 
     void end_element(const orcus::xml_token_element_t& elem)
     {
-        m_parser_tokens.emplace_back(parse_token_t::end_element);
+        assert(elem.attrs.empty());
+
+        m_element_store.emplace_back(orcus::make_unique<orcus::xml_token_element_t>(elem));
+        m_parser_tokens.emplace_back(parse_token_t::end_element, m_element_store.back().get());
         check_and_notify();
     }
 
     void characters(const orcus::pstring& val, bool transient)
     {
-        m_parser_tokens.emplace_back(parse_token_t::characters);
+        if (transient)
+            m_parser_tokens.emplace_back(m_pool.intern(val).first);
+        else
+            m_parser_tokens.emplace_back(val);
+
         check_and_notify();
     }
 

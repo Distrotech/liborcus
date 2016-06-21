@@ -18,6 +18,8 @@ namespace orcus {
 
 class tokens;
 class xmlns_context;
+class pstring;
+struct xml_token_element_t;
 
 namespace sax {
 
@@ -33,8 +35,21 @@ struct ORCUS_PSR_DLLPUBLIC parse_token
 {
     parse_token_t type;
 
+    union
+    {
+        struct
+        {
+            const char* p;
+            size_t n;
+
+        } characters;
+
+        const xml_token_element_t* element;
+    };
+
     parse_token();
-    parse_token(parse_token_t _type);
+    parse_token(const pstring& _characters);
+    parse_token(parse_token_t _type, const xml_token_element_t* _element);
 
     parse_token(const parse_token& other);
 

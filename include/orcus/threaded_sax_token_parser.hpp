@@ -113,10 +113,13 @@ void threaded_sax_token_parser<_Handler>::process_tokens(sax::parse_tokens_t& tk
             switch (t.type)
             {
                 case sax::parse_token_t::start_element:
+                    m_handler.start_element(*t.element);
                     break;
                 case sax::parse_token_t::end_element:
+                    m_handler.end_element(*t.element);
                     break;
                 case sax::parse_token_t::characters:
+                    m_handler.characters(pstring(t.characters.p, t.characters.n), false);
                     break;
                 default:
                     throw general_error("unknown token type encountered.");

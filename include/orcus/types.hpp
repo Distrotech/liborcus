@@ -70,11 +70,11 @@ struct ORCUS_PSR_DLLPUBLIC xml_token_element_t
     pstring raw_name;
     std::vector<xml_token_attr_t> attrs;
 
-    xml_token_element_t(const xml_token_element_t&) = delete;
     xml_token_element_t& operator= (xml_token_element_t) = delete;
 
     xml_token_element_t();
     xml_token_element_t(xmlns_id_t _ns, xml_token_t _name, const pstring& _raw_name, std::vector<xml_token_attr_t>&& _attrs);
+    xml_token_element_t(const xml_token_element_t& other);
     xml_token_element_t(xml_token_element_t&& other);
 };
 
