@@ -9,7 +9,12 @@
 #include "xml_stream_handler.hpp"
 
 #include "orcus/tokens.hpp"
+
+#ifdef __ORCUS_THREADED_XML_PARSING
+#include "orcus/threaded_sax_token_parser.hpp"
+#else
 #include "orcus/sax_token_parser.hpp"
+#endif
 
 #include <iostream>
 #include <vector>
@@ -52,7 +57,12 @@ void xml_stream_parser::parse()
     if (!mp_handler)
         return;
 
+#ifdef __ORCUS_THREADED_XML_PARSING
+    threaded_sax_token_parser<xml_stream_handler> sax(m_content, m_size, m_tokens, m_ns_cxt, *mp_handler, 1000);
+#else
     sax_token_parser<xml_stream_handler> sax(m_content, m_size, m_tokens, m_ns_cxt, *mp_handler);
+#endif
+
     sax.parse();
 }
 
@@ -72,4 +82,5 @@ xml_stream_handler* xml_stream_parser::get_handler() const
 }
 
 }
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
