@@ -311,7 +311,9 @@ public:
         m_hidden(false),
         m_formula_hidden(false),
         m_print_content(false),
-        m_cell_protection(false)
+        m_cell_protection(false),
+        m_ver_alignment(spreadsheet::ver_alignment_t::unknown),
+        m_has_ver_alignment(false)
     {}
 
 private:
@@ -328,6 +330,9 @@ private:
     bool m_cell_protection;
 
     border_map_type m_border_style_dir_pair;
+
+    spreadsheet::ver_alignment_t m_ver_alignment;
+    bool m_has_ver_alignment;
 
 public:
 
@@ -425,6 +430,9 @@ public:
                         m_locked = true;
                     }
                 }
+                case XML_vertical_align:
+                    m_has_ver_alignment = odf_helper::extract_ver_alignment_style(attr.value, m_ver_alignment);
+                break;
                 default:
                     ;
             }
@@ -453,6 +461,8 @@ public:
     {
         return m_border_style_dir_pair;
     }
+    bool has_ver_alignment() const { return m_has_ver_alignment;}
+    const spreadsheet::ver_alignment_t& get_ver_alignment() const { return m_ver_alignment;}
 
 };
 
