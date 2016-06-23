@@ -466,6 +466,35 @@ public:
 
 };
 
+class paragraph_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
+{
+    spreadsheet::hor_alignment_t m_hor_alignment;
+    bool m_has_hor_alignment;
+
+public:
+    paragraph_prop_attr_parser():
+        m_hor_alignment(spreadsheet::hor_alignment_t::unknown),
+        m_has_hor_alignment(false)
+    {}
+
+    void operator() (const xml_token_attr_t& attr)
+    {
+        if (attr.ns == NS_odf_fo)
+        {
+            switch (attr.name)
+            {
+                case XML_text_align:
+                    m_has_hor_alignment = odf_helper::extract_hor_alignment_style(attr.value, m_hor_alignment);
+                break;
+                default:
+                    ;
+            }
+        }
+    }
+    bool has_hor_alignment() const { return m_has_hor_alignment;}
+    const spreadsheet::hor_alignment_t& get_hor_alignment() const { return m_hor_alignment;}
+};
+
 }
 
 style_value_converter::style_value_converter()
