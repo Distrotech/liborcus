@@ -619,7 +619,14 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                 xml_element_expected(parent, NS_odf_style, XML_style);
             break;
             case XML_paragraph_properties:
+            {
                 xml_element_expected(parent, NS_odf_style, XML_style);
+                paragraph_prop_attr_parser func;
+                func = std::for_each(attrs.begin(), attrs.end(), func);
+                if (func.has_hor_alignment())
+                    mp_styles->set_xf_horizontal_alignment(func.get_hor_alignment());
+
+            }
             break;
             case XML_text_properties:
             {
@@ -752,6 +759,10 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                         mp_styles->set_cell_print_content(func.is_print_content());
                         mp_styles->set_cell_formula_hidden(func.is_formula_hidden());
                     }
+
+                    if (func.has_ver_alignment())
+                        mp_styles->set_xf_vertical_alignment(func.get_ver_alignment());
+
                     size_t cell_protection_id = mp_styles->commit_cell_protection();
                     switch (m_current_style->family)
                     {
