@@ -82,6 +82,13 @@ void threaded_xml_stream_parser::parse()
 
     threaded_sax_token_parser<xml_stream_handler> sax(m_content, m_size, m_tokens, m_ns_cxt, *mp_handler, 1000);
     sax.parse();
+
+    sax.swap_string_pool(m_pool);
+}
+
+void threaded_xml_stream_parser::swap_string_pool(string_pool& pool)
+{
+    m_pool.swap(pool);
 }
 
 }

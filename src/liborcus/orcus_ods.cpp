@@ -75,12 +75,16 @@ void orcus_ods::read_content(const zip_archive& archive)
 
 void orcus_ods::read_content_xml(const unsigned char* p, size_t size)
 {
-    xml_stream_parser parser(
+    threaded_xml_stream_parser parser(
         get_config(), mp_impl->m_ns_repo, odf_tokens,
         reinterpret_cast<const char*>(p), size);
     ods_content_xml_handler handler(mp_impl->m_cxt, odf_tokens, mp_impl->mp_factory);
     parser.set_handler(&handler);
     parser.parse();
+
+    string_pool this_pool;
+    parser.swap_string_pool(this_pool);
+    mp_impl->m_cxt.m_string_pool.merge(this_pool);
 }
 
 bool orcus_ods::detect(const unsigned char* blob, size_t size)

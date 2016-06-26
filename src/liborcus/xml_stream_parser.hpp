@@ -5,14 +5,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef __ORCUS_XMLPARSER_HPP__
-#define __ORCUS_XMLPARSER_HPP__
+#ifndef INCLUDED_ORCUS_XMLPARSER_HPP
+#define INCLUDED_ORCUS_XMLPARSER_HPP
 
 #include <cstdlib>
 #include <string>
 #include <exception>
 
 #include "orcus/xml_namespace.hpp"
+#include "orcus/string_pool.hpp"
 
 namespace orcus {
 
@@ -63,6 +64,8 @@ public:
 
 class threaded_xml_stream_parser : public xml_stream_parser_base
 {
+    string_pool m_pool;
+
 public:
     threaded_xml_stream_parser(
         const config& opt,
@@ -70,9 +73,12 @@ public:
     ~threaded_xml_stream_parser();
 
     virtual void parse();
+
+    void swap_string_pool(string_pool& pool);
 };
 
 }
 
 #endif
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
