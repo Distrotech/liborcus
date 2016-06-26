@@ -24,18 +24,6 @@ using namespace std;
 
 namespace orcus {
 
-// ============================================================================
-
-xml_stream_parser::parse_error::parse_error(const string& msg) :
-    m_msg(msg) {}
-
-xml_stream_parser::parse_error::~parse_error() throw() {}
-
-const char* xml_stream_parser::parse_error::what() const throw()
-{
-    return m_msg.c_str();
-}
-
 xml_stream_parser::xml_stream_parser(
     const config& opt,
     xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size) :

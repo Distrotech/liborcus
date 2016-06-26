@@ -29,16 +29,6 @@ class tokens;
 class xml_stream_parser
 {
 public:
-    class parse_error : public ::std::exception
-    {
-    public:
-        parse_error(const ::std::string& msg);
-        virtual ~parse_error() throw();
-        virtual const char* what() const throw();
-    private:
-        ::std::string m_msg;
-    };
-
     xml_stream_parser(
         const config& opt,
         xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size);
