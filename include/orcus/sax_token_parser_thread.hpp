@@ -19,6 +19,7 @@ namespace orcus {
 class tokens;
 class xmlns_context;
 class pstring;
+class string_pool;
 struct xml_token_element_t;
 
 namespace sax {
@@ -84,6 +85,8 @@ public:
      *         to come), false if it's done i.e. this is the last token set.
      */
     bool next_tokens(parse_tokens_t& tokens);
+
+    void swap_string_pool(string_pool& pool);
 };
 
 }}

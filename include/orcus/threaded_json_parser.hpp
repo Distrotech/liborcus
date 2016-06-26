@@ -60,6 +60,8 @@ public:
      */
     json::parser_stats get_stats() const;
 
+    void swap_string_pool(string_pool& pool);
+
 private:
     void thread_parse();
 
@@ -98,6 +100,12 @@ template<typename _Handler>
 json::parser_stats threaded_json_parser<_Handler>::get_stats() const
 {
     return m_parser_thread.get_stats();
+}
+
+template<typename _Handler>
+void threaded_json_parser<_Handler>::swap_string_pool(string_pool& pool)
+{
+    m_parser_thread.swap_string_pool(pool);
 }
 
 template<typename _Handler>

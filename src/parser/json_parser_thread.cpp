@@ -234,6 +234,11 @@ struct parser_thread::impl
         stats.token_buffer_size_threshold = m_token_buffer.token_size_threshold();
         return stats;
     }
+
+    void swap_string_pool(string_pool& pool)
+    {
+        m_pool.swap(pool);
+    }
 };
 
 std::ostream& operator<< (std::ostream& os, const parse_tokens_t& tokens)
@@ -321,6 +326,11 @@ bool parser_thread::next_tokens(parse_tokens_t& tokens)
 parser_stats parser_thread::get_stats() const
 {
     return mp_impl->get_stats();
+}
+
+void parser_thread::swap_string_pool(string_pool& pool)
+{
+    mp_impl->swap_string_pool(pool);
 }
 
 }}

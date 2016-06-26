@@ -14,7 +14,11 @@
 #include <vector>
 #include <ostream>
 
-namespace orcus { namespace json {
+namespace orcus {
+
+class string_pool;
+
+namespace json {
 
 struct ORCUS_PSR_DLLPUBLIC parser_stats
 {
@@ -104,6 +108,8 @@ public:
     bool next_tokens(parse_tokens_t& tokens);
 
     parser_stats get_stats() const;
+
+    void swap_string_pool(string_pool& pool);
 };
 
 }}

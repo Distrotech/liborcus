@@ -19,6 +19,7 @@
 namespace orcus {
 
 class xmlns_context;
+class string_pool;
 
 template<typename _Handler>
 class threaded_sax_token_parser
@@ -61,6 +62,8 @@ public:
      */
     void parse();
 
+    void swap_string_pool(string_pool& pool);
+
 private:
     void thread_parse();
 
@@ -95,6 +98,12 @@ void threaded_sax_token_parser<_Handler>::parse()
         process_tokens(tokens);
 
     process_tokens(tokens);
+}
+
+template<typename _Handler>
+void threaded_sax_token_parser<_Handler>::swap_string_pool(string_pool& pool)
+{
+    m_parser_thread.swap_string_pool(pool);
 }
 
 template<typename _Handler>

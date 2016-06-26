@@ -144,6 +144,11 @@ struct parser_thread::impl
     {
         return m_token_buffer.next_tokens(tokens);
     }
+
+    void swap_string_pool(string_pool& pool)
+    {
+        m_pool.swap(pool);
+    }
 };
 
 parser_thread::parser_thread(
@@ -168,6 +173,11 @@ void parser_thread::start()
 bool parser_thread::next_tokens(parse_tokens_t& tokens)
 {
     return mp_impl->next_tokens(tokens);
+}
+
+void parser_thread::swap_string_pool(string_pool& pool)
+{
+    mp_impl->swap_string_pool(pool);
 }
 
 }}
