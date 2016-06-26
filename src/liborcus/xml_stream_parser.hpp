@@ -26,21 +26,21 @@ class tokens;
  * the first char of the content stream.  Make sure you finish parsing while
  * the content pointer is valid.
  */
-class xml_stream_parser
+class xml_stream_parser_base
 {
 public:
-    xml_stream_parser(
-        const config& opt,
-        xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size);
-    ~xml_stream_parser();
+    xml_stream_parser_base() = delete;
 
-    void parse();
+    virtual void parse() = 0;
 
     void set_handler(xml_stream_handler* handler);
     xml_stream_handler* get_handler() const;
 
-private:
-    xml_stream_parser(); // disabled
+protected:
+    xml_stream_parser_base(
+        const config& opt,
+        xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size);
+    ~xml_stream_parser_base();
 
     const config& m_config;
     xmlns_context m_ns_cxt;
@@ -48,6 +48,28 @@ private:
     xml_stream_handler* mp_handler;
     const char* m_content;
     size_t m_size;
+};
+
+class xml_stream_parser : public xml_stream_parser_base
+{
+public:
+    xml_stream_parser(
+        const config& opt,
+        xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size);
+    ~xml_stream_parser();
+
+    virtual void parse();
+};
+
+class threaded_xml_stream_parser : public xml_stream_parser_base
+{
+public:
+    threaded_xml_stream_parser(
+        const config& opt,
+        xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size);
+    ~threaded_xml_stream_parser();
+
+    virtual void parse();
 };
 
 }

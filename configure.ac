@@ -220,20 +220,6 @@ AS_IF([test "x$enable_spreadsheet_model" != "xno"], [
 ])
 AM_CONDITIONAL([BUILD_SPREADSHEET_MODEL], [test "x$enable_spreadsheet_model" != "xno"])
 
-# ====================
-# Threaded XML parsing
-# ====================
-
-AC_ARG_ENABLE(threaded-xml-parsing,
-	AS_HELP_STRING([--enable-threaded-xml-parsing],
-		[Enable threaded XML parsing for XML-based import filters. Disabled by default.]),
-	[enable_threaded_xml_parsing="$enableval"],
-	[enable_threaded_xml_parsing=no]
-)
-AS_IF([test "x$enable_threaded_xml_parsing" != "xno"], [
-	CXXFLAGS="$CXXFLAGS -D__ORCUS_THREADED_XML_PARSING"
-])
-
 # ==============
 # Python support
 # ==============
@@ -279,7 +265,6 @@ Build configuration:
         debug:                 $enable_debug
         werror:                $enable_werror
         spreadsheet-model:     $enable_spreadsheet_model
-        threaded-xml-parsing:  $enable_threaded_xml_parsing
         python:                $enable_python
         gnumeric-filter:       $with_gnumeric_filter
         ods-filter:            $with_ods_filter

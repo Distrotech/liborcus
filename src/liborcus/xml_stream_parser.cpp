@@ -10,11 +10,8 @@
 
 #include "orcus/tokens.hpp"
 
-#ifdef __ORCUS_THREADED_XML_PARSING
 #include "orcus/threaded_sax_token_parser.hpp"
-#else
 #include "orcus/sax_token_parser.hpp"
-#endif
 
 #include <iostream>
 #include <vector>
@@ -24,7 +21,7 @@ using namespace std;
 
 namespace orcus {
 
-xml_stream_parser::xml_stream_parser(
+xml_stream_parser_base::xml_stream_parser_base(
     const config& opt,
     xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size) :
     m_config(opt),
@@ -36,25 +33,11 @@ xml_stream_parser::xml_stream_parser(
 {
 }
 
-xml_stream_parser::~xml_stream_parser()
+xml_stream_parser_base::~xml_stream_parser_base()
 {
 }
 
-void xml_stream_parser::parse()
-{
-    if (!mp_handler)
-        return;
-
-#ifdef __ORCUS_THREADED_XML_PARSING
-    threaded_sax_token_parser<xml_stream_handler> sax(m_content, m_size, m_tokens, m_ns_cxt, *mp_handler, 1000);
-#else
-    sax_token_parser<xml_stream_handler> sax(m_content, m_size, m_tokens, m_ns_cxt, *mp_handler);
-#endif
-
-    sax.parse();
-}
-
-void xml_stream_parser::set_handler(xml_stream_handler* handler)
+void xml_stream_parser_base::set_handler(xml_stream_handler* handler)
 {
     mp_handler = handler;
     if (mp_handler)
@@ -64,9 +47,41 @@ void xml_stream_parser::set_handler(xml_stream_handler* handler)
     }
 }
 
-xml_stream_handler* xml_stream_parser::get_handler() const
+xml_stream_handler* xml_stream_parser_base::get_handler() const
 {
     return mp_handler;
+}
+
+xml_stream_parser::xml_stream_parser(
+    const config& opt,
+    xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size) :
+    xml_stream_parser_base(opt, ns_repo, tokens, content, size) {}
+
+xml_stream_parser::~xml_stream_parser() {}
+
+void xml_stream_parser::parse()
+{
+    if (!mp_handler)
+        return;
+
+    sax_token_parser<xml_stream_handler> sax(m_content, m_size, m_tokens, m_ns_cxt, *mp_handler);
+    sax.parse();
+}
+
+threaded_xml_stream_parser::threaded_xml_stream_parser(
+    const config& opt,
+    xmlns_repository& ns_repo, const tokens& tokens, const char* content, size_t size) :
+    xml_stream_parser_base(opt, ns_repo, tokens, content, size) {}
+
+threaded_xml_stream_parser::~threaded_xml_stream_parser() {}
+
+void threaded_xml_stream_parser::parse()
+{
+    if (!mp_handler)
+        return;
+
+    threaded_sax_token_parser<xml_stream_handler> sax(m_content, m_size, m_tokens, m_ns_cxt, *mp_handler, 1000);
+    sax.parse();
 }
 
 }
