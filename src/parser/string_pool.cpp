@@ -154,6 +154,7 @@ void string_pool::merge(string_pool& other)
                 // This is a new string value in this pool.  Move this string
                 // instance in as-is.
                 mp_impl->m_store.push_back(std::move(value));
+                assert(key.get() == mp_impl->m_store.back()->data());
                 auto r = mp_impl->m_set.insert(key);
                 if (!r.second)
                     throw general_error("failed to intern a new string instance.");
