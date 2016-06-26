@@ -65,6 +65,17 @@ public:
 
     void swap(string_pool& other);
 
+    /**
+     * Merge another string pool instance in.  This will not invalidate any
+     * string references to the other pool.
+     *
+     * The other string pool instance will become empty when this call
+     * returns.
+     *
+     * @param other string pool instance to merge in.
+     */
+    void merge(string_pool& other);
+
 private:
     struct impl;
     std::unique_ptr<impl> mp_impl;

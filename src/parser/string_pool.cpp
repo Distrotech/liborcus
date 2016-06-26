@@ -59,6 +59,8 @@ struct string_pool::impl
 {
     string_set_type m_set;
     string_store_type m_store;
+    /** duplicate string instances */
+    string_store_type m_merged_store;
 };
 
 string_pool::string_pool() : mp_impl(orcus::make_unique<impl>()) {}
@@ -126,12 +128,57 @@ void string_pool::clear()
 
 size_t string_pool::size() const
 {
-    return mp_impl->m_store.size();
+    return mp_impl->m_set.size();
 }
 
 void string_pool::swap(string_pool& other)
 {
     std::swap(mp_impl, other.mp_impl);
+}
+
+void string_pool::merge(string_pool& other)
+{
+    string_store_type* other_store = &other.mp_impl->m_store;
+
+    std::for_each(other_store->begin(), other_store->end(),
+        [&](string_store_type::value_type& value)
+        {
+            const std::string* p = value.get();
+            size_t n = p->size();
+
+            pstring key(p->data(), n);
+            string_set_type::const_iterator it = mp_impl->m_set.find(key);
+
+            if (it == mp_impl->m_set.end())
+            {
+                // This is a new string value in this pool.  Move this string
+                // instance in as-is.
+                mp_impl->m_store.push_back(std::move(value));
+                auto r = mp_impl->m_set.insert(key);
+                if (!r.second)
+                    throw general_error("failed to intern a new string instance.");
+            }
+            else
+            {
+                // This is a duplicate string value in this pool.  Move this
+                // string instance in to the merged store.
+                mp_impl->m_merged_store.push_back(std::move(value));
+            }
+        }
+    );
+
+    // Move all duplicate string values from the other store as-is.
+    other_store = &other.mp_impl->m_merged_store;
+    std::for_each(other_store->begin(), other_store->end(),
+        [&](string_store_type::value_type& value)
+        {
+            mp_impl->m_merged_store.push_back(std::move(value));
+        }
+    );
+
+    other.mp_impl->m_store.clear();
+    other.mp_impl->m_merged_store.clear();
+    other.mp_impl->m_set.clear();
 }
 
 }

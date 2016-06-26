@@ -7,6 +7,7 @@
 
 #include "orcus/string_pool.hpp"
 #include "orcus/pstring.hpp"
+#include "orcus/global.hpp"
 
 #include <iostream>
 #include <cassert>
@@ -65,9 +66,44 @@ void test_basic()
     assert(str.get() != static_str.get());
 }
 
+void test_merge()
+{
+    string_pool pool1;
+    std::unique_ptr<string_pool> pool2(orcus::make_unique<string_pool>());
+
+    pool1.intern("A");
+    pool1.intern("B");
+    pool1.intern("C");
+    pstring v1 = pool1.intern("same value").first;
+
+    pool2->intern("D");
+    pool2->intern("E");
+    pool2->intern("F");
+    pstring v2 = pool2->intern("same value").first;
+
+    assert(pool1.size() == 4);
+    assert(pool2->size() == 4);
+
+    pool1.merge(*pool2);
+
+    assert(pool1.size() == 7);
+    assert(pool2->size() == 0);
+
+    pool2.reset(); // Delete the pool2 instance altogether.
+
+    // This should not create a new entry.
+    auto r = pool1.intern("F");
+    assert(!r.second);
+
+    // v2 still points to the original string in pool2, which should now be in
+    // the merged store in pool1 (thus valid).
+    assert(v1 == v2);
+}
+
 int main()
 {
     test_basic();
+    test_merge();
     return EXIT_SUCCESS;
 }
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
