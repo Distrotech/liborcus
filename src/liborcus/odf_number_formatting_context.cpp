@@ -162,14 +162,16 @@ public:
     size_t get_min_int_digits() const { return m_min_int_digits;}
 };
 
-class percentage_style_attr_parser : std::unary_function<xml_token_attr_t, void>
+class generic_style_attr_parser : std::unary_function<xml_token_attr_t, void>
 {
     pstring m_style_name;
     bool m_volatile;
+    bool m_long;
 
 public:
-    percentage_style_attr_parser() :
-        m_volatile(false)
+    generic_style_attr_parser() :
+        m_volatile(false),
+        m_long(false)
     {}
 
     void operator() (const xml_token_attr_t& attr)
@@ -188,114 +190,14 @@ public:
                     ;
             }
         }
-    }
-
-    pstring get_style_name() const { return m_style_name;}
-    bool is_volatile() const { return m_volatile;}
-};
-
-class currency_style_attr_parser : std::unary_function<xml_token_attr_t, void>
-{
-    pstring m_style_name;
-    bool m_volatile;
-
-public:
-    currency_style_attr_parser() :
-        m_volatile(false)
-    {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.ns == NS_odf_style)
-        {
-            switch (attr.name)
-            {
-                case XML_name:
-                    m_style_name = attr.value;
-                break;
-                case XML_volatile:
-                    m_volatile = attr.value == "true";
-                break;
-                default:
-                    ;
-            }
-        }
-    }
-
-    pstring get_style_name() const { return m_style_name;}
-    bool is_volatile() const { return m_volatile;}
-};
-
-
-class date_style_attr_parser : std::unary_function<xml_token_attr_t, void>
-{
-    pstring m_style_name;
-    bool m_volatile;
-
-public:
-    date_style_attr_parser():
-        m_volatile(false)
-    {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.ns == NS_odf_style)
-        {
-            switch (attr.name)
-            {
-                case XML_name:
-                    m_style_name = attr.value;
-                break;
-                case XML_volatile:
-                    m_volatile = attr.value == "true";
-                break;
-                default:
-                    ;
-            }
-        }
-    }
-    pstring get_style_name() const { return m_style_name;}
-    bool is_volatile() const { return m_volatile;}
-};
-
-class day_attr_parser : std::unary_function<xml_token_attr_t, void>
-{
-    bool m_style_name;
-
-public:
-    day_attr_parser():
-        m_style_name(false)
-    {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.ns == NS_odf_number)
+        else if (attr.ns == NS_odf_number)
             if (attr.name == XML_style)
-                m_style_name = attr.value == "long";
+                m_long = attr.value == "long";
     }
 
-    bool has_long() const { return m_style_name;}
-
-};
-
-class year_attr_parser : std::unary_function<xml_token_attr_t, void>
-{
-    bool m_style_name;
-
-public:
-    year_attr_parser():
-        m_style_name(false)
-    {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.ns == NS_odf_number)
-            if (attr.name == XML_style)
-                m_style_name = attr.value =="long";
-    }
-
-    bool has_long() const { return m_style_name;}
-
+    pstring get_style_name() const { return m_style_name;}
+    bool is_volatile() const { return m_volatile;}
+    bool has_long() const { return m_long;}
 };
 
 class month_attr_parser : std::unary_function<xml_token_attr_t, void>
@@ -321,77 +223,6 @@ public:
 
     bool has_long() const { return m_style_name;}
     bool is_textual() const { return m_textual;}
-};
-
-
-class time_style_attr_parser : std::unary_function<xml_token_attr_t, void>
-{
-    pstring m_style_name;
-    bool m_volatile;
-
-public:
-    time_style_attr_parser():
-        m_volatile(false)
-    {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.ns == NS_odf_style)
-        {
-            switch (attr.name)
-            {
-                case XML_name:
-                    m_style_name = attr.value;
-                break;
-                case XML_volatile:
-                    m_volatile = attr.value == "true";
-                break;
-                default:
-                    ;
-            }
-        }
-    }
-
-    pstring get_style_name() const { return m_style_name;}
-    bool is_volatile() const { return m_volatile;}
-};
-
-class hours_attr_parser : std::unary_function<xml_token_attr_t, void>
-{
-    bool m_style_name;
-
-public:
-    hours_attr_parser():
-        m_style_name(false)
-    {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.ns == NS_odf_number)
-            if (attr.name == XML_style)
-                m_style_name = attr.value == "long";
-    }
-
-    bool has_long() const { return m_style_name;}
-};
-
-class minutes_attr_parser : std::unary_function<xml_token_attr_t, void>
-{
-    bool m_style_name;
-
-public:
-    minutes_attr_parser():
-        m_style_name(false)
-    {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.ns == NS_odf_number)
-            if (attr.name == XML_style)
-                m_style_name = attr.value == "long";
-    }
-
-    bool has_long() const { return m_style_name;}
 };
 
 class seconds_attr_parser : std::unary_function<xml_token_attr_t, void>
@@ -472,70 +303,6 @@ public:
     size_t get_min_deno_digits() const { return m_min_deno_digits;}
     pstring get_deno_value() const { return m_deno_value;}
     bool has_predefined_deno() const { return m_predefined_deno;}
-};
-
-class boolean_style_attr_parser : std::unary_function<xml_token_attr_t, void>
-{
-    pstring m_style_name;
-    bool m_volatile;
-
-public:
-    boolean_style_attr_parser():
-        m_volatile(false)
-    {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.ns == NS_odf_style)
-        {
-            switch (attr.name)
-            {
-                case XML_name:
-                    m_style_name = attr.value;
-                break;
-                case XML_volatile:
-                    m_volatile = attr.value == "true";
-                break;
-                default:
-                    ;
-            }
-        }
-    }
-
-    pstring get_style_name() const { return m_style_name;}
-    bool is_volatile() const { return m_volatile;}
-};
-
-class text_style_attr_parser : std::unary_function<xml_token_attr_t, void>
-{
-    pstring m_style_name;
-    bool m_volatile;
-
-public:
-    text_style_attr_parser():
-        m_volatile(false)
-    {}
-
-    void operator() (const xml_token_attr_t& attr)
-    {
-        if (attr.ns == NS_odf_style)
-        {
-            switch (attr.name)
-            {
-                case XML_name:
-                    m_style_name = attr.value;
-                break;
-                case XML_volatile:
-                    m_volatile = attr.value == "true";
-                break;
-                default:
-                    ;
-            }
-        }
-    }
-
-    pstring get_style_name() const { return m_style_name;}
-    bool is_volatile() const { return m_volatile;}
 };
 
 class text_properties_attr_parser : std::unary_function<xml_token_attr_t, void>
@@ -706,7 +473,7 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
             break;
             case XML_currency_style:
             {
-                currency_style_attr_parser func;
+                generic_style_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style->name = func.get_style_name();
                 m_current_style->is_volatile = func.is_volatile();
@@ -714,7 +481,7 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
             break;
             case XML_percentage_style:
             {
-                percentage_style_attr_parser func;
+                generic_style_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style->name = func.get_style_name();
                 m_current_style->is_volatile = func.is_volatile();
@@ -774,7 +541,7 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
             break;
             case XML_boolean_style:
             {
-                boolean_style_attr_parser func;
+                generic_style_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style->name = func.get_style_name();
                 m_current_style->is_volatile = func.is_volatile();
@@ -809,7 +576,7 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
             break;
             case XML_date_style:
             {
-                date_style_attr_parser func;
+                generic_style_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style->name = func.get_style_name();
                 m_current_style->is_volatile = func.is_volatile();
@@ -817,7 +584,7 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
             break;
             case XML_day:
             {
-                day_attr_parser func;
+                generic_style_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style->number_formatting_code += "D";
                 if (func.has_long())
@@ -839,7 +606,7 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
             break;
             case XML_year:
             {
-                year_attr_parser func;
+                generic_style_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style->number_formatting_code += "YY";
                 if (func.has_long())
@@ -848,7 +615,7 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
             break;
             case XML_time_style:
             {
-                time_style_attr_parser func;
+                generic_style_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style->name = func.get_style_name();
                 m_current_style->is_volatile = func.is_volatile();
@@ -856,7 +623,7 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
             break;
             case XML_hours:
             {
-                hours_attr_parser func;
+                generic_style_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style->number_formatting_code += "H";
                 if (func.has_long())
@@ -865,7 +632,7 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
             break;
             case XML_minutes:
             {
-                minutes_attr_parser func;
+                generic_style_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style->number_formatting_code += "M";
                 if (func.has_long())
@@ -891,7 +658,7 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
             break;
             case XML_text_style:
             {
-                text_style_attr_parser func;
+                generic_style_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style->name = func.get_style_name();
                 m_current_style->is_volatile = func.is_volatile();
