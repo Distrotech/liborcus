@@ -46,6 +46,13 @@ public:
     static orcus::spreadsheet::underline_width_t extract_underline_width(const orcus::pstring& value);
 
     static orcus::spreadsheet::underline_t extract_underline_style(const orcus::pstring& value);
+
+    static bool extract_hor_alignment_style(const orcus::pstring& value,
+            spreadsheet::hor_alignment_t& alignment);
+
+    static bool extract_ver_alignment_style(const orcus::pstring& value,
+            spreadsheet::ver_alignment_t& alignment);
+
 };
 
 }

@@ -62,6 +62,26 @@ odf_underline_style_map::entry odf_underline_style_entries[] =
     { MDDS_ASCII("wave"), spreadsheet::underline_t::wave}
 };
 
+typedef mdds::sorted_string_map<spreadsheet::hor_alignment_t> odf_horizontal_alignment_map;
+
+odf_horizontal_alignment_map::entry odf_horizontal_alignment_entries[] =
+{
+    { MDDS_ASCII("center"), spreadsheet::hor_alignment_t::center},
+    { MDDS_ASCII("end"), spreadsheet::hor_alignment_t::right},
+    { MDDS_ASCII("justified"), spreadsheet::hor_alignment_t::justified},
+    { MDDS_ASCII("start"), spreadsheet::hor_alignment_t::left}
+};
+
+typedef mdds::sorted_string_map<spreadsheet::ver_alignment_t> odf_vertical_alignment_map;
+
+odf_vertical_alignment_map::entry odf_vertical_alignment_entries[] =
+{
+    { MDDS_ASCII("bottom"), spreadsheet::ver_alignment_t::bottom},
+    { MDDS_ASCII("justified"), spreadsheet::ver_alignment_t::justified},
+    { MDDS_ASCII("middle"), spreadsheet::ver_alignment_t::middle},
+    { MDDS_ASCII("top"), spreadsheet::ver_alignment_t::top}
+};
+
 bool is_valid_hex_digit(const char& character, orcus::spreadsheet::color_elem_t& val)
 {
     if ('0' <= character && character <= '9')
@@ -158,6 +178,33 @@ orcus::spreadsheet::underline_t odf_helper::extract_underline_style(const orcus:
     underline_style = underline_style_map.find(value.get(), value.size());
 
     return underline_style;
+}
+
+bool odf_helper::extract_hor_alignment_style(const orcus::pstring& value, spreadsheet::hor_alignment_t& alignment)
+{
+    odf_horizontal_alignment_map horizontal_alignment_map(odf_horizontal_alignment_entries,
+            ORCUS_N_ELEMENTS(odf_horizontal_alignment_entries),
+            spreadsheet::hor_alignment_t::unknown);
+
+    alignment = horizontal_alignment_map.find(value.get(), value.size());
+
+    if (alignment == spreadsheet::hor_alignment_t::unknown)
+        return false;
+
+    return true;
+}
+
+bool odf_helper::extract_ver_alignment_style(const orcus::pstring& value, spreadsheet::ver_alignment_t& alignment)
+{
+    odf_vertical_alignment_map vertical_alignment_map(odf_vertical_alignment_entries,
+            ORCUS_N_ELEMENTS(odf_vertical_alignment_entries),
+            spreadsheet::ver_alignment_t::unknown);
+    alignment = vertical_alignment_map.find(value.get(), value.size());
+
+    if (alignment == spreadsheet::ver_alignment_t::unknown)
+        return false;
+
+    return true;
 }
 
 }
