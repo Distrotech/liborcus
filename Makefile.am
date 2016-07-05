@@ -244,6 +244,7 @@ EXTRA_DIST = \
 	$(test_data) \
 	$(vsprojects_data)
 
+.PHONY: distclean-local dist-hook doc-doxygen doc-sphinx doc
 
 distclean-local:
 	rm -rf *.pc
@@ -252,15 +253,15 @@ dist-hook:
 	git log --date=short --pretty="format:@%cd  %an  <%ae>  [%H]%n%n%s%n%n%e%b" | sed -e "s|^\([^@]\)|\t\1|" -e "s|^@||" >$(distdir)/ChangeLog
 
 
-build-doc-doxygen:
+doc-doxygen:
 	@echo "Building documentation by doxygen..."
 	@cd doc && doxygen doxygen.conf
 
-build-doc-sphinx:
+doc-sphinx:
 	@echo "Building documentation by sphinx..."
 	@sphinx-build -b html ./doc/ ./doc/_build
 
-build-doc: build-doc-doxygen build-doc-sphinx
+doc: doc-doxygen doc-sphinx
 
 
 
