@@ -718,9 +718,9 @@ void styles_context::commit_default_styles()
     mp_styles->commit_border();
     mp_styles->commit_cell_protection();
     mp_styles->commit_number_format();
-    mp_styles->commit_cell_style();
     mp_styles->commit_cell_style_xf();
     mp_styles->commit_cell_xf();
+    mp_styles->commit_cell_style();
 }
 
 }
