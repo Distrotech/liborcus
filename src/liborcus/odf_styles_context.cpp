@@ -441,9 +441,9 @@ bool styles_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
 
 xml_context_base* styles_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
-    number_formatting_style* number_formatting = new number_formatting_style;
     if (ns == NS_odf_number )
     {
+        number_formatting_style* number_formatting = new number_formatting_style;
         mp_child.reset(new number_formatting_context(get_session_context(), get_tokens(), m_styles, mp_styles, number_formatting));
         mp_child->transfer_common(*this);
         return mp_child.get();
