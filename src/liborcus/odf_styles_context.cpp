@@ -121,7 +121,9 @@ class text_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
 
 public:
     text_prop_attr_parser() : m_bold(false), m_italic(false), m_color(false),
+                            m_red(0), m_green(0), m_blue(0),
                             m_underline_is_text_color(false), m_underline(false),
+                            m_underline_red(0), m_underline_green(0), m_underline_blue(0),
                             m_underline_mode(spreadsheet::underline_mode_t::continuos),
                             m_underline_width(spreadsheet::underline_width_t::none),
                             m_underline_style(spreadsheet::underline_t::none),

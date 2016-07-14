@@ -107,8 +107,9 @@ struct number_formatting_style
     pstring character_stream;
 
     number_formatting_style():
-        is_volatile(false)
-    {}
+        number_formatting(0),
+        is_volatile(0)
+        {}
 
     number_formatting_style(const pstring& style_name, const bool volatile_style);
 };

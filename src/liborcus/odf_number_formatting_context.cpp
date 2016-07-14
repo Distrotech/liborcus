@@ -84,6 +84,8 @@ class number_attr_parser : std::unary_function<xml_token_attr_t, void>
 public:
 
     number_attr_parser() :
+        m_decimal_places(0),
+        m_min_int_digits(0),
         m_grouping(false),
         m_has_decimal_places(false)
     {}
@@ -129,7 +131,10 @@ class scientific_number_attr_parser : std::unary_function<xml_token_attr_t, void
 public:
 
     scientific_number_attr_parser() :
-        m_grouping(false)
+        m_decimal_places(0),
+        m_grouping(false),
+        m_min_exp_digits(0),
+        m_min_int_digits(0)
     {}
 
     void operator() (const xml_token_attr_t& attr)
@@ -207,6 +212,7 @@ class month_attr_parser : std::unary_function<xml_token_attr_t, void>
 
 public:
     month_attr_parser():
+        m_style_name(false),
         m_textual(false)
     {}
 
@@ -233,6 +239,7 @@ class seconds_attr_parser : std::unary_function<xml_token_attr_t, void>
 
 public:
     seconds_attr_parser():
+        m_decimal_places(0),
         m_style_name(false),
         m_has_decimal_places(false)
     {}
@@ -268,6 +275,9 @@ class fraction_attr_parser : std::unary_function<xml_token_attr_t, void>
 
 public:
     fraction_attr_parser():
+        m_min_int_digits(0),
+        m_min_deno_digits(0),
+        m_min_num_digits(0),
         m_predefined_deno(false)
     {}
 

@@ -52,7 +52,8 @@ void fill_t::reset()
     *this = fill_t();
 }
 
-border_attrs_t::border_attrs_t()
+border_attrs_t::border_attrs_t():
+    style(orcus::spreadsheet::border_style_t::unknown)
 {
 }
 

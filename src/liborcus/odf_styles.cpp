@@ -75,10 +75,11 @@ odf_style::~odf_style()
     }
 }
 
-number_formatting_style::number_formatting_style(const pstring& style_name, const bool volatile_style)
+number_formatting_style::number_formatting_style(const pstring& style_name, const bool volatile_style):
+    number_formatting(0),
+    name(style_name),
+    is_volatile(volatile_style)
 {
-    name = style_name;
-    is_volatile = volatile_style;
 }
 
 

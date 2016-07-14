@@ -27,6 +27,12 @@ public:
         spreadsheet::color_elem_t blue;
 
         length_t border_width;
+
+        odf_border_details():
+            red(0),
+            green(0),
+            blue(0)
+            {}
     };
 
     static bool convert_fo_color(const orcus::pstring& value, orcus::spreadsheet::color_elem_t& red,
