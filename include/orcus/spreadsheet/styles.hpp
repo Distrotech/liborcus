@@ -171,7 +171,7 @@ public:
     virtual void set_border_style(border_direction_t dir, border_style_t style);
     virtual void set_border_color(
         border_direction_t dir, color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
-    virtual void set_border_width(border_direction_t dir,length_t length);
+    virtual void set_border_width(border_direction_t dir, double width, orcus::length_unit_t unit);
     virtual size_t commit_border();
 
     virtual void set_cell_hidden(bool b);

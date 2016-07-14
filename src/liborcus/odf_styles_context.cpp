@@ -618,7 +618,7 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                         {
                             mp_styles->set_border_color(itr->first, 0, itr->second.red, itr->second.green, itr->second.blue);
                             mp_styles->set_border_style(itr->first, itr->second.border_style);
-                            mp_styles->set_border_width(itr->first, itr->second.border_width);
+                            mp_styles->set_border_width(itr->first, itr->second.border_width.value, itr->second.border_width.unit);
                         }
                     }
 

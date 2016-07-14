@@ -114,7 +114,7 @@ public:
     virtual void set_border_style(orcus::spreadsheet::border_direction_t dir, border_style_t style) = 0;
     virtual void set_border_color(
         orcus::spreadsheet::border_direction_t dir, color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue) = 0;
-    virtual void set_border_width(border_direction_t dir, length_t width) = 0;
+    virtual void set_border_width(border_direction_t dir, double width, orcus::length_unit_t unit) = 0;
     virtual size_t commit_border() = 0;
 
     // cell protection

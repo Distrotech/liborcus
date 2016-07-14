@@ -283,11 +283,14 @@ void import_styles::set_border_color(
         p->border_color = color_t(alpha, red, green, blue);
 }
 
-void import_styles::set_border_width(border_direction_t dir, length_t width)
+void import_styles::set_border_width(border_direction_t dir, double width, orcus::length_unit_t unit)
 {
     border_attrs_t* p = get_border_attrs(m_cur_border, dir);
     if (p)
-        p->border_width = width;
+    {
+        p->border_width.value = width;
+        p->border_width.unit = unit;
+    }
 }
 
 size_t import_styles::commit_border()
