@@ -55,7 +55,9 @@ enum class border_style_t
     medium_dashed,
     slant_dash_dot,
     thick,
-    thin
+    thin,
+    double_thin,
+    fine_dashed
 };
 
 enum class formula_grammar_t

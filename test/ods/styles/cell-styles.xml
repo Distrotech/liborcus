@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <office:styles xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0">
   <style:style style:name="Name1" style:family="table-cell" style:parent-style-name="Text">
-    <style:table-cell-properties fo:background-color="#feffcc" fo:border="0.06pt thick #ffcc12"/>
+    <style:table-cell-properties fo:background-color="#feffcc" fo:border="0.06pt dotted #ffcc12"/>
   </style:style>
   <style:style style:name="Name2" style:family="table-cell" style:parent-style-name="Text">
-<style:table-cell-properties fo:border-top="0.74pt solid #ffee11" fo:border-bottom="1.74pt thin #aeee11" fo:border-left="0.74pt none #11ee11" fo:border-right="0.22pt dash-dot-dot #05ee11"/>
+<style:table-cell-properties fo:border-top="0.74pt fine-dashed #ffee11" fo:border-bottom="1.74pt double-thin #aeee11" fo:border-left="0.74pt none #11ee11" fo:border-right="0.22pt dash-dot-dot #05ee11"/>
   </style:style>
   <style:style style:name="Name3" style:family="table-cell" style:parent-style-name="Text">
-<style:table-cell-properties fo:diagonal-bl-tr="1.74pt medium #ffccee" fo:diagonal-tl-br="0.74pt medium-dash-dot #120000" fo:border-left="none" fo:border-right="0.74pt dotted #000000"/>
+<style:table-cell-properties fo:diagonal-bl-tr="1.74pt dashed #ffccee" fo:diagonal-tl-br="0.74pt dash-dot #120000" fo:border-left="none" fo:border-right="0.74pt dotted #000000"/>
   </style:style>
   <style:style style:name="Name4" style:family="table-cell" style:parent-style-name="Text">
-<style:table-cell-properties fo:border-top="0.74pt double-border #000000" fo:border-bottom="none" fo:border-left="0.74pt hair #000000" fo:border-right="0.74pt medium #000000"/>
+<style:table-cell-properties fo:border-top="0.74pt double-border #000000" fo:border-bottom="none" fo:border-left="0.74pt solid #000000" fo:border-right="0.74pt dotted #000000"/>
   </style:style>
   <style:style style:name="Name5" style:family="table-cell" style:parent-style-name="Text">
 <style:table-cell-properties style:cell-protect="hidden-and-protected" style:print-content="true"/>

@@ -26,17 +26,10 @@ odf_border_style_map::entry odf_border_style_entries[] =
     { MDDS_ASCII("dash-dot-dot"), spreadsheet::border_style_t::dash_dot_dot},
     { MDDS_ASCII("dashed"), spreadsheet::border_style_t::dashed},
     { MDDS_ASCII("dotted"), spreadsheet::border_style_t::dotted},
-    { MDDS_ASCII("double-border"), spreadsheet::border_style_t::double_border},
-    { MDDS_ASCII("hair"), spreadsheet::border_style_t::hair},
-    { MDDS_ASCII("medium"), spreadsheet::border_style_t::medium},
-    { MDDS_ASCII("medium-dash-dot"), spreadsheet::border_style_t::medium_dash_dot},
-    { MDDS_ASCII("medium-dash-dot-dot"), spreadsheet::border_style_t::medium_dash_dot_dot},
-    { MDDS_ASCII("medium-dashed"), spreadsheet::border_style_t::medium_dashed},
+    { MDDS_ASCII("double-thin"), spreadsheet::border_style_t::double_thin},
+    { MDDS_ASCII("fine-dashed"), spreadsheet::border_style_t::fine_dashed},
     { MDDS_ASCII("none"), spreadsheet::border_style_t::none},
-    { MDDS_ASCII("slant-dash-dot"), spreadsheet::border_style_t::slant_dash_dot},
     { MDDS_ASCII("solid"), spreadsheet::border_style_t::solid},
-    { MDDS_ASCII("thick"), spreadsheet::border_style_t::thick},
-    { MDDS_ASCII("thin"), spreadsheet::border_style_t::thin},
     { MDDS_ASCII("unknown"), spreadsheet::border_style_t::unknown}
 };
 
