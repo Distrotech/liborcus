@@ -270,6 +270,46 @@ void test_odf_number_formatting(orcus::spreadsheet::import_styles& styles)
     assert(cell_number_format->format_string.str() == "[>=0]0.00;[RED]-0.00");
 
 }
+
+void test_odf_text_strikeout(orcus::spreadsheet::import_styles& styles)
+{
+    const orcus::spreadsheet::cell_style_t* style = find_cell_style_by_name("Name20", &styles);
+    size_t xf = style->xf;
+    const orcus::spreadsheet::cell_format_t* cell_format = styles.get_cell_style_format(xf);
+    size_t font = cell_format->font;
+    assert(cell_format);
+
+    const orcus::spreadsheet::font_t* cell_font = styles.get_font(font);
+    assert(cell_font->strikeout_style == orcus::spreadsheet::strikeout_style_t::solid);
+    assert(cell_font->strikeout_width == orcus::spreadsheet::strikeout_width_t::unknown);
+    assert(cell_font->strikeout_type == orcus::spreadsheet::strikeout_type_t::single);
+    assert(cell_font->strikeout_text == orcus::spreadsheet::strikeout_text_t::unknown);
+
+    style = find_cell_style_by_name("Name21", &styles);
+    xf = style->xf;
+    cell_format = styles.get_cell_style_format(xf);
+    font = cell_format->font;
+    assert(cell_format);
+
+    cell_font = styles.get_font(font);
+    assert(cell_font->strikeout_style == orcus::spreadsheet::strikeout_style_t::solid);
+    assert(cell_font->strikeout_width == orcus::spreadsheet::strikeout_width_t::bold);
+    assert(cell_font->strikeout_type == orcus::spreadsheet::strikeout_type_t::single);
+    assert(cell_font->strikeout_text == orcus::spreadsheet::strikeout_text_t::unknown);
+
+    style = find_cell_style_by_name("Name22", &styles);
+    xf = style->xf;
+    cell_format = styles.get_cell_style_format(xf);
+    font = cell_format->font;
+    assert(cell_format);
+
+    cell_font = styles.get_font(font);
+    assert(cell_font->strikeout_style == orcus::spreadsheet::strikeout_style_t::solid);
+    assert(cell_font->strikeout_width == orcus::spreadsheet::strikeout_width_t::unknown);
+    assert(cell_font->strikeout_type == orcus::spreadsheet::strikeout_type_t::single);
+    assert(cell_font->strikeout_text == orcus::spreadsheet::strikeout_text_t::slash);
+}
+
 int main()
 {
     orcus::string_pool string_pool;
@@ -282,6 +322,7 @@ int main()
     test_odf_border(styles);
     test_odf_cell_protection(styles);
     test_odf_font(styles);
+    test_odf_text_strikeout(styles);
 
     orcus::string_pool string_pool2;
     path = SRCDIR"/test/ods/styles/number-format.xml";

@@ -27,4 +27,13 @@
   <style:style style:name="Name9" style:family="table-cell" style:parent-style-name="Text">
 <style:text-properties style:font-name="Tahoma" style:text-underline-style="dash" fo:font-size="00pt" style:text-underline-color="#1856ff" fo:font-weight="bold" style:text-underline-width="bold"/>
   </style:style>
+<style:style style:name="Name20" style:family="table-cell" style:parent-style-name="Default">
+<style:text-properties style:text-line-through-style="solid" style:text-line-through-type="single"/>
+</style:style>
+<style:style style:name="Name21" style:family="table-cell" style:parent-style-name="Default">
+<style:text-properties style:text-line-through-style="solid" style:text-line-through-type="single" style:text-line-through-width="bold"/>
+</style:style>
+<style:style style:name="Name22" style:family="table-cell" style:parent-style-name="Default">
+<style:text-properties style:text-line-through-style="solid" style:text-line-through-type="single" style:text-line-through-text="/"/>
+</style:style>
 </office:styles>
