@@ -60,6 +60,32 @@ enum class border_style_t
     fine_dashed
 };
 
+enum class strikeout_style_t
+{
+    unknown = 0,
+    solid
+};
+
+enum class strikeout_type_t
+{
+    unknown = 0,
+    single,
+    double_type
+};
+
+enum class strikeout_width_t
+{
+    unknown = 0,
+    bold
+};
+
+enum class strikeout_text_t
+{
+    unknown = 0,
+    slash,
+    cross
+};
+
 enum class formula_grammar_t
 {
     unknown = 0,

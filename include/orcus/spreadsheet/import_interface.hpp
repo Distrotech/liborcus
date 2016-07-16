@@ -95,6 +95,10 @@ public:
     virtual void set_font_underline_type(underline_type_t e) = 0;
     virtual void set_font_underline_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue) = 0;
     virtual void set_font_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue) = 0;
+    virtual void set_strikeout_style(orcus::spreadsheet::strikeout_style_t s) = 0;
+    virtual void set_strikeout_type(orcus::spreadsheet::strikeout_type_t s) = 0;
+    virtual void set_strikeout_width(orcus::spreadsheet::strikeout_width_t s) = 0;
+    virtual void set_strikeout_text(orcus::spreadsheet::strikeout_text_t s) = 0;
     virtual size_t commit_font() = 0;
 
     // fill

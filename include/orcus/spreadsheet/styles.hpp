@@ -45,6 +45,10 @@ struct ORCUS_SPM_DLLPUBLIC font_t
     underline_type_t underline_type;
     color_t underline_color;
     color_t color;
+    strikeout_style_t strikeout_style;
+    strikeout_width_t strikeout_width;
+    strikeout_type_t strikeout_type;
+    strikeout_text_t strikeout_text;
 
     font_t();
     void reset();
@@ -158,6 +162,10 @@ public:
     virtual void set_font_underline_type(underline_type_t e);
     virtual void set_font_underline_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
     virtual void set_font_color(color_elem_t alpha, color_elem_t red, color_elem_t green, color_elem_t blue);
+    virtual void set_strikeout_style(strikeout_style_t s);
+    virtual void set_strikeout_type(strikeout_type_t s);
+    virtual void set_strikeout_width(strikeout_width_t s);
+    virtual void set_strikeout_text(strikeout_text_t s);
     virtual size_t commit_font();
 
     virtual void set_fill_count(size_t n);
