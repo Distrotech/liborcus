@@ -301,6 +301,8 @@
                 <F N="../src/liborcus/odf_namespace_types.hpp"/>
                 <F N="../src/liborcus/odf_namespace_types_cpp.inl"/>
                 <F N="../src/liborcus/odf_namespace_types_hpp.inl"/>
+                <F N="../src/liborcus/odf_number_formatting_context.cpp"/>
+                <F N="../src/liborcus/odf_number_formatting_context.hpp"/>
                 <F N="../src/liborcus/odf_para_context.cpp"/>
                 <F N="../src/liborcus/odf_para_context.hpp"/>
                 <F N="../src/liborcus/odf_styles.cpp"/>
