@@ -18,15 +18,15 @@ ixion::abs_range_t to_abs_range(
     ixion::abs_range_t range(ixion::abs_range_t::invalid);
     ixion::abs_address_t pos(0,0,0);
 
-    ixion::formula_name_type res = resolver.resolve(p_ref, n_ref, pos);
+    ixion::formula_name_t res = resolver.resolve(p_ref, n_ref, pos);
     switch (res.type)
     {
-        case ixion::formula_name_type::cell_reference:
+        case ixion::formula_name_t::cell_reference:
             // Single cell reference.
             range.first = ixion::to_address(res.address).to_abs(pos);
             range.last = range.first;
         break;
-        case ixion::formula_name_type::range_reference:
+        case ixion::formula_name_t::range_reference:
             // Range reference.
             range = ixion::to_range(res.range).to_abs(pos);
         break;

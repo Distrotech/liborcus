@@ -112,17 +112,17 @@ PyObject* sheet_rows_iternext(PyObject* self)
             case ixion::element_type_formula:
             {
                 const ixion::formula_cell* fc = row_pos->get<ixion::formula_element_block>();
-                const ixion::formula_result* res = fc->get_result_cache();
-                switch (res->get_type())
+                const ixion::formula_result& res = fc->get_result_cache();
+                switch (res.get_type())
                 {
-                    case ixion::formula_result::rt_value:
+                    case ixion::formula_result::result_type::value:
                         PyTuple_SetItem(
                             pyobj_row, col_pos,
-                            PyFloat_FromDouble(res->get_value()));
+                            PyFloat_FromDouble(res.get_value()));
                     break;
-                    case ixion::formula_result::rt_string:
+                    case ixion::formula_result::result_type::string:
                     {
-                        ixion::string_id_t sid = res->get_string();
+                        ixion::string_id_t sid = res.get_string();
                         const std::string* ps = data->m_sheet_range.get_string(sid);
                         if (ps)
                         {
@@ -132,9 +132,9 @@ PyObject* sheet_rows_iternext(PyObject* self)
                         }
                     }
                     break;
-                    case ixion::formula_result::rt_error:
+                    case ixion::formula_result::result_type::error:
                     {
-                        ixion::formula_error_t fe = res->get_error();
+                        ixion::formula_error_t fe = res.get_error();
                         const char* fename = ixion::get_formula_error_name(fe);
                         if (fename)
                             PyTuple_SetItem(pyobj_row, col_pos, PyUnicode_FromString(fename));

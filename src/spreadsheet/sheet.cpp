@@ -582,8 +582,8 @@ void sheet::set_merge_cell_range(const char* p_ref, size_t p_ref_len)
     if (!resolver)
         return;
 
-    ixion::formula_name_type res = resolver->resolve(p_ref, p_ref_len, ixion::abs_address_t());
-    if (res.type != ixion::formula_name_type::range_reference)
+    ixion::formula_name_t res = resolver->resolve(p_ref, p_ref_len, ixion::abs_address_t());
+    if (res.type != ixion::formula_name_t::range_reference)
         return;
 
     col_merge_size_type::iterator it_col = mp_impl->m_merge_ranges.find(res.range.first.col);
@@ -737,9 +737,8 @@ void sheet::dump_flat(std::ostream& os) const
 
                         os2 << formula;
 
-                        const ixion::formula_result* res = cell->get_result_cache();
-                        if (res)
-                            os2 << " (" << res->str(mp_impl->m_doc.get_model_context()) << ")";
+                        const ixion::formula_result& res = cell->get_result_cache();
+                        os2 << " (" << res.str(mp_impl->m_doc.get_model_context()) << ")";
 
                         mx.set(row, col, os2.str());
                     }
@@ -900,9 +899,8 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
 
                         os << ':' << formula;
 
-                        const ixion::formula_result* res = cell->get_result_cache();
-                        if (res)
-                            os << ':' << res->str(mp_impl->m_doc.get_model_context());
+                        const ixion::formula_result& res = cell->get_result_cache();
+                        os << ':' << res.str(mp_impl->m_doc.get_model_context());
                     }
                     os << endl;
                 }
@@ -1458,9 +1456,8 @@ void sheet::dump_html(const string& filepath) const
 
                             os << formula;
 
-                            const ixion::formula_result* res = cell->get_result_cache();
-                            if (res)
-                                os << " (" << res->str(mp_impl->m_doc.get_model_context()) << ")";
+                            const ixion::formula_result& res = cell->get_result_cache();
+                            os << " (" << res.str(mp_impl->m_doc.get_model_context()) << ")";
                         }
                     }
                     break;

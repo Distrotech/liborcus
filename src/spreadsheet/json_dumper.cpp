@@ -64,27 +64,22 @@ void dump_cell_value(
             const ixion::formula_cell* cell = node.get<ixion::formula_element_block>();
             assert(cell);
 
-            const ixion::formula_result* res = cell->get_result_cache();
-            if (!res)
-            {
-                file << "\"#RES!\"";
-                break;
-            }
+            const ixion::formula_result& res = cell->get_result_cache();
 
-            switch (res->get_type())
+            switch (res.get_type())
             {
-                case ixion::formula_result::rt_value:
-                    file << res->get_value();
+                case ixion::formula_result::result_type::value:
+                    file << res.get_value();
                 break;
-                case ixion::formula_result::rt_string:
+                case ixion::formula_result::result_type::string:
                 {
-                    ixion::string_id_t sid = res->get_string();
+                    ixion::string_id_t sid = res.get_string();
                     const std::string* p = cxt.get_string(sid);
                     assert(p);
                     dump_string(file, *p);
                 }
                 break;
-                case ixion::formula_result::rt_error:
+                case ixion::formula_result::result_type::error:
                     file << "\"#ERR!\"";
                 break;
             }
