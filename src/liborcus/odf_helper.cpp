@@ -58,7 +58,7 @@ odf_underline_style_map::entry odf_underline_style_entries[] =
     { MDDS_ASCII("dotted"), spreadsheet::underline_t::dotted},
     { MDDS_ASCII("long-dash"), spreadsheet::underline_t::long_dash},
     { MDDS_ASCII("none"), spreadsheet::underline_t::none},
-    { MDDS_ASCII("solid"), spreadsheet::underline_t::solid},
+    { MDDS_ASCII("solid"), spreadsheet::underline_t::single_line},
     { MDDS_ASCII("wave"), spreadsheet::underline_t::wave}
 };
 

@@ -121,7 +121,6 @@ enum class underline_t
     single_accounting, // unique to xlsx
     double_line,
     double_accounting, // unique to xlsx
-    solid,
     dotted,
     dash,
     long_dash,
