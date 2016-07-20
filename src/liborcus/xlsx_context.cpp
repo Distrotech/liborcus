@@ -863,14 +863,14 @@ void xlsx_styles_context::characters(const pstring& /*str*/, bool /*transient*/)
 
 void xlsx_styles_context::start_border_color(const xml_attrs_t& attrs)
 {
-    pstring ps = for_each(
-        attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_rgb)).get_value();
+    color_attr_parser func;
+    func = for_each(attrs.begin(), attrs.end(), func);
 
     spreadsheet::color_elem_t alpha;
     spreadsheet::color_elem_t red;
     spreadsheet::color_elem_t green;
     spreadsheet::color_elem_t blue;
-    if (to_rgb(ps, alpha, red, green, blue))
+    if (to_rgb(func.get_rgb(), alpha, red, green, blue))
         mp_styles->set_border_color(m_cur_border_dir, alpha, red, green, blue);
 }
 
