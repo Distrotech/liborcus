@@ -284,8 +284,8 @@ public:
             case XML_style:
             {
                 border_style_map type_map(border_style_type_entries, ORCUS_N_ELEMENTS(border_style_type_entries), spreadsheet::border_style_t::none);
-                  m_styles.set_border_style(m_dir,
-                          type_map.find(attr.value.get(), attr.value.size()));
+                m_styles.set_border_style(m_dir,
+                        type_map.find(attr.value.get(), attr.value.size()));
             }
             break;
         }
