@@ -210,6 +210,7 @@ public:
                     strikethrough_style_map style_map(strikethrough_style_entries, sizeof(strikethrough_style_entries)/sizeof(strikethrough_style_entries[0]), spreadsheet::strikethrough_style_t::none);
                     m_strikethrough_style = style_map.find(attr.value.get(), attr.value.size());
                 }
+                break;
                 case XML_text_line_through_type:
                 {
                     if (attr.value == "single")
@@ -219,6 +220,7 @@ public:
                     else
                         m_strikethrough_type = spreadsheet::strikethrough_type_t::unknown;
                 }
+                break;
                 case XML_text_line_through_width:
                 {
                     if (attr.value == "bold")
@@ -226,6 +228,7 @@ public:
                     else
                         m_strikethrough_width = spreadsheet::strikethrough_width_t::unknown;
                 }
+                break;
                 case XML_text_line_through_text:
                 {
                     if (attr.value == "/")
