@@ -20,10 +20,10 @@ font_t::font_t() :
     underline_mode(underline_mode_t::continuos),
     underline_type(underline_type_t::none),
     color(),
-    strikeout_style(strikeout_style_t::none),
-    strikeout_width(strikeout_width_t::unknown),
-    strikeout_type(strikeout_type_t::unknown),
-    strikeout_text(strikeout_text_t::unknown)
+    strikethrough_style(strikethrough_style_t::none),
+    strikethrough_width(strikethrough_width_t::unknown),
+    strikethrough_type(strikethrough_type_t::unknown),
+    strikethrough_text(strikethrough_text_t::unknown)
 {
 }
 
@@ -191,24 +191,24 @@ void import_styles::set_font_color(color_elem_t alpha, color_elem_t red, color_e
     m_cur_font.color = color_t(alpha, red, green, blue);
 }
 
-void import_styles::set_strikeout_style(strikeout_style_t s)
+void import_styles::set_strikethrough_style(strikethrough_style_t s)
 {
-    m_cur_font.strikeout_style = s;
+    m_cur_font.strikethrough_style = s;
 }
 
-void import_styles::set_strikeout_width(strikeout_width_t s)
+void import_styles::set_strikethrough_width(strikethrough_width_t s)
 {
-    m_cur_font.strikeout_width = s;
+    m_cur_font.strikethrough_width = s;
 }
 
-void import_styles::set_strikeout_type(strikeout_type_t s)
+void import_styles::set_strikethrough_type(strikethrough_type_t s)
 {
-    m_cur_font.strikeout_type = s;
+    m_cur_font.strikethrough_type = s;
 }
 
-void import_styles::set_strikeout_text(strikeout_text_t s)
+void import_styles::set_strikethrough_text(strikethrough_text_t s)
 {
-    m_cur_font.strikeout_text = s;
+    m_cur_font.strikethrough_text = s;
 }
 
 size_t import_styles::commit_font()

@@ -271,7 +271,7 @@ void test_odf_number_formatting(orcus::spreadsheet::import_styles& styles)
 
 }
 
-void test_odf_text_strikeout(orcus::spreadsheet::import_styles& styles)
+void test_odf_text_strikethrough(orcus::spreadsheet::import_styles& styles)
 {
     const orcus::spreadsheet::cell_style_t* style = find_cell_style_by_name("Name20", &styles);
     size_t xf = style->xf;
@@ -280,10 +280,10 @@ void test_odf_text_strikeout(orcus::spreadsheet::import_styles& styles)
     assert(cell_format);
 
     const orcus::spreadsheet::font_t* cell_font = styles.get_font(font);
-    assert(cell_font->strikeout_style == orcus::spreadsheet::strikeout_style_t::solid);
-    assert(cell_font->strikeout_width == orcus::spreadsheet::strikeout_width_t::unknown);
-    assert(cell_font->strikeout_type == orcus::spreadsheet::strikeout_type_t::single);
-    assert(cell_font->strikeout_text == orcus::spreadsheet::strikeout_text_t::unknown);
+    assert(cell_font->strikethrough_style == orcus::spreadsheet::strikethrough_style_t::solid);
+    assert(cell_font->strikethrough_width == orcus::spreadsheet::strikethrough_width_t::unknown);
+    assert(cell_font->strikethrough_type == orcus::spreadsheet::strikethrough_type_t::single);
+    assert(cell_font->strikethrough_text == orcus::spreadsheet::strikethrough_text_t::unknown);
 
     style = find_cell_style_by_name("Name21", &styles);
     xf = style->xf;
@@ -292,10 +292,10 @@ void test_odf_text_strikeout(orcus::spreadsheet::import_styles& styles)
     assert(cell_format);
 
     cell_font = styles.get_font(font);
-    assert(cell_font->strikeout_style == orcus::spreadsheet::strikeout_style_t::solid);
-    assert(cell_font->strikeout_width == orcus::spreadsheet::strikeout_width_t::bold);
-    assert(cell_font->strikeout_type == orcus::spreadsheet::strikeout_type_t::single);
-    assert(cell_font->strikeout_text == orcus::spreadsheet::strikeout_text_t::unknown);
+    assert(cell_font->strikethrough_style == orcus::spreadsheet::strikethrough_style_t::solid);
+    assert(cell_font->strikethrough_width == orcus::spreadsheet::strikethrough_width_t::bold);
+    assert(cell_font->strikethrough_type == orcus::spreadsheet::strikethrough_type_t::single);
+    assert(cell_font->strikethrough_text == orcus::spreadsheet::strikethrough_text_t::unknown);
 
     style = find_cell_style_by_name("Name22", &styles);
     xf = style->xf;
@@ -304,10 +304,10 @@ void test_odf_text_strikeout(orcus::spreadsheet::import_styles& styles)
     assert(cell_format);
 
     cell_font = styles.get_font(font);
-    assert(cell_font->strikeout_style == orcus::spreadsheet::strikeout_style_t::solid);
-    assert(cell_font->strikeout_width == orcus::spreadsheet::strikeout_width_t::unknown);
-    assert(cell_font->strikeout_type == orcus::spreadsheet::strikeout_type_t::single);
-    assert(cell_font->strikeout_text == orcus::spreadsheet::strikeout_text_t::slash);
+    assert(cell_font->strikethrough_style == orcus::spreadsheet::strikethrough_style_t::solid);
+    assert(cell_font->strikethrough_width == orcus::spreadsheet::strikethrough_width_t::unknown);
+    assert(cell_font->strikethrough_type == orcus::spreadsheet::strikethrough_type_t::single);
+    assert(cell_font->strikethrough_text == orcus::spreadsheet::strikethrough_text_t::slash);
 }
 
 int main()
@@ -322,7 +322,7 @@ int main()
     test_odf_border(styles);
     test_odf_cell_protection(styles);
     test_odf_font(styles);
-    test_odf_text_strikeout(styles);
+    test_odf_text_strikethrough(styles);
 
     orcus::string_pool string_pool2;
     path = SRCDIR"/test/ods/styles/number-format.xml";

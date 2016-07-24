@@ -98,18 +98,18 @@ public:
     const length_t& get_height() const { return m_height; }
 };
 
-typedef mdds::sorted_string_map<spreadsheet::strikeout_style_t> strikethrough_style_map;
+typedef mdds::sorted_string_map<spreadsheet::strikethrough_style_t> strikethrough_style_map;
 
 strikethrough_style_map::entry strikethrough_style_entries[] =
 {
-    { MDDS_ASCII("none"), spreadsheet::strikeout_style_t::none },
-    { MDDS_ASCII("solid"), spreadsheet::strikeout_style_t::solid },
-    { MDDS_ASCII("dash"), spreadsheet::strikeout_style_t::dash },
-    { MDDS_ASCII("dotted"), spreadsheet::strikeout_style_t::dotted },
-    { MDDS_ASCII("dot-dash"), spreadsheet::strikeout_style_t::dot_dash },
-    { MDDS_ASCII("dot-dot-dash"), spreadsheet::strikeout_style_t::dot_dot_dash },
-    { MDDS_ASCII("long-dash"), spreadsheet::strikeout_style_t::long_dash},
-    { MDDS_ASCII("wave"), spreadsheet::strikeout_style_t::wave },
+    { MDDS_ASCII("none"), spreadsheet::strikethrough_style_t::none },
+    { MDDS_ASCII("solid"), spreadsheet::strikethrough_style_t::solid },
+    { MDDS_ASCII("dash"), spreadsheet::strikethrough_style_t::dash },
+    { MDDS_ASCII("dotted"), spreadsheet::strikethrough_style_t::dotted },
+    { MDDS_ASCII("dot-dash"), spreadsheet::strikethrough_style_t::dot_dash },
+    { MDDS_ASCII("dot-dot-dash"), spreadsheet::strikethrough_style_t::dot_dot_dash },
+    { MDDS_ASCII("long-dash"), spreadsheet::strikethrough_style_t::long_dash},
+    { MDDS_ASCII("wave"), spreadsheet::strikethrough_style_t::wave },
 };
 
 class text_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
@@ -136,10 +136,10 @@ class text_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
     spreadsheet::underline_t m_underline_style;
     spreadsheet::underline_type_t m_underline_type;
 
-    spreadsheet::strikeout_style_t m_strikeout_style;
-    spreadsheet::strikeout_type_t m_strikeout_type;
-    spreadsheet::strikeout_width_t m_strikeout_width;
-    spreadsheet::strikeout_text_t m_strikeout_text;
+    spreadsheet::strikethrough_style_t m_strikethrough_style;
+    spreadsheet::strikethrough_type_t m_strikethrough_type;
+    spreadsheet::strikethrough_width_t m_strikethrough_width;
+    spreadsheet::strikethrough_text_t m_strikethrough_text;
 
 public:
     text_prop_attr_parser() : m_bold(false), m_italic(false), m_color(false),
@@ -150,10 +150,10 @@ public:
                             m_underline_width(spreadsheet::underline_width_t::none),
                             m_underline_style(spreadsheet::underline_t::none),
                             m_underline_type(spreadsheet::underline_type_t::none),
-                            m_strikeout_style(spreadsheet::strikeout_style_t::none),
-                            m_strikeout_type(spreadsheet::strikeout_type_t::unknown),
-                            m_strikeout_width(spreadsheet::strikeout_width_t::unknown),
-                            m_strikeout_text(spreadsheet::strikeout_text_t::unknown) {}
+                            m_strikethrough_style(spreadsheet::strikethrough_style_t::none),
+                            m_strikethrough_type(spreadsheet::strikethrough_type_t::unknown),
+                            m_strikethrough_width(spreadsheet::strikethrough_width_t::unknown),
+                            m_strikethrough_text(spreadsheet::strikethrough_text_t::unknown) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -207,33 +207,33 @@ public:
                 break;
                 case XML_text_line_through_style:
                 {
-                    strikethrough_style_map style_map(strikethrough_style_entries, sizeof(strikethrough_style_entries)/sizeof(strikethrough_style_entries[0]), spreadsheet::strikeout_style_t::none);
-                    m_strikeout_style = style_map.find(attr.value.get(), attr.value.size());
+                    strikethrough_style_map style_map(strikethrough_style_entries, sizeof(strikethrough_style_entries)/sizeof(strikethrough_style_entries[0]), spreadsheet::strikethrough_style_t::none);
+                    m_strikethrough_style = style_map.find(attr.value.get(), attr.value.size());
                 }
                 case XML_text_line_through_type:
                 {
                     if (attr.value == "single")
-                        m_strikeout_type = spreadsheet::strikeout_type_t::single;
+                        m_strikethrough_type = spreadsheet::strikethrough_type_t::single;
                     else if (attr.value == "double")
-                        m_strikeout_type = spreadsheet::strikeout_type_t::double_type;
+                        m_strikethrough_type = spreadsheet::strikethrough_type_t::double_type;
                     else
-                        m_strikeout_type = spreadsheet::strikeout_type_t::unknown;
+                        m_strikethrough_type = spreadsheet::strikethrough_type_t::unknown;
                 }
                 case XML_text_line_through_width:
                 {
                     if (attr.value == "bold")
-                        m_strikeout_width = spreadsheet::strikeout_width_t::bold;
+                        m_strikethrough_width = spreadsheet::strikethrough_width_t::bold;
                     else
-                        m_strikeout_width = spreadsheet::strikeout_width_t::unknown;
+                        m_strikethrough_width = spreadsheet::strikethrough_width_t::unknown;
                 }
                 case XML_text_line_through_text:
                 {
                     if (attr.value == "/")
-                        m_strikeout_text = spreadsheet::strikeout_text_t::slash;
+                        m_strikethrough_text = spreadsheet::strikethrough_text_t::slash;
                     else if (attr.value == "X")
-                        m_strikeout_text = spreadsheet::strikeout_text_t::cross;
+                        m_strikethrough_text = spreadsheet::strikethrough_text_t::cross;
                     else
-                        m_strikeout_text = spreadsheet::strikeout_text_t::unknown;
+                        m_strikethrough_text = spreadsheet::strikethrough_text_t::unknown;
                 }
                 default:
                     ;
@@ -287,11 +287,11 @@ public:
         green = m_underline_green;
         blue = m_underline_blue;
     }
-    bool has_strikeout() const { return m_strikeout_style != spreadsheet::strikeout_style_t::none;}
-    spreadsheet::strikeout_style_t get_strikeout_style() const { return m_strikeout_style;}
-    spreadsheet::strikeout_width_t get_strikeout_width() const { return m_strikeout_width;}
-    spreadsheet::strikeout_type_t get_strikeout_type() const { return m_strikeout_type;}
-    spreadsheet::strikeout_text_t get_strikeout_text() const { return m_strikeout_text;}
+    bool has_strikethrough() const { return m_strikethrough_style != spreadsheet::strikethrough_style_t::none;}
+    spreadsheet::strikethrough_style_t get_strikethrough_style() const { return m_strikethrough_style;}
+    spreadsheet::strikethrough_width_t get_strikethrough_width() const { return m_strikethrough_width;}
+    spreadsheet::strikethrough_type_t get_strikethrough_type() const { return m_strikethrough_type;}
+    spreadsheet::strikethrough_text_t get_strikethrough_text() const { return m_strikethrough_text;}
 };
 
 class cell_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
@@ -635,19 +635,19 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                         spreadsheet::underline_mode_t mode = func.get_underline_mode();
                         mp_styles->set_font_underline_mode(mode);
                     }
-                    if (func.has_strikeout())
+                    if (func.has_strikethrough())
                     {
-                        spreadsheet::strikeout_style_t style = func.get_strikeout_style();
-                        mp_styles->set_strikeout_style(style);
+                        spreadsheet::strikethrough_style_t style = func.get_strikethrough_style();
+                        mp_styles->set_strikethrough_style(style);
 
-                        spreadsheet::strikeout_width_t width = func.get_strikeout_width();
-                        mp_styles->set_strikeout_width(width);
+                        spreadsheet::strikethrough_width_t width = func.get_strikethrough_width();
+                        mp_styles->set_strikethrough_width(width);
 
-                        spreadsheet::strikeout_type_t type = func.get_strikeout_type();
-                        mp_styles->set_strikeout_type(type);
+                        spreadsheet::strikethrough_type_t type = func.get_strikethrough_type();
+                        mp_styles->set_strikethrough_type(type);
 
-                        spreadsheet::strikeout_text_t text = func.get_strikeout_text();
-                        mp_styles->set_strikeout_text(text);
+                        spreadsheet::strikethrough_text_t text = func.get_strikethrough_text();
+                        mp_styles->set_strikethrough_text(text);
                     }
 
                     size_t font_id = mp_styles->commit_font();

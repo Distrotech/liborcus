@@ -60,7 +60,7 @@ enum class border_style_t
     fine_dashed
 };
 
-enum class strikeout_style_t
+enum class strikethrough_style_t
 {
     none = 0,
     solid,
@@ -72,7 +72,7 @@ enum class strikeout_style_t
     wave
 };
 
-enum class strikeout_type_t
+enum class strikethrough_type_t
 {
     unknown = 0,
     none,
@@ -80,7 +80,7 @@ enum class strikeout_type_t
     double_type
 };
 
-enum class strikeout_width_t
+enum class strikethrough_width_t
 {
     unknown = 0,
     width_auto,
@@ -90,7 +90,7 @@ enum class strikeout_width_t
     bold
 };
 
-enum class strikeout_text_t
+enum class strikethrough_text_t
 {
     unknown = 0,
     slash,
