@@ -20,7 +20,7 @@ font_t::font_t() :
     underline_mode(underline_mode_t::continuos),
     underline_type(underline_type_t::none),
     color(),
-    strikeout_style(strikeout_style_t::unknown),
+    strikeout_style(strikeout_style_t::none),
     strikeout_width(strikeout_width_t::unknown),
     strikeout_type(strikeout_type_t::unknown),
     strikeout_text(strikeout_text_t::unknown)

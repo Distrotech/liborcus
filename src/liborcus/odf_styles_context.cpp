@@ -14,6 +14,9 @@
 #include "odf_number_formatting_context.hpp"
 #include <iostream>
 
+#include <mdds/sorted_string_map.hpp>
+#include <mdds/global.hpp>
+
 using namespace std;
 
 namespace orcus {
@@ -95,6 +98,20 @@ public:
     const length_t& get_height() const { return m_height; }
 };
 
+typedef mdds::sorted_string_map<spreadsheet::strikeout_style_t> strikethrough_style_map;
+
+strikethrough_style_map::entry strikethrough_style_entries[] =
+{
+    { MDDS_ASCII("none"), spreadsheet::strikeout_style_t::none },
+    { MDDS_ASCII("solid"), spreadsheet::strikeout_style_t::solid },
+    { MDDS_ASCII("dash"), spreadsheet::strikeout_style_t::dash },
+    { MDDS_ASCII("dotted"), spreadsheet::strikeout_style_t::dotted },
+    { MDDS_ASCII("dot-dash"), spreadsheet::strikeout_style_t::dot_dash },
+    { MDDS_ASCII("dot-dot-dash"), spreadsheet::strikeout_style_t::dot_dot_dash },
+    { MDDS_ASCII("long-dash"), spreadsheet::strikeout_style_t::long_dash},
+    { MDDS_ASCII("wave"), spreadsheet::strikeout_style_t::wave },
+};
+
 class text_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
 {
     pstring m_font_name;
@@ -124,22 +141,19 @@ class text_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
     spreadsheet::strikeout_width_t m_strikeout_width;
     spreadsheet::strikeout_text_t m_strikeout_text;
 
-    bool m_strikeout;
-
 public:
     text_prop_attr_parser() : m_bold(false), m_italic(false), m_color(false),
                             m_red(0), m_green(0), m_blue(0),
-                            m_underline_is_text_color(false), m_underline(false),
+                            m_underline_is_text_color(true), m_underline(false),
                             m_underline_red(0), m_underline_green(0), m_underline_blue(0),
                             m_underline_mode(spreadsheet::underline_mode_t::continuos),
                             m_underline_width(spreadsheet::underline_width_t::none),
                             m_underline_style(spreadsheet::underline_t::none),
                             m_underline_type(spreadsheet::underline_type_t::none),
-                            m_strikeout_style(spreadsheet::strikeout_style_t::unknown),
+                            m_strikeout_style(spreadsheet::strikeout_style_t::none),
                             m_strikeout_type(spreadsheet::strikeout_type_t::unknown),
                             m_strikeout_width(spreadsheet::strikeout_width_t::unknown),
-                            m_strikeout_text(spreadsheet::strikeout_text_t::unknown),
-                            m_strikeout(false) {}
+                            m_strikeout_text(spreadsheet::strikeout_text_t::unknown) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -155,6 +169,10 @@ public:
                     {
                         m_underline = true;
                         m_underline_is_text_color = true;
+                    }
+                    else
+                    {
+                        m_underline_is_text_color = false;
                     }
                 break;
                 case XML_text_underline_mode:
@@ -189,15 +207,11 @@ public:
                 break;
                 case XML_text_line_through_style:
                 {
-                    m_strikeout = true;
-                    if (attr.value == "solid")
-                        m_strikeout_style = spreadsheet::strikeout_style_t::solid;
-                    else
-                        m_strikeout_style = spreadsheet::strikeout_style_t::unknown;
+                    strikethrough_style_map style_map(strikethrough_style_entries, sizeof(strikethrough_style_entries)/sizeof(strikethrough_style_entries[0]), spreadsheet::strikeout_style_t::none);
+                    m_strikeout_style = style_map.find(attr.value.get(), attr.value.size());
                 }
                 case XML_text_line_through_type:
                 {
-                    m_strikeout = true;
                     if (attr.value == "single")
                         m_strikeout_type = spreadsheet::strikeout_type_t::single;
                     else if (attr.value == "double")
@@ -207,7 +221,6 @@ public:
                 }
                 case XML_text_line_through_width:
                 {
-                    m_strikeout = true;
                     if (attr.value == "bold")
                         m_strikeout_width = spreadsheet::strikeout_width_t::bold;
                     else
@@ -215,7 +228,6 @@ public:
                 }
                 case XML_text_line_through_text:
                 {
-                    m_strikeout = true;
                     if (attr.value == "/")
                         m_strikeout_text = spreadsheet::strikeout_text_t::slash;
                     else if (attr.value == "X")
@@ -275,7 +287,7 @@ public:
         green = m_underline_green;
         blue = m_underline_blue;
     }
-    bool has_strikeout() const { return m_strikeout;}
+    bool has_strikeout() const { return m_strikeout_style != spreadsheet::strikeout_style_t::none;}
     const spreadsheet::strikeout_style_t get_strikeout_style() const { return m_strikeout_style;}
     const spreadsheet::strikeout_width_t get_strikeout_width() const { return m_strikeout_width;}
     const spreadsheet::strikeout_type_t get_strikeout_type() const { return m_strikeout_type;}

@@ -62,13 +62,20 @@ enum class border_style_t
 
 enum class strikeout_style_t
 {
-    unknown = 0,
-    solid
+    none = 0,
+    solid,
+    dash,
+    dot_dash,
+    dot_dot_dash,
+    dotted,
+    long_dash,
+    wave
 };
 
 enum class strikeout_type_t
 {
     unknown = 0,
+    none,
     single,
     double_type
 };
@@ -76,6 +83,10 @@ enum class strikeout_type_t
 enum class strikeout_width_t
 {
     unknown = 0,
+    width_auto,
+    thin,
+    medium,
+    thick,
     bold
 };
 
