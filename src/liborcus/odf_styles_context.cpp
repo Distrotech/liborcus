@@ -102,13 +102,13 @@ typedef mdds::sorted_string_map<spreadsheet::strikethrough_style_t> strikethroug
 
 strikethrough_style_map::entry strikethrough_style_entries[] =
 {
-    { MDDS_ASCII("none"), spreadsheet::strikethrough_style_t::none },
-    { MDDS_ASCII("solid"), spreadsheet::strikethrough_style_t::solid },
     { MDDS_ASCII("dash"), spreadsheet::strikethrough_style_t::dash },
-    { MDDS_ASCII("dotted"), spreadsheet::strikethrough_style_t::dotted },
     { MDDS_ASCII("dot-dash"), spreadsheet::strikethrough_style_t::dot_dash },
     { MDDS_ASCII("dot-dot-dash"), spreadsheet::strikethrough_style_t::dot_dot_dash },
+    { MDDS_ASCII("dotted"), spreadsheet::strikethrough_style_t::dotted },
     { MDDS_ASCII("long-dash"), spreadsheet::strikethrough_style_t::long_dash},
+    { MDDS_ASCII("none"), spreadsheet::strikethrough_style_t::none },
+    { MDDS_ASCII("solid"), spreadsheet::strikethrough_style_t::solid },
     { MDDS_ASCII("wave"), spreadsheet::strikethrough_style_t::wave },
 };
 
