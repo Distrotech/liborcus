@@ -751,7 +751,12 @@ bool number_formatting_context::end_element(xmlns_id_t ns, xml_token_t name)
 void number_formatting_context::characters(const pstring& str, bool transient)
 {
     if (str != "\n")
-        m_current_style->character_stream = str;
+    {
+        if (transient)
+            m_current_style->character_stream = m_pool.intern(str).first;
+        else
+            m_current_style->character_stream = str;
+    }
 }
 
 

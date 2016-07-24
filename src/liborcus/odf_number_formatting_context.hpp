@@ -11,7 +11,9 @@
 #include "xml_context_base.hpp"
 #include "odf_styles.hpp"
 #include "odf_styles_context.hpp"
+
 #include "orcus/global.hpp"
+#include "orcus/string_pool.hpp"
 
 namespace orcus {
 
@@ -41,6 +43,8 @@ private:
     spreadsheet::iface::import_styles* mp_styles;
     odf_styles_map_type& m_styles;
     number_formatting_style* m_current_style;
+
+    string_pool m_pool;
 };
 
 }
