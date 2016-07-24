@@ -276,10 +276,10 @@ public:
     }
     bool has_underline() const { return m_underline; }
     bool underline_is_text_color() const { return m_underline_is_text_color; }
-    const spreadsheet::underline_width_t get_underline_width() const { return m_underline_width; }
-    const spreadsheet::underline_mode_t get_underline_mode() const { return m_underline_mode; }
-    const spreadsheet::underline_type_t get_underline_type() const { return m_underline_type; }
-    const spreadsheet::underline_t get_underline_style() const { return m_underline_style; }
+    spreadsheet::underline_width_t get_underline_width() const { return m_underline_width; }
+    spreadsheet::underline_mode_t get_underline_mode() const { return m_underline_mode; }
+    spreadsheet::underline_type_t get_underline_type() const { return m_underline_type; }
+    spreadsheet::underline_t get_underline_style() const { return m_underline_style; }
     void get_underline_color(spreadsheet::color_elem_t& red, spreadsheet::color_elem_t& green,
             spreadsheet::color_elem_t& blue)
     {
@@ -288,10 +288,10 @@ public:
         blue = m_underline_blue;
     }
     bool has_strikeout() const { return m_strikeout_style != spreadsheet::strikeout_style_t::none;}
-    const spreadsheet::strikeout_style_t get_strikeout_style() const { return m_strikeout_style;}
-    const spreadsheet::strikeout_width_t get_strikeout_width() const { return m_strikeout_width;}
-    const spreadsheet::strikeout_type_t get_strikeout_type() const { return m_strikeout_type;}
-    const spreadsheet::strikeout_text_t get_strikeout_text() const { return m_strikeout_text;}
+    spreadsheet::strikeout_style_t get_strikeout_style() const { return m_strikeout_style;}
+    spreadsheet::strikeout_width_t get_strikeout_width() const { return m_strikeout_width;}
+    spreadsheet::strikeout_type_t get_strikeout_type() const { return m_strikeout_type;}
+    spreadsheet::strikeout_text_t get_strikeout_text() const { return m_strikeout_text;}
 };
 
 class cell_prop_attr_parser : std::unary_function<xml_token_attr_t, void>
