@@ -55,11 +55,11 @@ xml_context_base* gnumeric_content_xml_context::create_child_context(xmlns_id_t 
     return NULL;
 }
 
-void gnumeric_content_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+void gnumeric_content_xml_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
 {
 }
 
-void gnumeric_content_xml_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& attrs)
+void gnumeric_content_xml_context::start_element(xmlns_id_t ns, xml_token_t name, const xml_attrs_t& /*attrs*/)
 {
     push_stack(ns, name);
 
@@ -87,7 +87,7 @@ bool gnumeric_content_xml_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void gnumeric_content_xml_context::characters(const pstring& str, bool transient)
+void gnumeric_content_xml_context::characters(const pstring& /*str*/, bool /*transient*/)
 {
 }
 

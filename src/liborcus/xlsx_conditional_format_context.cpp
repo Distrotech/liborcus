@@ -682,17 +682,17 @@ xlsx_conditional_format_context::~xlsx_conditional_format_context()
 {
 }
 
-bool xlsx_conditional_format_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
+bool xlsx_conditional_format_context::can_handle_element(xmlns_id_t /*ns*/, xml_token_t /*name*/) const
 {
     return true;
 }
 
-xml_context_base* xlsx_conditional_format_context::create_child_context(xmlns_id_t ns, xml_token_t name)
+xml_context_base* xlsx_conditional_format_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
     return NULL;
 }
 
-void xlsx_conditional_format_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+void xlsx_conditional_format_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
 {
 }
 

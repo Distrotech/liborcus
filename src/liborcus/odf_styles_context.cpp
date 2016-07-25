@@ -525,7 +525,7 @@ styles_context::styles_context(
     commit_default_styles();
 }
 
-bool styles_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
+bool styles_context::can_handle_element(xmlns_id_t ns, xml_token_t /*name*/) const
 {
     if (ns == NS_odf_number)
         return false;
@@ -533,7 +533,7 @@ bool styles_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
     return true;
 }
 
-xml_context_base* styles_context::create_child_context(xmlns_id_t ns, xml_token_t name)
+xml_context_base* styles_context::create_child_context(xmlns_id_t ns, xml_token_t /*name*/)
 {
     if (ns == NS_odf_number )
     {
@@ -546,9 +546,8 @@ xml_context_base* styles_context::create_child_context(xmlns_id_t ns, xml_token_
     return nullptr;
 }
 
-void styles_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+void styles_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
 {
-    return;
 }
 
 void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::vector<xml_token_attr_t>& attrs)
@@ -823,7 +822,7 @@ bool styles_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void styles_context::characters(const pstring& str, bool transient)
+void styles_context::characters(const pstring& /*str*/, bool /*transient*/)
 {
 }
 

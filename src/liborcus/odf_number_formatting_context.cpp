@@ -400,17 +400,17 @@ number_formatting_context::number_formatting_context(
     m_current_style(number_format_style)
 {}
 
-bool number_formatting_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
+bool number_formatting_context::can_handle_element(xmlns_id_t /*ns*/, xml_token_t /*name*/) const
 {
     return true;
 }
 
-xml_context_base* number_formatting_context::create_child_context(xmlns_id_t ns, xml_token_t name)
+xml_context_base* number_formatting_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
     return NULL;
 }
 
-void number_formatting_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+void number_formatting_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
 {
 }
 

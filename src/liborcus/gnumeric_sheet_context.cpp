@@ -559,7 +559,7 @@ xml_context_base* gnumeric_sheet_context::create_child_context(xmlns_id_t ns, xm
     return NULL;
 }
 
-void gnumeric_sheet_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)
+void gnumeric_sheet_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
 {
 }
 
@@ -694,7 +694,7 @@ bool gnumeric_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void gnumeric_sheet_context::characters(const pstring& str, bool transient)
+void gnumeric_sheet_context::characters(const pstring& str, bool /*transient*/)
 {
     chars = str;
 }
