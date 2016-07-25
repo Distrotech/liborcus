@@ -420,6 +420,7 @@ void number_formatting_context::end_child_context(xmlns_id_t ns, xml_token_t nam
 
 void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, const std::vector<xml_token_attr_t>& attrs)
 {
+    m_current_style->character_stream.clear();
     if (ns == NS_odf_number)
     {
         switch(name)
@@ -743,7 +744,6 @@ bool number_formatting_context::end_element(xmlns_id_t ns, xml_token_t name)
         else if (name == XML_text)
                 m_current_style->number_formatting_code += m_current_style->character_stream;
         }
-    m_current_style->character_stream.clear();
     return false;
 }
 
