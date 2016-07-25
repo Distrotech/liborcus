@@ -23,17 +23,34 @@ namespace orcus {
 
 namespace {
 
+typedef mdds::sorted_string_map<odf_style_family> style_family_map;
+
+style_family_map::entry style_family_entries[] =
+{
+    { MDDS_ASCII("graphic"), style_family_graphic },
+    { MDDS_ASCII("paragraph"), style_family_paragraph },
+    { MDDS_ASCII("table"), style_family_table },
+    { MDDS_ASCII("table-cell"), style_family_table_cell },
+    { MDDS_ASCII("table-column"), style_family_table_column },
+    { MDDS_ASCII("table-row"), style_family_table_row },
+    { MDDS_ASCII("text"), style_family_text }
+};
+
+odf_style_family to_style_family(const pstring& val)
+{
+    style_family_map style_family_map(style_family_entries, ORCUS_N_ELEMENTS(style_family_entries), style_family_unknown);
+    return style_family_map.find(val.get(), val.size());
+}
+
 class style_attr_parser : public std::unary_function<xml_token_attr_t, void>
 {
-    const style_value_converter* m_converter;
-
     pstring m_name;
     odf_style_family m_family;
 
     pstring m_parent_name;
 public:
-    style_attr_parser(const style_value_converter* converter) :
-        m_converter(converter), m_family(style_family_unknown) {}
+    style_attr_parser() :
+        m_family(style_family_unknown) {}
 
     void operator() (const xml_token_attr_t& attr)
     {
@@ -45,7 +62,7 @@ public:
                     m_name = attr.value;
                 break;
                 case XML_family:
-                    m_family = m_converter->to_style_family(attr.value);
+                    m_family = to_style_family(attr.value);
                 break;
                 case XML_parent_style_name:
                     m_parent_name = attr.value;
@@ -497,36 +514,6 @@ public:
 
 }
 
-style_value_converter::style_value_converter()
-{
-    static const struct {
-        const char* str;
-        odf_style_family val;
-    } style_family_values[] = {
-        { "graphic", style_family_graphic },
-        { "paragraph", style_family_paragraph },
-        { "table", style_family_table },
-        { "table-column", style_family_table_column },
-        { "table-row", style_family_table_row },
-        { "table-cell", style_family_table_cell },
-        { "text", style_family_text }
-    };
-
-    size_t n = sizeof(style_family_values)/sizeof(style_family_values[0]);
-    for (size_t i = 0; i < n; ++i)
-    {
-        m_style_families.insert(
-            style_families_type::value_type(
-                style_family_values[i].str, style_family_values[i].val));
-    }
-}
-
-odf_style_family style_value_converter::to_style_family(const pstring& val) const
-{
-    style_families_type::const_iterator it = m_style_families.find(val);
-    return it == m_style_families.end() ? style_family_unknown : it->second;
-}
-
 styles_context::styles_context(
     session_context& session_cxt, const tokens& tk, odf_styles_map_type& styles,
     spreadsheet::iface::import_styles* iface_styles) :
@@ -592,7 +579,7 @@ void styles_context::start_element(xmlns_id_t ns, xml_token_t name, const std::v
                 expected_parents.push_back(std::pair<xmlns_id_t, xml_token_t>(NS_odf_office, XML_automatic_styles));
                 expected_parents.push_back(std::pair<xmlns_id_t, xml_token_t>(NS_odf_office, XML_styles));
                 xml_element_expected(parent, expected_parents);
-                style_attr_parser func(&m_converter);
+                style_attr_parser func;
                 func = std::for_each(attrs.begin(), attrs.end(), func);
                 m_current_style.reset(new odf_style(func.get_name(), func.get_family(), func.get_parent()));
             }

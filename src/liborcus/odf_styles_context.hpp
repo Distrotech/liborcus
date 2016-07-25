@@ -21,17 +21,6 @@ namespace spreadsheet { namespace iface {
     class import_styles;
 }}
 
-class style_value_converter
-{
-    typedef std::unordered_map<pstring, odf_style_family, pstring::hash> style_families_type;
-    style_families_type m_style_families;
-
-public:
-    style_value_converter();
-
-    odf_style_family to_style_family(const pstring& val) const;
-};
-
 /**
  * Context that handles <office:automatic-styles> scope.
  */
@@ -55,8 +44,6 @@ private:
     spreadsheet::iface::import_styles* mp_styles;
     odf_styles_map_type& m_styles;
     std::unique_ptr<xml_context_base> mp_child;
-
-    style_value_converter m_converter;
 
     std::unique_ptr<odf_style> m_current_style;
 
