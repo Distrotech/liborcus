@@ -319,7 +319,7 @@ void test_odf_text_strikethrough(orcus::spreadsheet::import_styles& styles)
 
 void test_odf_text_alignment(orcus::spreadsheet::import_styles& styles)
 {
-    const orcus::spreadsheet::cell_style_t* style = find_cell_style_by_name("Name22", &styles);
+    const orcus::spreadsheet::cell_style_t* style = find_cell_style_by_name("Name23", &styles);
     size_t xf = style->xf;
     const orcus::spreadsheet::cell_format_t* cell_format = styles.get_cell_style_format(xf);
     assert(cell_format);
