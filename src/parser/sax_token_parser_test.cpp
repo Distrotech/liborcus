@@ -11,6 +11,7 @@
 #include "orcus/xml_namespace.hpp"
 
 #include <cstring>
+#include <iostream>
 
 using namespace std;
 using namespace orcus;
@@ -106,9 +107,46 @@ void test_sax_token_parser_1()
     assert(hdl.get_token_count() == ORCUS_N_ELEMENTS(checks));
 }
 
+void test_unicode_string()
+{
+    const char* content = "<?xml version=\"1.0\"?><root>&#x20B9;</root>";
+    size_t content_size = strlen(content);
+
+    class handler
+    {
+    public:
+
+        void start_element(const orcus::xml_token_element_t& /*elem*/)
+        {
+        }
+
+        void end_element(const orcus::xml_token_element_t& /*elem*/)
+        {
+        }
+
+        void characters(const orcus::pstring& val, bool transient)
+        {
+            std::cout << "charachters:" << std::endl;
+            std::cout << val << std::endl;
+        }
+    };
+
+    const char* token_names[] = {
+    };
+    size_t token_count = ORCUS_N_ELEMENTS(token_names);
+
+    handler hdl;
+    tokens token_map(token_names, token_count);
+    xmlns_repository ns_repo;
+    xmlns_context ns_cxt = ns_repo.create_context();
+    sax_token_parser<handler> parser(content, content_size, token_map, ns_cxt, hdl);
+    parser.parse();
+}
+
 int main()
 {
     test_sax_token_parser_1();
+    test_unicode_string();
     return EXIT_SUCCESS;
 }
 

@@ -21,7 +21,12 @@ malformed_xml_error::~malformed_xml_error() throw() {}
 
 char decode_xml_encoded_char(const char* p, size_t n)
 {
-    if (n == 2)
+    if (*p == '#')
+    {
+        // this is an escaped unicode character
+        // what should we do here?
+    }
+    else if (n == 2)
     {
         if (!std::strncmp(p, "lt", n))
             return '<';
