@@ -694,9 +694,12 @@ bool gnumeric_sheet_context::end_element(xmlns_id_t ns, xml_token_t name)
     return pop_stack(ns, name);
 }
 
-void gnumeric_sheet_context::characters(const pstring& str, bool /*transient*/)
+void gnumeric_sheet_context::characters(const pstring& str, bool transient)
 {
-    chars = str;
+    if (transient)
+        chars = m_pool.intern(str).first;
+    else
+        chars = str;
 }
 
 void gnumeric_sheet_context::start_font(const xml_attrs_t& attrs)

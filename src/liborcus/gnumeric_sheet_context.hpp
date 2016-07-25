@@ -11,6 +11,8 @@
 #include "xml_context_base.hpp"
 #include "orcus/spreadsheet/types.hpp"
 
+#include "orcus/string_pool.hpp"
+
 namespace orcus {
 
 namespace spreadsheet { namespace iface {
@@ -91,6 +93,8 @@ private:
     std::unique_ptr<gnumeric_style_region> mp_region_data;
 
     gnumeric_color front_color;
+
+    string_pool m_pool;
 
     /**
      * Used for temporary storage of characters

@@ -10,6 +10,8 @@
 
 #include "xml_context_base.hpp"
 
+#include "orcus/string_pool.hpp"
+
 namespace orcus {
 
 namespace spreadsheet { namespace iface {
@@ -42,6 +44,8 @@ private:
     spreadsheet::iface::import_factory* mp_factory;
 
     std::unique_ptr<gnumeric_cell_data> mp_cell_data;
+
+    string_pool m_pool;
 
     /**
     * Used for temporary storage of characters
