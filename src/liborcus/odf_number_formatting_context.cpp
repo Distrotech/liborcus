@@ -86,8 +86,7 @@ public:
     number_attr_parser() :
         m_decimal_places(0),
         m_min_int_digits(0),
-        m_grouping(false),
-        m_has_decimal_places(false)
+        m_grouping(false)
     {}
 
     void operator() (const xml_token_attr_t& attr)
@@ -99,8 +98,6 @@ public:
                 case XML_decimal_places:
                 {
                     m_decimal_places = to_long(attr.value);
-                    if (m_decimal_places > 0)
-                        m_has_decimal_places = true;
                 }
                 break;
                 case XML_grouping:
@@ -118,7 +115,7 @@ public:
     size_t get_decimal_places() const { return m_decimal_places;}
     bool is_grouped() const { return m_grouping;}
     size_t get_min_int_digits() const { return m_min_int_digits;}
-    bool has_decimal_places() const { return m_has_decimal_places;}
+    bool has_decimal_places() const { return m_decimal_places > 0;}
 };
 
 class scientific_number_attr_parser : std::unary_function<xml_token_attr_t, void>
