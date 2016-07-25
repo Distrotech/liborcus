@@ -112,7 +112,7 @@ AC_ARG_ENABLE(debug,
 	[enable_debug=no]
 )
 AS_IF([test "x$enable_debug" != "xno"], [
-	CXXFLAGS="$CXXFLAGS -g -O0"
+	CXXFLAGS="$CXXFLAGS -g -O0 -DMDDS_ASSERT_STRING_MAP"
 ], [
 	CXXFLAGS="$CXXFLAGS -O2"
 	AC_DEFINE([NDEBUG], [], [Disable debugging information])
