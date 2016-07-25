@@ -32,7 +32,7 @@ public:
         opc_content_types_context::ct_cache_type* p_ct_cache, xml_token_t attr_name) :
         mp_ct_cache(p_ct_cache),
         m_attr_name(attr_name),
-        m_content_type(NULL) {}
+        m_content_type(nullptr) {}
 
     part_ext_attr_parser(const part_ext_attr_parser& r) :
         mp_ct_cache(r.mp_ct_cache),
@@ -59,7 +59,7 @@ private:
         if (itr == mp_ct_cache->end())
         {
             cout << "unknown content type: " << p << endl;
-            return NULL;
+            return nullptr;
         }
         const pstring& val = *itr;
         return val.get();
@@ -93,7 +93,7 @@ bool opc_content_types_context::can_handle_element(xmlns_id_t ns, xml_token_t na
 
 xml_context_base* opc_content_types_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
-    return NULL;
+    return nullptr;
 }
 
 void opc_content_types_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base *child)
@@ -203,7 +203,7 @@ private:
         {
             if (mp_config->debug)
                 cout << "unknown schema: " << p << endl;
-            return NULL;
+            return nullptr;
         }
         const pstring& val = *itr;
         return val.get();
@@ -259,7 +259,7 @@ bool opc_relations_context::can_handle_element(xmlns_id_t ns, xml_token_t name) 
 
 xml_context_base* opc_relations_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
-    return NULL;
+    return nullptr;
 }
 
 void opc_relations_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base *child)

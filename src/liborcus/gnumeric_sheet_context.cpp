@@ -530,8 +530,8 @@ gnumeric_sheet_context::gnumeric_sheet_context(
     session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
     xml_context_base(session_cxt, tokens),
     mp_factory(factory),
-    mp_sheet(NULL),
-    mp_auto_filter(NULL)
+    mp_sheet(nullptr),
+    mp_auto_filter(nullptr)
 {
 }
 
@@ -556,7 +556,7 @@ xml_context_base* gnumeric_sheet_context::create_child_context(xmlns_id_t ns, xm
         return mp_child.get();
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void gnumeric_sheet_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)

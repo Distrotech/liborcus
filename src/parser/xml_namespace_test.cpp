@@ -84,7 +84,7 @@ xmlns_id_t NS_test_all[] = {
     NS_test_name1,
     NS_test_name2,
     NS_test_name3,
-    NULL
+    nullptr
 };
 
 void test_predefined_ns()

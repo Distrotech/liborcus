@@ -37,7 +37,7 @@ output_mode parse_mode(const char* s)
 {
     const char* prefix = "--mode=";
     size_t prefix_size = strlen(prefix);
-    const char* p_value = NULL;
+    const char* p_value = nullptr;
     size_t value_size = 0;
     for (size_t i = 0, n = strlen(s); i < n; ++i, ++s)
     {

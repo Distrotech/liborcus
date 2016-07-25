@@ -233,8 +233,8 @@ public:
 
 PyObject* json_loads(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
 {
-    char* stream = NULL;
-    static const char* kwlist[] = { "s", NULL };
+    char* stream = nullptr;
+    static const char* kwlist[] = { "s", nullptr };
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s", const_cast<char**>(kwlist), &stream))
     {
         PyErr_SetString(PyExc_TypeError, "The method must be given a string.");
@@ -258,20 +258,20 @@ PyObject* json_loads(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
 PyMethodDef orcus_methods[] =
 {
     { "loads", (PyCFunction)json_loads, METH_VARARGS | METH_KEYWORDS, "Load JSON string into a Python object." },
-    { NULL, NULL, 0, NULL }
+    { nullptr, nullptr, 0, nullptr }
 };
 
 struct PyModuleDef moduledef =
 {
     PyModuleDef_HEAD_INIT,
     "_orcus_json",
-    NULL,
+    nullptr,
     sizeof(struct module_state),
     orcus_methods,
-    NULL,
+    nullptr,
     orcus_traverse,
     orcus_clear,
-    NULL
+    nullptr
 };
 
 }

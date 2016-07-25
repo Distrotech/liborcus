@@ -514,7 +514,7 @@ bool xlsx_styles_context::can_handle_element(xmlns_id_t /*ns*/, xml_token_t /*na
 
 xml_context_base* xlsx_styles_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
-    return NULL;
+    return nullptr;
 }
 
 void xlsx_styles_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
@@ -720,7 +720,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
             pstring ps = for_each(
                 attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
-            size_t n = strtoul(ps.get(), NULL, 10);
+            size_t n = strtoul(ps.get(), nullptr, 10);
             mp_styles->set_cell_style_xf_count(n);
             m_cell_style_xf = true;
         }
@@ -731,7 +731,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
             pstring ps = for_each(
                 attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
-            size_t n = strtoul(ps.get(), NULL, 10);
+            size_t n = strtoul(ps.get(), nullptr, 10);
             mp_styles->set_cell_xf_count(n);
             m_cell_style_xf = false;
         }
@@ -742,7 +742,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
             pstring ps = for_each(
                 attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
-            size_t n = strtoul(ps.get(), NULL, 10);
+            size_t n = strtoul(ps.get(), nullptr, 10);
             mp_styles->set_dxf_count(n);
         }
         break;
@@ -751,7 +751,7 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
             xml_element_expected(parent, NS_ooxml_xlsx, XML_styleSheet);
             pstring ps = for_each(
                 attrs.begin(), attrs.end(), single_attr_getter(m_pool, NS_ooxml_xlsx, XML_count)).get_value();
-            size_t n = strtoul(ps.get(), NULL, 10);
+            size_t n = strtoul(ps.get(), nullptr, 10);
             mp_styles->set_cell_style_count(n);
         }
         break;

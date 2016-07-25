@@ -249,7 +249,7 @@ namespace {
 
 border_attrs_t* get_border_attrs(border_t& cur_border, border_direction_t dir)
 {
-    border_attrs_t* p = NULL;
+    border_attrs_t* p = nullptr;
     switch (dir)
     {
         case border_direction_t::top:
@@ -489,7 +489,7 @@ size_t import_styles::commit_cell_style()
 const font_t* import_styles::get_font(size_t index) const
 {
     if (index >= m_fonts.size())
-        return NULL;
+        return nullptr;
 
     return &m_fonts[index];
 }
@@ -497,7 +497,7 @@ const font_t* import_styles::get_font(size_t index) const
 const cell_format_t* import_styles::get_cell_format(size_t index) const
 {
     if (index >= m_cell_formats.size())
-        return NULL;
+        return nullptr;
 
     return &m_cell_formats[index];
 }
@@ -505,7 +505,7 @@ const cell_format_t* import_styles::get_cell_format(size_t index) const
 const fill_t* import_styles::get_fill(size_t index) const
 {
     if (index >= m_fills.size())
-        return NULL;
+        return nullptr;
 
     return &m_fills[index];
 }
@@ -513,7 +513,7 @@ const fill_t* import_styles::get_fill(size_t index) const
 const border_t* import_styles::get_border(size_t index) const
 {
     if (index >= m_borders.size())
-        return NULL;
+        return nullptr;
 
     return &m_borders[index];
 }
@@ -521,7 +521,7 @@ const border_t* import_styles::get_border(size_t index) const
 const protection_t* import_styles::get_protection(size_t index) const
 {
     if (index >= m_protections.size())
-        return NULL;
+        return nullptr;
 
     return &m_protections[index];
 }
@@ -529,7 +529,7 @@ const protection_t* import_styles::get_protection(size_t index) const
 const number_format_t* import_styles::get_number_format(size_t index) const
 {
     if (index >= m_number_formats.size())
-        return NULL;
+        return nullptr;
 
     return &m_number_formats[index];
 }
@@ -537,7 +537,7 @@ const number_format_t* import_styles::get_number_format(size_t index) const
 const cell_format_t* import_styles::get_cell_style_format(size_t index) const
 {
     if (index >= m_cell_style_formats.size())
-        return NULL;
+        return nullptr;
 
     return &m_cell_style_formats[index];
 }
@@ -545,7 +545,7 @@ const cell_format_t* import_styles::get_cell_style_format(size_t index) const
 const cell_format_t* import_styles::get_dxf_format(size_t index) const
 {
     if (index >= m_dxf_formats.size())
-        return NULL;
+        return nullptr;
 
     return &m_dxf_formats[index];
 }
@@ -553,7 +553,7 @@ const cell_format_t* import_styles::get_dxf_format(size_t index) const
 const cell_style_t* import_styles::get_cell_style(size_t index) const
 {
     if (index >= m_cell_styles.size())
-        return NULL;
+        return nullptr;
 
     return &m_cell_styles[index];
 }

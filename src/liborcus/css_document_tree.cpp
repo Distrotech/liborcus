@@ -378,7 +378,7 @@ simple_selector_node* get_or_create_simple_selector_node(
 
         if (!r.second)
             // Insertion failed.
-            return NULL;
+            return nullptr;
 
         it = r.first;
     }
@@ -390,7 +390,7 @@ const simple_selector_node* get_simple_selector_node(
     const simple_selectors_type& store, const css_simple_selector_t& ss)
 {
     simple_selectors_type::const_iterator it = store.find(ss);
-    return it == store.end() ? NULL : &it->second;
+    return it == store.end() ? nullptr : &it->second;
 }
 
 simple_selectors_type* get_or_create_simple_selectors_type(
@@ -406,7 +406,7 @@ simple_selectors_type* get_or_create_simple_selectors_type(
                     combinator, simple_selectors_type()));
         if (!r.second)
             // Insertion failed.
-            return NULL;
+            return nullptr;
 
         it = r.first;
     }
@@ -418,7 +418,7 @@ const simple_selectors_type* get_simple_selectors_type(
     const combinators_type& store, css::combinator_t combinator)
 {
     combinators_type::const_iterator it = store.find(combinator);
-    return it == store.end() ? NULL : &it->second;
+    return it == store.end() ? nullptr : &it->second;
 }
 
 void dump_pseudo_elements(css::pseudo_element_t elem)
@@ -497,7 +497,7 @@ const css_pseudo_element_properties_t* get_properties_map(
 {
     const simple_selector_node* node = get_simple_selector_node(root, selector.first);
     if (!node)
-        return NULL;
+        return nullptr;
 
     if (!selector.chained.empty())
     {
@@ -510,11 +510,11 @@ const css_pseudo_element_properties_t* get_properties_map(
             const css_chained_simple_selector_t& css = *it_chain;
             const simple_selectors_type* ss = get_simple_selectors_type(*combos, css.combinator);
             if (!ss)
-                return NULL;
+                return nullptr;
 
             node = get_simple_selector_node(*ss, css.simple_selector);
             if (!node)
-                return NULL;
+                return nullptr;
 
             combos = &node->children;
         }
@@ -606,11 +606,11 @@ const css_properties_t* css_document_tree::get_properties(
 {
     const css_pseudo_element_properties_t* prop_map = get_properties_map(mp_impl->m_root, selector);
     if (!prop_map)
-        return NULL;
+        return nullptr;
 
     css_pseudo_element_properties_t::const_iterator it = prop_map->find(pseudo_elem);
     if (it == prop_map->end())
-        return NULL;
+        return nullptr;
 
     return &it->second;
 }

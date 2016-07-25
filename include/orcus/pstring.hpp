@@ -67,7 +67,7 @@ public:
 
     void clear()
     {
-        m_pos = NULL;
+        m_pos = nullptr;
         m_size = 0;
     }
 

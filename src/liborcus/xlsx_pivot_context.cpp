@@ -194,7 +194,7 @@ bool xlsx_pivot_cache_def_context::can_handle_element(xmlns_id_t /*ns*/, xml_tok
 
 xml_context_base* xlsx_pivot_cache_def_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
-    return NULL;
+    return nullptr;
 }
 
 void xlsx_pivot_cache_def_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
@@ -285,7 +285,7 @@ bool xlsx_pivot_cache_rec_context::can_handle_element(xmlns_id_t /*ns*/, xml_tok
 
 xml_context_base* xlsx_pivot_cache_rec_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
-    return NULL;
+    return nullptr;
 }
 
 void xlsx_pivot_cache_rec_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)
@@ -781,7 +781,7 @@ bool xlsx_pivot_table_context::can_handle_element(xmlns_id_t /*ns*/, xml_token_t
 
 xml_context_base* xlsx_pivot_table_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
-    return NULL;
+    return nullptr;
 }
 
 void xlsx_pivot_table_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)

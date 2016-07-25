@@ -145,7 +145,7 @@ void text_para_context::flush_segment()
 
     m_has_content = true;
 
-    const odf_style* style = NULL;
+    const odf_style* style = nullptr;
     if (!m_span_stack.empty())
     {
         pstring style_name = m_span_stack.back();

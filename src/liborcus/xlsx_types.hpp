@@ -32,7 +32,7 @@ struct xlsx_rel_table_info : public opc_rel_extra
 {
     spreadsheet::iface::import_sheet* sheet_interface;
 
-    xlsx_rel_table_info() : sheet_interface(NULL) {}
+    xlsx_rel_table_info() : sheet_interface(nullptr) {}
 
     virtual ~xlsx_rel_table_info() {}
 };

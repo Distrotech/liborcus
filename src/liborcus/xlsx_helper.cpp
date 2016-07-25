@@ -19,7 +19,7 @@ bool to_rgb(
     if (n != 8)
         return false;
 
-    unsigned long v = strtoul(ps.get(), NULL, 16);
+    unsigned long v = strtoul(ps.get(), nullptr, 16);
     blue  = (0x000000FF & v);
     green = (0x000000FF & (v >> 8));
     red   = (0x000000FF & (v >> 16));

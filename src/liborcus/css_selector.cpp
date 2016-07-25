@@ -88,7 +88,7 @@ bool css_selector_t::operator== (const css_selector_t& r) const
 }
 
 css_property_value_t::css_property_value_t() :
-    type(css::property_value_t::none), str(NULL) {}
+    type(css::property_value_t::none), str(nullptr) {}
 
 css_property_value_t::css_property_value_t(const css_property_value_t& r) :
     type(r.type)

@@ -21,7 +21,7 @@ xmlns_id_t xls_xml_ns[] = {
     NS_xls_xml_o,
     NS_xls_xml_x,
     NS_xls_xml_html,
-    NULL
+    nullptr
 };
 
 }

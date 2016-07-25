@@ -218,7 +218,7 @@ class table_handler : public ixion::iface::table_handler
                 return p;
         }
 
-        return NULL;
+        return nullptr;
     }
 
     pstring get_string(ixion::string_id_t sid) const
@@ -417,7 +417,7 @@ void document::insert_table(table_t* p)
 const table_t* document::get_table(const pstring& name) const
 {
     auto it = mp_impl->m_tables.find(name);
-    return it == mp_impl->m_tables.end() ? NULL : it->second.get();
+    return it == mp_impl->m_tables.end() ? nullptr : it->second.get();
 }
 
 namespace {
@@ -459,7 +459,7 @@ sheet* document::get_sheet(const pstring& sheet_name)
         mp_impl->m_sheets.begin(), mp_impl->m_sheets.end(), find_sheet_by_name(sheet_name));
 
     if (it == mp_impl->m_sheets.end())
-        return NULL;
+        return nullptr;
 
     return &(*it)->data;
 }
@@ -467,7 +467,7 @@ sheet* document::get_sheet(const pstring& sheet_name)
 sheet* document::get_sheet(sheet_t sheet_pos)
 {
     if (static_cast<size_t>(sheet_pos) >= mp_impl->m_sheets.size())
-        return NULL;
+        return nullptr;
 
     return &mp_impl->m_sheets[sheet_pos]->data;
 }
@@ -475,7 +475,7 @@ sheet* document::get_sheet(sheet_t sheet_pos)
 const sheet* document::get_sheet(sheet_t sheet_pos) const
 {
     if (static_cast<size_t>(sheet_pos) >= mp_impl->m_sheets.size())
-        return NULL;
+        return nullptr;
 
     return &mp_impl->m_sheets[sheet_pos]->data;
 }

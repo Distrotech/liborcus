@@ -136,7 +136,7 @@ class zip_stream_parser
     }
 
 public:
-    zip_stream_parser() : m_stream(NULL), m_pos(0), m_pos_internal(0) {}
+    zip_stream_parser() : m_stream(nullptr), m_pos(0), m_pos_internal(0) {}
     zip_stream_parser(zip_archive_stream* stream, size_t pos) : m_stream(stream), m_pos(pos), m_pos_internal(0) {}
 
     string read_string(size_t n)
@@ -427,7 +427,7 @@ void zip_archive_impl::dump_file_entry(const char* entry_name) const
 pstring zip_archive_impl::get_file_entry_name(size_t pos) const
 {
     if (pos >= m_file_params.size())
-        return NULL;
+        return nullptr;
 
     return m_file_params[pos].filename;
 }

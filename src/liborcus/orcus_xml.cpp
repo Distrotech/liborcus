@@ -43,7 +43,7 @@ class xml_data_sax_handler
 
         scope(xmlns_id_t _ns, const pstring& _name) :
             ns(_ns), name(_name),
-            element_open_begin(NULL), element_open_end(NULL),
+            element_open_begin(nullptr), element_open_end(nullptr),
             type(xml_map_tree::element_unknown) {}
     };
 
@@ -69,7 +69,7 @@ private:
             if (it->ns == ns && it->name == name)
                 return &(*it);
         }
-        return NULL;
+        return nullptr;
     }
 
     void set_single_link_cell(const xml_map_tree::cell_reference& ref, const pstring& val)
@@ -105,7 +105,7 @@ public:
         m_link_positions(link_positions),
         m_map_tree(map_tree),
         m_map_tree_walker(map_tree.get_tree_walker()),
-        mp_current_elem(NULL),
+        mp_current_elem(nullptr),
         m_in_range_ref(false) {}
 
     void doctype(const sax::doctype_declaration&)
@@ -470,7 +470,7 @@ struct orcus_xml_impl
 
     xml_map_tree::cell_position m_cur_range_ref;
 
-    explicit orcus_xml_impl(xmlns_repository& ns_repo) : mp_import_factory(NULL), mp_export_factory(NULL), m_ns_repo(ns_repo), m_ns_cxt_map(ns_repo.create_context()), m_map_tree(m_ns_repo) {}
+    explicit orcus_xml_impl(xmlns_repository& ns_repo) : mp_import_factory(nullptr), mp_export_factory(nullptr), m_ns_repo(ns_repo), m_ns_cxt_map(ns_repo.create_context()), m_map_tree(m_ns_repo) {}
 };
 
 orcus_xml::orcus_xml(xmlns_repository& ns_repo, spreadsheet::iface::import_factory* im_fact, spreadsheet::iface::export_factory* ex_fact) :

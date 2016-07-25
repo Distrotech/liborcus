@@ -139,7 +139,7 @@ void sax_parser<_Handler,_Config>::element()
             special_tag();
         break;
         case '?':
-            declaration(NULL);
+            declaration(nullptr);
         break;
         default:
             if (!is_alpha(c))

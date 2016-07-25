@@ -320,7 +320,7 @@ xml_context_base* ods_content_xml_context::create_child_context(xmlns_id_t ns, x
         return mp_child.get();
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void ods_content_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)

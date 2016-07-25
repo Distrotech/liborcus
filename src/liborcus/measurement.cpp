@@ -31,7 +31,7 @@ double to_double(const pstring& s)
 {
     const char* p = s.get();
     const char* p_end = p + s.size();
-    return to_double(p, p_end, NULL);
+    return to_double(p, p_end, nullptr);
 }
 
 long to_long(const char* p, const char* p_end, const char** p_parse_ended)
@@ -48,7 +48,7 @@ long to_long(const pstring& s)
 {
     const char* p = s.get();
     const char* p_end = p + s.size();
-    return to_long(p, p_end, NULL);
+    return to_long(p, p_end, nullptr);
 }
 
 bool to_bool(const pstring& s)

@@ -61,7 +61,7 @@ content_type_t cts[] = {
     CT_opc_core_properties,
     CT_opc_relationships,
     CT_xml,
-    NULL
+    nullptr
 };
 
 }

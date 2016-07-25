@@ -163,7 +163,7 @@ void css_parser<_Handler>::simple_selector_name()
     }
     assert(is_alpha(c) || c == '.' || c == '#');
 
-    const char* p = NULL;
+    const char* p = nullptr;
     size_t n = 0;
 
 #if ORCUS_DEBUG_CSS
@@ -317,7 +317,7 @@ template<typename _Handler>
 void css_parser<_Handler>::quoted_value()
 {
     // Parse until the the end quote is reached.
-    const char* p = NULL;
+    const char* p = nullptr;
     size_t len = 0;
     literal(p, len, '"');
     next();
@@ -344,7 +344,7 @@ void css_parser<_Handler>::value()
     if (!is_alpha(c) && !is_numeric(c) && !is_in(c, "-+.#"))
         css::parse_error::throw_with("value:: illegal first character of a value '", c, "'");
 
-    const char* p = NULL;
+    const char* p = nullptr;
     size_t len = 0;
     identifier(p, len, ".%");
     if (cur_char() == '(')

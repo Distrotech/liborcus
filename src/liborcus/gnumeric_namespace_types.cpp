@@ -27,7 +27,7 @@ xmlns_id_t gnumeric_ns[] = {
 
     NS_odf_meta,
     NS_odf_office,
-    NULL
+    nullptr
 };
 
 }

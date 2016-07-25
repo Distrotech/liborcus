@@ -22,18 +22,18 @@ namespace {
 xmlns_id_t ooxml_ns[] = {
     NS_ooxml_r,
     NS_ooxml_xlsx,
-    NULL
+    nullptr
 };
 
 xmlns_id_t opc_ns[] = {
     NS_opc_ct,
     NS_opc_rel,
-    NULL
+    nullptr
 };
 
 xmlns_id_t misc_ns[] = {
     NS_mc,
-    NULL
+    nullptr
 };
 
 }

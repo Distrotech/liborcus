@@ -407,7 +407,7 @@ bool number_formatting_context::can_handle_element(xmlns_id_t /*ns*/, xml_token_
 
 xml_context_base* number_formatting_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
-    return NULL;
+    return nullptr;
 }
 
 void number_formatting_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)

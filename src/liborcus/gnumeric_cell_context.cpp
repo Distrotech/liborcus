@@ -131,7 +131,7 @@ bool gnumeric_cell_context::can_handle_element(xmlns_id_t /*ns*/, xml_token_t /*
 
 xml_context_base* gnumeric_cell_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
-    return NULL;
+    return nullptr;
 }
 
 void gnumeric_cell_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)

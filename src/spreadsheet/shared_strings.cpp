@@ -53,14 +53,14 @@ bool format_run::formatted() const
 }
 
 import_shared_strings::import_shared_strings(orcus::string_pool& sp, ixion::model_context& cxt, import_styles& styles) :
-    m_string_pool(sp), m_cxt(cxt), m_styles(styles), mp_cur_format_runs(NULL) {}
+    m_string_pool(sp), m_cxt(cxt), m_styles(styles), mp_cur_format_runs(nullptr) {}
 
 import_shared_strings::~import_shared_strings()
 {
     for_each(m_formats.begin(), m_formats.end(),
              map_object_deleter<format_runs_map_type>());
 
-    // This pointer should be NULL.
+    // This pointer should be nullptr.
     assert(!mp_cur_format_runs);
     delete mp_cur_format_runs;
 }
@@ -80,7 +80,7 @@ const format_runs_t* import_shared_strings::get_format_runs(size_t index) const
     format_runs_map_type::const_iterator itr = m_formats.find(index);
     if (itr != m_formats.end())
         return itr->second;
-    return NULL;
+    return nullptr;
 }
 
 const string* import_shared_strings::get_string(size_t index) const
@@ -155,7 +155,7 @@ size_t import_shared_strings::commit_segments()
     size_t sindex = m_cxt.append_string(m_cur_segment_string.data(), m_cur_segment_string.size());
     m_cur_segment_string.clear();
     m_formats.insert(format_runs_map_type::value_type(sindex, mp_cur_format_runs));
-    mp_cur_format_runs = NULL;
+    mp_cur_format_runs = nullptr;
     return sindex;
 }
 

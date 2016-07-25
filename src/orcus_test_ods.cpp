@@ -82,21 +82,21 @@ void test_ods_import_column_widths_row_heights()
     assert(sh);
 
     // Column widths are in twips.
-    col_width_t cw = sh->get_col_width(1, NULL, NULL);
+    col_width_t cw = sh->get_col_width(1, nullptr, nullptr);
     assert(cw == 1440); // 1 in
-    cw = sh->get_col_width(2, NULL, NULL);
+    cw = sh->get_col_width(2, nullptr, nullptr);
     assert(cw == 2160); // 1.5 in
-    cw = sh->get_col_width(3, NULL, NULL);
+    cw = sh->get_col_width(3, nullptr, nullptr);
     assert(cw == 2592); // 1.8 in
 
     // Row heights are in twips too.
-    row_height_t rh = sh->get_row_height(3, NULL, NULL);
+    row_height_t rh = sh->get_row_height(3, nullptr, nullptr);
     assert(rh == 720); // 0.5 in
-    rh = sh->get_row_height(4, NULL, NULL);
+    rh = sh->get_row_height(4, nullptr, nullptr);
     assert(rh == 1440); // 1 in
-    rh = sh->get_row_height(5, NULL, NULL);
+    rh = sh->get_row_height(5, nullptr, nullptr);
     assert(rh == 2160); // 1.5 in
-    rh = sh->get_row_height(6, NULL, NULL);
+    rh = sh->get_row_height(6, nullptr, nullptr);
     assert(rh == 2592); // 1.8 in
 }
 

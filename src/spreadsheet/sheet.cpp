@@ -103,12 +103,12 @@ public:
     sheet_auto_filter(sheet& sh, orcus::string_pool& sp) :
         m_sheet(sh),
         m_string_pool(sp),
-        mp_resolver(NULL),
+        mp_resolver(nullptr),
         m_cur_col(-1) {}
 
     void reset()
     {
-        mp_resolver = NULL;
+        mp_resolver = nullptr;
         mp_data.reset(new auto_filter_t);
         m_cur_col = -1;
         m_cur_col_data.reset();
@@ -217,12 +217,12 @@ struct sheet_impl
     {
         col_merge_size_type::const_iterator it_col = m_merge_ranges.find(col);
         if (it_col == m_merge_ranges.end())
-            return NULL;
+            return nullptr;
 
         merge_size_type& col_merge_sizes = *it_col->second;
         merge_size_type::const_iterator it_row = col_merge_sizes.find(row);
         if (it_row == col_merge_sizes.end())
-            return NULL;
+            return nullptr;
 
         return &it_row->second;
     }
@@ -231,7 +231,7 @@ struct sheet_impl
     {
         overlapped_cells_type::const_iterator it = m_overlapped_ranges.find(row);
         if (it == m_overlapped_ranges.end())
-            return NULL;
+            return nullptr;
 
         return it->second;
     }
@@ -338,7 +338,7 @@ void sheet::set_auto(row_t row, col_t col, const char* p, size_t n)
     ixion::model_context& cxt = mp_impl->m_doc.get_model_context();
 
     // First, see if this can be parsed as a number.
-    char* endptr = NULL;
+    char* endptr = nullptr;
     double val = strtod(p, &endptr);
     const char* endptr_check = p + n;
     if (endptr == endptr_check)
@@ -717,7 +717,7 @@ void sheet::dump_flat(std::ostream& os) const
                     const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
                     assert(cell);
                     size_t index = cell->get_identifier();
-                    const ixion::formula_tokens_t* t = NULL;
+                    const ixion::formula_tokens_t* t = nullptr;
                     if (cell->is_shared())
                         t = cxt.get_shared_formula_tokens(mp_impl->m_sheet, index);
                     else
@@ -880,7 +880,7 @@ void sheet::dump_check(ostream& os, const pstring& sheet_name) const
                     const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
                     assert(cell);
                     size_t index = cell->get_identifier();
-                    const ixion::formula_tokens_t* t = NULL;
+                    const ixion::formula_tokens_t* t = nullptr;
                     if (cell->is_shared())
                         t = cxt.get_shared_formula_tokens(mp_impl->m_sheet, index);
                     else
@@ -977,7 +977,7 @@ public:
 
     typedef vector<attr> attrs_type;
 
-    html_elem(ostream& strm, const char* name, const char* style = NULL, const char* style_class = NULL) :
+    html_elem(ostream& strm, const char* name, const char* style = nullptr, const char* style_class = nullptr) :
         m_strm(strm), m_name(name)
     {
         m_strm << '<' << m_name;
@@ -1345,7 +1345,7 @@ void sheet::dump_html(const string& filepath) const
                 }
             }
 
-            const char* style_str = NULL;
+            const char* style_str = nullptr;
             if (!row_style.empty())
                 style_str = row_style.c_str();
             elem tr(file, p_tr, style_str);
@@ -1362,7 +1362,7 @@ void sheet::dump_html(const string& filepath) const
                     // Check if this cell is overlapped by a merged cell.
                     bool overlapped = false;
                     col_t last_col;
-                    if (p_overlapped->search_tree(col, overlapped, NULL, &last_col).second && overlapped)
+                    if (p_overlapped->search_tree(col, overlapped, nullptr, &last_col).second && overlapped)
                     {
                         // Skip all overlapped cells on this row.
                         col = last_col - 1;
@@ -1437,7 +1437,7 @@ void sheet::dump_html(const string& filepath) const
                         const ixion::formula_cell* cell = cxt.get_formula_cell(pos);
                         assert(cell);
                         size_t index = cell->get_identifier();
-                        const ixion::formula_tokens_t* t = NULL;
+                        const ixion::formula_tokens_t* t = nullptr;
                         if (cell->is_shared())
                             t = cxt.get_shared_formula_tokens(mp_impl->m_sheet, index);
                         else

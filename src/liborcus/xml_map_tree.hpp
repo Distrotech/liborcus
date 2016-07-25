@@ -164,7 +164,7 @@ public:
 
         /**
          * Points to a range reference instance of which this element is a
-         * parent. NULL if this element is not a parent element of any range
+         * parent. nullptr if this element is not a parent element of any range
          * reference.
          */
         range_reference* range_parent;

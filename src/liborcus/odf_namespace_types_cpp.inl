@@ -52,7 +52,7 @@ const xmlns_id_t odf_ns[] = {
     NS_odf_xforms,
     NS_odf_xhtml,
     NS_odf_xlink,
-    NULL
+    nullptr
 };
 
 } // anonymous

@@ -33,7 +33,7 @@ struct opc_rel_t
     pstring  target;
     schema_t type;
 
-    opc_rel_t() : type(NULL) {}
+    opc_rel_t() : type(nullptr) {}
     opc_rel_t(const pstring& _rid, const pstring& _target, schema_t _type) :
         rid(_rid), target(_target), type(_type) {}
 };

@@ -689,7 +689,7 @@ bool xlsx_conditional_format_context::can_handle_element(xmlns_id_t /*ns*/, xml_
 
 xml_context_base* xlsx_conditional_format_context::create_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/)
 {
-    return NULL;
+    return nullptr;
 }
 
 void xlsx_conditional_format_context::end_child_context(xmlns_id_t /*ns*/, xml_token_t /*name*/, xml_context_base* /*child*/)

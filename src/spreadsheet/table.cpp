@@ -33,9 +33,9 @@ class table_auto_filter : public iface::import_auto_filter
 public:
     table_auto_filter(document& doc) :
         m_pool(doc.get_string_pool()),
-        mp_resolver(NULL),
+        mp_resolver(nullptr),
         m_cur_col(-1),
-        mp_data(NULL) {}
+        mp_data(nullptr) {}
 
     void reset(auto_filter_t* data, const ixion::formula_name_resolver* resolver)
     {

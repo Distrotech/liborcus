@@ -22,37 +22,37 @@ import_factory::~import_factory()
 orcus::spreadsheet::iface::import_global_settings* import_factory::get_global_settings()
 {
     assert(false);
-    return NULL;
+    return nullptr;
 }
 
 orcus::spreadsheet::iface::import_shared_strings* import_factory::get_shared_strings()
 {
     assert(false);
-    return NULL;
+    return nullptr;
 }
 
 orcus::spreadsheet::iface::import_styles* import_factory::get_styles()
 {
     assert(false);
-    return NULL;
+    return nullptr;
 }
 
 orcus::spreadsheet::iface::import_sheet* import_factory::append_sheet(const char*, size_t)
 {
     assert(false);
-    return NULL;
+    return nullptr;
 }
 
 orcus::spreadsheet::iface::import_sheet* import_factory::get_sheet(const char*, size_t)
 {
     assert(false);
-    return NULL;
+    return nullptr;
 }
 
 orcus::spreadsheet::iface::import_sheet* import_factory::get_sheet(orcus::spreadsheet::sheet_t)
 {
     assert(false);
-    return NULL;
+    return nullptr;
 }
 
 void import_factory::finalize() {}

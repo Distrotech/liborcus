@@ -57,7 +57,7 @@ schema_t schs[] = {
     SCH_od_rels_pivot_table,
     SCH_xlsx_main,
     SCH_mso_x14ac,
-    NULL
+    nullptr
 };
 
 }

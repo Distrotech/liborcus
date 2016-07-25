@@ -26,34 +26,34 @@ import_conditional_format::~import_conditional_format() {}
 
 import_auto_filter* import_table::get_auto_filter()
 {
-    return NULL;
+    return nullptr;
 }
 
 import_sheet::~import_sheet() {}
 
 import_sheet_properties* import_sheet::get_sheet_properties()
 {
-    return NULL;
+    return nullptr;
 }
 
 import_data_table* import_sheet::get_data_table()
 {
-    return NULL;
+    return nullptr;
 }
 
 import_auto_filter* import_sheet::get_auto_filter()
 {
-    return NULL;
+    return nullptr;
 }
 
 import_table* import_sheet::get_table()
 {
-    return NULL;
+    return nullptr;
 }
 
 import_conditional_format* import_sheet::get_conditional_format()
 {
-    return NULL;
+    return nullptr;
 }
 
 import_global_settings::~import_global_settings() {}
@@ -62,17 +62,17 @@ import_factory::~import_factory() {}
 
 import_global_settings* import_factory::get_global_settings()
 {
-    return NULL;
+    return nullptr;
 }
 
 import_shared_strings* import_factory::get_shared_strings()
 {
-    return NULL;
+    return nullptr;
 }
 
 import_styles* import_factory::get_styles()
 {
-    return NULL;
+    return nullptr;
 }
 
 export_sheet::~export_sheet() {}

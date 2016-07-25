@@ -140,7 +140,7 @@ public:
 xls_xml_context::xls_xml_context(session_context& session_cxt, const tokens& tokens, spreadsheet::iface::import_factory* factory) :
     xml_context_base(session_cxt, tokens),
     mp_factory(factory),
-    mp_cur_sheet(NULL),
+    mp_cur_sheet(nullptr),
     m_cur_row(0), m_cur_col(0), m_cur_cell_type(ct_unknown),
     m_cur_cell_value(std::numeric_limits<double>::quiet_NaN())
 {
@@ -157,7 +157,7 @@ bool xls_xml_context::can_handle_element(xmlns_id_t ns, xml_token_t name) const
 
 xml_context_base* xls_xml_context::create_child_context(xmlns_id_t ns, xml_token_t name)
 {
-    return NULL;
+    return nullptr;
 }
 
 void xls_xml_context::end_child_context(xmlns_id_t ns, xml_token_t name, xml_context_base* child)

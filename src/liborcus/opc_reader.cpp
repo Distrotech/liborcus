@@ -48,7 +48,7 @@ struct process_opc_rel : public unary_function<void, opc_rel_t>
 
     void operator() (opc_rel_t& v)
     {
-        opc_rel_extra* data = NULL;
+        opc_rel_extra* data = nullptr;
         if (m_extras)
         {
             opc_rel_extras_t::map_type::iterator it = m_extras->data.find(v.rid);
@@ -103,7 +103,7 @@ void opc_reader::read_part(const pstring& path, const schema_t type, opc_rel_ext
 
     // Change current directory and read the in-file.
     const char* p = path.get();
-    const char* p_name = NULL;
+    const char* p_name = nullptr;
     size_t name_len = 0;
     for (size_t i = 0, n = path.size(); i < n; ++i, ++p)
     {
@@ -129,7 +129,7 @@ void opc_reader::read_part(const pstring& path, const schema_t type, opc_rel_ext
                 dir_changed.push_back(string());
             }
 
-            p_name = NULL;
+            p_name = nullptr;
             name_len = 0;
         }
     }
@@ -227,7 +227,7 @@ void opc_reader::read_content()
 
     if (m_config.debug)
         for_each(rels.begin(), rels.end(), print_opc_rel());
-    for_each(rels.begin(), rels.end(), process_opc_rel(*this, NULL));
+    for_each(rels.begin(), rels.end(), process_opc_rel(*this, nullptr));
 }
 
 void opc_reader::read_content_types()

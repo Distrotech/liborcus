@@ -112,7 +112,7 @@ void csv_parser<_Handler>::cell()
     }
 
     if (!len)
-        p = NULL;
+        p = nullptr;
 
     push_cell_value(p, len);
 }

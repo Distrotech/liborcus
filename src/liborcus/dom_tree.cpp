@@ -119,7 +119,7 @@ struct dom_tree_impl
     dom_tree::element_stack_type m_elem_stack;
     dom_tree::element* m_root;
 
-    dom_tree_impl(xmlns_context& cxt) : m_ns_cxt(cxt), m_root(NULL) {}
+    dom_tree_impl(xmlns_context& cxt) : m_ns_cxt(cxt), m_root(nullptr) {}
 
     ~dom_tree_impl()
     {
@@ -229,7 +229,7 @@ void dom_tree::start_element(xmlns_id_t ns, const pstring& name)
     // These strings must be persistent.
     pstring name_safe = mp_impl->m_pool.intern(name).first;
 
-    element* p = NULL;
+    element* p = nullptr;
     if (!mp_impl->m_root)
     {
         // This must be the root element!
@@ -302,7 +302,7 @@ const sax::doctype_declaration* dom_tree::get_doctype() const
 const dom_tree::attrs_type* dom_tree::get_declaration_attributes(const pstring& name) const
 {
     declarations_type::const_iterator it = mp_impl->m_decls.find(name);
-    return it == mp_impl->m_decls.end() ? NULL : &it->second;
+    return it == mp_impl->m_decls.end() ? nullptr : &it->second;
 }
 
 namespace {

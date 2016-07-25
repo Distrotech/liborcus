@@ -30,7 +30,7 @@ const orcus::spreadsheet::cell_style_t* find_cell_style_by_name(const orcus::pst
     }
 
     assert(false);
-    return NULL;
+    return nullptr;
 }
 
 }

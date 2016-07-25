@@ -26,7 +26,7 @@ class csv_handler
 {
 public:
     csv_handler(spreadsheet::iface::import_factory& factory) :
-        m_factory(factory), mp_sheet(NULL), m_row(0), m_col(0) {}
+        m_factory(factory), mp_sheet(nullptr), m_row(0), m_col(0) {}
 
     void begin_parse()
     {

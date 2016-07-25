@@ -480,7 +480,7 @@ void orcus_xlsx::read_pivot_cache_def(const std::string& dir_path, const std::st
     parser.parse();
 
     handler.reset();
-    mp_impl->m_opc_reader.check_relation_part(file_name, NULL);
+    mp_impl->m_opc_reader.check_relation_part(file_name, nullptr);
 }
 
 void orcus_xlsx::read_pivot_cache_rec(const std::string& dir_path, const std::string& file_name)
@@ -541,7 +541,7 @@ void orcus_xlsx::read_pivot_table(const std::string& dir_path, const std::string
     parser.parse();
 
     handler.reset();
-    mp_impl->m_opc_reader.check_relation_part(file_name, NULL);
+    mp_impl->m_opc_reader.check_relation_part(file_name, nullptr);
 }
 
 void orcus_xlsx::read_rev_headers(const std::string& dir_path, const std::string& file_name)
@@ -574,7 +574,7 @@ void orcus_xlsx::read_rev_headers(const std::string& dir_path, const std::string
     parser.parse();
 
     handler.reset();
-    mp_impl->m_opc_reader.check_relation_part(file_name, NULL);
+    mp_impl->m_opc_reader.check_relation_part(file_name, nullptr);
 }
 
 void orcus_xlsx::read_rev_log(const std::string& dir_path, const std::string& file_name)

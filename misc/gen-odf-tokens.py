@@ -121,7 +121,7 @@ def gen_namespace_tokens (filepath, ns_values):
         outfile.write("    NS_odf_")
         outfile.write(key)
         outfile.write(",\n")
-    outfile.write("    NULL\n")
+    outfile.write("    nullptr\n")
     outfile.write("};\n\n")
     outfile.write("} // anonymous\n\n")
 

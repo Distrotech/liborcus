@@ -35,7 +35,7 @@ std::string resolve_file_path(const std::string& dir_path, const std::string& fi
         ++p;
 
     vector<pstring> dir_stack;
-    const char* p_head = NULL;
+    const char* p_head = nullptr;
     for (; p != p_end; ++p)
     {
         if (*p == '/')
@@ -57,7 +57,7 @@ std::string resolve_file_path(const std::string& dir_path, const std::string& fi
             else
                 dir_stack.push_back(dir);
 
-            p_head = NULL;
+            p_head = nullptr;
         }
         else if (p_head)
         {

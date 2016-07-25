@@ -13,7 +13,7 @@
 namespace orcus {
 
 xml_stream_handler::xml_stream_handler(xml_context_base* root_context) :
-    mp_ns_cxt(NULL),
+    mp_ns_cxt(nullptr),
     mp_root_context(root_context)
 {
     m_context_stack.push_back(root_context);

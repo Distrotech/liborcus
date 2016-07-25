@@ -67,8 +67,8 @@ void process_char(const char* p, const char*& digit, size_t& digit_len)
 
 void flush_int(int& store, const char*& digit, size_t& digit_len)
 {
-    store = strtol(digit, NULL, 10);
-    digit = NULL;
+    store = strtol(digit, nullptr, 10);
+    digit = nullptr;
     digit_len = 0;
 }
 
@@ -125,8 +125,8 @@ date_time_t to_date_time(const pstring& str)
                 }
 
                 // Flush day.
-                ret.day = strtol(digit, NULL, 10);
-                digit = NULL;
+                ret.day = strtol(digit, nullptr, 10);
+                digit = nullptr;
                 digit_len = 0;
 
                 ++t_count;
@@ -213,12 +213,12 @@ date_time_t to_date_time(const pstring& str)
     if (t_count)
     {
         // Flush second.
-        ret.second = strtod(digit, NULL);
+        ret.second = strtod(digit, nullptr);
     }
     else
     {
         // Flush day.
-        ret.day = strtol(digit, NULL, 10);
+        ret.day = strtol(digit, nullptr, 10);
     }
 
     return ret;

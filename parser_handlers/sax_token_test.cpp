@@ -19,7 +19,7 @@ int main()
     size_t len = strlen(test_code);
 
     sax_token_handler hdl;
-    orcus::tokens token_map(NULL, 0);
+    orcus::tokens token_map(nullptr, 0);
     orcus::xmlns_repository repo;
     orcus::xmlns_context cxt = repo.create_context();
     orcus::sax_token_parser<sax_token_handler> parser(test_code, len, token_map, cxt, hdl);

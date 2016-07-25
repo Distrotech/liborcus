@@ -45,7 +45,7 @@ void print_stack(const tokens& tokens, const xml_elem_stack_t& elem_stack, const
 }
 
 xml_context_base::xml_context_base(session_context& session_cxt, const tokens& tokens) :
-    mp_ns_cxt(NULL), m_session_cxt(session_cxt), m_tokens(tokens) {}
+    mp_ns_cxt(nullptr), m_session_cxt(session_cxt), m_tokens(tokens) {}
 
 xml_context_base::~xml_context_base()
 {

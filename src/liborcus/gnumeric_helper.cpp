@@ -20,7 +20,7 @@ namespace {
 
 size_t parse_color_string(pstring str)
 {
-    unsigned long col_value = strtol( str.get(), NULL, 16 );
+    unsigned long col_value = strtol( str.get(), nullptr, 16 );
     col_value = col_value >> 8;
     // make sure that this actually worked
     assert( col_value <= 255 );

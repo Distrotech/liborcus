@@ -84,7 +84,7 @@ protected:
      */
     void xml_element_expected(
         const xml_token_pair_t& elem, xmlns_id_t ns, xml_token_t name,
-        const ::std::string* error = NULL);
+        const ::std::string* error = nullptr);
 
     void xml_element_expected(
         const xml_token_pair_t& elem, const xml_elem_stack_t& expected_elems);

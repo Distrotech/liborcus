@@ -18,9 +18,9 @@ namespace orcus {
 
 class pstring;
 
-ORCUS_DLLPUBLIC double to_double(const char* p, const char* p_end, const char** p_parse_ended = NULL);
+ORCUS_DLLPUBLIC double to_double(const char* p, const char* p_end, const char** p_parse_ended = nullptr);
 ORCUS_DLLPUBLIC double to_double(const pstring& s);
-ORCUS_DLLPUBLIC long to_long(const char* p, const char* p_end, const char** p_parse_ended = NULL);
+ORCUS_DLLPUBLIC long to_long(const char* p, const char* p_end, const char** p_parse_ended = nullptr);
 ORCUS_DLLPUBLIC long to_long(const pstring& s);
 ORCUS_DLLPUBLIC bool to_bool(const pstring& s);
 

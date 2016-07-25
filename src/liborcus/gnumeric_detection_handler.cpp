@@ -26,7 +26,7 @@ public:
         xml_context_base(session_cxt, tokens) {}
 
     virtual bool can_handle_element(xmlns_id_t, xml_token_t) const { return true; };
-    virtual xml_context_base* create_child_context(xmlns_id_t, xml_token_t) { return NULL; }
+    virtual xml_context_base* create_child_context(xmlns_id_t, xml_token_t) { return nullptr; }
     virtual void characters(const pstring&, bool) {}
     virtual void end_child_context(xmlns_id_t, xml_token_t, xml_context_base*) {}
 

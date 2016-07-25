@@ -31,7 +31,7 @@ const xmlns_id_t NS_mso_password = "http://schemas.microsoft.com/office/2006/key
 const xmlns_id_t NS_mso_all[] = {
     NS_mso_encryption,
     NS_mso_password,
-    NULL
+    nullptr
 };
 
 class char_printer : unary_function<char, void>

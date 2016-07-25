@@ -27,7 +27,7 @@ xml_stream_parser_base::xml_stream_parser_base(
     m_config(opt),
     m_ns_cxt(ns_repo.create_context()),
     m_tokens(tokens),
-    mp_handler(NULL),
+    mp_handler(nullptr),
     m_content(content),
     m_size(size)
 {

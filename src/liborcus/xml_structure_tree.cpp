@@ -76,7 +76,7 @@ struct element_ref
     xml_structure_tree::entity_name name;
     elem_prop* prop;
 
-    element_ref() : prop(NULL) {}
+    element_ref() : prop(nullptr) {}
     element_ref(xml_structure_tree::entity_name _name, elem_prop* _prop) :
         name(_name), prop(_prop) {}
 };
@@ -269,7 +269,7 @@ struct xml_structure_tree_impl
     xml_structure_tree_impl& operator=(const xml_structure_tree_impl&) = delete;
 
     xml_structure_tree_impl(xmlns_context& xmlns_cxt) :
-        m_xmlns_cxt(xmlns_cxt), mp_root(NULL) {}
+        m_xmlns_cxt(xmlns_cxt), mp_root(nullptr) {}
 
     ~xml_structure_tree_impl()
     {
