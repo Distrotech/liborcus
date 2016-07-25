@@ -263,7 +263,6 @@ public:
     bool has_decimal_places() const { return m_has_decimal_places;}
 };
 
-
 class fraction_attr_parser : std::unary_function<xml_token_attr_t, void>
 {
     size_t m_min_int_digits;
@@ -715,11 +714,12 @@ void number_formatting_context::start_element(xmlns_id_t ns, xml_token_t name, c
 
 bool number_formatting_context::end_element(xmlns_id_t ns, xml_token_t name)
 {
+    pstring character_content = m_current_style->character_stream;
     if (ns == NS_odf_number)
     {
         if (name == XML_number_style || name == XML_currency_style || name == XML_percentage_style
-            || name == XML_text_style || name == XML_boolean_style || name == XML_date_style
-            || name == XML_time_style)
+                || name == XML_text_style || name == XML_boolean_style || name == XML_date_style
+                || name == XML_time_style)
         {
             if (m_current_style->is_volatile)
             {
@@ -728,7 +728,7 @@ bool number_formatting_context::end_element(xmlns_id_t ns, xml_token_t name)
             else
             {
                 mp_styles->set_number_format_code(m_current_style->number_formatting_code.c_str(),
-                                                m_current_style->number_formatting_code.size());
+                        m_current_style->number_formatting_code.size());
                 mp_styles->set_xf_number_format(mp_styles->commit_number_format());
 
                 mp_styles->set_cell_style_name( m_current_style->name.get(), m_current_style->name.size());
@@ -739,11 +739,13 @@ bool number_formatting_context::end_element(xmlns_id_t ns, xml_token_t name)
         }
         else if (name == XML_currency_symbol)
             m_current_style->number_formatting_code = m_current_style->number_formatting_code + "[$"
-                    + m_current_style->character_stream + "]";
+                + character_content + "]";
 
         else if (name == XML_text)
-                m_current_style->number_formatting_code += m_current_style->character_stream;
+        {
+            m_current_style->number_formatting_code += character_content;
         }
+    }
     return false;
 }
 
@@ -758,7 +760,6 @@ void number_formatting_context::characters(const pstring& str, bool transient)
             m_current_style->character_stream = str;
     }
 }
-
 
 }
 
