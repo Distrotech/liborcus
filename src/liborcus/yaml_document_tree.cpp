@@ -452,7 +452,7 @@ std::vector<node> node::keys() const
     std::for_each(yvm->key_order.begin(), yvm->key_order.end(),
         [&](const std::unique_ptr<yaml_value>& key)
         {
-            keys.push_back(std::move(node(key.get())));
+            keys.push_back(node(key.get()));
         }
     );
 
