@@ -208,9 +208,9 @@ void test_odf_number_formatting(orcus::spreadsheet::import_styles& styles)
     cell_format = styles.get_cell_style_format(xf);
     assert(cell_format);
 
-    // number_format = cell_format->number_format;
-    // cell_number_format = styles.get_number_format(number_format);
-    // assert(cell_number_format->format_string.str() == "[$₹]#,##0.00;[RED]-[$₹]#,##0.00");
+    number_format = cell_format->number_format;
+    cell_number_format = styles.get_number_format(number_format);
+    assert(cell_number_format->format_string.str() == "[$₹]#,##0.00;[RED]-[$₹]#,##0.00");
 
     style = find_cell_style_by_name("Name12", &styles);
     xf = style->xf;

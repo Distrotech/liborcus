@@ -21,12 +21,7 @@ malformed_xml_error::~malformed_xml_error() throw() {}
 
 char decode_xml_encoded_char(const char* p, size_t n)
 {
-    if (*p == '#')
-    {
-        // this is an escaped unicode character
-        // what should we do here?
-    }
-    else if (n == 2)
+    if (n == 2)
     {
         if (!std::strncmp(p, "lt", n))
             return '<';
@@ -53,6 +48,43 @@ char decode_xml_encoded_char(const char* p, size_t n)
     }
 
     return '\0';
+}
+
+std::string decode_xml_unicode_char(const char* p, size_t n)
+{
+    std::string s(p);
+    unsigned int point;
+    if (*p == '#')
+    {
+        if (s[1] == 'x')
+            point = std::stoi(s.substr(2), nullptr, 16);
+        else
+            point = std::stoi(s.substr(1), nullptr, 10);
+
+        if (point < 0x80)
+        {
+            s = (point >> 0 & 0x7F) | 0x00;
+        }
+        else if (point < 0x0800)
+        {
+            s = (point >> 6 & 0x1F) | 0xC0;
+            s += (point >> 0 & 0x3F) | 0x80;
+        }
+        else if (point < 0x010000)
+        {
+            s = (point >> 12 & 0x0F) | 0xE0;
+            s += (point >> 6 & 0x3F) | 0x80;
+            s += (point >> 0 & 0x3F) | 0x80;
+        }
+        else if (point < 0x110000)
+        {
+            s = (point >> 18 & 0x07) | 0xF0;
+            s += (point >> 12 & 0x3F) | 0x80;
+            s += (point >> 6 & 0x3F) | 0x80;
+            s += (point >> 0 & 0x3F) | 0x80;
+        }
+    }
+    return s;
 }
 
 struct parser_base::impl
@@ -182,14 +214,21 @@ void parser_base::parse_encoded_char(cell_buffer& buf)
         cout << "sax_parser::parse_encoded_char: raw='" << std::string(p0, n) << "'" << endl;
 #endif
 
+        std::string utf8;
+
         char c = decode_xml_encoded_char(p0, n);
         if (c)
             buf.append(&c, 1);
+        else
+            utf8 = decode_xml_unicode_char(p0, n);
+
+        if (!utf8.empty())
+            buf.append(utf8.c_str(), utf8.size() / sizeof(utf8[0]));
 
         // Move to the character past ';' before returning to the parent call.
         next();
 
-        if (!c)
+        if (!c && utf8.empty())
         {
 #if ORCUS_DEBUG_SAX_PARSER
             cout << "sax_parser::parse_encoded_char: not a known encoding name. Use the original." << endl;

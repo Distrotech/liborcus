@@ -66,6 +66,19 @@ struct doctype_declaration
 ORCUS_PSR_DLLPUBLIC char decode_xml_encoded_char(const char* p, size_t n);
 
 /**
+ * Given an unicode string (such as #20A9 ), return a std::string
+ * that corresponds with the name.  The name shouldn't include the
+ * leading '&' and trailing ';'.
+ *
+ * @param p pointer to the first character of encoded name
+ * @param n length of encoded name
+ *
+ * @return string that corresponds with the encoded name.  empty string is
+ *         returned if decoding fails.
+ */
+ORCUS_PSR_DLLPUBLIC std::string decode_xml_unicode_char(const char* p, size_t n);
+
+/**
  * Element properties passed by sax_parser to its handler's open_element()
  * and close_element() calls.
  */
