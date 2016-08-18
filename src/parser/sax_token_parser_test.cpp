@@ -109,12 +109,17 @@ void test_sax_token_parser_1()
 
 void test_unicode_string()
 {
-    const char* content = "<?xml version=\"1.0\"?><root>&#x20B9;</root>";
-    size_t content_size = strlen(content);
+    const char* content1 = "<?xml version=\"1.0\"?><root>&#x0021;</root>";
+    const char* content2 = "<?xml version=\"1.0\"?><root>&#x00B6;</root>";
+    const char* content3 = "<?xml version=\"1.0\"?><root>&#x20B9;</root>";
 
     class handler
     {
+        orcus::pstring str;
     public:
+        handler(orcus::pstring str):
+            str(str)
+            {}
 
         void start_element(const orcus::xml_token_element_t& /*elem*/)
         {
@@ -128,6 +133,7 @@ void test_unicode_string()
         {
             std::cout << "charachters:" << std::endl;
             std::cout << val << std::endl;
+            assert(val == str);
         }
     };
 
@@ -135,12 +141,18 @@ void test_unicode_string()
     };
     size_t token_count = ORCUS_N_ELEMENTS(token_names);
 
-    handler hdl;
     tokens token_map(token_names, token_count);
     xmlns_repository ns_repo;
     xmlns_context ns_cxt = ns_repo.create_context();
-    sax_token_parser<handler> parser(content, content_size, token_map, ns_cxt, hdl);
-    parser.parse();
+    handler hdl("\u0021");
+    sax_token_parser<handler> parser1(content1, strlen(content1), token_map, ns_cxt, hdl);
+    parser1.parse();
+    hdl = handler("\u00B6");
+    sax_token_parser<handler> parser2(content2, strlen(content2), token_map, ns_cxt, hdl);
+    parser2.parse();
+    hdl = handler("\u20B9");
+    sax_token_parser<handler> parser3(content3, strlen(content3), token_map, ns_cxt, hdl);
+    parser3.parse();
 }
 
 int main()
