@@ -79,7 +79,6 @@ class number_attr_parser : std::unary_function<xml_token_attr_t, void>
     size_t m_decimal_places;
     size_t m_min_int_digits;
     bool m_grouping;
-    bool m_has_decimal_places;
 
 public:
 
@@ -232,13 +231,11 @@ class seconds_attr_parser : std::unary_function<xml_token_attr_t, void>
 {
     size_t m_decimal_places;
     bool m_style_name;
-    bool m_has_decimal_places;
 
 public:
     seconds_attr_parser():
         m_decimal_places(0),
-        m_style_name(false),
-        m_has_decimal_places(false)
+        m_style_name(false)
     {}
 
     void operator() (const xml_token_attr_t& attr)
@@ -250,14 +247,13 @@ public:
             if (attr.name == XML_decimal_places)
             {
                 m_decimal_places = to_long(attr.value);
-                m_has_decimal_places = true;
             }
         }
     }
 
     bool has_long() const { return m_style_name;}
     size_t get_decimal_places() const { return m_decimal_places;}
-    bool has_decimal_places() const { return m_has_decimal_places;}
+    bool has_decimal_places() const { return m_decimal_places > 0;}
 };
 
 class fraction_attr_parser : std::unary_function<xml_token_attr_t, void>
