@@ -52,39 +52,53 @@ char decode_xml_encoded_char(const char* p, size_t n)
 
 std::string decode_xml_unicode_char(const char* p, size_t n)
 {
-    std::string s(p);
-    unsigned int point;
-    if (*p == '#')
+    if (*p == '#' && n >= 2)
     {
-        if (s[1] == 'x')
-            point = std::stoi(s.substr(2), nullptr, 16);
+        uint32_t point = 0;
+        if (p[1] == 'x')
+        {
+            if (n == 2)
+                throw orcus::xml_structure_error("invalid number of characters for hexadecimal unicode reference");
+
+            point = std::stoi(std::string(p + 2, n - 2), nullptr, 16);
+        }
         else
-            point = std::stoi(s.substr(1), nullptr, 10);
+            point = std::stoi(std::string(p + 1, n - 1), nullptr, 10);
 
         if (point < 0x80)
         {
-            s = (point >> 0 & 0x7F) | 0x00;
+            // is it really necessary to do the bit manipulation here?
+            std::string s(1, static_cast<char>(point & 0x7F));
+            return s;
         }
         else if (point < 0x0800)
         {
-            s = (point >> 6 & 0x1F) | 0xC0;
-            s += (point >> 0 & 0x3F) | 0x80;
+            std::string s(1, static_cast<char>((point >> 6 & 0x1F) | 0xC0));
+            s += static_cast<char>((point & 0x3F) | 0x80);
+            return s;
         }
         else if (point < 0x010000)
         {
-            s = (point >> 12 & 0x0F) | 0xE0;
-            s += (point >> 6 & 0x3F) | 0x80;
-            s += (point >> 0 & 0x3F) | 0x80;
+            std::string s(1, static_cast<char>((point >> 12 & 0x0F) | 0xE0));
+            s += static_cast<char>((point >> 6 & 0x3F) | 0x80);
+            s += static_cast<char>((point & 0x3F) | 0x80);
+            return s;
         }
         else if (point < 0x110000)
         {
-            s = (point >> 18 & 0x07) | 0xF0;
-            s += (point >> 12 & 0x3F) | 0x80;
-            s += (point >> 6 & 0x3F) | 0x80;
-            s += (point >> 0 & 0x3F) | 0x80;
+            std::string s(1, static_cast<char>((point >> 18 & 0x07) | 0xF0));
+            s += static_cast<char>((point >> 12 & 0x3F) | 0x80);
+            s += static_cast<char>((point >> 6 & 0x3F) | 0x80);
+            s += static_cast<char>((point & 0x3F) | 0x80);
+            return s;
+        }
+        else
+        {
+            // should not happen as that is not represented by utf-8
+            assert(false);
         }
     }
-    return s;
+    return std::string();
 }
 
 struct parser_base::impl
@@ -214,21 +228,24 @@ void parser_base::parse_encoded_char(cell_buffer& buf)
         cout << "sax_parser::parse_encoded_char: raw='" << std::string(p0, n) << "'" << endl;
 #endif
 
-        std::string utf8;
 
         char c = decode_xml_encoded_char(p0, n);
         if (c)
             buf.append(&c, 1);
         else
-            utf8 = decode_xml_unicode_char(p0, n);
+        {
+            std::string utf8 = decode_xml_unicode_char(p0, n);
 
-        if (!utf8.empty())
-            buf.append(utf8.c_str(), utf8.size() / sizeof(utf8[0]));
+            if (!utf8.empty())
+                buf.append(utf8.c_str(), utf8.size());
+
+            c = '1'; // just to avoid hitting the !c case below
+        }
 
         // Move to the character past ';' before returning to the parent call.
         next();
 
-        if (!c && utf8.empty())
+        if (!c)
         {
 #if ORCUS_DEBUG_SAX_PARSER
             cout << "sax_parser::parse_encoded_char: not a known encoding name. Use the original." << endl;
