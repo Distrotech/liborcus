@@ -447,6 +447,7 @@ public:
                         m_locked = true;
                     }
                 }
+                break;
                 case XML_vertical_align:
                     m_has_ver_alignment = odf_helper::extract_ver_alignment_style(attr.value, m_ver_alignment);
                 break;
