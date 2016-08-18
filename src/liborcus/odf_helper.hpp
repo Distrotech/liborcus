@@ -29,6 +29,7 @@ public:
         length_t border_width;
 
         odf_border_details():
+            border_style(orcus::spreadsheet::border_style_t::unknown),
             red(0),
             green(0),
             blue(0)
