@@ -238,9 +238,10 @@ void parser_base::parse_encoded_char(cell_buffer& buf)
             std::string utf8 = decode_xml_unicode_char(p0, n);
 
             if (!utf8.empty())
+            {
                 buf.append(utf8.c_str(), utf8.size());
-
-            c = '1'; // just to avoid hitting the !c case below
+                c = '1'; // just to avoid hitting the !c case below
+            }
         }
 
         // Move to the character past ';' before returning to the parent call.
