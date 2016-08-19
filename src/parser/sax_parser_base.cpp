@@ -239,7 +239,7 @@ void parser_base::parse_encoded_char(cell_buffer& buf)
 
             if (!utf8.empty())
             {
-                buf.append(utf8.c_str(), utf8.size());
+                buf.append(utf8.data(), utf8.size());
                 c = '1'; // just to avoid hitting the !c case below
             }
         }
