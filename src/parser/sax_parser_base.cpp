@@ -58,7 +58,8 @@ std::string decode_xml_unicode_char(const char* p, size_t n)
         if (p[1] == 'x')
         {
             if (n == 2)
-                throw orcus::xml_structure_error("invalid number of characters for hexadecimal unicode reference");
+                throw orcus::xml_structure_error(
+                    "invalid number of characters for hexadecimal unicode reference");
 
             point = std::stoi(std::string(p + 2, n - 2), nullptr, 16);
         }
@@ -98,6 +99,7 @@ std::string decode_xml_unicode_char(const char* p, size_t n)
             assert(false);
         }
     }
+
     return std::string();
 }
 
