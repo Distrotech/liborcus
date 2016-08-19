@@ -230,7 +230,6 @@ void parser_base::parse_encoded_char(cell_buffer& buf)
         cout << "sax_parser::parse_encoded_char: raw='" << std::string(p0, n) << "'" << endl;
 #endif
 
-
         char c = decode_xml_encoded_char(p0, n);
         if (c)
             buf.append(&c, 1);
