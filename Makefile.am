@@ -11,17 +11,32 @@ pkgconfigdir = $(libdir)/pkgconfig
 
 doc_data = \
     doc/conf.py \
-    doc/css.rst \
-    doc/csv.rst \
     doc/doxygen.conf \
-    doc/gnumeric.rst \
     doc/index.rst \
-    doc/json.rst \
-    doc/ods.rst \
-    doc/xls-xml.rst \
-    doc/xlsx.rst \
-    doc/xml.rst \
-    doc/yaml.rst
+    doc/cli/index.rst \
+    doc/cli/orcus_csv.rst \
+    doc/cli/orcus_gnumeric.rst \
+    doc/cli/orcus_json.rst \
+    doc/cli/orcus_ods.rst \
+    doc/cli/orcus_xls_xml.rst \
+    doc/cli/orcus_xlsx.rst \
+    doc/cli/orcus_xml.rst \
+    doc/cli/orcus_yaml.rst \
+    doc/cpp/filter/index.rst \
+    doc/cpp/index.rst \
+    doc/cpp/model/index.rst \
+    doc/cpp/model/json.rst \
+    doc/cpp/model/spreadsheet.rst \
+    doc/cpp/model/yaml.rst \
+    doc/cpp/parser/csv.rst \
+    doc/cpp/parser/index.rst \
+    doc/cpp/parser/json.rst \
+    doc/cpp/parser/util.rst \
+    doc/cpp/parser/xml.rst \
+    doc/cpp/parser/yaml.rst \
+    doc/overview/index.rst \
+    doc/overview/json.rst \
+    doc/python/index.rst
 
 bin_data = \
     bin/env-osx.sh \
