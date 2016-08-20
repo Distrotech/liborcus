@@ -382,10 +382,11 @@ orcus_odf_styles_context_test_SOURCES = \
 
 orcus_odf_styles_context_test_LDADD = \
 	liborcus/liborcus-@ORCUS_API_VERSION@.la \
-	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la \
-	parser/liborcus-parser-@ORCUS_API_VERSION@.la
+	parser/liborcus-parser-@ORCUS_API_VERSION@.la \
+	spreadsheet/liborcus-spreadsheet-model-@ORCUS_API_VERSION@.la
 
-orcus_odf_styles_context_test_CPPFLAGS = -I$(top_builddir)/lib/liborcus/liborcus.la $(AM_CPPFLAGS) -DSRCDIR=\""$(top_srcdir)"\"
+orcus_odf_styles_context_test_CPPFLAGS = $(AM_CPPFLAGS) \
+	-I$(top_builddir)/lib/liborcus/liborcus.la -DSRCDIR=\""$(top_srcdir)"\"
 
 TESTS += \
 	 orcus-odf-styles-context-test

@@ -134,6 +134,7 @@ test_data = \
     test/ods/raw-values-1/check.txt \
     test/ods/raw-values-1/input.ods \
     test/ods/styles/cell-styles.xml \
+    test/ods/styles/number-format.xml \
     test/ods/test.ods \
     test/python/json.py \
     test/python/module.py \
