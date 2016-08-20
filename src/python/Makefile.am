@@ -46,11 +46,13 @@ _orcus_json_la_LIBADD = \
 orcusdir = $(pythondir)/orcus
 orcus_DATA = \
 	./orcus/__init__.py \
-	./orcus/json.py
+	./orcus/json.py \
+	./orcus/xlsx.py
 
 EXTRA_DIST = \
 	./orcus/__init__.py \
-	./orcus/json.py
+	./orcus/json.py \
+	./orcus/xlsx.py
 
 AM_TESTS_ENVIRONMENT = PYTHONPATH=$(top_srcdir)/src/python:.libs$${PYTHONPATH:+:$${PYTHONPATH}}; export PYTHONPATH;
 
