@@ -1,4 +1,4 @@
-SUBDIRS = src include parser_handlers
+SUBDIRS = src include parser_handlers benchmark
 ACLOCAL_AMFLAGS = -I m4
 
 pcfiles = liborcus-@ORCUS_API_VERSION@.pc
@@ -137,6 +137,7 @@ test_data = \
     test/ods/test.ods \
     test/python/json.py \
     test/python/module.py \
+    test/python/xlsx.py \
     test/xls-xml/basic/check.txt \
     test/xls-xml/basic/input.xml \
     test/xlsx/background-color/standard.xlsx \

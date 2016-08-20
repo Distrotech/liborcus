@@ -1,4 +1,4 @@
-SUBDIRS = mso spreadsheet
+SUBDIRS = detail mso spreadsheet
 
 liborcusdir = $(includedir)/liborcus-@ORCUS_API_VERSION@/orcus
 liborcus_HEADERS = \
@@ -34,9 +34,11 @@ liborcus_HEADERS = \
 	sax_parser_base.hpp \
 	sax_ns_parser.hpp \
 	sax_token_parser.hpp \
+	sax_token_parser_thread.hpp \
 	stream.hpp \
 	string_pool.hpp \
 	threaded_json_parser.hpp \
+	threaded_sax_token_parser.hpp \
 	tokens.hpp \
 	types.hpp \
 	xml_namespace.hpp \

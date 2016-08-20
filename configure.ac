@@ -242,6 +242,7 @@ AC_CONFIG_FILES([Makefile
 	VERSION
 	include/Makefile
 	include/orcus/Makefile
+	include/orcus/detail/Makefile
 	include/orcus/mso/Makefile
 	include/orcus/spreadsheet/Makefile
 	src/Makefile
