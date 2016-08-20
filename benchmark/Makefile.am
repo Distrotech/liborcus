@@ -22,6 +22,9 @@ threaded_json_parser_test_LDADD = \
 
 threaded_json_parser_test_CPPFLAGS = $(AM_CPPFLAGS)
 
+CLEANFILES = $(EXTRA_PROGRAMS)
+
 .PHONY: all
 
 all: $(EXTRA_PROGRAMS)
+
