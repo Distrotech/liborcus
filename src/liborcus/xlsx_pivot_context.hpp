@@ -27,6 +27,9 @@ public:
     virtual void start_element(xmlns_id_t ns, xml_token_t name, const::std::vector<xml_token_attr_t>& attrs);
     virtual bool end_element(xmlns_id_t ns, xml_token_t name);
     virtual void characters(const pstring& str, bool transient);
+
+private:
+    void start_element_x(const xml_token_pair_t& parent, const std::vector<xml_token_attr_t>& attrs);
 };
 
 /**

@@ -634,10 +634,12 @@ void xlsx_styles_context::start_element(xmlns_id_t ns, xml_token_t name, const x
         break;
         case XML_fill:
         {
-            xml_elem_stack_t expected_elements;
-            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_fills));
-            expected_elements.push_back(xml_token_pair_t(NS_ooxml_xlsx, XML_dxf));
-            xml_element_expected(parent, NS_ooxml_xlsx, XML_fills);
+            xml_elem_stack_t expected = {
+                xml_token_pair_t(NS_ooxml_xlsx, XML_fills),
+                xml_token_pair_t(NS_ooxml_xlsx, XML_dxf)
+            };
+
+            xml_element_expected(parent, expected);
         }
         break;
         case XML_patternFill:

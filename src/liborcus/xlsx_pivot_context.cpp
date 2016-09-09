@@ -256,11 +256,9 @@ void xlsx_pivot_cache_def_context::start_element(xmlns_id_t ns, xml_token_t name
         break;
         case XML_s:
         {
-            xml_element_expected(parent, NS_ooxml_xlsx, XML_sharedItems);
-            s_attr_parser func;
-            for_each(attrs.begin(), attrs.end(), func);
+            start_element_x(parent, attrs);
+            break;
         }
-        break;
         default:
             warn_unhandled();
     }
@@ -273,6 +271,29 @@ bool xlsx_pivot_cache_def_context::end_element(xmlns_id_t ns, xml_token_t name)
 
 void xlsx_pivot_cache_def_context::characters(const pstring& /*str*/, bool /*transient*/)
 {
+}
+
+void xlsx_pivot_cache_def_context::start_element_x(
+    const xml_token_pair_t& parent, const std::vector<xml_token_attr_t>& attrs)
+{
+    if (parent.first != NS_ooxml_xlsx)
+    {
+        warn_unhandled();
+        return;
+    }
+
+    switch (parent.second)
+    {
+        case XML_sharedItems:
+        {
+            xml_element_expected(parent, NS_ooxml_xlsx, XML_sharedItems);
+            s_attr_parser func;
+            for_each(attrs.begin(), attrs.end(), func);
+            break;
+        }
+        default:
+            warn_unhandled();
+    }
 }
 
 xlsx_pivot_cache_rec_context::xlsx_pivot_cache_rec_context(session_context& cxt, const tokens& tokens) :
@@ -942,13 +963,24 @@ void xlsx_pivot_table_context::start_element(xmlns_id_t ns, xml_token_t name, co
             break;
             case XML_x:
             {
-                xml_element_expected(parent, NS_ooxml_xlsx, XML_i);
-                long idx = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_v);
-                if (idx < 0)
-                    // 0 is default when not set.
-                    idx = 0;
+                if (parent.first != NS_ooxml_xlsx)
+                {
+                    warn_unhandled();
+                    break;
+                }
 
-                cout << "  * v = " << idx << endl;
+                if (parent.second == XML_i)
+                {
+                    long idx = single_long_attr_getter::get(attrs, NS_ooxml_xlsx, XML_v);
+                    if (idx < 0)
+                        // 0 is default when not set.
+                        idx = 0;
+
+                    cout << "  * v = " << idx << endl;
+                    break;
+                }
+
+                warn_unhandled();
             }
             break;
             case XML_pivotTableStyleInfo:
@@ -965,6 +997,8 @@ void xlsx_pivot_table_context::start_element(xmlns_id_t ns, xml_token_t name, co
                 warn_unhandled();
         }
     }
+    else
+        warn_unhandled();
 }
 
 bool xlsx_pivot_table_context::end_element(xmlns_id_t ns, xml_token_t name)
