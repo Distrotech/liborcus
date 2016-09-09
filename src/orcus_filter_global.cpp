@@ -137,8 +137,6 @@ bool parse_import_filter_args(
     if (vm.count("output-format"))
         outformat = vm["output-format"].as<string>();
 
-    json_config opt;
-
     if (infile.empty())
     {
         cerr << err_no_input_file << endl;
@@ -150,6 +148,10 @@ bool parse_import_filter_args(
         // 'outdir' is used as the output file path in this mode.
         return handle_dump_check(app, doc, infile, outdir);
     }
+
+    config opt;
+    opt.debug = vm.count("debug") > 0;
+    app.set_config(opt);
 
     if (outformat.empty())
     {
