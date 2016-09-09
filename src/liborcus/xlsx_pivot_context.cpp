@@ -256,7 +256,7 @@ void xlsx_pivot_cache_def_context::start_element(xmlns_id_t ns, xml_token_t name
         break;
         case XML_s:
         {
-            start_element_x(parent, attrs);
+            start_element_s(parent, attrs);
             break;
         }
         default:
@@ -273,7 +273,7 @@ void xlsx_pivot_cache_def_context::characters(const pstring& /*str*/, bool /*tra
 {
 }
 
-void xlsx_pivot_cache_def_context::start_element_x(
+void xlsx_pivot_cache_def_context::start_element_s(
     const xml_token_pair_t& parent, const std::vector<xml_token_attr_t>& attrs)
 {
     if (parent.first != NS_ooxml_xlsx)

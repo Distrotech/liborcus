@@ -29,7 +29,7 @@ public:
     virtual void characters(const pstring& str, bool transient);
 
 private:
-    void start_element_x(const xml_token_pair_t& parent, const std::vector<xml_token_attr_t>& attrs);
+    void start_element_s(const xml_token_pair_t& parent, const std::vector<xml_token_attr_t>& attrs);
 };
 
 /**
