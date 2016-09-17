@@ -6,16 +6,13 @@
  */
 
 #include "xlsx.hpp"
-#include "document.hpp"
 
-#if defined(__ORCUS_XLSX) && defined(__ORCUS_SPREADSHEET_MODEL)
+#ifdef __ORCUS_PYTHON_XLSX
+#include "document.hpp"
 #include "orcus/orcus_xlsx.hpp"
 #include "orcus/spreadsheet/document.hpp"
 #include "orcus/spreadsheet/factory.hpp"
 #include "orcus/global.hpp"
-#define XLSX_ENABLED 1
-#else
-#define XLSX_ENABLED 0
 #endif
 
 #include <iostream>
@@ -24,7 +21,7 @@ using namespace std;
 
 namespace orcus { namespace python {
 
-#if XLSX_ENABLED
+#ifdef __ORCUS_PYTHON_XLSX
 
 PyObject* xlsx_read_file(PyObject* /*module*/, PyObject* args, PyObject* kwargs)
 {

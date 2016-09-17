@@ -10,9 +10,12 @@
 
 #include "root.hpp"
 #include "xlsx.hpp"
+
+#ifdef __ORCUS_SPREADSHEET_MODEL
 #include "document.hpp"
 #include "sheet.hpp"
 #include "sheet_rows.hpp"
+#endif
 
 #include <iostream>
 #include <string>

@@ -236,6 +236,21 @@ AS_IF([test "x$enable_python" != "xno"], [
 ])
 AM_CONDITIONAL([BUILD_PYTHON], [test "x$enable_python" != "xno"])
 
+with_python_xlsx="no"
+if test "x$enable_spreadsheet_model" != "xno"; then
+    if test "x$enable_python" != "xno"; then
+        if test "x$with_xlsx_filter" != "xno"; then
+            with_python_xlsx="yes"
+        fi
+    fi
+fi
+
+if test "x$with_python_xlsx" != "xno"; then
+    CXXFLAGS="$CXXFLAGS -D__ORCUS_PYTHON_XLSX"
+fi
+
+AM_CONDITIONAL([WITH_PYTHON_XLSX], [test "x$with_python_xlsx" != "xno"])
+
 AC_CONFIG_FILES([Makefile
 	liborcus-$ORCUS_API_VERSION.pc:liborcus.pc.in
 	liborcus-spreadsheet-model-$ORCUS_API_VERSION.pc:liborcus-spreadsheet-model.pc.in
@@ -272,6 +287,7 @@ Build configuration:
         xlsx-filter:           $with_xlsx_filter
         xls-xml-filter:        $with_xls_xml_filter
         tools:                 $with_tools
+        python-xlsx            $with_python_xlsx
 ==============================================================================
 ])
 
