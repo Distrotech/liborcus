@@ -1,0 +1,14 @@
+image: gcc
+
+build:
+  stage: build
+
+  before_script: 
+    - apt update && apt -y install make autoconf 
+  script: 
+    - ./autogen.sh &&  make
+
+test:
+  stage: test
+  script:
+    - make check
