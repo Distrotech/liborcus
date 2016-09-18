@@ -64,7 +64,7 @@ std::tuple<pstring, size_t, size_t> find_line_with_offset(
 
 std::string load_file_content(const char* filepath)
 {
-    std::ifstream file(filepath);
+    std::ifstream file(filepath, std::ios::binary);
     if (!file)
     {
         // failed to open the specified file.
