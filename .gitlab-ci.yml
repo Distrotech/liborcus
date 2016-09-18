@@ -4,9 +4,9 @@ build:
   stage: build
 
   before_script: 
-    - apt update && apt -y install make autoconf automake libtool libboost-dev
+    - apt update && apt -y install make autoconf automake libtool libboost-dev libboost-system-dev
   script: 
-    - ./autogen.sh && make
+    - ./autogen.sh --disable-spreadsheet-model && make
 
 test:
   stage: test
