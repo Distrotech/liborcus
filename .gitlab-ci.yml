@@ -4,7 +4,7 @@ build:
   stage: build
 
   before_script: 
-    - apt update && apt -y install make autoconf automake libtool libboost1.58-dev
+    - apt update && apt -y install make autoconf automake libtool libboost-dev
   script: 
     - ./autogen.sh && make
 
